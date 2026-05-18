@@ -287,7 +287,8 @@ sub _format_date {
 sub _format_address {
     my ($addr) = @_;
     return '' unless $addr;
-    my @parts = split /\s*\/\s*/, $addr;
+    # Split on " / " (space-slash-space) only — so "27/29" stays intact
+    my @parts = split /\s+\/\s+/, $addr;
     return join("\\\n", map { _escape_typst($_) } @parts);
 }
 
