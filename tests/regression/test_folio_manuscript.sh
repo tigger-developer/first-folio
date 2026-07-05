@@ -164,6 +164,56 @@ Third chapter text.
 ORG
 }
 
+write_dummy_markdown() {
+    local file="$1"
+    cat > "$file" <<'MD'
+# About Time
+
+**A Novel**
+
+*by Test Author*
+
+--- Draft 4 | July 2026 ---
+
+## PART ONE
+
+### Chapter 1
+
+The rain had been falling since Tuesday.
+
+***
+
+By noon, the hands had moved backwards twice.
+
+### Chapter 2
+
+The first rule of time travel was breakfast.
+MD
+}
+
+write_dummy_org() {
+    local file="$1"
+    cat > "$file" <<'ORG'
+#+TITLE: About Time
+#+SUBTITLE: A Novel
+#+AUTHOR: Test Author
+#+DATE: July 2026
+#+VERSION: Draft 4
+#+WORDCOUNT: 80000
+
+* PART ONE
+** Chapter 1
+The rain had been falling since Tuesday.
+
+-----
+
+By noon, the hands had moved backwards twice.
+
+** Chapter 2
+The first rule of time travel was breakfast.
+ORG
+}
+
 echo "=== Folio manuscript tests (issue #9) ==="
 
 MD_DIR="$TMPDIR_TEST/md"
@@ -348,14 +398,18 @@ run_fail "RT-9.49: Unwritable output destination exits non-zero" \
 
 echo ""
 echo "Dummy example documents for UT evidence"
+DUMMY_DIR="$TMPDIR_TEST/dummy"
+mkdir -p "$DUMMY_DIR"
+write_dummy_markdown "$DUMMY_DIR/dummy.md"
+write_dummy_org "$DUMMY_DIR/dummy.org"
 run_ok "UT-9.6 evidence: Dummy Markdown manuscript renders with British preset" \
-    "$FOLIO" manuscript --style british "$PROJECT_DIR/examples/dummy-manuscript.md" "$TMPDIR_TEST/ut-british-md.pdf"
+    "$FOLIO" manuscript --style british "$DUMMY_DIR/dummy.md" "$TMPDIR_TEST/ut-british-md.pdf"
 run_ok "UT-9.7 evidence: Dummy org-mode manuscript renders with British preset" \
-    "$FOLIO" manuscript --style british "$PROJECT_DIR/examples/dummy-manuscript.org" "$TMPDIR_TEST/ut-british-org.pdf"
+    "$FOLIO" manuscript --style british "$DUMMY_DIR/dummy.org" "$TMPDIR_TEST/ut-british-org.pdf"
 run_ok "UT-9.8 evidence: Dummy Markdown manuscript renders with US preset" \
-    "$FOLIO" manuscript --style us "$PROJECT_DIR/examples/dummy-manuscript.md" "$TMPDIR_TEST/ut-us-md.pdf"
+    "$FOLIO" manuscript --style us "$DUMMY_DIR/dummy.md" "$TMPDIR_TEST/ut-us-md.pdf"
 run_ok "UT-9.9 evidence: Dummy org-mode manuscript renders with US preset" \
-    "$FOLIO" manuscript --style us "$PROJECT_DIR/examples/dummy-manuscript.org" "$TMPDIR_TEST/ut-us-org.pdf"
+    "$FOLIO" manuscript --style us "$DUMMY_DIR/dummy.org" "$TMPDIR_TEST/ut-us-org.pdf"
 printf '  UT evidence PDFs: %s\n' "$TMPDIR_TEST"/ut-*.pdf
 
 echo ""
