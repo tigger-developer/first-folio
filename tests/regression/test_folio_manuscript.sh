@@ -134,90 +134,94 @@ write_markdown_fixtures() {
     local dir="$1"
     mkdir -p "$dir/part1" "$dir/part2"
 
-    cat > "$dir/part1/ch00.md" <<'MD'
-# About Time
+    printf '%s\n' \
+        '# About Time' \
+        '' \
+        '**A Novel**' \
+        '' \
+        '*by Test Author*' \
+        '' \
+        '--- Draft 4 | July 2026 ---' \
+        > "$dir/part1/ch00.md"
 
-**A Novel**
+    printf '%s\n' \
+        '## PART ONE' \
+        '' \
+        '### Chapter 1' \
+        '' \
+        "First paragraph with *emphasis* and \`code\`." \
+        '' \
+        '```' \
+        'monospace block' \
+        '```' \
+        '' \
+        '***' \
+        '' \
+        'Second paragraph.[^note]' \
+        '' \
+        '[^note]: A useful footnote.' \
+        > "$dir/part1/ch01.md"
 
-*by Test Author*
+    printf '%s\n' \
+        '### Chapter 2' \
+        '' \
+        'Chapter two starts here.' \
+        '' \
+        '### Notes <!-- noexport -->' \
+        '' \
+        'Private planning note.' \
+        > "$dir/part1/ch02.md"
 
---- Draft 4 | July 2026 ---
-MD
-
-    printf '%s' '## PART ONE
-
-### Chapter 1
-
-First paragraph with *emphasis* and `code`.
-
-```
-monospace block
-```
-
-***
-
-Second paragraph.[^note]
-
-[^note]: A useful footnote.
-' > "$dir/part1/ch01.md"
-
-    printf '%s' '### Chapter 2
-
-Chapter two starts here.
-
-### Notes <!-- noexport -->
-
-Private planning note.
-' > "$dir/part1/ch02.md"
-
-    cat > "$dir/part2/ch03.md" <<'MD'
-## PART TWO
-
-### Chapter 3
-
-Third chapter text.
-MD
+    printf '%s\n' \
+        '## PART TWO' \
+        '' \
+        '### Chapter 3' \
+        '' \
+        'Third chapter text.' \
+        > "$dir/part2/ch03.md"
 }
 
 write_org_fixtures() {
     local dir="$1"
     mkdir -p "$dir/part1" "$dir/part2"
 
-    cat > "$dir/part1/ch00.org" <<'ORG'
-#+TITLE: About Time
-#+SUBTITLE: A Novel
-#+AUTHOR: Test Author
-#+DATE: July 2026
-#+VERSION: Draft 4
-#+WORDCOUNT: 80000
-#+ADDRESS: 1 Example Street / Galway / Ireland
-#+EMAIL: test@example.com
-#+WEBSITE: https://example.com
-ORG
+    printf '%s\n' \
+        '#+TITLE: About Time' \
+        '#+SUBTITLE: A Novel' \
+        '#+AUTHOR: Test Author' \
+        '#+DATE: July 2026' \
+        '#+VERSION: Draft 4' \
+        '#+WORDCOUNT: 80000' \
+        '#+ADDRESS: 1 Example Street / Galway / Ireland' \
+        '#+EMAIL: test@example.com' \
+        '#+WEBSITE: https://example.com' \
+        > "$dir/part1/ch00.org"
 
-    printf '%s' '* PART ONE
-** Chapter 1
-First paragraph with /emphasis/ and ~code~.
+    printf '%s\n' \
+        '* PART ONE' \
+        '** Chapter 1' \
+        'First paragraph with /emphasis/ and ~code~.' \
+        '' \
+        '-----' \
+        '' \
+        'Second paragraph.[fn:note]' \
+        '' \
+        '[fn:note] A useful footnote.' \
+        > "$dir/part1/ch01.org"
 
------
+    printf '%s\n' \
+        '** Chapter 2' \
+        'Chapter two starts here.' \
+        '' \
+        '*** Notes :noexport:' \
+        'Private planning note.' \
+        > "$dir/part1/ch02.org"
 
-Second paragraph.[fn:note]
-
-[fn:note] A useful footnote.
-' > "$dir/part1/ch01.org"
-
-    printf '%s' '** Chapter 2
-Chapter two starts here.
-
-*** Notes :noexport:
-Private planning note.
-' > "$dir/part1/ch02.org"
-
-    cat > "$dir/part2/ch03.org" <<'ORG'
-* PART TWO
-** Chapter 3
-Third chapter text.
-ORG
+    printf '%s\n' \
+        '* PART TWO' \
+        '** Chapter 3' \
+        'Third chapter text.' \
+        > "$dir/part2/ch03.org"
 }
 
 echo "=== Folio manuscript tests (issue #9) ==="
@@ -275,16 +279,16 @@ not_has_text "$TMPDIR_TEST/org.typ" "Private planning note" "RT-9.16: Org noexpo
 
 echo ""
 echo "Config inheritance and fonts"
-cat > "$TMPDIR_TEST/script.yaml" <<'YAML'
-folio:
-  font: Test Body
-  font-size: 13pt
-  heading-font: Test Heading
-  heading-font-size: 15pt
-  letter:
-    font: Letter Font
-    font-size: 10pt
-YAML
+printf '%s\n' \
+    'folio:' \
+    '  font: Test Body' \
+    '  font-size: 13pt' \
+    '  heading-font: Test Heading' \
+    '  heading-font-size: 15pt' \
+    '  letter:' \
+    '    font: Letter Font' \
+    '    font-size: 10pt' \
+    > "$TMPDIR_TEST/script.yaml"
 cp "$MD_DIR/part1/ch01.md" "$TMPDIR_TEST/ch01.md"
 cp "$MD_DIR/part1/ch00.md" "$TMPDIR_TEST/ch00.md"
 run_ok "RT-9.17-RT-9.24: Root font/page config applies to manuscript" \
@@ -296,29 +300,29 @@ has_text "$TMPDIR_TEST/config.typ" 'font: "Test Heading"' "RT-9.21: Root heading
 has_text "$TMPDIR_TEST/config.typ" '15pt' "RT-9.22: Root heading font size appears"
 not_has_text "$TMPDIR_TEST/config.typ" "Letter Font" "RT-9.20: Letter font does not affect manuscript"
 
-cat > "$TMPDIR_TEST/script.yaml" <<'YAML'
-folio:
-  font: Fallback Body
-  font-size: 12.5pt
-YAML
+printf '%s\n' \
+    'folio:' \
+    '  font: Fallback Body' \
+    '  font-size: 12.5pt' \
+    > "$TMPDIR_TEST/script.yaml"
 run_ok "RT-9.23-RT-9.24: Missing heading config inherits body config" \
     "$FOLIO" manuscript "$TMPDIR_TEST/ch01.md" "$TMPDIR_TEST/fallback.typ"
 has_text "$TMPDIR_TEST/fallback.typ" 'Fallback Body' "RT-9.23: Heading font inherits body font"
 has_text "$TMPDIR_TEST/fallback.typ" '12.5pt' "RT-9.24: Heading size inherits body size"
 
-cat > "$TMPDIR_TEST/script.yaml" <<'YAML'
-folio:
-  manuscript:
-    font: Manuscript Body
-    heading-font: Manuscript Heading
-    mono-font: Manuscript Mono
-    title-font: Manuscript Title
-    author-font: Manuscript Author
-    date-font: Manuscript Date
-    version-font: Manuscript Version
-    page-header:
-      font: Manuscript Header
-YAML
+printf '%s\n' \
+    'folio:' \
+    '  manuscript:' \
+    '    font: Manuscript Body' \
+    '    heading-font: Manuscript Heading' \
+    '    mono-font: Manuscript Mono' \
+    '    title-font: Manuscript Title' \
+    '    author-font: Manuscript Author' \
+    '    date-font: Manuscript Date' \
+    '    version-font: Manuscript Version' \
+    '    page-header:' \
+    '      font: Manuscript Header' \
+    > "$TMPDIR_TEST/script.yaml"
 run_ok "RT-9.25-RT-9.29: Manuscript font overrides apply to their elements" \
     "$FOLIO" manuscript "$TMPDIR_TEST/ch00.md" "$TMPDIR_TEST/ch01.md" "$TMPDIR_TEST/overrides.typ"
 has_text "$TMPDIR_TEST/overrides.typ" "Manuscript Body" "RT-9.25: Manuscript body font override appears"
@@ -392,33 +396,33 @@ run_ok "RT-9.44: US manuscript style keeps A4 unless explicitly configured" \
     "$FOLIO" manuscript --style us "$MD_DIR"/part?/ch??.md "$TMPDIR_TEST/us-page.typ"
 has_text "$TMPDIR_TEST/us-page.typ" 'paper: "a4"' "RT-9.44: US manuscript style keeps A4"
 has_text "$TMPDIR_TEST/british.typ" "Contents" "RT-9.50: TOC enabled by default"
-cat > "$TMPDIR_TEST/script.yaml" <<'YAML'
-folio:
-  manuscript:
-    toc:
-      enabled: false
-YAML
+printf '%s\n' \
+    'folio:' \
+    '  manuscript:' \
+    '    toc:' \
+    '      enabled: false' \
+    > "$TMPDIR_TEST/script.yaml"
 run_ok "RT-9.51: TOC can be disabled" \
     "$FOLIO" manuscript "$TMPDIR_TEST/ch01.md" "$TMPDIR_TEST/no-toc.typ"
 not_has_text "$TMPDIR_TEST/no-toc.typ" "Contents" "RT-9.51: Disabled TOC absent"
 
-cat > "$TMPDIR_TEST/script.yaml" <<'YAML'
-folio:
-  manuscript:
-    toc:
-      font: TOC Font
-      font-size: 9pt
-      font-weight: bold
-      heading-font: TOC Heading
-      heading-font-size: 17pt
-      heading-font-weight: bold
-      include-parts: false
-      include-chapters: true
-      include-sections: true
-    line-spacing: 1.25
-    paragraph-indent: 8mm
-    paragraph-spacing: 2mm
-YAML
+printf '%s\n' \
+    'folio:' \
+    '  manuscript:' \
+    '    toc:' \
+    '      font: TOC Font' \
+    '      font-size: 9pt' \
+    '      font-weight: bold' \
+    '      heading-font: TOC Heading' \
+    '      heading-font-size: 17pt' \
+    '      heading-font-weight: bold' \
+    '      include-parts: false' \
+    '      include-chapters: true' \
+    '      include-sections: true' \
+    '    line-spacing: 1.25' \
+    '    paragraph-indent: 8mm' \
+    '    paragraph-spacing: 2mm' \
+    > "$TMPDIR_TEST/script.yaml"
 run_ok "RT-9.52-RT-9.57: TOC and paragraph layout config applies" \
     "$FOLIO" manuscript "$TMPDIR_TEST/ch01.md" "$TMPDIR_TEST/toc-config.typ"
 has_text "$TMPDIR_TEST/toc-config.typ" "TOC Font" "RT-9.52: TOC entry font appears"
@@ -440,15 +444,11 @@ output_absent "$TMPDIR_TEST/missing.typ" "RT-9.45: Missing input creates no outp
 run_fail "RT-9.46: Mixed Markdown and org input exits non-zero" \
     "$FOLIO" manuscript "$MD_DIR/part1/ch01.md" "$ORG_DIR/part1/ch01.org" "$TMPDIR_TEST/mixed.typ"
 output_absent "$TMPDIR_TEST/mixed.typ" "RT-9.46: Mixed input creates no output artefact"
-cat > "$TMPDIR_TEST/script.fountain" <<'FTN'
-Title: Wrong Format
-FTN
+printf '%s\n' 'Title: Wrong Format' > "$TMPDIR_TEST/script.fountain"
 run_fail "RT-9.47: Fountain input is rejected" \
     "$FOLIO" manuscript "$TMPDIR_TEST/script.fountain" "$TMPDIR_TEST/fountain.typ"
 output_absent "$TMPDIR_TEST/fountain.typ" "RT-9.47: Fountain input creates no output artefact"
-cat > "$TMPDIR_TEST/notes.txt" <<'TXT'
-Wrong format.
-TXT
+printf '%s\n' 'Wrong format.' > "$TMPDIR_TEST/notes.txt"
 run_fail "RT-9.48: Other non-manuscript format is rejected" \
     "$FOLIO" manuscript "$TMPDIR_TEST/notes.txt" "$TMPDIR_TEST/text.typ"
 output_absent "$TMPDIR_TEST/text.typ" "RT-9.48: Unsupported input creates no output artefact"

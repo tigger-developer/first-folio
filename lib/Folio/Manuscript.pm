@@ -367,21 +367,21 @@ sub _typst_preamble {
         $header_clause = qq{, header-ascent: $header_edge, header: align(right)[#text(font: "$header_font", size: $header_size)[$header_text]]};
     }
 
-    return <<"TYPST";
-// style: @{[_cfg($config, 'style', 'british')]}
-// margin: $margin
-// distance-from-edge: $header_edge
-// content-padding-after: $header_pad
-// page-header-format: $header
-// mono-font: $mono_font
-// title-font: $title_font
-// line-spacing: $line_spacing
-// paragraph-indent: $para_indent
-// paragraph-spacing: $para_spacing
-#set page(paper: "$page", margin: $margin, numbering: "1"$header_clause)
-#set text(font: "$font", size: $font_size)
-#set par(first-line-indent: $para_indent, spacing: $typst_para_spacing, leading: ${line_spacing}em)
-TYPST
+    return join("\n",
+        '// style: ' . _cfg($config, 'style', 'british'),
+        "// margin: $margin",
+        "// distance-from-edge: $header_edge",
+        "// content-padding-after: $header_pad",
+        "// page-header-format: $header",
+        "// mono-font: $mono_font",
+        "// title-font: $title_font",
+        "// line-spacing: $line_spacing",
+        "// paragraph-indent: $para_indent",
+        "// paragraph-spacing: $para_spacing",
+        qq{#set page(paper: "$page", margin: $margin, numbering: "1"$header_clause)},
+        qq{#set text(font: "$font", size: $font_size)},
+        qq{#set par(first-line-indent: $para_indent, spacing: $typst_para_spacing, leading: ${line_spacing}em)},
+    );
 }
 
 sub _title_page {

@@ -330,52 +330,11 @@ sub _validate_text_file {
 }
 
 sub print_usage {
-    print <<'USAGE';
-Usage: folio <command> [options]
-
-A format converter for stage plays.
-
-Commands:
-  convert    Convert a play between formats
-  letter     Generate letters from :letter: tagged sections
-  manuscript Generate prose manuscripts from Markdown or org-mode files
-
-Options:
-  -h, --help     Show this help message
-  --version      Show version
-
-Run 'folio convert --help' for convert-specific options.
-USAGE
+    _print_help_doc('folio-help.md');
 }
 
 sub print_convert_usage {
-    print <<'USAGE';
-Usage: folio convert <source> [target] [options]
-
-Convert a play from one format to another.
-Format is deduced from file extensions (.org, .md, .fountain, .ftn, .pdf).
-
-When no target file is given, output goes to stdout.
-Use --to to specify the output format for stdout mode.
-
-Options:
-  --to FORMAT              Output format (org, md, fountain, pdf)
-  --style STYLE            Layout style: british (default) or us
-  --force                  Force binary output to terminal
-
-PDF options (ignored for non-PDF output):
-  --font FONT              Body font family
-  --font-size SIZE         Body font size
-  --margin SIZE            Page margins
-  --page SIZE              Page size (a4, letter, etc.)
-  --indent SIZE            Dialogue indent depth
-  --dialogue-spacing SIZE  Space before dialogue blocks
-  --direction-spacing SIZE Space before stage directions
-  --[no-]direction-italic  Italicise stage directions
-  --[no-]direction-center  Centre stage directions
-
-Config: script.yaml in source dir or ~/.config/first-folio/script.yaml
-USAGE
+    _print_help_doc('folio-convert-help.md');
 }
 
 # --- manuscript subcommand ---
@@ -446,38 +405,7 @@ sub _source_dir_for_inputs {
 }
 
 sub print_manuscript_usage {
-    print <<'USAGE';
-Usage: folio manuscript <input.md|input.org...> <output.typ|output.pdf> [options]
-
-Generate a prose manuscript from one or more Markdown or org-mode files.
-Inputs are sorted deterministically and joined with a blank line separator.
-
-Options:
-  --style STYLE              Manuscript preset: british (default) or us
-  --font FONT                Body font family
-  --font-size SIZE           Body font size
-  --heading-font FONT        Heading font family
-  --heading-font-size SIZE   Heading font size
-  --mono-font FONT           Monospace/code font family
-  --page SIZE                Page size (default: a4)
-  --margin SIZE              Page margins
-  --line-spacing VALUE       Paragraph leading multiplier
-  --paragraph-indent SIZE    First-line paragraph indent
-  --paragraph-spacing SIZE   Space between paragraphs
-
-Metadata overrides:
-  --title TEXT
-  --subtitle TEXT
-  --author TEXT
-  --date TEXT
-  --wordcount TEXT
-  --version TEXT
-  --address TEXT
-  --email TEXT
-  --website TEXT
-
-Config: script.yaml in source dir or ~/.config/first-folio/script.yaml
-USAGE
+    _print_help_doc('folio-manuscript-help.md');
 }
 
 # --- cover subcommand ---
@@ -555,32 +483,17 @@ sub cmd_letter {
 }
 
 sub print_letter_usage {
-    print <<'USAGE';
-Usage: folio letter <source.org> [options]
+    _print_help_doc('folio-letter-help.md');
+}
 
-Generate letters from :letter: tagged sections in an org file.
-One PDF is generated per recipient.
-
-Options:
-  --to RECIPIENT     Generate only for matching recipients (regex substring)
-  --dir DIR          Output directory (default: same as source file)
-  --prefix PREFIX    Output filename prefix (default: "letter")
-  -h, --help         Show this help message
-
-Placeholders:
-  Any [keyword] in the letter body is replaced from two sources:
-
-  1. Recipient tags (H4 under :to:) — highest priority:
-       **** The Abbey                :org:       -> [org]
-       **** Dave                     :moniker:   -> [moniker]
-       **** Friday                   :deadline:  -> [deadline]
-     Any tag name works. Define your own as needed.
-
-  2. Document front matter — fallback:
-       #+TITLE:    -> [title]      #+AUTHOR:   -> [author]
-       #+SUBTITLE: -> [subtitle]   #+DATE:     -> [date]
-       #+VERSION:  -> [version]
-
-  Unresolved placeholders pass through as [name].
-USAGE
+sub _print_help_doc {
+    my ($name) = @_;
+    my $path = "$FindBin::RealBin/../docs/$name";
+    open(my $fh, '<:encoding(UTF-8)', $path)
+        or die "Error: cannot open help document $path: $!\n";
+    while (my $line = <$fh>) {
+        next if $line =~ /^<!--/;
+        print $line;
+    }
+    close $fh;
 }
