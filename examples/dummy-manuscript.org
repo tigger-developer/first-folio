@@ -3,7 +3,7 @@
 #+AUTHOR: Example Author
 #+DATE: 2026-07-06
 #+VERSION: Draft 2
-#+WORDCOUNT: 90000
+#+WORDCOUNT: about 90,000 words
 #+CONTACT-NAME: Example Agent
 #+ADDRESS: 100 Example Street / Sample City / Exampleland
 #+PHONE: +353 1 000 0000
@@ -22,7 +22,7 @@ Nessa. I am sorry I called you Belly in the attic. I am in Delgany House. I want
 
 Mira checked the [[https://example.invalid/archive][archive index]] and found a note where none had been before.[fn:ledger]
 
-The margin held a /soft warning/ beside +an erased instruction+.
+The margin held a /soft warning/ and /another warning/ beside +an erased instruction+. It also carried *bold chalk*, *bold ink*, */bold italic chalk/*, */bold italic ink/*, */bold italic margin/*, and */bold italic latch/*.
 
 - The drawer hummed when touched.
 - The latch answered only after the ninth word.

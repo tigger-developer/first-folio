@@ -6,7 +6,7 @@ Org-mode manuscript input uses org front matter and headings for prose manuscrip
 
 ## Metadata Contract
 
-All org front matter values are treated as manuscript strings. `#+WORDCOUNT: about 90,000 words` and `#+WORDCOUNT: 90000` are both valid because the field is rendered as entered. Dates should be written as ISO strings such as `2026-07-06`; rendered output uses `folio.manuscript.date-format`.
+All org front matter values are treated as manuscript strings. `#+WORDCOUNT: about 90,000 words`, `#+WORDCOUNT: approx 100k words`, `#+WORDCOUNT: 20.000 mots`, and `#+WORDCOUNT: 90000` are all valid because the field is rendered as entered. Dates should be written as ISO strings such as `2026-07-06`; rendered output uses `folio.manuscript.date-format`.
 
 Supported front matter fields are `TITLE`, `SUBTITLE`, `AUTHOR`, `ATTRIBUTION`, `DATE`, `VERSION`, `WORDCOUNT`, `CONTACT-NAME`, `ADDRESS`, `PHONE`, `EMAIL`, and `WEBSITE`. `ATTRIBUTION` is optional and defaults to empty; when set, it prefixes the author name with a space, so `#+ATTRIBUTION: by` and `#+AUTHOR: Taḋg Paul` render as `by Taḋg Paul`. `AUTHOR-ATTRIBUTION` is accepted as a compatibility alias. `CONTACT-NAME` is optional and is used only for the title-page contact block; it does not default to the manuscript author.
 

@@ -79,6 +79,9 @@
   v({{.Config.Folio.Manuscript.Table.SpaceAfter}})
 }
 
+#show strong: it => text(weight: "bold")[#it.body]
+#show emph: it => text(style: "italic")[#it.body]
+
 #show raw.where(block: true): it => block(
   above: {{.Config.Folio.Manuscript.CodeBlock.SpaceBefore}},
   below: {{.Config.Folio.Manuscript.CodeBlock.SpaceAfter}},
@@ -146,14 +149,6 @@
   )
 ]
 {{end}}
-{{if .IsUS}}
-#place(top + right, float: true)[
-  {{if .Config.Folio.Manuscript.TitlePage.IncludeWordCount}}#if "{{.Meta.WordCount}}" != "" [
-    #text(font: "{{.Config.Folio.Manuscript.WordCountFont}}", size: {{.Config.Folio.Manuscript.WordCountFontSize}}, weight: "{{.Config.Folio.Manuscript.WordCountFontWeight}}")[{{.Meta.WordCount}}]
-  ]
-  {{end}}
-]
-{{end}}
 #align(center + horizon)[
   {{if .Config.Folio.Manuscript.TitlePage.IncludeTitle}}
   #text(
@@ -176,6 +171,14 @@
     #text(font: "{{.Config.Folio.Manuscript.AuthorFont}}", size: {{.Config.Folio.Manuscript.AuthorFontSize}}, weight: "{{.Config.Folio.Manuscript.AuthorFontWeight}}")[{{if .Meta.AuthorAttribution}}{{.Meta.AuthorAttribution}} {{end}}{{.Meta.Author}}]
   ]{{end}}
 ]
+
+{{if .IsUS}}
+{{if .Config.Folio.Manuscript.TitlePage.IncludeWordCount}}#if "{{.Meta.WordCount}}" != "" [
+  #place(bottom + center, float: true)[
+    #text(font: "{{.Config.Folio.Manuscript.WordCountFont}}", size: {{.Config.Folio.Manuscript.WordCountFontSize}}, weight: "{{.Config.Folio.Manuscript.WordCountFontWeight}}")[{{.Meta.WordCount}}]
+  ]
+]{{end}}
+{{end}}
 
 {{if .Config.Folio.Manuscript.TOC.PageBreakBefore}}#pagebreak(){{end}}
 {{end}}

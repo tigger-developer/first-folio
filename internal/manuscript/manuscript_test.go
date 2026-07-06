@@ -75,7 +75,7 @@ func TestUSManuscriptOverridesBritishWithoutChangingPageSize(t *testing.T) {
 
 	assertContains(t, typst, `paper: "a4"`)
 	assertNotContains(t, typst, `us-letter`)
-	assertContains(t, typst, `font: "Libertinus Mono"`)
+	assertContains(t, typst, `font: "Liberation Mono"`)
 	assertContains(t, typst, `size: 10pt`)
 	assertContains(t, typst, `font: "Menlo"`)
 	assertContains(t, typst, `size: 9pt`)
@@ -230,6 +230,27 @@ func TestMarkdownFrontmatterScalarValuesBecomeStrings(t *testing.T) {
 	}
 	if doc.Metadata.WordCount != "90000" {
 		t.Fatalf("numeric wordcount should be coerced to string, got %q", doc.Metadata.WordCount)
+	}
+}
+
+func TestMarkdownFrontmatterPreservesLocalizedWordCountText(t *testing.T) {
+	doc, err := parseMarkdown(strings.Join([]string{
+		"---",
+		"title: Le Verger de Verre",
+		"wordcount: 20.000 mots",
+		"---",
+		"",
+		"# PARTIE UNE",
+		"",
+		"## Chapitre 1",
+		"",
+		"Body text.",
+	}, "\n"))
+	if err != nil {
+		t.Fatalf("parsing markdown localized wordcount: %v", err)
+	}
+	if doc.Metadata.WordCount != "20.000 mots" {
+		t.Fatalf("localized wordcount should be preserved as display text, got %q", doc.Metadata.WordCount)
 	}
 }
 
@@ -608,6 +629,8 @@ func assertExampleTypstMatches(t *testing.T, root string, style string) {
 		assertContains(t, typst, `#show list: it => {`)
 		assertContains(t, typst, `#show enum: it => {`)
 		assertContains(t, typst, `#show figure.where(kind: table): it => {`)
+		assertContains(t, typst, `#show strong: it => text(weight: "bold")[#it.body]`)
+		assertContains(t, typst, `#show emph: it => text(style: "italic")[#it.body]`)
 		assertContains(t, typst, `#show raw.where(block: true): it => block(`)
 		assertContains(t, typst, `above: 0.5em`)
 		assertContains(t, typst, `below: 0.5em`)
@@ -616,6 +639,13 @@ func assertExampleTypstMatches(t *testing.T, root string, style string) {
 		assertContains(t, typst, `#table(`)
 		assertContains(t, typst, `#folio-scene-break()`)
 		assertContains(t, typst, "```")
+		assertContains(t, typst, `about 90,000 words`)
+		assertContains(t, typst, `#strong[bold chalk]`)
+		assertContains(t, typst, `#strong[bold ink]`)
+		assertContains(t, typst, `#strong[#emph[bold italic chalk]]`)
+		assertContains(t, typst, `italic ink]]`)
+		assertContains(t, typst, `italic margin]]`)
+		assertContains(t, typst, `italic latch]]`)
 		if !strings.Contains(typst, `#strong[WAIT]`) && !strings.Contains(typst, `*WAIT*`) {
 			t.Fatalf("%s %s Typst did not render bold markup:\n%s", style, name, typst)
 		}

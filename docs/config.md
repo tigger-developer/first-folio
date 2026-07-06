@@ -92,9 +92,9 @@ Common manuscript keys:
 |---|---|---|---|
 | `page` | string | `a4` | inherited |
 | `margin` | string | `20mm` | `25mm` |
-| `font` | string | `Libertinus Serif` | `Libertinus Mono` |
-| `heading-font` | string | `Libertinus Sans` | `Libertinus Mono` |
-| `mono-font` | string | `Libertinus Mono` | `Libertinus Mono` |
+| `font` | string | `Libertinus Serif` | `Liberation Mono` |
+| `heading-font` | string | `Libertinus Sans` | `Liberation Mono` |
+| `mono-font` | string | `Libertinus Mono` | `Menlo` |
 | `line-spacing` | number | `1.5` | `2` |
 | `paragraph-indent` | string | `10mm` | `12.7mm` |
 | `paragraph-spacing` | string | `0` | `0` |
@@ -105,7 +105,7 @@ Common manuscript keys:
 
 US manuscript style is selected with `folio.manuscript.style: us` or `folio.style: us`, or with `folio manuscript --style us ...`. The US override is layered on top of the British manuscript preset and does not change the page size to `us-letter`; page size changes require explicit user config.
 
-Manuscript metadata supports `title`, `subtitle`, `author`, `attribution`, `date`, `version`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`.
+Manuscript metadata supports `title`, `subtitle`, `author`, `attribution`, `date`, `version`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`. `wordcount` is display text, not a numeric field; values such as `about 90,000 words`, `approx 100k words`, and `20.000 mots` render as entered.
 
 `folio.manuscript.date-format` controls title-page date rendering for ISO frontmatter dates using Go date layouts. British defaults to `2 January 2006`; US overrides default to `January 2, 2006`.
 

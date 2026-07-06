@@ -6,7 +6,7 @@ Markdown manuscript input is a prose contract, separate from the Markdown stage-
 
 ## Metadata Contract
 
-All YAML frontmatter values are treated as manuscript strings. Quote values when that keeps the intent clearest, but the parser also accepts YAML scalars and converts them to strings, so `wordcount: about 90,000 words` and `wordcount: 90000` are both valid. Dates should be written as ISO strings such as `2026-07-06`; rendered output uses `folio.manuscript.date-format`.
+All YAML frontmatter values are treated as manuscript strings. Quote values when that keeps the intent clearest, but the parser also accepts YAML scalars and converts them to strings, so `wordcount: about 90,000 words`, `wordcount: approx 100k words`, `wordcount: 20.000 mots`, and `wordcount: 90000` are all valid. Dates should be written as ISO strings such as `2026-07-06`; rendered output uses `folio.manuscript.date-format`.
 
 Supported frontmatter fields are `title`, `subtitle`, `author`, `attribution`, `date`, `version`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`. `attribution` is optional and defaults to empty; when set, it prefixes the author name with a space, so `attribution: by` and `author: Taḋg Paul` render as `by Taḋg Paul`. `author-attribution` is accepted as a compatibility alias. `contact-name` is optional and is used only for the title-page contact block; it does not default to the manuscript author.
 

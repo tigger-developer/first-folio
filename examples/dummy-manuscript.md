@@ -4,7 +4,7 @@ subtitle: A Novel
 author: Example Author
 date: 2026-07-06
 version: Draft 2
-wordcount: 90000
+wordcount: about 90,000 words
 contact-name: Example Agent
 address: 100 Example Street / Sample City / Exampleland
 phone: +353 1 000 0000
@@ -22,7 +22,7 @@ The corridor outside the archive was quiet enough for a whisper to travel. "Are 
 
 Mira checked the [archive index](https://example.invalid/archive) and found a note where none had been before.[^ledger]
 
-The margin held a *soft warning* beside ~~an erased instruction~~.
+The margin held a *soft warning* and _another warning_ beside ~~an erased instruction~~. It also carried **bold chalk**, __bold ink__, ***bold italic chalk***, ___bold italic ink___, **_bold italic margin_**, and __*bold italic latch*__.
 
 - The drawer hummed when touched.
 - The latch answered only after the ninth word.

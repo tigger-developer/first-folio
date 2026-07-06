@@ -6,11 +6,11 @@ folio:
     style: us
     margin: 25mm
 
-    font: Libertinus Mono
+    font: Liberation Mono
     font-size: 10pt
     font-weight: regular
 
-    heading-font: Libertinus Mono
+    heading-font: Liberation Mono
     heading-font-size: 10pt
     heading-font-weight: regular
 
@@ -18,31 +18,31 @@ folio:
     mono-font-size: 9pt
     mono-font-weight: bold
 
-    title-font: Libertinus Mono
+    title-font: Liberation Mono
     title-font-size: 10pt
     title-font-weight: regular
 
-    subtitle-font: Libertinus Mono
+    subtitle-font: Liberation Mono
     subtitle-font-size: 10pt
     subtitle-font-weight: regular
 
-    author-font: Libertinus Mono
+    author-font: Liberation Mono
     author-font-size: 10pt
     author-font-weight: regular
-    date-font: Libertinus Mono
+    date-font: Liberation Mono
     date-font-size: 10pt
     date-font-weight: regular
     date-format: "January 2, 2006"
 
-    version-font: Libertinus Mono
+    version-font: Liberation Mono
     version-font-size: 10pt
     version-font-weight: regular
 
-    wordcount-font: Libertinus Mono
+    wordcount-font: Liberation Mono
     wordcount-font-size: 10pt
     wordcount-font-weight: regular
 
-    contact-font: Libertinus Mono
+    contact-font: Liberation Mono
     contact-font-size: 10pt
     contact-font-weight: regular
 
@@ -55,17 +55,17 @@ folio:
 
     page-header:
       enabled: true
-      font: Libertinus Mono
+      font: Liberation Mono
       font-size: 10pt
       font-weight: regular
       format: "[author] / [title] / [page]"
       align: right
 
     toc:
-      font: Libertinus Mono
+      font: Liberation Mono
       font-size: 10pt
       font-weight: regular
-      heading-font: Libertinus Mono
+      heading-font: Liberation Mono
       heading-font-size: 10pt
       heading-font-weight: regular
 
