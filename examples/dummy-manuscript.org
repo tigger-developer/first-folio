@@ -1,23 +1,13 @@
 #+TITLE: The Glass Orchard
-
 #+SUBTITLE: A Novel
-
 #+AUTHOR: Example Author
-
 #+DATE: 2026-07-06
-
 #+VERSION: Draft 2
-
 #+WORDCOUNT: 90000
-
 #+CONTACT-NAME: Example Agent
-
 #+ADDRESS: 100 Example Street / Sample City / Exampleland
-
 #+PHONE: +353 1 000 0000
-
 #+EMAIL: author@example.invalid
-
 #+WEBSITE: https://example.invalid
 
 * PART ONE
