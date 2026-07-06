@@ -40,6 +40,10 @@ if (grep { $_ eq '--help' || $_ eq '-h' } @ARGV) {
         print_letter_usage();
         exit 0;
     }
+    if ($subcommand eq 'manuscript') {
+        shift @ARGV;
+        cmd_manuscript('--help');
+    }
     print_usage();
     exit 0;
 }
@@ -56,6 +60,9 @@ if ($subcommand eq 'convert') {
 } elsif ($subcommand eq 'letter') {
     shift @ARGV;  # remove 'letter'
     cmd_letter();
+} elsif ($subcommand eq 'manuscript') {
+    shift @ARGV;  # remove 'manuscript'
+    cmd_manuscript();
 } elsif ($subcommand eq '') {
     print STDERR "Error: no subcommand given.\n";
     print STDERR "Usage: folio <command> [options]\n";
@@ -322,51 +329,11 @@ sub _validate_text_file {
 }
 
 sub print_usage {
-    print <<'USAGE';
-Usage: folio <command> [options]
-
-A format converter for stage plays.
-
-Commands:
-  convert    Convert a play between formats
-  letter     Generate letters from :letter: tagged sections
-
-Options:
-  -h, --help     Show this help message
-  --version      Show version
-
-Run 'folio convert --help' for convert-specific options.
-USAGE
+    print_help_doc('folio-help.md');
 }
 
 sub print_convert_usage {
-    print <<'USAGE';
-Usage: folio convert <source> [target] [options]
-
-Convert a play from one format to another.
-Format is deduced from file extensions (.org, .md, .fountain, .ftn, .pdf).
-
-When no target file is given, output goes to stdout.
-Use --to to specify the output format for stdout mode.
-
-Options:
-  --to FORMAT              Output format (org, md, fountain, pdf)
-  --style STYLE            Layout style: british (default) or us
-  --force                  Force binary output to terminal
-
-PDF options (ignored for non-PDF output):
-  --font FONT              Body font family
-  --font-size SIZE         Body font size
-  --margin SIZE            Page margins
-  --page SIZE              Page size (a4, letter, etc.)
-  --indent SIZE            Dialogue indent depth
-  --dialogue-spacing SIZE  Space before dialogue blocks
-  --direction-spacing SIZE Space before stage directions
-  --[no-]direction-italic  Italicise stage directions
-  --[no-]direction-center  Centre stage directions
-
-Config: script.yaml in source dir or ~/.config/first-folio/script.yaml
-USAGE
+    print_help_doc('folio-convert-help.md');
 }
 
 # --- cover subcommand ---
@@ -444,32 +411,30 @@ sub cmd_letter {
 }
 
 sub print_letter_usage {
-    print <<'USAGE';
-Usage: folio letter <source.org> [options]
+    print_help_doc('folio-letter-help.md');
+}
 
-Generate letters from :letter: tagged sections in an org file.
-One PDF is generated per recipient.
+sub print_help_doc {
+    my ($filename) = @_;
+    my $path = "$FindBin::RealBin/../docs/$filename";
+    open(my $fh, '<:encoding(UTF-8)', $path)
+        or die "Error: cannot read help file $path: $!\n";
+    while (my $line = <$fh>) {
+        print $line;
+    }
+    close $fh;
+}
 
-Options:
-  --to RECIPIENT     Generate only for matching recipients (regex substring)
-  --dir DIR          Output directory (default: same as source file)
-  --prefix PREFIX    Output filename prefix (default: "letter")
-  -h, --help         Show this help message
+sub cmd_manuscript {
+    my $root = "$FindBin::RealBin/..";
+    local $ENV{FIRST_FOLIO_ROOT} = $root;
 
-Placeholders:
-  Any [keyword] in the letter body is replaced from two sources:
+    my $helper = "$FindBin::RealBin/folio-manuscript";
+    if (-x $helper) {
+        exec { $helper } $helper, @ARGV
+            or die "Error: cannot execute $helper: $!\n";
+    }
 
-  1. Recipient tags (H4 under :to:) — highest priority:
-       **** The Abbey                :org:       -> [org]
-       **** Dave                     :moniker:   -> [moniker]
-       **** Friday                   :deadline:  -> [deadline]
-     Any tag name works. Define your own as needed.
-
-  2. Document front matter — fallback:
-       #+TITLE:    -> [title]      #+AUTHOR:   -> [author]
-       #+SUBTITLE: -> [subtitle]   #+DATE:     -> [date]
-       #+VERSION:  -> [version]
-
-  Unresolved placeholders pass through as [name].
-USAGE
+    exec { 'go' } 'go', 'run', "$root/cmd/folio-manuscript", @ARGV
+        or die "Error: cannot execute Go manuscript helper: $!\n";
 }

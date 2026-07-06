@@ -62,16 +62,46 @@ All First Folio-specific settings live under the `folio:` key. These control PDF
 |-----|------|---------|-------------|
 | `font` | string | `New Computer Modern` | Body font family |
 | `font-size` | string | `12pt` | Body font size |
+| `heading-font` | string | inherits `font` | Heading font family |
+| `heading-font-size` | string | inherits `font-size` | Heading font size |
 | `margin` | string | `25mm` | Page margins |
 | `page` | string | `a4` | Page size (a4, us-letter, etc.) |
 | `indent` | string | `5em` | Dialogue indent depth |
 | `dialogue-spacing` | string | `1.6em` | Vertical space before dialogue blocks |
 | `direction-spacing` | string | `1.6em` | Vertical space before stage directions |
-| `direction-italic` | bool | `true` | Italicise stage directions |
+| `direction-italic` | bool | `true` | Italicize stage directions |
 | `direction-center` | bool | `false` | Centre stage directions |
 | `default-format` | string | `pdf` | Default output format when no target file or `--to` given |
 
 All `folio:` keys correspond to CLI flags of the same name. CLI flags override config values.
+
+### Manuscript settings (`folio.manuscript:`)
+
+Manuscript settings inherit from root `folio:` values unless a manuscript or child override is present. The inheritance model is:
+
+1. Child override, such as `folio.manuscript.toc.font`
+2. Manuscript override, such as `folio.manuscript.font`
+3. Root default, such as `folio.font`
+4. Active preset default
+
+For heading fonts, `folio.manuscript.heading-font` inherits from `folio.heading-font`, which inherits from `folio.font`.
+
+Common manuscript keys:
+
+| Key | Type | British default | US override |
+|---|---|---|---|
+| `page` | string | `a4` | inherited |
+| `margin` | string | `20mm` | `25mm` |
+| `font` | string | `Libertinus Serif` | `Libertinus Mono` |
+| `heading-font` | string | `Libertinus Sans` | `Libertinus Mono` |
+| `mono-font` | string | `Libertinus Mono` | `Libertinus Mono` |
+| `line-spacing` | number | `1.5` | `2` |
+| `paragraph-indent` | string | `10mm` | `12.7mm` |
+| `paragraph-spacing` | string | `0` | `0` |
+
+`folio.manuscript.toc.enabled` defaults to `true`. Set it to `false` to suppress the generated table of contents.
+
+US manuscript style is selected with `folio.manuscript.style: us` or `folio.style: us`, or with `folio manuscript --style us ...`. The US override is layered on top of the British manuscript preset and does not change the page size to `us-letter`; page size changes require explicit user config.
 
 ### Yapper-specific keys
 

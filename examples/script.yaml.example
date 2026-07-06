@@ -34,6 +34,8 @@
 # folio:
 #   font: Libertinus Serif       # any installed font; e.g. EB Garamond, Asap
 #   font-size: 12pt
+#   heading-font: Libertinus Sans
+#   heading-font-size: 14pt
 #   font-weight: regular         # optional: thin, light, regular, bold, black, or 100-900
 #   font-stretch: 100%           # optional: 75%, 100%, 125% — pin a variant (e.g. avoid Asap Condensed fallback)
 #   margin: 25mm
@@ -119,6 +121,20 @@
   #   space-after-subject: 0.5em
   #   space-before-closing: 0.8em
   #   space-before-signoff: 1.5em
+
+  # --- Prose manuscript rendering (folio manuscript) ---
+  # manuscript:
+  #   style: british              # british | us
+  #   margin: 20mm
+  #   font: Libertinus Serif
+  #   heading-font: Libertinus Sans
+  #   mono-font: Libertinus Mono
+  #   line-spacing: 1.5
+  #   paragraph-indent: 10mm
+  #   paragraph-spacing: 0
+  #   toc:
+  #     enabled: true
+  #     title: Contents
 
 # --- Yapper (TTS) configuration ---
 # Silently ignored by First Folio. See: github.com/tadg-paul/yapper

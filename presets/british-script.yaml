@@ -16,6 +16,8 @@ render:
 folio:
   font: Libertinus Serif
   font-size: 12pt
+  heading-font: Libertinus Serif
+  heading-font-size: 14pt
   # font-weight and font-stretch are optional. Useful for fonts whose
   # family name groups multiple variants (e.g. Asap bundles Asap Condensed
   # and Asap Expanded under "Asap"). Without these, Typst may select a

@@ -24,6 +24,10 @@ folio convert play.md play.org
 # Generate letters from :letter: tagged sections
 folio letter play.org              # all recipients
 folio letter play.org --to Abbey   # specific recipient
+
+# Render prose manuscript chapters to PDF
+folio manuscript '~/notes/about-time-nove/part?/ch??.md' ~/creative/subs/obrien-about-time/04-manuscript-ch1-3.pdf
+folio manuscript examples/dummy-manuscript.org manuscript.typ
 ```
 
 ## Installation
@@ -46,6 +50,8 @@ make uninstall  # removes the symlink
 | Markdown | Yes | Yes | [docs/format-markdown.md](docs/format-markdown.md) |
 | Fountain | Yes | Yes | [docs/format-fountain.md](docs/format-fountain.md) |
 | PDF (via Typst) | - | Yes | - |
+| Manuscript Markdown | Yes | - | [docs/format-manuscript-markdown.md](docs/format-manuscript-markdown.md) |
+| Manuscript org-mode | Yes | - | [docs/format-manuscript-org.md](docs/format-manuscript-org.md) |
 
 Org-mode uses heading levels to encode play structure. Markdown uses headers, bold, and italic conventions. Fountain follows the [Fountain spec](https://fountain.io/syntax). See the schema docs for full element mappings, and [docs/formats.md](docs/formats.md) for the event stream and fidelity matrix.
 
@@ -55,9 +61,9 @@ Org-mode uses heading levels to encode play structure. Markdown uses headers, bo
 
 Each format has a complete reference example demonstrating all supported features:
 
-- [about-time.org](about-time.org) — org-mode (master authoring format, includes cover letter structure)
-- [one-day.md](one-day.md) — Markdown
-- [one-day.fountain](one-day.fountain) — Fountain
+- [about-time.org](about-time.org) --- org-mode (master authoring format, includes cover letter structure)
+- [one-day.md](one-day.md) --- Markdown
+- [one-day.fountain](one-day.fountain) --- Fountain
 
 ## Configuration
 
@@ -89,6 +95,9 @@ See [docs/config.md](docs/config.md) for the full schema and [examples/script.ya
 | `lib/Folio/Config.pm` | Config loading with layered merge |
 | `lib/Folio/Format.pm` | Extension and format mapping |
 | `lib/OrgPlay/` | Shared parser and Typst template (legacy namespace) |
+| `cmd/folio-manuscript/` | Go manuscript rendering CLI |
+| `internal/manuscript/` | Go manuscript parsing, config, and Typst rendering |
+| `templates/` | File-backed Typst templates |
 | `tests/regression/` | Regression test suite (run via `make test`) |
 | `tests/one_off/` | One-off tests for specific issues |
 | `examples/` | Annotated config example |
@@ -105,11 +114,14 @@ make test-one-off ISSUE=5  # one-off tests for a specific issue
 ## Documentation
 
 - [Vision](docs/vision.md) - project goals, supported formats, and direction of travel
+- [Architecture](ARCHITECTURE.md) - current Perl/Go runtime boundary and migration direction
 - [Configuration](docs/config.md) - config schema, precedence, shared keys, migration
 - [Formats](docs/formats.md) - format overview, event stream, and fidelity matrix
   - [Org-mode](docs/format-org.md) - org-mode play format schema
   - [Markdown](docs/format-markdown.md) - Markdown play format schema
   - [Fountain](docs/format-fountain.md) - Fountain format schema and fidelity analysis
+  - [Markdown manuscript](docs/format-manuscript-markdown.md) - prose manuscript Markdown contract
+  - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Licence
 
@@ -117,4 +129,4 @@ MIT - Copyright Taḋg Paul
 
 ## Acknowledgements
 
-- [YAML::Tiny](https://metacpan.org/pod/YAML::Tiny) v1.76 by Adam Kennedy — embedded YAML parser. Licensed under the same terms as Perl itself (Artistic License 1.0 / GPL 1+).
+- [YAML::Tiny](https://metacpan.org/pod/YAML::Tiny) v1.76 by Adam Kennedy --- embedded YAML parser. Licensed under the same terms as Perl itself (Artistic License 1.0 / GPL 1+).

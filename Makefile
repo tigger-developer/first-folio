@@ -4,9 +4,12 @@ PROJECT_DIR := $(shell cd "$(dir $(lastword $(MAKEFILE_LIST)))" && pwd)
 CURRENT_VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 RELEASE_VERSION ?= $(shell echo "$(CURRENT_VERSION)" | awk -F. '{printf "%s.%s.%d", $$1, $$2, $$3+1}')
 
-.PHONY: install uninstall test test-one-off lint sync release
+.PHONY: build install uninstall test test-one-off lint sync release
 
-install:
+build:
+	@go build -o "$(PROJECT_DIR)/bin/folio-manuscript" ./cmd/folio-manuscript
+
+install: build
 	@ln -sf "$(PROJECT_DIR)/bin/folio" "$(INSTALL_DIR)/folio"
 	@echo "Linked folio -> $(INSTALL_DIR)/folio"
 
@@ -24,6 +27,8 @@ lint:
 	done; \
 	if [ "$$fail" -eq 1 ]; then exit 1; fi
 	@echo "All files pass syntax check."
+	@echo "Go tests..."
+	@go test ./...
 
 test: lint
 	@for t in tests/regression/test_*.sh; do \

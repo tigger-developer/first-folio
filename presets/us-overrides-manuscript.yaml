@@ -1,0 +1,71 @@
+# Shunn-style US prose manuscript overrides.
+# Loaded on top of british-manuscript.yaml.
+
+folio:
+  manuscript:
+    style: us
+    margin: 25mm
+
+    font: Libertinus Mono
+    font-size: 12pt
+    font-weight: regular
+
+    heading-font: Libertinus Mono
+    heading-font-size: 12pt
+    heading-font-weight: regular
+
+    mono-font: Libertinus Mono
+    mono-font-size: 12pt
+    mono-font-weight: regular
+
+    title-font: Libertinus Mono
+    title-font-size: 12pt
+    title-font-weight: regular
+
+    subtitle-font: Libertinus Mono
+    subtitle-font-size: 12pt
+    subtitle-font-weight: regular
+
+    author-font: Libertinus Mono
+    author-font-size: 12pt
+    author-font-weight: regular
+    author-attribution: "by"
+
+    date-font: Libertinus Mono
+    date-font-size: 12pt
+    date-font-weight: regular
+
+    version-font: Libertinus Mono
+    version-font-size: 12pt
+    version-font-weight: regular
+
+    wordcount-font: Libertinus Mono
+    wordcount-font-size: 12pt
+    wordcount-font-weight: regular
+
+    contact-font: Libertinus Mono
+    contact-font-size: 12pt
+    contact-font-weight: regular
+
+    line-spacing: 2
+    paragraph-indent: 12.7mm
+    paragraph-spacing: 0
+
+    page-header:
+      enabled: true
+      font: Libertinus Mono
+      font-size: 12pt
+      font-weight: regular
+      format: "[author] / [title] / [page]"
+      align: right
+
+    toc:
+      font: Libertinus Mono
+      font-size: 12pt
+      font-weight: regular
+      heading-font: Libertinus Mono
+      heading-font-size: 12pt
+      heading-font-weight: regular
+
+    part:
+      case-transform: upper

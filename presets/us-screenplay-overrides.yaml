@@ -11,10 +11,6 @@ folio:
   font: Courier Prime
   # font-weight: regular   # explicit pinning if needed; Courier Prime is usually unambiguous
   # font-stretch: 100%
-  # Standard US paper size
-  page: us-letter
-  # American convention uses inch margins
-  margin: 1in
 
   title-page:
     title:
@@ -53,14 +49,14 @@ folio:
         # Dialogue on its own line below cue/instruction
         placement: new-line
         # Stage play: wider column than screenplay
-        indent: 1in
-        wrap-indent: 1in
+        indent: 25.4mm
+        wrap-indent: 25.4mm
     stage-direction:
       # American action paragraphs are roman, not italic
       italic: false
     transition:
       # Transitions sit far right
-      indent: 4in
+      indent: 101.6mm
     act-header:
       case-transform: upper
     scene-header:

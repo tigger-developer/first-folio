@@ -3,10 +3,6 @@
 # Only specifies values that differ; everything else inherits.
 
 folio:
-  # US letter, inch margins
-  page: us-letter
-  margin: 1in
-
   title-page:
     author:
       # American convention

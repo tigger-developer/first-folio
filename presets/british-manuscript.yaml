@@ -1,0 +1,111 @@
+# British prose manuscript layout.
+# Loaded as the manuscript base; user script.yaml values override this.
+
+folio:
+  page: a4
+  font: Libertinus Serif
+  font-size: 12pt
+  heading-font: Libertinus Sans
+  heading-font-size: 14pt
+
+  manuscript:
+    style: british
+    page: a4
+    margin: 20mm
+
+    font: Libertinus Serif
+    font-size: 12pt
+
+    heading-font: Libertinus Sans
+    heading-font-size: 14pt
+    heading-font-weight: regular
+
+    mono-font: Libertinus Mono
+    mono-font-size: 11pt
+    mono-font-weight: regular
+
+    title-font: Libertinus Sans
+    title-font-size: 20pt
+    title-font-weight: bold
+
+    subtitle-font: Libertinus Sans
+    subtitle-font-size: 14pt
+    subtitle-font-weight: regular
+    subtitle-font-style: italic
+
+    author-font: Libertinus Sans
+    author-font-size: 12pt
+    author-font-weight: regular
+    author-attribution: "by"
+
+    date-font: Libertinus Sans
+    date-font-size: 10pt
+    date-font-weight: regular
+
+    version-font: Libertinus Sans
+    version-font-size: 10pt
+    version-font-weight: regular
+
+    wordcount-font: Libertinus Sans
+    wordcount-font-size: 10pt
+    wordcount-font-weight: regular
+
+    contact-font: Libertinus Sans
+    contact-font-size: 10pt
+    contact-font-weight: regular
+
+    line-spacing: 1.5
+    paragraph-indent: 10mm
+    paragraph-spacing: 0
+
+    title-page:
+      enabled: true
+      page-number: false
+      include-title: true
+      include-subtitle: true
+      include-author: true
+      include-date: true
+      include-wordcount: true
+      include-address: true
+      include-email: true
+      include-website: true
+      include-version: true
+
+    page-header:
+      enabled: true
+      font: Libertinus Sans
+      font-size: 10pt
+      font-weight: regular
+      format: "[author] / [title] / [page]"
+      align: right
+      distance-from-edge: 20mm
+      content-padding-after: 10mm
+
+    toc:
+      enabled: true
+      title: "Contents"
+      page-break-before: true
+      font: Libertinus Sans
+      font-size: 11pt
+      font-weight: regular
+      heading-font: Libertinus Sans
+      heading-font-size: 16pt
+      heading-font-weight: bold
+      include-parts: true
+      include-chapters: true
+      include-sections: false
+      dot-leaders: true
+      page-numbers: true
+
+    part:
+      page-break-before: true
+      vertical-align: center
+      align: center
+      case-transform: as-written
+
+    chapter:
+      page-break-before: true
+      position: one-third
+      align: center
+      case-transform: as-written
+      space-after: 2em

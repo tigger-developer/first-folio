@@ -11,6 +11,8 @@ First Folio converts stage plays between three text-based formats (org-mode, Mar
 | [Org-mode play](format-org.md) | Yes | Yes | [orgmode.org](https://orgmode.org) |
 | [Markdown play](format-markdown.md) | Yes | Yes | [CommonMark](https://commonmark.org) |
 | [Fountain](format-fountain.md) | Yes | Yes | [fountain.io](https://fountain.io) |
+| [Markdown manuscript](format-manuscript-markdown.md) | Yes | No | [CommonMark](https://commonmark.org) |
+| [Org-mode manuscript](format-manuscript-org.md) | Yes | No | [orgmode.org](https://orgmode.org) |
 | PDF (via Typst) | - | Yes | [typst.app](https://typst.app) |
 
 ## The Event Stream
@@ -74,4 +76,8 @@ Individual event types can be suppressed via [configuration](config.md). The `re
 | `render-character-table` | `character_table_start`, `character_table_row`, `character_table_end` |
 
 Suppression is applied between the parser and emitter - the parser always emits all events, and the emitter always handles all events it receives. The config layer filters the event stream.
+
+## Manuscript Path
+
+`folio manuscript` is a prose rendering path rather than a stage-play conversion path. It accepts Markdown and org-mode manuscript contracts, rejects Fountain, and renders directly to Typst or PDF through the Go manuscript engine. It does not use the stage-play event stream because prose manuscripts have different structural elements: parts, chapters, sections, paragraphs, scene breaks, code, and manuscript metadata.
 8 symbol replacements

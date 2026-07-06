@@ -1,0 +1,26 @@
+#+TITLE: About Time
+#+SUBTITLE: A Novel
+#+AUTHOR: Tadhg Paul
+#+DATE: July 2026
+#+VERSION: Draft 4
+#+WORDCOUNT: 80000
+#+ADDRESS: 1 Example Street / Galway / Ireland
+#+EMAIL: tadg@example.com
+#+WEBSITE: https://example.com
+
+* PART ONE
+** Chapter 1
+The rain had been falling since Tuesday, though nobody could agree which Tuesday
+had started it.
+
+Mairead found the watch under the loose floorboard.
+
+-----
+
+By noon, the hands had moved backwards twice.
+
+** Chapter 2
+The first rule of time travel was that nobody should do it before breakfast.
+
+*** Notes :noexport:
+This private planning section must not appear in the rendered manuscript.
