@@ -59,11 +59,10 @@ func lineSpacingLeading(lineSpacing string) string {
 	if err != nil {
 		return lineSpacing + "em"
 	}
-	leading := multiplier - 1
-	if leading < 0 {
-		leading = 0
+	if multiplier < 1 {
+		multiplier = 1
 	}
-	return strconv.FormatFloat(leading, 'f', -1, 64) + "em"
+	return strconv.FormatFloat(multiplier, 'f', -1, 64) + "em"
 }
 
 func paragraphSpacing(spacing string, lineSpacing string) string {
@@ -73,11 +72,11 @@ func paragraphSpacing(spacing string, lineSpacing string) string {
 		if err != nil {
 			return "0.7em"
 		}
-		leading := multiplier - 1
-		if leading < 0.7 {
-			leading = 0.7
+		paragraphGap := multiplier - 1
+		if paragraphGap < 0.7 {
+			paragraphGap = 0.7
 		}
-		return strconv.FormatFloat(leading, 'f', -1, 64) + "em"
+		return strconv.FormatFloat(paragraphGap, 'f', -1, 64) + "em"
 	}
 	return trimmed
 }

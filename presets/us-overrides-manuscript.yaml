@@ -7,44 +7,44 @@ folio:
     margin: 25mm
 
     font: Libertinus Mono
-    font-size: 12pt
+    font-size: 10pt
     font-weight: regular
 
     heading-font: Libertinus Mono
-    heading-font-size: 12pt
+    heading-font-size: 10pt
     heading-font-weight: regular
 
     mono-font: Libertinus Mono
-    mono-font-size: 12pt
+    mono-font-size: 10pt
     mono-font-weight: regular
 
     title-font: Libertinus Mono
-    title-font-size: 12pt
+    title-font-size: 10pt
     title-font-weight: regular
 
     subtitle-font: Libertinus Mono
-    subtitle-font-size: 12pt
+    subtitle-font-size: 10pt
     subtitle-font-weight: regular
 
     author-font: Libertinus Mono
-    author-font-size: 12pt
+    author-font-size: 10pt
     author-font-weight: regular
     author-attribution: "by"
 
     date-font: Libertinus Mono
-    date-font-size: 12pt
+    date-font-size: 10pt
     date-font-weight: regular
 
     version-font: Libertinus Mono
-    version-font-size: 12pt
+    version-font-size: 10pt
     version-font-weight: regular
 
     wordcount-font: Libertinus Mono
-    wordcount-font-size: 12pt
+    wordcount-font-size: 10pt
     wordcount-font-weight: regular
 
     contact-font: Libertinus Mono
-    contact-font-size: 12pt
+    contact-font-size: 10pt
     contact-font-weight: regular
 
     line-spacing: 2
@@ -57,17 +57,17 @@ folio:
     page-header:
       enabled: true
       font: Libertinus Mono
-      font-size: 12pt
+      font-size: 10pt
       font-weight: regular
       format: "[author] / [title] / [page]"
       align: right
 
     toc:
       font: Libertinus Mono
-      font-size: 12pt
+      font-size: 10pt
       font-weight: regular
       heading-font: Libertinus Mono
-      heading-font-size: 12pt
+      heading-font-size: 10pt
       heading-font-weight: regular
 
     part:
