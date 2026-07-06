@@ -38,7 +38,7 @@ func TestMarkdownManuscriptCLIProducesTypstContract(t *testing.T) {
 	assertContains(t, typst, `#folio-chapter(first: false)[Chapter 1]`)
 	assertContains(t, typst, `#folio-chapter(first: false)[Chapter 2]`)
 	assertContains(t, typst, `#folio-scene-break()`)
-	assertContains(t, typst, `#text(font: "Libertinus Mono", size: 10pt, weight: "bold")[watch]`)
+	assertContains(t, typst, `#text(font: "Libertinus Mono", size: 10pt, weight: "regular")[watch]`)
 	assertNotContains(t, typst, `Private planning`)
 	assertBefore(t, typst, `Chapter 1`, `Chapter 2`)
 }
@@ -334,18 +334,18 @@ func TestMarkdownInlineMarkupAndLiteralDelimitersRenderToTypst(t *testing.T) {
 
 	assertContains(t, typst, `Kevin thought, \_.`)
 	assertContains(t, typst, `The form had three blanks: \_, \_, and \_.`)
-	assertContains(t, typst, `Dialogue begins — like this – then continues with *bold*, _italic_, and #text(font: "Libertinus Mono", size: 10pt, weight: "bold")[kevin\_murray].`)
+	assertContains(t, typst, `Dialogue begins — like this – then continues with *bold*, _italic_, and #text(font: "Libertinus Mono", size: 10pt, weight: "regular")[kevin\_murray].`)
 	assertContains(t, typst, `\/\/ JOKES ABOUT HALLOWEEN`)
 	assertContains(t, typst, `font: "Libertinus Mono"`)
 	assertContains(t, typst, `size: 10pt`)
-	assertContains(t, typst, `weight: "bold"`)
+	assertContains(t, typst, `weight: "regular"`)
 	assertContains(t, typst, `#folio-code[living\_room:`)
 	assertContains(t, typst, `north\_wall: 4.20m]`)
 }
 
 func TestRenderInlineMarkup(t *testing.T) {
-	got := renderInlineMarkup("Dialogue begins --- like this -- then continues with **bold**, *italic*, and `kevin_murray`.", "Libertinus Mono", "10pt", "bold")
-	want := `Dialogue begins — like this – then continues with *bold*, _italic_, and #text(font: "Libertinus Mono", size: 10pt, weight: "bold")[kevin\_murray].`
+	got := renderInlineMarkup("Dialogue begins --- like this -- then continues with **bold**, *italic*, and `kevin_murray`.", "Libertinus Mono", "10pt", "regular")
+	want := `Dialogue begins — like this – then continues with *bold*, _italic_, and #text(font: "Libertinus Mono", size: 10pt, weight: "regular")[kevin\_murray].`
 	if got != want {
 		t.Fatalf("unexpected inline render\nwant: %s\n got: %s", want, got)
 	}
@@ -362,7 +362,7 @@ func TestRenderInlineMarkup(t *testing.T) {
 	if err != nil {
 		t.Fatalf("parsing canonical markdown: %v", err)
 	}
-	got = renderInlineMarkup(canonicalDoc.Blocks[1].Text, "Libertinus Mono", "10pt", "bold")
+	got = renderInlineMarkup(canonicalDoc.Blocks[1].Text, "Libertinus Mono", "10pt", "regular")
 	if got != want {
 		t.Fatalf("unexpected canonical inline render\ncanonical: %s\nwant: %s\n got: %s", RenderMarkdown(doc), want, got)
 	}
@@ -389,7 +389,7 @@ func TestOrgInlineMarkupAndSectionBreakRenderThroughCanonicalMarkdown(t *testing
 	runManuscript(t, root, filepath.Join(dir, "ch01.org"), output)
 	typst := readFile(t, output)
 
-	assertContains(t, typst, `Dialogue begins — like this – then continues with *bold*, _italic_, and #text(font: "Libertinus Mono", size: 10pt, weight: "bold")[kevin\_murray].`)
+	assertContains(t, typst, `Dialogue begins — like this – then continues with *bold*, _italic_, and #text(font: "Libertinus Mono", size: 10pt, weight: "regular")[kevin\_murray].`)
 	assertContains(t, typst, `#folio-scene-break()`)
 	assertContains(t, typst, `Kevin thought, \_.`)
 }
