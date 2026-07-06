@@ -144,6 +144,7 @@
   #   toc:
   #     enabled: true
   #     title: Contents
+  #     line-spacing: 1.15em
 
 # --- Yapper (TTS) configuration ---
 # Silently ignored by First Folio. See: github.com/tadg-paul/yapper

@@ -97,6 +97,7 @@ folio:
       include-sections: false
       dot-leaders: true
       page-numbers: true
+      line-spacing: 1.15em
       part-gap-before: 0.5em
       part-bold: true
 

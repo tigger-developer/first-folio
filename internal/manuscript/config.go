@@ -136,6 +136,7 @@ type TOCConfig struct {
 	DotLeaders        bool   `yaml:"dot-leaders"`
 	PageNumbers       bool   `yaml:"page-numbers"`
 	PageBreakBefore   bool   `yaml:"page-break-before"`
+	LineSpacing       string `yaml:"line-spacing"`
 	PartGapBefore     string `yaml:"part-gap-before"`
 	PartBold          bool   `yaml:"part-bold"`
 }
@@ -287,6 +288,7 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.TOC.HeadingFont, ms.HeadingFont)
 	fill(&ms.TOC.HeadingFontSize, "16pt")
 	fill(&ms.TOC.HeadingFontWeight, "bold")
+	fill(&ms.TOC.LineSpacing, "1.15em")
 	fill(&ms.TOC.PartGapBefore, "0.5em")
 	fill(&ms.SceneBreak.Marker, "#")
 	fill(&ms.List.SpaceBefore, "0.5em")

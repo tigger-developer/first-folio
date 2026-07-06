@@ -189,7 +189,7 @@
 )[{{.Config.Folio.Manuscript.TOC.Title}}]
 #v(1em)
 #text(font: "{{.Config.Folio.Manuscript.TOC.Font}}", size: {{.Config.Folio.Manuscript.TOC.FontSize}}, weight: "{{.Config.Folio.Manuscript.TOC.FontWeight}}")[
-  #set par(leading: 0.5em)
+  #set par(leading: {{.Config.Folio.Manuscript.TOC.LineSpacing}})
   #show outline.entry: it => block(
     above: if it.level == 1 { {{.Config.Folio.Manuscript.TOC.PartGapBefore}} } else { 0pt },
     below: 0.5em,

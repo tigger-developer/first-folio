@@ -101,6 +101,8 @@ Common manuscript keys:
 
 `folio.manuscript.toc.enabled` defaults to `true`. Set it to `false` to suppress the generated table of contents.
 
+`folio.manuscript.toc.line-spacing` controls table-of-contents item line spacing. The British default is `1.15em`.
+
 US manuscript style is selected with `folio.manuscript.style: us` or `folio.style: us`, or with `folio manuscript --style us ...`. The US override is layered on top of the British manuscript preset and does not change the page size to `us-letter`; page size changes require explicit user config.
 
 Manuscript metadata supports `title`, `subtitle`, `author`, `attribution`, `date`, `version`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`.
