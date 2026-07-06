@@ -20,9 +20,9 @@ folio:
     heading-font-size: 14pt
     heading-font-weight: regular
 
-    mono-font: Liberation Mono
+    mono-font: Libertinus Mono
     mono-font-size: 10pt
-    mono-font-weight: bold
+    mono-font-weight: regular
 
     title-font: Libertinus Sans
     title-font-size: 20pt
