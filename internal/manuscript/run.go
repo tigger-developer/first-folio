@@ -84,19 +84,19 @@ func parseArgs(args []string) (Options, []string, error) {
 
 	for i := 0; i < len(args); i++ {
 		arg := args[i]
+		if arg == "-h" || arg == "--help" {
+			opts.ShowHelp = true
+			return opts, nil, nil
+		}
+		if arg == "--dry-run" {
+			opts.DryRun = true
+			continue
+		}
 		if !strings.HasPrefix(arg, "--") {
 			positional = append(positional, arg)
 			continue
 		}
 		key := strings.TrimPrefix(arg, "--")
-		if key == "help" || key == "h" {
-			opts.ShowHelp = true
-			return opts, nil, nil
-		}
-		if key == "dry-run" {
-			opts.DryRun = true
-			continue
-		}
 		if key == "version" {
 			if i+1 >= len(args) || strings.HasPrefix(args[i+1], "--") {
 				opts.ShowVersion = true

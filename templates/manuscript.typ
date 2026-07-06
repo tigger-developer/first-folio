@@ -152,11 +152,13 @@
   numbering: none,
   footer: none,
   header: align(right)[
-    #text(
-      font: "{{.Config.Folio.Manuscript.PageHeader.Font}}",
-      size: {{.Config.Folio.Manuscript.PageHeader.FontSize}},
-      weight: "{{.Config.Folio.Manuscript.PageHeader.FontWeight}}",
-    )[{{.Header}}]
+    #pad(right: 0.5em)[
+      #text(
+        font: "{{.Config.Folio.Manuscript.PageHeader.Font}}",
+        size: {{.Config.Folio.Manuscript.PageHeader.FontSize}},
+        weight: "{{.Config.Folio.Manuscript.PageHeader.FontWeight}}",
+      )[{{.Header}}]
+    ]
   ],
 )
 

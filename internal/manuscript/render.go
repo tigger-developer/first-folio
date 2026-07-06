@@ -70,13 +70,12 @@ func paragraphSpacing(spacing string, lineSpacing string) string {
 	if trimmed == "" || trimmed == "0" || trimmed == "0pt" {
 		multiplier, err := strconv.ParseFloat(strings.TrimSpace(lineSpacing), 64)
 		if err != nil {
-			return "0.7em"
+			return lineSpacing + "em"
 		}
-		paragraphGap := multiplier - 1
-		if paragraphGap < 0.7 {
-			paragraphGap = 0.7
+		if multiplier < 1 {
+			multiplier = 1
 		}
-		return strconv.FormatFloat(paragraphGap, 'f', -1, 64) + "em"
+		return strconv.FormatFloat(multiplier, 'f', -1, 64) + "em"
 	}
 	return trimmed
 }
