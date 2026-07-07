@@ -16,7 +16,7 @@ use Folio::Config;
 use Folio::Format;
 use Folio::IntroFilter;
 
-our $VERSION = '0.4.7';
+our $VERSION = '0.4.8';
 
 # Top-level flags
 my $help    = 0;
