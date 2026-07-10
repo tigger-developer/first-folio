@@ -343,6 +343,19 @@ sub _escape_typst {
         return $s;
     };
 
+    # Helper: bracketed Typst content needs bracket escaping as well.
+    my $esc_bracketed_inner = sub {
+        my $s = $esc_inner->(shift);
+        $s =~ s/\[/\\[/g;
+        $s =~ s/\]/\\]/g;
+        return $s;
+    };
+
+    # Org inline code/verbatim: =text=
+    $text =~ s{(?<!\w)=([^=\n]+?)=(?!\w)}{
+        push @markup_slots, '#text(font: "Libertinus Mono")[' . $esc_bracketed_inner->($1) . ']';
+        "\x00MARKUP" . $#markup_slots . "\x00"
+    }ge;
     # Markdown bold italic: ***text***
     $text =~ s{\*\*\*([^*\n]+?)\*\*\*}{
         push @markup_slots, "*_" . $esc_inner->($1) . "_*";
