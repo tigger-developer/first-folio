@@ -37,8 +37,11 @@ func Run(args []string) error {
 		return err
 	}
 
-	sourceDir := filepath.Dir(inputSet.Paths[0])
-	cfg, err := LoadConfig(sourceDir, opts)
+	configDir, err := localConfigDir(inputSet.Paths)
+	if err != nil {
+		return err
+	}
+	cfg, err := LoadConfig(configDir, opts)
 	if err != nil {
 		return err
 	}
@@ -176,18 +179,29 @@ func printDryRun(inputSet InputSet, opts Options, cfg Config) {
 }
 
 func applyMetadataOverrides(meta *Metadata, opts Options, cfg Config) {
-	overrideString(&meta.Title, opts.Title, cfg.Title)
-	overrideString(&meta.Subtitle, opts.Subtitle, cfg.Subtitle)
-	overrideString(&meta.Author, opts.Author, cfg.Author)
-	overrideString(&meta.AuthorAttribution, opts.AuthorAttribution, cfg.Attribution, cfg.AuthorAttribution, cfg.Folio.Manuscript.Attribution, cfg.Folio.Manuscript.AuthorAttribution)
-	overrideString(&meta.Date, opts.Date, cfg.Date)
-	overrideString(&meta.Version, opts.Version, cfg.Version)
-	overrideString(&meta.WordCount, opts.WordCount, cfg.WordCount)
-	overrideString(&meta.ContactName, opts.ContactName, cfg.ContactName)
+	overrideString(&meta.Title, cfg.Title, opts.Title)
+	overrideString(&meta.Subtitle, cfg.Subtitle, opts.Subtitle)
+	overrideString(&meta.Author, cfg.Author, opts.Author)
+	overrideString(&meta.AuthorAttribution, cfg.Attribution, cfg.AuthorAttribution, cfg.Folio.Manuscript.Attribution, cfg.Folio.Manuscript.AuthorAttribution, opts.AuthorAttribution)
+	overrideString(&meta.Date, cfg.Date, opts.Date)
+	overrideString(&meta.Version, cfg.Version, opts.Version)
+	overrideString(&meta.WordCount, cfg.WordCount, opts.WordCount)
+	overrideString(&meta.ContactName, cfg.ContactName, opts.ContactName)
 	overrideString(&meta.Address, cfg.Address)
 	overrideString(&meta.Phone, cfg.Phone)
 	overrideString(&meta.Email, cfg.Email)
 	overrideString(&meta.Website, cfg.Website)
+}
+
+func localConfigDir(paths []string) (string, error) {
+	if len(paths) == 1 {
+		return filepath.Dir(paths[0]), nil
+	}
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("finding manuscript config directory: %w", err)
+	}
+	return cwd, nil
 }
 
 func overrideString(target *string, values ...string) {

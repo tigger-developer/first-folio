@@ -48,8 +48,10 @@ Configuration remains based on `script.yaml`. Manuscript rendering uses the same
 2. US manuscript override preset, only when `--style us` or equivalent config is selected.
 3. Global `~/.config/first-folio/script.yaml`.
 4. Global style-specific `script-british.yaml` or `script-us.yaml`.
-5. Local `script.yaml` beside the first source file.
+5. Local `script.yaml`: beside the source for one manuscript input, or in the process working directory for multiple manuscript inputs.
 6. Local style-specific `script-british.yaml` or `script-us.yaml`.
+
+The same selected local directory supplies both the base and style-specific files. A multi-input request does not merge configuration from individual input directories.
 7. CLI overrides.
 
 Root `folio.*` values remain the shared defaults. `folio.manuscript.*` values are manuscript-specific overrides. Child settings such as `folio.manuscript.toc.font` override only their own element.

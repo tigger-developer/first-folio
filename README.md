@@ -71,7 +71,7 @@ Each format has a complete reference example demonstrating all supported feature
 First Folio reads configuration from `script.yaml` files. It never creates or modifies config files.
 
 ```yaml
-# ~/.config/first-folio/script.yaml or alongside your source file
+# ~/.config/first-folio/script.yaml or in the project's local config directory
 
 date: "2026-04-26"
 version: "Draft v3"
@@ -83,6 +83,8 @@ folio:
 ```
 
 All config sources are merged in precedence order: CLI flags > local `script.yaml` > global `script.yaml` > built-in defaults. The config file is shared with [yapper](https://github.com/tadg-paul/yapper) (TTS rendering).
+
+For manuscripts, a single input uses config beside that input; multiple inputs use config from the directory where the command is run.
 
 See [docs/config.md](docs/config.md) for the full schema and [examples/script.yaml](examples/script.yaml) for a complete annotated example.
 

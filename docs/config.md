@@ -13,7 +13,7 @@ See [examples/script.yaml](../examples/script.yaml) for a complete annotated exa
 | Location | Purpose |
 |----------|---------|
 | `~/.config/first-folio/script.yaml` | Global user defaults |
-| `<source-file-directory>/script.yaml` | Per-project overrides |
+| `<local-config-directory>/script.yaml` | Per-project overrides |
 
 Both files are read when they exist. Per-project values override global values. CLI flags override everything.
 
@@ -24,11 +24,18 @@ All config sources are read and merged. Each layer overrides individual keys fro
 | Priority | Source |
 |----------|--------|
 | 1 (highest) | CLI flags |
-| 2 | Local `script.yaml` (source file directory) |
+| 2 | Local `script.yaml` (selected local-config directory) |
 | 3 | Global `~/.config/first-folio/script.yaml` |
 | 4 (lowest) | Built-in defaults |
 
 **Example:** Global config sets `folio.font: "EB Garamond"` and `folio.page: a4`. A local config sets only `folio.font: "Georgia"`. The merged result uses Georgia for the font and a4 for the page - the local config overrides one key without erasing the rest.
+
+For `folio manuscript`, the local-config directory depends on the number of resolved input files:
+
+- One input: the input file's directory.
+- Multiple inputs: the directory from which `folio manuscript` was invoked.
+
+Both `script.yaml` and the selected `script-british.yaml` or `script-us.yaml` are read from that one directory. First Folio does not merge configuration found beside individual files in a multi-input request.
 
 ## Schema
 
