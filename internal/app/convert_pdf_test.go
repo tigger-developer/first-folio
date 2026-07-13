@@ -81,3 +81,94 @@ func TestConvertPDFCompiles(t *testing.T) {
 		t.Fatalf("invalid PDF output: %d bytes", len(raw))
 	}
 }
+
+func TestScriptSourceFormatsRasterizeInBritishAndUSStyles(t *testing.T) {
+	toolHome := os.Getenv("HOME")
+	for _, tool := range []string{"typst", "pdf-to-png"} {
+		if _, err := exec.LookPath(tool); err != nil {
+			t.Skipf("%s is not installed", tool)
+		}
+	}
+	sources := map[string]string{
+		"org": `#+TITLE: Matrix Play
+#+AUTHOR: Example Author
+* ACT ONE
+** Scene One
+*** Night.
+**** CÁIT quietly
+Hello.
+`,
+		"md": `# Matrix Play
+
+*by Example Author*
+
+## ACT ONE
+
+### Scene One
+
+*Night.*
+
+**CÁIT:** *(quietly)*
+Hello.
+`,
+		"fountain": `Title: Matrix Play
+Author: Example Author
+
+> **ACT ONE** <
+
+.SCENE ONE
+
+Night.
+
+CÁIT
+(quietly)
+Hello.
+`,
+	}
+	extensions := map[string]string{"org": ".org", "md": ".md", "fountain": ".fountain"}
+	for _, style := range []string{"british", "us"} {
+		for format, sourceText := range sources {
+			t.Run(style+"/"+format, func(t *testing.T) {
+				dir := t.TempDir()
+				t.Setenv("HOME", t.TempDir())
+				source := filepath.Join(dir, "play"+extensions[format])
+				target := filepath.Join(dir, style+"-"+format+".pdf")
+				writeAppFile(t, source, sourceText)
+
+				status, stdout, stderr := runApp(t, "convert", source, target, "--style", style)
+				if status != 0 {
+					t.Fatalf("status %d\nstdout:%s\nstderr:%s", status, stdout, stderr)
+				}
+				raw, err := os.ReadFile(target)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if !bytes.HasPrefix(raw, []byte("%PDF")) || len(raw) < 1000 {
+					t.Fatalf("invalid PDF output: %d bytes", len(raw))
+				}
+
+				cmd := exec.Command("pdf-to-png", filepath.Base(target), "120")
+				cmd.Dir = dir
+				cmd.Env = []string{"HOME=" + toolHome}
+				for _, value := range os.Environ() {
+					if !strings.HasPrefix(value, "HOME=") {
+						cmd.Env = append(cmd.Env, value)
+					}
+				}
+				if output, err := cmd.CombinedOutput(); err != nil {
+					t.Fatalf("rasterizing %s/%s: %v\n%s", style, format, err, output)
+				}
+				images, err := filepath.Glob(filepath.Join(dir, style+"-"+format+"-*.png"))
+				if err != nil || len(images) == 0 {
+					t.Fatalf("%s/%s raster output: %v, %v", style, format, images, err)
+				}
+				for _, image := range images {
+					info, err := os.Stat(image)
+					if err != nil || info.Size() == 0 {
+						t.Errorf("empty raster output %s: %v", image, err)
+					}
+				}
+			})
+		}
+	}
+}
