@@ -129,46 +129,51 @@ Hello.
 	for _, style := range []string{"british", "us"} {
 		for format, sourceText := range sources {
 			t.Run(style+"/"+format, func(t *testing.T) {
-				dir := t.TempDir()
-				t.Setenv("HOME", t.TempDir())
-				source := filepath.Join(dir, "play"+extensions[format])
-				target := filepath.Join(dir, style+"-"+format+".pdf")
-				writeAppFile(t, source, sourceText)
-
-				status, stdout, stderr := runApp(t, "convert", source, target, "--style", style)
-				if status != 0 {
-					t.Fatalf("status %d\nstdout:%s\nstderr:%s", status, stdout, stderr)
-				}
-				raw, err := os.ReadFile(target)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if !bytes.HasPrefix(raw, []byte("%PDF")) || len(raw) < 1000 {
-					t.Fatalf("invalid PDF output: %d bytes", len(raw))
-				}
-
-				cmd := exec.Command("pdf-to-png", filepath.Base(target), "120")
-				cmd.Dir = dir
-				cmd.Env = []string{"HOME=" + toolHome}
-				for _, value := range os.Environ() {
-					if !strings.HasPrefix(value, "HOME=") {
-						cmd.Env = append(cmd.Env, value)
-					}
-				}
-				if output, err := cmd.CombinedOutput(); err != nil {
-					t.Fatalf("rasterizing %s/%s: %v\n%s", style, format, err, output)
-				}
-				images, err := filepath.Glob(filepath.Join(dir, style+"-"+format+"-*.png"))
-				if err != nil || len(images) == 0 {
-					t.Fatalf("%s/%s raster output: %v, %v", style, format, images, err)
-				}
-				for _, image := range images {
-					info, err := os.Stat(image)
-					if err != nil || info.Size() == 0 {
-						t.Errorf("empty raster output %s: %v", image, err)
-					}
-				}
+				assertScriptPDFRasterizes(t, style, format, extensions[format], sourceText, toolHome)
 			})
+		}
+	}
+}
+
+func assertScriptPDFRasterizes(t *testing.T, style string, format string, extension string, sourceText string, toolHome string) {
+	t.Helper()
+	dir := t.TempDir()
+	t.Setenv("HOME", t.TempDir())
+	source := filepath.Join(dir, "play"+extension)
+	target := filepath.Join(dir, style+"-"+format+".pdf")
+	writeAppFile(t, source, sourceText)
+
+	status, stdout, stderr := runApp(t, "convert", source, target, "--style", style)
+	if status != 0 {
+		t.Fatalf("status %d\nstdout:%s\nstderr:%s", status, stdout, stderr)
+	}
+	raw, err := os.ReadFile(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.HasPrefix(raw, []byte("%PDF")) || len(raw) < 1000 {
+		t.Fatalf("invalid PDF output: %d bytes", len(raw))
+	}
+
+	cmd := exec.Command("pdf-to-png", filepath.Base(target), "120")
+	cmd.Dir = dir
+	cmd.Env = []string{"HOME=" + toolHome}
+	for _, value := range os.Environ() {
+		if !strings.HasPrefix(value, "HOME=") {
+			cmd.Env = append(cmd.Env, value)
+		}
+	}
+	if output, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("rasterizing %s/%s: %v\n%s", style, format, err, output)
+	}
+	images, err := filepath.Glob(filepath.Join(dir, style+"-"+format+"-*.png"))
+	if err != nil || len(images) == 0 {
+		t.Fatalf("%s/%s raster output: %v, %v", style, format, images, err)
+	}
+	for _, image := range images {
+		info, err := os.Stat(image)
+		if err != nil || info.Size() == 0 {
+			t.Errorf("empty raster output %s: %v", image, err)
 		}
 	}
 }
