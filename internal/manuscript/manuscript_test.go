@@ -11,13 +11,13 @@ import (
 )
 
 func TestMarkdownManuscriptCLIProducesTypstContract(t *testing.T) {
-	root := testProjectRoot(t)
+	t.Setenv("HOME", t.TempDir())
 	dir := t.TempDir()
 	writeFile(t, filepath.Join(dir, "part1", "ch02.md"), markdownChapterTwo())
 	writeFile(t, filepath.Join(dir, "part1", "ch01.md"), markdownChapterOne())
 
 	output := filepath.Join(dir, "out.typ")
-	runManuscript(t, root, filepath.Join(dir, "part?", "ch??.md"), output)
+	runManuscriptDirect(t, filepath.Join(dir, "part?", "ch??.md"), output)
 	typst := readFile(t, output)
 
 	assertContains(t, typst, `paper: "a4"`)
@@ -26,8 +26,14 @@ func TestMarkdownManuscriptCLIProducesTypstContract(t *testing.T) {
 	assertContains(t, typst, `#outline(title: none)`)
 	assertContains(t, typst, `font: "Libertinus Serif"`)
 	assertContains(t, typst, `font: "Libertinus Sans"`)
-	assertContains(t, typst, `leading: 1.5em`)
-	assertContains(t, typst, `spacing: 1.5em`)
+	assertContains(t, typst, `top-edge: 0.8em`)
+	assertContains(t, typst, `bottom-edge: -0.2em`)
+	assertContains(t, typst, `leading: 0.5em`)
+	assertContains(t, typst, `spacing: 0pt`)
+	assertContains(t, typst, `top: 20mm + 10mm`)
+	assertContains(t, typst, `rest: 20mm`)
+	assertContains(t, typst, `header-ascent: 10mm`)
+	assertNotContains(t, typst, "\n#v(10mm)\n#folio-part")
 	assertContains(t, typst, `author\@example.invalid`)
 	assertContains(t, typst, `+353 1 000 0000`)
 	assertContains(t, typst, `6 July 2026`)
@@ -65,12 +71,12 @@ func TestOrgManuscriptCLIProducesTypstContract(t *testing.T) {
 }
 
 func TestUSManuscriptOverridesBritishWithoutChangingPageSize(t *testing.T) {
-	root := testProjectRoot(t)
+	t.Setenv("HOME", t.TempDir())
 	dir := t.TempDir()
 	writeFile(t, filepath.Join(dir, "ch01.md"), markdownChapterOne())
 
 	output := filepath.Join(dir, "us.typ")
-	runManuscript(t, root, "--style", "us", filepath.Join(dir, "ch01.md"), output)
+	runManuscriptDirect(t, "--style", "us", filepath.Join(dir, "ch01.md"), output)
 	typst := readFile(t, output)
 
 	assertContains(t, typst, `paper: "a4"`)
@@ -83,13 +89,38 @@ func TestUSManuscriptOverridesBritishWithoutChangingPageSize(t *testing.T) {
 	assertContains(t, typst, `size: 9pt`)
 	assertContains(t, typst, `weight: "bold"`)
 	assertContains(t, typst, `first-line-indent: 12.7mm`)
-	assertContains(t, typst, `leading: 2em`)
-	assertContains(t, typst, `spacing: 2em`)
+	assertContains(t, typst, `leading: 1em`)
+	assertContains(t, typst, `spacing: 0pt`)
 	assertContains(t, typst, `margin: 25mm`)
 	assertContains(t, typst, `author\@example.invalid`)
 	assertContains(t, typst, `+353 1 000 0000`)
 	assertContains(t, typst, `#stack(`)
 	assertContains(t, typst, `#set par(leading: 1.15em)`)
+}
+
+func TestManuscriptSpacingOverridesAreIndependent(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	dir := t.TempDir()
+	writeFile(t, filepath.Join(dir, "script.yaml"), strings.Join([]string{
+		"folio:",
+		"  manuscript:",
+		"    line-spacing: 1.0",
+		"    paragraph-spacing: 3mm",
+		"    page-header:",
+		"      content-padding-after: 55mm",
+		"",
+	}, "\n"))
+	writeFile(t, filepath.Join(dir, "ch01.md"), markdownChapterOne())
+
+	output := filepath.Join(dir, "out.typ")
+	runManuscriptDirect(t, filepath.Join(dir, "ch01.md"), output)
+	typst := readFile(t, output)
+
+	assertContains(t, typst, `leading: 0em`)
+	assertContains(t, typst, `spacing: 3mm`)
+	assertContains(t, typst, `top: 20mm + 55mm`)
+	assertContains(t, typst, `header-ascent: 55mm`)
+	assertNotContains(t, typst, "\n#v(55mm)\n")
 }
 
 func TestTOCCanBeDisabledByConfig(t *testing.T) {
@@ -669,6 +700,13 @@ func renderExamplePDFText(t *testing.T, root string, style string, name string) 
 func runManuscript(t *testing.T, root string, args ...string) {
 	t.Helper()
 	_ = runManuscriptOutput(t, root, args...)
+}
+
+func runManuscriptDirect(t *testing.T, args ...string) {
+	t.Helper()
+	if err := Run(args); err != nil {
+		t.Fatalf("folio manuscript failed: %v", err)
+	}
 }
 
 func runManuscriptOutput(t *testing.T, root string, args ...string) string {
