@@ -66,6 +66,8 @@ func TestConvertInvalidInputs(t *testing.T) {
 	dir := t.TempDir()
 	binary := filepath.Join(dir, "binary.org")
 	writeAppFile(t, binary, "text\x00binary")
+	text := filepath.Join(dir, "text.org")
+	writeAppFile(t, text, "* ACT ONE\n")
 
 	tests := []struct {
 		name string
@@ -74,7 +76,7 @@ func TestConvertInvalidInputs(t *testing.T) {
 	}{
 		{"missing", []string{"convert", filepath.Join(dir, "missing.org"), "out.md"}, "file not found"},
 		{"binary", []string{"convert", binary, "out.md"}, "appears to be a binary file"},
-		{"unknown target", []string{"convert", binary, "out.xyz"}, "Unrecognised file extension"},
+		{"unknown target", []string{"convert", text, "out.xyz"}, "Unrecognised file extension"},
 		{"no source", []string{"convert"}, "no source file specified"},
 	}
 	for _, tt := range tests {
