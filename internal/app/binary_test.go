@@ -24,7 +24,7 @@ func TestBuiltBinaryOutsideCheckout(t *testing.T) {
 	}
 	help := exec.Command(binary, "--help")
 	help.Dir = dir
-	help.Env = append(os.Environ(), "HOME="+filepath.Join(dir, "home"))
+	help.Env = []string{"HOME=" + filepath.Join(dir, "home"), "PATH="}
 	output, err := help.CombinedOutput()
 	if err != nil || !strings.Contains(string(output), "manuscript") {
 		t.Fatalf("installed-shaped help: %v\n%s", err, output)

@@ -17,7 +17,7 @@ install: build
 	@echo "Linked $(INSTALL_DIR)/folio -> $(BUILD_DIR)/folio"
 
 uninstall:
-	@unlink "$(INSTALL_DIR)/folio"
+	@test ! -L "$(INSTALL_DIR)/folio" || unlink "$(INSTALL_DIR)/folio"
 	@echo "Removed $(INSTALL_DIR)/folio"
 
 lint:
