@@ -110,7 +110,7 @@ Hello.[fn:note]
 		{"title", "folio:\n  title-page:\n    title:\n      font-size: 18pt\n      bold: false\n      italic: true\n    subtitle:\n      italic: false\n    author:\n      prefix: \"\"\n", []string{"size: 18pt", `style: "italic"`, "A Subtitle", "Example Author"}, []string{"by Example Author"}},
 		{"filtered", "render:\n  stage-directions: false\n  frontmatter: false\n  footnotes: false\n  transitions: false\n", []string{"#dialogue"}, []string{"Night.", "Intro text.", "#footnote", "CUT TO"}},
 		{"us style", "folio:\n  style: us\n", []string{"spacing: 0em", "#align(left)"}, []string{"columns: (7em, 1fr)"}},
-		{"screenplay style", "folio:\n  style: screenplay\n", []string{`font: "Courier Prime"`, "#v(40%)", `weight: "regular"`, "#align(center)", "#align(left)[#body]", "#upper[#title]", ")[Written by]", "#v(0.3em)", ")[Example Author]"}, []string{"columns: (7em, 1fr)", "#align(left)[_#body _]", "Written by\\nExample Author"}},
+		{"screenplay style", "folio:\n  style: screenplay\n", []string{`font: "Courier Prime"`, "#v(40%)", `weight: "regular"`, "pad(left: 25.4mm, right: 25.4mm)", "#align(center)[_(#direction)_]", "#pad(left: 101.6mm)[#align(right)", "#align(left)[#body]", "#upper[#title]", ")[Written by]", "#v(0.3em)", ")[Example Author]"}, []string{"columns: (7em, 1fr)", "#align(left)[_#body _]", "Written by\\nExample Author"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

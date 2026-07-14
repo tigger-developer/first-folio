@@ -25,18 +25,20 @@
 #let dialogue(name, direction: none, body) = {
   block(above: {{.SpeechSpace}}, below: 0.2em, breakable: true, spacing: 0em)[
     #set par(spacing: 0.6em)
-    #align({{.SpeakerAlign}})[#text(weight: "{{.SpeakerWeight}}")[{{.SpeakerContent}}]]
-    #if direction != none [
-      {{.InstructionOpen}}{{.InstructionPrefix}}#direction{{.InstructionSuffix}}{{.InstructionClose}}
+    #pad(left: {{.DialogueIndent}}, right: {{.DialogueWrap}})[
+      #pad(left: {{.SpeakerIndent}})[#align({{.SpeakerAlign}})[#text(weight: "{{.SpeakerWeight}}")[{{.SpeakerContent}}]]]
+      #if direction != none [
+        #align({{.InstructionAlign}})[{{.InstructionOpen}}{{.InstructionPrefix}}#direction{{.InstructionSuffix}}{{.InstructionClose}}]
+      ]
+      #body
     ]
-    #body
   ]
 }
 {{end}}
 
 #let stage-direction(body) = {
   block(above: {{.DirectionSpace}}, below: 0.6em)[
-    #align({{.DirectionAlign}})[{{.DirectionOpen}}#body{{.DirectionClose}}]
+    #pad(left: {{.DirectionIndent}})[#align({{.DirectionAlign}})[{{.DirectionOpen}}#body{{.DirectionClose}}]]
   ]
 }
 

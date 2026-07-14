@@ -152,6 +152,10 @@ func assertScriptPDFRasterizes(t *testing.T, style string, format string, extens
 	t.Helper()
 	dir := t.TempDir()
 	t.Setenv("HOME", t.TempDir())
+	fontPath := filepath.Join(toolHome, "Library", "Fonts")
+	if info, err := os.Stat(fontPath); err == nil && info.IsDir() {
+		t.Setenv("TYPST_FONT_PATHS", fontPath)
+	}
 	source := filepath.Join(dir, "play"+extension)
 	target := filepath.Join(dir, style+"-"+format+".pdf")
 	writeAppFile(t, source, sourceText)

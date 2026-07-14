@@ -21,7 +21,7 @@ import (
 )
 
 var (
-	dimensionRE = regexp.MustCompile(`^-?(?:\d+(?:\.\d+)?)(?:pt|mm|cm|in|em|%)$`)
+	dimensionRE = regexp.MustCompile(`^(?:0|-?(?:\d+(?:\.\d+)?)(?:pt|mm|cm|in|em|%))$`)
 	weightRE    = regexp.MustCompile(`^(?:[1-9]00|thin|extralight|light|regular|medium|semibold|bold|extrabold|black)$`)
 	alignRE     = regexp.MustCompile(`^(?:left|center|right)$`)
 	pageRE      = regexp.MustCompile(`^[A-Za-z0-9-]+$`)
@@ -39,12 +39,15 @@ type scriptTemplateData struct {
 	Page, Margin, Font, FontSize                     string
 	GlobalWeight, GlobalStretch                      string
 	DialogueSameLine                                 bool
-	SpeechSpace, DialogueWrap                        string
+	SpeechSpace, DialogueIndent, DialogueWrap        string
 	SpeakerWeight, SpeakerContent, SpeakerAlign      string
+	SpeakerIndent                                    string
 	InstructionOpen, InstructionClose                string
 	InstructionPrefix, InstructionSuffix             string
-	DirectionSpace, DirectionAlign                   string
+	InstructionAlign                                 string
+	DirectionSpace, DirectionAlign, DirectionIndent  string
 	DirectionOpen, DirectionClose                    string
+	TransitionIndent                                 string
 	ActSpace, ActAlign, ActFont, ActSize             string
 	ActWeight, ActOpen, ActClose                     string
 	SceneSpace, SceneAfter, SceneAlign               string
@@ -108,14 +111,19 @@ func newScriptTemplateData(doc play.Document, cfg config.Config) (scriptTemplate
 	data := scriptTemplateData{
 		Page: cfg.String("folio.page", "a4"), Margin: cfg.String("folio.margin", "25mm"), Font: escapeTypstString(font), FontSize: fontSize,
 		SpeechSpace:       cfg.String("folio.positioning.speech.space-before", "1.6em"),
+		DialogueIndent:    typstDimension(cfg.String("folio.positioning.speech.dialogue.indent", "0")),
 		DialogueWrap:      cfg.String("folio.positioning.speech.dialogue.wrap-indent", "7em"),
 		DialogueSameLine:  cfg.String("folio.positioning.speech.dialogue.placement", "same-line") == "same-line",
 		SpeakerWeight:     boolWeight(cfg.Bool("folio.positioning.speech.speaker.bold", true)),
 		SpeakerAlign:      validAlign(cfg.String("folio.positioning.speech.speaker.align", "left")),
+		SpeakerIndent:     typstDimension(cfg.String("folio.positioning.speech.speaker.indent", "0")),
 		InstructionPrefix: instructionDelimiter(cfg.String("folio.positioning.speech.speech-instruction.prefix", "(")),
 		InstructionSuffix: instructionDelimiter(cfg.String("folio.positioning.speech.speech-instruction.suffix", ")")),
+		InstructionAlign:  validAlign(cfg.String("folio.positioning.speech.speech-instruction.align", "left")),
 		DirectionSpace:    cfg.String("folio.positioning.stage-direction.space-before", "1.6em"),
 		DirectionAlign:    validAlign(cfg.String("folio.positioning.stage-direction.align", "left")),
+		DirectionIndent:   typstDimension(cfg.String("folio.positioning.stage-direction.indent", "0")),
+		TransitionIndent:  typstDimension(cfg.String("folio.positioning.transition.indent", "0")),
 		ActSpace:          cfg.String("folio.positioning.act-header.space-before", "0em"),
 		ActAlign:          validAlign(cfg.String("folio.positioning.act-header.align", "center")),
 		ActFont:           escapeTypstString(cfg.InheritedString("folio.positioning.act-header", "font", font)),
@@ -178,6 +186,13 @@ func authorPrefix(value string) (string, []string) {
 	return "", lines
 }
 
+func typstDimension(value string) string {
+	if strings.TrimSpace(value) == "0" {
+		return "0pt"
+	}
+	return value
+}
+
 func renderPlayBody(doc play.Document, cfg config.Config) string {
 	footnotes := map[string]string{}
 	for _, event := range doc.Events {
@@ -222,7 +237,8 @@ func renderPlayBody(doc play.Document, cfg config.Config) string {
 		case play.EventTransition:
 			align := validAlign(cfg.String("folio.positioning.transition.align", "right"))
 			content := caseExpression(cfg.String("folio.positioning.transition.case-transform", "upper"), inlineTypst(event.Text, footnotes))
-			lines = append(lines, "#v("+cfg.String("folio.positioning.transition.space-before", "1.6em")+")", "#align("+align+")["+content+"]")
+			indent := typstDimension(cfg.String("folio.positioning.transition.indent", "0"))
+			lines = append(lines, "#v("+cfg.String("folio.positioning.transition.space-before", "1.6em")+")", "#pad(left: "+indent+")[#align("+align+")["+content+"]]")
 		case play.EventCharacterTableStart:
 			var rows []string
 			for i+1 < len(doc.Events) && doc.Events[i+1].Kind == play.EventCharacterTableRow {
@@ -283,8 +299,9 @@ func escapeTypstString(value string) string {
 
 func validateScriptData(data scriptTemplateData) error {
 	for name, value := range map[string]string{
-		"font-size": data.FontSize, "margin": data.Margin, "speech spacing": data.SpeechSpace, "dialogue wrap": data.DialogueWrap,
-		"direction spacing": data.DirectionSpace, "act spacing": data.ActSpace, "act size": data.ActSize,
+		"font-size": data.FontSize, "margin": data.Margin, "speech spacing": data.SpeechSpace, "dialogue indent": data.DialogueIndent, "dialogue wrap": data.DialogueWrap,
+		"speaker indent": data.SpeakerIndent, "direction spacing": data.DirectionSpace, "direction indent": data.DirectionIndent, "transition indent": data.TransitionIndent,
+		"act spacing": data.ActSpace, "act size": data.ActSize,
 		"scene spacing": data.SceneSpace, "scene after": data.SceneAfter, "scene size": data.SceneSize,
 		"frontmatter spacing": data.FrontmatterSpace, "frontmatter size": data.FrontmatterSize,
 		"title size": data.TitleSize, "subtitle spacing": data.SubtitleSpace, "subtitle size": data.SubtitleSize,
