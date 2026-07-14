@@ -66,14 +66,15 @@ Markdown's only fidelity gap is arbitrary front matter keys - Markdown output in
 
 ### Rendering toggles
 
-Individual event types can be suppressed via [configuration](config.md). The `render-*` keys control whether certain elements appear in output:
+Individual event types can be suppressed via [configuration](config.md). Keys beneath `render:` control whether certain elements appear in output:
 
 | Config key | Events suppressed when `false` |
 |------------|-------------------------------|
-| `render-stage-directions` | `stage_direction` |
-| `render-intro` | Title page / opening block |
-| `render-footnotes` | `footnote_def` |
-| `render-character-table` | `character_table_start`, `character_table_row`, `character_table_end` |
+| `render.stage-directions` | `stage_direction` |
+| `render.frontmatter` | Introductory headers and text before the play proper |
+| `render.footnotes` | `footnote_def` |
+| `render.character-table` | `character_table_start`, `character_table_row`, `character_table_end` |
+| `render.transitions` | `transition` |
 
 Suppression is applied between the parser and emitter - the parser always emits all events, and the emitter always handles all events it receives. The config layer filters the event stream.
 

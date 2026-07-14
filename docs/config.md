@@ -1,12 +1,12 @@
-<!-- Version: 0.1 | Last updated: 2026-04-26 -->
+<!-- Version: 0.2 | Last updated: 2026-07-14 -->
 
 # Configuration
 
 First Folio reads configuration from YAML files named `script.yaml`. It never creates, modifies, or writes to config files - they are maintained by the user or by other tools.
 
-The config file is designed to be shared with [yapper](https://github.com/tadg-paul/yapper) (a TTS rendering tool for play scripts). Each tool reads shared top-level keys and its own namespace, silently ignoring everything else.
+First Folio owns the `folio:` namespace. A project may also contain a top-level `yapper:` block, which belongs exclusively to Yapper and is ignored by First Folio. Only the documented top-level metadata and `render` keys form a shared contract between the applications.
 
-See [examples/script.yaml](../examples/script.yaml) for a complete annotated example.
+See [examples/script.yaml.example](../examples/script.yaml.example) for an annotated example.
 
 ## File locations
 
@@ -41,7 +41,8 @@ These keys are read by both First Folio and yapper. When present, they override 
 | `title` | string | (from source) | Play title |
 | `subtitle` | string | (from source) | Play subtitle |
 | `author` | string | (from source) | Author name |
-| `draft-date` | string | (none) | Draft date, displayed on the PDF title page |
+| `date` | string | (from source) | Date displayed on the title page |
+| `version` | string | (from source) | Draft or version displayed on the title page |
 
 ### Shared rendering options
 
@@ -49,31 +50,45 @@ Control which elements appear in output. Read by both First Folio and yapper.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `render-stage-directions` | bool | `true` | Include stage directions in output |
-| `render-intro` | bool | `true` | Include title page / opening block |
-| `render-footnotes` | bool | `true` | Include footnotes in output |
-| `render-character-table` | bool | `true` | Include cast list in output |
+| `render.stage-directions` | bool | `true` | Include stage directions |
+| `render.frontmatter` | bool | `true` | Include introductory sections before the play proper |
+| `render.footnotes` | bool | `true` | Include footnotes |
+| `render.character-table` | bool | `true` | Include the cast list |
+| `render.transitions` | bool | `true` | Include transitions |
 
 ### First Folio PDF settings (`folio:`)
 
-All First Folio-specific settings live under the `folio:` key. These control PDF rendering via Typst and are silently ignored by yapper.
+All First Folio-specific settings live under the `folio:` key.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `font` | string | `New Computer Modern` | Body font family |
+| `font` | string | `Libertinus Serif` | Body font family |
 | `font-size` | string | `12pt` | Body font size |
-| `heading-font` | string | inherits `font` | Heading font family |
-| `heading-font-size` | string | inherits `font-size` | Heading font size |
+| `font-weight` | string | font default | Optional Typst font weight |
+| `font-stretch` | string | font default | Optional Typst font stretch |
 | `margin` | string | `25mm` | Page margins |
-| `page` | string | `a4` | Page size (a4, us-letter, etc.) |
-| `indent` | string | `5em` | Dialogue indent depth |
-| `dialogue-spacing` | string | `1.6em` | Vertical space before dialogue blocks |
-| `direction-spacing` | string | `1.6em` | Vertical space before stage directions |
-| `direction-italic` | bool | `true` | Italicize stage directions |
-| `direction-center` | bool | `false` | Centre stage directions |
+| `page` | string | `a4` | Page size |
 | `default-format` | string | `pdf` | Default output format when no target file or `--to` given |
+| `style` | string | `british` | Script style: `british`, `us`, or `screenplay` |
 
-All `folio:` keys correspond to CLI flags of the same name. CLI flags override config values.
+Script layout is configured beneath `folio.title-page` and `folio.positioning`. The canonical preset documents every supported child key. Important paths include:
+
+| Path | Purpose |
+|---|---|
+| `folio.title-page.{title,subtitle,author,date,version}` | Title-page alignment, typography, spacing, and footer position |
+| `folio.positioning.speech.space-before` | Space before a speech block |
+| `folio.positioning.speech.speaker` | Speaker alignment, weight, case, prefix, and suffix |
+| `folio.positioning.speech.speech-instruction` | Parenthetical placement, alignment, delimiters, and emphasis |
+| `folio.positioning.speech.dialogue` | Same-line/new-line placement and wrapping indent |
+| `folio.positioning.stage-direction` | Direction spacing, alignment, emphasis, case, and indentation |
+| `folio.positioning.transition` | Transition spacing, alignment, and case |
+| `folio.positioning.{frontmatter,act-header,scene-header}` | Header typography, spacing, alignment, case, and page breaks |
+
+CLI layout options override their documented configuration equivalents. See `folio convert --help` for the public CLI surface.
+
+### Letter settings (`folio.letter:`)
+
+Letters use one layout rather than British/US variants. Supported keys are `font`, `font-size`, `font-weight`, `font-stretch`, `page`, `margin-top`, `margin-bottom`, `margin-left`, `margin-right`, `space-before-closing`, `space-before-signoff`, `space-after-sender`, `space-after-recipient`, `space-after-date`, and `space-after-subject`.
 
 ### Manuscript settings (`folio.manuscript:`)
 
@@ -117,13 +132,9 @@ Manuscript metadata supports `title`, `subtitle`, `author`, `attribution`, `date
 
 `folio.manuscript.toc.part-bold` controls whether part entries are bold in the table of contents. The default is `true`.
 
-### Yapper-specific keys
+### Yapper namespace (`yapper:`)
 
-The following keys are examples of yapper configuration. First Folio silently ignores them. See [yapper documentation](https://github.com/tadg-paul/yapper) for the full reference.
-
-- `auto-assign-voices`, `character-voices`, `narrator-voice`, `intro-voice`
-- `dialogue-speed`, `stage-direction-speed`, `gap-after-dialogue`, `gap-after-stage-direction`, `gap-after-scene`
-- `speech-substitution`, `threads`
+Anything beneath a top-level `yapper:` block is exclusively Yapper configuration and is ignored by First Folio. First Folio does not define or document Yapper's child keys; see the [Yapper documentation](https://github.com/tadg-paul/yapper) for that schema.
 
 ## YAML
 
@@ -159,5 +170,8 @@ folio:
   font-size: 11pt
   margin: 25mm
   page: a4
-  indent: 5em
+  positioning:
+    speech:
+      dialogue:
+        wrap-indent: 5em
 ```

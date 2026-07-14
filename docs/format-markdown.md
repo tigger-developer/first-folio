@@ -1,4 +1,4 @@
-<!-- Version: 0.2 | Last updated: 2026-04-26 -->
+<!-- Version: 0.3 | Last updated: 2026-07-14 -->
 
 # Markdown Play Format
 
@@ -8,7 +8,7 @@ First Folio uses a convention-based Markdown format to represent stage plays. Th
 - [CommonMark Specification](https://commonmark.org)
 - [GitHub Flavoured Markdown](https://github.github.com/gfm/) (tables)
 
-**Intro sections:** `##` headings before the first character dialogue (e.g. Synopsis, Setting, Scene List) are automatically detected as intro material. These render identically to act headers but can be toggled on/off via `render-intro` in [config](config.md).
+**Intro sections:** `##` headings before the first character dialogue (e.g. Synopsis, Setting, Scene List) are automatically detected as intro material. These render identically to act headers but can be toggled with `render.frontmatter` in [config](config.md).
 
 ## Element Schema
 

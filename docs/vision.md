@@ -26,7 +26,7 @@ Playwrights and dramaturgs work across multiple tools and workflows. A play may 
 
 5. **Minimal dependencies.** The installed application is one Go binary. PDF output requires Typst. Rich manuscript Markdown/org parsing and conversion may depend on Pandoc where using a standard document AST avoids custom parser complexity.
 
-6. **Shared configuration.** A single `script.yaml` file configures both First Folio and companion tools (e.g. [yapper](https://github.com/tadg-paul/yapper) for TTS rendering). Each tool reads shared metadata and its own namespace, ignoring the rest. Per-project config files override global defaults. See [docs/config.md](config.md).
+6. **Project configuration.** A project may keep First Folio and Yapper settings in one `script.yaml`. Only documented top-level metadata and `render` keys are shared. The `folio:` and `yapper:` namespaces belong exclusively to their respective applications. Per-project config files override global defaults. See [docs/config.md](config.md).
 
 ## Supported Formats
 

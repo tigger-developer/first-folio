@@ -82,9 +82,9 @@ folio:
   page: a4
 ```
 
-All config sources are merged in precedence order: CLI flags > local `script.yaml` > global `script.yaml` > built-in defaults. The config file is shared with [yapper](https://github.com/tadg-paul/yapper) (TTS rendering).
+All config sources are merged in precedence order: CLI flags > local `script.yaml` > global `script.yaml` > built-in defaults. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
 
-See [docs/config.md](docs/config.md) for the full schema and [examples/script.yaml](examples/script.yaml) for a complete annotated example.
+See [docs/config.md](docs/config.md) for the configuration reference and [examples/script.yaml.example](examples/script.yaml.example) for an annotated example.
 
 ## Project Structure
 

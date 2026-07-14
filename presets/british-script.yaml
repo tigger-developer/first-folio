@@ -1,10 +1,6 @@
-# First Folio / Yapper — shared script config
-# THIS IS THE **CANONICAL** CONFIG FOR THIS PROJECT. All other configs should follow it.
-# This config is shared by Yapper app https://github.com/tadg-paul/yapper
-# `render` flags are honoured by both apps.
-# `folio.*` is First Folio-specific (PDF layout) and ignored by Yapper.
-# Yapper-specific keys (voices, narrator, etc.) live elsewhere and are
-# ignored by First Folio.
+# Canonical First Folio script config.
+# Top-level metadata and `render` are shared with Yapper where documented.
+# `folio` is exclusively First Folio-owned; `yapper` is exclusively Yapper-owned.
 
 render:
   stage-directions: true

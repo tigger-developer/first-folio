@@ -15,8 +15,9 @@ func TestLoadScriptPrecedence(t *testing.T) {
   font: Global Font
   page: a5
   margin: 30mm
-character-voices:
-  CÁIT: voice-id
+yapper:
+  character-voices:
+    CÁIT: voice-id
 `)
 	writeYAML(t, filepath.Join(home, ".config", "first-folio", "script-us.yaml"), "folio:\n  margin: 22mm\n")
 	writeYAML(t, filepath.Join(project, "script.yaml"), "folio:\n  style: us\n  font: Local Font\n")
@@ -35,7 +36,7 @@ character-voices:
 	assertValue(t, cfg, "folio.page", "a4")
 	assertValue(t, cfg, "folio.margin", "22mm")
 	assertValue(t, cfg, "folio.style", "us")
-	assertValue(t, cfg, "character-voices.CÁIT", "voice-id")
+	assertValue(t, cfg, "yapper.character-voices.CÁIT", "voice-id")
 }
 
 func TestInheritedValue(t *testing.T) {

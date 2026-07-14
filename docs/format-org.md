@@ -1,4 +1,4 @@
-<!-- Version: 0.2 | Last updated: 2026-04-26 -->
+<!-- Version: 0.3 | Last updated: 2026-07-14 -->
 
 # Org-mode Play Format
 
@@ -6,7 +6,7 @@ Org-mode is the primary authoring format for First Folio. It uses Emacs org-mode
 
 **External reference:** [orgmode.org - Document Structure](https://orgmode.org/manual/Document-Structure.html)
 
-**Intro sections:** H1 headings before the first character dialogue (e.g. Synopsis, Setting, Scene List) are automatically detected as intro material. These render the same as act headers but can be toggled on/off via `render-intro` in [config](config.md).
+**Intro sections:** H1 headings before the first character dialogue (e.g. Synopsis, Setting, Scene List) are automatically detected as intro material. These render the same as act headers but can be toggled with `render.frontmatter` in [config](config.md).
 
 ## Element Schema
 

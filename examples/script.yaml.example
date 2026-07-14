@@ -1,4 +1,4 @@
-# Example script.yaml for First Folio and yapper
+# Example script.yaml for First Folio, with an optional Yapper namespace
 #
 # This file can live in two places:
 #   ~/.config/first-folio/script.yaml   (global user defaults)
@@ -146,19 +146,8 @@
   #     title: Contents
   #     line-spacing: 1.15em
 
-# --- Yapper (TTS) configuration ---
-# Silently ignored by First Folio. See: github.com/tadg-paul/yapper
-# auto-assign-voices: true
-# character-voices:
-#   KEVIN: af_alloy
-#   NESSA: af_heart
-# narrator-voice: bf_alice
-# intro-voice: bf_alice
-# dialogue-speed: 1.0
-# stage-direction-speed: 0.9
-# gap-after-dialogue: 0.3
-# gap-after-stage-direction: 0.5
-# gap-after-scene: 1.0
-# threads: 3
-# speech-substitution:
-#   Cáit: Kawch
+# --- Yapper configuration ---
+# Everything under this top-level block is exclusively Yapper-owned and is
+# ignored by First Folio. Consult Yapper's documentation for its child keys.
+# yapper:
+#   ...
