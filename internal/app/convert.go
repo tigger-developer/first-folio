@@ -10,8 +10,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/tadg-paul/first-folio/internal/config"
-	"github.com/tadg-paul/first-folio/internal/play"
+	"github.com/tigger-developer/first-folio/internal/config"
+	"github.com/tigger-developer/first-folio/internal/play"
 )
 
 type convertOptions struct {

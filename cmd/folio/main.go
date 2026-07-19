@@ -5,7 +5,7 @@ package main
 import (
 	"os"
 
-	"github.com/tadg-paul/first-folio/internal/app"
+	"github.com/tigger-developer/first-folio/internal/app"
 )
 
 func main() {

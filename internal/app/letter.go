@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/tadg-paul/first-folio/internal/config"
-	"github.com/tadg-paul/first-folio/internal/letter"
+	"github.com/tigger-developer/first-folio/internal/config"
+	"github.com/tigger-developer/first-folio/internal/letter"
 )
 
 func runLetter(args []string, stdout io.Writer) error {

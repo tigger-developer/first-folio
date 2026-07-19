@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tadg-paul/first-folio/internal/play"
+	"github.com/tigger-developer/first-folio/internal/play"
 )
 
 var scriptRoundTripSources = map[play.Format]string{

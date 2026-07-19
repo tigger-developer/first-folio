@@ -14,10 +14,10 @@ import (
 	"strings"
 	"text/template"
 
-	folio "github.com/tadg-paul/first-folio"
-	"github.com/tadg-paul/first-folio/internal/config"
-	"github.com/tadg-paul/first-folio/internal/play"
-	typstutil "github.com/tadg-paul/first-folio/internal/typst"
+	folio "github.com/tigger-developer/first-folio"
+	"github.com/tigger-developer/first-folio/internal/config"
+	"github.com/tigger-developer/first-folio/internal/play"
+	typstutil "github.com/tigger-developer/first-folio/internal/typst"
 )
 
 var (

@@ -12,9 +12,9 @@ import (
 	"text/template"
 	"time"
 
-	folio "github.com/tadg-paul/first-folio"
-	"github.com/tadg-paul/first-folio/internal/config"
-	typstutil "github.com/tadg-paul/first-folio/internal/typst"
+	folio "github.com/tigger-developer/first-folio"
+	"github.com/tigger-developer/first-folio/internal/config"
+	typstutil "github.com/tigger-developer/first-folio/internal/typst"
 )
 
 type templateData struct {

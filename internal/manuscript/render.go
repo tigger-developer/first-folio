@@ -11,7 +11,7 @@ import (
 	"text/template"
 	"time"
 
-	folio "github.com/tadg-paul/first-folio"
+	folio "github.com/tigger-developer/first-folio"
 )
 
 type templateData struct {

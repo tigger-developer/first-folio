@@ -5,7 +5,7 @@ package manuscript
 import (
 	"os"
 
-	sharedconfig "github.com/tadg-paul/first-folio/internal/config"
+	sharedconfig "github.com/tigger-developer/first-folio/internal/config"
 )
 
 type Config struct {

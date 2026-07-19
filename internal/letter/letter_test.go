@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tadg-paul/first-folio/internal/config"
+	"github.com/tigger-developer/first-folio/internal/config"
 )
 
 const letterFixture = `#+TITLE: Test Play

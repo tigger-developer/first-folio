@@ -1,4 +1,4 @@
-module github.com/tadg-paul/first-folio
+module github.com/tigger-developer/first-folio
 
 go 1.26
 

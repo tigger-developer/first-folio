@@ -7,8 +7,8 @@ import (
 	"io"
 	"strings"
 
-	folio "github.com/tadg-paul/first-folio"
-	"github.com/tadg-paul/first-folio/internal/manuscript"
+	folio "github.com/tigger-developer/first-folio"
+	"github.com/tigger-developer/first-folio/internal/manuscript"
 )
 
 var Version = "0.4.10"

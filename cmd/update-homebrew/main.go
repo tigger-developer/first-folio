@@ -25,7 +25,7 @@ func main() {
 		fatal("usage: update-homebrew [--publish-tap PATH] VERSION")
 	}
 	version := strings.TrimPrefix(flag.Arg(0), "v")
-	url := "https://github.com/tadg-paul/first-folio/archive/refs/tags/v" + version + ".tar.gz"
+	url := "https://github.com/tigger-developer/first-folio/archive/refs/tags/v" + version + ".tar.gz"
 	digest, err := downloadDigest(url)
 	if err != nil {
 		fatal(err.Error())

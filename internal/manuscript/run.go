@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	folio "github.com/tadg-paul/first-folio"
+	folio "github.com/tigger-developer/first-folio"
 )
 
 const Version = "0.4.7"
