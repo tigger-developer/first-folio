@@ -211,6 +211,20 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 
 var gutterZeroRE = regexp.MustCompile(`^\s*0(?:\.0+)?(?:mm|in|pt|cm|em)?\s*$`)
 
+// typstEnumPrefixRE matches a Typst numbered-list enum marker at the START of a
+// heading body: one or more digits, then `.` or `)`, then a space. When a composed
+// heading like `1. Foo` (chapter.prefix empty + separator ". ") lands in a Typst
+// content position, the markup parser treats it as an enum item and reformats the
+// entry into marker/body/leader lines. Applied by escapeTypstEnumPrefix at the
+// #folio-chapter / #folio-part body emit site to defuse the trigger with a single
+// backslash before the punctuation, which renders identically but is no longer an
+// enum marker to the parser.
+var typstEnumPrefixRE = regexp.MustCompile(`^(\d+)([.)])( )`)
+
+func escapeTypstEnumPrefix(s string) string {
+	return typstEnumPrefixRE.ReplaceAllString(s, `${1}\${2}${3}`)
+}
+
 func isGutterActive(gutter string) bool {
 	return !gutterZeroRE.MatchString(gutter)
 }
@@ -350,7 +364,7 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 				composed.Number,
 				composed.Prefix,
 				composed.Full,
-				caseTransform(composed.Full, hc.CaseTransform),
+				escapeTypstEnumPrefix(caseTransform(composed.Full, hc.CaseTransform)),
 			))
 			lines = emitDirective(lines, hc.BlankPageAfter.TypstDirective())
 			firstPageBlock = false
@@ -371,7 +385,7 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 				composed.Number,
 				composed.Prefix,
 				composed.Full,
-				caseTransform(composed.Full, hc.CaseTransform),
+				escapeTypstEnumPrefix(caseTransform(composed.Full, hc.CaseTransform)),
 			))
 			lines = emitDirective(lines, hc.BlankPageAfter.TypstDirective())
 			firstPageBlock = false
