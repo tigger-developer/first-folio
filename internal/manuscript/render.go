@@ -316,12 +316,28 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 		)
 	}
 
+	// For the FIRST block, the "current page" at the point of an enforce-right context is a
+	// phantom empty page created by the TOC's pagebreak (or the fresh body page after any
+	// front matter). Add that page number to the skip lists so its header/footer stay hidden.
+	// Subsequent blocks' "current page" is a real content page, so we don't skip it there.
+	seedFirstBlockPhantomSkip := func(lines []string, mode BlankPageMode) []string {
+		if mode == BlankPageEnforceRight || mode == BlankPageEnforceLeft {
+			return append(lines,
+				`#context { let pg = counter(page).at(here()).first(); state("folio-skip-header-pages", ()).update(pages => pages + (pg,)); state("folio-skip-footer-pages", ()).update(pages => pages + (pg,)) }`,
+			)
+		}
+		return lines
+	}
+
 	var lines []string
 	firstPageBlock := true
 	for _, block := range blocks {
 		switch block.Kind {
 		case "part":
 			hc := cfg.Folio.Manuscript.Part
+			if firstPageBlock {
+				lines = seedFirstBlockPhantomSkip(lines, hc.BlankPageBefore)
+			}
 			lines = emitDirective(lines, hc.BlankPageBefore.TypstDirective())
 			composed := composeHeadingParts(block, hc)
 			lines = emitPartState(lines, composed)
@@ -340,6 +356,9 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 			firstPageBlock = false
 		case "chapter":
 			hc := cfg.Folio.Manuscript.Chapter
+			if firstPageBlock {
+				lines = seedFirstBlockPhantomSkip(lines, hc.BlankPageBefore)
+			}
 			lines = emitDirective(lines, hc.BlankPageBefore.TypstDirective())
 			composed := composeHeadingParts(block, hc)
 			lines = emitChapterState(lines, composed)
