@@ -71,6 +71,21 @@ folio:
       include-email: true
       include-website: true
       include-version: true
+      # Publisher-ready default layout (AC15.12): items placed at the six corners plus
+      # top-center for the title. Users can revert to the legacy centred group by
+      # unsetting these per-item aligns and setting title-block-align: center.
+      title:
+        align: top-center
+      author:
+        align: top-right
+      version:
+        align: top-left
+      date:
+        align: bottom-left
+      wordcount:
+        align: bottom-right
+      contact:
+        align: bottom-center
 
     page-header:
       enabled: true
