@@ -34,7 +34,7 @@ func TestRT_15_3_HeaderAuthorTitlePagePlaceholdersStillSubstitute(t *testing.T) 
 	typst := renderIssue15Manuscript(t, "")
 	assertContains(t, typst, `Example Author`)
 	assertContains(t, typst, `The Glass Orchard`)
-	assertContains(t, typst, `#context counter(page).display()`)
+	assertContains(t, typst, `#folio-display-page()`)
 	assertNotContains(t, typst, "[author]")
 	assertNotContains(t, typst, "[title]")
 	assertNotContains(t, typst, "[page]")
@@ -115,7 +115,7 @@ func TestRT_15_9_PageFooterFormatSupportsAllPlaceholders(t *testing.T) {
 	assertContains(t, body, `The Glass Orchard`)
 	assertContains(t, body, `state("folio-current-part").get()`)
 	assertContains(t, body, `state("folio-current-chapter").get()`)
-	assertContains(t, body, `counter(page).display()`)
+	assertContains(t, body, `#folio-display-page()`)
 }
 
 // RT-15.10: page-footer.align, distance-from-edge, content-padding-after position the footer.
@@ -786,7 +786,7 @@ func TestRT_15_54_DefaultFooterIsCenteredPageNumber(t *testing.T) {
 	body := extractBodyPageBlock(t, typst)
 	assertContains(t, body, `footer: context {`)
 	assertContains(t, body, `align(center)[`)
-	assertContains(t, body, `#context counter(page).display()`)
+	assertContains(t, body, `#folio-display-page()`)
 }
 
 // RT-15.55: page-footer.enabled: false explicitly configured omits the running footer.
@@ -840,7 +840,8 @@ func assertIssue15ConfigRejected(t *testing.T, scriptYAML string, wantInError st
 // customisation appears.
 func extractBodyPageBlock(t *testing.T, typst string) string {
 	t.Helper()
-	marker := `#counter(page).update(1)`
+	// The body-page setup begins with this comment (added when the counter reset was removed).
+	marker := `// counter(page) is intentionally NOT reset here.`
 	idx := strings.Index(typst, marker)
 	if idx < 0 {
 		t.Fatalf("body-page marker %q not found in Typst output:\n%s", marker, typst)
@@ -852,7 +853,8 @@ func extractBodyPageBlock(t *testing.T, typst string) string {
 // everything before the body-page marker.
 func extractTitleAndTOCBlock(t *testing.T, typst string) string {
 	t.Helper()
-	marker := `#counter(page).update(1)`
+	// The body-page setup begins with this comment (added when the counter reset was removed).
+	marker := `// counter(page) is intentionally NOT reset here.`
 	idx := strings.Index(typst, marker)
 	if idx < 0 {
 		t.Fatalf("body-page marker %q not found in Typst output:\n%s", marker, typst)

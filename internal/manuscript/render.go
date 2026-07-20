@@ -306,7 +306,7 @@ func substitutePlaceholders(format string, meta Metadata) string {
 		case "title":
 			out.WriteString(escapeTypst(meta.Title))
 		case "page":
-			out.WriteString("#context counter(page).display()")
+			out.WriteString("#folio-display-page()")
 		case "part":
 			out.WriteString(`#context state("folio-current-part").get()`)
 		case "chapter":

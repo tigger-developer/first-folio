@@ -12,6 +12,20 @@
 // showing their normal running header and footer. The default value `()` is provided at the
 // call sites (both `.final()` and `.update()`) so no explicit initialization is needed here.
 
+// Physical vs display page counters. `counter(page)` is left as Typst's built-in physical
+// page counter, incrementing on every page and NEVER reset. All parity checks
+// (calc.odd for header/footer alignment; pagebreak(to: "odd") for enforce-right; skip-list
+// membership) use this physical counter so odd = recto = right-hand from the reader's view,
+// matching the standard book convention where page 1 (title) is always a recto. A separate
+// `folio-page-offset` state records the physical counter value at the first body block
+// (part or chapter with first=true) minus one, so displayed page numbers can start at 1
+// for the body while the underlying counter continues from the title-page count.
+#let folio-display-page() = context {
+  let physical = counter(page).at(here()).first()
+  let offset = state("folio-page-offset", 0).final()
+  str(physical - offset)
+}
+
 // A blank page macro used to satisfy folio.manuscript.{part,chapter}.blank-page-{before,after}.
 // A weak pagebreak avoids doubling with an adjacent hard break; the empty page() scope removes
 // numbering, header, and footer so the blank page is visually blank and unnumbered.
@@ -36,6 +50,12 @@
   if not first and {{.Config.Folio.Manuscript.Part.PageBreakBefore}} {
     pagebreak(weak: true)
   }
+  // Seed the display-page offset at the first body block so page tokens start at 1.
+  if first {
+    context {
+      state("folio-page-offset", 0).update(counter(page).at(here()).first() - 1)
+    }
+  }
   // After any pagebreak, record this heading's page number in the skip lists
   // when its flags are set. The header/footer context checks membership.
   context {
@@ -59,10 +79,19 @@
 }
 
 #let folio-chapter(first: false, skip-header: false, skip-footer: false, body) = {
+  // Update state BEFORE pagebreak so the new chapter page's header/footer context sees the
+  // new chapter title (state updates take effect from their source position onward, and the
+  // pagebreak's new page is a later source position).
+  state("folio-current-chapter").update(body)
   if not first and {{.Config.Folio.Manuscript.Chapter.PageBreakBefore}} {
     pagebreak(weak: true)
   }
-  state("folio-current-chapter").update(body)
+  // Seed the display-page offset at the first body block so page tokens start at 1.
+  if first {
+    context {
+      state("folio-page-offset", 0).update(counter(page).at(here()).first() - 1)
+    }
+  }
   context {
     let pg = counter(page).at(here()).first()
     if skip-header {
@@ -283,7 +312,11 @@
 {{.Config.Folio.Manuscript.TOC.BlankPageAfter.TypstDirective}}
 {{end}}
 
-#counter(page).update(1)
+// counter(page) is intentionally NOT reset here. The physical counter continues from
+// the title-page count so parity checks (calc.odd, pagebreak(to: "odd")) evaluate against
+// the reader's view of the book (page 1 = title = recto). The visible page number seen by
+// the reader in the running footer is derived through #folio-display-page() which subtracts
+// the offset recorded at the first body block.
 #set text(
   top-edge: 0.8em,
   bottom-edge: -0.2em,
