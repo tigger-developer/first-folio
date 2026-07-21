@@ -50,7 +50,13 @@ func Load(opts Options) (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
-	local, err := readOptional(filepath.Join(opts.LocalDir, "script.yaml"))
+	// #20: walk upward from LocalDir looking for script.yaml, bounded at the
+	// user's home directory. This lets a manuscript with subdirectory inputs
+	// (e.g. `folio manuscript 'part?/ch??.md' out.pdf` where the first input
+	// resolves to `part0/ch00.md`) still discover the project-root script.yaml.
+	// The nearest hit wins -- no merging of multiple walked files.
+	localScriptPath := findScriptYAML(opts.LocalDir, opts.Home)
+	local, err := readOptional(localScriptPath)
 	if err != nil {
 		return Config{}, err
 	}
@@ -84,8 +90,11 @@ func Load(opts Options) (Config, error) {
 		return Config{}, err
 	}
 	deepMerge(base, local)
-	if opts.LocalDir != "" {
-		if err := mergeOptional(base, filepath.Join(opts.LocalDir, "script-"+styleSuffix(style)+".yaml")); err != nil {
+	if localScriptPath != "" {
+		// Style-suffixed sibling override sits next to the base script.yaml wherever the
+		// walk found it (not necessarily in opts.LocalDir itself).
+		localDirFound := filepath.Dir(localScriptPath)
+		if err := mergeOptional(base, filepath.Join(localDirFound, "script-"+styleSuffix(style)+".yaml")); err != nil {
 			return Config{}, err
 		}
 	}
@@ -165,6 +174,40 @@ func readEmbedded(name string) (map[string]any, error) {
 		return nil, fmt.Errorf("loading embedded config %s: %w", name, err)
 	}
 	return parseYAML(name, raw)
+}
+
+// findScriptYAML walks upward from startDir looking for a script.yaml file.
+// Returns the absolute path of the nearest match, or "" if none is found before
+// crossing the home boundary (or reaching the filesystem root). startDir="" or
+// home="" short-circuits to a same-directory-only lookup for the given startDir.
+// The home boundary prevents unrelated reads from parent projects, /etc, or
+// other users' home directories.
+func findScriptYAML(startDir, home string) string {
+	if startDir == "" {
+		return ""
+	}
+	abs, err := filepath.Abs(startDir)
+	if err != nil {
+		return ""
+	}
+	homeAbs, _ := filepath.Abs(home)
+	dir := abs
+	for {
+		candidate := filepath.Join(dir, "script.yaml")
+		if _, err := os.Stat(candidate); err == nil {
+			return candidate
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			return ""
+		}
+		// Stop before crossing the home boundary (but allow the home dir itself
+		// to be checked, since a manuscript project rooted at $HOME is valid).
+		if homeAbs != "" && dir == homeAbs {
+			return ""
+		}
+		dir = parent
+	}
 }
 
 func readOptional(path string) (map[string]any, error) {
