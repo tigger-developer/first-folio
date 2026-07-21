@@ -160,6 +160,17 @@ type ManuscriptConfig struct {
 	Part                HeadingConfig     `yaml:"part"`
 	Chapter             HeadingConfig     `yaml:"chapter"`
 	Copyright           CopyrightConfig   `yaml:"copyright"`
+	PageNumbering       PageNumberingConfig `yaml:"page-numbering"`
+}
+
+// #16 PageNumberingConfig -- controls the page-number style on frontmatter
+// vs body pages and whether the display counter restarts at the frontmatter/body
+// boundary. Number-format values match the existing part/chapter number-format
+// convention: "1" (arabic, default), "I" (Roman upper), "i" (Roman lower).
+type PageNumberingConfig struct {
+	FrontmatterFormat string `yaml:"frontmatter-format"` // "1" | "I" | "i"; default "1"
+	BodyFormat        string `yaml:"body-format"`        // "1" | "I" | "i"; default "1"
+	BodyReset         string `yaml:"body-reset"`         // "first-part-or-chapter" (default) | "never"
 }
 
 // #21 CopyrightConfig -- frontmatter copyright page rendered from declarative
@@ -327,6 +338,10 @@ type HeadingConfig struct {
 	NameCase string `yaml:"name-case"`
 	// AC18.2: choose between derived (source-order) and source (parsed from source) numbering.
 	ExplicitNumbering string `yaml:"explicit-numbering"` // "" or "derived" (default), "source"
+	// #16 AC16.4: controls whether the counter resets. "per-part" (default) matches
+	// current hardcoded chapter-per-part behaviour; "never" numbers continuously.
+	// Currently applied only to chapter (part counter has no reset boundary above it).
+	NumberReset string `yaml:"number-reset"` // "per-part" (default for chapter) | "never"
 }
 
 func LoadConfig(sourceDir string, opts Options) (Config, error) {
@@ -391,7 +406,43 @@ func validateConfig(cfg *Config) error {
 	if err := validateCopyright(&ms.Copyright); err != nil {
 		return err
 	}
+	if err := validatePageNumbering(&ms.PageNumbering); err != nil {
+		return err
+	}
+	if err := validateNumberReset("chapter", ms.Chapter.NumberReset); err != nil {
+		return err
+	}
 	return nil
+}
+
+// validatePageNumbering enforces the "1" / "I" / "i" enum for both format fields
+// and the enum for body-reset.
+func validatePageNumbering(p *PageNumberingConfig) error {
+	switch p.FrontmatterFormat {
+	case "1", "I", "i":
+	default:
+		return fmt.Errorf("page-numbering.frontmatter-format %q is not one of 1, I, i", p.FrontmatterFormat)
+	}
+	switch p.BodyFormat {
+	case "1", "I", "i":
+	default:
+		return fmt.Errorf("page-numbering.body-format %q is not one of 1, I, i", p.BodyFormat)
+	}
+	switch p.BodyReset {
+	case "first-part-or-chapter", "never":
+	default:
+		return fmt.Errorf("page-numbering.body-reset %q is not one of first-part-or-chapter, never", p.BodyReset)
+	}
+	return nil
+}
+
+func validateNumberReset(field, value string) error {
+	switch value {
+	case "per-part", "never", "":
+		return nil
+	default:
+		return fmt.Errorf("%s.number-reset %q is not one of per-part, never", field, value)
+	}
 }
 
 // validateCopyright enforces enum and format constraints on the copyright block.
@@ -566,6 +617,15 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.Copyright.HeadingFontWeight, "bold")
 	fill(&ms.Copyright.LineSpacing, ms.LineSpacing)
 	fill(&ms.Copyright.BlockSpacing, "0.75em")
+	// #16 page-numbering defaults.
+	fill(&ms.PageNumbering.FrontmatterFormat, "1")
+	fill(&ms.PageNumbering.BodyFormat, "1")
+	fill(&ms.PageNumbering.BodyReset, "first-part-or-chapter")
+	// #16 chapter number-reset default = per-part (matches hardcoded parser behaviour).
+	fill(&ms.Chapter.NumberReset, "per-part")
+	// Parts have no scope above them; hardcode "never" for symmetry / future-proofing
+	// but never actually reset the part counter.
+	fill(&ms.Part.NumberReset, "never")
 }
 
 func fill(target *string, value string) {

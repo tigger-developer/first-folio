@@ -61,6 +61,17 @@ func RunWithIO(args []string, stdout io.Writer) error {
 		return err
 	}
 	applyMetadataOverrides(&doc.Metadata, opts, cfg)
+	// #16 AC16.4: when chapter.number-reset is "never", renumber chapters
+	// continuously across all parts. Parser defaults to per-part reset.
+	if cfg.Folio.Manuscript.Chapter.NumberReset == "never" {
+		continuous := 0
+		for i := range doc.Blocks {
+			if doc.Blocks[i].Kind == "chapter" {
+				continuous++
+				doc.Blocks[i].Number = continuous
+			}
+		}
+	}
 
 	if opts.DryRun {
 		printDryRun(stdout, inputSet, opts, cfg)

@@ -22,8 +22,11 @@
 // for the body while the underlying counter continues from the title-page count.
 #let folio-display-page() = context {
   let physical = counter(page).at(here()).first()
+  let is-body = state("folio-is-body", false).at(here())
   let offset = state("folio-page-offset", 0).final()
-  str(physical - offset)
+  let displayed = if is-body { physical - offset } else { physical }
+  let fmt = if is-body { "{{.Config.Folio.Manuscript.PageNumbering.BodyFormat}}" } else { "{{.Config.Folio.Manuscript.PageNumbering.FrontmatterFormat}}" }
+  numbering(fmt, displayed)
 }
 
 // #18 semantic-authoring state seeds: pre-populate the first part / first chapter values so
@@ -74,10 +77,13 @@
     pagebreak(weak: true)
   }
   // Seed the display-page offset at the first body block so page tokens start at 1.
+  // #16 AC16.3: when body-reset is "never", skip the offset seed.
   if first {
+    {{if ne .Config.Folio.Manuscript.PageNumbering.BodyReset "never"}}
     context {
       state("folio-page-offset", 0).update(counter(page).at(here()).first() - 1)
     }
+    {{end}}
     // #24: mark the frontmatter/body boundary. Header/footer context reads this
     // state via state.at(here()) to pick between format and frontmatter-format.
     state("folio-is-body", false).update(true)
@@ -118,10 +124,14 @@
     pagebreak(weak: true)
   }
   // Seed the display-page offset at the first body block so page tokens start at 1.
+  // #16 AC16.3: when body-reset is "never", skip the offset seed so the display
+  // counter stays continuous with the frontmatter physical count.
   if first {
+    {{if ne .Config.Folio.Manuscript.PageNumbering.BodyReset "never"}}
     context {
       state("folio-page-offset", 0).update(counter(page).at(here()).first() - 1)
     }
+    {{end}}
     // #24: mark the frontmatter/body boundary.
     state("folio-is-body", false).update(true)
   }

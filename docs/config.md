@@ -228,6 +228,36 @@ A `0mm` gutter leaves the running-page margin configuration byte-identical to th
 
 Independent of `page-break-before`; combining `page-break-before: true` with `blank-page-before: true` produces one blank page and one heading page (no doubling). Combining with `enforce-right` / `enforce-left` inserts the parity blank if and only if the natural next page has the wrong parity.
 
+### Page numbering (issue #16)
+
+`folio.manuscript.page-numbering` controls the number-style style on frontmatter vs body pages, and whether the display counter restarts at the frontmatter/body boundary.
+
+```yaml
+folio:
+  manuscript:
+    page-numbering:
+      frontmatter-format: "i"          # "1" (default), "I", "i"
+      body-format: "1"                  # "1" (default), "I", "i"
+      body-reset: first-part-or-chapter # default; also "never"
+```
+
+- **`frontmatter-format`** — style of the page number when `[page]` is used in `page-header.frontmatter-format` or `page-footer.frontmatter-format`. Accepts `"1"` (arabic, default), `"I"` (Roman upper), `"i"` (Roman lower).
+- **`body-format`** — style of the page number on body pages (from the first part or chapter onward). Same accepted values.
+- **`body-reset: first-part-or-chapter`** (default) — the display counter restarts at 1 at the first body block.
+- **`body-reset: never`** — the display counter continues through frontmatter and body without a restart.
+
+### Chapter number reset (issue #16)
+
+`chapter.number-reset` controls whether the chapter counter restarts per part.
+
+```yaml
+folio:
+  manuscript:
+    chapter:
+      number-reset: per-part            # default; matches current behaviour
+      # other: "never" — chapters number continuously across all parts
+```
+
 ### Copyright page (issue #21)
 
 The `folio.manuscript.copyright` block renders a frontmatter copyright page (verso, page ii by convention) between the title page and the TOC. Disabled by default. Every field is optional.
