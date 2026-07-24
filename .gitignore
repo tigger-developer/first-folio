@@ -42,3 +42,6 @@ inc/
 /bin/folio-manuscript
 /dist/
 /.agent/
+/.agents/
+/.claude/
+/.codex/
