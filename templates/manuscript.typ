@@ -226,6 +226,7 @@
 
 {{if and (not .IsUS) .Config.Folio.Manuscript.TitlePage.Enabled}}
 #set page(
+  footer-descent: 0pt,
   footer: [
     #grid(
       columns: (1fr, 1fr, 1fr),
