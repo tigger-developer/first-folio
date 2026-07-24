@@ -70,6 +70,18 @@ func TestRT_27_6_TOCPartRemainsBoldWithoutLinks(t *testing.T) {
 	}
 }
 
+// RT-27.7: removing page annotations preserves the PDF document outline.
+func TestRT_27_7_DocumentOutlineRemainsAvailable(t *testing.T) {
+	requireTool(t, "pdftohtml")
+	output := renderIssue27PDF(t)
+	xmlPath := filepath.Join(t.TempDir(), "toc.xml")
+	commandOutput(t, exec.Command("pdftohtml", "-xml", "-hidden", output, xmlPath))
+	xmlOutput := readFile(t, xmlPath)
+
+	assertContains(t, xmlOutput, "<outline>")
+	assertContains(t, xmlOutput, `<item page="3">PART ONE</item>`)
+}
+
 func renderIssue27PDF(t *testing.T) string {
 	t.Helper()
 	requireTool(t, "typst")

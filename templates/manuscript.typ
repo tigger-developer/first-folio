@@ -348,17 +348,14 @@
     above: if it.level == 1 { {{.Config.Folio.Manuscript.TOC.PartGapBefore}} } else { 0pt },
     below: 0.5em,
   )[
-    #link(
-      it.element.location(),
-      it.indented(
-        it.prefix(),
-        grid(
-          columns: (auto, 1fr, auto),
-          column-gutter: 0.5em,
-          if it.level == 1 and {{.Config.Folio.Manuscript.TOC.PartBold}} { strong(it.body()) } else { it.body() },
-          box(width: 1fr, it.fill),
-          it.page(),
-        ),
+    #it.indented(
+      it.prefix(),
+      grid(
+        columns: (auto, 1fr, auto),
+        column-gutter: 0.5em,
+        if it.level == 1 and {{.Config.Folio.Manuscript.TOC.PartBold}} { strong(it.body()) } else { it.body() },
+        box(width: 1fr, it.fill),
+        it.page(),
       ),
     )
   ]
