@@ -38,21 +38,35 @@ func TestRT_27_2_TOCRetainsVisibleEntryContent(t *testing.T) {
 	}
 }
 
-// RT-27.3: PDF conversion exposes bold part text and internal TOC links.
-func TestRT_27_3_TOCPartIsBoldAndEntriesAreLinked(t *testing.T) {
+// RT-27.3 removed: KDP treats internal PDF links as non-printable markup.
+func TestRT_27_3_Removed_TOCEntriesAreLinked(t *testing.T) {
+	t.Skip("RT-27.3 removed: print-production TOCs must not contain link annotations")
+}
+
+// RT-27.5: PDF conversion exposes no link annotations on TOC entries.
+func TestRT_27_5_TOCContainsNoLinkAnnotations(t *testing.T) {
 	requireTool(t, "pdftohtml")
 	output := renderIssue27PDF(t)
 	xmlPath := filepath.Join(t.TempDir(), "toc.xml")
 	commandOutput(t, exec.Command("pdftohtml", "-xml", "-hidden", output, xmlPath))
 	xmlOutput := readFile(t, xmlPath)
 
-	linkedPart := regexp.MustCompile(`<a href="[^"]+"><b>PART ONE</b></a>`)
-	if !linkedPart.MatchString(xmlOutput) {
-		t.Fatalf("bold part TOC text was not linked:\n%s", xmlOutput)
+	if strings.Contains(xmlOutput, "<a href=") {
+		t.Fatalf("TOC PDF contains link annotations:\n%s", xmlOutput)
 	}
-	linkedChapter := regexp.MustCompile(`<a href="[^"]+">Chapter 1[ .]+[0-9]+</a>`)
-	if !linkedChapter.MatchString(xmlOutput) {
-		t.Fatalf("chapter TOC text was not linked:\n%s", xmlOutput)
+}
+
+// RT-27.6: removing PDF links does not remove configured bold part styling.
+func TestRT_27_6_TOCPartRemainsBoldWithoutLinks(t *testing.T) {
+	requireTool(t, "pdftohtml")
+	output := renderIssue27PDF(t)
+	xmlPath := filepath.Join(t.TempDir(), "toc.xml")
+	commandOutput(t, exec.Command("pdftohtml", "-xml", "-hidden", output, xmlPath))
+	xmlOutput := readFile(t, xmlPath)
+
+	assertContains(t, xmlOutput, "<b>PART ONE</b>")
+	if strings.Contains(xmlOutput, "<a href=") {
+		t.Fatalf("bold TOC part remains wrapped in a link annotation:\n%s", xmlOutput)
 	}
 }
 
