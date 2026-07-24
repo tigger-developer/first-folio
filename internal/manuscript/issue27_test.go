@@ -27,9 +27,14 @@ func TestRT_27_2_TOCRetainsVisibleEntryContent(t *testing.T) {
 
 	assertBefore(t, text, "PART ONE", "Chapter 1")
 	assertBefore(t, text, "Chapter 1", "Chapter 2")
-	entryPattern := regexp.MustCompile(`PART ONE[ .]+[0-9]+`)
-	if !entryPattern.MatchString(text) {
-		t.Fatalf("part TOC entry did not retain dot leaders and a page number:\n%s", text)
+	for _, pattern := range []string{
+		`PART ONE[ .]+[0-9]+`,
+		`Chapter 1[ .]+[0-9]+`,
+		`Chapter 2[ .]+[0-9]+`,
+	} {
+		if !regexp.MustCompile(pattern).MatchString(text) {
+			t.Fatalf("TOC entry %q did not retain dot leaders and a page number:\n%s", pattern, text)
+		}
 	}
 }
 
@@ -41,9 +46,14 @@ func TestRT_27_3_TOCPartIsBoldAndEntriesAreLinked(t *testing.T) {
 	commandOutput(t, exec.Command("pdftohtml", "-xml", "-hidden", output, xmlPath))
 	xmlOutput := readFile(t, xmlPath)
 
-	assertContains(t, xmlOutput, "<b>PART ONE</b>")
-	assertContains(t, xmlOutput, "<a href=")
-	assertContains(t, xmlOutput, ">Chapter 1")
+	linkedPart := regexp.MustCompile(`<a href="[^"]+"><b>PART ONE</b></a>`)
+	if !linkedPart.MatchString(xmlOutput) {
+		t.Fatalf("bold part TOC text was not linked:\n%s", xmlOutput)
+	}
+	linkedChapter := regexp.MustCompile(`<a href="[^"]+">Chapter 1[ .]+[0-9]+</a>`)
+	if !linkedChapter.MatchString(xmlOutput) {
+		t.Fatalf("chapter TOC text was not linked:\n%s", xmlOutput)
+	}
 }
 
 func renderIssue27PDF(t *testing.T) string {
