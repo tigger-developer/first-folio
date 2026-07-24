@@ -374,6 +374,7 @@
 )
 #set par(
   first-line-indent: {{.Config.Folio.Manuscript.ParagraphIndent}},
+  justify: {{.Config.Folio.Manuscript.Justify}},
   spacing: {{.Spacing}},
   leading: {{.Leading}},
 )

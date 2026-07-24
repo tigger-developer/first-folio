@@ -54,6 +54,7 @@ folio:
     contact-font-weight: regular
 
     line-spacing: 1.5
+    justify: true
     paragraph-indent: 10mm
     paragraph-spacing: 0
 
