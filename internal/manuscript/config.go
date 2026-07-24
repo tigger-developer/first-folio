@@ -108,59 +108,59 @@ type Folio struct {
 }
 
 type ManuscriptConfig struct {
-	Style               string              `yaml:"style"`
-	Page                string              `yaml:"page"`
-	Margin              string              `yaml:"margin"`
-	Font                string              `yaml:"font"`
-	FontSize            string              `yaml:"font-size"`
-	FontWeight          string              `yaml:"font-weight"`
-	HeadingFont         string              `yaml:"heading-font"`
-	HeadingFontSize     string              `yaml:"heading-font-size"`
-	HeadingFontWeight   string              `yaml:"heading-font-weight"`
-	MonoFont            string              `yaml:"mono-font"`
-	MonoFontSize        string              `yaml:"mono-font-size"`
-	MonoFontWeight      string              `yaml:"mono-font-weight"`
-	TitleFont           string              `yaml:"title-font"`
-	TitleFontSize       string              `yaml:"title-font-size"`
-	TitleFontWeight     string              `yaml:"title-font-weight"`
-	SubtitleFont        string              `yaml:"subtitle-font"`
-	SubtitleFontSize    string              `yaml:"subtitle-font-size"`
-	SubtitleFontWeight  string              `yaml:"subtitle-font-weight"`
-	SubtitleFontStyle   string              `yaml:"subtitle-font-style"`
-	AuthorFont          string              `yaml:"author-font"`
-	AuthorFontSize      string              `yaml:"author-font-size"`
-	AuthorFontWeight    string              `yaml:"author-font-weight"`
-	Attribution         string              `yaml:"attribution"`
-	AuthorAttribution   string              `yaml:"author-attribution"`
-	DateFont            string              `yaml:"date-font"`
-	DateFontSize        string              `yaml:"date-font-size"`
-	DateFontWeight      string              `yaml:"date-font-weight"`
-	DateFormat          string              `yaml:"date-format"`
-	VersionFont         string              `yaml:"version-font"`
-	VersionFontSize     string              `yaml:"version-font-size"`
-	VersionFontWeight   string              `yaml:"version-font-weight"`
-	WordCountFont       string              `yaml:"wordcount-font"`
-	WordCountFontSize   string              `yaml:"wordcount-font-size"`
-	WordCountFontWeight string              `yaml:"wordcount-font-weight"`
-	ContactFont         string              `yaml:"contact-font"`
-	ContactFontSize     string              `yaml:"contact-font-size"`
-	ContactFontWeight   string              `yaml:"contact-font-weight"`
-	LineSpacing         string              `yaml:"line-spacing"`
-	Justify             *bool               `yaml:"justify"`
-	ParagraphIndent     string              `yaml:"paragraph-indent"`
-	ParagraphSpacing    string              `yaml:"paragraph-spacing"`
-	PageHeader          PageHeaderConfig    `yaml:"page-header"`
-	PageFooter          PageFooterConfig    `yaml:"page-footer"`
-	Gutter              string              `yaml:"gutter"`
-	TOC                 TOCConfig           `yaml:"toc"`
-	TitlePage           TitlePageConfig     `yaml:"title-page"`
-	SceneBreak          SceneBreakConfig    `yaml:"scene-break"`
-	List                SpacedBlockConfig   `yaml:"list"`
-	Table               SpacedBlockConfig   `yaml:"table"`
-	CodeBlock           SpacedBlockConfig   `yaml:"code-block"`
-	Part                HeadingConfig       `yaml:"part"`
-	Chapter             HeadingConfig       `yaml:"chapter"`
-	Copyright           CopyrightConfig     `yaml:"copyright"`
+	Style               string            `yaml:"style"`
+	Page                string            `yaml:"page"`
+	Margin              string            `yaml:"margin"`
+	Font                string            `yaml:"font"`
+	FontSize            string            `yaml:"font-size"`
+	FontWeight          string            `yaml:"font-weight"`
+	HeadingFont         string            `yaml:"heading-font"`
+	HeadingFontSize     string            `yaml:"heading-font-size"`
+	HeadingFontWeight   string            `yaml:"heading-font-weight"`
+	MonoFont            string            `yaml:"mono-font"`
+	MonoFontSize        string            `yaml:"mono-font-size"`
+	MonoFontWeight      string            `yaml:"mono-font-weight"`
+	TitleFont           string            `yaml:"title-font"`
+	TitleFontSize       string            `yaml:"title-font-size"`
+	TitleFontWeight     string            `yaml:"title-font-weight"`
+	SubtitleFont        string            `yaml:"subtitle-font"`
+	SubtitleFontSize    string            `yaml:"subtitle-font-size"`
+	SubtitleFontWeight  string            `yaml:"subtitle-font-weight"`
+	SubtitleFontStyle   string            `yaml:"subtitle-font-style"`
+	AuthorFont          string            `yaml:"author-font"`
+	AuthorFontSize      string            `yaml:"author-font-size"`
+	AuthorFontWeight    string            `yaml:"author-font-weight"`
+	Attribution         string            `yaml:"attribution"`
+	AuthorAttribution   string            `yaml:"author-attribution"`
+	DateFont            string            `yaml:"date-font"`
+	DateFontSize        string            `yaml:"date-font-size"`
+	DateFontWeight      string            `yaml:"date-font-weight"`
+	DateFormat          string            `yaml:"date-format"`
+	VersionFont         string            `yaml:"version-font"`
+	VersionFontSize     string            `yaml:"version-font-size"`
+	VersionFontWeight   string            `yaml:"version-font-weight"`
+	WordCountFont       string            `yaml:"wordcount-font"`
+	WordCountFontSize   string            `yaml:"wordcount-font-size"`
+	WordCountFontWeight string            `yaml:"wordcount-font-weight"`
+	ContactFont         string            `yaml:"contact-font"`
+	ContactFontSize     string            `yaml:"contact-font-size"`
+	ContactFontWeight   string            `yaml:"contact-font-weight"`
+	LineSpacing         string            `yaml:"line-spacing"`
+	Justify             *bool             `yaml:"justify"`
+	ParagraphIndent     string            `yaml:"paragraph-indent"`
+	ParagraphSpacing    string            `yaml:"paragraph-spacing"`
+	PageHeader          PageHeaderConfig  `yaml:"page-header"`
+	PageFooter          PageFooterConfig  `yaml:"page-footer"`
+	Gutter              string            `yaml:"gutter"`
+	TOC                 TOCConfig         `yaml:"toc"`
+	TitlePage           TitlePageConfig   `yaml:"title-page"`
+	SceneBreak          SceneBreakConfig  `yaml:"scene-break"`
+	List                SpacedBlockConfig `yaml:"list"`
+	Table               SpacedBlockConfig `yaml:"table"`
+	CodeBlock           SpacedBlockConfig `yaml:"code-block"`
+	Part                HeadingConfig     `yaml:"part"`
+	Chapter             HeadingConfig     `yaml:"chapter"`
+	Copyright           CopyrightConfig   `yaml:"copyright"`
 	PageNumbering       PageNumberingConfig `yaml:"page-numbering"`
 }
 
@@ -179,13 +179,13 @@ type PageNumberingConfig struct {
 // compatibility. When enabled, the page renders on the frontmatter (verso, page
 // ii by default) between the title page and the TOC.
 type CopyrightConfig struct {
-	Enabled         bool          `yaml:"enabled"`
-	Position        string        `yaml:"position"`              // "after-title" (default), "after-toc", "after-frontmatter"
-	SkipHeader      *bool         `yaml:"skip-header,omitempty"` // default true
-	SkipFooter      *bool         `yaml:"skip-footer,omitempty"` // default false
-	BlankPageBefore BlankPageMode `yaml:"blank-page-before"`
-	BlankPageAfter  BlankPageMode `yaml:"blank-page-after"`
-	Align           string        `yaml:"align"`
+	Enabled              bool                  `yaml:"enabled"`
+	Position             string                `yaml:"position"`             // "after-title" (default), "after-toc", "after-frontmatter"
+	SkipHeader           *bool                 `yaml:"skip-header,omitempty"` // default true
+	SkipFooter           *bool                 `yaml:"skip-footer,omitempty"` // default false
+	BlankPageBefore      BlankPageMode         `yaml:"blank-page-before"`
+	BlankPageAfter       BlankPageMode         `yaml:"blank-page-after"`
+	Align                string                `yaml:"align"`
 	// Credits is a list of free-text credit lines rendered as centred paragraphs at
 	// the top of the copyright page (before the body). Users write the full copyright
 	// text they want -- including the © character, year, and holder name(s). Markdown-
@@ -193,47 +193,48 @@ type CopyrightConfig struct {
 	// single default line is generated from folio.author and the folio.date year:
 	// `Copyright © YEAR Author Name.` To omit the credit block entirely, set credits
 	// to an empty list AND unset folio.author.
-	Credits              []string `yaml:"credits"`
-	Body                 []string `yaml:"body"`
-	Separator            string   `yaml:"separator"`
-	SeparatorSpaceBefore string   `yaml:"separator-space-before"`
-	SeparatorSpaceAfter  string   `yaml:"separator-space-after"`
-	Publication          []string `yaml:"publication"`
-	Publisher            string   `yaml:"publisher"`
-	PublisherPreposition string   `yaml:"publisher-preposition"`
-	ISBN                 string   `yaml:"isbn"`
-	ISBNLabel            string   `yaml:"isbn-label"`
-	ISBNBarcode          string   `yaml:"isbn-barcode"` // "none" (default), "render", "file", "render-and-file"
-	Font                 string   `yaml:"font"`
-	FontSize             string   `yaml:"font-size"`
-	HeadingFontWeight    string   `yaml:"heading-font-weight"`
-	LineSpacing          string   `yaml:"line-spacing"`
-	BlockSpacing         string   `yaml:"block-spacing"`
+	Credits              []string              `yaml:"credits"`
+	Body                 []string              `yaml:"body"`
+	Separator            string                `yaml:"separator"`
+	SeparatorSpaceBefore string                `yaml:"separator-space-before"`
+	SeparatorSpaceAfter  string                `yaml:"separator-space-after"`
+	Publication          []string              `yaml:"publication"`
+	Publisher            string                `yaml:"publisher"`
+	PublisherPreposition string                `yaml:"publisher-preposition"`
+	ISBN                 string                `yaml:"isbn"`
+	ISBNLabel            string                `yaml:"isbn-label"`
+	ISBNBarcode          string                `yaml:"isbn-barcode"` // "none" (default), "render", "file", "render-and-file"
+	Font                 string                `yaml:"font"`
+	FontSize             string                `yaml:"font-size"`
+	HeadingFontWeight    string                `yaml:"heading-font-weight"`
+	LineSpacing          string                `yaml:"line-spacing"`
+	BlockSpacing         string                `yaml:"block-spacing"`
 }
 
+
 type TitlePageConfig struct {
-	Enabled            bool                `yaml:"enabled"`
-	PageNumber         bool                `yaml:"page-number"`
-	IncludeTitle       bool                `yaml:"include-title"`
-	IncludeSubtitle    bool                `yaml:"include-subtitle"`
-	IncludeAuthor      bool                `yaml:"include-author"`
-	IncludeDate        bool                `yaml:"include-date"`
-	IncludeWordCount   bool                `yaml:"include-wordcount"`
-	IncludeContactName bool                `yaml:"include-contact-name"`
-	IncludeAddress     bool                `yaml:"include-address"`
-	IncludePhone       bool                `yaml:"include-phone"`
-	IncludeEmail       bool                `yaml:"include-email"`
-	IncludeWebsite     bool                `yaml:"include-website"`
-	IncludeVersion     bool                `yaml:"include-version"`
-	TitleBlockAlign    string              `yaml:"title-block-align"`
-	FooterAlign        string              `yaml:"footer-align"`
-	Title              TitlePageItemConfig `yaml:"title"`
-	Subtitle           TitlePageItemConfig `yaml:"subtitle"`
-	Author             TitlePageItemConfig `yaml:"author"`
-	Date               TitlePageItemConfig `yaml:"date"`
-	WordCount          TitlePageItemConfig `yaml:"wordcount"`
-	Version            TitlePageItemConfig `yaml:"version"`
-	Contact            TitlePageItemConfig `yaml:"contact"`
+	Enabled            bool                    `yaml:"enabled"`
+	PageNumber         bool                    `yaml:"page-number"`
+	IncludeTitle       bool                    `yaml:"include-title"`
+	IncludeSubtitle    bool                    `yaml:"include-subtitle"`
+	IncludeAuthor      bool                    `yaml:"include-author"`
+	IncludeDate        bool                    `yaml:"include-date"`
+	IncludeWordCount   bool                    `yaml:"include-wordcount"`
+	IncludeContactName bool                    `yaml:"include-contact-name"`
+	IncludeAddress     bool                    `yaml:"include-address"`
+	IncludePhone       bool                    `yaml:"include-phone"`
+	IncludeEmail       bool                    `yaml:"include-email"`
+	IncludeWebsite     bool                    `yaml:"include-website"`
+	IncludeVersion     bool                    `yaml:"include-version"`
+	TitleBlockAlign    string                  `yaml:"title-block-align"`
+	FooterAlign        string                  `yaml:"footer-align"`
+	Title              TitlePageItemConfig     `yaml:"title"`
+	Subtitle           TitlePageItemConfig     `yaml:"subtitle"`
+	Author             TitlePageItemConfig     `yaml:"author"`
+	Date               TitlePageItemConfig     `yaml:"date"`
+	WordCount          TitlePageItemConfig     `yaml:"wordcount"`
+	Version            TitlePageItemConfig     `yaml:"version"`
+	Contact            TitlePageItemConfig     `yaml:"contact"`
 }
 
 type TitlePageItemConfig struct {
@@ -241,12 +242,12 @@ type TitlePageItemConfig struct {
 }
 
 type PageHeaderConfig struct {
-	Enabled    bool   `yaml:"enabled"`
-	Font       string `yaml:"font"`
-	FontSize   string `yaml:"font-size"`
-	FontWeight string `yaml:"font-weight"`
-	FontStyle  string `yaml:"font-style"`
-	Format     string `yaml:"format"`
+	Enabled             bool   `yaml:"enabled"`
+	Font                string `yaml:"font"`
+	FontSize            string `yaml:"font-size"`
+	FontWeight          string `yaml:"font-weight"`
+	FontStyle           string `yaml:"font-style"`
+	Format              string `yaml:"format"`
 	// #24: frontmatter-format / alt-frontmatter-format apply on frontmatter pages
 	// (title, copyright, TOC, and any page before the first part/chapter). nil ->
 	// fall back to Format / AltFormat. Non-nil empty string -> blank header on
@@ -267,12 +268,12 @@ type PageHeaderConfig struct {
 // Enabled is a *bool so normalizeConfig can distinguish "unset" (default true) from
 // an explicit `enabled: false`.
 type PageFooterConfig struct {
-	Enabled    *bool  `yaml:"enabled,omitempty"`
-	Font       string `yaml:"font"`
-	FontSize   string `yaml:"font-size"`
-	FontWeight string `yaml:"font-weight"`
-	FontStyle  string `yaml:"font-style"`
-	Format     string `yaml:"format"`
+	Enabled             *bool  `yaml:"enabled,omitempty"`
+	Font                string `yaml:"font"`
+	FontSize            string `yaml:"font-size"`
+	FontWeight          string `yaml:"font-weight"`
+	FontStyle           string `yaml:"font-style"`
+	Format              string `yaml:"format"`
 	// #24: frontmatter-format / alt-frontmatter-format apply on frontmatter pages.
 	// nil -> fall back to Format / AltFormat. Non-nil empty string -> blank footer
 	// on frontmatter. Non-nil non-empty -> use this format on frontmatter.
