@@ -7,6 +7,7 @@ import (
 	"encoding/xml"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -49,6 +50,23 @@ func TestRT_28_3_HelpDocumentsExternalBarcode(t *testing.T) {
 	assertContains(t, help, `isbn-barcode: file`)
 	assertContains(t, help, `manuscript.barcode.svg`)
 	assertContains(t, help, `folio manuscript manuscript.md manuscript.pdf`)
+}
+
+// RT-28.4: the documented PDF command writes the SVG beside a valid PDF.
+func TestRT_28_4_PDFCommandWritesExternalBarcode(t *testing.T) {
+	if _, err := exec.LookPath("typst"); err != nil {
+		t.Skip("typst is not installed")
+	}
+	dir := barcodeProject(t, "file")
+	output := filepath.Join(dir, "manuscript.pdf")
+
+	runFolio(t, "manuscript", filepath.Join(dir, "chapter.md"), output)
+
+	assertValidSVG(t, filepath.Join(dir, "manuscript.barcode.svg"))
+	pdf := readTestFile(t, output)
+	if !strings.HasPrefix(pdf, "%PDF-") {
+		t.Fatalf("manuscript output is not a PDF")
+	}
 }
 
 func barcodeProject(t *testing.T, mode string) string {

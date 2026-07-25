@@ -105,7 +105,7 @@ func writeManuscriptOutput(typst string, output string, cfg Config) error {
 }
 
 func writeBarcodeSidecar(output string, cfg CopyrightConfig) error {
-	if cfg.ISBN == "" || (cfg.ISBNBarcode != "file" && cfg.ISBNBarcode != "render-and-file") {
+	if !cfg.Enabled || cfg.ISBN == "" || (cfg.ISBNBarcode != "file" && cfg.ISBNBarcode != "render-and-file") {
 		return nil
 	}
 	svg, err := renderEAN13SVG(cfg.ISBN)
@@ -129,12 +129,12 @@ func writeFileAtomic(path string, data []byte) (resultErr error) {
 	closed := false
 	defer func() {
 		if !closed {
-			if err := tmp.Close(); err != nil && resultErr == nil {
-				resultErr = fmt.Errorf("closing temporary file: %w", err)
+			if err := tmp.Close(); err != nil {
+				resultErr = errors.Join(resultErr, fmt.Errorf("closing temporary file: %w", err))
 			}
 		}
-		if err := os.Remove(tmpPath); err != nil && !errors.Is(err, os.ErrNotExist) && resultErr == nil {
-			resultErr = fmt.Errorf("removing temporary file: %w", err)
+		if err := os.Remove(tmpPath); err != nil && !errors.Is(err, os.ErrNotExist) {
+			resultErr = errors.Join(resultErr, fmt.Errorf("removing temporary file: %w", err))
 		}
 	}()
 	if _, err := tmp.Write(data); err != nil {
