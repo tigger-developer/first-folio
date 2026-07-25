@@ -1,4 +1,4 @@
-<!-- Version: 0.2 | Last updated: 2026-07-14 -->
+<!-- Version: 0.3 | Last updated: 2026-07-26 -->
 
 # Configuration
 
@@ -154,7 +154,7 @@ When `alt-format` is unset, `format` renders on every page (unchanged from AC15.
 
 ### Page-footer block
 
-`folio.manuscript.page-footer` mirrors the fields of `folio.manuscript.page-header`. Typography fields (`font`, `font-size`, `font-weight`, `font-style`) inherit from `page-header` when unset. Default: enabled with a centered `[page]` number, `distance-from-edge` and `content-padding-after` matching `page-header`. Set `page-footer.enabled: false` to omit the running footer.
+`folio.manuscript.page-footer` mirrors the fields of `folio.manuscript.page-header`. Typography fields (`font`, `font-size`, `font-weight`, `font-style`) inherit from `page-header` when unset. Default: enabled with a centred `[page]` number, `distance-from-edge` and `content-padding-after` matching `page-header`. Set `page-footer.enabled: false` to omit the running footer.
 
 Both `page-header` and `page-footer` accept `font-style` alongside `font`, `font-size`, and `font-weight`. Accepted values are `regular` (default), `italic`, and `oblique`. When unset, no `style:` argument is emitted, preserving the default upright rendering.
 
@@ -162,14 +162,14 @@ Both `page-header` and `page-footer` accept `font-style` alongside `font`, `font
 
 `page-header` and `page-footer` each accept `frontmatter-format` and `alt-frontmatter-format` that apply on frontmatter pages (title, copyright, TOC, and any page before the first part or chapter). Body pages use the normal `format` / `alt-format` pair.
 
-- **Unset** (key absent from YAML) → frontmatter pages use `format` / `alt-format` (backwards-compatible, no change).
-- **Set to non-empty string** → that string renders on frontmatter pages.
-- **Set to empty string `""`** → frontmatter pages render blank (no header or footer text).
-- **`alt-frontmatter-format` set alongside `frontmatter-format`** → verso frontmatter uses `frontmatter-format`, recto frontmatter uses `alt-frontmatter-format` (same verso/recto pairing as `format` / `alt-format`).
+- **Unset** (key absent from YAML) -> frontmatter pages use `format` / `alt-format` (backwards-compatible, no change).
+- **Set to non-empty string** -> that string renders on frontmatter pages.
+- **Set to empty string `""`** -> frontmatter pages render blank (no header or footer text).
+- **`alt-frontmatter-format` set alongside `frontmatter-format`** -> verso frontmatter uses `frontmatter-format`, recto frontmatter uses `alt-frontmatter-format` (same verso/recto pairing as `format` / `alt-format`).
 
 The frontmatter/body boundary is defined as: any page before the first part or chapter block is frontmatter; from the first part or chapter onward is body. Matches standard publishing convention.
 
-Example — suppress the running header on frontmatter but keep body headers:
+Example --- suppress the running header on frontmatter but keep body headers:
 
 ```yaml
 folio:
@@ -241,10 +241,10 @@ folio:
       body-reset: first-part-or-chapter # default; also "never"
 ```
 
-- **`frontmatter-format`** — style of the page number when `[page]` is used in `page-header.frontmatter-format` or `page-footer.frontmatter-format`. Accepts `"1"` (arabic, default), `"I"` (Roman upper), `"i"` (Roman lower).
-- **`body-format`** — style of the page number on body pages (from the first part or chapter onward). Same accepted values.
-- **`body-reset: first-part-or-chapter`** (default) — the display counter restarts at 1 at the first body block.
-- **`body-reset: never`** — the display counter continues through frontmatter and body without a restart.
+- **`frontmatter-format`** --- style of the page number when `[page]` is used in `page-header.frontmatter-format` or `page-footer.frontmatter-format`. Accepts `"1"` (arabic, default), `"I"` (Roman upper), `"i"` (Roman lower).
+- **`body-format`** --- style of the page number on body pages (from the first part or chapter onward). Same accepted values.
+- **`body-reset: first-part-or-chapter`** (default) --- the display counter restarts at 1 at the first body block.
+- **`body-reset: never`** --- the display counter continues through frontmatter and body without a restart.
 
 ### Chapter number reset (issue #16)
 
@@ -288,7 +288,7 @@ folio:
 1. `credits` lines (rendered as centred paragraphs; write the exact text including `©`, year, name)
 2. `body` paragraphs (markdown-mini: `**bold**`, `*italic*`, `--` en-dash, `---` em-dash; a body entry that is only `---` / `***` / `___` renders as a scene-break line)
 3. Separator glyph (centred, between top and bottom sections)
-4. `#v(1fr)` — pushes the sections below to the bottom of the page
+4. `#v(1fr)` --- pushes the sections below to the bottom of the page
 5. Publication lines
 6. `<preposition> <publisher>` (publisher bold)
 7. `<isbn-label>: <isbn>` (label bold)
@@ -298,23 +298,42 @@ Missing blocks silently collapse. The bottom section (publication onwards) is al
 
 **Defaults**:
 
-- `credits` unset → single default line: `Copyright © YEAR Author Name.` (year from `folio.date`, name from `folio.author`)
-- `body` unset → British preset ships Irish/UK moral-rights + all-rights-reserved + NLI/BL legal-deposit; US preset ships all-rights-reserved + Library of Congress CIP text
-- `folio.date` unset → defaults to today at config-load time so year derivation always resolves
-- `skip-header: true` (default) → no running header on copyright page
-- `skip-footer: false` (default) → page number renders in footer
-- `blank-page-before: enforce-left` (default) → lands on verso (page ii)
-- `position: after-title` (default) → between title page and TOC
-- `line-spacing: 1.4` (default) → generous publisher-typical spacing; override to `1.0` (single) or inherit body via explicit value
+- `credits` unset -> single default line: `Copyright © YEAR Author Name.` (year from `folio.date`, name from `folio.author`)
+- `body` unset -> British preset ships Irish/UK moral-rights + all-rights-reserved + NLI/BL legal-deposit; US preset ships all-rights-reserved + Library of Congress CIP text
+- `folio.date` unset -> defaults to today at config-load time so year derivation always resolves
+- `skip-header: true` (default) -> no running header on copyright page
+- `skip-footer: false` (default) -> page number renders in footer
+- `blank-page-before: enforce-left` (default) -> lands on verso (page ii)
+- `position: after-title` (default) -> between title page and TOC
+- `line-spacing: 1.4` (default) -> generous publisher-typical spacing; override to `1.0` (single) or inherit body via explicit value
 
 **ISBN barcode**:
 
-- `none` — no barcode (default)
-- `render` — embed EAN-13 SVG on the copyright page below the ISBN text
-- `file` — write `<output-basename>.barcode.svg` alongside the output PDF; do not embed
-- `render-and-file` — both
+- `none` --- no barcode (default)
+- `render` --- embed EAN-13 SVG on the copyright page below the ISBN text
+- `file` --- write `<output-basename>.barcode.svg` alongside the output PDF; do not embed
+- `render-and-file` --- both
 
 Invalid ISBNs (wrong length, non-numeric, or wrong EAN-13 check digit for a 13-digit input) are rejected at config-load time with a diagnostic naming the offending value.
+
+To generate an external SVG for cover artwork, configure the local `script.yaml`:
+
+```yaml
+folio:
+  manuscript:
+    copyright:
+      enabled: true
+      isbn: "978-0-000000-00-2"
+      isbn-barcode: file
+```
+
+Then render the manuscript:
+
+```bash
+folio manuscript manuscript.md manuscript.pdf
+```
+
+The command writes `manuscript.barcode.svg` beside `manuscript.pdf`. Set `isbn-barcode: render-and-file` to embed the barcode in the manuscript and write the external SVG.
 
 ### Semantic authoring of parts and chapters (issue #18)
 
@@ -366,7 +385,7 @@ Rendered outcomes for the source above with the config above:
 **Name case vs case-transform (AC18.5):**
 
 - `case-transform` applies to the *composed* heading (`prefix + number + separator + name + suffix`) as a whole. Set to `upper` to render `PART 1: UNBELIEVED`.
-- `name-case` applies only to the name segment. Values: `""` (as-written, default), `"upper"`, `"lower"`, `"title"`. Set `name-case: "title"` to auto-capitalise a source like `# the watch` into `Part 1: The Watch`.
+- `name-case` applies only to the name segment. Values: `""` (as-written, default), `"upper"`, `"lower"`, `"title"`. Set `name-case: "title"` to auto-capitalize a source like `# the watch` into `Part 1: The Watch`.
 
 ### Skipping running header or footer on part / chapter pages
 
@@ -437,3 +456,7 @@ folio:
       dialogue:
         wrap-indent: 5em
 ```
+
+## Changelog
+
+- 0.3 (2026-07-26): Added the external ISBN barcode SVG workflow.

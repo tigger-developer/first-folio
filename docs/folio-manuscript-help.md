@@ -15,3 +15,21 @@ Options:
   --contact-name NAME         Override title-page contact name
   --dry-run                   Validate inputs and print the render plan
   -h, --help                  Show this help message
+
+External ISBN barcode SVG:
+  Configure the copyright block in the local script.yaml:
+
+    folio:
+      manuscript:
+        copyright:
+          enabled: true
+          isbn: "978-0-000000-00-2"
+          isbn-barcode: file
+
+  Then render the manuscript:
+
+    folio manuscript manuscript.md manuscript.pdf
+
+  This writes manuscript.barcode.svg beside manuscript.pdf.
+  Use render-and-file instead of file to embed the barcode in the
+  manuscript and write the external SVG.

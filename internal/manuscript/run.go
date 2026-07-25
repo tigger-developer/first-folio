@@ -3,6 +3,7 @@
 package manuscript
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -83,13 +84,71 @@ func RunWithIO(args []string, stdout io.Writer) error {
 		return err
 	}
 
-	if strings.HasSuffix(strings.ToLower(opts.Output), ".typ") {
-		return os.WriteFile(opts.Output, []byte(typst), 0o644)
-	}
-	if !strings.HasSuffix(strings.ToLower(opts.Output), ".pdf") {
+	return writeManuscriptOutput(typst, opts.Output, cfg)
+}
+
+func writeManuscriptOutput(typst string, output string, cfg Config) error {
+	extension := strings.ToLower(filepath.Ext(output))
+	switch extension {
+	case ".typ":
+		if err := os.WriteFile(output, []byte(typst), 0o644); err != nil {
+			return fmt.Errorf("writing Typst manuscript: %w", err)
+		}
+	case ".pdf":
+		if err := compileTypst(typst, output); err != nil {
+			return err
+		}
+	default:
 		return fmt.Errorf("manuscript output must end in .pdf or .typ")
 	}
-	return compileTypst(typst, opts.Output)
+	return writeBarcodeSidecar(output, cfg.Folio.Manuscript.Copyright)
+}
+
+func writeBarcodeSidecar(output string, cfg CopyrightConfig) error {
+	if cfg.ISBN == "" || (cfg.ISBNBarcode != "file" && cfg.ISBNBarcode != "render-and-file") {
+		return nil
+	}
+	svg, err := renderEAN13SVG(cfg.ISBN)
+	if err != nil {
+		return fmt.Errorf("generating ISBN barcode: %w", err)
+	}
+	base := strings.TrimSuffix(output, filepath.Ext(output))
+	if err := writeFileAtomic(base+".barcode.svg", []byte(svg)); err != nil {
+		return fmt.Errorf("writing ISBN barcode: %w", err)
+	}
+	return nil
+}
+
+func writeFileAtomic(path string, data []byte) (resultErr error) {
+	dir := filepath.Dir(path)
+	tmp, err := os.CreateTemp(dir, ".folio-barcode-*.tmp")
+	if err != nil {
+		return err
+	}
+	tmpPath := tmp.Name()
+	closed := false
+	defer func() {
+		if !closed {
+			if err := tmp.Close(); err != nil && resultErr == nil {
+				resultErr = fmt.Errorf("closing temporary file: %w", err)
+			}
+		}
+		if err := os.Remove(tmpPath); err != nil && !errors.Is(err, os.ErrNotExist) && resultErr == nil {
+			resultErr = fmt.Errorf("removing temporary file: %w", err)
+		}
+	}()
+	if _, err := tmp.Write(data); err != nil {
+		return err
+	}
+	if err := tmp.Chmod(0o644); err != nil {
+		return err
+	}
+	closeErr := tmp.Close()
+	closed = true
+	if closeErr != nil {
+		return closeErr
+	}
+	return os.Rename(tmpPath, path)
 }
 
 func parseArgs(args []string) (Options, []string, error) {
