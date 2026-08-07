@@ -1,4 +1,4 @@
-<!-- Version: 0.3 | Last updated: 2026-07-26 -->
+<!-- Version: 0.4 | Last updated: 2026-08-07 -->
 
 # Configuration
 
@@ -125,6 +125,7 @@ Common manuscript keys:
 - `[author]` -- the manuscript author
 - `[title]` -- the manuscript title
 - `[page]` -- the current page number
+- `[total-pages]` -- the final physical page count in Arabic numerals, including frontmatter and intentional blank pages
 - `[part]` -- the current part's **semantic name** (issue #18: whatever remains after `Part N:` prefix stripping; e.g. `Unbelieved` for a source heading `# PART ONE: UNBELIEVED`)
 - `[part-number]` -- the current part's number, formatted per `part.number-format` (`1`, `I`, `i`)
 - `[part-prefix]` -- the configured `part.prefix` string
@@ -137,6 +138,17 @@ Common manuscript keys:
 Unknown bracket tokens (e.g. `[unknown]`) are rendered as literal text.
 
 The British and US presets both default to `format: "[title] • [chapter] • [author]"` for the header and `format: "[page]"` for the footer.
+
+Use both page placeholders to render values such as `4/100`:
+
+```yaml
+folio:
+  manuscript:
+    page-footer:
+      format: "[page]/[total-pages]"
+```
+
+`[total-pages]` always reports the final physical page count. Unlike `[page]`, it is not affected by `page-numbering.body-reset` or frontmatter/body numbering formats.
 
 #### `alt-format` for facing-page layouts
 
@@ -459,4 +471,5 @@ folio:
 
 ## Changelog
 
+- 0.4 (2026-08-07): Added the `[total-pages]` manuscript header/footer placeholder.
 - 0.3 (2026-07-26): Added the external ISBN barcode SVG workflow.

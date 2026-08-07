@@ -29,6 +29,10 @@
   numbering(fmt, displayed)
 }
 
+#let folio-total-pages() = context {
+  numbering("1", counter(page).final().first())
+}
+
 // #18 semantic-authoring state seeds: pre-populate the first part / first chapter values so
 // the FIRST body page's header context sees the correct [part] / [chapter] on entry. Multi-
 // part / multi-chapter manuscripts overwrite these via state.update at each folio-part /
