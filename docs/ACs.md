@@ -4,7 +4,7 @@ Central record of accepted issue criteria after SDLC gate closure.
 
 Cutover date: 2026-07-14
 
-Last migrated: AC10.11 from #10 on 2026-07-15
+Last migrated: AC31.1 from #31 on 2026-08-07
 
 **Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
 
@@ -47,5 +47,13 @@ Migrated: 2026-07-15
 | AC10.9 | Given the completed migration, First Folio has no Perl runtime/build/test/release dependency and no project-owned shell application or regression-test logic. | ✅ RT10.26: dependency audit finds no Perl invocation or shipped Perl modules<br>✅ RT10.27: test discovery finds only Go-owned automated suites plus declarative fixtures/templates<br>✅ RT10.28: clean-environment test succeeds without Perl. |
 | AC10.10 | Given all accepted pre-migration fixtures, the Go implementation is behaviourally equivalent except for changes explicitly approved in separately referenced issues. | ✅ RT10.29: run the full pre-migration characterization corpus<br>✅ RT10.30: compare semantic output and diagnostics<br>✅ RT10.31: compare PDF text and required visual evidence. |
 | AC10.11 | Given completion of the migration, architecture, configuration, format, installation, contributor, dependency, and release documentation describe the Go-only implementation accurately. | ✅ RT10.32: documentation audit against executable help, package layout, Make targets, and release artefacts. |
+
+## Issue 31: Continued Manuscript TOC Alignment
+
+GitHub issue: https://github.com/tigger-developer/first-folio/issues/31
+
+| ID | AC | Tests |
+|---|---|---|
+| AC31.1 | `folio.manuscript.toc.continuation-padding-before` accepts a Typst length and reserves that height above TOC entries on every TOC page. The Contents heading occupies the reserved band on page one, while continuation pages leave it blank, so entry lists share a vertical start. The British base default is `15mm` and is inherited by US manuscripts. | ✅ RT-31.1: a public PDF render confirms first-entry coordinates align across two default TOC pages<br>✅ RT-31.2: generated output uses the `15mm` base default when the key is absent<br>✅ RT-31.3: a `20mm` override moves both pages' entry starts by approximately `5mm` while retaining alignment<br>✅ UT-31.1: a human reviewer confirms the default two-page TOC alignment |
 
 **Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
