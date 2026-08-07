@@ -13,41 +13,41 @@ import (
 	"testing"
 )
 
-// RT-31.1: configured continuation padding moves the first entry on page two.
-func TestRT_31_1_TOCContinuationPaddingMovesLaterPage(t *testing.T) {
+// RT-31.1: the default reserved band aligns first entries across TOC pages.
+func TestRT_31_1_DefaultTOCContinuationPaddingAlignsPages(t *testing.T) {
 	requirePDFTools(t)
-	_, unpaddedPDF := renderContinuationTOC(t, "")
-	_, paddedPDF := renderContinuationTOC(t, "15mm")
-	_, unpaddedContinuation := tocEntryStarts(t, unpaddedPDF)
-	_, paddedContinuation := tocEntryStarts(t, paddedPDF)
-	shift := paddedContinuation - unpaddedContinuation
+	_, pdf := renderContinuationTOC(t, "")
+	firstPage, continuation := tocEntryStarts(t, pdf)
 
-	t.Logf("measured continuation shift: %.2fpt", shift)
-	if math.Abs(shift-42.52) > 1 {
-		t.Fatalf("15mm continuation padding shifted first entry by %.2fpt, want approximately 42.52pt", shift)
+	t.Logf("measured first-entry positions: page one=%.2fpt, continuation=%.2fpt", firstPage, continuation)
+	if math.Abs(firstPage-continuation) > 1 {
+		t.Fatalf("TOC first entries are not aligned: page one %.2fpt, continuation %.2fpt", firstPage, continuation)
 	}
 }
 
-// RT-31.2: an omitted key retains the zero-padding default in generated output.
-func TestRT_31_2_TOCContinuationPaddingDefaultsToZero(t *testing.T) {
+// RT-31.2: an omitted key uses the British base preset's reserved band.
+func TestRT_31_2_TOCContinuationPaddingDefaultsToFifteenMillimetres(t *testing.T) {
 	dir, _ := renderContinuationTOC(t, "")
 	typst := filepath.Join(dir, "manuscript.typ")
 
 	runFolio(t, "manuscript", filepath.Join(dir, "manuscript.md"), typst)
 
-	assertContains(t, readTestFile(t, typst), "#let folio-toc-continuation-padding = 0mm")
+	assertContains(t, readTestFile(t, typst), "#let folio-toc-continuation-padding = 15mm")
 }
 
-// RT-31.3: continuation padding does not move the first entry on TOC page one.
-func TestRT_31_3_TOCContinuationPaddingLeavesFirstPageUnchanged(t *testing.T) {
+// RT-31.3: overriding the reserved band moves both TOC page starts equally.
+func TestRT_31_3_TOCContinuationPaddingOverrideMovesBothPages(t *testing.T) {
 	requirePDFTools(t)
-	_, unpaddedPDF := renderContinuationTOC(t, "")
-	_, paddedPDF := renderContinuationTOC(t, "15mm")
-	unpaddedFirst, _ := tocEntryStarts(t, unpaddedPDF)
-	paddedFirst, _ := tocEntryStarts(t, paddedPDF)
+	_, defaultPDF := renderContinuationTOC(t, "")
+	_, customPDF := renderContinuationTOC(t, "20mm")
+	defaultFirst, defaultContinuation := tocEntryStarts(t, defaultPDF)
+	customFirst, customContinuation := tocEntryStarts(t, customPDF)
+	firstShift := customFirst - defaultFirst
+	continuationShift := customContinuation - defaultContinuation
 
-	if math.Abs(paddedFirst-unpaddedFirst) > 0.5 {
-		t.Fatalf("continuation padding moved first TOC entry from %.2fpt to %.2fpt", unpaddedFirst, paddedFirst)
+	t.Logf("measured 5mm override shifts: page one=%.2fpt, continuation=%.2fpt", firstShift, continuationShift)
+	if math.Abs(firstShift-14.17) > 1 || math.Abs(continuationShift-14.17) > 1 {
+		t.Fatalf("20mm override shifts are %.2fpt and %.2fpt, want approximately 14.17pt", firstShift, continuationShift)
 	}
 }
 
