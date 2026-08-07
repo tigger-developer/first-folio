@@ -297,9 +297,10 @@ func renderDate(value string, layout string) string {
 }
 
 func lineSpacingLeading(lineSpacing string) string {
-	multiplier, err := strconv.ParseFloat(strings.TrimSpace(lineSpacing), 64)
+	trimmed := strings.TrimSpace(lineSpacing)
+	multiplier, err := strconv.ParseFloat(trimmed, 64)
 	if err != nil {
-		return lineSpacing + "em"
+		return trimmed
 	}
 	if multiplier < 1 {
 		multiplier = 1

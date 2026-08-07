@@ -1,4 +1,4 @@
-<!-- Version: 0.4 | Last updated: 2026-08-07 -->
+<!-- Version: 0.5 | Last updated: 2026-08-07 -->
 
 # Configuration
 
@@ -114,7 +114,7 @@ Common manuscript keys:
 | `paragraph-indent` | string | `10mm` | `12.7mm` |
 | `paragraph-spacing` | string | `0` | `0` |
 
-`folio.manuscript.line-spacing` is a baseline multiplier: `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap.
+`folio.manuscript.line-spacing` accepts a baseline multiplier or an explicit Typst length. With a multiplier, `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. A length such as `2em` is passed through without adding another unit. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap.
 
 `folio.manuscript.page-header.content-padding-after` controls the clearance between the running header and the manuscript body on every running-header page. It does not affect the title page or table of contents.
 
@@ -413,7 +413,7 @@ Unknown alignment values (e.g. `middle-middle`, `bottom-diagonal`) are rejected 
 
 `folio.manuscript.toc.enabled` defaults to `true`. Set it to `false` to suppress the generated table of contents.
 
-`folio.manuscript.toc.line-spacing` controls table-of-contents item line spacing. The British default is `1.15em`.
+`folio.manuscript.toc.line-spacing` controls the baseline interval between table-of-contents items, including one-line entries. The British default is `1.15em`; for example, `2em` renders item baselines approximately two font-heights apart.
 
 US manuscript style is selected with `folio.manuscript.style: us` or `folio.style: us`, or with `folio manuscript --style us ...`. The US override is layered on top of the British manuscript preset and does not change the page size to `us-letter`; page size changes require explicit user config.
 
@@ -471,5 +471,6 @@ folio:
 
 ## Changelog
 
+- 0.5 (2026-08-07): Clarified manuscript body and table-of-contents line-spacing behaviour.
 - 0.4 (2026-08-07): Added the `[total-pages]` manuscript header/footer placeholder.
 - 0.3 (2026-07-26): Added the external ISBN barcode SVG workflow.

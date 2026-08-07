@@ -4,6 +4,7 @@ package manuscript_test
 
 import (
 	"encoding/xml"
+	"math"
 	"os/exec"
 	"path/filepath"
 	"strconv"
@@ -50,8 +51,12 @@ func TestRT_30_3_TOCLineSpacingControlsEntrySeparation(t *testing.T) {
 
 	compactGap := averageTOCEntryGap(t, compactPDF)
 	wideGap := averageTOCEntryGap(t, widePDF)
-	if wideGap < compactGap*1.5 {
-		t.Fatalf("TOC 2em entry gap %.2f is not materially larger than 1em gap %.2f", wideGap, compactGap)
+	t.Logf("measured TOC entry gaps: 1em=%.2fpt, 2em=%.2fpt", compactGap, wideGap)
+	if math.Abs(compactGap-10) > 1 {
+		t.Fatalf("TOC 1em entry gap is %.2fpt, want approximately 10pt", compactGap)
+	}
+	if math.Abs(wideGap-20) > 1 {
+		t.Fatalf("TOC 2em entry gap is %.2fpt, want approximately 20pt", wideGap)
 	}
 }
 
@@ -87,6 +92,7 @@ func spacingProject(t *testing.T, bodySpacing string, tocSpacing string, tocEnab
 		"    line-spacing: " + strconv.Quote(bodySpacing),
 		"    toc:",
 		"      enabled: " + strconv.FormatBool(tocEnabled),
+		"      font-size: 10pt",
 		"      line-spacing: " + strconv.Quote(tocSpacing),
 		"",
 	}, "\n"))

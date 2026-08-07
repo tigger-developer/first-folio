@@ -350,7 +350,7 @@
   #set par(leading: {{.Config.Folio.Manuscript.TOC.LineSpacing}})
   #show outline.entry: it => block(
     above: if it.level == 1 { {{.Config.Folio.Manuscript.TOC.PartGapBefore}} } else { 0pt },
-    below: 0.5em,
+    below: calc.max(0pt, {{.Config.Folio.Manuscript.TOC.LineSpacing}} - 0.65em),
   )[
     #it.indented(
       it.prefix(),
