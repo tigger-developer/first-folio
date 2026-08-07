@@ -305,6 +305,7 @@ type TOCConfig struct {
 	BlankPageAfter    BlankPageMode `yaml:"blank-page-after"`
 	LineSpacing       string        `yaml:"line-spacing"`
 	PartGapBefore     string        `yaml:"part-gap-before"`
+	ContinuationPad   string        `yaml:"continuation-padding-before"`
 	PartBold          bool          `yaml:"part-bold"`
 }
 
@@ -583,6 +584,7 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.TOC.HeadingFontWeight, "bold")
 	fill(&ms.TOC.LineSpacing, "1.15em")
 	fill(&ms.TOC.PartGapBefore, "0.5em")
+	fill(&ms.TOC.ContinuationPad, "15mm")
 	fill(&ms.SceneBreak.Marker, "#")
 	fill(&ms.List.SpaceBefore, "0.5em")
 	fill(&ms.List.SpaceAfter, "0.5em")

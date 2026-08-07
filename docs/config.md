@@ -1,4 +1,4 @@
-<!-- Version: 0.5 | Last updated: 2026-08-07 -->
+<!-- Version: 0.6 | Last updated: 2026-08-07 -->
 
 # Configuration
 
@@ -415,6 +415,8 @@ Unknown alignment values (e.g. `middle-middle`, `bottom-diagonal`) are rejected 
 
 `folio.manuscript.toc.line-spacing` controls the baseline interval between table-of-contents items, including one-line entries. The British default is `1.15em`; for example, `2em` renders item baselines approximately two font-heights apart.
 
+`folio.manuscript.toc.continuation-padding-before` reserves space above entries on every table-of-contents page. The Contents heading occupies that band on page one, and continuation pages leave it blank, keeping entry lists vertically aligned. The British default is `15mm`, inherited by the US preset.
+
 US manuscript style is selected with `folio.manuscript.style: us` or `folio.style: us`, or with `folio manuscript --style us ...`. The US override is layered on top of the British manuscript preset and does not change the page size to `us-letter`; page size changes require explicit user config.
 
 Manuscript metadata supports `title`, `subtitle`, `author`, `attribution`, `date`, `version`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`. `wordcount` is display text, not a numeric field; values such as `about 90,000 words`, `approx 100k words`, and `20.000 mots` render as entered.
@@ -471,6 +473,7 @@ folio:
 
 ## Changelog
 
+- 0.6 (2026-08-07): Added configurable reserved space above continued table-of-contents entries.
 - 0.5 (2026-08-07): Clarified manuscript body and table-of-contents line-spacing behaviour.
 - 0.4 (2026-08-07): Added the `[total-pages]` manuscript header/footer placeholder.
 - 0.3 (2026-07-26): Added the external ISBN barcode SVG workflow.

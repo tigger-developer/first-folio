@@ -339,13 +339,19 @@
 // Clear the title-page footer before the TOC's blank-page-before directive so any inserted
 // parity blank does not inherit the British title-page grid footer.
 #set page(numbering: none, footer: none)
+#let folio-toc-continuation-padding = {{.Config.Folio.Manuscript.TOC.ContinuationPad}}
+#set page(
+  {{if .PageSpec.Custom}}width: {{.PageSpec.Width}}, height: {{.PageSpec.Height}},{{else}}paper: "{{.PageSpec.Named}}",{{end}}
+  {{if .GutterActive}}margin: (top: {{.Config.Folio.Manuscript.Margin}} + folio-toc-continuation-padding, bottom: {{.Config.Folio.Manuscript.Margin}}, inside: {{.Config.Folio.Manuscript.Margin}} + {{.Gutter}}, outside: {{.Config.Folio.Manuscript.Margin}}),{{else}}margin: (top: {{.Config.Folio.Manuscript.Margin}} + folio-toc-continuation-padding, rest: {{.Config.Folio.Manuscript.Margin}}),{{end}}
+)
 {{.Config.Folio.Manuscript.TOC.BlankPageBefore.TypstDirective}}
-#text(
-  font: "{{.Config.Folio.Manuscript.TOC.HeadingFont}}",
-  size: {{.Config.Folio.Manuscript.TOC.HeadingFontSize}},
-  weight: "{{.Config.Folio.Manuscript.TOC.HeadingFontWeight}}",
-)[{{.Config.Folio.Manuscript.TOC.Title}}]
-#v(1em)
+#place(top + left, dy: -folio-toc-continuation-padding)[
+  #text(
+    font: "{{.Config.Folio.Manuscript.TOC.HeadingFont}}",
+    size: {{.Config.Folio.Manuscript.TOC.HeadingFontSize}},
+    weight: "{{.Config.Folio.Manuscript.TOC.HeadingFontWeight}}",
+  )[{{.Config.Folio.Manuscript.TOC.Title}}]
+]
 #text(font: "{{.Config.Folio.Manuscript.TOC.Font}}", size: {{.Config.Folio.Manuscript.TOC.FontSize}}, weight: "{{.Config.Folio.Manuscript.TOC.FontWeight}}")[
   #set par(leading: {{.Config.Folio.Manuscript.TOC.LineSpacing}})
   #show outline.entry: it => block(

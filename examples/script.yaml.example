@@ -145,6 +145,7 @@
   #     enabled: true
   #     title: Contents
   #     line-spacing: 1.15em
+  #     continuation-padding-before: 15mm
 
 # --- Yapper configuration ---
 # Everything under this top-level block is exclusively Yapper-owned and is
