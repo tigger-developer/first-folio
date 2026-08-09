@@ -58,7 +58,8 @@ func TestRT_32_4_TOCLinksRejectNonBooleanValues(t *testing.T) {
 	if status == 0 {
 		t.Fatal("non-boolean toc.links unexpectedly succeeded")
 	}
-	assertContains(t, stderr, "links")
+	assertContains(t, stderr, "cannot unmarshal")
+	assertContains(t, stderr, "bool")
 }
 
 // RT-32.5: chapter numbers are continuous across parts by default.

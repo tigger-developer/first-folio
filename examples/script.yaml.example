@@ -143,9 +143,13 @@
   #     space-after: 0.5em
   #   toc:
   #     enabled: true
+  #     links: true                 # default; false removes PDF link annotations
   #     title: Contents
   #     line-spacing: 1.15em
   #     continuation-padding-before: 15mm
+  #   chapter:
+  #     number-reset: never         # default; per-part restarts at each part
+  #     number-format: "1"          # 1, I, i, or part.chapter such as I.1
 
 # --- Yapper configuration ---
 # Everything under this top-level block is exclusively Yapper-owned and is

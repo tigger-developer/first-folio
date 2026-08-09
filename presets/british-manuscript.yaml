@@ -100,6 +100,7 @@ folio:
 
     toc:
       enabled: true
+      links: true
       title: "Contents"
       page-break-before: true
       font: Libertinus Sans
@@ -145,6 +146,7 @@ folio:
       align: center
       case-transform: as-written
       space-after: 2em
+      number-reset: never
 
     # #21: copyright page. Disabled by default; when enabled, the British preset
     # supplies moral-rights, all-rights-reserved, and NLI/BL legal-deposit text.

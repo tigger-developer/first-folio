@@ -1,4 +1,4 @@
-<!-- Version: 0.6 | Last updated: 2026-08-07 -->
+<!-- Version: 0.7 | Last updated: 2026-08-09 -->
 
 # Configuration
 
@@ -260,14 +260,25 @@ folio:
 
 ### Chapter number reset (issue #16)
 
-`chapter.number-reset` controls whether the chapter counter restarts per part.
+`chapter.number-reset` controls whether the chapter counter restarts per part. Continuous numbering is the default.
 
 ```yaml
 folio:
   manuscript:
     chapter:
-      number-reset: per-part            # default; matches current behaviour
-      # other: "never" — chapters number continuously across all parts
+      number-reset: never               # default: continuous across all parts
+      # other: "per-part" -- restart at 1 for each part
+```
+
+### Table-of-contents links (issue #32)
+
+`folio.manuscript.toc.links` controls clickable internal links from visible TOC entries to their headings. It defaults to `true`. Set it to `false` for print-production systems such as KDP that reject PDF link annotations; the visible TOC and PDF document outline remain present.
+
+```yaml
+folio:
+  manuscript:
+    toc:
+      links: true                       # default
 ```
 
 ### Copyright page (issue #21)
@@ -349,7 +360,7 @@ The command writes `manuscript.barcode.svg` beside `manuscript.pdf`. Set `isbn-b
 
 ### Semantic authoring of parts and chapters (issue #18)
 
-Parts and chapters can be authored with just the semantic name -- the parser derives the number from source order (H1s count 1, 2, 3, ...; H2s reset per H1) and composes the rendered heading from configurable prefix, number, separator, name, and suffix.
+Parts and chapters can be authored with just the semantic name. The parser derives numbers from source order; manuscript rendering then applies `chapter.number-reset`, whose default `never` produces one continuous chapter sequence across parts. The rendered heading is composed from configurable prefix, number, separator, name, and suffix.
 
 **Source (author-facing):**
 
@@ -380,6 +391,9 @@ folio:
       # same shape as part
       prefix: "Chapter "
       show-number: true
+      number-reset: never            # default; use per-part to restart each part
+      number-format: "1"             # chapter only: 1, I, i
+      # number-format: "I.1"         # part.chapter; each segment accepts 1, I, i
 ```
 
 Rendered outcomes for the source above with the config above:
@@ -393,6 +407,13 @@ Rendered outcomes for the source above with the config above:
 
 - `derived` (default): part and chapter numbers come from source order (safe if you renumber chapters by moving files around).
 - `source`: use the number literal from the source heading. Useful when a manuscript deliberately skips numbers (Chapter 7 is called "Chapter 7" for in-fiction reasons).
+
+**Chapter number formats:**
+
+- One segment formats only the chapter counter: `1`, `I`, or `i`.
+- Two segments format `part.chapter`: `I.1`, `1.1`, `1.I`, and the other combinations of `1`, `I`, and `i`.
+- `number-reset: never` keeps the chapter segment continuous across parts; `per-part` restarts that segment at 1.
+- Unsupported patterns are rejected instead of silently falling back to Arabic.
 
 **Name case vs case-transform (AC18.5):**
 
@@ -473,6 +494,7 @@ folio:
 
 ## Changelog
 
+- 0.7 (2026-08-09): Restored linked manuscript TOCs by default, documented the annotation-free override, and added continuous and part-qualified chapter numbering.
 - 0.6 (2026-08-07): Added configurable reserved space above continued table-of-contents entries.
 - 0.5 (2026-08-07): Clarified manuscript body and table-of-contents line-spacing behaviour.
 - 0.4 (2026-08-07): Added the `[total-pages]` manuscript header/footer placeholder.

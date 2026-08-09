@@ -15,14 +15,14 @@ import (
 )
 
 type templateData struct {
-	Config           Config
-	Meta             Metadata
-	Header           string
-	HeaderAlt        string
-	HasHeaderAlt     bool
-	Footer           string
-	FooterAlt        string
-	HasFooterAlt     bool
+	Config       Config
+	Meta         Metadata
+	Header       string
+	HeaderAlt    string
+	HasHeaderAlt bool
+	Footer       string
+	FooterAlt    string
+	HasFooterAlt bool
 	// #24: frontmatter-format branches. HasHeaderFrontmatter is true iff PageHeader
 	// FrontmatterFormat is non-nil (the field was set in YAML, including empty string).
 	// When true, HeaderFrontmatter and HeaderAltFrontmatter carry the substituted format
@@ -36,28 +36,28 @@ type templateData struct {
 	FooterAltFrontmatter    string
 	HasFooterFrontmatter    bool
 	HasFooterAltFrontmatter bool
-	Body             string
+	Body                    string
 
 	// #18: seed the first part / first chapter semantic-authoring state at document top so
 	// the FIRST body page's header context (which evaluates at page-top, before the first
 	// folio-part / folio-chapter macro body has run its state.update) still sees the
 	// correct values. Multi-part / multi-chapter manuscripts update the state again in
 	// their block emissions; the seed is a starting value only.
-	FirstPartName     string
-	FirstPartNumber   string
-	FirstPartPrefix   string
-	FirstPartFull     string
+	FirstPartName      string
+	FirstPartNumber    string
+	FirstPartPrefix    string
+	FirstPartFull      string
 	FirstChapterName   string
 	FirstChapterNumber string
 	FirstChapterPrefix string
 	FirstChapterFull   string
-	IsUS             bool
-	Leading          string
-	Spacing          string
-	PartVertical     string
-	ChapterPosition  string
-	SceneBreakMarker string
-	HasContact       bool
+	IsUS               bool
+	Leading            string
+	Spacing            string
+	PartVertical       string
+	ChapterPosition    string
+	SceneBreakMarker   string
+	HasContact         bool
 
 	// Page dimensions: either a named preset or a custom W x H (both non-empty means custom).
 	PageSpec PageSpec
@@ -67,42 +67,41 @@ type templateData struct {
 	GutterActive bool
 
 	// Header/footer alignment expressions (rendered directly into `align(...)` in the template).
-	HeaderAlignExpr    string
-	FooterAlignExpr    string
-	HeaderAlignIsPair  bool
-	FooterAlignIsPair  bool
-	PageFooterEnabled  bool
-
+	HeaderAlignExpr   string
+	FooterAlignExpr   string
+	HeaderAlignIsPair bool
+	FooterAlignIsPair bool
+	PageFooterEnabled bool
 
 	// Title-page per-item alignment expressions (empty = use legacy group fallback) and a
 	// paired Floatable boolean per item so the template can emit `float: true` only when the
 	// vertical axis is top or bottom (Typst's floating placement forbids center).
-	TitleAlignExpr        string
-	TitleFloatable        bool
-	SubtitleAlignExpr     string
-	SubtitleFloatable     bool
-	AuthorAlignExpr       string
-	AuthorFloatable       bool
-	DateAlignExpr         string
-	DateFloatable         bool
-	WordCountAlignExpr    string
-	WordCountFloatable    bool
-	VersionAlignExpr      string
-	VersionFloatable      bool
-	ContactAlignExpr      string
-	ContactFloatable      bool
+	TitleAlignExpr     string
+	TitleFloatable     bool
+	SubtitleAlignExpr  string
+	SubtitleFloatable  bool
+	AuthorAlignExpr    string
+	AuthorFloatable    bool
+	DateAlignExpr      string
+	DateFloatable      bool
+	WordCountAlignExpr string
+	WordCountFloatable bool
+	VersionAlignExpr   string
+	VersionFloatable   bool
+	ContactAlignExpr   string
+	ContactFloatable   bool
 
 	// Legacy title-block-align, used for the title/subtitle/author group when no per-item align is set.
-	TitleBlockAlignExpr string
+	TitleBlockAlignExpr  string
 	FooterGroupAlignExpr string
 
 	// #21: copyright page emit (composed by renderCopyrightPage) and its position knob.
 	// HasCopyright is true iff cfg.Folio.Manuscript.Copyright.Enabled is true.
 	// The template inserts CopyrightEmit at one of two locations based on CopyrightPosition:
 	// after-title -> between title-page and TOC; after-toc / after-frontmatter -> after TOC.
-	HasCopyright        bool
-	CopyrightEmit       string
-	CopyrightPosition   string
+	HasCopyright      bool
+	CopyrightEmit     string
+	CopyrightPosition string
 }
 
 func RenderTypst(doc Document, cfg Config) (string, error) {
@@ -166,65 +165,65 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 	leading := lineSpacingLeading(cfg.Folio.Manuscript.LineSpacing)
 	pageFooterEnabled := cfg.Folio.Manuscript.PageFooter.Enabled != nil && *cfg.Folio.Manuscript.PageFooter.Enabled
 	data := templateData{
-		Config:              cfg,
-		Meta:                safeMeta,
-		Header:              renderHeader(doc.Metadata, cfg),
-		HeaderAlt:           renderHeaderAlt(doc.Metadata, cfg),
-		HasHeaderAlt:        cfg.Folio.Manuscript.PageHeader.AltFormat != "",
+		Config:                  cfg,
+		Meta:                    safeMeta,
+		Header:                  renderHeader(doc.Metadata, cfg),
+		HeaderAlt:               renderHeaderAlt(doc.Metadata, cfg),
+		HasHeaderAlt:            cfg.Folio.Manuscript.PageHeader.AltFormat != "",
 		HeaderFrontmatter:       renderHeaderFrontmatter(doc.Metadata, cfg),
 		HeaderAltFrontmatter:    renderHeaderAltFrontmatter(doc.Metadata, cfg),
 		HasHeaderFrontmatter:    cfg.Folio.Manuscript.PageHeader.FrontmatterFormat != nil,
 		HasHeaderAltFrontmatter: cfg.Folio.Manuscript.PageHeader.AltFrontmatterFormat != nil,
-		Footer:              renderFooter(doc.Metadata, cfg),
-		FooterAlt:           renderFooterAlt(doc.Metadata, cfg),
-		HasFooterAlt:        cfg.Folio.Manuscript.PageFooter.AltFormat != "",
+		Footer:                  renderFooter(doc.Metadata, cfg),
+		FooterAlt:               renderFooterAlt(doc.Metadata, cfg),
+		HasFooterAlt:            cfg.Folio.Manuscript.PageFooter.AltFormat != "",
 		FooterFrontmatter:       renderFooterFrontmatter(doc.Metadata, cfg),
 		FooterAltFrontmatter:    renderFooterAltFrontmatter(doc.Metadata, cfg),
 		HasFooterFrontmatter:    cfg.Folio.Manuscript.PageFooter.FrontmatterFormat != nil,
 		HasFooterAltFrontmatter: cfg.Folio.Manuscript.PageFooter.AltFrontmatterFormat != nil,
-		Body:                body,
-		IsUS:                cfg.Folio.Manuscript.Style == "us",
-		Leading:             leading,
-		Spacing:             paragraphSpacing(cfg.Folio.Manuscript.ParagraphSpacing, leading),
-		PartVertical:        typstVerticalAlign(cfg.Folio.Manuscript.Part.VerticalAlign),
-		ChapterPosition:     chapterPosition(cfg.Folio.Manuscript.Chapter.Position),
-		SceneBreakMarker:    escapeTypst(cfg.Folio.Manuscript.SceneBreak.Marker),
-		HasContact:          hasContactBlock(doc.Metadata, cfg),
-		PageSpec:            pageSpec,
-		Gutter:              cfg.Folio.Manuscript.Gutter,
-		GutterActive:        isGutterActive(cfg.Folio.Manuscript.Gutter),
-		HeaderAlignExpr:     headerAlign.TypstAlignExpression(),
-		FooterAlignExpr:     footerAlign.TypstAlignExpression(),
-		HeaderAlignIsPair:   headerAlign.IsPair,
-		FooterAlignIsPair:   footerAlign.IsPair,
-		PageFooterEnabled:   pageFooterEnabled,
-		TitleAlignExpr:      titleExpr,
-		TitleFloatable:      TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Title.Align),
-		SubtitleAlignExpr:   subtitleExpr,
-		SubtitleFloatable:   TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Subtitle.Align),
-		AuthorAlignExpr:     authorExpr,
-		AuthorFloatable:     TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Author.Align),
-		DateAlignExpr:       dateExpr,
-		DateFloatable:       TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Date.Align),
-		WordCountAlignExpr:  wordCountExpr,
-		WordCountFloatable:  TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.WordCount.Align),
-		VersionAlignExpr:    versionExpr,
-		VersionFloatable:    TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Version.Align),
-		ContactAlignExpr:    contactExpr,
-		ContactFloatable:    TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Contact.Align),
-		TitleBlockAlignExpr: titleBlockExpr,
-		FooterGroupAlignExpr: footerGroupExpr,
-		FirstPartName:       firstPart.Name,
-		FirstPartNumber:     firstPart.Number,
-		FirstPartPrefix:     firstPart.Prefix,
-		FirstPartFull:       firstPart.Full,
-		FirstChapterName:    firstChapter.Name,
-		FirstChapterNumber:  firstChapter.Number,
-		FirstChapterPrefix:  firstChapter.Prefix,
-		FirstChapterFull:    firstChapter.Full,
-		HasCopyright:        cfg.Folio.Manuscript.Copyright.Enabled,
-		CopyrightEmit:       renderCopyrightPage(doc.Metadata, cfg),
-		CopyrightPosition:   cfg.Folio.Manuscript.Copyright.Position,
+		Body:                    body,
+		IsUS:                    cfg.Folio.Manuscript.Style == "us",
+		Leading:                 leading,
+		Spacing:                 paragraphSpacing(cfg.Folio.Manuscript.ParagraphSpacing, leading),
+		PartVertical:            typstVerticalAlign(cfg.Folio.Manuscript.Part.VerticalAlign),
+		ChapterPosition:         chapterPosition(cfg.Folio.Manuscript.Chapter.Position),
+		SceneBreakMarker:        escapeTypst(cfg.Folio.Manuscript.SceneBreak.Marker),
+		HasContact:              hasContactBlock(doc.Metadata, cfg),
+		PageSpec:                pageSpec,
+		Gutter:                  cfg.Folio.Manuscript.Gutter,
+		GutterActive:            isGutterActive(cfg.Folio.Manuscript.Gutter),
+		HeaderAlignExpr:         headerAlign.TypstAlignExpression(),
+		FooterAlignExpr:         footerAlign.TypstAlignExpression(),
+		HeaderAlignIsPair:       headerAlign.IsPair,
+		FooterAlignIsPair:       footerAlign.IsPair,
+		PageFooterEnabled:       pageFooterEnabled,
+		TitleAlignExpr:          titleExpr,
+		TitleFloatable:          TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Title.Align),
+		SubtitleAlignExpr:       subtitleExpr,
+		SubtitleFloatable:       TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Subtitle.Align),
+		AuthorAlignExpr:         authorExpr,
+		AuthorFloatable:         TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Author.Align),
+		DateAlignExpr:           dateExpr,
+		DateFloatable:           TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Date.Align),
+		WordCountAlignExpr:      wordCountExpr,
+		WordCountFloatable:      TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.WordCount.Align),
+		VersionAlignExpr:        versionExpr,
+		VersionFloatable:        TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Version.Align),
+		ContactAlignExpr:        contactExpr,
+		ContactFloatable:        TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Contact.Align),
+		TitleBlockAlignExpr:     titleBlockExpr,
+		FooterGroupAlignExpr:    footerGroupExpr,
+		FirstPartName:           firstPart.Name,
+		FirstPartNumber:         firstPart.Number,
+		FirstPartPrefix:         firstPart.Prefix,
+		FirstPartFull:           firstPart.Full,
+		FirstChapterName:        firstChapter.Name,
+		FirstChapterNumber:      firstChapter.Number,
+		FirstChapterPrefix:      firstChapter.Prefix,
+		FirstChapterFull:        firstChapter.Full,
+		HasCopyright:            cfg.Folio.Manuscript.Copyright.Enabled,
+		CopyrightEmit:           renderCopyrightPage(doc.Metadata, cfg),
+		CopyrightPosition:       cfg.Folio.Manuscript.Copyright.Position,
 	}
 	raw, err := folio.Assets.ReadFile("templates/manuscript.typ")
 	if err != nil {
@@ -378,6 +377,7 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 
 	var lines []string
 	firstPageBlock := true
+	currentPartNumber := 0
 	for _, block := range blocks {
 		switch block.Kind {
 		case "part":
@@ -387,6 +387,7 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 			}
 			lines = emitDirective(lines, hc.BlankPageBefore.TypstDirective())
 			composed := composeHeadingParts(block, hc)
+			currentPartNumber = effectiveHeadingNumber(block, hc)
 			lines = emitPartState(lines, composed)
 			lines = append(lines, fmt.Sprintf(
 				"#folio-part(first: %t, skip-header: %t, skip-footer: %t, name: %q, number: %q, prefix: %q, full: %q)[%s]",
@@ -407,7 +408,7 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 				lines = seedFirstBlockPhantomSkip(lines, hc.BlankPageBefore)
 			}
 			lines = emitDirective(lines, hc.BlankPageBefore.TypstDirective())
-			composed := composeHeadingParts(block, hc)
+			composed := composeChapterHeadingParts(block, hc, currentPartNumber)
 			lines = emitChapterState(lines, composed)
 			lines = append(lines, fmt.Sprintf(
 				"#folio-chapter(first: %t, skip-header: %t, skip-footer: %t, name: %q, number: %q, prefix: %q, full: %q)[%s]",
@@ -455,6 +456,25 @@ type HeadingParts struct {
 }
 
 func composeHeadingParts(block Block, hc HeadingConfig) HeadingParts {
+	return composeHeadingPartsWithNumber(block, hc, formatHeadingNumber(effectiveHeadingNumber(block, hc), hc.NumberFormat))
+}
+
+func composeChapterHeadingParts(block Block, hc HeadingConfig, partNumber int) HeadingParts {
+	chapterNumber := effectiveHeadingNumber(block, hc)
+	return composeHeadingPartsWithNumber(block, hc, formatChapterNumber(partNumber, chapterNumber, hc.NumberFormat))
+}
+
+func effectiveHeadingNumber(block Block, hc HeadingConfig) int {
+	number := block.Number
+	if hc.ExplicitNumbering == "source" && block.SourceNumber != "" {
+		if parsed, err := strconv.Atoi(block.SourceNumber); err == nil {
+			number = parsed
+		}
+	}
+	return number
+}
+
+func composeHeadingPartsWithNumber(block Block, hc HeadingConfig, numberStr string) HeadingParts {
 	showName := true
 	if hc.ShowName != nil {
 		showName = *hc.ShowName
@@ -469,14 +489,6 @@ func composeHeadingParts(block Block, hc HeadingConfig) HeadingParts {
 		name = block.Text
 	}
 	name = applyNameCase(name, hc.NameCase)
-
-	number := block.Number
-	if hc.ExplicitNumbering == "source" && block.SourceNumber != "" {
-		if parsed, err := strconv.Atoi(block.SourceNumber); err == nil {
-			number = parsed
-		}
-	}
-	numberStr := formatHeadingNumber(number, hc.NumberFormat)
 
 	prefix := hc.Prefix
 
@@ -501,6 +513,14 @@ func composeHeadingParts(block Block, hc HeadingConfig) HeadingParts {
 		Prefix: prefix,
 		Full:   full.String(),
 	}
+}
+
+func formatChapterNumber(partNumber, chapterNumber int, format string) string {
+	segments := strings.Split(format, ".")
+	if len(segments) == 2 {
+		return formatHeadingNumber(partNumber, segments[0]) + "." + formatHeadingNumber(chapterNumber, segments[1])
+	}
+	return formatHeadingNumber(chapterNumber, format)
 }
 
 // formatHeadingNumber renders an integer per the configured number-format:

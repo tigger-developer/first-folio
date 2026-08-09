@@ -358,16 +358,23 @@
     above: if it.level == 1 { {{.Config.Folio.Manuscript.TOC.PartGapBefore}} } else { 0pt },
     below: calc.max(0pt, {{.Config.Folio.Manuscript.TOC.LineSpacing}} - 0.65em),
   )[
-    #it.indented(
-      it.prefix(),
-      grid(
-        columns: (auto, 1fr, auto),
-        column-gutter: 0.5em,
-        if it.level == 1 and {{.Config.Folio.Manuscript.TOC.PartBold}} { strong(it.body()) } else { it.body() },
-        box(width: 1fr, it.fill),
-        it.page(),
-      ),
-    )
+    #{
+      let entry = it.indented(
+        it.prefix(),
+        grid(
+          columns: (auto, 1fr, auto),
+          column-gutter: 0.5em,
+          if it.level == 1 and {{.Config.Folio.Manuscript.TOC.PartBold}} { strong(it.body()) } else { it.body() },
+          box(width: 1fr, it.fill),
+          it.page(),
+        ),
+      )
+      if {{if .Config.Folio.Manuscript.TOC.Links}}true{{else}}false{{end}} {
+        link(it.element.location(), entry)
+      } else {
+        entry
+      }
+    }
   ]
   #outline(title: none)
 ]

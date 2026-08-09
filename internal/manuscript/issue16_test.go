@@ -84,12 +84,15 @@ func TestRT_16_7_InvalidBodyResetRejected(t *testing.T) {
 	}, "\n"), "body-reset")
 }
 
-// RT-16.8: chapter.number-reset defaults to per-part (backwards compatible).
-func TestRT_16_8_ChapterNumberResetDefaultsPerPart(t *testing.T) {
-	// Fixture has: PART ONE > Chapter 1 > Chapter 2. Default per-part resets on
-	// each new part (which the parser does), so chapters count 1, 2 within the
-	// single part. Assert the second chapter emits number: "2".
-	typst := renderIssue15Manuscript(t, "")
+// RT-16.8: chapter.number-reset accepts the historical per-part mode explicitly.
+func TestRT_16_8_ChapterNumberResetPerPartAccepted(t *testing.T) {
+	typst := renderIssue15Manuscript(t, strings.Join([]string{
+		"folio:",
+		"  manuscript:",
+		"    chapter:",
+		"      number-reset: per-part",
+		"",
+	}, "\n"))
 	assertContains(t, typst, `number: "2"`)
 }
 
