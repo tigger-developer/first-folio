@@ -105,6 +105,13 @@ func renderIssue27PDF(t *testing.T) string {
 		"",
 		"The second chapter supplies the next entry.",
 	}, "\n"))
+	writeFile(t, filepath.Join(dir, "script.yaml"), strings.Join([]string{
+		"folio:",
+		"  manuscript:",
+		"    toc:",
+		"      links: false",
+		"",
+	}, "\n"))
 
 	output := filepath.Join(dir, "manuscript.pdf")
 	runManuscriptDirect(t, filepath.Join(dir, "chapter.md"), output)
