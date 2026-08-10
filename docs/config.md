@@ -91,7 +91,7 @@ Script layout is configured beneath `folio.title-page` and `folio.positioning`. 
 | `folio.positioning.transition` | Transition spacing, alignment, and case |
 | `folio.positioning.{frontmatter,act-header,scene-header}` | Header typography, spacing, alignment, case, and page breaks |
 
-CLI layout options override their documented configuration equivalents. See `folio convert --help` for the public CLI surface.
+The effective CLI layout overrides are `--font`, `--font-size`, `--margin`, and `--page`; `--style` selects the preset layer. Other layout changes belong in `script.yaml`. See `folio convert --help` for the public CLI surface.
 
 ### Letter settings (`folio.letter:`)
 

@@ -84,7 +84,7 @@ Fields:
   - `Save as file` reveals a save-as picker and infers target format from extension (matches CLI behaviour).
   - `Preview as text` reveals a format picker (`org` / `md` / `fountain` - no `pdf` for stdout), and renders output into the log area rather than to disk.
 - **Style** - segmented control: `British Stageplay` (default) | `US Stageplay` | `Screenplay`. Screenplay is nation-agnostic (one industry-standard layout for both geographies).
-- **PDF layout** - disclosure group, only enabled when target is `.pdf`. Contains: `Font`, `Font size`, `Margin`, `Page size`, `Dialogue indent`, `Dialogue spacing`, `Direction spacing`, plus two toggles for `Italic directions` and `Centre directions`. These map 1:1 to the `--font`, `--font-size`, `--margin`, `--page`, `--indent`, `--dialogue-spacing`, `--direction-spacing`, `--[no-]direction-italic`, `--[no-]direction-centre` CLI flags. Fields left blank are omitted from the invocation so config-file values apply.
+- **PDF/Typst layout** - disclosure group, enabled when the target is `.pdf` or `.typ`. It contains the effective public CLI overrides: `Font`, `Font size`, `Margin`, and `Page size`. Dialogue and direction positioning remain configuration-only until the CLI exposes effective overrides for them. Fields left blank are omitted from the invocation so config-file values apply.
 
 Primary action: `Convert`.
 
@@ -177,9 +177,9 @@ Each field row shows:
 
 - The dotted key (e.g. `folio.positioning.speech.speaker.case`)
 - A control appropriate to the field's type, with **dropdown options** wherever the CLI accepts a fixed set:
-  - Enums (`style`, `page`, `case`, `alignment`, `position`) → `Picker` with the CLI-accepted values
-  - Booleans (`render.*`, `direction-italic`, `direction-centre`) → `Toggle`
-  - Sizes (`font-size`, `margin`, `indent`) → text field with a dropdown of common values (`10pt`, `11pt`, `12pt`; `20mm`, `25mm`, `30mm`) plus free text for anything else
+  - Enums (`style`, `page`, `case-transform`, `align`, `position`) -> `Picker` with the configuration contract's accepted values
+  - Booleans (`render.*`, `folio.positioning.stage-direction.italic`) -> `Toggle`
+  - Sizes (`font-size`, `margin`, `indent`) -> text field with a dropdown of common values (`10pt`, `11pt`, `12pt`; `20mm`, `25mm`, `30mm`) plus free text for anything else
   - Fonts → text field with a dropdown of fonts installed on the system that Typst can see
   - Free-form strings (`title`, `author`) → plain text field
 - A subtle secondary line showing the resolved value under the current scope, and which layer it came from (`from global`, `from local`, `from built-in`) - so users can tell whether their edit will actually take effect.

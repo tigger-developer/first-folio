@@ -16,11 +16,6 @@ PDF options ignored for non-PDF output:
   --font-size SIZE         Body font size
   --margin SIZE            Page margins
   --page SIZE              Page size (a4, letter, etc.)
-  --indent SIZE            Dialogue indent depth
-  --dialogue-spacing SIZE  Space before dialogue blocks
-  --direction-spacing SIZE Space before stage directions
-  --[no-]direction-italic  Italicize stage directions
-  --[no-]direction-centre  Centre stage directions
   -h, --help               Show this help message
   --version                Show application version
 
