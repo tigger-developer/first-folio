@@ -1,24 +1,26 @@
 # Example script.yaml for First Folio, with an optional Yapper namespace
 #
-# This file can live in two places:
+# This file can participate at two scopes:
 #   ~/.config/first-folio/script.yaml   (global user defaults)
-#   alongside your source file           (per-project overrides)
+#   nearest ancestor of the source file  (per-project overrides)
 #
-# Both are read and merged. Per-project values override global values.
-# CLI flags override everything.
+# First Folio walks from the source directory towards HOME and uses the nearest
+# script.yaml. A script-<style>.yaml sibling is then applied for the active style.
+# Per-project values override global values; CLI flags override everything.
 #
 # First Folio only reads this file — it never modifies or creates it.
 #
 # Everything below is commented out by default — uncomment only what you
-# want to override. Defaults come from presets/british-script.yaml.
-# See presets/ for full reference values.
+# want to override. Script/letter defaults come from british-script.yaml;
+# manuscript defaults come from british-manuscript.yaml. See presets/ for the
+# active base and style-override values.
 
 # --- Shared metadata ---
 # Override #+TITLE, #+AUTHOR, etc. from the source. Usually leave these
 # in the source doc and only set date/version here per-project.
-# title: About Time
-# author: Tadhg O'Brien
-# date: "2026-04-26"
+# title: The Glass Orchard
+# author: Example Author
+# date: "2026-07-06"
 # version: "Draft v3"
 
 # --- Shared rendering toggles ---
@@ -125,13 +127,50 @@
   # --- Prose manuscript rendering (folio manuscript) ---
   # manuscript:
   #   style: british              # british | us
+  #   page: a4
   #   margin: 20mm
+  #   gutter: 0mm
   #   font: Libertinus Serif
+  #   font-size: 12pt
+  #   font-weight: regular
   #   heading-font: Libertinus Sans
+  #   heading-font-size: 14pt
+  #   heading-font-weight: regular
   #   mono-font: Libertinus Mono
+  #   mono-font-size: 10pt
+  #   mono-font-weight: regular
   #   line-spacing: 1.5
+  #   justify: true
   #   paragraph-indent: 10mm
   #   paragraph-spacing: 0
+  #   date-format: "2 January 2006"
+  #   title-page:
+  #     enabled: true
+  #     page-number: false
+  #     include-title: true
+  #     include-subtitle: true
+  #     include-author: true
+  #     include-date: true
+  #     include-wordcount: true
+  #     include-contact-name: true
+  #     include-address: true
+  #     include-phone: true
+  #     include-email: true
+  #     include-website: true
+  #     include-version: true
+  #   page-header:
+  #     enabled: true
+  #     format: "[title] • [chapter] • [author]"
+  #     alt-format: "[author] • [chapter] • [title]"
+  #     frontmatter-format: ""
+  #     align: left-right
+  #     distance-from-edge: 20mm
+  #     content-padding-after: 10mm
+  #   page-footer:
+  #     enabled: true
+  #     format: "[page]/[total-pages]"
+  #     frontmatter-format: "[page]"
+  #     align: center
   #   list:
   #     space-before: 0.5em
   #     space-after: 0.5em
@@ -146,10 +185,36 @@
   #     links: true                 # default; false removes PDF link annotations
   #     title: Contents
   #     line-spacing: 1.15em
+  #     include-parts: true
+  #     include-chapters: true
+  #     include-sections: false
+  #     dot-leaders: true
+  #     page-numbers: true
+  #     part-gap-before: 0.5em
+  #     part-bold: true
   #     continuation-padding-before: 15mm
+  #   scene-break:
+  #     marker: "#"
+  #   part:
+  #     page-break-before: true
+  #     align: center
+  #     vertical-align: center
+  #     show-name: true
+  #     show-number: false
   #   chapter:
+  #     page-break-before: true
+  #     position: one-third
+  #     align: center
   #     number-reset: never         # default; per-part restarts at each part
   #     number-format: "1"          # 1, I, i, or part.chapter such as I.1
+  #   page-numbering:
+  #     frontmatter-format: "i"
+  #     body-format: "1"
+  #     body-reset: first-part-or-chapter
+  #   copyright:
+  #     enabled: false
+  #     isbn: "978-0-000000-00-2"
+  #     isbn-barcode: none           # none | render | file | render-and-file
 
 # --- Yapper configuration ---
 # Everything under this top-level block is exclusively Yapper-owned and is

@@ -1,4 +1,4 @@
-<!-- Version: 0.2 | Last updated: 2026-07-13 -->
+<!-- Version: 0.3 | Last updated: 2026-08-10 -->
 
 # Architecture
 
@@ -38,7 +38,7 @@ Stage plays and manuscripts intentionally retain separate semantic models.
 
 Stage-play parsers produce typed events for metadata, acts, scenes, directions, speakers, dialogue, character tables, transitions, props, intro material, and footnotes. Text emitters consume that model, while script PDF rendering prepares escaped template data from it.
 
-Manuscripts use metadata plus prose blocks such as parts, chapters, sections, paragraphs, lists, tables, code, images where supported, scene breaks, and footnotes. Markdown remains the canonical shared manuscript contract for the current implementation; Org is canonicalized through that contract before rendering.
+Manuscripts use metadata plus prose blocks such as parts, chapters, sections, paragraphs, lists, tables, code, blockquotes, links, scene breaks, and footnotes. Source-document images are not yet part of the manuscript contract; generated ISBN barcode SVGs are a separate copyright-page facility. Markdown remains the canonical shared manuscript contract for the current implementation; Org is canonicalized through that contract before rendering.
 
 Letters have a smaller recipient-oriented model because their sender, recipient, substitution, and signoff semantics do not map cleanly onto either stage plays or manuscripts.
 
@@ -53,6 +53,8 @@ Letters have a smaller recipient-oriented model because their sender, recipient,
 5. Selected local `script.yaml`.
 6. Selected local style-specific YAML.
 7. CLI overrides.
+
+Local discovery begins at the source directory and walks upwards towards HOME. Only the nearest `script.yaml` is selected; its style-specific sibling is loaded from the same directory. For a multi-file manuscript, the first resolved input determines that starting directory.
 
 The loader provides dotted and inherited access for scripts and letters, and typed decoding for manuscript layout. Root `folio.*` values remain shared defaults; child mode values override only their own elements.
 

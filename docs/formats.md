@@ -1,4 +1,4 @@
-<!-- Version: 0.1 | Last updated: 2026-04-26 -->
+<!-- Version: 0.2 | Last updated: 2026-08-10 -->
 
 # Format Overview
 
@@ -31,8 +31,10 @@ The event stream is the intermediate representation. Every parser emits these ev
 | `character_table_row` | name, description | One entry in the cast list |
 | `character_table_end` | - | End cast list |
 | `prop_text` | text | On-stage text (signs, placards, letters read aloud) |
-| `footnote_def` | name, text | A footnote definition |
-| `end` | - | End of document |
+| `footnote` | name, text | A footnote definition |
+| `transition` | text | A transition such as `BLACKOUT` or `CUT TO:` |
+| `intro_header` | title | A header before the play proper |
+| `intro_text` | text | Introductory prose before the play proper |
 
 ## Fidelity Matrix
 
@@ -42,7 +44,7 @@ Not every format can represent every event natively. The matrix below shows whic
 |-------|----------|----------|----------|-----|
 | front_matter (title) | Lossless | Lossless | Lossless | Lossless |
 | front_matter (author) | Lossless | Lossless | Lossless | Lossless |
-| front_matter (other keys) | Lossless | Lost | Lossless | Lost |
+| front_matter (other keys) | Selected keys | Lost | Selected keys | Selected keys rendered where applicable |
 | act_header | Lossless | Lossless | Degraded | Lossless |
 | scene_header | Lossless | Lossless | Lossless | Lossless |
 | stage_direction | Lossless | Lossless | Lossless | Lossless |
@@ -51,18 +53,20 @@ Not every format can represent every event natively. The matrix below shows whic
 | dialogue | Lossless | Lossless | Lossless | Lossless |
 | character_table | Lossless | Lossless | Degraded | Lossless |
 | prop_text | Lossless | Lossless | Degraded | Lossless |
-| footnote_def | Lossless | Lossless | Degraded | Lossless |
+| footnote | Lossless | Lossless | Degraded | Lossless |
+| transition | Lossless | Lossless | Lossless | Lossless |
+| intro_header / intro_text | Lossless | Lossless | Degraded | Lossless |
 
 ### Key Fidelity Gaps
 
 Fountain is the format with the most fidelity concerns. See [format-fountain.md §Fidelity Analysis](format-fountain.md#fidelity-analysis) for full details. In summary:
 
-- **Act headers** map to Fountain Sections, which are invisible in formatted output - they serve as structural markers only. A Fountain reader can recover them, but a human reading a formatted Fountain document cannot see act boundaries.
+- **Act headers** are emitted as a Fountain page break followed by visible centred bold text. First Folio can parse that representation back as an act, but other Fountain tools may treat it only as centred text.
 - **Character tables** have no Fountain equivalent. They are rendered as plain Action text, which means a Fountain->org round-trip loses the table structure.
 - **Prop text** maps to Fountain's centred text (`>TEXT<`), which loses the semantic distinction between "on-stage text" and "centred action".
 - **Footnotes** map to Fountain Notes (`[[text]]`), which are not numbered and are invisible in formatted output. The name/number of the footnote is lost.
 
-Markdown's only fidelity gap is arbitrary front matter keys - Markdown output includes only title and author.
+Text emitters preserve only the metadata keys they explicitly render. Org output includes title, subtitle, author, date, and version; Markdown includes title, subtitle, and author; Fountain includes title, subtitle, author, version, and date. Other parsed metadata remains available to PDF rendering but is not guaranteed to survive a text-format round trip.
 
 ### Rendering toggles
 
@@ -72,7 +76,7 @@ Individual event types can be suppressed via [configuration](config.md). Keys be
 |------------|-------------------------------|
 | `render.stage-directions` | `stage_direction` |
 | `render.frontmatter` | Introductory headers and text before the play proper |
-| `render.footnotes` | `footnote_def` |
+| `render.footnotes` | `footnote` |
 | `render.character-table` | `character_table_start`, `character_table_row`, `character_table_end` |
 | `render.transitions` | `transition` |
 
@@ -81,4 +85,3 @@ Suppression is applied between the parser and emitter - the parser always emits 
 ## Manuscript Path
 
 `folio manuscript` is a prose rendering path rather than a stage-play conversion path. It accepts Markdown and org-mode manuscript contracts, rejects Fountain, and renders directly to Typst or PDF through the Go manuscript engine. It does not use the stage-play event stream because prose manuscripts have different structural elements: parts, chapters, sections, paragraphs, scene breaks, code, and manuscript metadata.
-8 symbol replacements

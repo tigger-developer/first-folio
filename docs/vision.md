@@ -1,10 +1,10 @@
-<!-- Version: 0.1 | Last updated: 2026-04-26 -->
+<!-- Version: 0.2 | Last updated: 2026-08-10 -->
 
 # First Folio - Vision
 
 ## Purpose
 
-First Folio is a format converter for stage plays. It reads plays written in a structured source format and produces output in any supported target format, preserving the semantic structure of the work: acts, scenes, stage directions, character names, dialogue, character tables, and front matter.
+First Folio is a command-line publishing tool for stage plays, submission letters, and prose manuscripts. It converts structured play sources without discarding their dramatic semantics and renders scripts, letters, and manuscripts as production-quality Typst or PDF documents.
 
 ## Name
 
@@ -12,7 +12,7 @@ The name references the 1623 First Folio of Shakespeare's plays - the first coll
 
 ## Problem
 
-Playwrights and dramaturgs work across multiple tools and workflows. A play may be drafted in Emacs org-mode, submitted in Fountain format, typeset as PDF for rehearsal, or published as Markdown. No single tool handles all of these conversions while preserving the semantic structure of the text. Existing converters (pandoc, etc.) treat plays as generic documents, losing the distinction between stage directions, character names, dialogue, and other dramatic elements.
+Writers work across multiple tools and workflows. A play may be drafted in Emacs Org mode, submitted in Fountain, typeset as PDF for rehearsal, or published as Markdown. A prose manuscript needs repeatable title pages, contents, running matter, chapter layout, and regional submission conventions without repeated word-processor repair. Generic converters do not preserve dramatic semantics, while word processors make deterministic project-wide typography and rendering unnecessarily fragile.
 
 ## Goals
 
@@ -20,24 +20,28 @@ Playwrights and dramaturgs work across multiple tools and workflows. A play may 
 
 2. **Lossless round-tripping where possible.** Converting from format A to format B and back should preserve the semantic content of the play. Formatting details (whitespace, indentation) may change, but no acts, scenes, directions, characters, or dialogue lines should be lost.
 
-3. **Faithful formatting.** Each output format follows its own conventions. Markdown uses headers and bold/italic. PDF (via Typst) uses British stage play layout with proper indentation. Fountain follows the Fountain markup specification. The tool does not impose one format's conventions on another.
+3. **Faithful formatting.** Each output format follows its own conventions. Play PDFs support British stage-play, US stage-play, and US screenplay presets. Manuscript PDFs support British and US manuscript presets. Fountain follows the supported subset documented by First Folio rather than pretending unsupported Fountain features round-trip.
 
 4. **CLI-first, scriptable.** All operations are available as command-line tools that read from files or stdin and write to files or stdout. Batch processing, piping, and scripting are first-class use cases.
 
 5. **Minimal dependencies.** The installed application is one Go binary. PDF output requires Typst. Rich manuscript Markdown/org parsing and conversion may depend on Pandoc where using a standard document AST avoids custom parser complexity.
 
-6. **Project configuration.** A project may keep First Folio and Yapper settings in one `script.yaml`. Only documented top-level metadata and `render` keys are shared. The `folio:` and `yapper:` namespaces belong exclusively to their respective applications. Per-project config files override global defaults. See [docs/config.md](config.md).
+6. **Project configuration.** A project may keep First Folio and Yapper settings in one `script.yaml`. Only documented top-level metadata and `render` keys are shared. The `folio:` and `yapper:` namespaces belong exclusively to their respective applications. The nearest project config and its style-specific sibling override global settings and built-in presets by key. See [docs/config.md](config.md).
 
 ## Supported Formats
 
-| Format | Read | Write | Notes |
-|--------|------|-------|-------|
-| Org-mode play | Yes | No | Structured org with heading-level semantics |
-| Markdown | No | Yes | Clean idiomatic Markdown |
-| PDF | No | Yes | Via Typst, British stage play layout |
-| Fountain | Planned | Planned | Industry-standard screenplay/stage play format |
+| Path | Read | Write | Notes |
+|------|------|-------|-------|
+| Org-mode play | Yes | Yes | Structured Org with heading-level dramatic semantics |
+| Markdown play | Yes | Yes | Convention-based Markdown play contract |
+| Fountain play | Yes | Yes | Documented supported Fountain subset |
+| Typst/PDF play | No | Yes | British, US stage-play, or US screenplay layout |
+| Org-mode manuscript | Yes | No | Canonicalized through the Markdown manuscript contract |
+| Markdown manuscript | Yes | No | Canonical manuscript input contract |
+| Typst/PDF manuscript | No | Yes | British or US manuscript layout |
+| Org-mode letter sections | Yes | No | Recipient-specific letters rendered to PDF |
 
-The direction of travel is toward full read/write support for all text-based formats (org, Markdown, Fountain). PDF remains write-only as it is a final-output format.
+PDF and Typst are final-output formats. Manuscript text-format emission and source-document images remain outside the current contract.
 
 ## Future: a gentle interface
 
@@ -45,7 +49,7 @@ First Folio is CLI-first, but many playwrights are not comfortable with terminal
 
 The vision is not a full IDE or editor — org-mode and Emacs already serve that role beautifully. Instead, a simple companion app that:
 
-- Opens an org or Fountain file and shows a live-rendered preview
+- Opens an Org, Markdown, or Fountain file and shows a live-rendered preview
 - Provides a "Convert to..." menu (PDF, Markdown, Fountain) with one click
 - Exposes style selection (British / American / Screenplay) as a dropdown
 - Generates cover letters from the embedded `:letter:` section with a recipient picker

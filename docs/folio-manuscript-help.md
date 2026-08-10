@@ -10,11 +10,17 @@ Options:
   --attribution TEXT          Prefix author name, for example by
   --author-attribution TEXT   Compatibility alias for --attribution
   --date DATE                 Override manuscript date
-  --version [VERSION]         Show command version, or override manuscript version when VALUE is supplied
+  --version                   Show application version
   --wordcount WORDS           Override manuscript word count
   --contact-name NAME         Override title-page contact name
   --dry-run                   Validate inputs and print the render plan
   -h, --help                  Show this help message
+
+Set manuscript version metadata in source frontmatter or script.yaml.
+
+Config:
+  ~/.config/first-folio/script.yaml plus the nearest script.yaml found by
+  walking from the first resolved input's directory towards HOME.
 
 External ISBN barcode SVG:
   Configure the copyright block in the local script.yaml:

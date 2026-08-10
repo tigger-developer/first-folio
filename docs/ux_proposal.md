@@ -1,4 +1,4 @@
-<!-- Version: 0.1 | Last updated: 2026-07-19 | Status: proposal, not implemented -->
+<!-- Version: 0.2 | Last updated: 2026-08-10 | Status: proposal, not implemented -->
 
 # First Folio - SwiftUI Companion App: UX Proposal
 
@@ -33,9 +33,9 @@ The commands have genuinely different shapes. The UI must reflect that rather th
 
 | Command | Input | Output | Style options | Distinctive UX need |
 |---|---|---|---|---|
-| `convert` | One script file (`.org` / `.md` / `.fountain`) | One file (any of the above plus `.pdf`) or stdout | `british` (British Stageplay, default) / `us` (US Stageplay) / `screenplay` (industry-standard screenplay, nation-agnostic) | Target format picker; layout knobs behind a disclosure; open produced PDF in Preview on success |
+| `convert` | One script file (`.org` / `.md` / `.fountain`) | One file (any of the above plus `.typ` or `.pdf`) or stdout | `british` (British Stageplay, default) / `us` (US Stageplay) / `screenplay` (industry-standard screenplay, nation-agnostic) | Target format picker; layout knobs behind a disclosure; open produced PDF in Preview on success |
 | `letter` | One `.org` file containing `:letter:` sections | N PDFs, one per recipient, into a chosen directory | none | Recipient list surfaced from the source file; per-recipient toggles; prefix and directory |
-| `manuscript` | Many prose files (`.md` / `.org`), possibly a glob | One `.typ` or `.pdf` file | `british` (default) / `us` only - no screenplay | Ordered multi-file list, drag to reorder; metadata overrides form; dry-run |
+| `manuscript` | Many prose files (`.md` / `.org`), possibly a glob | One `.typ` or `.pdf` file | `british` (default) / `us` only - no screenplay | Deterministically sorted multi-file list; metadata overrides form; dry-run |
 
 The style options are asymmetric on purpose:
 
@@ -113,10 +113,10 @@ Purpose: run `folio manuscript <input>... <target> [--style ...] [metadata overr
 
 Fields:
 
-- **Input files** - multi-file picker (`.md`, `.org`). Chosen files appear in a reorderable list with drag handles - order is significant to the CLI. A `Add glob...` button opens a small sheet where the user can enter a shell glob (e.g. `~/notes/about-time-nove/part?/ch??.md`), and the app expands it and appends the matches; this preserves the CLI's globbing use case for users who prefer patterns.
+- **Input files** - multi-file picker (`.md`, `.org`). The CLI sorts resolved paths deterministically; the app displays that effective order rather than implying drag order will be preserved. An `Add glob...` button opens a small sheet where the user can enter a shell glob (e.g. `chapters/ch??.md`), and the app expands it before invocation.
 - **Target file** - save-as picker with `.typ` or `.pdf` selection.
 - **Style** - segmented control: `British` (default) | `US`. No screenplay option.
-- **Metadata overrides** - disclosure group. Fields: `Title`, `Subtitle`, `Author`, `Attribution` (prefix, e.g. "by"), `Date`, `Version`, `Wordcount`, `Contact name`. Blanks are omitted from the invocation so `script.yaml` and source frontmatter still apply. Maps to the `--title` / `--subtitle` / `--author` / `--attribution` / `--date` / `--version` / `--wordcount` / `--contact-name` CLI flags.
+- **Metadata overrides** - disclosure group. Fields: `Title`, `Subtitle`, `Author`, `Attribution` (prefix, e.g. "by"), `Date`, `Wordcount`, and `Contact name`. Blanks are omitted from the invocation so `script.yaml` and source frontmatter still apply. These map to the corresponding public CLI flags. Manuscript `Version` currently belongs in source frontmatter or `script.yaml` because public `--version` reports the application version.
 - **Dry run** - checkbox. When ticked, adds `--dry-run` and shows the render plan in the log without producing output.
 
 Primary action: `Render Manuscript`.
@@ -134,7 +134,7 @@ Primary action: `Render Manuscript`.
 The app does not write config files in MVP (matches the CLI contract in `docs/config.md`). It does:
 
 - Read `~/.config/first-folio/script.yaml` at launch, if present, to prefill default style, font, and page size in the Convert screen.
-- Show the resolved config sources in a Preferences sheet (`⚙`): global path, local path (if a source file is loaded), and the CLI overrides that will be added by the app's current field values. This is a diagnostic aid so a writer can see why an output looks the way it does.
+- Show the resolved config sources in a Preferences sheet: global path, nearest local ancestor path (if a source file is loaded), active style-specific siblings, and the CLI overrides that will be added by the app's current field values. This is a diagnostic aid so a writer can see why an output looks the way it does.
 
 **No bundled script.yaml.** The app ships without a `script.yaml` inside its bundle. Defaults come from `folio` itself - the CLI already embeds `presets/british-script.yaml` (see `internal/config/config.go:39` and `assets.go`) and applies it when no user config is present. Duplicating those defaults in the app bundle would create two sources of truth that could drift. If the app needs to render fields with default values (for example in the post-MVP Preferences pane), it obtains them by asking `folio` (via a schema/effective-config CLI mode - see Open Question 6), not from an app-local file.
 
@@ -152,7 +152,7 @@ The Preferences pane is a structured YAML editor for the `folio:` namespace. It 
 
 At the top of the pane, a two-position toggle:
 
-- **Prefs for this doc set** - enabled only when a source file (Convert / Letter) or set of source files (Manuscript) is currently loaded. Edits the local `script.yaml` in the source file's directory. If none exists, `Save` creates one containing only the keys the user has set - it does not copy the merged config into a new file (that would freeze defaults and defeat inheritance).
+- **Prefs for this doc set** - enabled only when a source file (Convert / Letter) or set of source files (Manuscript) is currently loaded. Edits the nearest ancestor `script.yaml`. If none exists, the UI must ask the user to select the intended project directory before creating one containing only the keys explicitly set; it must not assume every source subdirectory is a project root.
 - **Default config** - always enabled. Edits `~/.config/first-folio/script.yaml`. Same principle: writes only the keys the user has actually set.
 
 The toggle also changes the "resolved value" annotation next to each field so the user can see which layer wins after their edit (see §Field rows).
@@ -209,7 +209,7 @@ The `~/.config/first-folio/` directory does not exist on a fresh machine (the CL
 2. The app writes `script.yaml` to that path.
 3. This path and filename are exactly what the CLI reads (`docs/config.md` §File locations), so both the app and the CLI immediately see the new file with no additional configuration.
 
-The app never creates a local `script.yaml` in a source-file directory automatically - that scope's `Save` only writes when the user explicitly chose "Prefs for this doc set", and the directory already exists (it contains the source file).
+The app never creates a local `script.yaml` automatically. That scope's `Save` writes only after the user explicitly chooses "Prefs for this doc set" and, when no ancestor config exists, selects the intended project directory.
 
 ### Why this is post-MVP
 

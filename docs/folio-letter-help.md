@@ -8,6 +8,7 @@ Options:
   --dir DIR          Output directory, default same as source file
   --prefix PREFIX    Output filename prefix, default "letter"
   -h, --help         Show this help message
+  --version          Show application version
 
 Placeholders:
   Any [keyword] in the letter body is replaced from two sources:
@@ -24,3 +25,7 @@ Placeholders:
        #+VERSION:  -> [version]
 
   Unresolved placeholders pass through as [name].
+
+Config:
+  ~/.config/first-folio/script.yaml plus the nearest script.yaml found by
+  walking from the source directory towards HOME.

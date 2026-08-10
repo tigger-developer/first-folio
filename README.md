@@ -1,6 +1,6 @@
 # First Folio
 
-A format converter for stage plays. Reads plays in structured source formats and produces output in multiple target formats, preserving the semantic structure: acts, scenes, stage directions, characters, dialogue, and front matter.
+A command-line publishing tool for stage plays, submission letters, and prose manuscripts. It converts structured play sources between Org, Markdown, and Fountain, and renders scripts, letters, and manuscripts through Typst.
 
 ## Quickstart
 
@@ -25,8 +25,8 @@ folio convert play.md play.org
 folio letter play.org              # all recipients
 folio letter play.org --to Abbey   # specific recipient
 
-# Render prose manuscript chapters to PDF
-folio manuscript '~/notes/about-time-nove/part?/ch??.md' ~/creative/subs/obrien-about-time/04-manuscript-ch1-3.pdf
+# Render one or more prose manuscript chapters to PDF
+folio manuscript 'chapters/ch??.md' submission.pdf
 folio manuscript examples/dummy-manuscript.org manuscript.typ
 ```
 
@@ -71,7 +71,7 @@ Each format has a complete reference example demonstrating all supported feature
 First Folio reads configuration from `script.yaml` files. It never creates or modifies config files.
 
 ```yaml
-# ~/.config/first-folio/script.yaml or alongside your source file
+# ~/.config/first-folio/script.yaml or the nearest project ancestor
 
 date: "2026-04-26"
 version: "Draft v3"
@@ -82,7 +82,7 @@ folio:
   page: a4
 ```
 
-All config sources are merged in precedence order: CLI flags > local `script.yaml` > global `script.yaml` > built-in defaults. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
+Configuration is merged by key. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the global style-specific file, global `script.yaml`, the selected built-in style override, and the British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
 
 See [docs/config.md](docs/config.md) for the configuration reference and [examples/script.yaml.example](examples/script.yaml.example) for an annotated example.
 

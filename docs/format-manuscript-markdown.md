@@ -1,4 +1,4 @@
-<!-- Version: 0.1 | Last updated: 2026-07-06 -->
+<!-- Version: 0.2 | Last updated: 2026-08-10 -->
 
 # Markdown Manuscript Format
 
@@ -8,7 +8,7 @@ Markdown manuscript input is a prose contract, separate from the Markdown stage-
 
 All YAML frontmatter values are treated as manuscript strings. Quote values when that keeps the intent clearest, but the parser also accepts YAML scalars and converts them to strings, so `wordcount: about 90,000 words`, `wordcount: approx 100k words`, `wordcount: 20.000 mots`, and `wordcount: 90000` are all valid. Dates should be written as ISO strings such as `2026-07-06`; rendered output uses `folio.manuscript.date-format`.
 
-Supported frontmatter fields are `title`, `subtitle`, `author`, `attribution`, `date`, `version`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`. `attribution` is optional and defaults to empty; when set, it prefixes the author name with a space, so `attribution: by` and `author: Tadhg O'Brien` render as `by Tadhg O'Brien`. `author-attribution` is accepted as a compatibility alias. `contact-name` is optional and is used only for the title-page contact block; it does not default to the manuscript author.
+Supported frontmatter fields are `title`, `subtitle`, `author`, `attribution`, `date`, `version`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`. `attribution` is optional and defaults to empty; when set, it prefixes the author name with a space, so `attribution: by` and `author: Example Author` render as `by Example Author`. `author-attribution` is accepted as a compatibility alias. `contact-name` is optional and is used only for the title-page contact block; it does not default to the manuscript author.
 
 ## Element Schema
 
@@ -30,7 +30,7 @@ Supported frontmatter fields are `title`, `subtitle`, `author`, `attribution`, `
 | HTML comments | Private notes, excluded |
 | Heading ending `<!-- noexport -->` | Private section excluded until the next same-or-higher heading |
 
-Setext headings are not part of the manuscript contract; use ATX headings (`#`, `##`, `###`) only. HTML blocks are not supported.
+Setext headings are not part of the manuscript contract; use ATX headings (`#`, `##`, `###`) only. HTML blocks and source-document images are not supported.
 
 Section breaks default to a centred `#` marker in rendered manuscripts. Override `folio.manuscript.scene-break.marker` in YAML config to use another marker.
 

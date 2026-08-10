@@ -1,4 +1,4 @@
-<!-- Version: 0.3 | Last updated: 2026-07-14 -->
+<!-- Version: 0.4 | Last updated: 2026-08-10 -->
 
 # Markdown Play Format
 
@@ -14,17 +14,19 @@ First Folio uses a convention-based Markdown format to represent stage plays. Th
 
 ### Front Matter
 
-The document title is a level-1 ATX heading. The subtitle (if present) appears as an italic line below the title. The author appears as an italic string prefixed with "by".
+The document title is a level-1 ATX heading. The subtitle (if present) appears as a bold line below the title. The author appears as an italic string prefixed with "by". An optional version/date line uses the exact delimiter form shown below.
 
 ```markdown
 # The Importance of Being Earnest
 
-*A Trivial Comedy for Serious People*
+**A Trivial Comedy for Serious People**
 
 *by Oscar Wilde*
+
+--- Draft 3 | 2026-08-10 ---
 ```
 
-`title`, `subtitle`, and `author` are represented. Other front matter keys (template, draft-date, etc.) are not included in Markdown output. The `draft-date` is available via the config system and rendered on the PDF title page only.
+`title`, `subtitle`, `author`, `version`, and `date` are represented. Other front matter keys are not included in Markdown output.
 
 ### Acts (H2)
 
@@ -99,6 +101,15 @@ Bold-italic quoted text, standalone on its own line.
 
 ```markdown
 ***"WELCOME TO THE GARDEN PARTY"***
+```
+
+### Transitions
+
+A blockquote-style line represents a transition. First Folio treats this as a dramatic transition, not a general Markdown blockquote.
+
+```markdown
+> BLACKOUT
+> CUT TO:
 ```
 
 ### Footnotes

@@ -1,4 +1,4 @@
-<!-- Version: 0.7 | Last updated: 2026-08-09 -->
+<!-- Version: 0.8 | Last updated: 2026-08-10 -->
 
 # Configuration
 
@@ -13,9 +13,9 @@ See [examples/script.yaml.example](../examples/script.yaml.example) for an annot
 | Location | Purpose |
 |----------|---------|
 | `~/.config/first-folio/script.yaml` | Global user defaults |
-| `<source-file-directory>/script.yaml` | Per-project overrides |
+| Nearest `script.yaml` at or above the source directory | Per-project overrides |
 
-Both files are read when they exist. Per-project values override global values. CLI flags override everything.
+Local discovery starts in the source directory and walks upwards towards HOME. The nearest `script.yaml` wins; multiple local files are not merged. For a multi-file manuscript, the first resolved input supplies the starting directory. A style-specific sibling such as `script-us.yaml` or `script-screenplay.yaml` is loaded from the same directory as its base file.
 
 ## Precedence - layered merge
 
@@ -24,9 +24,12 @@ All config sources are read and merged. Each layer overrides individual keys fro
 | Priority | Source |
 |----------|--------|
 | 1 (highest) | CLI flags |
-| 2 | Local `script.yaml` (source file directory) |
-| 3 | Global `~/.config/first-folio/script.yaml` |
-| 4 (lowest) | Built-in defaults |
+| 2 | Nearest local `script-<style>.yaml` |
+| 3 | Nearest local `script.yaml` |
+| 4 | Global `~/.config/first-folio/script-<style>.yaml` |
+| 5 | Global `~/.config/first-folio/script.yaml` |
+| 6 | Selected built-in style override |
+| 7 (lowest) | British built-in base preset |
 
 **Example:** Global config sets `folio.font: "EB Garamond"` and `folio.page: a4`. A local config sets only `folio.font: "Georgia"`. The merged result uses Georgia for the font and a4 for the page - the local config overrides one key without erasing the rest.
 
@@ -43,6 +46,8 @@ These keys are read by both First Folio and yapper. When present, they override 
 | `author` | string | (from source) | Author name |
 | `date` | string | (from source) | Date displayed on the title page |
 | `version` | string | (from source) | Draft or version displayed on the title page |
+
+Manuscript mode additionally accepts top-level `attribution`, `author-attribution`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`. These override corresponding manuscript frontmatter values and are display strings, including `wordcount`; First Folio does not impose numeric or language-specific formatting.
 
 ### Shared rendering options
 
@@ -66,6 +71,8 @@ All First Folio-specific settings live under the `folio:` key.
 | `font-size` | string | `12pt` | Body font size |
 | `font-weight` | string | font default | Optional Typst font weight |
 | `font-stretch` | string | font default | Optional Typst font stretch |
+| `heading-font` | string | inherits `font` | Default heading font family |
+| `heading-font-size` | string | inherits `font-size` | Default heading font size |
 | `margin` | string | `25mm` | Page margins |
 | `page` | string | `a4` | Page size |
 | `default-format` | string | `pdf` | Default output format when no target file or `--to` given |
@@ -111,12 +118,64 @@ Common manuscript keys:
 | `heading-font` | string | `Libertinus Sans` | `Menlo` |
 | `mono-font` | string | `Libertinus Mono` | `Iosevka Custom` |
 | `line-spacing` | number | `1.5` | `2` |
+| `justify` | bool | `true` | inherited (`true`) |
 | `paragraph-indent` | string | `10mm` | `12.7mm` |
 | `paragraph-spacing` | string | `0` | `0` |
 
-`folio.manuscript.line-spacing` accepts a baseline multiplier or an explicit Typst length. With a multiplier, `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. A length such as `2em` is passed through without adding another unit. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap.
+`folio.manuscript.line-spacing` accepts a baseline multiplier or an explicit Typst length. With a multiplier, `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. A length such as `2em` is passed through without adding another unit. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap. `folio.manuscript.justify` controls body-text justification.
 
 `folio.manuscript.page-header.content-padding-after` controls the clearance between the running header and the manuscript body on every running-header page. It does not affect the title page or table of contents.
+
+#### Complete manuscript key inventory
+
+The built-in files [british-manuscript.yaml](../presets/british-manuscript.yaml) and [us-overrides-manuscript.yaml](../presets/us-overrides-manuscript.yaml) are the canonical default values. Every accepted `folio.manuscript` key is listed below; omitted child typography inherits from the manuscript heading or body typography as described above.
+
+| Group | Accepted keys |
+|---|---|
+| Core | `style`, `page`, `margin`, `gutter`, `line-spacing`, `justify`, `paragraph-indent`, `paragraph-spacing` |
+| Body typography | `font`, `font-size`, `font-weight` |
+| Heading typography | `heading-font`, `heading-font-size`, `heading-font-weight` |
+| Monospace typography | `mono-font`, `mono-font-size`, `mono-font-weight` |
+| Title typography | `title-font`, `title-font-size`, `title-font-weight` |
+| Subtitle typography | `subtitle-font`, `subtitle-font-size`, `subtitle-font-weight`, `subtitle-font-style` |
+| Author typography | `author-font`, `author-font-size`, `author-font-weight`, `attribution`, `author-attribution` |
+| Date typography | `date-font`, `date-font-size`, `date-font-weight`, `date-format` |
+| Version typography | `version-font`, `version-font-size`, `version-font-weight` |
+| Word-count typography | `wordcount-font`, `wordcount-font-size`, `wordcount-font-weight` |
+| Contact typography | `contact-font`, `contact-font-size`, `contact-font-weight` |
+
+| Nested block | Accepted child keys |
+|---|---|
+| `page-header` | `enabled`, `font`, `font-size`, `font-weight`, `font-style`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
+| `page-footer` | `enabled`, `font`, `font-size`, `font-weight`, `font-style`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
+| `toc` | `enabled`, `links`, `title`, `font`, `font-size`, `font-weight`, `heading-font`, `heading-font-size`, `heading-font-weight`, `include-parts`, `include-chapters`, `include-sections`, `dot-leaders`, `page-numbers`, `page-break-before`, `blank-page-before`, `blank-page-after`, `line-spacing`, `part-gap-before`, `continuation-padding-before`, `part-bold` |
+| `title-page` | `enabled`, `page-number`, `include-title`, `include-subtitle`, `include-author`, `include-date`, `include-wordcount`, `include-contact-name`, `include-address`, `include-phone`, `include-email`, `include-website`, `include-version`, `title-block-align`, `footer-align` |
+| `title-page.<item>` | `align`, where `<item>` is `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, or `contact` |
+| `scene-break` | `marker` |
+| `list`, `table`, `code-block` | `space-before`, `space-after` |
+| `page-numbering` | `frontmatter-format`, `body-format`, `body-reset` |
+
+The `part` and `chapter` blocks share this shape:
+
+| Key | Purpose |
+|---|---|
+| `page-break-before`, `blank-page-before`, `blank-page-after` | Page and parity control |
+| `skip-header`, `skip-footer` | Suppress running matter on the heading page |
+| `vertical-align`, `position`, `align` | Heading placement; `vertical-align` is principally for parts and `position` for chapters |
+| `case-transform`, `name-case` | Case of the complete heading or semantic name |
+| `space-after` | Clearance after the heading |
+| `prefix`, `separator`, `suffix` | Compose the displayed heading |
+| `number-format`, `show-number`, `show-name` | Number/name presentation |
+| `explicit-numbering` | Use `derived` source order or `source` number text |
+| `number-reset` | `never` or, for chapters, `per-part` |
+
+The `copyright` block accepts:
+
+| Group | Accepted keys |
+|---|---|
+| Page control | `enabled`, `position`, `skip-header`, `skip-footer`, `blank-page-before`, `blank-page-after`, `align` |
+| Content | `credits`, `body`, `separator`, `separator-space-before`, `separator-space-after`, `publication`, `publisher`, `publisher-preposition`, `isbn`, `isbn-label`, `isbn-barcode` |
+| Typography | `font`, `font-size`, `heading-font-weight`, `line-spacing`, `block-spacing` |
 
 ### Page-header format placeholders
 
@@ -205,17 +264,17 @@ Default: `align: left-right` for the header (outer-edge, both sides), `align: ce
 
 ### Custom page dimensions
 
-`folio.manuscript.page` accepts either a named Typst preset (`a4`, `us-letter`, `uk-book-b`, ...) or a custom `WxHmm` / `WxHin` dimension:
+`folio.manuscript.page` accepts either a named Typst preset (`a4`, `us-letter`, `uk-book-b`, ...) or a custom `WxHmm` dimension. Imperial custom dimensions remain accepted for backward compatibility but public configuration should use metric values.
 
 ```yaml
 folio:
   manuscript:
-    page: 5.5x8.5in    # trade paperback
+    page: 140x216mm    # trade paperback
     # or
     page: 200x300mm    # custom hardback
 ```
 
-Both dimensions must share the same unit. Values that match neither shape (e.g. `200mm`, `5.5inx200mm`, `bogus`) are rejected at config load with a diagnostic naming the offending value.
+Both dimensions must share the same unit. Values that match neither shape (e.g. `200mm`, mixed-unit dimensions, or `bogus`) are rejected at config load with a diagnostic naming the offending value.
 
 ### Binding gutter
 
@@ -242,7 +301,7 @@ Independent of `page-break-before`; combining `page-break-before: true` with `bl
 
 ### Page numbering (issue #16)
 
-`folio.manuscript.page-numbering` controls the number-style style on frontmatter vs body pages, and whether the display counter restarts at the frontmatter/body boundary.
+`folio.manuscript.page-numbering` controls the number style on frontmatter and body pages, and whether the display counter restarts at the frontmatter/body boundary.
 
 ```yaml
 folio:
@@ -494,6 +553,7 @@ folio:
 
 ## Changelog
 
+- 0.8 (2026-08-10): Documented nearest-ancestor and style-sibling discovery, the complete manuscript key inventory, justification, and metric custom-page examples.
 - 0.7 (2026-08-09): Restored linked manuscript TOCs by default, documented the annotation-free override, and added continuous and part-qualified chapter numbering.
 - 0.6 (2026-08-07): Added configurable reserved space above continued table-of-contents entries.
 - 0.5 (2026-08-07): Clarified manuscript body and table-of-contents line-spacing behaviour.

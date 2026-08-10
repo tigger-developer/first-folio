@@ -1,4 +1,4 @@
-<!-- Version: 0.3 | Last updated: 2026-07-14 -->
+<!-- Version: 0.4 | Last updated: 2026-08-10 -->
 
 # Org-mode Play Format
 
@@ -12,7 +12,7 @@ Org-mode is the primary authoring format for First Folio. It uses Emacs org-mode
 
 ### Front Matter
 
-Org-mode keyword lines at the top of the file. Any `#+KEY: value` line is captured.
+Org-mode keyword lines at the top of the file. Any `#+KEY: value` line is captured by the parser. Org emission preserves `TITLE`, `SUBTITLE`, `AUTHOR`, `DATE`, and `VERSION`; arbitrary keys are not guaranteed to survive a text-format round trip.
 
 ```org
 #+TITLE: The Importance of Being Earnest
@@ -21,7 +21,7 @@ Org-mode keyword lines at the top of the file. Any `#+KEY: value` line is captur
 #+TEMPLATE: play
 ```
 
-Standard keys: `TITLE`, `AUTHOR`, `SUBTITLE`. Any key is accepted and passed through the event stream.
+Standard emitted keys are `TITLE`, `SUBTITLE`, `AUTHOR`, `DATE`, and `VERSION`.
 
 ### Acts (H1)
 
@@ -53,7 +53,7 @@ Level-3 headings represent stage directions (also called action text or narrativ
 *** JACK enters through the French windows.
 ```
 
-Org-mode inline markup within stage directions is converted: `/italic/` -> italic, `*bold*` -> bold.
+Org-mode inline markup is retained in event text and interpreted by the Org-aware PDF renderer. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
 
 ### Characters (H4)
 
@@ -88,7 +88,7 @@ I don't think there is much likelihood, Jack,
 of you and Miss Fairfax being united.
 ```
 
-Org-mode inline markup within dialogue is converted: `/italic/` -> italic, `*bold*` -> bold.
+The same inline-markup limitation applies to dialogue: PDF rendering understands the Org source markers, while text-format emission preserves the event text rather than normalizing all target markers.
 
 ### Character Table
 
@@ -107,13 +107,23 @@ Separator rows (`|---+---|`) are ignored. Each data row emits a `character_table
 
 ### Prop Text
 
-On-stage text (signs, letters, placards) marked with a specific list-item pattern.
+On-stage text (signs, letters, placards) uses a level-3 heading tagged `:prop:`. The parser also accepts the historical list-item form.
 
 ```org
+*** WELCOME TO THE GARDEN PARTY                              :prop:
+
 - *"WELCOME TO THE GARDEN PARTY"*
 ```
 
-The pattern is: `- *"TEXT"*` - a list item containing bold-quoted text. The quotes and bold markers are stripped; only the inner text is emitted.
+Both forms emit the same `prop_text` event. First Folio emits the tagged-heading form when writing Org.
+
+### Transitions
+
+A transition uses a level-3 heading tagged `:transition:`. The parser also accepts a level-5 heading as a compatibility form.
+
+```org
+*** BLACKOUT                                                :transition:
+```
 
 ### Footnotes
 
@@ -161,5 +171,3 @@ Just boiled.
 *** Research notes :noexport:
 - Look up kettle brands for period accuracy.
 ```
-1 -ize correction
-7 symbol replacements

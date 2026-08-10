@@ -1,5 +1,4 @@
-sanitize: defaulting to oed + symbols
-<!-- Version: 0.1 | Last updated: 2026-04-26 -->
+<!-- Version: 0.2 | Last updated: 2026-08-10 -->
 
 # Fountain Format
 
@@ -18,25 +17,24 @@ Fountain is widely supported by professional screenwriting and playwriting softw
 
 ### Title Page
 
-Key-value pairs at the very start of the file. Keys end with a colon. Values are either inline or indented on the next line (3+ spaces or tab). The title page is terminated by two consecutive blank lines.
+Key-value pairs at the very start of the file. Keys end with a colon and values must be on the same line. The first blank line terminates the title page.
 
 ```fountain
 Title: The Importance of Being Earnest
 Author: Oscar Wilde
 Draft date: 1895
 Contact:
-    oscar@example.com
-    +44 20 7946 0958
+oscar@example.invalid
 
 ```
 
-Common keys: `Title`, `Credit`, `Author`, `Authors`, `Source`, `Draft date`, `Contact`, `Copyright`, `Notes`. Any key is accepted.
+Any same-line key is parsed into metadata. First Folio emits `Title`, `Author`, `Draft date`, and `Date`; a subtitle is emitted as an indented continuation of `Title`, but that continuation is not currently recovered by First Folio's Fountain parser. Other keys are not guaranteed to survive a text-format round trip.
 
 **Event mapping:** Each key-value pair -> `front_matter(key, value)`.
 
 ### Sections
 
-Structural markers using ATX-style headings. Sections are **invisible** in formatted Fountain output - they exist purely for organizational purposes in the plain-text source.
+First Folio accepts ATX-style Fountain sections as structural input.
 
 ```fountain
 # Act I
@@ -46,7 +44,7 @@ Structural markers using ATX-style headings. Sections are **invisible** in forma
 
 **Event mapping:** `#` -> `act_header(title)`. `##` -> `scene_header(title)`. Deeper levels are collapsed to `scene_header`.
 
-**Fidelity note:** This is a key difference from org-mode and Markdown, where act/scene headers are visible structural elements. In Fountain, sections are metadata. A human reading a Fountain document in a Fountain app will not see section headings in the formatted output - they appear only in the outline/navigator. See [Fidelity Analysis §Act Headers](#act-headers) below.
+When writing Fountain, First Folio emits an act as a page break followed by visible centred bold text. This preserves a visible act boundary, but it is a First Folio representation rather than an invisible Fountain section.
 
 ### Scene Headings
 
@@ -75,7 +73,7 @@ The room is luxuriously furnished.
 !JACK enters — this is forced Action despite being all-caps.
 ```
 
-Leading tabs and spaces are preserved (tabs = 4 spaces). Blank lines within an Action block are preserved.
+Line content is preserved as an event. Blank lines delimit elements and are not represented in the event stream.
 
 **Event mapping:** -> `stage_direction(text)`.
 
@@ -123,7 +121,7 @@ I really don't see anything romantic in proposing.
 It is very romantic to be in love.
 ```
 
-Manual line breaks within dialogue are preserved. To include an intentional blank line within dialogue (without ending the dialogue block), use a line containing only two spaces.
+Manual line breaks within dialogue become separate dialogue events. Blank or whitespace-only lines end the dialogue block; First Folio does not support Fountain's two-space intentional blank-line convention.
 
 **Event mapping:** Each line -> `dialogue(line)`.
 
@@ -153,7 +151,7 @@ CUT TO:
 >FADE OUT.
 ```
 
-**Event mapping:** -> `stage_direction(text)`. The semantic distinction between a transition and a stage direction is lost. Transitions are a screenplay convention and are uncommon in stage plays.
+**Event mapping:** -> `transition(text)`. Forced `>` markers are stripped.
 
 ### Lyrics
 
@@ -165,7 +163,7 @@ Lines prefixed with `~`. Used for songs within dialogue.
 ~must be in want of a wife.
 ```
 
-**Event mapping:** -> `dialogue(line)` with the `~` prefix stripped. The lyric/song marker is lost.
+**First Folio support:** Lyrics do not have a dedicated event. The `~` prefix is not interpreted or stripped; it remains in the resulting action or dialogue text. Do not rely on lyric semantics surviving conversion.
 
 **Fidelity note:** Lyrics lose their semantic marking. On round-trip, song lyrics become ordinary dialogue.
 
@@ -189,9 +187,9 @@ Text enclosed in double brackets. Invisible in formatted output.
 [[This scene needs more tension — revisit in next draft.]]
 ```
 
-Notes can appear inline within other elements or on their own line. They can span multiple lines.
+First Folio recognizes only a standalone, single-line note whose line begins with `[[` and ends with `]]`. Inline and multiline notes are not part of the supported contract.
 
-**Event mapping:** -> `footnote_def(name, text)`. The name is auto-generated since Fountain notes are not numbered.
+**Event mapping:** -> `footnote(name, text)`. The name is auto-generated from the source line because Fountain notes are not numbered.
 
 **Fidelity note:** Org-mode and Markdown footnotes are numbered/named and appear in the output. Fountain notes are anonymous and invisible. The name is lost on Fountain export; the content is preserved but becomes invisible. See [Fidelity Analysis §Footnotes](#footnotes).
 
@@ -225,7 +223,7 @@ A line of three or more equals signs (`===`).
 ===
 ```
 
-**Event mapping:** **Dropped.** Page breaks have no event-stream equivalent.
+**Event mapping:** **Dropped with a warning.** Page breaks have no event-stream equivalent. First Folio nevertheless emits a page break before its visible act representation; re-importing that generated Fountain recovers the following visible act marker and discards the page-break marker.
 
 ### Emphasis
 
@@ -240,7 +238,7 @@ Fountain uses Markdown-style emphasis, plus underline:
 
 Emphasis does **not** carry across line breaks. Backslash (`\`) escapes special characters.
 
-**Fidelity note:** Underline (`_text_`) has no equivalent in org-mode or Markdown. It is converted to italic on export to those formats.
+First Folio preserves emphasis markers as inline text where the target contract supports them. It does not reinterpret Fountain underline as Markdown italic. Exact cross-format emphasis fidelity depends on the target format's inline syntax.
 
 ---
 
@@ -253,8 +251,8 @@ This section details every case where converting to or from Fountain loses infor
 | Element | Fountain -> Event Stream | Event Stream -> Fountain | Round-trip Impact |
 |---------|------------------------|------------------------|-------------------|
 | Title/Author | Lossless | Lossless | None |
-| Other front matter keys | Lossless | Lossless | None |
-| Act headers | Lossless (sections recoverable) | Degraded (invisible in output) | Visible -> invisible -> visible |
+| Other front matter keys | Parsed only | Selected keys emitted | Unrecognized keys lost |
+| Act headers | Lossless from `#` or visible marker | Visible centred marker after page break | Structure preserved in First Folio |
 | Scene headers | Lossless | Lossless | None |
 | Stage directions | Lossless | Lossless | None |
 | Characters | Lossless | Lossless | None |
@@ -265,23 +263,24 @@ This section details every case where converting to or from Fountain loses infor
 | Character tables | N/A (no Fountain equivalent) | Degraded (becomes Action) | **Lost** on round-trip |
 | Prop text | Lossless (centred text) | Degraded (becomes centred text) | Semantic distinction lost |
 | Footnotes | Degraded (anonymous, invisible) | Degraded (name lost, invisible) | Name/numbering **lost** |
-| Lyrics | Degraded (marker stripped) | N/A (cannot emit) | **Lost** |
+| Transitions | Lossless | Lossless | None |
+| Lyrics | No dedicated support; marker retained as text | N/A (cannot emit) | Lyric semantics **lost** |
 | Synopses | **Lost** | N/A (cannot emit) | **Lost** |
 | Boneyard | **Lost** | N/A (cannot emit) | **Lost** |
 | Page breaks | **Lost** | N/A (cannot emit) | **Lost** |
-| Underline emphasis | Degraded (becomes italic) | N/A | Underline -> italic |
+| Underline emphasis | Preserved as inline text | Preserved where target supports it | Target-dependent |
 
 ### Act Headers
 
-**The problem:** Fountain Sections (`#`, `##`) are invisible in formatted output. They exist as organizational metadata in the plain-text source and appear in the app's outline/navigator panel, but they are not rendered in the printed or exported document. In contrast, org-mode H1 headings and Markdown H2 headings are visible structural elements.
+**The problem:** Native Fountain Sections (`#`, `##`) are organizational metadata rather than visible formatted headings. Stage plays generally require visible act divisions.
 
 **On import (Fountain -> events):** Section headings are parsed and emitted as `act_header` events. No information is lost at the data level.
 
-**On export (events -> Fountain):** Act headers are written as Section headings (`# Act I`). The text is preserved, but a reader viewing the formatted Fountain output will not see the act boundaries. Only someone reading the raw `.fountain` file or using an app's outline view will see them.
+**On export (events -> Fountain):** First Folio writes `===` and a visible centred bold marker such as `> **ACT I** <`. First Folio parses that visible marker back as an act header.
 
-**Round-trip (org -> Fountain -> org):** The act header text survives, but the visual prominence changes: visible header -> invisible section -> visible header. Functionally lossless; visually degraded in the Fountain intermediate.
+**Round-trip (Org -> Fountain -> Org):** The act text and structural event survive. The generated Fountain representation is visible rather than a native invisible Section.
 
-**Recommendation:** For plays where act structure is important to the reader (most stage plays), be aware that Fountain's formatted output will not show act divisions. This is a fundamental design decision in the Fountain spec, not a limitation of First Folio.
+**Recommendation:** Treat the visible marker as First Folio's interoperability convention. Other Fountain applications may classify it as centred text rather than an act.
 
 ### Mid-dialogue Parentheticals
 
@@ -330,7 +329,7 @@ The event stream supports only a single `direction` at the start of a character'
 
 **On export (events -> Fountain):** Footnote content is preserved inside `[[note]]` markers, but the name/number is lost. The note becomes invisible in formatted Fountain output.
 
-**On import (Fountain -> events):** Notes are emitted as `footnote_def` events with auto-generated names. The original anonymous nature of Fountain notes means there is no name to recover.
+**On import (Fountain -> events):** Standalone single-line notes are emitted as `footnote` events with auto-generated names. The original anonymous nature of Fountain notes means there is no name to recover.
 
 **Round-trip:** The footnote text survives, but the name/numbering is lost and the footnote changes from visible to invisible to visible (with a new auto-generated name).
 
@@ -338,7 +337,7 @@ The event stream supports only a single `direction` at the start of a character'
 
 These are Fountain-only elements with no equivalent in the event stream.
 
-**Lyrics (`~`):** Imported as dialogue with the lyric marker stripped. On round-trip, song lyrics become ordinary dialogue - the reader can no longer distinguish sung text from spoken text.
+**Lyrics (`~`):** No dedicated lyric event exists. The marker remains literal text, and its lyric semantics are not recoverable from the event stream.
 
 **Synopses (`=`):** Dropped entirely on import. These are outlining metadata.
 
@@ -376,5 +375,3 @@ Just boiled.
 
 >THE END<
 ```
-3 -ize corrections
-43 symbol replacements
