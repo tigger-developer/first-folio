@@ -394,6 +394,7 @@
 #set text(
   top-edge: 0.8em,
   bottom-edge: -0.2em,
+  tracking: {{.Config.Folio.Manuscript.LetterSpacing}},
 )
 #set par(
   first-line-indent: {{.Config.Folio.Manuscript.ParagraphIndent}},
@@ -430,6 +431,7 @@
           size: {{.Config.Folio.Manuscript.PageFooter.FontSize}},
           weight: "{{.Config.Folio.Manuscript.PageFooter.FontWeight}}",{{if .Config.Folio.Manuscript.PageFooter.FontStyle}}
           style: "{{.Config.Folio.Manuscript.PageFooter.FontStyle}}",{{end}}
+          tracking: {{.Config.Folio.Manuscript.PageFooter.LetterSpacing}},
         )[{{if .HasFooterFrontmatter}}#{ if is-body { {{if .HasFooterAlt}}if calc.odd(pg) { [{{.FooterAlt}}] } else { [{{.Footer}}] }{{else}}[{{.Footer}}]{{end}} } else { {{if .HasFooterAltFrontmatter}}if calc.odd(pg) { [{{.FooterAltFrontmatter}}] } else { [{{.FooterFrontmatter}}] }{{else}}[{{.FooterFrontmatter}}]{{end}} } }{{else}}{{if .HasFooterAlt}}#{ if calc.odd(pg) { [{{.FooterAlt}}] } else { [{{.Footer}}] } }{{else}}{{.Footer}}{{end}}{{end}}]
       ]
     }
@@ -446,6 +448,7 @@
           size: {{.Config.Folio.Manuscript.PageHeader.FontSize}},
           weight: "{{.Config.Folio.Manuscript.PageHeader.FontWeight}}",{{if .Config.Folio.Manuscript.PageHeader.FontStyle}}
           style: "{{.Config.Folio.Manuscript.PageHeader.FontStyle}}",{{end}}
+          tracking: {{.Config.Folio.Manuscript.PageHeader.LetterSpacing}},
         )[{{if .HasHeaderFrontmatter}}#{ if is-body { {{if .HasHeaderAlt}}if calc.odd(pg) { [{{.HeaderAlt}}] } else { [{{.Header}}] }{{else}}[{{.Header}}]{{end}} } else { {{if .HasHeaderAltFrontmatter}}if calc.odd(pg) { [{{.HeaderAltFrontmatter}}] } else { [{{.HeaderFrontmatter}}] }{{else}}[{{.HeaderFrontmatter}}]{{end}} } }{{else}}{{if .HasHeaderAlt}}#{ if calc.odd(pg) { [{{.HeaderAlt}}] } else { [{{.Header}}] } }{{else}}{{.Header}}{{end}}{{end}}]
       ]
     }

@@ -118,11 +118,12 @@ Common manuscript keys:
 | `heading-font` | string | `Libertinus Sans` | `Menlo` |
 | `mono-font` | string | `Libertinus Mono` | `Iosevka Custom` |
 | `line-spacing` | number | `1.5` | `2` |
+| `letter-spacing` | Typst length | `0em` | inherited (`0em`) |
 | `justify` | bool | `true` | inherited (`true`) |
 | `paragraph-indent` | string | `10mm` | `12.7mm` |
 | `paragraph-spacing` | string | `0` | `0` |
 
-`folio.manuscript.line-spacing` accepts a baseline multiplier or an explicit Typst length. With a multiplier, `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. A length such as `2em` is passed through without adding another unit. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap. `folio.manuscript.justify` controls body-text justification.
+`folio.manuscript.line-spacing` accepts a baseline multiplier or an explicit Typst length. With a multiplier, `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. A length such as `2em` is passed through without adding another unit. `folio.manuscript.letter-spacing` maps to Typst font tracking and defaults to `0em`; positive and negative Typst lengths are accepted. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap. `folio.manuscript.justify` controls body-text justification.
 
 `folio.manuscript.page-header.content-padding-after` controls the clearance between the running header and the manuscript body on every running-header page. It does not affect the title page or table of contents.
 
@@ -133,7 +134,7 @@ The built-in files [british-manuscript.yaml](../presets/british-manuscript.yaml)
 | Group | Accepted keys |
 |---|---|
 | Core | `style`, `page`, `margin`, `gutter`, `line-spacing`, `justify`, `paragraph-indent`, `paragraph-spacing` |
-| Body typography | `font`, `font-size`, `font-weight` |
+| Body typography | `font`, `font-size`, `font-weight`, `letter-spacing` |
 | Heading typography | `heading-font`, `heading-font-size`, `heading-font-weight` |
 | Monospace typography | `mono-font`, `mono-font-size`, `mono-font-weight` |
 | Title typography | `title-font`, `title-font-size`, `title-font-weight` |
@@ -146,8 +147,8 @@ The built-in files [british-manuscript.yaml](../presets/british-manuscript.yaml)
 
 | Nested block | Accepted child keys |
 |---|---|
-| `page-header` | `enabled`, `font`, `font-size`, `font-weight`, `font-style`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
-| `page-footer` | `enabled`, `font`, `font-size`, `font-weight`, `font-style`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
+| `page-header` | `enabled`, `font`, `font-size`, `font-weight`, `font-style`, `letter-spacing`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
+| `page-footer` | `enabled`, `font`, `font-size`, `font-weight`, `font-style`, `letter-spacing`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
 | `toc` | `enabled`, `links`, `title`, `font`, `font-size`, `font-weight`, `heading-font`, `heading-font-size`, `heading-font-weight`, `include-parts`, `include-chapters`, `include-sections`, `dot-leaders`, `page-numbers`, `page-break-before`, `blank-page-before`, `blank-page-after`, `line-spacing`, `part-gap-before`, `continuation-padding-before`, `part-bold` |
 | `title-page` | `enabled`, `page-number`, `include-title`, `include-subtitle`, `include-author`, `include-date`, `include-wordcount`, `include-contact-name`, `include-address`, `include-phone`, `include-email`, `include-website`, `include-version`, `title-block-align`, `footer-align` |
 | `title-page.<item>` | `align`, where `<item>` is `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, or `contact` |
@@ -225,9 +226,9 @@ When `alt-format` is unset, `format` renders on every page (unchanged from AC15.
 
 ### Page-footer block
 
-`folio.manuscript.page-footer` mirrors the fields of `folio.manuscript.page-header`. Typography fields (`font`, `font-size`, `font-weight`, `font-style`) inherit from `page-header` when unset. Default: enabled with a centred `[page]` number, `distance-from-edge` and `content-padding-after` matching `page-header`. Set `page-footer.enabled: false` to omit the running footer.
+`folio.manuscript.page-footer` mirrors the fields of `folio.manuscript.page-header`. Typography fields (`font`, `font-size`, `font-weight`, `font-style`) inherit from `page-header` when unset. `letter-spacing` is independent: both header and footer inherit `folio.manuscript.letter-spacing` unless individually overridden. Default: enabled with a centred `[page]` number, `distance-from-edge` and `content-padding-after` matching `page-header`. Set `page-footer.enabled: false` to omit the running footer.
 
-Both `page-header` and `page-footer` accept `font-style` alongside `font`, `font-size`, and `font-weight`. Accepted values are `regular` (default), `italic`, and `oblique`. When unset, no `style:` argument is emitted, preserving the default upright rendering.
+Both `page-header` and `page-footer` accept `font-style` alongside `font`, `font-size`, and `font-weight`. Accepted values are `regular` (default), `italic`, and `oblique`. When unset, no `style:` argument is emitted, preserving the default upright rendering. Their `letter-spacing` values map to Typst tracking and accept values such as `0.05em` or `-0.01em`.
 
 ### Frontmatter-format (issue #24)
 

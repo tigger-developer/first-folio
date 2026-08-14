@@ -146,6 +146,7 @@ type ManuscriptConfig struct {
 	ContactFontSize     string              `yaml:"contact-font-size"`
 	ContactFontWeight   string              `yaml:"contact-font-weight"`
 	LineSpacing         string              `yaml:"line-spacing"`
+	LetterSpacing       string              `yaml:"letter-spacing"`
 	Justify             *bool               `yaml:"justify"`
 	ParagraphIndent     string              `yaml:"paragraph-indent"`
 	ParagraphSpacing    string              `yaml:"paragraph-spacing"`
@@ -241,12 +242,13 @@ type TitlePageItemConfig struct {
 }
 
 type PageHeaderConfig struct {
-	Enabled    bool   `yaml:"enabled"`
-	Font       string `yaml:"font"`
-	FontSize   string `yaml:"font-size"`
-	FontWeight string `yaml:"font-weight"`
-	FontStyle  string `yaml:"font-style"`
-	Format     string `yaml:"format"`
+	Enabled       bool   `yaml:"enabled"`
+	Font          string `yaml:"font"`
+	FontSize      string `yaml:"font-size"`
+	FontWeight    string `yaml:"font-weight"`
+	FontStyle     string `yaml:"font-style"`
+	LetterSpacing string `yaml:"letter-spacing"`
+	Format        string `yaml:"format"`
 	// #24: frontmatter-format / alt-frontmatter-format apply on frontmatter pages
 	// (title, copyright, TOC, and any page before the first part/chapter). nil ->
 	// fall back to Format / AltFormat. Non-nil empty string -> blank header on
@@ -267,12 +269,13 @@ type PageHeaderConfig struct {
 // Enabled is a *bool so normalizeConfig can distinguish "unset" (default true) from
 // an explicit `enabled: false`.
 type PageFooterConfig struct {
-	Enabled    *bool  `yaml:"enabled,omitempty"`
-	Font       string `yaml:"font"`
-	FontSize   string `yaml:"font-size"`
-	FontWeight string `yaml:"font-weight"`
-	FontStyle  string `yaml:"font-style"`
-	Format     string `yaml:"format"`
+	Enabled       *bool  `yaml:"enabled,omitempty"`
+	Font          string `yaml:"font"`
+	FontSize      string `yaml:"font-size"`
+	FontWeight    string `yaml:"font-weight"`
+	FontStyle     string `yaml:"font-style"`
+	LetterSpacing string `yaml:"letter-spacing"`
+	Format        string `yaml:"format"`
 	// #24: frontmatter-format / alt-frontmatter-format apply on frontmatter pages.
 	// nil -> fall back to Format / AltFormat. Non-nil empty string -> blank footer
 	// on frontmatter. Non-nil non-empty -> use this format on frontmatter.
@@ -572,6 +575,7 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.ContactFontSize, "10pt")
 	fill(&ms.ContactFontWeight, "regular")
 	fill(&ms.LineSpacing, "1.5")
+	fill(&ms.LetterSpacing, "0em")
 	if ms.Justify == nil {
 		justify := true
 		ms.Justify = &justify
@@ -584,6 +588,7 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.PageHeader.Font, ms.HeadingFont)
 	fill(&ms.PageHeader.FontSize, "10pt")
 	fill(&ms.PageHeader.FontWeight, "regular")
+	fill(&ms.PageHeader.LetterSpacing, ms.LetterSpacing)
 	fill(&ms.PageHeader.Format, "[title] • [chapter] • [author]")
 	fill(&ms.PageHeader.Align, "left-right")
 	fill(&ms.PageHeader.DistanceFromEdge, ms.Margin)
@@ -596,6 +601,7 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.PageFooter.FontSize, ms.PageHeader.FontSize)
 	fill(&ms.PageFooter.FontWeight, ms.PageHeader.FontWeight)
 	fill(&ms.PageFooter.FontStyle, ms.PageHeader.FontStyle)
+	fill(&ms.PageFooter.LetterSpacing, ms.LetterSpacing)
 	fill(&ms.PageFooter.Format, "[page]")
 	fill(&ms.PageFooter.Align, "center")
 	fill(&ms.PageFooter.DistanceFromEdge, ms.Margin)
