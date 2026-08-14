@@ -411,6 +411,7 @@
   ),
   header-ascent: {{.Config.Folio.Manuscript.PageHeader.ContentPaddingAfter}},
   {{if .PageFooterEnabled}}footer-descent: {{.Config.Folio.Manuscript.PageFooter.ContentPaddingAfter}},{{end}}{{else}}margin: (
+    top: {{.Config.Folio.Manuscript.Margin}},
     {{if .PageFooterEnabled}}bottom: {{.Config.Folio.Manuscript.PageFooter.DistanceFromEdge}} + {{.Config.Folio.Manuscript.PageFooter.ContentPaddingAfter}},{{end}}
     {{if .GutterActive}}inside: {{.Config.Folio.Manuscript.Margin}} + {{.Gutter}},
     outside: {{.Config.Folio.Manuscript.Margin}},{{else}}rest: {{.Config.Folio.Manuscript.Margin}},{{end}}
