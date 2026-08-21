@@ -141,6 +141,7 @@
   #   mono-font-weight: regular
   #   line-spacing: 1.5
   #   justify: true
+  #   widow-orphan-control: true
   #   paragraph-indent: 10mm
   #   paragraph-spacing: 0
   #   date-format: "2 January 2006"

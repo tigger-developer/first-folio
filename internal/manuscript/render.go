@@ -67,11 +67,12 @@ type templateData struct {
 	GutterActive bool
 
 	// Header/footer alignment expressions (rendered directly into `align(...)` in the template).
-	HeaderAlignExpr   string
-	FooterAlignExpr   string
-	HeaderAlignIsPair bool
-	FooterAlignIsPair bool
-	PageFooterEnabled bool
+	HeaderAlignExpr    string
+	FooterAlignExpr    string
+	HeaderAlignIsPair  bool
+	FooterAlignIsPair  bool
+	PageFooterEnabled  bool
+	WidowOrphanControl bool
 
 	// Title-page per-item alignment expressions (empty = use legacy group fallback) and a
 	// paired Floatable boolean per item so the template can emit `float: true` only when the
@@ -197,6 +198,7 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 		HeaderAlignIsPair:       headerAlign.IsPair,
 		FooterAlignIsPair:       footerAlign.IsPair,
 		PageFooterEnabled:       pageFooterEnabled,
+		WidowOrphanControl:      cfg.Folio.Manuscript.WidowOrphanControl != nil && *cfg.Folio.Manuscript.WidowOrphanControl,
 		TitleAlignExpr:          titleExpr,
 		TitleFloatable:          TitleItemFloatable(cfg.Folio.Manuscript.TitlePage.Title.Align),
 		SubtitleAlignExpr:       subtitleExpr,

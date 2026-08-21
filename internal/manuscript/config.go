@@ -148,6 +148,7 @@ type ManuscriptConfig struct {
 	LineSpacing         string              `yaml:"line-spacing"`
 	LetterSpacing       string              `yaml:"letter-spacing"`
 	Justify             *bool               `yaml:"justify"`
+	WidowOrphanControl  *bool               `yaml:"widow-orphan-control"`
 	ParagraphIndent     string              `yaml:"paragraph-indent"`
 	ParagraphSpacing    string              `yaml:"paragraph-spacing"`
 	PageHeader          PageHeaderConfig    `yaml:"page-header"`
@@ -579,6 +580,10 @@ func normalizeConfig(cfg *Config) {
 	if ms.Justify == nil {
 		justify := true
 		ms.Justify = &justify
+	}
+	if ms.WidowOrphanControl == nil {
+		enabled := true
+		ms.WidowOrphanControl = &enabled
 	}
 	fill(&ms.ParagraphIndent, "10mm")
 	fill(&ms.ParagraphSpacing, "0")

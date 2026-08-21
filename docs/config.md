@@ -120,10 +120,13 @@ Common manuscript keys:
 | `line-spacing` | number | `1.5` | `2` |
 | `letter-spacing` | Typst length | `0em` | inherited (`0em`) |
 | `justify` | bool | `true` | inherited (`true`) |
+| `widow-orphan-control` | bool | `true` | inherited (`true`) |
 | `paragraph-indent` | string | `10mm` | `12.7mm` |
 | `paragraph-spacing` | string | `0` | `0` |
 
 `folio.manuscript.line-spacing` accepts a baseline multiplier or an explicit Typst length. With a multiplier, `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. A length such as `2em` is passed through without adding another unit. `folio.manuscript.letter-spacing` maps to Typst font tracking and defaults to `0em`; positive and negative Typst lengths are accepted. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap. `folio.manuscript.justify` controls body-text justification.
+
+`folio.manuscript.widow-orphan-control` defaults to `true`, preventing a single paragraph line from being stranded at the bottom or top of a page. Set it to `false` to allow paragraphs to split freely at page boundaries. This setting does not keep whole paragraphs together.
 
 `folio.manuscript.page-header.content-padding-after` controls the clearance between the running header and the manuscript body on every running-header page. It does not affect the title page or table of contents.
 
@@ -133,7 +136,7 @@ The built-in files [british-manuscript.yaml](../presets/british-manuscript.yaml)
 
 | Group | Accepted keys |
 |---|---|
-| Core | `style`, `page`, `margin`, `gutter`, `line-spacing`, `justify`, `paragraph-indent`, `paragraph-spacing` |
+| Core | `style`, `page`, `margin`, `gutter`, `line-spacing`, `justify`, `widow-orphan-control`, `paragraph-indent`, `paragraph-spacing` |
 | Body typography | `font`, `font-size`, `font-weight`, `letter-spacing` |
 | Heading typography | `heading-font`, `heading-font-size`, `heading-font-weight` |
 | Monospace typography | `mono-font`, `mono-font-size`, `mono-font-weight` |

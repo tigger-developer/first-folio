@@ -395,6 +395,7 @@
   top-edge: 0.8em,
   bottom-edge: -0.2em,
   tracking: {{.Config.Folio.Manuscript.LetterSpacing}},
+  costs: (widow: {{if .WidowOrphanControl}}100%{{else}}0%{{end}}, orphan: {{if .WidowOrphanControl}}100%{{else}}0%{{end}}),
 )
 #set par(
   first-line-indent: {{.Config.Folio.Manuscript.ParagraphIndent}},
