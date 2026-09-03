@@ -6,9 +6,9 @@
 
 ** Current phase
 
-- *Phase:* Archive promoted, ticket sweep classified, and documentation reconciliation recorded; closure record pending.
+- *Phase:* Archive promoted, ticket sweep classified, documentation reconciliation recorded, and all snapshot-open tickets closed; closure record commit pending.
 - *Classified tickets:* All 35 snapshot issues have a recorded disposition.
-- *Next action:* Commit the migration evidence, close the 16 issues open at the snapshot, then record the closure result.
+- *Next action:* Commit the recorded closure result.
 
 ** Archive
 
@@ -222,9 +222,9 @@ Delivered ticket evidence retained; human review is required only to assign the 
 
 * Closure record
 
-- *Archive commit:* Pending migration commit.
-- *Closure date:* Pending.
-- *Tickets attempted:* Pending.
-- *Tickets closed:* Pending.
-- *Closure failures:* Pending.
-- *Closure-record commit:* Pending.
+- *Archive commit:* 7226975db9ae7b670f7cd78cf02446b5ea353cf1.
+- *Closure date:* 2026-09-03.
+- *Tickets attempted:* 16: #7, #11, #13, #14, #15, #16, #17, #18, #24, #25, #28, #29, #30, #33, #34, and #35.
+- *Tickets closed:* 16; every attempted ticket returned a successful close result.
+- *Closure failures:* None.
+- *Closure-record commit:* Pending this final index commit.
