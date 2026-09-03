@@ -74,11 +74,25 @@ folio:
       include-email: true
       include-website: true
       include-version: true
-      # Per-item title-page align is available via AC15.5 (title/subtitle/author/date/
-      # wordcount/version/contact each accept `align:` values). Defaults are intentionally
-      # left unset here so an unconfigured British manuscript renders the legacy centred
-      # title-block layout with contact at top-left and the British footer grid at the
-      # bottom (version | wordcount | date), unchanged from the pre-issue-15 look.
+      # Alignment values are the literal tokens `left`, `center`, and `right`, or a
+      # vertical-horizontal pair combining `top`, `center`, or `bottom` with those
+      # horizontal tokens, for example `top-left`, `center-right`, or `bottom-center`.
+      title-block-align: center # Positions title, subtitle, and author when their align value is empty.
+      footer-align: center # Aligns items retained in the British footer grid: version | wordcount | date.
+      title:
+        align: "" # Empty uses title-block-align; another alignment positions the title independently.
+      subtitle:
+        align: "" # Empty uses title-block-align; another alignment positions the subtitle independently.
+      author:
+        align: "" # Empty uses title-block-align; another alignment positions the author independently.
+      date:
+        align: "" # Empty retains the date in the footer grid; another alignment positions it independently.
+      wordcount:
+        align: "" # Empty retains the word count in the footer grid; another alignment positions it independently.
+      version:
+        align: "" # Empty retains the version in the footer grid; another alignment positions it independently.
+      contact:
+        align: top-left # Positions the contact block independently; top-left is the British default.
 
     page-header:
       enabled: true
