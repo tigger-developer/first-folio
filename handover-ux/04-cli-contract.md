@@ -143,7 +143,7 @@ Same principle as `convert`: use the app's known target path.
 
 ## Errors
 
-On non-zero exit the CLI writes a diagnostic to stderr and does not create a misleading success artefact (see `docs/ACs.md` AC9.11, AC9.5). The app surfaces this as an alert (last stderr line as title, full stderr in a disclosure) and offers no auto-open.
+On non-zero exit the CLI writes a diagnostic to stderr and does not create a misleading success artefact (see `docs/ACs.org` AC9.11, AC9.5). The app surfaces this as an alert (last stderr line as title, full stderr in a disclosure) and offers no auto-open.
 
 Do not swallow stderr. Do not attempt to re-word CLI diagnostics — relay them verbatim.
 

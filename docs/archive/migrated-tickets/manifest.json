@@ -1,0 +1,67 @@
+{
+  "repository": "tigger-developer/first-folio",
+  "url": "https://github.com/tigger-developer/first-folio",
+  "snapshot_time": "2026-09-03T22:11:39Z",
+  "issue_count": 35,
+  "open_count": 16,
+  "closed_count": 19,
+  "comment_count": 64,
+  "timeline_event_count": 232,
+  "pagination": {
+    "issues": {
+      "pages": 1,
+      "page_lengths": [
+        35
+      ],
+      "complete": true,
+      "excluded_pull_requests": 0
+    },
+    "comments": {
+      "issue_files": 35,
+      "total_pages": 35,
+      "complete": true
+    },
+    "timelines": {
+      "issue_files": 35,
+      "total_pages": 35,
+      "complete": true
+    }
+  },
+  "filenames": [
+    "1.md",
+    "2.md",
+    "3.md",
+    "4.md",
+    "5.md",
+    "6.md",
+    "7.md",
+    "8.md",
+    "9.md",
+    "10.md",
+    "11.md",
+    "12.md",
+    "13.md",
+    "14.md",
+    "15.md",
+    "16.md",
+    "17.md",
+    "18.md",
+    "19.md",
+    "20.md",
+    "21.md",
+    "22.md",
+    "23.md",
+    "24.md",
+    "25.md",
+    "26.md",
+    "27.md",
+    "28.md",
+    "29.md",
+    "30.md",
+    "31.md",
+    "32.md",
+    "33.md",
+    "34.md",
+    "35.md"
+  ]
+}

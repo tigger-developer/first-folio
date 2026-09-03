@@ -96,7 +96,7 @@ Mirror first-folio's shape:
 
 - `README.md` — quickstart, install, screenshots.
 - `ARCHITECTURE.md` — the runtime shape once implemented (source: `03-architecture.md`).
-- `docs/ACs.md` — post-approval AC migration target, per SDLC §Phase 5.
+- `docs/ACs.org` — post-approval AC migration target, per SDLC §Phase 5.
 - `docs/ux.md` — a stable copy of the app's own UX contract (initially: a link back to `first-folio/docs/ux_proposal.md` and a note of any deltas; over time, becomes canonical for the app).
 - `CLAUDE.md` at the repo root — repo-specific agent instructions if any diverge from `~/code/agents/*`.
 
