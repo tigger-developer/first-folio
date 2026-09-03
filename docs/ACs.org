@@ -87,7 +87,7 @@ HOLDING
 
 **** Requirement
 
-Supported extensions are =.org= (org-mode), =.md= (Markdown), =.fountain=/=.ftn= (Fountain), and =.pdf= (output only). Unrecognised extensions and invalid =--to= values are rejected with a descriptive error. See [[docs/formats.md#supported-formats][docs/formats.md §Supported Formats]].
+Supported extensions are =.org= (org-mode), =.md= (Markdown), =.fountain=/=.ftn= (Fountain), and =.pdf= (output only). Unrecognized extensions and invalid =--to= values are rejected with a descriptive error. See [[docs/formats.md#supported-formats][docs/formats.md §Supported Formats]].
 
 **** Provenance
 
@@ -107,7 +107,7 @@ HOLDING
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** RT-1.5 - Unrecognised extension (e.g. =.xyz=) exits non-zero with descriptive error
+***** RT-1.5 - Unrecognized extension (e.g. =.xyz=) exits non-zero with descriptive error
 
 - *Type:* Automated regression test
 - *Status:* PASS
@@ -3672,7 +3672,7 @@ PENDING
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; current =make test= passed the maintained RT definition.
 
-***** RT-15.54 - The default =page-footer= is enabled with =format: "[page]"= and =align: center=, producing a centered page-number footer on body pages
+***** RT-15.54 - The default =page-footer= is enabled with =format: "[page]"= and =align: center=, producing a centred page-number footer on body pages
 
 - *Type:* Automated regression test
 - *Status:* PASS
@@ -3684,7 +3684,7 @@ PENDING
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; current =make test= passed the maintained RT definition.
 
-***** UT-15.7 - A human reviewer opens an unconfigured manuscript rendering and confirms the header shows the new format on the correct side of odd/even pages and the footer shows the centered page number
+***** UT-15.7 - A human reviewer opens an unconfigured manuscript rendering and confirms the header shows the new format on the correct side of odd/even pages and the footer shows the centred page number
 
 - *Type:* User test
 - *Status:* PENDING

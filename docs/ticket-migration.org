@@ -1,0 +1,230 @@
+#+TITLE: Legacy ticket migration
+#+DATE: 2026-09-03
+#+OPTIONS: toc:2
+
+* Migration state and evidence
+
+** Current phase
+
+- *Phase:* Archive promoted, ticket sweep classified, and documentation reconciliation recorded; closure record pending.
+- *Classified tickets:* All 35 snapshot issues have a recorded disposition.
+- *Next action:* Commit the migration evidence, close the 16 issues open at the snapshot, then record the closure result.
+
+** Archive
+
+- *Repository:* tigger-developer/first-folio.
+- *Snapshot:* 2026-09-03T22:11:39Z.
+- *Manifest:* [[file:archive/migrated-tickets/manifest.json][Migrated-ticket manifest]].
+- *Coverage:* 35 actual issues: 16 open and 19 closed; pull requests excluded.
+- *Verification:* One issue page, 35 comment files, and 35 timeline files were fully paginated; 64 comments and 232 timeline events were archived.
+
+** Suite evidence
+
+- *Command:* =make test=.
+- *Result:* PASS: all packages selected by =make test= passed in one run on 2026-09-03.
+- *Evidence source:* The single current operator-run suite output; no test rerun is permitted by this migration.
+
+** Live RT map
+
+- *Harness:* 33 Go =*_test.go= files and 257 =Test*= definitions, all selected by =make test=.
+- *Named RT definitions:* 197 =func TestRT...= definitions. =TestRT_32_8_9= covers two logical IDs, giving 198 logical named RT IDs.
+- *Mapped:* 188 logical RT IDs are recorded against current AC headings in =docs/ACs.org=.
+- *Unresolved:* 10 logical RT IDs, =RT-19.1= through =RT-19.5= and =RT-20.1= through =RT-20.5=, belong to delivered bug-fix tickets with no unambiguous AC table.
+- *Execution:* 195 RT function definitions executed and passed in the recorded suite; =RT-15.7= and =RT-27.3= are intentionally skipped or superseded.
+- *Non-definition markers:* =RT-15.70=, =RT-15.71=, and =RT-18.26= are source comments or range annotations, not maintained test definitions, and are excluded from the checksum.
+
+** Test-definition inventory
+
+- *Descriptor rule:* Each listed Go test function name is the executable descriptor; its file is the path authority, its issue or AC number is the explicit traceability where present, and its membership is =make test=.
+- *Inventory:* 257 definitions across 33 files were enumerated with =rg --no-config '^func Test' --glob '*_test.go'=.
+- *Package-level definitions:* The 60 non-RT definitions are retained as package or integration contracts; no new AC identifier was inferred for them.
+- *RT definitions:* The 197 RT-named definitions are represented by the AC test headings where an AC mapping exists. The 10 #19/#20 definitions remain listed in the unresolved mapping record above.
+
++- *File:* =cmd/update-homebrew/main_test.go=; *definitions:* =TestUpdateFormula=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/app/app_test.go=; *definitions:* =TestRunTopLevelContract=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/app/binary_test.go=; *definitions:* =TestBuiltBinaryOutsideCheckout=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/app/convert_pdf_test.go=; *definitions:* =TestConvertTypstUsesConfiguredTemplate=, =TestConvertPDFCompiles=, =TestScriptSourceFormatsRasterizeInAllStyles=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/app/convert_test.go=; *definitions:* =TestConvertTextFormats=, =TestConvertConfigMetadataOverride=, =TestConvertInvalidInputs=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/app/letter_test.go=; *definitions:* =TestLetterCommandGeneratesFilteredPDF=, =TestLetterCommandRejectsMissingSections=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/app/manuscript_test.go=; *definitions:* =TestManuscriptDispatchInProcess=, =TestRT_25_1_ManuscriptDefaultsToJustifiedBodyText=, =TestRT_25_2_ManuscriptHonoursRaggedRightOverride=, =TestRT_25_3_ManuscriptJustificationIsScopedAfterFrontmatter=; *AC refs:* none recorded; *issue refs:* #25; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/app/parity_test.go=; *definitions:* =TestConversionMatrixParity=, =TestScriptFormatRoundTrips=, =TestScriptLayoutConfigurationParity=, =TestConfigLayerMatrixParity=, =TestConversionDiagnosticsParity=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/config/config_test.go=; *definitions:* =TestLoadScriptPrecedence=, =TestInheritedValue=, =TestLoadScreenplayPresetAndStyleSpecificConfig=, =TestMalformedYAMLNamesFile=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/config/issue20_test.go=; *definitions:* =TestRT_20_1_WalkUpFindsScriptInParent=, =TestRT_20_2_NearerScriptWinsOverAncestor=, =TestRT_20_3_NoScriptOnWalkPathSucceeds=, =TestRT_20_4_WalkStopsAtHomeBoundary=, =TestRT_20_5_StyleSuffixedSiblingFoundAtWalkTarget=; *AC refs:* none recorded; *issue refs:* #20; *RT markers:* RT-20.1, RT-20.2, RT-20.3, RT-20.4, RT-20.5; *membership:* =make test=.
+- *File:* =internal/letter/letter_test.go=; *definitions:* =TestParseLetters=, =TestRenderTypstInlineOrgMarkup=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/manuscript/issue16_test.go=; *definitions:* =TestRT_16_1_DefaultPageNumberingIsArabic=, =TestRT_16_2_FrontmatterFormatRomanLower=, =TestRT_16_3_BodyFormatRomanUpper=, =TestRT_16_4_InvalidFrontmatterFormatRejected=, =TestRT_16_5_BodyResetNeverOmitsOffsetSeed=, =TestRT_16_6_DefaultBodyResetSeedsOffset=, =TestRT_16_7_InvalidBodyResetRejected=, =TestRT_16_8_ChapterNumberResetPerPartAccepted=, =TestRT_16_9_ChapterNumberResetNeverAccepted=, =TestRT_16_10_InvalidChapterNumberResetRejected=; *AC refs:* none recorded; *issue refs:* #16; *RT markers:* RT-16.1, RT-16.10, RT-16.2, RT-16.3, RT-16.4, RT-16.5, RT-16.6, RT-16.7, RT-16.8, RT-16.9; *membership:* =make test=.
+- *File:* =internal/manuscript/issue18_test.go=; *definitions:* =TestRT_18_1_PartsDerivedFromSourceOrder=, =TestRT_18_2_MultiFilePartNumbering=, =TestRT_18_3_ChapterCounterResetsPerPart=, =TestRT_18_4_PartPrefixStrippedUnbelieved=, =TestRT_18_5_ChapterSourceNumberIgnoredByDefault=, =TestRT_18_6_ChapterExplicitNumberingSource=, =TestRT_18_7_HeadingWithoutPrefixVerbatim=, =TestRT_18_8_PartComposedHeading=, =TestRT_18_9_ChapterNumberFormatRomanUpper=, =TestRT_18_10_ChapterNumberFormatRomanLower=, =TestRT_18_11_ChapterShowNumberFalse=, =TestRT_18_12_ChapterShowNameFalse=, =TestRT_18_13_DefaultsRenderSemanticNameOnly=, =TestRT_18_14_ChapterPlaceholderReturnsSemanticName=, =TestRT_18_15_ChapterNumberPlaceholder=, =TestRT_18_16_ChapterPrefixPlaceholder=, =TestRT_18_17_ChapterFullPlaceholder=, =TestRT_18_18_UnknownBracketTokenRenders=, =TestRT_18_19_CaseTransformUpper=, =TestRT_18_20_NameCaseUpper=, =TestRT_18_21_NameCaseTitle=, =TestRT_18_22_HeaderAltFormatEmitsBranching=, =TestRT_18_23_HeaderAltUnsetNoBranch=, =TestRT_18_24_FooterAltFormatSymmetric=, =TestRT_18_25_AltFormatAcceptsExtendedPlaceholders=; *AC refs:* AC15.1, AC18.1, AC18.2, AC18.3, AC18.4, AC18.5, AC18.6; *issue refs:* #18; *RT markers:* RT-18.1, RT-18.10, RT-18.11, RT-18.12, RT-18.13, RT-18.14, RT-18.15, RT-18.16, RT-18.17, RT-18.18, RT-18.19, RT-18.2, RT-18.20, RT-18.21, RT-18.22, RT-18.23, RT-18.24, RT-18.25, RT-18.26, RT-18.3, RT-18.4, RT-18.5, RT-18.6, RT-18.7, RT-18.8, RT-18.9; *membership:* =make test=.
+- *File:* =internal/manuscript/issue19_test.go=; *definitions:* =TestRT_19_1_PageHeaderFontStyleItalic=, =TestRT_19_2_PageHeaderFontStyleOblique=, =TestRT_19_3_PageHeaderFontStyleUnsetEmitsNoStyle=, =TestRT_19_4_PageFooterFontStyleItalic=, =TestRT_19_5_PageFooterFontStyleInheritsFromHeader=; *AC refs:* none recorded; *issue refs:* #19; *RT markers:* RT-19.1, RT-19.2, RT-19.3, RT-19.4, RT-19.5; *membership:* =make test=.
+- *File:* =internal/manuscript/issue21_test.go=; *definitions:* =TestRT_21_1_UnconfiguredCopyrightEmitsNothing=, =TestRT_21_2_DisabledCopyrightPreservesOrder=, =TestRT_21_3_MinimalConfigRendersDefaultCredit=, =TestRT_21_4_MultiCreditRendersAll=, =TestRT_21_5_DefaultCreditLineFromAuthorAndYear=, =TestRT_21_6_BodyListRenders=, =TestRT_21_7_BodyMarkdownMini=, =TestRT_21_8_PublisherRendersWithBoldName=, =TestRT_21_9_ISBNLabelBoldValueRegular=, =TestRT_21_10_BarcodeRenderEmbedsSVG=, =TestRT_21_11_BarcodeNoneNoImage=, =TestRT_21_12_BritishPresetBodyText=, =TestRT_21_13_USPresetBodyText=, =TestRT_21_14_FolioDateDefaultsToToday=, =TestRT_21_15_InvalidISBNRejected=, =TestRT_21_16_UnknownPositionRejected=, =TestRT_21_17_UnknownBarcodeRejected=, =TestRT_21_18_SkipHeaderDefaultsTrue=, =TestRT_21_19_DefaultBlankPageBeforeEnforceLeft=; *AC refs:* AC21.14; *issue refs:* #21; *RT markers:* RT-21.1, RT-21.10, RT-21.11, RT-21.12, RT-21.13, RT-21.14, RT-21.15, RT-21.16, RT-21.17, RT-21.18, RT-21.19, RT-21.2, RT-21.3, RT-21.4, RT-21.5, RT-21.6, RT-21.7, RT-21.8, RT-21.9; *membership:* =make test=.
+- *File:* =internal/manuscript/issue22_test.go=; *definitions:* =TestRT_22_1_ChapterEmptyPrefixDotSeparatorEscapesEnumMarker=, =TestRT_22_2_ChapterEmptyPrefixParenSeparatorEscapesEnumMarker=, =TestRT_22_3_ChapterNonEmptyPrefixNoEscape=, =TestRT_22_4_ChapterNoNumberNoEscape=, =TestRT_22_5_StateFullArgIsNotEscaped=, =TestRT_22_6_PartEmptyPrefixDotSeparatorEscapesEnumMarker=; *AC refs:* none recorded; *issue refs:* #22; *RT markers:* RT-22.1, RT-22.2, RT-22.3, RT-22.4, RT-22.5, RT-22.6; *membership:* =make test=.
+- *File:* =internal/manuscript/issue23_test.go=; *definitions:* =TestRT_23_1_DocumentTopPageHonoursGutter=, =TestRT_23_2_DocumentTopPageFlatMarginWithoutGutter=, =TestRT_23_3_DocumentTopPageExplicitZeroGutter=; *AC refs:* none recorded; *issue refs:* #23; *RT markers:* RT-23.1, RT-23.2, RT-23.3; *membership:* =make test=.
+- *File:* =internal/manuscript/issue24_test.go=; *definitions:* =TestRT_24_1_UnconfiguredFrontmatterFormatUnchanged=, =TestRT_24_2_FrontmatterFormatBranchesOnIsBody=, =TestRT_24_3_EmptyFrontmatterFormatRendersBlank=, =TestRT_24_4_AltFrontmatterFormatVersoRectoPair=, =TestRT_24_5_PageFooterFrontmatterFormat=, =TestRT_24_6_IsBodyStateSeededInPartAndChapter=, =TestRT_24_7_AltFrontmatterFormatFooter=; *AC refs:* none recorded; *issue refs:* #24; *RT markers:* RT-24.1, RT-24.2, RT-24.3, RT-24.4, RT-24.5, RT-24.6, RT-24.7; *membership:* =make test=.
+- *File:* =internal/manuscript/issue26_test.go=; *definitions:* =TestRT_26_1_TitleFooterClearsPrintableBoundary=, =TestRT_26_2_TitleFooterRetainsMetadata=, =TestRT_26_3_AlignedTitleMetadataIsNotDuplicated=; *AC refs:* none recorded; *issue refs:* #26; *RT markers:* RT-26.1, RT-26.2, RT-26.3; *membership:* =make test=.
+- *File:* =internal/manuscript/issue27_test.go=; *definitions:* =TestRT_27_1_TOCContainsNoWordJoiners=, =TestRT_27_2_TOCRetainsVisibleEntryContent=, =TestRT_27_3_Removed_TOCEntriesAreLinked=, =TestRT_27_5_TOCContainsNoLinkAnnotations=, =TestRT_27_6_TOCPartRemainsBoldWithoutLinks=, =TestRT_27_7_DocumentOutlineRemainsAvailable=; *AC refs:* none recorded; *issue refs:* #27; *RT markers:* RT-27.1, RT-27.2, RT-27.3, RT-27.5, RT-27.6, RT-27.7; *membership:* =make test=.
+- *File:* =internal/manuscript/issue28_test.go=; *definitions:* =TestRT_28_1_FileModeWritesExternalBarcode=, =TestRT_28_2_RenderAndFileModeWritesAndEmbedsBarcode=, =TestRT_28_3_HelpDocumentsExternalBarcode=, =TestRT_28_4_PDFCommandWritesExternalBarcode=; *AC refs:* none recorded; *issue refs:* #28; *RT markers:* RT-28.1, RT-28.2, RT-28.3, RT-28.4; *membership:* =make test=.
+- *File:* =internal/manuscript/issue29_test.go=; *definitions:* =TestRT_29_1_HeaderResolvesTotalPages=, =TestRT_29_2_HeaderCombinesCurrentAndTotalPages=, =TestRT_29_3_FooterResolvesTotalPages=, =TestRT_29_4_TotalIncludesBlankAndIgnoresDisplayReset=, =TestRT_29_5_ExistingAndUnknownPlaceholdersRemainStable=, =TestRT_29_6_StandaloneTotalPagesHasNoSeparatorArtefact=; *AC refs:* none recorded; *issue refs:* #29; *RT markers:* RT-29.1, RT-29.2, RT-29.3, RT-29.4, RT-29.5, RT-29.6; *membership:* =make test=.
+- *File:* =internal/manuscript/issue30_test.go=; *definitions:* =TestRT_30_1_BodyLineSpacingLengthCompiles=, =TestRT_30_2_NumericBodyLineSpacingRemainsMultiplier=, =TestRT_30_3_TOCLineSpacingControlsEntrySeparation=; *AC refs:* none recorded; *issue refs:* #30; *RT markers:* RT-30.1, RT-30.2, RT-30.3; *membership:* =make test=.
+- *File:* =internal/manuscript/issue31_test.go=; *definitions:* =TestRT_31_1_DefaultTOCContinuationPaddingAlignsPages=, =TestRT_31_2_TOCContinuationPaddingDefaultsToFifteenMillimetres=, =TestRT_31_3_TOCContinuationPaddingOverrideMovesBothPages=; *AC refs:* none recorded; *issue refs:* #31; *RT markers:* RT-31.1, RT-31.2, RT-31.3; *membership:* =make test=.
+- *File:* =internal/manuscript/issue32_test.go=; *definitions:* =TestRT_32_1_TOCLinksDefaultToEnabled=, =TestRT_32_2_TOCLinksCanBeDisabled=, =TestRT_32_3_TOCLinkModesRemainPrintableAndOutlined=, =TestRT_32_4_TOCLinksRejectNonBooleanValues=, =TestRT_32_5_ChapterNumberingDefaultsToContinuous=, =TestRT_32_6_ChapterNumberingCanResetPerPart=, =TestRT_32_8_9_ChapterNumberFormats=, =TestRT_32_10_CompositeNumbersReachBodyAndTOC=, =TestRT_32_11_InvalidChapterNumberFormatIsRejected=; *AC refs:* none recorded; *issue refs:* #32; *RT markers:* RT-32.1, RT-32.10, RT-32.11, RT-32.2, RT-32.3, RT-32.4, RT-32.5, RT-32.6, RT-32.8, RT-32.9; *membership:* =make test=.
+- *File:* =internal/manuscript/issue33_test.go=; *definitions:* =TestRT_33_1_DisabledHeaderRestoresBodyTopMargin=, =TestRT_33_2_DisabledHeaderPositioningIsInert=, =TestRT_33_3_EnabledHeaderRetainsConfiguredTopMargin=, =TestRT_33_4_DisabledHeaderPDFUsesBodyTopMargin=; *AC refs:* none recorded; *issue refs:* #33; *RT markers:* RT-33.1, RT-33.2, RT-33.3, RT-33.4; *membership:* =make test=.
+- *File:* =internal/manuscript/issue34_test.go=; *definitions:* =TestRT_34_1_LetterSpacingDefaultsToZeroEm=, =TestRT_34_2_HeaderAndFooterInheritManuscriptLetterSpacing=, =TestRT_34_3_HeaderAndFooterLetterSpacingOverrides=, =TestRT_34_4_FooterInheritsManuscriptNotHeaderOverride=, =TestRT_34_5_LetterSpacingCompiles=, =TestRT_34_6_LetterSpacingChangesRenderedTextWidth=; *AC refs:* none recorded; *issue refs:* #34; *RT markers:* RT-34.1, RT-34.2, RT-34.3, RT-34.4, RT-34.5, RT-34.6; *membership:* =make test=.
+- *File:* =internal/manuscript/manuscript_config_enhancements_test.go=; *definitions:* =TestRT_15_1_HeaderPartPlaceholderTracksCurrentPart=, =TestRT_15_2_HeaderChapterPlaceholderTracksCurrentChapter=, =TestRT_15_3_HeaderAuthorTitlePagePlaceholdersStillSubstitute=, =TestRT_15_4_HeaderUnknownPlaceholderIsLiteral=, =TestRT_15_5_HeaderStateHasEmptyDefault=, =TestRT_15_6_PageFooterEnabledRendersFooter=, =TestRT_15_7_PageFooterDefaultDisabled=, =TestRT_15_8_PageFooterTypographyPropagates=, =TestRT_15_9_PageFooterFormatSupportsAllPlaceholders=, =TestRT_15_10_PageFooterPositioningPropagates=, =TestRT_15_11_PageFooterAbsentFromTitleAndTOC=, =TestRT_15_12_PageFooterInheritsFromHeader=, =TestRT_15_13_PageA4Preset=, =TestRT_15_14_PageCustomMillimetres=, =TestRT_15_15_PageCustomInches=, =TestRT_15_16_PageUKBookBPreset=, =TestRT_15_17_PageBogusRejected=, =TestRT_15_18_PageUnknownUnitRejected=, =TestRT_15_19_PageMissingHeightRejected=, =TestRT_15_20_PageMixedUnitRejected=, =TestRT_15_21_ChapterBlankPageBefore=, =TestRT_15_22_ChapterBlankPageAfter=, =TestRT_15_23_PartBlankPageBefore=, =TestRT_15_24_PartBlankPageAfter=, =TestRT_15_25_BlankPageBeforeWithPageBreakBefore=, =TestRT_15_26_BlankPageBeforeWithoutPageBreakBefore=, =TestRT_15_27_BlankPageIsUnnumberedAndBlank=, =TestRT_15_28_BlankPageDefaultsAreFalse=, =TestRT_15_29_TitleAlignBottomCenter=, =TestRT_15_30_SubtitleAlignTopCenter=, =TestRT_15_31_AuthorAlignTopRight=, =TestRT_15_32_DateAlignBottomLeft=, =TestRT_15_33_WordCountAlignBottomRight=, =TestRT_15_34_VersionAlignTopLeft=, =TestRT_15_35_ContactAlignTopRight=, =TestRT_15_36_BareCompassCenterAccepted=, =TestRT_15_37_InvalidVerticalAlignRejected=, =TestRT_15_38_InvalidHorizontalAlignRejected=, =TestRT_15_5_PerItemAlignSuppressesLegacyGridDuplication=, =TestRT_15_39_LegacyTitleBlockAlignFallback=, =TestRT_15_40_HeaderPairLeftRight=, =TestRT_15_41_HeaderPairRightLeft=, =TestRT_15_42_HeaderPairCenterLeft=, =TestRT_15_43_FooterPairRightCenter=, =TestRT_15_44_ScalarAlignAppliesUniformly=, =TestRT_15_45_HeaderPairInvalidRightRejected=, =TestRT_15_46_HeaderPairThreeTokensRejected=, =TestRT_15_47_SinglePageUsesOddRule=, =TestRT_15_63_ChapterBlankPageEnforceRight=, =TestRT_15_64_ChapterBlankPageEnforceLeft=, =TestRT_15_65_PartBlankPageEnforceRight=, =TestRT_15_66_TOCBlankPageEnforceRight=, =TestRT_15_67_TOCBlankPageAfterTrue=, =TestRT_15_68_InvalidBlankPageValueRejected=, =TestRT_15_69_BoolTrueStillEmitsUnconditionalBlankPage=, =TestRT_15_56_ChapterSkipHeader=, =TestRT_15_57_ChapterSkipFooter=, =TestRT_15_58_PartSkipHeader=, =TestRT_15_59_PartSkipFooter=, =TestRT_15_60_SkipDefaultsFalse=, =TestRT_15_61_TemplateFolioPartMacroSupportsSkip=, =TestRT_15_62_TemplateFolioChapterMacroSupportsSkip=, =TestRT_15_48_GutterDefaultsToZero=, =TestRT_15_49_GutterInsideMarginAdded=, =TestRT_15_50_GutterOutsideMarginBase=, =TestRT_15_51_ExplicitZeroGutterMatchesUnconfigured=, =TestRT_15_52_DefaultHeaderFormatIsTitleChapterAuthor=, =TestRT_15_53_DefaultHeaderAlignIsLeftRight=, =TestRT_15_54_DefaultFooterIsCenteredPageNumber=, =TestRT_15_55_ExplicitFooterDisableOmitsFooter=; *AC refs:* AC15.1, AC15.11, AC15.12, AC15.2, AC15.3, AC15.4, AC15.5, AC15.6, AC15.7, AC15.8, AC15.9, AC18.4; *issue refs:* #15; *RT markers:* RT-15.1, RT-15.10, RT-15.11, RT-15.12, RT-15.13, RT-15.14, RT-15.15, RT-15.16, RT-15.17, RT-15.18, RT-15.19, RT-15.2, RT-15.20, RT-15.21, RT-15.22, RT-15.23, RT-15.24, RT-15.25, RT-15.26, RT-15.27, RT-15.28, RT-15.29, RT-15.3, RT-15.30, RT-15.31, RT-15.32, RT-15.33, RT-15.34, RT-15.35, RT-15.36, RT-15.37, RT-15.38, RT-15.39, RT-15.4, RT-15.40, RT-15.41, RT-15.42, RT-15.43, RT-15.44, RT-15.45, RT-15.46, RT-15.47, RT-15.48, RT-15.49, RT-15.5, RT-15.50, RT-15.51, RT-15.52, RT-15.53, RT-15.54, RT-15.55, RT-15.56, RT-15.57, RT-15.58, RT-15.59, RT-15.6, RT-15.60, RT-15.61, RT-15.62, RT-15.63, RT-15.64, RT-15.65, RT-15.66, RT-15.67, RT-15.68, RT-15.69, RT-15.7, RT-15.70, RT-15.71, RT-15.8, RT-15.9; *membership:* =make test=.
+- *File:* =internal/manuscript/manuscript_test.go=; *definitions:* =TestMarkdownManuscriptCLIProducesTypstContract=, =TestOrgManuscriptCLIProducesTypstContract=, =TestUSManuscriptOverridesBritishWithoutChangingPageSize=, =TestManuscriptSpacingOverridesAreIndependent=, =TestTOCCanBeDisabledByConfig=, =TestTOCPartGapBeforeCanBeConfigured=, =TestTOCLineSpacingCanBeConfigured=, =TestTOCPartBoldCanBeDisabled=, =TestRenderDateUsesConfiguredGoLayoutForISOInput=, =TestTitlePageDateFormatCanBeConfigured=, =TestMarkdownFrontmatterAndHeadingContract=, =TestMarkdownFrontmatterScalarValuesBecomeStrings=, =TestMarkdownFrontmatterPreservesLocalizedWordCountText=, =TestMarkdownBodyDashDialogueDoesNotOverrideVersion=, =TestContactNameIsOptionalAndDoesNotFallbackToAuthor=, =TestAuthorAttributionDefaultsEmptyAndCanPrefixAuthor=, =TestMarkdownInlineMarkupAndLiteralDelimitersRenderToTypst=, =TestRenderInlineMarkup=, =TestOrgInlineMarkupAndSectionBreakRenderThroughCanonicalMarkdown=, =TestOrgManuscriptRenderingUsesCanonicalMarkdown=, =TestMarkdownSectionBreaksRequireBlankLineBoundaries=, =TestInvalidInputsFailClearly=, =TestQuotedHomeGlobExpandsDeterministically=, =TestCLIHelpVersionAndDryRun=, =TestPublicFolioDispatcherReachesGoManuscriptHelp=, =TestPDFRenderHasTOCAndNoBlankPageBeforePart=, =TestExamplePDFsRasterize=, =TestDummyMarkdownAndOrgExamplesRenderSamePDFText=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/manuscript/pagination_test.go=; *definitions:* =TestWidowOrphanControlDefaultsEnabled=, =TestWidowOrphanControlCanBeDisabled=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/play/format_test.go=; *definitions:* =TestFormatDetection=, =TestFormatValidation=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/play/play_test.go=; *definitions:* =TestParseOrgPlayEvents=, =TestParseMarkdownPlayEvents=, =TestParseFountainWarningsAndEvents=, =TestTextEmittersPreserveCoreContract=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+- *File:* =internal/typst/escape_test.go=; *definitions:* =TestEscapeContexts=; *AC refs:* none recorded; *issue refs:* none recorded; *RT markers:* none recorded; *membership:* =make test=.
+
+** Ledger and documentation reconciliation
+
+- *Canonical ledger:* [[file:ACs.org][docs/ACs.org]], converted from the pre-migration =docs/ACs.md= using the canonical Org template hierarchy.
+- *Ledger result:* 126 AC headings and 398 named RT/UT headings; original 25 AC headings and 121 test headings retained with their identifiers and provenance.
+- *Recovered requirements:* AC3.6, AC3.7, AC3.8, and AC34.1 were recovered from archived ticket evidence; the #33 regression records were attached to AC9.5 and AC15.7.
+- *Heuristic-marked ACs:* 0. Ticket #33 has a ticket-level migration heuristic because one user test remains unresolved; no AC status is marked =ASSUMED PASS=.
+- *Documentation changes:* Current references to =docs/ACs.md= in =handover-ux/04-cli-contract.md= and =handover-ux/06-first-steps.md= were updated to =docs/ACs.org=. No other unambiguous stale authority reference was found in the inspected current documentation.
+- *Implementation-plan archival:* No implementation-plan document was found under the repository file inventory; no archival move was required.
+
+** Classification checkpoint
+
+- *Delivered ticket records:* 31, based on archived implementation or test evidence and the recorded current suite where applicable.
+- *Open defects:* 0.
+- *Defined but undelivered ticket records:* 3: #7 GUI companion, #11 org-mode architecture discovery, and #35 placeholder modifiers.
+- *Abandoned:* 0.
+- *Requires human review:* #17 has a proposed fix and a referenced commit but no test or comment evidence; #19 and #20 have delivered bug-fix evidence but their RTs have no unambiguous AC mapping.
+- *Deferred scopes:* #16 AC16.5 through AC16.7 remain explicitly deferred; #21 barcode =file= mode remains explicitly deferred. These scopes are not silently promoted to delivered evidence.
+
+* Open defects at migration
+
+- None.
+
+* Defined but undelivered features
+
+** [[file:archive/migrated-tickets/7.md][#7 - feat: lightweight GUI companion app]]
+
+*** Snapshot state
+
+Open.
+
+*** Evidence
+
+No timeline commits or comments were recorded. The archived ticket contains skeleton AC7.1 through AC7.4, each marked TBD.
+
+*** Disposition
+
+Open feature scope. No GUI implementation or GUI test evidence was found in the snapshot or the maintained Go harness.
+
+** [[file:archive/migrated-tickets/11.md][#11 - [DISCOVERY] Evaluate org-mode as canonical manuscript architecture]]
+
+*** Snapshot state
+
+Open.
+
+*** Evidence
+
+No timeline commits were recorded. The ticket explicitly parks the architecture question for a future pass while Markdown remains the v1 render intermediate.
+
+*** Disposition
+
+Parked discovery scope. No requirement or test was promoted into =docs/ACs.org=.
+
+** [[file:archive/migrated-tickets/35.md][#35 - Add composable modifiers to manuscript header and footer placeholders]]
+
+*** Snapshot state
+
+Open.
+
+*** Evidence
+
+No timeline commits, comments, or maintained RT definitions were recorded. The archived ticket defines AC35.1 through AC35.8 and RT35.1 through RT35.27 as pending.
+
+*** Disposition
+
+Undelivered feature scope. The eight criteria and their pending tests remain preserved in the immutable archive and were not promoted to current AC authority.
+
+* Requires human review
+
+** [[file:archive/migrated-tickets/17.md][#17 - Title-page item flushness: place() items slightly inset from margin]]
+
+*** Snapshot state
+
+Open.
+
+*** Evidence
+
+The archived ticket contains a proposed template-level fix and one referenced commit, but no comments, test result, or approval evidence. The record conflicts with a delivered-ticket interpretation.
+
+*** Disposition
+
+Human adjudication required: confirm whether the referenced commit delivered the proposed flushness correction and supply the acceptance evidence, or retain the issue as an open defect.
+
+** [[file:archive/migrated-tickets/19.md][#19 - fix: page-header and page-footer ignore font-style (and lack font-style entirely)]]
+
+*** Snapshot state
+
+Closed.
+
+*** Evidence
+
+The archived ticket records the bug-fix commit and passing RT-B1 through RT-B5 evidence, but contains no AC table. Current definitions =RT-19.1= through =RT-19.5= therefore have no unambiguous current AC target.
+
+*** Disposition
+
+Delivered ticket evidence retained; human review is required only to assign the five RTs to existing AC authority without inventing a new criterion.
+
+** [[file:archive/migrated-tickets/20.md][#20 - fix: script.yaml lookup should walk up from source dir, not stop at first-input dir]]
+
+*** Snapshot state
+
+Closed.
+
+*** Evidence
+
+The archived ticket records the bug-fix commit and passing RT-B1 through RT-B6 evidence, but contains no AC table. Current definitions =RT-20.1= through =RT-20.5= therefore have no unambiguous current AC target.
+
+*** Disposition
+
+Delivered ticket evidence retained; human review is required only to assign the five RTs to existing AC authority without inventing a new criterion.
+
+* Delivered tickets
+
+- [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]] - archived AC/test evidence; current suite passed.
+- [[file:archive/migrated-tickets/2.md][#2 - feat: unified YAML config with precedence chain and shared schema]] - archived AC/test evidence; current suite passed.
+- [[file:archive/migrated-tickets/3.md][#3 - feat: config-driven rendering with British/American style presets]] - archived delivery evidence and recovered AC3.6 through AC3.8; current suite passed.
+- [[file:archive/migrated-tickets/4.md][#4 - feat: Homebrew formula for first-folio]] - archived delivery evidence; current suite passed.
+- [[file:archive/migrated-tickets/5.md][#5 - feat: H3 tag system for within-scene elements]] - archived delivery evidence; current suite passed.
+- [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]] - archived delivery evidence; current suite passed.
+- [[file:archive/migrated-tickets/8.md][#8 - feat: font-weight and font-stretch config keys]] - archived delivery and user-test evidence; current suite passed.
+- [[file:archive/migrated-tickets/9.md][#9 - feat: add manuscript PDF mode for prose chapters]] - archived AC/test evidence; current suite passed.
+- [[file:archive/migrated-tickets/10.md][#10 - Migrate First Folio runtime and test suite from Perl/shell to Go]] - archived delivery evidence; current suite passed.
+- [[file:archive/migrated-tickets/12.md][#12 - fix: render org inline code markup in cover letters]] - archived bug-fix commit evidence; no new AC invented.
+- [[file:archive/migrated-tickets/13.md][#13 - fix: resolve multi-input manuscript config from working directory]] - archived AC/test and implementation evidence; current suite passed.
+- [[file:archive/migrated-tickets/14.md][#14 - fix: honour manuscript line spacing and repeated header padding]] - archived bug-fix and suite evidence; current suite passed.
+- [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]] - archived AC/test evidence; AC15.12 retained as superseded.
+- [[file:archive/migrated-tickets/16.md][#16 - Parity-aware book layout, Roman-numeral frontmatter, and numbering resets]] [fn:migration-heuristic] - AC16.1 through AC16.4 have delivery evidence; AC16.5 through AC16.7 are explicitly deferred.
+- [[file:archive/migrated-tickets/18.md][#18 - Semantic authoring of parts and chapters with configurable rendering]] - archived AC/test evidence; current suite passed.
+- [[file:archive/migrated-tickets/19.md][#19 - fix: page-header and page-footer ignore font-style (and lack font-style entirely)]] - archived bug-fix and test evidence; AC mapping remains under review.
+- [[file:archive/migrated-tickets/20.md][#20 - fix: script.yaml lookup should walk up from source dir, not stop at first-input dir]] - archived bug-fix and test evidence; AC mapping remains under review.
+- [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]] - archived implementation and 19-RT evidence; barcode =file= mode remains deferred.
+- [[file:archive/migrated-tickets/22.md][#22 - fix: composed heading starting with digit + '.' or ')' triggers Typst enum parse]] - archived bug-fix evidence; RT-22.1 through RT-22.6 mapped to AC18.3.
+- [[file:archive/migrated-tickets/23.md][#23 - fix: title page and TOC ignore folio.manuscript.gutter]] - archived bug-fix evidence; RT-23.1 through RT-23.3 mapped to AC15.7.
+- [[file:archive/migrated-tickets/24.md][#24 - Frontmatter-format for page-header and page-footer]] - archived implementation and seven-RT evidence; current suite passed.
+- [[file:archive/migrated-tickets/25.md][#25 - Add configurable manuscript paragraph justification]] - archived implementation and user-test evidence; current suite passed.
+- [[file:archive/migrated-tickets/26.md][#26 - fix: keep British title-page footer inside KDP printable boundary]] - archived bug-fix and user-test evidence; current suite passed.
+- [[file:archive/migrated-tickets/27.md][#27 - fix: remove non-printable word joiners from manuscript TOC]] - archived bug-fix and user-test evidence; RT-27.3 is retained as superseded/skipped evidence.
+- [[file:archive/migrated-tickets/28.md][#28 - Restore external ISBN barcode SVG generation]] - archived implementation evidence; RT-28.1 through RT-28.4 mapped to AC21.8.
+- [[file:archive/migrated-tickets/29.md][#29 - Add total page count placeholder to manuscript headers and footers]] - archived AC/test evidence; current suite passed.
+- [[file:archive/migrated-tickets/30.md][#30 - Correct manuscript body and TOC line-spacing rendering]] - archived bug-fix evidence; RT-30.1 through RT-30.3 mapped to AC9.12 and AC9.13.
+- [[file:archive/migrated-tickets/31.md][#31 - Configure top padding on continued manuscript TOC pages]] - archived AC/test evidence; current suite passed.
+- [[file:archive/migrated-tickets/32.md][#32 - Restore configurable TOC links and correct chapter numbering defaults]] - archived AC/test evidence; current suite passed.
+- [[file:archive/migrated-tickets/33.md][#33 - Fix disabled manuscript header retaining TOC top margin]] [fn:migration-heuristic] - four RTs pass in the current suite; the archived user test remains unresolved.
+- [[file:archive/migrated-tickets/34.md][#34 - Expose manuscript letter spacing for body, header, and footer]] - recovered AC34.1; six RTs and one user test pass in the current suite and archived ticket.
+
+[fn:migration-heuristic] A ticket-level classification inferred delivery from converging archived implementation and current-suite evidence while preserving the unresolved user-test boundary; it does not change any AC status to =ASSUMED PASS=.
+
+* Closure record
+
+- *Archive commit:* Pending migration commit.
+- *Closure date:* Pending.
+- *Tickets attempted:* Pending.
+- *Tickets closed:* Pending.
+- *Closure failures:* Pending.
+- *Closure-record commit:* Pending.
