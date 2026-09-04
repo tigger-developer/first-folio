@@ -1,8 +1,6 @@
-<!-- SYNC IMPACT: 0.1.0 -> 0.1.1 | Principles: NONE | Added: NONE | Removed: Perl Standards | TODOs: Human ratification; reconcile requirement targets for font-style and configuration-lookup regression groups -->
+<!-- SYNC IMPACT: UNRATIFIED -> 1.0.0 | Principles: NONE | Added: NONE | Removed: Ratification Blockers; SDLC scaffold marker; draft-only qualifications | TODOs: NONE -->
 
 # First Folio Constitution
-
-<!-- SDLC-GENERATED-SCAFFOLD: editable until ratification. -->
 
 ## Engineering Standards
 
@@ -22,7 +20,7 @@ This project MUST comply with the following canonical standards. The standards a
 
 A deviation MUST name the standard, reason, risk, and approving authority. Silence is not a deviation.
 
-The adopted SDLC revision is `99b9509c548d10cb1613b128b1c8986a69f19c9a`.
+The adopted SDLC revision is `v2.0.7`.
 
 ## Specification and Evidence
 
@@ -73,7 +71,7 @@ Tests and code provide evidence of implemented behaviour. They do not approve re
 
 Authority is concern-specific:
 
-1. Taḋg O'Brien, the human project owner, controls ratification, amendments,
+1. Tadhg O'Brien, the human project owner, controls ratification, amendments,
    and standards deviations.
 2. After ratification, this constitution and its selected engineering standards
    govern engineering and project governance.
@@ -137,25 +135,14 @@ requirements or transfer First Folio's provider obligations.
 ## Governance
 
 This constitution governs project specifications, plans, tasks,
-implementation, and review after ratification. Before ratification, this
-scaffold has no authority. Taḋg O'Brien is the human authority for initial
-ratification and every later amendment. No standards deviation is approved.
+implementation, and review. Tadhg O'Brien is the human authority for
+ratification and every amendment. No standards deviation is approved.
 
 Compliance review MUST report the applicable constitutional principles, every
 approved standards deviation, and every unresolved constitutional conflict.
-Changes to governance require human approval and MUST explain compatibility
-and migration effects.
+Amendments require human approval and MUST explain compatibility and migration
+effects. MAJOR removes or incompatibly redefines governance, MINOR adds or
+materially expands governance, and PATCH clarifies governance without changing
+meaning.
 
-Before ratification, draft versions use pre-1.0 numbering and revisions are not
-amendments. Initial ratification sets version `1.0.0`. After ratification,
-MAJOR removes or incompatibly redefines governance, MINOR adds or materially
-expands governance, and PATCH clarifies governance without changing meaning.
-
-### Ratification Blockers
-
-- Human ratification has not occurred.
-- The page-header and page-footer font-style regression group and the
-  source-directory configuration lookup regression group, comprising ten
-  maintained tests, lack unambiguous current requirement targets.
-
-**Version**: 0.1.1 | **Ratified**: UNRATIFIED | **Last Revised**: 2026-09-04
+**Version**: 1.0.0 | **Ratified**: 2026-09-04 | **Last Revised**: 2026-09-04
