@@ -45,3 +45,4 @@ inc/
 /.agents/
 /.claude/
 /.codex/
+.env
