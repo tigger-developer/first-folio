@@ -1,4 +1,4 @@
-<!-- SYNC IMPACT: TEMPLATE -> 0.1.0 | Principles: Added Semantic Fidelity and Authorial Integrity; Added Open Sources and Scriptable Core | Added: NONE | Removed: NONE | TODOs: Human ratification; reconcile requirement targets for font-style and configuration-lookup regression groups -->
+<!-- SYNC IMPACT: 0.1.0 -> 0.1.1 | Principles: NONE | Added: NONE | Removed: Perl Standards | TODOs: Human ratification; reconcile requirement targets for font-style and configuration-lookup regression groups -->
 
 # First Folio Constitution
 
@@ -18,7 +18,6 @@ This project MUST comply with the following canonical standards. The standards a
 - **Documentation:** `~/.agents/sdlc/DOCUMENTATION.md`.
 - **Source control:** `~/.agents/sdlc/GIT.md`.
 - **Go Standards:** `~/.agents/sdlc/technologies/GO.md`.
-- **Perl Standards:** `~/.agents/sdlc/technologies/PERL.md`.
 - **Shell Standards:** `~/.agents/sdlc/technologies/SHELL.md`.
 
 A deviation MUST name the standard, reason, risk, and approving authority. Silence is not a deviation.
@@ -159,4 +158,4 @@ expands governance, and PATCH clarifies governance without changing meaning.
   source-directory configuration lookup regression group, comprising ten
   maintained tests, lack unambiguous current requirement targets.
 
-**Version**: 0.1.0 | **Ratified**: UNRATIFIED | **Last Revised**: 2026-09-04
+**Version**: 0.1.1 | **Ratified**: UNRATIFIED | **Last Revised**: 2026-09-04
