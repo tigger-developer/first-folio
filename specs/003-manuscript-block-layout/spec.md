@@ -3,21 +3,24 @@
 ## Specification Summary
 
 - **Outcome:** Manuscript blockquotes and fenced code have configurable
-  clearance from surrounding paragraphs, and blockquotes have configurable
+  clearance and whole-block indentation, and blockquotes have configurable
   typography.
 - **Before:** Fenced-code clearance used only side-specific settings;
   blockquotes had no dedicated clearance or font contract.
 - **After:** Equal spacing is available through `quoted-block-spacing` and
-  `code-block-spacing`; quoted blocks use the shared six-property `font` block.
+  `code-block-spacing`; whole-block left indentation is available through
+  `quote-block-indent` and `code-block-indent`; quoted blocks use the shared
+  six-property `font` block.
 - **Changes:** Side-specific code-block spacing remains available and overrides
-  the equal-spacing value on its respective side.
+  the equal-spacing value on its respective side; block indentation is separate
+  from prose first-line indentation.
 - **Unchanged:** Inline code and fenced code retain the manuscript monospace
   font; paragraph spacing and source semantics do not change.
 - **Edge cases:** Omitted quote-font properties inherit independently;
   side-specific code spacing may override only one side; invalid values fail
-  before output.
-- **Decisions:** Both spacing defaults are `0.5em`; the public quote style
-  `regular` maps to Typst `normal`.
+  before output; omitted block indents preserve the existing layout.
+- **Decisions:** Both spacing defaults are `0.5em`; both indent defaults are
+  `0em`; the public quote style `regular` maps to Typst `normal`.
 - **Evidence:** The project owner's `BYPASS-GATE-7` instruction dated 2026-09-05,
   the maintained manuscript regression pack, and [audits.md](audits.md).
 - **Next step:** A code-audit PASS and current regression evidence permit the
@@ -32,19 +35,20 @@ Created: 2026-09-05
 Status: Approved emergency change
 
 Input: Add configurable clearance around quoted and fenced-code manuscript
-blocks, plus a reusable six-property font block for quoted text, without
-changing code-block monospace typography.
+blocks, separate whole-block left indents, and a reusable six-property font
+block for quoted text, without changing code-block monospace typography.
 
 ## Scope
 
 - In scope: Markdown blockquotes and fenced code in manuscript generation gain
-  **equal spacing above and below**.
+  **equal spacing above and below** and **separate whole-block left indents**.
 - In scope: Org manuscript blockquotes and source blocks gain the same layout
   through the existing canonical Markdown conversion.
 - In scope: Quoted blocks gain the **Feature 001 font-block shape**.
 - In scope: Existing side-specific code-block spacing remains supported.
 - Out of scope: Inline-code typography, code-block typography, paragraph
-  spacing, source parsing, and non-manuscript rendering **do not change**.
+  spacing and first-line indentation, source parsing, and non-manuscript
+  rendering **do not change**.
 - Out of scope: This emergency change does not activate the full
   [Unified Font Configuration](../001-unified-font-config/spec.md) migration.
 
@@ -85,6 +89,14 @@ space above and below.
 
    AND it **writes no output artefact**
 
+4. GIVEN a manuscript blockquote containing multiple rendered lines
+
+   WHEN `quote-block-indent` is configured
+
+   THEN **every line in the block is inset from the left by that value**
+
+   AND prose first-line indentation **does not change**
+
 ### User Story 2 - Separate fenced code from prose (Priority: P1)
 
 The user **sets one code-block spacing value** without altering the established
@@ -113,9 +125,18 @@ retaining the manuscript monospace font.
 
    AND the lower clearance **retains `code-block-spacing`**
 
+3. GIVEN a fenced code block containing multiple lines
+
+   WHEN `code-block-indent` is configured
+
+   THEN **every line in the block is inset from the left by that value**
+
+   AND its **monospace typography is unchanged**
+
 ### Edge Cases
 
 - Omitted equal-spacing properties use `0.5em`.
+- Omitted block-indent properties use `0em` and preserve the existing layout.
 - `code-block.space-before` and `code-block.space-after` override their
   respective sides independently.
 - A partial quoted-block font overrides only its declared properties.
@@ -150,9 +171,18 @@ retaining the manuscript monospace font.
   blockquote or code content, paragraph spacing, headings, pagination controls,
   or non-manuscript output.
 - FR-009 - **Reject invalid values before output**: Invalid equal-spacing,
-  quote-font size, weight, stretch, style, or letter-spacing values MUST return
-  non-zero with the full configuration path and MUST produce no output
-  artefact. Quote-font family values MUST be escaped for Typst string context.
+  block-indent, quote-font size, weight, stretch, style, or letter-spacing
+  values MUST return non-zero with the full configuration path and MUST produce
+  no output artefact. Quote-font family values MUST be escaped for Typst string
+  context.
+- FR-010 - **Indent quoted blocks**: `folio.manuscript.quote-block-indent` MUST
+  apply the configured left inset to every rendered line of a manuscript
+  blockquote, MUST remain independent of prose first-line indentation, and MUST
+  default to `0em`.
+- FR-011 - **Indent code blocks**: `folio.manuscript.code-block-indent` MUST
+  apply the configured left inset to every rendered line of a fenced-code
+  block, MUST remain independent of prose first-line indentation, and MUST
+  default to `0em`.
 
 ### Key Entities
 
@@ -162,6 +192,8 @@ retaining the manuscript monospace font.
   text.
 - **Precise code spacing**: Existing independent clearance above or below a
   fenced-code block.
+- **Whole-block indent**: A left inset applied uniformly to every rendered line
+  of a quoted or fenced-code block.
 
 ## Success Criteria
 
@@ -178,6 +210,9 @@ retaining the manuscript monospace font.
   compile and retain equivalent textual content.
 - SC-005 - **Fail safely**: Every invalid new spacing or quote-font value is
   rejected before output with its full configuration path.
+- SC-006 - **Apply whole-block indents**: Each configured block-indent value is
+  emitted as the left inset of its named block type without changing paragraph
+  indentation.
 
 ## Assumptions
 
@@ -201,6 +236,7 @@ retaining the manuscript monospace font.
   Markdown, Org, Typst, and PDF behaviour.
 - Preserves: Existing source parsing, content, monospace typography,
   side-specific code spacing, and non-manuscript rendering.
-- Changes: Blockquotes gain dedicated spacing and font configuration; fenced
-  code gains an equal-spacing shorthand.
+- Changes: Blockquotes gain dedicated spacing, indentation, and font
+  configuration; fenced code gains equal-spacing and whole-block-indentation
+  settings.
 - Supersedes: No established requirement is removed or weakened.

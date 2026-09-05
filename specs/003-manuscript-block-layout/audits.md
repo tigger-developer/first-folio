@@ -83,7 +83,19 @@
 - Model: `gpt-5.6-luna`
 - Verdict: **PASS**
 
+### Indent amendment audit 1
+
+- Candidate diff:
+  `6dd5a52047dd399e0a8b95a3d7803711c93e7a9541e1687be5552daaf7c715f8`
+- Scope: Add separate whole-block left indents for manuscript blockquotes and
+  fenced code within the existing emergency feature.
+- Harness: Hermes
+- Provider: `openai-codex`
+- Model: `gpt-5.6-luna`
+- Verdict: **PASS**
+
 ## Current gate
 
 - Effective verdict: **PASS**
-- Consequence: Final verification may run against the audited implementation.
+- Consequence: Final verification may run against the audited implementation,
+  including the focused indent amendment.

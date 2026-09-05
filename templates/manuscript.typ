@@ -205,24 +205,24 @@
   above: {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
   below: {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
 )[
-  #text(
+  #pad(left: {{.Config.Folio.Manuscript.QuoteBlockIndent.Value}})[#text(
     font: "{{.QuotedBlockFamily}}",
     size: {{.Config.Folio.Manuscript.QuotedBlock.Font.Size}},
     weight: {{.QuotedBlockWeight}},
     stretch: {{.Config.Folio.Manuscript.QuotedBlock.Font.Stretch}},
     style: "{{.QuotedBlockStyle}}",
     tracking: {{.Config.Folio.Manuscript.QuotedBlock.Font.LetterSpacing}},
-  )[#it]
+  )[#it]]
 ]
 
 #show raw.where(block: true): it => block(
   above: {{.Config.Folio.Manuscript.CodeBlock.SpaceBefore}},
   below: {{.Config.Folio.Manuscript.CodeBlock.SpaceAfter}},
-)[#text(
+)[#pad(left: {{.Config.Folio.Manuscript.CodeBlockIndent.Value}})[#text(
   font: "{{.Config.Folio.Manuscript.MonoFont}}",
   size: {{.Config.Folio.Manuscript.MonoFontSize}},
   weight: "{{.Config.Folio.Manuscript.MonoFontWeight}}",
-)[#it]]
+)[#it]]]
 
 #show raw.where(block: false): it => text(
   font: "{{.Config.Folio.Manuscript.MonoFont}}",

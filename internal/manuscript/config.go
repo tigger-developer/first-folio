@@ -156,6 +156,8 @@ type ManuscriptConfig struct {
 	ParagraphSpacing    string              `yaml:"paragraph-spacing"`
 	QuotedBlockSpacing  ConfigString        `yaml:"quoted-block-spacing"`
 	CodeBlockSpacing    ConfigString        `yaml:"code-block-spacing"`
+	QuoteBlockIndent    ConfigString        `yaml:"quote-block-indent"`
+	CodeBlockIndent     ConfigString        `yaml:"code-block-indent"`
 	QuotedBlock         QuotedBlockConfig   `yaml:"quoted-block"`
 	PageHeader          PageHeaderConfig    `yaml:"page-header"`
 	PageFooter          PageFooterConfig    `yaml:"page-footer"`
@@ -531,6 +533,12 @@ func validateQuotedBlockConfig(ms *ManuscriptConfig) error {
 	if err := validateTypstLength("folio.manuscript.code-block-spacing", ms.CodeBlockSpacing.Value, true, false); err != nil {
 		return err
 	}
+	if err := validateTypstLength("folio.manuscript.quote-block-indent", ms.QuoteBlockIndent.Value, true, false); err != nil {
+		return err
+	}
+	if err := validateTypstLength("folio.manuscript.code-block-indent", ms.CodeBlockIndent.Value, true, false); err != nil {
+		return err
+	}
 	font := &ms.QuotedBlock.Font
 	if strings.TrimSpace(font.Family) == "" {
 		return fmt.Errorf("folio.manuscript.quoted-block.font.family must not be empty")
@@ -761,6 +769,8 @@ func normalizeConfig(cfg *Config) {
 	}
 	defaultConfigString(&ms.QuotedBlockSpacing, "0.5em")
 	defaultConfigString(&ms.CodeBlockSpacing, "0.5em")
+	defaultConfigString(&ms.QuoteBlockIndent, "0em")
+	defaultConfigString(&ms.CodeBlockIndent, "0em")
 	inheritFontProperty(&ms.QuotedBlock.Font, "family", &ms.QuotedBlock.Font.Family, ms.Font)
 	inheritFontProperty(&ms.QuotedBlock.Font, "size", &ms.QuotedBlock.Font.Size, ms.FontSize)
 	inheritFontProperty(&ms.QuotedBlock.Font, "weight", &ms.QuotedBlock.Font.Weight, ms.FontWeight)

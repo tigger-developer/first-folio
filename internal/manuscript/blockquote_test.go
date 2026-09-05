@@ -1,5 +1,5 @@
-// ABOUTME: Regression tests for configurable manuscript blockquote typography and spacing.
-// ABOUTME: Covers equal block spacing and compatibility with precise code-block spacing overrides.
+// ABOUTME: Regression tests for configurable manuscript blockquote typography, spacing, and indentation.
+// ABOUTME: Covers whole-block indentation and compatibility with precise code-block spacing overrides.
 package manuscript
 
 import (
@@ -18,6 +18,8 @@ func TestManuscriptBlockSpacingAndQuoteFontCanBeConfigured(t *testing.T) {
 		"  manuscript:",
 		"    quoted-block-spacing: 1.25em",
 		"    code-block-spacing: 1.75em",
+		"    quote-block-indent: 2em",
+		"    code-block-indent: 3em",
 		"    quoted-block:",
 		"      font:",
 		`        family: Libertinus "Serif"`,
@@ -53,7 +55,7 @@ func TestManuscriptBlockSpacingAndQuoteFontCanBeConfigured(t *testing.T) {
 		"  above: 1.25em,",
 		"  below: 1.25em,",
 		")[",
-		"  #text(",
+		"  #pad(left: 2em)[#text(",
 		`    font: "Libertinus \"Serif\"",`,
 		"    size: 11pt,",
 		`    weight: "semibold",`,
@@ -65,6 +67,7 @@ func TestManuscriptBlockSpacingAndQuoteFontCanBeConfigured(t *testing.T) {
 		"#show raw.where(block: true): it => block(",
 		"  above: 1.75em,",
 		"  below: 1.75em,",
+		")[#pad(left: 3em)[#text(",
 	}, "\n"))
 }
 
@@ -79,6 +82,10 @@ func TestInvalidQuotedBlockConfigurationFailsBeforeOutput(t *testing.T) {
 		{"empty spacing", `    quoted-block-spacing: ""`, "folio.manuscript.quoted-block-spacing"},
 		{"empty code spacing", `    code-block-spacing: ""`, "folio.manuscript.code-block-spacing"},
 		{"mapped spacing", "    quoted-block-spacing: {bad: value}", "folio.manuscript.quoted-block-spacing"},
+		{"quote indent", "    quote-block-indent: inward", "folio.manuscript.quote-block-indent"},
+		{"code indent", "    code-block-indent: inward", "folio.manuscript.code-block-indent"},
+		{"empty quote indent", `    quote-block-indent: ""`, "folio.manuscript.quote-block-indent"},
+		{"empty code indent", `    code-block-indent: ""`, "folio.manuscript.code-block-indent"},
 		{"size", "        size: enormous", "folio.manuscript.quoted-block.font.size"},
 		{"weight", "        weight: supreme", "folio.manuscript.quoted-block.font.weight"},
 		{"stretch", "        stretch: extended", "folio.manuscript.quoted-block.font.stretch"},
@@ -141,7 +148,7 @@ func TestQuotedBlockFontPropertiesInheritWhenOmitted(t *testing.T) {
 				"  above: 0.5em,",
 				"  below: 0.5em,",
 				")[",
-				"  #text(",
+				"  #pad(left: 0em)[#text(",
 				`    font: "Libertinus Serif",`,
 				"    size: 12pt,",
 				`    weight: "regular",`,
@@ -164,6 +171,12 @@ func TestBlockSpacingDefaultsWithoutPresetValues(t *testing.T) {
 	}
 	if got := cfg.Folio.Manuscript.CodeBlockSpacing.Value; got != "0.5em" {
 		t.Fatalf("code-block spacing = %q, want 0.5em", got)
+	}
+	if got := cfg.Folio.Manuscript.QuoteBlockIndent.Value; got != "0em" {
+		t.Fatalf("quote-block indent = %q, want 0em", got)
+	}
+	if got := cfg.Folio.Manuscript.CodeBlockIndent.Value; got != "0em" {
+		t.Fatalf("code-block indent = %q, want 0em", got)
 	}
 }
 

@@ -20,3 +20,24 @@
   quoted passage, and the fenced-code content.
 - Post-audit repeat: PASS after the focused template-delta audit, with the same
   page size, byte count, and extracted content.
+
+## OOT-002 - configured whole-block indents render
+
+- Category: One-off test
+- Requirement: FR-010 - quoted-block indentation and FR-011 - code-block
+  indentation
+- Expected: A Markdown manuscript containing a wrapping blockquote and a
+  two-line fenced-code block compiles to PDF with separate non-default left
+  indents applied uniformly within each block.
+- Procedure: Generate a temporary Markdown source and local `script.yaml`, set
+  `quote-block-indent: 2em` and `code-block-indent: 3em`, run the repository CLI
+  to PDF, extract the text with layout retention, and inspect the rendered
+  content page.
+- Status: PASS
+- Tested revision: Candidate diff
+  `6dd5a52047dd399e0a8b95a3d7803711c93e7a9541e1687be5552daaf7c715f8`
+- Environment: macOS arm64, Go 1.26.3, Typst 0.14.2, Poppler 26.04.0
+- Tester: Claudius
+- Observed: The CLI returned zero and produced a three-page A4 PDF of 19,532
+  bytes. Both wrapped quote lines shared the quote inset, both code lines shared
+  the code inset, and the surrounding prose retained its body margin.

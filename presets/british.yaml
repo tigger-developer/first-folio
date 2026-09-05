@@ -294,6 +294,8 @@ folio:
     paragraph-spacing: 0pt
     quoted-block-spacing: 0.5em
     code-block-spacing: 0.5em
+    quote-block-indent: 0em
+    code-block-indent: 0em
 
     quoted-block:
       font:

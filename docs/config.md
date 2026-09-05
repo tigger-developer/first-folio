@@ -157,6 +157,7 @@ The built-in files [british-manuscript.yaml](../presets/british-manuscript.yaml)
 | `title-page.<item>` | `align`, where `<item>` is `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, or `contact` |
 | `scene-break` | `marker` |
 | `quoted-block-spacing`, `code-block-spacing` | Equal clearance above and below quoted and fenced-code blocks |
+| `quote-block-indent`, `code-block-indent` | Left inset applied to every line of quoted and fenced-code blocks; defaults to `0em` |
 | `quoted-block.font` | `family`, `size`, `weight`, `stretch`, `style`, `letter-spacing`; omitted properties inherit from the manuscript font |
 | `list`, `table`, `code-block` | `space-before`, `space-after`; code-block values override `code-block-spacing` on their respective side |
 | `page-numbering` | `frontmatter-format`, `body-format`, `body-reset` |
