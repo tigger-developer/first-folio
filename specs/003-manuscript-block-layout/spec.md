@@ -4,21 +4,24 @@
 
 - **Outcome:** Manuscript blockquotes and fenced code have configurable
   clearance and whole-block indentation, and blockquotes have configurable
-  typography.
+  typography; a code span occupying a complete source line uses the same block
+  layout as fenced code.
 - **Before:** Fenced-code clearance used only side-specific settings;
   blockquotes had no dedicated clearance or font contract.
 - **After:** Equal spacing is available through `quoted-block-spacing` and
   `code-block-spacing`; whole-block left indentation is available through
   `quote-block-indent` and `code-block-indent`; quoted blocks use the shared
-  six-property `font` block.
+  six-property `font` block; complete-line code spans become code blocks.
 - **Changes:** Side-specific code-block spacing remains available and overrides
   the equal-spacing value on its respective side; block indentation is separate
   from prose first-line indentation.
-- **Unchanged:** Inline code and fenced code retain the manuscript monospace
-  font; paragraph spacing and source semantics do not change.
+- **Unchanged:** Code embedded within a mixed-content line remains inline;
+  inline and block code retain the manuscript monospace font; paragraph spacing
+  does not change.
 - **Edge cases:** Omitted quote-font properties inherit independently;
   side-specific code spacing may override only one side; invalid values fail
-  before output; omitted block indents preserve the existing layout.
+  before output; omitted block indents preserve the existing layout; existing
+  fences and code spans with trailing content are not reclassified.
 - **Decisions:** Both spacing defaults are `0.5em`; both indent defaults are
   `0em`; the public quote style `regular` maps to Typst `normal`.
 - **Evidence:** The project owner's `BYPASS-GATE-7` instruction dated 2026-09-05,
@@ -36,7 +39,8 @@ Status: Approved emergency change
 
 Input: Add configurable clearance around quoted and fenced-code manuscript
 blocks, separate whole-block left indents, and a reusable six-property font
-block for quoted text, without changing code-block monospace typography.
+block for quoted text; classify a complete-line code span as a code block
+without changing mixed-content inline-code semantics.
 
 ## Scope
 
@@ -46,9 +50,12 @@ block for quoted text, without changing code-block monospace typography.
   through the existing canonical Markdown conversion.
 - In scope: Quoted blocks gain the **Feature 001 font-block shape**.
 - In scope: Existing side-specific code-block spacing remains supported.
+- In scope: A Markdown code span that is the only non-whitespace content on its
+  source line gains fenced-code block semantics. Org verbatim spans gain the
+  same behaviour through the existing canonical Markdown conversion.
 - Out of scope: Inline-code typography, code-block typography, paragraph
-  spacing and first-line indentation, source parsing, and non-manuscript
-  rendering **do not change**.
+  spacing and first-line indentation, all other source parsing, and
+  non-manuscript rendering **do not change**.
 - Out of scope: This emergency change does not activate the full
   [Unified Font Configuration](../001-unified-font-config/spec.md) migration.
 
@@ -133,6 +140,19 @@ retaining the manuscript monospace font.
 
    AND its **monospace typography is unchanged**
 
+4. GIVEN a code span that is the only non-whitespace content on its source line
+
+   WHEN the manuscript is rendered
+
+   THEN it uses **code-block spacing, indentation, and monospace typography**
+
+5. GIVEN a code span with any source content outside its delimiters on the same
+   line
+
+   WHEN the manuscript is rendered
+
+   THEN it **remains inline code**
+
 ### Edge Cases
 
 - Omitted equal-spacing properties use `0.5em`.
@@ -142,6 +162,10 @@ retaining the manuscript monospace font.
 - A partial quoted-block font overrides only its declared properties.
 - Public quote style `regular` renders through Typst's equivalent `normal`
   value.
+- Surrounding source-line whitespace does not prevent a complete-line code span
+  from becoming a block.
+- Existing fenced code is preserved without reclassification.
+- A code span followed by prose or a source comment remains inline.
 
 ## Requirements
 
@@ -183,6 +207,13 @@ retaining the manuscript monospace font.
   apply the configured left inset to every rendered line of a fenced-code
   block, MUST remain independent of prose first-line indentation, and MUST
   default to `0em`.
+- FR-012 - **Promote complete-line code spans**: A Markdown code span that is
+  the only non-whitespace content on its source line MUST render with code-block
+  semantics, including configured code-block spacing and indentation. Org
+  verbatim spans MUST follow the same rule after canonical Markdown conversion.
+- FR-013 - **Preserve mixed-content inline code**: A code span with any content
+  outside its delimiters on the same source line MUST remain inline and MUST NOT
+  receive code-block spacing or indentation.
 
 ### Key Entities
 
@@ -194,6 +225,8 @@ retaining the manuscript monospace font.
   fenced-code block.
 - **Whole-block indent**: A left inset applied uniformly to every rendered line
   of a quoted or fenced-code block.
+- **Complete-line code span**: Inline-code source syntax whose delimiters and
+  surrounding whitespace occupy the whole source line.
 
 ## Success Criteria
 
@@ -213,6 +246,9 @@ retaining the manuscript monospace font.
 - SC-006 - **Apply whole-block indents**: Each configured block-indent value is
   emitted as the left inset of its named block type without changing paragraph
   indentation.
+- SC-007 - **Classify source lines exactly**: Complete-line code spans receive
+  block layout in Markdown and Org manuscripts while code spans embedded in or
+  followed by other content remain inline.
 
 ## Assumptions
 
@@ -238,5 +274,5 @@ retaining the manuscript monospace font.
   side-specific code spacing, and non-manuscript rendering.
 - Changes: Blockquotes gain dedicated spacing, indentation, and font
   configuration; fenced code gains equal-spacing and whole-block-indentation
-  settings.
+  settings; complete-line code spans gain fenced-code layout semantics.
 - Supersedes: No established requirement is removed or weakened.

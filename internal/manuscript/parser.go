@@ -63,6 +63,7 @@ func parseMarkdown(text string) (Document, error) {
 		return Document{}, err
 	}
 	text = removeMarkdownPrivateSections(text)
+	text = promoteStandaloneMarkdownCodeSpans(text)
 	typst, err := runPandoc("markdown-raw_html", "typst", text)
 	if err != nil {
 		return Document{}, err
@@ -73,6 +74,119 @@ func parseMarkdown(text string) (Document, error) {
 	}
 	doc.Blocks = blocks
 	return doc, nil
+}
+
+func promoteStandaloneMarkdownCodeSpans(text string) string {
+	lines := strings.Split(strings.ReplaceAll(text, "\r\n", "\n"), "\n")
+	out := make([]string, 0, len(lines))
+	inFence := false
+	fenceMarker := byte(0)
+	fenceLength := 0
+
+	for _, line := range lines {
+		marker, length, closing, isFence := markdownFenceLine(line, fenceMarker, fenceLength)
+		if inFence {
+			out = append(out, line)
+			if isFence && closing {
+				inFence = false
+				fenceMarker = 0
+				fenceLength = 0
+			}
+			continue
+		}
+		if isFence && !closing {
+			inFence = true
+			fenceMarker = marker
+			fenceLength = length
+			out = append(out, line)
+			continue
+		}
+
+		content, ok := standaloneMarkdownCodeSpan(line)
+		if !ok {
+			out = append(out, line)
+			continue
+		}
+		delimiter := strings.Repeat("`", max(3, longestRun(content, '`')+1))
+		out = append(out, delimiter, content, delimiter)
+	}
+
+	return strings.Join(out, "\n")
+}
+
+func markdownFenceLine(line string, openMarker byte, openLength int) (byte, int, bool, bool) {
+	spaces := 0
+	for spaces < len(line) && line[spaces] == ' ' {
+		spaces++
+	}
+	if spaces > 3 || spaces == len(line) {
+		return 0, 0, false, false
+	}
+	trimmed := line[spaces:]
+	marker := trimmed[0]
+	if marker != '`' && marker != '~' {
+		return 0, 0, false, false
+	}
+	length := 0
+	for length < len(trimmed) && trimmed[length] == marker {
+		length++
+	}
+	if length < 3 {
+		return 0, 0, false, false
+	}
+	remainder := trimmed[length:]
+	if openMarker != 0 {
+		closing := marker == openMarker && length >= openLength && strings.TrimSpace(remainder) == ""
+		return marker, length, closing, closing
+	}
+	if marker == '`' && strings.Contains(remainder, "`") {
+		return 0, 0, false, false
+	}
+	return marker, length, false, true
+}
+
+func standaloneMarkdownCodeSpan(line string) (string, bool) {
+	leadingSpaces := len(line) - len(strings.TrimLeft(line, " "))
+	if leadingSpaces > 3 || strings.HasPrefix(line, "\t") {
+		return "", false
+	}
+	trimmed := strings.TrimSpace(line)
+	if len(trimmed) < 3 || trimmed[0] != '`' {
+		return "", false
+	}
+	delimiterLength := 0
+	for delimiterLength < len(trimmed) && trimmed[delimiterLength] == '`' {
+		delimiterLength++
+	}
+	trailingLength := 0
+	for index := len(trimmed) - 1; index >= 0 && trimmed[index] == '`'; index-- {
+		trailingLength++
+	}
+	if trailingLength != delimiterLength || len(trimmed) <= delimiterLength*2 {
+		return "", false
+	}
+	content := trimmed[delimiterLength : len(trimmed)-delimiterLength]
+	if strings.Contains(content, strings.Repeat("`", delimiterLength)) {
+		return "", false
+	}
+	if strings.HasPrefix(content, " ") && strings.HasSuffix(content, " ") && strings.Trim(content, " ") != "" {
+		content = content[1 : len(content)-1]
+	}
+	return content, true
+}
+
+func longestRun(text string, marker byte) int {
+	longest := 0
+	current := 0
+	for index := 0; index < len(text); index++ {
+		if text[index] == marker {
+			current++
+			longest = max(longest, current)
+			continue
+		}
+		current = 0
+	}
+	return longest
 }
 
 func parseOrg(text string) (Document, error) {

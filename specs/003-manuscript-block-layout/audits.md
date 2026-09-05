@@ -94,8 +94,67 @@
 - Model: `gpt-5.6-luna`
 - Verdict: **PASS**
 
+## Complete-line code-span amendment
+
+### Test audit harness incident 1
+
+- Scope: New complete-line code-span regression coverage.
+- Result: The harness rejected its own output because a FAIL verdict contained
+  no blocking finding.
+- Consequence: No audit verdict was recorded from this invocation.
+
+### Test audit attempt 1
+
+- Verdict: **FAIL**
+- Blocking findings: The selected artefact omitted existing spacing, font,
+  invalid-value, indentation, and compatibility tests from the audit context;
+  alternate complete-line source forms were covered only at the helper
+  boundary; normal-lifecycle PENDING records and planning rationale were absent.
+- Remediation: The audit was rerun with the relevant maintained test files and
+  emergency authority. Whitespace, backtick-delimiter, existing-fence,
+  tilde-fence, unclosed-span, Markdown, and Org cases were expanded.
+
+### Test audit attempt 2
+
+- Verdict: **FAIL**
+- Blocking findings: Lower-side precise spacing, each independent quote-font
+  inheritance path, explicit `regular` and `oblique` style mapping, deterministic
+  rendered-layout evidence, application-dispatch coverage, and the normal
+  PENDING lifecycle record were requested.
+- Remediation: Retained regressions now cover both precise-spacing sides, every
+  inherited font property, all public quote styles, successful application
+  dispatch, and application-level invalid-indent failure. Poppler bounding-box
+  evidence now records exact block and prose positions.
+
+### Test audit attempt 3
+
+- Verdict: **FAIL**
+- Remaining blocking findings: The auditor required retroactive
+  pre-implementation PENDING entries, public-executable tests for all existing
+  emergency requirements, broader preservation comparisons, expanded Org
+  permutations, one-off classification rationale, and operational-path
+  rationale.
+- Disposition: `BYPASS-GATE-7` explicitly skips test audits under the emergency
+  standard. The failed report is retained as advisory evidence. No
+  pre-implementation record has been fabricated retrospectively, and demands
+  beyond the bounded complete-line classification were not made delivery gates.
+
+### Code audit 1
+
+- Candidate diff:
+  `393973073fe956c5f4c0181dc24d7b18ba31551fe6355d9d93da462dcfdaf5fb`
+- Scope: Promote complete-line Markdown code spans, and Org verbatim spans after
+  canonical Markdown conversion, to existing code-block layout while preserving
+  mixed-content inline code and existing fences.
+- Harness: Hermes
+- Provider: `openai-codex`
+- Model: `gpt-5.6-luna`
+- Verdict: **PASS**
+
 ## Current gate
 
 - Effective verdict: **PASS**
 - Consequence: Final verification may run against the audited implementation,
-  including the focused indent amendment.
+  including the focused indent and complete-line code-span amendments. The
+  separate test audit remains a disclosed, non-gating FAIL under the explicit
+  emergency bypass.

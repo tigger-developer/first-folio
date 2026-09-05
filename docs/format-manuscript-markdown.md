@@ -23,7 +23,9 @@ Supported frontmatter fields are `title`, `subtitle`, `author`, `attribution`, `
 | `**bold**` | Bold text |
 | `*italic*` | Italic text |
 | `~~deleted~~` | Strikethrough text |
-| `` `code` `` and fenced code blocks | Monospace text |
+| `` `code` `` within a mixed-content line | Inline monospace text |
+| `` `code` `` as the only non-whitespace content on a line | Monospace code block |
+| Fenced code blocks | Monospace code block |
 | `--` and `---` | En dash and em dash |
 | `[^name]` and `[^name]: text` | Footnote reference and definition |
 | Blockquotes, links, lists, and tables | Standard Markdown document elements |
@@ -35,6 +37,8 @@ Setext headings are not part of the manuscript contract; use ATX headings (`#`, 
 Section breaks default to a centred `#` marker in rendered manuscripts. Override `folio.manuscript.scene-break.marker` in YAML config to use another marker.
 
 Lists, tables, blockquotes, and fenced code blocks render with `0.5em` vertical clearance before and after by default. Set `folio.manuscript.quoted-block-spacing` or `folio.manuscript.code-block-spacing` to change both sides of those blocks equally. The existing `folio.manuscript.code-block.space-before` and `folio.manuscript.code-block.space-after` properties override the equal code-block spacing on their respective sides. Set `folio.manuscript.quote-block-indent` or `folio.manuscript.code-block-indent` to inset every line of the corresponding block from the left; both default to `0em` and are independent of prose first-line indentation. Configure blockquote typography through `folio.manuscript.quoted-block.font`; its `family`, `size`, `weight`, `stretch`, `style`, and `letter-spacing` properties inherit independently from the manuscript font when omitted.
+
+A backtick code span that is the only non-whitespace content on its source line uses the fenced-code block layout, including configured spacing and indentation. Any content outside the closing backtick on that line keeps the code span inline. Existing fenced blocks are unchanged. Org manuscript verbatim spans follow the same distinction through canonical Markdown conversion.
 
 Fountain is not accepted by manuscript mode.
 

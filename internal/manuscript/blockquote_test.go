@@ -160,6 +160,93 @@ func TestQuotedBlockFontPropertiesInheritWhenOmitted(t *testing.T) {
 	}
 }
 
+func TestQuotedBlockFontPropertiesInheritIndependently(t *testing.T) {
+	configured := map[string]string{
+		"family":         "Quoted Serif",
+		"size":           "11pt",
+		"weight":         "semibold",
+		"stretch":        "125%",
+		"style":          "italic",
+		"letter-spacing": "0.03em",
+	}
+	tests := []struct {
+		name     string
+		omitted  string
+		expected map[string]string
+	}{
+		{"family", "family", map[string]string{"family": "Libertinus Serif"}},
+		{"size", "size", map[string]string{"size": "12pt"}},
+		{"weight", "weight", map[string]string{"weight": "regular"}},
+		{"stretch", "stretch", map[string]string{"stretch": "100%"}},
+		{"style", "style", map[string]string{"style": "normal"}},
+		{"letter spacing", "letter-spacing", map[string]string{"letter-spacing": "0em"}},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			lines := []string{
+				"folio:",
+				"  manuscript:",
+				"    font: Libertinus Serif",
+				"    font-size: 12pt",
+				"    font-weight: regular",
+				"    letter-spacing: 0em",
+				"    quoted-block:",
+				"      font:",
+			}
+			order := []string{"family", "size", "weight", "stretch", "style", "letter-spacing"}
+			for _, property := range order {
+				if property != test.omitted {
+					lines = append(lines, "        "+property+": "+configured[property])
+				}
+			}
+			typst := renderIssue15Manuscript(t, strings.Join(append(lines, ""), "\n"))
+
+			want := map[string]string{
+				"family":         configured["family"],
+				"size":           configured["size"],
+				"weight":         configured["weight"],
+				"stretch":        configured["stretch"],
+				"style":          configured["style"],
+				"letter-spacing": configured["letter-spacing"],
+			}
+			for property, value := range test.expected {
+				want[property] = value
+			}
+			assertContains(t, typst, `    font: "`+want["family"]+`",`)
+			assertContains(t, typst, "    size: "+want["size"]+",")
+			assertContains(t, typst, `    weight: "`+want["weight"]+`",`)
+			assertContains(t, typst, "    stretch: "+want["stretch"]+",")
+			assertContains(t, typst, `    style: "`+want["style"]+`",`)
+			assertContains(t, typst, "    tracking: "+want["letter-spacing"]+",")
+		})
+	}
+}
+
+func TestQuotedBlockFontStyleMappings(t *testing.T) {
+	tests := []struct {
+		configured string
+		expected   string
+	}{
+		{"regular", "normal"},
+		{"italic", "italic"},
+		{"oblique", "oblique"},
+	}
+	for _, test := range tests {
+		t.Run(test.configured, func(t *testing.T) {
+			typst := renderIssue15Manuscript(t, strings.Join([]string{
+				"folio:",
+				"  manuscript:",
+				"    quoted-block:",
+				"      font:",
+				"        style: " + test.configured,
+				"",
+			}, "\n"))
+			assertContains(t, typst, `    style: "`+test.expected+`",`)
+		})
+	}
+}
+
 func TestBlockSpacingDefaultsWithoutPresetValues(t *testing.T) {
 	var cfg Config
 	normalizeConfig(&cfg)
@@ -196,18 +283,32 @@ func TestQuotedBlockFontAcceptsNumericWeightAndPlainStretch(t *testing.T) {
 }
 
 func TestPreciseCodeBlockSpacingOverridesEqualSpacing(t *testing.T) {
-	typst := renderIssue15Manuscript(t, strings.Join([]string{
-		"folio:",
-		"  manuscript:",
-		"    code-block-spacing: 1.75em",
-		"    code-block:",
-		"      space-before: 0.25em",
-		"",
-	}, "\n"))
+	tests := []struct {
+		name      string
+		overrides []string
+		wantAbove string
+		wantBelow string
+	}{
+		{"before only", []string{"      space-before: 0.25em"}, "0.25em", "1.75em"},
+		{"after only", []string{"      space-after: 2.25em"}, "1.75em", "2.25em"},
+		{"both sides", []string{"      space-before: 0.25em", "      space-after: 2.25em"}, "0.25em", "2.25em"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			lines := []string{
+				"folio:",
+				"  manuscript:",
+				"    code-block-spacing: 1.75em",
+				"    code-block:",
+			}
+			lines = append(lines, test.overrides...)
+			typst := renderIssue15Manuscript(t, strings.Join(append(lines, ""), "\n"))
 
-	assertContains(t, typst, strings.Join([]string{
-		"#show raw.where(block: true): it => block(",
-		"  above: 0.25em,",
-		"  below: 1.75em,",
-	}, "\n"))
+			assertContains(t, typst, strings.Join([]string{
+				"#show raw.where(block: true): it => block(",
+				"  above: " + test.wantAbove + ",",
+				"  below: " + test.wantBelow + ",",
+			}, "\n"))
+		})
+	}
 }

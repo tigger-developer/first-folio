@@ -1,8 +1,9 @@
 // ABOUTME: Verifies manuscript dispatch through the single in-process Go application.
-// ABOUTME: Covers embedded help and dry-run output without the legacy helper boundary.
+// ABOUTME: Covers help, rendering classification, configuration failure, and body justification.
 package app
 
 import (
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -26,6 +27,58 @@ func TestManuscriptDispatchInProcess(t *testing.T) {
 		if !strings.Contains(stdout, fragment) {
 			t.Errorf("dry-run missing %q:\n%s", fragment, stdout)
 		}
+	}
+}
+
+func TestManuscriptDispatchClassifiesCompleteLineCodeSpans(t *testing.T) {
+	dir := t.TempDir()
+	t.Setenv("HOME", t.TempDir())
+	source := filepath.Join(dir, "chapter.md")
+	target := filepath.Join(dir, "manuscript.typ")
+	writeAppFile(t, source, strings.Join([]string{
+		"## Chapter 1",
+		"",
+		"This is `inline_code` here.",
+		"",
+		"`echo from a complete line`",
+		"",
+		"`echo with trailing content` # remains inline",
+		"",
+	}, "\n"))
+
+	status, stdout, stderr := runApp(t, "manuscript", source, target)
+	if status != 0 {
+		t.Fatalf("status %d\nstdout:%s\nstderr:%s", status, stdout, stderr)
+	}
+	typst := readAppFile(t, target)
+	for _, fragment := range []string{
+		"This is `inline_code` here.",
+		"```\necho from a complete line\n```",
+		"`echo with trailing content` \\# remains inline",
+	} {
+		if !strings.Contains(typst, fragment) {
+			t.Errorf("generated Typst missing classification evidence %q:\n%s", fragment, typst)
+		}
+	}
+}
+
+func TestManuscriptDispatchRejectsInvalidBlockIndentBeforeOutput(t *testing.T) {
+	dir := t.TempDir()
+	t.Setenv("HOME", t.TempDir())
+	source := filepath.Join(dir, "chapter.md")
+	target := filepath.Join(dir, "manuscript.typ")
+	writeAppFile(t, source, "## Chapter 1\n\n`echo from a complete line`\n")
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  manuscript:\n    code-block-indent: inward\n")
+
+	status, _, stderr := runApp(t, "manuscript", source, target)
+	if status == 0 {
+		t.Fatalf("invalid code-block indent returned status zero")
+	}
+	if !strings.Contains(stderr, "folio.manuscript.code-block-indent") {
+		t.Fatalf("invalid code-block indent diagnostic omitted its path: %s", stderr)
+	}
+	if _, err := os.Stat(target); !os.IsNotExist(err) {
+		t.Fatalf("invalid code-block indent wrote output %s", target)
 	}
 }
 
