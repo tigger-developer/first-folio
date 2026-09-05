@@ -146,10 +146,6 @@ func markdownFenceLine(line string, openMarker byte, openLength int) (byte, int,
 }
 
 func standaloneMarkdownCodeSpan(line string) (string, bool) {
-	leadingSpaces := len(line) - len(strings.TrimLeft(line, " "))
-	if leadingSpaces > 3 || strings.HasPrefix(line, "\t") {
-		return "", false
-	}
 	trimmed := strings.TrimSpace(line)
 	if len(trimmed) < 3 || trimmed[0] != '`' {
 		return "", false

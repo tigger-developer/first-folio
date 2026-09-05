@@ -56,22 +56,29 @@ revision.
 - Requirement: FR-012 - promote complete-line code spans and FR-013 - preserve
   mixed-content inline code
 - Expected: A complete-line Markdown code span uses the configured code-block
-  layout while code embedded in prose and code followed by trailing content
-  remain inline.
+  layout while code embedded in prose remains inline. In the supplied negative
+  example, `but ` is prose before the code span and `#because...` remains inside
+  that span.
 - Procedure: Render the four source forms supplied by the project owner through
   the public manuscript command, inspect the generated Typst, compile to PDF,
   extract Poppler bounding boxes and layout-retained text, and inspect the
   rendered content page at 120 DPI.
 - Status: PASS
 - Tested revision: Audited candidate diff
-  `393973073fe956c5f4c0181dc24d7b18ba31551fe6355d9d93da462dcfdaf5fb`
+  `e33af353c2b01082cb016c6b67b0aefdc7f6c4a900c6ce126312d533e5102afc`
+  based on production revision `e71795a`
 - Environment: macOS arm64, Go 1.26.3, Typst 0.14.2, Poppler 26.04.0
 - Tester: Claudius
 - Observed: The existing fence and the complete-line code span rendered with
-  the configured code-block inset. Inline code within prose and the code span
-  followed by a source comment remained at the prose margin. Text content was
-  retained in all four cases. Bounding boxes placed both block-code lines at
-  `xMin=85.492910`; the inline-code paragraph and the trailing-content line both
-  began at `xMin=56.692913`.
-- Post-audit repeat: PASS with the same three-page A4 output, 18,575-byte file
-  size, extracted content, bounding-box positions, and rendered appearance.
+  the configured code-block inset. Inline code within prose, including the span
+  preceded by `but ` with `#because...` inside its delimiters, remained at the
+  prose margin. Text content was retained in all four cases. Bounding boxes
+  placed both block-code lines at `xMin=85.492910`; both prose lines began at
+  `xMin=56.692913`, while `#because` remained within the inline monospace span.
+- Superseded fixture: The earlier 18,575-byte run placed `#because...` outside
+  the closing backtick and therefore did not evidence the project owner's
+  intended negative example.
+- Corrected post-audit repeat: PASS with a three-page A4 PDF of 18,580 bytes.
+  Extracted text, bounding boxes, and the rendered page confirm that leading
+  `but ` determines prose classification while all delimited content remains
+  inline code.

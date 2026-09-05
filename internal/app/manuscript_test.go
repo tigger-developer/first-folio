@@ -42,7 +42,7 @@ func TestManuscriptDispatchClassifiesCompleteLineCodeSpans(t *testing.T) {
 		"",
 		"`echo from a complete line`",
 		"",
-		"`echo with trailing content` # remains inline",
+		"but `echo # because remains inside the code span`",
 		"",
 	}, "\n"))
 
@@ -54,7 +54,7 @@ func TestManuscriptDispatchClassifiesCompleteLineCodeSpans(t *testing.T) {
 	for _, fragment := range []string{
 		"This is `inline_code` here.",
 		"```\necho from a complete line\n```",
-		"`echo with trailing content` \\# remains inline",
+		"but `echo # because remains inside the code span`",
 	} {
 		if !strings.Contains(typst, fragment) {
 			t.Errorf("generated Typst missing classification evidence %q:\n%s", fragment, typst)

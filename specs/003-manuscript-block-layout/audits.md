@@ -151,10 +151,51 @@
 - Model: `gpt-5.6-luna`
 - Verdict: **PASS**
 
+### Boundary clarification audit 1
+
+- Candidate diff:
+  `46bb31a075dd6f563877aeb347bd623ca43555e52932c95a488ae86cccc11c73`
+- Scope: Correct the negative example so leading prose determines inline
+  classification while `#because...` remains inside the code delimiters.
+- Harness: Hermes
+- Provider: `openai-codex`
+- Model: `gpt-5.6-luna`
+- Verdict: **PASS**
+- Advisory: Add the equivalent Org mixed-content case containing `#`.
+- Remediation: The Org regression was added through the canonical conversion
+  boundary.
+
+### Boundary clarification audit invocation incident
+
+- Result: A malformed command included stray positional arguments and was
+  rejected before the audit harness ran.
+- Consequence: No audit verdict was recorded from this invocation.
+
+### Boundary clarification audit 2
+
+- Candidate diff:
+  `e66ce92b71c5d57d610ee651dce507b2960af160f7b92d7cd3650e07cc7a9db7`
+- Verdict: **FAIL**
+- Blocking finding: The preprocessor excluded tab indentation and more than
+  three leading spaces even though the specification ignores all surrounding
+  source-line whitespace.
+- Remediation: The arbitrary indentation exclusion was removed. Markdown
+  integration and helper regressions now cover four-space and tab-indented
+  complete-line spans.
+
+### Boundary clarification audit 3
+
+- Candidate diff:
+  `e33af353c2b01082cb016c6b67b0aefdc7f6c4a900c6ce126312d533e5102afc`
+- Harness: Hermes
+- Provider: `openai-codex`
+- Model: `gpt-5.6-luna`
+- Verdict: **PASS**
+
 ## Current gate
 
 - Effective verdict: **PASS**
 - Consequence: Final verification may run against the audited implementation,
-  including the focused indent and complete-line code-span amendments. The
-  separate test audit remains a disclosed, non-gating FAIL under the explicit
-  emergency bypass.
+  including the corrected prose-prefix boundary, Org parity, and surrounding
+  whitespace handling. The separate test audit remains a disclosed,
+  non-gating FAIL under the explicit emergency bypass.

@@ -24,11 +24,15 @@ func TestStandaloneMarkdownCodeSpanUsesCodeBlockLayout(t *testing.T) {
 		"",
 		"  `echo \"Whitespace still makes this a code block\"`  ",
 		"",
+		"    `echo \"Four spaces still make this a code block\"`",
+		"",
+		"\t`echo \"A tab still makes this a code block\"`",
+		"",
 		"~~~",
 		`echo "This fenced block uses tildes"`,
 		"~~~",
 		"",
-		"`echo \"This is not a code block\"` # trailing prose",
+		"but `echo \"This is not a code block\" #because the code does not occupy the whole line`",
 		"",
 	}, "\n"))
 
@@ -54,19 +58,31 @@ func TestStandaloneMarkdownCodeSpanUsesCodeBlockLayout(t *testing.T) {
 	}, "\n"))
 	assertContains(t, typst, strings.Join([]string{
 		"```",
+		`echo "Four spaces still make this a code block"`,
+		"```",
+	}, "\n"))
+	assertContains(t, typst, strings.Join([]string{
+		"```",
+		`echo "A tab still makes this a code block"`,
+		"```",
+	}, "\n"))
+	assertContains(t, typst, strings.Join([]string{
+		"```",
 		`echo "This fenced block uses tildes"`,
 		"```",
 	}, "\n"))
-	assertContains(t, typst, "`echo \"This is not a code block\"` \\# trailing prose")
+	assertContains(t, typst, "but\n`echo \"This is not a code block\" #because the code does not occupy the whole line`")
 }
 
 func TestStandaloneMarkdownCodeSpanPreprocessingIsSourceAware(t *testing.T) {
 	input := strings.Join([]string{
 		"  `whole line`  ",
 		"before `inline` after",
+		"but `code # because remains inside`",
 		"`code` # trailing prose",
 		"``code with ` tick``",
-		"    `indented code`",
+		"    `four-space code`",
+		"\t`tab-indented code`",
 		"```",
 		"`already fenced`",
 		"```",
@@ -81,11 +97,17 @@ func TestStandaloneMarkdownCodeSpanPreprocessingIsSourceAware(t *testing.T) {
 		"whole line",
 		"```",
 		"before `inline` after",
+		"but `code # because remains inside`",
 		"`code` # trailing prose",
 		"```",
 		"code with ` tick",
 		"```",
-		"    `indented code`",
+		"```",
+		"four-space code",
+		"```",
+		"```",
+		"tab-indented code",
+		"```",
 		"```",
 		"`already fenced`",
 		"```",
@@ -111,6 +133,8 @@ func TestStandaloneOrgCodeSpanUsesCanonicalCodeBlockLayout(t *testing.T) {
 		"",
 		"Text with =inline code= here.",
 		"",
+		"but =echo # because remains inside the code span=",
+		"",
 	}, "\n"))
 
 	output := filepath.Join(dir, "manuscript.typ")
@@ -123,4 +147,5 @@ func TestStandaloneOrgCodeSpanUsesCanonicalCodeBlockLayout(t *testing.T) {
 		"```",
 	}, "\n"))
 	assertContains(t, typst, "Text with `inline code` here.")
+	assertContains(t, typst, "but `echo # because remains inside the code span`")
 }

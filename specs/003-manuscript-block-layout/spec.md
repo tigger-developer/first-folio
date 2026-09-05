@@ -21,9 +21,10 @@
 - **Edge cases:** Omitted quote-font properties inherit independently;
   side-specific code spacing may override only one side; invalid values fail
   before output; omitted block indents preserve the existing layout; existing
-  fences and code spans with trailing content are not reclassified.
+  fences and code spans sharing a source line with prose are not reclassified.
 - **Decisions:** Both spacing defaults are `0.5em`; both indent defaults are
-  `0em`; the public quote style `regular` maps to Typst `normal`.
+  `0em`; the public quote style `regular` maps to Typst `normal`; complete-line
+  classification is purely syntactic and never infers a programming language.
 - **Evidence:** The project owner's `BYPASS-GATE-7` instruction dated 2026-09-05,
   the maintained manuscript regression pack, and [audits.md](audits.md).
 - **Next step:** A code-audit PASS and current regression evidence permit the
@@ -55,7 +56,8 @@ without changing mixed-content inline-code semantics.
   same behaviour through the existing canonical Markdown conversion.
 - Out of scope: Inline-code typography, code-block typography, paragraph
   spacing and first-line indentation, all other source parsing, and
-  non-manuscript rendering **do not change**.
+  non-manuscript rendering **do not change**. The feature does not parse code or
+  infer a programming language.
 - Out of scope: This emergency change does not activate the full
   [Unified Font Configuration](../001-unified-font-config/spec.md) migration.
 
@@ -146,8 +148,8 @@ retaining the manuscript monospace font.
 
    THEN it uses **code-block spacing, indentation, and monospace typography**
 
-5. GIVEN a code span with any source content outside its delimiters on the same
-   line
+5. GIVEN a code span preceded by `but ` or any other source content outside its
+   delimiters on the same line
 
    WHEN the manuscript is rendered
 
@@ -165,7 +167,8 @@ retaining the manuscript monospace font.
 - Surrounding source-line whitespace does not prevent a complete-line code span
   from becoming a block.
 - Existing fenced code is preserved without reclassification.
-- A code span followed by prose or a source comment remains inline.
+- A prose prefix such as `but ` keeps the span inline even when text beginning
+  with `#` remains inside the code delimiters.
 
 ## Requirements
 
@@ -211,9 +214,13 @@ retaining the manuscript monospace font.
   the only non-whitespace content on its source line MUST render with code-block
   semantics, including configured code-block spacing and indentation. Org
   verbatim spans MUST follow the same rule after canonical Markdown conversion.
+  Classification MUST depend only on source delimiters and line occupancy and
+  MUST NOT inspect code content or infer a programming language.
 - FR-013 - **Preserve mixed-content inline code**: A code span with any content
   outside its delimiters on the same source line MUST remain inline and MUST NOT
-  receive code-block spacing or indentation.
+  receive code-block spacing or indentation. Content inside the delimiters,
+  including text beginning with `#`, MUST remain code and MUST NOT affect this
+  classification.
 
 ### Key Entities
 
@@ -247,8 +254,8 @@ retaining the manuscript monospace font.
   emitted as the left inset of its named block type without changing paragraph
   indentation.
 - SC-007 - **Classify source lines exactly**: Complete-line code spans receive
-  block layout in Markdown and Org manuscripts while code spans embedded in or
-  followed by other content remain inline.
+  block layout in Markdown and Org manuscripts while code spans sharing a line
+  with prose remain inline.
 
 ## Assumptions
 
