@@ -39,10 +39,21 @@ Candidate:
 - Context: Candidate specification, normative YAML, and constitution only, to
   isolate context volume from harness availability.
 
+## Post-feedback candidate
+
+- `spec.md`: `041ed5d2f8afee7b844ba6cb6fae083c4794434e79ec5210307bce8cc887b873`
+- `config.yaml`: `057b4d61c0181c44ef00b779b58ea10ebf7ae969d3f7540916c7247ee83d03eb`
+- Revision: Presentation was aligned with the project styling contract after
+  project-owner feedback on 2026-09-05. Requirements and behaviour were not
+  intentionally changed.
+- Audit status: The three attempts above apply to the earlier candidate digest,
+  not this revised candidate. No independent verdict covers this digest.
+
 ## Current gate
 
 - Effective verdict: **NONE**
 - Blocker: The independent audit harness returned no structured verdict in
-  three progressively smaller attempts.
+  three progressively smaller attempts, and the revised candidate has no
+  independent verdict.
 - Consequence: The draft may be reviewed by the project owner, but planning
   MUST NOT begin until a current `audit-spec` PASS or effective PASS is recorded.

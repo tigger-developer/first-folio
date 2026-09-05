@@ -55,3 +55,7 @@ to clarification or audit
   `letter-spacing`; and no clarification marker remains.
 - Independent `audit-spec` remains blocked by three Hermes harness timeouts.
   This checklist does not substitute for the required audit verdict.
+- Presentation was revised on 2026-09-05 after project-owner feedback that the
+  first draft failed the styling contract. The revised candidate was rechecked
+  for bold semantic spines, one-fact structure, acceptance-scenario signposts,
+  and descriptors beside identifiers.
