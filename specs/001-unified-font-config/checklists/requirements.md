@@ -37,8 +37,8 @@ to clarification or audit
 ## Feature Readiness
 
 - [x] All functional requirements have clear acceptance criteria.
-- [x] User scenarios cover configuration, discoverability, and regression
-  continuity.
+- [x] User scenarios cover the canonical base, minimal style overlays, font
+  inheritance, every publishing mode, hard failure, and regression continuity.
 - [x] Feature outcomes are measurable without relying on implementation
   structure.
 - [x] Implementation and test procedures are absent unless they are part of the
@@ -59,3 +59,10 @@ to clarification or audit
   first draft failed the styling contract. The revised candidate was rechecked
   for bold semantic spines, one-fact structure, acceptance-scenario signposts,
   and descriptors beside identifiers.
+- The project owner restored the original configuration authority on
+  2026-09-05. The normative YAML now resides at `presets/british.yaml`, covers
+  all three modes, and is required to become the application's actual runtime
+  base rather than a feature-directory copy.
+- The revised specification explicitly names the two documented font flags,
+  hard-failure status, script conversion, letter PDF generation, and manuscript
+  Typst/PDF generation.

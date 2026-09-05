@@ -1,9 +1,11 @@
-# Normative configuration contract for unified font blocks.
+# Canonical British configuration contract.
 #
-# This file defines the complete British default configuration affected by this
-# feature. Every `font` block exposes the same fields in the same order.
-# Assigned fields are defaults owned by that role. Commented fields are valid
-# user options that inherit from the named parent when omitted.
+# This file defines the complete public configuration contract for script,
+# letter, and manuscript rendering. Every `font` block exposes the same fields
+# in the same order. Assigned fields are defaults owned by that role. Commented
+# fields are valid user options that inherit from the named parent when omitted.
+# Feature 001 - Unified Font Configuration requires the application to load this
+# file as its runtime base.
 
 render:
   stage-directions: true
@@ -257,6 +259,7 @@ folio:
     page: a4
     margin: 20mm
     gutter: 0mm
+    date-format: "2 January 2006"
 
     font:
       # family: Libertinus Serif # Inherits folio.font.family.
@@ -340,7 +343,6 @@ folio:
 
       date:
         align: ""
-        format: "2 January 2006"
         font:
           # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
           size: 10pt

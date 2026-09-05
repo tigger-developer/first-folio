@@ -6,257 +6,351 @@ Created: 2026-09-04
 
 Status: Draft
 
-Input: Replace every public font-related key shape with one uniform, breaking
-configuration block; publish all defaults and visible inheritance options; and
-carry the maintained regression pack forward with traceable replacements where
-the old syntax itself is superseded.
+Input: Replace every public font-key shape with one uniform breaking contract;
+make one exhaustive British YAML file the runtime base for script, letter, and
+manuscript; retain only differences in style overrides; and carry the maintained
+regression pack forward with traceable replacements.
 
 ## Scope
 
-- In scope: Every supported text role uses **one `font` block shape** across
-  script, letter, and manuscript rendering.
-- In scope: [config.yaml](config.yaml) **defines** the block shape, defaults,
-  roles, and inheritance as the **normative configuration contract**.
+- In scope: [presets/british.yaml](../../presets/british.yaml) becomes the
+  **single exhaustive British base** for script, letter, and manuscript
+  configuration.
+- In scope: The application **loads that same file at runtime** as its
+  lowest-precedence configuration source.
+- In scope: A user may **inspect or copy the British base** as a complete
+  configuration reference without consulting implementation code.
+- In scope: US and screenplay presets become **limited overrides containing only
+  differences** from the British base.
+- In scope: Every supported text role uses **one `font` block shape**.
 - In scope: Existing flat and prefixed font keys are **removed without
   compatibility aliases**.
 - In scope: The **entire maintained regression pack remains live**, using
-  traceable replacements where old syntax or assertions are superseded.
-- Out of scope: Source parsing, document semantics, pagination, and
-  non-typographic layout **remain unchanged**.
-- Out of scope: Configuration discovery, layer precedence, and command-line
-  option names **remain unchanged**.
+  traceable replacements where syntax or assertions are superseded.
+- Out of scope: Source-frontmatter configuration belongs to the separate
+  [Source Frontmatter Configuration](../002-source-frontmatter-config/spec.md)
+  feature.
+- Out of scope: Source semantics, text conversion, pagination, non-typographic
+  layout, and configuration discovery **remain unchanged**.
 - Out of scope: The feature adds **no named style registry**, **user-defined
   inheritance graph**, or undeclared font property.
 
 ## User Scenarios & Testing
 
-### User Story 1 - Configure any font role consistently (Priority: P1)
+### User Story 1 - Inspect and reuse the complete configuration (Priority: P1)
+
+The user **inspects one British YAML file** to find every configuration option
+and may **copy it as an editable starting point**.
+
+Why this priority: One runtime-owned reference prevents the documented
+configuration contract from **drifting away from application defaults**.
+
+Independent Test: The same exhaustive British file can be **loaded directly by
+the application** and **copied unchanged as an override** without changing
+output.
+
+#### Acceptance Scenarios
+
+1. GIVEN an installation with **no user override**
+
+   WHEN the user renders a script, letter, or manuscript
+
+   THEN every effective default **originates from `presets/british.yaml`** and
+   its documented per-field inheritance
+
+2. GIVEN a copy of `presets/british.yaml` at the global or nearest local
+   `script.yaml` location
+
+   WHEN the user renders the same source without editing that copy
+
+   THEN the output **matches the unconfigured British output**
+
+3. GIVEN the British base and a selected US or screenplay preset
+
+   WHEN the application resolves configuration
+
+   THEN the selected preset **overrides only its declared differences**
+
+   AND every omitted value **continues to come from the British base**
+
+### User Story 2 - Configure every font role consistently (Priority: P1)
 
 The user **configures any text role** with the **same complete font vocabulary**
-in every rendering mode, including a bold extended monospace face.
+across script, letter, and manuscript rendering.
 
-Why this priority: A **uniform contract removes role-specific gaps** that
-prevent valid font variants from being selected.
+Why this priority: A uniform contract removes role-specific gaps that prevent
+valid font variants from being selected.
 
-Independent Test: A **partial monospace font block changes weight and stretch**,
-**inherits omitted properties**, and **leaves other text unchanged**.
-
-#### Acceptance Scenarios
-
-1. GIVEN a manuscript with a **partially inherited monospace font**
-
-   WHEN the user sets **`weight: bold`** and **`stretch: 125%`** in that role's
-   `font` block
-
-   THEN **inline code and code blocks use** the **bold extended variant**
-
-   AND **prose and headings retain** their own effective font values
-
-2. GIVEN any configurable script, letter, or manuscript text role listed in
-   the normative configuration
-
-   WHEN the user **supplies any supported subset** of the role's `font` fields
-
-   THEN each supplied field **overrides only itself**
-
-   AND each omitted field **inherits independently** from its documented parent
-
-### User Story 2 - Inspect the complete contract (Priority: P1)
-
-The user **inspects one configuration artefact** to see **every default** and
-**every inherited font option** without consulting implementation code.
-
-Why this priority: **Visible defaults and inheritance** make configuration
-decisions reviewable before rendering.
-
-Independent Test: Every supported font role **shows all six fields** as an
-assigned default or a commented option naming its inheritance source.
+Independent Test: One partial font block **changes only its declared
+properties** and **inherits every omitted property** from its named parent.
 
 #### Acceptance Scenarios
 
-1. GIVEN the normative configuration artefact
+1. GIVEN a manuscript monospace role whose family and size are inherited
 
-   WHEN the user **inspects a `font` block**
+   WHEN the user sets **`weight: bold`** and **`stretch: 125%`**
 
-   THEN **all supported fields appear** in the same order
+   THEN inline code and code blocks **use the bold extended variant**
 
-   AND **each inherited field is commented out** with its source named
+   AND prose and headings **retain their own effective fonts**
 
-2. GIVEN an unconfigured installation
+2. GIVEN any font role declared in the British base
 
-   WHEN each rendering mode **produces a document**
+   WHEN the user supplies a supported subset of its `font` properties
 
-   THEN its effective font values **match the active built-in defaults** and
-   selected style overrides
+   THEN each supplied property **overrides only itself**
 
-### User Story 3 - Preserve regression protection (Priority: P1)
+   AND each omitted property **inherits separately from the parent named beside
+   that property**
+
+3. GIVEN a higher-precedence file that changes one font property
+
+   WHEN configuration layers are merged
+
+   THEN lower-precedence sibling properties **remain effective**
+
+### User Story 3 - Preserve every publishing mode (Priority: P1)
+
+The user retains **script conversion**, **letter PDF generation**, and
+**manuscript Typst/PDF generation** while adopting the new schema.
+
+Why this priority: The configuration migration must not remove established
+publishing behaviour.
+
+Independent Test: Each rendering mode accepts the new font contract while its
+unrelated source and output behaviour **remains protected**.
+
+#### Acceptance Scenarios
+
+1. GIVEN a stage play in Org, Markdown, or Fountain
+
+   WHEN it is converted among the three text formats
+
+   THEN its existing conversion behaviour **remains unchanged**
+
+   AND font configuration **affects only Typst or PDF rendering**
+
+2. GIVEN an Org source containing one or more letters
+
+   WHEN letter PDFs are generated with a letter font override
+
+   THEN the override **affects letter text only**
+
+   AND recipient selection, filenames, and PDF generation **remain unchanged**
+
+3. GIVEN a Markdown or Org manuscript
+
+   WHEN Typst or PDF output is generated with manuscript font overrides
+
+   THEN each override **affects only its declared manuscript role**
+
+   AND manuscript parsing, joining, and non-typographic layout **remain
+   unchanged**
+
+### User Story 4 - Preserve regression protection (Priority: P1)
 
 The project owner **hands an approved specification and aligned regression
 pack** to a build agent as the behavioural boundary for test-driven delivery.
 
-Why this priority: The **regression pack protects established behaviour** from
-silent loss during the schema migration.
+Why this priority: The regression pack protects established behaviour from
+silent loss during the migration.
 
 Independent Test: Every pre-change maintained test **remains active** or has an
 **active traceable replacement** protecting the same behaviour.
 
 #### Acceptance Scenarios
 
-1. GIVEN a maintained test whose behaviour is unchanged but whose fixture uses
-   a superseded font key
+1. GIVEN a maintained test whose fixture uses a superseded font key
 
-   WHEN the regression pack is **aligned with this specification**
+   WHEN the regression pack is aligned with this specification
 
-   THEN the test **remains active** with an equivalent new-schema fixture
+   THEN the test **remains active with an equivalent new-schema fixture**
 
-2. GIVEN a maintained test whose assertion specifically requires superseded
-   syntax or omitted output
+2. GIVEN a maintained assertion that specifically requires superseded syntax
 
-   WHEN the regression pack is **aligned with this specification**
+   WHEN the regression pack is aligned with this specification
 
    THEN the old test **remains as superseded provenance**
 
    AND an active replacement **preserves its behavioural intent**
 
-3. GIVEN configuration files at the existing global, local, and style-specific
-   locations
+3. GIVEN an invalid font configuration
 
-   WHEN their font values **use the new block shape**
+   WHEN any public command loads it
 
-   THEN **discovery, precedence, and deep merging remain unchanged**
+   THEN the command **writes a path-specific diagnostic to stderr**
+
+   AND **returns a non-zero status before producing output**
 
 ### Edge Cases
 
-- A font block with **one explicit field inherits the other five**
+- A font block with **one explicit property inherits the other five**
   independently.
-- A higher-precedence field **does not erase inherited sibling fields**.
-- An **unknown field**, **legacy key**, or **scalar font value is rejected**
-  with a diagnostic naming its path.
-- An **empty or null field is rejected** rather than erasing an inherited
-  value.
-- Named and numeric weights **retain their established meanings**.
-- Stretch values **retain percentage semantics** and the established
-  plain-number shorthand.
-- Default upright text **remains upright** without requiring the former omitted
-  output argument.
+- A higher-precedence property **does not erase inherited sibling properties**.
+- An **unknown property inside a font block**, **legacy font key**, **scalar font
+  value**, **empty value**, or **invalid font value** causes a hard failure.
+- A copied British base with no edits **does not become a second default
+  authority**; it is an ordinary higher-precedence override.
+- A style override that repeats an unchanged British value **violates the
+  minimal-override contract**.
+- Default upright text **remains upright** without relying on an omitted output
+  argument.
 
 ## Requirements
 
 ### Functional Requirements
 
-- FR-001 - **Use one font block shape**: Every configurable text role MUST use
-  a **mapping named `font`** with the same ordered fields: `family`,
-  `size`, `weight`, `stretch`, `style`, and `letter-spacing`.
-- FR-002 - **Publish the normative YAML contract**:
-  [config.yaml](config.yaml) MUST **assign every effective British default** and
-  show every inheritable field as a **commented option naming its source**.
-- FR-003 - **Inherit each field independently**: An omitted font field MUST
-  **inherit that field only** from the parent named in the normative
+- FR-001 - **Provide one canonical British base**: `presets/british.yaml` MUST
+  be the **sole exhaustive built-in base** for script, letter, and manuscript
   configuration.
-- FR-004 - **Merge font fields across layers**: Configuration layering MUST
-  **preserve lower-precedence sibling fields** that a higher layer does not
-  replace.
-- FR-005 - **Support every field consistently**: Every font role MUST accept
-  **all six font fields**, including roles previously limited to family, size,
-  or weight.
-- FR-006 - **Confine overrides to their roles**: A role-specific font override
-  MUST affect **only that role's text**. The normative configuration declares
-  the body, heading, monospace, title-page, running-matter, contents, copyright,
-  script-element, and letter roles.
-- FR-007 - **Resolve explicit effective defaults**: An unconfigured render MUST
-  resolve **every font field to a value** while preserving approved British and
-  selected-style rendering semantics.
-- FR-008 - **Reject invalid font configuration**: Unknown fields, invalid
-  values, scalar font values, and superseded keys MUST **fail with a diagnostic
-  naming the path** and, for legacy keys, the replacement block.
-- FR-009 - **Preserve configuration loading**: The migration MUST preserve
-  **source-directory discovery**, **HOME-boundary stopping**, **nearest-file and
-  style-sibling selection**, and **configuration and command-line precedence**.
-- FR-010 - **Make a clean breaking migration**: The application MUST accept
-  **only the new font block contract** after delivery, without legacy aliases
+- FR-002 - **Use the canonical base at runtime**: Every rendering mode MUST load
+  `presets/british.yaml` as its **lowest-precedence configuration source**; no
+  duplicate runtime default may independently define the same contract.
+- FR-003 - **Expose the complete public contract**: The British base MUST show
+  **every accepted public configuration property** in its correct hierarchy.
+  Explicit defaults MUST be assigned, while inherited properties MUST remain
+  visible as commented options naming their source.
+- FR-004 - **Keep the canonical base copyable**: Copying the British base
+  unchanged to a supported global or local `script.yaml` location MUST produce
+  the **same effective British configuration**.
+- FR-005 - **Keep style presets minimal**: The US and screenplay built-in
+  presets MUST contain **only properties whose effective values differ** from
+  the British base and MUST deep-merge over that base.
+- FR-006 - **Use one font block shape**: Every configurable text role MUST use
+  a mapping named `font` with the ordered properties `family`, `size`, `weight`,
+  `stretch`, `style`, and `letter-spacing`.
+- FR-007 - **Inherit font properties independently**: An omitted font property
+  MUST inherit **that property only** from the parent identified beside it in
+  the British base. Resolution MUST continue transitively until it reaches an
+  explicitly assigned value.
+- FR-008 - **Merge font properties across layers**: A higher-precedence layer
+  MUST replace only its declared properties and **preserve lower-precedence
+  siblings**.
+- FR-009 - **Support every role consistently**: Every font role MUST accept all
+  six font properties, including roles previously limited to family, size, or
+  weight.
+- FR-010 - **Confine overrides to their roles**: A role-specific font override
+  MUST affect **only that role's rendered text** across script, letter, and
+  manuscript output.
+- FR-011 - **Resolve explicit effective defaults**: An unconfigured render MUST
+  resolve every font property through the British base and its transitive
+  inheritance while preserving approved British **rendered output behaviour**.
+  Generated Typst MAY change only where the new contract emits explicit font
+  values that previously relied on omission.
+- FR-012 - **Reject invalid font configuration**: Unknown properties inside a
+  `font` block, invalid font values, scalar font values, empty or null font
+  properties, and superseded font keys MUST **terminate before output**, write a
+  diagnostic identifying the offending path, and return a **non-zero status**.
+- FR-013 - **Preserve configuration loading**: Source-directory discovery,
+  HOME-boundary stopping, nearest-file selection, style-sibling selection, deep
+  merging, and existing layer precedence MUST remain unchanged.
+- FR-014 - **Make a clean breaking migration**: After delivery, the application
+  MUST accept **only the new font block contract**, without compatibility aliases
   or dual decoding.
-- FR-011 - **Preserve command-line behaviour**: Existing font-related options
-  MUST retain their **meanings and precedence** while targeting the new model.
-- FR-012 - **Keep the regression pack live**: Every pre-change maintained test
-  MUST **remain active or have an active traceable replacement**. No behavioural
-  check may be deleted, disabled, or weakened solely because its configuration
-  syntax changes.
-- FR-013 - **Preserve replacement lineage**: A replaced test MUST remain
-  identifiable as **superseded provenance**. Its active replacement MUST name
-  the same originating requirement or this specification's replacement
-  requirement.
+- FR-015 - **Preserve documented font flags**: `folio convert --font` and
+  `folio convert --font-size` MUST retain their observable meanings and highest
+  precedence while targeting `folio.font.family` and `folio.font.size`.
+- FR-016 - **Preserve mode contracts**: The migration MUST leave Org, Markdown,
+  and Fountain script conversion; script Typst/PDF rendering; Org letter PDF
+  generation; and Markdown/Org manuscript Typst/PDF generation unchanged except
+  for the specified configuration schema.
+- FR-017 - **Keep the regression pack live**: Every pre-change maintained test
+  MUST remain active or have an active traceable replacement. No behavioural
+  check may be deleted, disabled, or weakened solely because its syntax changes.
+- FR-018 - **Preserve replacement lineage**: A replaced test MUST remain
+  identifiable as superseded provenance. Its active replacement MUST name the
+  same originating requirement or this specification's replacement requirement.
 
 ### Key Entities
 
-- **Font block**: The uniform six-field value used to resolve one text role.
-- **Font role**: A bounded class of rendered text, such as manuscript
-  monospace, a page header, a script speaker, or a letter body.
-- **Parent role**: The documented source from which an omitted field inherits.
-- **Effective font**: The complete six-field value after preset selection,
-  configuration layering, command-line overrides, and role inheritance.
+- **British base**: The single exhaustive runtime configuration from which every
+  built-in style and rendering mode begins.
+- **Style override**: A limited YAML layer containing only effective differences
+  from the British base.
+- **Font block**: The uniform six-property value resolving typography for one
+  text role.
+- **Parent role**: The documented source from which one omitted font property
+  inherits.
+- **Effective configuration**: The result after base selection, style overlays,
+  file layers, command-line overrides, and per-property inheritance.
 
 ## Success Criteria
 
 ### Measurable Outcomes
 
-- SC-001 - **Use one public vocabulary**: **100% of configurable font roles**
-  use the same six fields, with no role-specific spelling.
-- SC-002 - **Expose the whole contract**: **100% of normative font blocks** show
-  all six fields as assigned defaults or commented inherited options naming
-  their sources.
-- SC-003 - **Select variants predictably**: The user can set **family, size,
-  weight, stretch, style, and letter spacing independently** for every role.
-- SC-004 - **Retain regression protection**: **100% of pre-change maintained
+- SC-001 - **Maintain one exhaustive base**: **100% of accepted public
+  configuration properties** appear in `presets/british.yaml`, assigned or
+  visibly commented for inheritance.
+- SC-002 - **Use one runtime authority**: **100% of unconfigured script, letter,
+  and manuscript renders** derive their defaults from the same British base.
+- SC-003 - **Keep overlays limited**: **100% of US and screenplay preset
+  properties differ effectively** from the British base.
+- SC-004 - **Use one font vocabulary**: **100% of configurable font roles** use
+  the same six public properties.
+- SC-005 - **Retain publishing behaviour**: Org, Markdown, and Fountain script
+  conversion; letter PDFs; and Markdown/Org manuscript Typst/PDF output retain
+  all protected non-schema behaviour.
+- SC-006 - **Retain regression protection**: **100% of pre-change maintained
   tests remain active or have active traceable replacements**, with none removed
   or skipped solely for the migration.
-- SC-005 - **Preserve default output behaviour**: British, US, and screenplay
-  outputs retain **all protected non-schema behaviour** without user font
-  overrides.
-- SC-006 - **Make failures visible**: **100% of sampled legacy and malformed
-  paths fail with an identifying diagnostic**; none are silently ignored.
+- SC-007 - **Make failures visible**: **100% of sampled legacy, unknown, and
+  malformed configuration paths** return non-zero with an identifying diagnostic
+  and produce no output artefact.
 
 ## Assumptions
 
 - The sole current user has **accepted a breaking configuration migration**.
-- The six fields in [config.yaml](config.yaml) **bound this feature**;
-  additional text or OpenType controls require another specification.
-- **Omission means inheritance**; empty strings and null values do not reset a
-  field.
-- Existing style selection and built-in override layering **remain
-  authoritative** outside the font-key migration.
+- The six font properties in the British base **bound this feature**; additional
+  text or OpenType controls require another specification.
+- A commented property **inherits from its named parent**; an uncommented
+  property owns its explicit default.
+- Inheritance **continues through commented parent properties** until an
+  assigned value is reached, identically in the built-in base and an unedited
+  copy.
+- Existing built-in British, US, and screenplay rendering semantics **remain
+  authoritative** unless this specification explicitly changes their schema.
+- Source-frontmatter configuration is **specified separately** and does not
+  alter this feature's existing file-layer precedence.
 - Automated tests are **aligned before production code changes** so they
   establish the failing RED boundary.
 
 ## Existing Baseline
 
-- Requirement authority consulted: `docs/ACs.org` requirements **AC8.1-AC8.7 -
-  font weight and stretch**, **AC9.5-AC9.7 - cross-mode font inheritance**,
-  **AC9.12 - contents typography**, **AC15.2 - running-footer inheritance**, and
-  **AC34.1 - manuscript tracking**.
-- Design authority consulted: `ARCHITECTURE.md`, `docs/config.md`, and the
-  current British, US, and screenplay presets establish the **configuration and
-  rendering baseline**.
-- Historical context consulted: Archived tickets **8 - font weight and
-  stretch**, **9 - manuscript PDF mode**, **15 - manuscript configuration
-  extensions**, **19 - running-matter font style**, **20 - source-directory
-  configuration lookup**, and **34 - manuscript letter spacing** establish
-  **lineage and rationale**.
-- Implementation evidence consulted: The shared loader, three render paths,
-  manuscript normalization, and affected maintained tests establish the
-  **implemented baseline and regression boundary**.
-- Preserves: **Role boundaries, document semantics, configuration discovery and
-  precedence, style layering, CLI precedence, and the maintained regression
-  pack remain unchanged**.
-- Changes: The normative nested contract **replaces flat and prefixed keys**,
-  boolean typography controls, inconsistent role fields, and silent unknown-key
-  acceptance.
-- Supersedes: This specification **supersedes conflicting key paths and omission
-  rules only** in AC8.1-AC8.7, AC9.5-AC9.7, AC9.12, AC15.2, and AC34.1. Their
-  rendering intent, scoping, value semantics, and lineage remain authoritative.
-- Unaffected: Source formats, semantic models, non-typographic layout, external
-  ownership boundaries, and output-format contracts **do not change**.
+- Requirement authority consulted: `docs/ACs.org` requirements **AC1.1-AC1.7 -
+  script conversion and PDF configuration**, **AC2.1-AC2.3 - YAML configuration
+  and precedence**, **AC3.2-AC3.6 - British and US preset selection**,
+  **AC8.1-AC8.7 - font weight and stretch**, **AC9.1-AC9.12 - manuscript input,
+  rendering, and inheritance**, and **AC10.1-AC10.5 - unified runtime and loader**.
+- Design authority consulted: `ARCHITECTURE.md`, `docs/config.md`, the current
+  preset files, and the active configuration and rendering code establish the
+  **split runtime baseline**.
+- Historical context consulted: Archived tickets **1 - multi-format script
+  conversion**, **2 - unified YAML configuration**, **3 - style presets**,
+  **8 - font weight and stretch**, **9 - manuscript mode**, **10 - unified Go
+  runtime**, **15 - manuscript configuration extensions**, **19 - running-matter
+  font style**, **20 - source-directory lookup**, and **34 - manuscript letter
+  spacing** establish lineage and rationale.
+- Regression evidence consulted: Maintained tests under `internal/config`,
+  `internal/app`, `internal/letter`, `internal/manuscript`, and `internal/play`
+  establish the **implemented configuration, mode, and output boundaries**.
+- Preserves: **British-first styling**, **US and screenplay overlays**, existing
+  file discovery and precedence, all rendering modes, and the maintained
+  regression pack.
+- Changes: One exhaustive British runtime file **replaces the separate script
+  and manuscript base files**; one US override **replaces the separate US
+  script and manuscript overrides**; every font key adopts the nested contract.
+- Supersedes: This specification supersedes the **preset filenames and split-file
+  structure** named by AC9.9 - US manuscript override, and the conflicting font
+  key paths and omission rules in AC8.1-AC8.7, AC9.5-AC9.7, AC9.12, AC15.2, and
+  AC34.1. Their rendering intent, value semantics, and lineage remain
+  authoritative.
+- Unaffected: **AC2.3 - unrelated top-level key tolerance** and **AC10.5 -
+  companion-tool key tolerance** remain authoritative; unknown-key rejection is
+  confined to font blocks and superseded font keys.
+- Unaffected: Source-format semantics, content conversion, non-typographic
+  layout, and external Typst, Pandoc, and Fountain ownership boundaries do not
+  change.
 - Reconciled evidence: On approval, the five header/footer style tests and five
-  source-directory discovery tests **gain current targets** in FR-006 - confine
-  overrides to their roles, FR-007 - resolve explicit effective defaults,
-  FR-009 - preserve configuration loading, and FR-013 - preserve replacement
-  lineage.
+  source-directory discovery tests **gain current targets** in FR-010 - confine
+  overrides to roles, FR-011 - resolve effective defaults, FR-013 - preserve
+  loading, and FR-018 - preserve replacement lineage.
