@@ -59,6 +59,17 @@ folio:
     widow-orphan-control: true
     paragraph-indent: 10mm
     paragraph-spacing: 0
+    quoted-block-spacing: 0.5em
+    code-block-spacing: 0.5em
+
+    quoted-block:
+      font:
+        # family: Libertinus Serif # Inherits folio.manuscript.font.
+        # size: 12pt               # Inherits folio.manuscript.font-size.
+        # weight: regular          # Inherits folio.manuscript.font-weight.
+        stretch: 100%
+        style: regular
+        # letter-spacing: 0em      # Inherits folio.manuscript.letter-spacing.
 
     title-page:
       enabled: true
@@ -143,10 +154,6 @@ folio:
       space-after: 0.5em
 
     table:
-      space-before: 0.5em
-      space-after: 0.5em
-
-    code-block:
       space-before: 0.5em
       space-after: 0.5em
 

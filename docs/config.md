@@ -156,7 +156,9 @@ The built-in files [british-manuscript.yaml](../presets/british-manuscript.yaml)
 | `title-page` | `enabled`, `page-number`, `include-title`, `include-subtitle`, `include-author`, `include-date`, `include-wordcount`, `include-contact-name`, `include-address`, `include-phone`, `include-email`, `include-website`, `include-version`, `title-block-align`, `footer-align` |
 | `title-page.<item>` | `align`, where `<item>` is `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, or `contact` |
 | `scene-break` | `marker` |
-| `list`, `table`, `code-block` | `space-before`, `space-after` |
+| `quoted-block-spacing`, `code-block-spacing` | Equal clearance above and below quoted and fenced-code blocks |
+| `quoted-block.font` | `family`, `size`, `weight`, `stretch`, `style`, `letter-spacing`; omitted properties inherit from the manuscript font |
+| `list`, `table`, `code-block` | `space-before`, `space-after`; code-block values override `code-block-spacing` on their respective side |
 | `page-numbering` | `frontmatter-format`, `body-format`, `body-reset` |
 
 The `part` and `chapter` blocks share this shape:

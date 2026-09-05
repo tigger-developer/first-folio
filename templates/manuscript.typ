@@ -201,6 +201,20 @@
 #show strong: it => text(weight: "bold")[#it.body]
 #show emph: it => text(style: "italic")[#it.body]
 
+#show quote.where(block: true): it => block(
+  above: {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
+  below: {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
+)[
+  #text(
+    font: "{{.QuotedBlockFamily}}",
+    size: {{.Config.Folio.Manuscript.QuotedBlock.Font.Size}},
+    weight: {{.QuotedBlockWeight}},
+    stretch: {{.Config.Folio.Manuscript.QuotedBlock.Font.Stretch}},
+    style: "{{.QuotedBlockStyle}}",
+    tracking: {{.Config.Folio.Manuscript.QuotedBlock.Font.LetterSpacing}},
+  )[#it]
+]
+
 #show raw.where(block: true): it => block(
   above: {{.Config.Folio.Manuscript.CodeBlock.SpaceBefore}},
   below: {{.Config.Folio.Manuscript.CodeBlock.SpaceAfter}},

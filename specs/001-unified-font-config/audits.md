@@ -53,10 +53,13 @@ Candidate:
 
 - `spec.md`: `d68119ae6b30bd81a53b284c16c51ca3ce24f9f33bf16f02b257f1bbf4a833a3`
 - `presets/british.yaml`:
-  `18cb3781fe5da95ed8009084f345aa59379894812272bc5fbbc7e031c7b5ff2a`
+  `a7bc268d003908cb9d65ca43e89b1b8c270f819e401882f935e59e82e7b38a55`
 - Revision: Project-owner clarification restored one exhaustive British runtime
   base, minimal US and screenplay overlays, explicit mode coverage, named CLI
   flags, and hard-failure semantics.
+- Emergency delta: Feature 003 adds quoted-block spacing and the shared
+  six-property quote font block, plus equal code-block spacing, without
+  activating the Feature 001 runtime migration.
 - Audit status: The earlier attempts do not cover this candidate. A fresh
   independent verdict is required.
 

@@ -12,6 +12,7 @@ import (
 	"time"
 
 	folio "github.com/tigger-developer/first-folio"
+	typstutil "github.com/tigger-developer/first-folio/internal/typst"
 )
 
 type templateData struct {
@@ -58,6 +59,9 @@ type templateData struct {
 	ChapterPosition    string
 	SceneBreakMarker   string
 	HasContact         bool
+	QuotedBlockFamily  string
+	QuotedBlockWeight  string
+	QuotedBlockStyle   string
 
 	// Page dimensions: either a named preset or a custom W x H (both non-empty means custom).
 	PageSpec PageSpec
@@ -190,6 +194,9 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 		ChapterPosition:         chapterPosition(cfg.Folio.Manuscript.Chapter.Position),
 		SceneBreakMarker:        escapeTypst(cfg.Folio.Manuscript.SceneBreak.Marker),
 		HasContact:              hasContactBlock(doc.Metadata, cfg),
+		QuotedBlockFamily:       typstutil.EscapeString(cfg.Folio.Manuscript.QuotedBlock.Font.Family),
+		QuotedBlockWeight:       typstFontWeight(cfg.Folio.Manuscript.QuotedBlock.Font.Weight),
+		QuotedBlockStyle:        typstFontStyle(cfg.Folio.Manuscript.QuotedBlock.Font.Style),
 		PageSpec:                pageSpec,
 		Gutter:                  cfg.Folio.Manuscript.Gutter,
 		GutterActive:            isGutterActive(cfg.Folio.Manuscript.Gutter),
@@ -940,6 +947,23 @@ func chapterPosition(value string) string {
 	default:
 		return value
 	}
+}
+
+func typstFontStyle(value string) string {
+	switch strings.ToLower(strings.TrimSpace(value)) {
+	case "", "regular":
+		return "normal"
+	default:
+		return strings.ToLower(strings.TrimSpace(value))
+	}
+}
+
+func typstFontWeight(value string) string {
+	value = strings.ToLower(strings.TrimSpace(value))
+	if _, err := strconv.Atoi(value); err == nil {
+		return value
+	}
+	return `"` + value + `"`
 }
 
 func escapeTypst(text string) string {

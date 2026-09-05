@@ -34,7 +34,7 @@ Setext headings are not part of the manuscript contract; use ATX headings (`#`, 
 
 Section breaks default to a centred `#` marker in rendered manuscripts. Override `folio.manuscript.scene-break.marker` in YAML config to use another marker.
 
-Lists, tables, and fenced code blocks render with `0.5em` vertical padding before and after by default. Override `folio.manuscript.list.space-before`, `folio.manuscript.list.space-after`, `folio.manuscript.table.space-before`, `folio.manuscript.table.space-after`, `folio.manuscript.code-block.space-before`, and `folio.manuscript.code-block.space-after` to adjust this spacing.
+Lists, tables, blockquotes, and fenced code blocks render with `0.5em` vertical clearance before and after by default. Set `folio.manuscript.quoted-block-spacing` or `folio.manuscript.code-block-spacing` to change both sides of those blocks equally. The existing `folio.manuscript.code-block.space-before` and `folio.manuscript.code-block.space-after` properties override the equal code-block spacing on their respective sides. Configure blockquote typography through `folio.manuscript.quoted-block.font`; its `family`, `size`, `weight`, `stretch`, `style`, and `letter-spacing` properties inherit independently from the manuscript font when omitted.
 
 Fountain is not accepted by manuscript mode.
 

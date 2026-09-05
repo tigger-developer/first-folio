@@ -4,7 +4,10 @@ package manuscript
 
 import (
 	"fmt"
+	"math"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 
 	sharedconfig "github.com/tigger-developer/first-folio/internal/config"
@@ -151,6 +154,9 @@ type ManuscriptConfig struct {
 	WidowOrphanControl  *bool               `yaml:"widow-orphan-control"`
 	ParagraphIndent     string              `yaml:"paragraph-indent"`
 	ParagraphSpacing    string              `yaml:"paragraph-spacing"`
+	QuotedBlockSpacing  ConfigString        `yaml:"quoted-block-spacing"`
+	CodeBlockSpacing    ConfigString        `yaml:"code-block-spacing"`
+	QuotedBlock         QuotedBlockConfig   `yaml:"quoted-block"`
 	PageHeader          PageHeaderConfig    `yaml:"page-header"`
 	PageFooter          PageFooterConfig    `yaml:"page-footer"`
 	Gutter              string              `yaml:"gutter"`
@@ -322,6 +328,92 @@ type SpacedBlockConfig struct {
 	SpaceAfter  string `yaml:"space-after"`
 }
 
+type QuotedBlockConfig struct {
+	Font FontConfig `yaml:"font"`
+}
+
+// ConfigString retains whether a YAML property was omitted so normalization
+// can distinguish inheritance from an explicitly empty or null value.
+type ConfigString struct {
+	Value string
+	Set   bool
+}
+
+func (s *ConfigString) UnmarshalYAML(node *yaml.Node) error {
+	s.Set = true
+	if node.Tag == "!!null" {
+		s.Value = ""
+		return nil
+	}
+	if node.Kind != yaml.ScalarNode {
+		return nil
+	}
+	return node.Decode(&s.Value)
+}
+
+// FontConfig is the shared six-property font block introduced for quoted
+// manuscript blocks and intended for reuse by the unified font migration.
+type FontConfig struct {
+	Family        string `yaml:"family"`
+	Size          string `yaml:"size"`
+	Weight        string `yaml:"weight"`
+	Stretch       string `yaml:"stretch"`
+	Style         string `yaml:"style"`
+	LetterSpacing string `yaml:"letter-spacing"`
+	set           map[string]bool
+}
+
+func (f *FontConfig) UnmarshalYAML(node *yaml.Node) error {
+	if node.Kind != yaml.MappingNode {
+		return fmt.Errorf("folio.manuscript.quoted-block.font must be a mapping")
+	}
+	f.set = make(map[string]bool, len(node.Content)/2)
+	for index := 0; index < len(node.Content); index += 2 {
+		key := node.Content[index].Value
+		valueNode := node.Content[index+1]
+		f.set[key] = true
+		var target *string
+		switch key {
+		case "family":
+			target = &f.Family
+		case "size":
+			target = &f.Size
+		case "weight":
+			target = &f.Weight
+		case "stretch":
+			target = &f.Stretch
+		case "style":
+			target = &f.Style
+		case "letter-spacing":
+			target = &f.LetterSpacing
+		default:
+			return fmt.Errorf("folio.manuscript.quoted-block.font.%s is not supported", key)
+		}
+		if valueNode.Tag == "!!null" {
+			*target = ""
+			continue
+		}
+		if valueNode.Kind != yaml.ScalarNode {
+			return fmt.Errorf("folio.manuscript.quoted-block.font.%s must be a scalar value", key)
+		}
+		if err := valueNode.Decode(target); err != nil {
+			return fmt.Errorf("decoding folio.manuscript.quoted-block.font.%s: %w", key, err)
+		}
+	}
+	return nil
+}
+
+func (f *FontConfig) propertyWasSet(name string) bool {
+	return f.set != nil && f.set[name]
+}
+
+var typstLengthRE = regexp.MustCompile(`^([+-]?(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+))(pt|mm|cm|in|em)$`)
+
+var typstFontWeights = map[string]bool{
+	"thin": true, "extralight": true, "light": true, "regular": true,
+	"medium": true, "semibold": true, "bold": true, "extrabold": true, "black": true,
+}
+
 type HeadingConfig struct {
 	PageBreakBefore bool          `yaml:"page-break-before"`
 	BlankPageBefore BlankPageMode `yaml:"blank-page-before"`
@@ -420,6 +512,9 @@ func validateConfig(cfg *Config) error {
 	if err := validateNumberReset("chapter", ms.Chapter.NumberReset); err != nil {
 		return err
 	}
+	if err := validateQuotedBlockConfig(ms); err != nil {
+		return err
+	}
 	if err := validateHeadingNumberFormat("part", ms.Part.NumberFormat, false); err != nil {
 		return err
 	}
@@ -427,6 +522,80 @@ func validateConfig(cfg *Config) error {
 		return err
 	}
 	return nil
+}
+
+func validateQuotedBlockConfig(ms *ManuscriptConfig) error {
+	if err := validateTypstLength("folio.manuscript.quoted-block-spacing", ms.QuotedBlockSpacing.Value, true, false); err != nil {
+		return err
+	}
+	if err := validateTypstLength("folio.manuscript.code-block-spacing", ms.CodeBlockSpacing.Value, true, false); err != nil {
+		return err
+	}
+	font := &ms.QuotedBlock.Font
+	if strings.TrimSpace(font.Family) == "" {
+		return fmt.Errorf("folio.manuscript.quoted-block.font.family must not be empty")
+	}
+	if err := validateTypstLength("folio.manuscript.quoted-block.font.size", font.Size, false, false); err != nil {
+		return err
+	}
+	if err := validateFontWeight("folio.manuscript.quoted-block.font.weight", font.Weight); err != nil {
+		return err
+	}
+	if err := validateFontStretch("folio.manuscript.quoted-block.font.stretch", font.Stretch); err != nil {
+		return err
+	}
+	if err := validateFontStyle("folio.manuscript.quoted-block.font.style", font.Style); err != nil {
+		return err
+	}
+	return validateTypstLength("folio.manuscript.quoted-block.font.letter-spacing", font.LetterSpacing, true, true)
+}
+
+func validateTypstLength(path string, value string, allowZero bool, allowNegative bool) error {
+	match := typstLengthRE.FindStringSubmatch(strings.TrimSpace(value))
+	if match == nil {
+		return fmt.Errorf("%s %q must be a length in pt, mm, cm, in, or em", path, value)
+	}
+	number, err := strconv.ParseFloat(match[1], 64)
+	if err != nil {
+		return fmt.Errorf("%s %q has an invalid numeric value: %w", path, value, err)
+	}
+	if number < 0 && !allowNegative {
+		return fmt.Errorf("%s %q must not be negative", path, value)
+	}
+	if number == 0 && !allowZero {
+		return fmt.Errorf("%s %q must be greater than zero", path, value)
+	}
+	return nil
+}
+
+func validateFontWeight(path string, value string) error {
+	value = strings.ToLower(strings.TrimSpace(value))
+	if typstFontWeights[value] {
+		return nil
+	}
+	weight, err := strconv.Atoi(value)
+	if err == nil && weight >= 100 && weight <= 900 {
+		return nil
+	}
+	return fmt.Errorf("%s %q must be a Typst weight name or a number from 100 to 900", path, value)
+}
+
+func validateFontStretch(path string, value string) error {
+	value = strings.TrimSuffix(strings.TrimSpace(value), "%")
+	stretch, err := strconv.ParseFloat(value, 64)
+	if err != nil || math.IsNaN(stretch) || math.IsInf(stretch, 0) || stretch <= 0 {
+		return fmt.Errorf("%s %q must be a positive percentage or plain number", path, value)
+	}
+	return nil
+}
+
+func validateFontStyle(path string, value string) error {
+	switch strings.ToLower(strings.TrimSpace(value)) {
+	case "regular", "italic", "oblique":
+		return nil
+	default:
+		return fmt.Errorf("%s %q must be regular, italic, or oblique", path, value)
+	}
 }
 
 // validatePageNumbering enforces the "1" / "I" / "i" enum for both format fields
@@ -590,6 +759,17 @@ func normalizeConfig(cfg *Config) {
 	if ms.ParagraphSpacing == "0" {
 		ms.ParagraphSpacing = "0pt"
 	}
+	defaultConfigString(&ms.QuotedBlockSpacing, "0.5em")
+	defaultConfigString(&ms.CodeBlockSpacing, "0.5em")
+	inheritFontProperty(&ms.QuotedBlock.Font, "family", &ms.QuotedBlock.Font.Family, ms.Font)
+	inheritFontProperty(&ms.QuotedBlock.Font, "size", &ms.QuotedBlock.Font.Size, ms.FontSize)
+	inheritFontProperty(&ms.QuotedBlock.Font, "weight", &ms.QuotedBlock.Font.Weight, ms.FontWeight)
+	inheritFontProperty(&ms.QuotedBlock.Font, "stretch", &ms.QuotedBlock.Font.Stretch, "100%")
+	inheritFontProperty(&ms.QuotedBlock.Font, "style", &ms.QuotedBlock.Font.Style, "regular")
+	inheritFontProperty(&ms.QuotedBlock.Font, "letter-spacing", &ms.QuotedBlock.Font.LetterSpacing, ms.LetterSpacing)
+	ms.QuotedBlock.Font.Weight = strings.ToLower(strings.TrimSpace(ms.QuotedBlock.Font.Weight))
+	ms.QuotedBlock.Font.Stretch = normalizeFontStretch(ms.QuotedBlock.Font.Stretch)
+	ms.QuotedBlock.Font.Style = strings.ToLower(strings.TrimSpace(ms.QuotedBlock.Font.Style))
 	fill(&ms.PageHeader.Font, ms.HeadingFont)
 	fill(&ms.PageHeader.FontSize, "10pt")
 	fill(&ms.PageHeader.FontWeight, "regular")
@@ -628,8 +808,8 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.List.SpaceAfter, "0.5em")
 	fill(&ms.Table.SpaceBefore, "0.5em")
 	fill(&ms.Table.SpaceAfter, "0.5em")
-	fill(&ms.CodeBlock.SpaceBefore, "0.5em")
-	fill(&ms.CodeBlock.SpaceAfter, "0.5em")
+	fill(&ms.CodeBlock.SpaceBefore, ms.CodeBlockSpacing.Value)
+	fill(&ms.CodeBlock.SpaceAfter, ms.CodeBlockSpacing.Value)
 	fill(&ms.TitlePage.TitleBlockAlign, "center")
 	fill(&ms.TitlePage.FooterAlign, "center")
 	fill(&ms.Part.Align, "center")
@@ -677,6 +857,26 @@ func normalizeConfig(cfg *Config) {
 	// Parts have no scope above them; hardcode "never" for symmetry / future-proofing
 	// but never actually reset the part counter.
 	fill(&ms.Part.NumberReset, "never")
+}
+
+func normalizeFontStretch(value string) string {
+	value = strings.TrimSpace(value)
+	if value != "" && !strings.HasSuffix(value, "%") {
+		return value + "%"
+	}
+	return value
+}
+
+func inheritFontProperty(font *FontConfig, name string, target *string, value string) {
+	if !font.propertyWasSet(name) && *target == "" {
+		*target = value
+	}
+}
+
+func defaultConfigString(target *ConfigString, value string) {
+	if !target.Set {
+		target.Value = value
+	}
 }
 
 func fill(target *string, value string) {
