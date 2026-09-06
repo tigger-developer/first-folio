@@ -2,7 +2,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+DEFINITION_GATE: PENDING
+#+DEFINITION_GATE: PASS
 #+OPERATOR_SIGNOFF: PENDING
 
 * Specification Summary
@@ -114,9 +114,11 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 - The canonical British file must be valid user YAML and valid as the embedded
   runtime base. An unchanged copy at a supported user configuration location
   must not change effective output.
-- The approved British, US, and screenplay rendered appearance is the migration
-  baseline. Generated Typst text may differ where explicit regular font values
-  replace omission, but observable rendering must not.
+- Commit =d00c7f5de646eedacfda1484f15fcc7bfdf06a0b= is the pre-change
+  migration baseline. British, US, and screenplay output produced from that
+  revision defines the appearance to preserve. Generated Typst text may differ
+  where explicit regular font values replace omission, but observable rendering
+  must not.
 - Typst remains the PDF renderer and Pandoc remains the rich manuscript
   conversion boundary described by the architecture.
 
@@ -132,14 +134,18 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
   preserves unspecified properties from the same role in lower layers.
 - Omitting a role's entire =font= block in an overlay leaves that role's lower
   layer block unchanged.
-- The British file lists every accepted public configuration property. Runtime
-  defaults are assigned; optional or source-derived values are shown as
-  commented options with their source or absence semantics.
+- The British file lists every accepted public configuration property. Values
+  with runtime defaults are assigned. Optional or source-derived non-font
+  values are shown as commented options with their source or absence semantics.
+  Font properties are never commented or omitted: every font role contains all
+  six properties.
 - US and screenplay are both limited overlays. The current split manuscript
   baseline and split US overrides are retired.
 - The existing =presets/british.yaml= was produced under the abandoned draft.
   Delivery must reconcile it against current runtime baselines and approved
-  behaviour rather than treating it as requirement authority.
+  behaviour rather than treating it as requirement authority. Its commented
+  font properties and role-inheritance comments are specifically rejected and
+  must be replaced by complete role-local blocks.
 
 ** Unresolved blockers
 
@@ -168,8 +174,8 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 
 - *Criterion:* Given no user configuration, script, letter, and manuscript modes
   use =presets/british.yaml= as their shared lowest-precedence configuration;
-  copying that file unchanged to a supported user location leaves the effective
-  output unchanged.
+  the file lists every accepted public configuration property; and copying it
+  unchanged to a supported user location leaves the effective output unchanged.
 - *Proven by:* [[#rt-039-2][RT039.2 - Use and copy the British base]].
 
 ** AC039.3 - Configuration-layer inheritance only
@@ -239,16 +245,20 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 :END:
 
 - *Covers:* [[#ac-039-1][AC039.1 - One uniform font block]].
-- *Boundary:* Built =folio= command and its script, letter, and manuscript
-  publishing entry points.
-- *Setup:* Table-driven fixtures independently enumerate the covered roles named
-  by this specification. Each case changes one of the six properties to a
-  distinctive valid value without changing another role, and asserts that the
-  canonical British base contains a complete block for the role.
-- *Action:* Invoke the applicable public command and inspect its Typst or PDF
-  output at the affected role.
-- *Expected:* The requested value is applied only to the selected role; every
-  role accepts all six properties.
+- *Boundary:* Built =folio= script and manuscript commands, the letter Typst
+  renderer where letter PDF compilation hides source-level properties, and a
+  built =folio letter= PDF smoke test.
+- *Setup:* A table contains every literal path in the authoritative font-role
+  inventory below. For each path, six cases change exactly one property to a
+  distinctive valid value and leave a neighbouring control role unchanged.
+- *Action:* Invoke the applicable public command for script and manuscript;
+  invoke the same configuration and rendering path directly for the letter
+  role; inspect the emitted role-scoped Typst; and compile representative cases
+  for all three modes through the public command.
+- *Expected:* Each of the 198 path-property cases emits the requested value in
+  the selected role, retains the control role's value, and finds a complete
+  six-property block at the same path in the British base. The public-command
+  cases produce their requested output.
 - *Retention:* Persistent regression suite under =make test=.
 
 ** RT039.2 - Use and copy the British base
@@ -259,16 +269,18 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 - *Covers:* [[#ac-039-2][AC039.2 - One exhaustive British runtime base]].
 - *Boundary:* Built =folio= command using its embedded defaults and supported
   local configuration discovery.
-- *Setup:* Representative script, letter, and manuscript inputs; an independently
-  maintained table of accepted public configuration paths; one render with no
-  user config; and one with an unchanged copy of =presets/british.yaml= as its
-  nearest =script.yaml=.
+- *Setup:* Representative script, letter, and manuscript inputs; the public
+  configuration inventory rule below; one render with no user config; and one
+  with an unchanged copy of =presets/british.yaml= as its nearest
+  =script.yaml=.
 - *Action:* Compare the embedded loader's unconfigured effective tree with the
   parsed British file, then produce the same public output from both setups for
   all three modes.
 - *Expected:* The effective tree has the British file's hierarchy and values;
-  every accepted path is assigned or visibly documented as optional or
-  source-derived; and paired public outputs match.
+  every path in the public configuration inventory is assigned or, for a
+  non-font optional or source-derived value, visibly documented with its
+  semantics; no public font property is commented or absent; and paired public
+  outputs match.
 - *Retention:* Persistent regression suite under =make test=.
 
 ** RT039.3 - Preserve lower-layer font properties
@@ -312,7 +324,10 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 - *Boundary:* Built =folio convert=, =folio letter=, and =folio manuscript=
   commands.
 - *Setup:* Table-driven local configurations cover each invalid category in
-  AC039.5 - Clean breaking failure boundary.
+  AC039.5 - Clean breaking failure boundary. Cases cover the accepted/rejected
+  boundary for every property-domain row, all non-scalar shapes, missing and
+  unknown properties in a British-base role, and partial valid user-layer
+  blocks as controls.
 - *Action:* Request an output file from the applicable command.
 - *Expected:* Every case returns non-zero, names the full invalid path on
   standard error, and leaves the requested output absent.
@@ -343,9 +358,15 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 
 - *Covers:* [[#ac-039-6][AC039.6 - Existing publishing behaviour remains]].
 - *Reviewer:* Operator.
-- *Procedure:* Compare representative British script, British letter, British
-  manuscript, US script, US manuscript, and screenplay PDFs with their approved
-  pre-change appearance.
+- *Procedure:* In a temporary checkout of baseline commit
+  =d00c7f5de646eedacfda1484f15fcc7bfdf06a0b=, build First Folio and render
+  the script source matrix defined by
+  =TestScriptSourceFormatsRasterizeInAllStyles=, the letter source defined by
+  =TestLetterCommandGeneratesFilteredPDF=, and =examples/dummy-manuscript.org=
+  and =examples/dummy-manuscript.md=. Render the same fixtures with the
+  candidate for British script, British letter, British manuscript, US script,
+  US manuscript, and screenplay where each style applies. Compare paired PDFs
+  using the existing text, page, raster, and visual review methods.
 - *Expected:* Typography and non-font layout are unchanged except where the
   operator explicitly accepts a recorded difference.
 - *Record:* Write the dated result to =validation.org=.
@@ -356,10 +377,16 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 :END:
 
 - *Covers:* [[#ac-039-7][AC039.7 - Regression protection remains live]].
-- *Boundary:* Maintained test inventory immediately before and after delivery.
-- *Procedure:* Record the pre-change test names, classify each as unchanged or
-  replaced, and link each replacement to its predecessor and requirement before
-  running the full maintained suite.
+- *Boundary:* Repository-owned Go tests and named RT, UT, and OT records at
+  baseline commit =d00c7f5de646eedacfda1484f15fcc7bfdf06a0b= and at the
+  delivery candidate.
+- *Procedure:* Capture the fully qualified test and subtest names reported by
+  =go test -json ./...= at both revisions. Add the named RT, UT, and OT records
+  referenced by =docs/work.org= at each revision. Classify every baseline item
+  as unchanged or replaced, and link each replacement to its predecessor and
+  requirement before running the full maintained suite. Count parameterized
+  cases by their reported fully qualified subtest names; retain skipped tests
+  in the inventory with their reason.
 - *Expected:* Every pre-change test has one active outcome; none is deleted,
   skipped, disabled, or weakened solely because its configuration syntax changed.
 - *Bounds:* One delivery-time comparison of repository-owned tests only; no
@@ -443,8 +470,11 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 2. Apply global, global style-specific, nearest local, nearest local
    style-specific, and CLI layers through the existing precedence and
    property-level deep merge.
-3. Validate each First Folio font node, materialize complete role-local font
-   values, and pass those values to the existing render path.
+3. Validate each First Folio font node and decode the merged six properties at
+   each role path into a complete role-local value. Completeness comes solely
+   from the complete same-path block in the British base plus any same-path
+   overlay values. There is no role fallback or implicit constructor default.
+   Pass those values to the existing render path.
 4. Render Typst or PDF through the existing process and preserve the current
    output-creation boundary on failure.
 
@@ -462,14 +492,84 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
     letter-spacing: 0em
   #+end_src
 
-- *Covered roles:* Root body and heading; letter body; script title-page items,
-  speech roles, stage directions, transitions, and section headings; manuscript
-  body, heading, monospace, quoted block, title-page items, running header,
-  running footer, contents body and heading, and copyright body and label.
-- *Property semantics:* Preserve supported family and Typst length forms;
-  named or numeric weights; percentage stretch including the established numeric
-  shorthand; =regular=, =italic=, or =oblique= style; and existing positive or
-  negative letter-spacing lengths.
+- *Authoritative font-role inventory:* W039 covers exactly these public paths.
+  This table, not a generated list from =presets/british.yaml=, is the expected
+  inventory for RT039.1.
+
+  | Mode       | Literal font-block path                                      |
+  |------------+--------------------------------------------------------------|
+  | shared     | =folio.font=                                                 |
+  | shared     | =folio.heading.font=                                         |
+  | script     | =folio.title-page.title.font=                                |
+  | script     | =folio.title-page.subtitle.font=                             |
+  | script     | =folio.title-page.author.font=                               |
+  | script     | =folio.title-page.date.font=                                 |
+  | script     | =folio.title-page.version.font=                              |
+  | script     | =folio.positioning.speech.speaker.font=                      |
+  | script     | =folio.positioning.speech.speech-instruction.font=           |
+  | script     | =folio.positioning.speech.dialogue.font=                     |
+  | script     | =folio.positioning.stage-direction.font=                     |
+  | script     | =folio.positioning.transition.font=                          |
+  | script     | =folio.positioning.frontmatter.header.font=                  |
+  | script     | =folio.positioning.act-header.font=                          |
+  | script     | =folio.positioning.scene-header.font=                        |
+  | letter     | =folio.letter.font=                                          |
+  | manuscript | =folio.manuscript.font=                                      |
+  | manuscript | =folio.manuscript.heading.font=                              |
+  | manuscript | =folio.manuscript.mono.font=                                 |
+  | manuscript | =folio.manuscript.quoted-block.font=                         |
+  | manuscript | =folio.manuscript.title-page.title.font=                     |
+  | manuscript | =folio.manuscript.title-page.subtitle.font=                  |
+  | manuscript | =folio.manuscript.title-page.author.font=                    |
+  | manuscript | =folio.manuscript.title-page.date.font=                      |
+  | manuscript | =folio.manuscript.title-page.wordcount.font=                 |
+  | manuscript | =folio.manuscript.title-page.version.font=                   |
+  | manuscript | =folio.manuscript.title-page.contact.font=                   |
+  | manuscript | =folio.manuscript.page-header.font=                          |
+  | manuscript | =folio.manuscript.page-footer.font=                          |
+  | manuscript | =folio.manuscript.toc.font=                                  |
+  | manuscript | =folio.manuscript.toc.heading.font=                          |
+  | manuscript | =folio.manuscript.copyright.font=                            |
+  | manuscript | =folio.manuscript.copyright.label.font=                      |
+
+- *Public configuration inventory:* Start with the deterministic union, at
+  baseline commit =d00c7f5de646eedacfda1484f15fcc7bfdf06a0b=, of the leaf
+  keys documented in =docs/config.md= and the leaf keys in the active runtime
+  presets selected by =internal/config/config.go=. The unused
+  =presets/british.yaml= from W036 is excluded. Partition that baseline union as
+  follows:
+  1. The non-font inventory contains every path whose value does not configure
+     a listed role's family, size, weight, stretch, style, letter spacing,
+     boldness, or italics. Those paths remain accepted and must appear in the
+     exhaustive British file.
+  2. The retired-font inventory contains every path whose value does configure
+     one of those font semantics, including scalar =font= values, prefixed
+     =*-font*= and =*-letter-spacing= keys, and role-local =bold= or =italic=
+     keys. Those paths are rejection cases under AC039.5 and are not accepted
+     merely because a baseline authority lists them.
+  3. The replacement-font inventory contains the six literal property children
+     of each of the 33 authoritative font-role paths above. Those 198 leaf paths
+     are accepted and replace the retired-font inventory.
+  The post-change accepted inventory is exactly the non-font inventory plus the
+  replacement-font inventory. Delivery may correct any other documented path
+  only by recording the discrepancy and preserving runtime behaviour or by
+  obtaining an explicit operator decision. RT039.2 compares the new British
+  base with this named inventory rather than deriving expected paths from the
+  new file; RT039.5 verifies every retired-font path is rejected.
+- *Property domains:*
+
+  | Property         | Accepted value                                                           | Rejected value                                      |
+  |------------------+--------------------------------------------------------------------------+-----------------------------------------------------|
+  | =family=         | Non-empty YAML string after trimming boundary whitespace                 | Null, empty, whitespace-only, sequence, or mapping  |
+  | =size=           | Positive decimal plus =pt=, =mm=, =cm=, =in=, or =em=                    | Zero, negative, missing unit, or another unit       |
+  | =weight=         | =thin=, =extralight=, =light=, =regular=, =medium=, =semibold=, =bold=, =extrabold=, =black=, or integer 100 through 900 | Other name, fractional number, or out-of-range integer |
+  | =stretch=        | Positive finite decimal, with optional trailing =%=; plain number means percent | Zero, negative, non-finite, or another suffix       |
+  | =style=          | =regular=, =italic=, or =oblique=, case-insensitive after trimming       | Any other value                                     |
+  | =letter-spacing= | Signed decimal plus =pt=, =mm=, =cm=, =in=, or =em=; zero is valid       | Missing unit or another unit                        |
+
+  YAML numeric scalars are accepted only for =weight= and =stretch=, where the
+  domain above permits them. All effective British font properties are
+  materialized in the canonical forms illustrated by the font interface.
 - *CLI compatibility:* =folio convert --font= writes the effective root
   =font.family= and =--font-size= writes =font.size= without changing the flag
   surface or precedence.
@@ -485,6 +585,8 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 - Use one reusable, presence-aware internal font value for validation and
   rendering. Presence is required while merging partial higher layers; the
   effective value for every role is complete after the British base is applied.
+  A missing effective property after merge is therefore an invalid built-in
+  base, not an instruction to consult another role.
 - Remove normalization that copies font values between roles. Retain ordinary
   same-path deep merge across configuration layers.
 

@@ -120,7 +120,7 @@ classification; it is provenance, not current state.
 - *Specification:* [[file:archive/sdlc-v2/specs/003-manuscript-block-layout/spec.md][Manuscript Block Layout]]
 - *Migration evidence:* The project owner explicitly authorized immediate delivery with BYPASS-GATE-7, and post-implementation validation is recorded.
 
-** TODO W039 - Unified Font Configuration :feature:
+** REVIEW W039 - Unified Font Configuration :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-039
 :PRIORITY: P1

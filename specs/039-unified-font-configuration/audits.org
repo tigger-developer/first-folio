@@ -45,6 +45,109 @@
   boundary.
 - *Remediation:* None.
 
+** Independent review
+:PROPERTIES:
+:ROUND:    1
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =bc8d3eeceeffd9b58ef36f971c46ad9e6924fc0c4f529191a50339c69b0995ef=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Blocking findings:*
+  1. =SPEC-039-ROLE-PATHS=: The font-role descriptions did not supply exact
+     YAML paths or a complete authoritative inventory.
+  2. =SPEC-039-COMPLETE-BLOCK-CONTRADICTION=: Explicit six-property British
+     blocks conflicted with the allowance for commented optional values.
+  3. =DESIGN-039-INHERITANCE-CONTRACT=: The design did not establish how
+     complete role-local values arise without prohibited role inheritance.
+  4. =SPEC-039-BASELINE=: Approved pre-change appearance was not tied to a
+     reproducible artefact or revision.
+  5. =TEST-039-PATH-INVENTORY=: The independent accepted-path table used by
+     RT039.2 was neither defined nor named as an authority.
+  6. =TEST-039-ROLE-COVERAGE=: RT039.1 lacked exact enumerated role paths and
+     observable per-property isolation assertions.
+  7. =TEST-039-INVALID-DOMAIN=: The admissible values, coercions, and limits for
+     the six font properties were incomplete.
+- *Advisory:* =TEST-039-LINEAGE=: Name the maintained regression inventory and
+  define how generated or parameterized tests are counted.
+- *Remediation:* Added an explicit 33-role path table, a six-property domain
+  table, same-path completeness flow, baseline revision and fixtures, a
+  deterministic public-path inventory, 198 role-property assertions, and an
+  exact regression-lineage counting method.
+
+** Local review
+:PROPERTIES:
+:ROUND:    3
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =874fe8c4a0db0601d8de403acd195e7faccd1af83c3e3ae16167471eed1adff4=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* None. The retained requirement now names its exact font roles,
+  valid property domains, public configuration inventory, baseline evidence,
+  same-path merge invariant, observable regression assertions, and test-lineage
+  method without widening product scope.
+- *Remediation:* None.
+
+** Independent review
+:PROPERTIES:
+:ROUND:    2
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =874fe8c4a0db0601d8de403acd195e7faccd1af83c3e3ae16167471eed1adff4=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Blocking finding:* =SPEC-039-INVENTORY-CONTRADICTION=: The accepted public
+  path union included retired scalar and prefixed font paths from the baseline
+  documentation and active presets, contradicting AC039.5 - Clean breaking
+  failure boundary.
+- *Resolved prior findings:* All seven first-round blockers and the lineage
+  advisory were otherwise resolved.
+- *Remediation:* Partitioned the baseline union into non-font and retired-font
+  inventories, defined the 198 replacement font leaves, excluded every retired
+  font path from the post-change accepted set, and made those retired paths
+  explicit RT039.5 rejection cases.
+
+** Local review
+:PROPERTIES:
+:ROUND:    4
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =a5df147041901cd6568420c0fd48ce154d4ded170f49414ab84fbf55fc32cb5d=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* None. The post-change accepted inventory now retains all non-font
+  paths, rejects all retired font paths, and adds only the exact replacement
+  font-property paths.
+- *Remediation:* None.
+
+** Independent review
+:PROPERTIES:
+:ROUND:    3
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =a5df147041901cd6568420c0fd48ce154d4ded170f49414ab84fbf55fc32cb5d=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* No blocking findings or advisories remain. The accepted-path
+  partition resolves =SPEC-039-INVENTORY-CONTRADICTION=; the specification,
+  design, and RT, UT, and OT definitions are coherent for definition-time
+  review.
+- *Remediation:* None.
+
 * Implementation gate
 
 No implementation review has been performed. Delivery is not authorized.
