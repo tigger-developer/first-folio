@@ -134,10 +134,6 @@ The migration index and archived tickets retain disposition, provenance, and
 rationale only. Ticket bodies and comments are not current requirement or AC
 authorities.
 
-Requirements established or changed through Spec Kit are governed by approved
-=specs/*/spec.md= artefacts.
-
-
 ** Legacy status vocabulary at migration
 
 - *HOLDING:* The requirement remains current and its recorded evidence passes.
