@@ -1,0 +1,27 @@
+authorities:
+    architecture:
+        - docs/ARCHITECTURE.md
+    product:
+        - README.md
+        - docs/vision.md
+    requirements:
+        - docs/work.org
+infrastructure:
+    role: none
+migration:
+    archive_branch: sdlc_v2_state_2026-09-06-4
+    branch: sdlc-v3-migration-2026-09-06-4
+    date: "2026-09-06"
+project:
+    kind: application
+    migration_source: v2
+    primary_branch: master
+sdlc:
+    revision: 457499ef44f1e728814c4e2243eaf2fa82c04820
+standards:
+    technologies:
+        - API
+        - GO
+        - RUST
+        - SHELL
+version: 3

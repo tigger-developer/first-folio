@@ -4,8 +4,6 @@ Feature branch: `master`
 
 Created: 2026-09-05
 
-Status: Draft
-
 Input: Allow the first Markdown manuscript source to declare `folio:` and
 `render:` configuration in YAML frontmatter, above every file-based
 configuration layer but below explicit command-line options.

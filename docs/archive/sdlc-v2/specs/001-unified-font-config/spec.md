@@ -4,8 +4,6 @@ Feature branch: `master`
 
 Created: 2026-09-04
 
-Status: Draft
-
 Input: Replace every public font-key shape with one uniform breaking contract;
 make one exhaustive British YAML file the runtime base for script, letter, and
 manuscript; retain only differences in style overrides; and carry the maintained
