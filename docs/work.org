@@ -1,0 +1,84 @@
+#+TITLE: Project Work Ledger
+#+STARTUP: overview
+#+TODO: TODO ACTIVE BLOCKED REVIEW | DONE ABANDONED
+#+OPTIONS: toc:2 num:nil
+
+#+begin_comment
+This is the canonical SDLC v3 work-ledger template.
+
+Use real Org headings and one monotonically increasing project-wide work number.
+Never reuse an identifier, including after abandonment or archival. A work item
+heading has the form "** TODO WNNN - Concise descriptor :type:" and properties
+for CUSTOM_ID, TYPE, PRIORITY, SOURCE, and CREATED. Put acceptance criteria,
+test definitions, edge cases, and solution design in the linked spec.org.
+#+end_comment
+
+* Open defects
+
+* Undelivered features
+
+* Active delivery
+
+* Human review
+
+** REVIEW W036 - Unified Font Configuration :migration:
+:PROPERTIES:
+:CUSTOM_ID: w-036
+:LEGACY_ID: 001
+:TYPE: migration
+:PRIORITY: P1
+:SOURCE: docs/archive/sdlc-v2/specs/001-unified-font-config/spec.md
+:CREATED: 2026-09-04
+:DISPOSITION: unresolved
+:END:
+
+- *Specification:* [[file:archive/sdlc-v2/specs/001-unified-font-config/spec.md][Unified Font Configuration]]
+- *Migration evidence:* The specification is Draft; its audit record ends with effective verdict NONE and records no operator approval or delivery.
+
+** REVIEW W037 - Source Frontmatter Configuration :migration:
+:PROPERTIES:
+:CUSTOM_ID: w-037
+:LEGACY_ID: 002
+:TYPE: migration
+:PRIORITY: P1
+:SOURCE: docs/archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md
+:CREATED: 2026-09-05
+:DISPOSITION: unresolved
+:END:
+
+- *Specification:* [[file:archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md][Source Frontmatter Configuration]]
+- *Migration evidence:* The specification is Draft; its effective audit PASS grants planning eligibility subject to approval, with no operator delivery or abandonment recorded.
+
+
+* Closed work
+
+** DONE W038 - Manuscript Block Layout :migration:
+:PROPERTIES:
+:CUSTOM_ID: w-038
+:LEGACY_ID: 003
+:TYPE: migration
+:PRIORITY: P1
+:SOURCE: docs/archive/sdlc-v2/specs/003-manuscript-block-layout/spec.md
+:CREATED: 2026-09-05
+:DISPOSITION: delivered
+:END:
+
+- *Specification:* [[file:archive/sdlc-v2/specs/003-manuscript-block-layout/spec.md][Manuscript Block Layout]]
+- *Migration evidence:* The record states project-owner authorization for immediate BYPASS-GATE-7 delivery, and post-implementation validation records PASS results.
+
+
+* Migration record
+
+** DONE SDLC migration - v2 to v3                      :migration:
+:PROPERTIES:
+:CUSTOM_ID: sdlc-migration
+:MIGRATED: 2026-09-06
+:END:
+
+- *Pre-migration state:* sdlc_v2_state_2026-09-06-3
+- *Migration branch:* sdlc-v3-migration-2026-09-06-3
+- *Ticket archive:* Not applicable.
+- *Historical requirements:* Not applicable.
+- *Archived v2 work:* [[file:archive/sdlc-v2/][Archived Spec Kit work]].
+- *Assumptions:* None recorded by project initialization.
+- *Unresolved items:* None recorded by project initialization.
