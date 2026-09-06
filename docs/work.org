@@ -1,8 +1,130 @@
-#+TITLE: Legacy acceptance criteria
-#+DATE: 2026-07-14
-#+OPTIONS: toc:3 num:nil
+#+TITLE: Project Work Ledger
+#+STARTUP: overview
+#+TODO: TODO ACTIVE BLOCKED REVIEW | DONE ABANDONED
+#+TYP_TODO: PENDING FAILING SUPERSEDED | HOLD ASSUMED_PASS
+#+TAGS: feature defect maintenance migration legacy
+#+OPTIONS: toc:2 num:nil
 
-* Ledger authority
+This is the project's canonical work and requirements index. Each fact has one
+authoritative representation:
+
+- *Current lifecycle state* :: The TODO keyword on the work-item headline.
+- *Classification* :: One or more tags on that headline.
+- *Stable metadata* :: The work item's property drawer.
+- *Current definition* :: The linked =spec.org= file.
+- *Evidence* :: The linked =audits.org= and =validation.org= files.
+- *History* :: Git history and explicitly linked archived sources.
+
+Do not repeat lifecycle state in a property, section, specification, or evidence
+file. Work items remain under one heading when their state changes. Use one
+monotonically increasing project-wide work number and never reuse an identifier,
+including after abandonment, deletion, retirement, or archival.
+
+* Ledger vocabulary
+:PROPERTIES:
+:VISIBILITY: folded
+:END:
+
+The file directives declare the permitted TODO states and standard tags. This
+section defines their meanings.
+
+** Lifecycle states
+
+- =TODO= :: Defined but not started.
+- =ACTIVE= :: Delivery is underway.
+- =BLOCKED= :: Delivery cannot continue because of a named external dependency.
+- =REVIEW= :: Human review, validation, or disposition is required.
+- =DONE= :: Delivered, verified, and closed.
+- =ABANDONED= :: Deliberately not delivered. Its identifiers remain reserved.
+
+** Legacy requirement states
+
+- =PENDING= :: The requirement or some required evidence remains unverified.
+- =FAILING= :: Current evidence shows that the requirement does not hold.
+- =SUPERSEDED= :: A named later requirement replaces or retires it.
+- =HOLD= :: The requirement remains current and its recorded evidence passes.
+- =ASSUMED_PASS= :: Migration inferred delivery under a recorded heuristic; it
+  is not a contemporaneous test result.
+
+** Standard tags
+
+- =feature= :: New or changed product behaviour.
+- =defect= :: Incorrect existing behaviour.
+- =maintenance= :: Internal upkeep without intended product-behaviour change.
+- =migration= :: Historical or framework migration work.
+- =legacy= :: Material governed by an earlier delivery process. Apply it to the
+  parent headline so the whole subtree inherits the classification.
+
+Tags are non-exclusive classifications. Add a project-specific tag only when it
+provides a durable cross-cutting category that the standard tags cannot express.
+
+** Work-item structure
+
+#+begin_example
+** TODO WNNN - Concise descriptor :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-nnn
+:PRIORITY: P1
+:SOURCE: operator
+:CREATED: YYYY-MM-DD
+:END:
+
+- *Specification:* [[file:../specs/NNN-concise-descriptor/spec.org][WNNN - Concise descriptor]]
+#+end_example
+
+Use =OWNER= and =BRANCH= properties only when concurrent work needs explicit
+coordination. Use =MIGRATION_DISPOSITION= only to preserve an immutable migration
+classification; it is provenance, not current state.
+
+* Work items
+
+** REVIEW W036 - Unified Font Configuration :feature:migration:
+:PROPERTIES:
+:CUSTOM_ID: w-036
+:LEGACY_ID: 001
+:PRIORITY: P1
+:SOURCE: docs/archive/sdlc-v2/specs/001-unified-font-config/spec.md
+:CREATED: 2026-09-04
+:MIGRATION_DISPOSITION: unresolved
+:END:
+
+- *Specification:* [[file:archive/sdlc-v2/specs/001-unified-font-config/spec.md][Unified Font Configuration]]
+- *Migration evidence:* The specification remains Draft and its current audit verdict is NONE; no operator-authorized delivery, approval, or abandonment is recorded.
+
+** REVIEW W037 - Source Frontmatter Configuration :feature:migration:
+:PROPERTIES:
+:CUSTOM_ID: w-037
+:LEGACY_ID: 002
+:PRIORITY: P1
+:SOURCE: docs/archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md
+:CREATED: 2026-09-05
+:MIGRATION_DISPOSITION: unresolved
+:END:
+
+- *Specification:* [[file:archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md][Source Frontmatter Configuration]]
+- *Migration evidence:* The specification remains Draft; although an audit PASS is recorded, planning and delivery remain conditional on approval and no explicit operator approval is recorded.
+
+** DONE W038 - Manuscript Block Layout :feature:migration:
+:PROPERTIES:
+:CUSTOM_ID: w-038
+:LEGACY_ID: 003
+:PRIORITY: P1
+:SOURCE: docs/archive/sdlc-v2/specs/003-manuscript-block-layout/spec.md
+:CREATED: 2026-09-05
+:MIGRATION_DISPOSITION: delivered
+:END:
+
+- *Specification:* [[file:archive/sdlc-v2/specs/003-manuscript-block-layout/spec.md][Manuscript Block Layout]]
+- *Migration evidence:* The project owner explicitly authorized immediate delivery with BYPASS-GATE-7, and post-implementation validation is recorded.
+
+* Legacy Acceptance Criteria (SDLC v1) :legacy:
+:PROPERTIES:
+:CUSTOM_ID: legacy-acceptance-criteria
+:VISIBILITY: folded
+:SOURCE_DATE: 2026-07-14
+:END:
+
+** Legacy ledger authority at migration
 
 This file is the sole authoritative record of requirements established under
 the legacy ticket-led process, including current and superseded requirements,
@@ -12,10 +134,7 @@ The migration index and archived tickets retain disposition, provenance, and
 rationale only. Ticket bodies and comments are not current requirement or AC
 authorities.
 
-Requirements established or changed through Spec Kit are governed by approved
-=specs/*/spec.md= artefacts.
-
-* Status vocabulary
+** Legacy status vocabulary at migration
 
 - *HOLDING:* The requirement remains current and its recorded evidence passes.
 - *PENDING:* The requirement or some required evidence remains unverified.
@@ -24,14 +143,13 @@ Requirements established or changed through Spec Kit are governed by approved
 - *ASSUMED PASS:* Migration inferred delivery under a named heuristic; this is
   not a contemporaneous test result.
 
-* Acceptance criteria
 
 ** Issue 1: feat: unified folio CLI with multi-format conversion
 
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/1][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC1.1 - =folio convert= accepts a source file path and an optional target file path
+*** HOLD AC1.1 - =folio convert= accepts a source file path and an optional target file path
 
 **** Requirement
 
@@ -42,10 +160,6 @@ Requirements established or changed through Spec Kit are governed by approved
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -83,7 +197,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** AC1.2 - Supported extensions are =.org= (org-mode), =.md= (Markdown), =.fountain=/=.ftn= (Fountain), and =.pdf= (output only)
+*** HOLD AC1.2 - Supported extensions are =.org= (org-mode), =.md= (Markdown), =.fountain=/=.ftn= (Fountain), and =.pdf= (output only)
 
 **** Requirement
 
@@ -94,10 +208,6 @@ Supported extensions are =.org= (org-mode), =.md= (Markdown), =.fountain=/=.ftn=
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -129,7 +239,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** AC1.3 - Org-mode documents convert to Markdown, Fountain, and PDF with semantic play content preserved
+*** HOLD AC1.3 - Org-mode documents convert to Markdown, Fountain, and PDF with semantic play content preserved
 
 **** Requirement
 
@@ -140,10 +250,6 @@ Org-mode documents convert to Markdown, Fountain, and PDF with semantic play con
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -199,7 +305,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** AC1.4 - Markdown documents convert to org-mode, Fountain, and PDF with semantic play content preserved
+*** HOLD AC1.4 - Markdown documents convert to org-mode, Fountain, and PDF with semantic play content preserved
 
 **** Requirement
 
@@ -210,10 +316,6 @@ Markdown documents convert to org-mode, Fountain, and PDF with semantic play con
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -257,7 +359,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** AC1.5 - Fountain documents convert to org-mode, Markdown, and PDF with semantic play content preserved
+*** HOLD AC1.5 - Fountain documents convert to org-mode, Markdown, and PDF with semantic play content preserved
 
 **** Requirement
 
@@ -268,10 +370,6 @@ Fountain documents convert to org-mode, Markdown, and PDF with semantic play con
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -315,7 +413,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** AC1.6 - PDF is write-only
+*** HOLD AC1.6 - PDF is write-only
 
 **** Requirement
 
@@ -326,10 +424,6 @@ PDF is write-only. Conversion from a =.pdf= source is an error with non-zero exi
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -349,7 +443,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** AC1.7 - PDF output configuration (font, page size, margins, indent, direction styling) and default output format are configurable via CLI flags and config file, using the config system established in #2
+*** HOLD AC1.7 - PDF output configuration (font, page size, margins, indent, direction styling) and default output format are configurable via CLI flags and config file, using the config system established in #2
 
 **** Requirement
 
@@ -360,10 +454,6 @@ PDF output configuration (font, page size, margins, indent, direction styling) a
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -395,7 +485,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** AC1.8 - =folio --help=, =folio --version=, and =folio convert --help= provide usage information and version
+*** HOLD AC1.8 - =folio --help=, =folio --version=, and =folio convert --help= provide usage information and version
 
 **** Requirement
 
@@ -406,10 +496,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -435,7 +521,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** AC1.9 - Dropped or degraded elements during conversion produce warnings on stderr without halting
+*** HOLD AC1.9 - Dropped or degraded elements during conversion produce warnings on stderr without halting
 
 **** Requirement
 
@@ -446,10 +532,6 @@ Dropped or degraded elements during conversion produce warnings on stderr withou
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -475,7 +557,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** AC1.10 - Binary output (PDF) to an interactive terminal is refused with a descriptive error unless =--force= is given
+*** HOLD AC1.10 - Binary output (PDF) to an interactive terminal is refused with a descriptive error unless =--force= is given
 
 **** Requirement
 
@@ -486,10 +568,6 @@ Binary output (PDF) to an interactive terminal is refused with a descriptive err
 - *Introduced by:* [[file:archive/migrated-tickets/1.md][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -514,7 +592,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/2][#2 - feat: unified YAML config with precedence chain and shared schema]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC2.1 - Configuration is read from YAML files named =script.yaml=
+*** HOLD AC2.1 - Configuration is read from YAML files named =script.yaml=
 
 **** Requirement
 
@@ -525,10 +603,6 @@ Configuration is read from YAML files named =script.yaml=. First Folio never cre
 - *Introduced by:* [[file:archive/migrated-tickets/2.md][#2 - feat: unified YAML config with precedence chain and shared schema]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -548,7 +622,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/2.md=.
 
-*** AC2.2 - All config sources are read and merged in precedence order: CLI flags > local =script.yaml= (source file directory) > =~/.config/first-folio/script.yaml= > built-in defaults
+*** HOLD AC2.2 - All config sources are read and merged in precedence order: CLI flags > local =script.yaml= (source file directory) > =~/.config/first-folio/script.yaml= > built-in defaults
 
 **** Requirement
 
@@ -559,10 +633,6 @@ All config sources are read and merged in precedence order: CLI flags > local =s
 - *Introduced by:* [[file:archive/migrated-tickets/2.md][#2 - feat: unified YAML config with precedence chain and shared schema]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -594,7 +664,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/2.md=.
 
-*** AC2.3 - First Folio reads shared metadata keys (=title=, =subtitle=, =author=, =draft-date=), shared rendering keys (=render-stage-directions=, =render-intro=, =render-footnotes=, =render-character-table=), and all keys under =folio:=
+*** HOLD AC2.3 - First Folio reads shared metadata keys (=title=, =subtitle=, =author=, =draft-date=), shared rendering keys (=render-stage-directions=, =render-intro=, =render-footnotes=, =render-character-table=), and all keys under =folio:=
 
 **** Requirement
 
@@ -605,10 +675,6 @@ First Folio reads shared metadata keys (=title=, =subtitle=, =author=, =draft-da
 - *Introduced by:* [[file:archive/migrated-tickets/2.md][#2 - feat: unified YAML config with precedence chain and shared schema]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -634,7 +700,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/2.md=.
 
-*** AC2.4 - The deprecated flat config at =~/.config/org-script/config= is not read
+*** HOLD AC2.4 - The deprecated flat config at =~/.config/org-script/config= is not read
 
 **** Requirement
 
@@ -645,10 +711,6 @@ The deprecated flat config at =~/.config/org-script/config= is not read. The old
 - *Introduced by:* [[file:archive/migrated-tickets/2.md][#2 - feat: unified YAML config with precedence chain and shared schema]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -668,7 +730,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/2.md=.
 
-*** AC2.5 - Config metadata (=title=, =subtitle=, =author=, =draft-date=) overrides any corresponding values found in the source document
+*** HOLD AC2.5 - Config metadata (=title=, =subtitle=, =author=, =draft-date=) overrides any corresponding values found in the source document
 
 **** Requirement
 
@@ -679,10 +741,6 @@ Config metadata (=title=, =subtitle=, =author=, =draft-date=) overrides any corr
 - *Introduced by:* [[file:archive/migrated-tickets/2.md][#2 - feat: unified YAML config with precedence chain and shared schema]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -719,7 +777,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/3][#3 - feat: config-driven rendering with British/American style presets]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC3.1 - Config-driven Typst rendering: all positioning, styling, and layout values are read from the config rather than hardcoded
+*** PENDING AC3.1 - Config-driven Typst rendering: all positioning, styling, and layout values are read from the config rather than hardcoded
 
 **** Requirement
 
@@ -731,10 +789,6 @@ Config-driven Typst rendering: all positioning, styling, and layout values are r
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-PENDING
-
 **** Tests
 
 ***** TBD - TBD
@@ -747,7 +801,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** AC3.2 - British layout is the canonical default, loaded from the embedded preset
+*** PENDING AC3.2 - British layout is the canonical default, loaded from the embedded preset
 
 **** Requirement
 
@@ -759,10 +813,6 @@ British layout is the canonical default, loaded from the embedded preset.
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-PENDING
-
 **** Tests
 
 ***** TBD - TBD
@@ -775,7 +825,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** AC3.3 - American layout is applied by loading the US override preset on top of British
+*** PENDING AC3.3 - American layout is applied by loading the US override preset on top of British
 
 **** Requirement
 
@@ -787,10 +837,6 @@ American layout is applied by loading the US override preset on top of British.
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-PENDING
-
 **** Tests
 
 ***** TBD - TBD
@@ -803,7 +849,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** AC3.4 - YAML::Tiny replaces the custom YAML parser for deep nesting support
+*** PENDING AC3.4 - YAML::Tiny replaces the custom YAML parser for deep nesting support
 
 **** Requirement
 
@@ -815,10 +861,6 @@ YAML::Tiny replaces the custom YAML parser for deep nesting support.
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-PENDING
-
 **** Tests
 
 ***** TBD - TBD
@@ -831,7 +873,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** AC3.5 - Transitions are a supported event type (H5 or :transition: tagged H3)
+*** PENDING AC3.5 - Transitions are a supported event type (H5 or :transition: tagged H3)
 
 **** Requirement
 
@@ -843,10 +885,6 @@ Transitions are a supported event type (H5 or :transition: tagged H3).
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-PENDING
-
 **** Tests
 
 ***** TBD - TBD
@@ -859,7 +897,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** AC3.6 - The =folio.style= configuration key and =--style= CLI flag select the British or US style, with CLI values taking precedence over local and global configuration and the US preset layering above the British preset
+*** HOLD AC3.6 - The =folio.style= configuration key and =--style= CLI flag select the British or US style, with CLI values taking precedence over local and global configuration and the US preset layering above the British preset
 
 **** Requirement
 
@@ -871,10 +909,6 @@ The =folio.style= configuration key and =--style= CLI flag select the British or
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-HOLDING
-
 **** Tests
 
 - No named test identifier was recorded in the source AC row; delivery evidence remains in the archived ticket comments or commit references.
@@ -882,7 +916,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** AC3.7 - Style-specific user configuration files named =script-british.yaml= and =script-us.yaml= load at global and local levels and override style-agnostic files at the same level
+*** HOLD AC3.7 - Style-specific user configuration files named =script-british.yaml= and =script-us.yaml= load at global and local levels and override style-agnostic files at the same level
 
 **** Requirement
 
@@ -894,10 +928,6 @@ Style-specific user configuration files named =script-british.yaml= and =script-
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-HOLDING
-
 **** Tests
 
 - No named test identifier was recorded in the source AC row; delivery evidence remains in the archived ticket comments or commit references.
@@ -905,7 +935,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** AC3.8 - Character names found in stage-direction text are uppercased using word-boundary matching from the character table, while dialogue text is not modified
+*** HOLD AC3.8 - Character names found in stage-direction text are uppercased using word-boundary matching from the character table, while dialogue text is not modified
 
 **** Requirement
 
@@ -916,10 +946,6 @@ Character names found in stage-direction text are uppercased using word-boundary
 - *Introduced by:* [[file:archive/migrated-tickets/3.md][#3 - feat: config-driven rendering with British/American style presets]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -933,7 +959,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/4][#4 - feat: Homebrew formula for first-folio]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC4.1 - A Homebrew formula installs =folio= to the Homebrew prefix
+*** PENDING AC4.1 - A Homebrew formula installs =folio= to the Homebrew prefix
 
 **** Requirement
 
@@ -945,10 +971,6 @@ A Homebrew formula installs =folio= to the Homebrew prefix.
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-PENDING
-
 **** Tests
 
 ***** TBD - TBD
@@ -961,7 +983,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/4.md=.
 
-*** AC4.2 - =brew install first-folio= makes =folio= available on PATH
+*** PENDING AC4.2 - =brew install first-folio= makes =folio= available on PATH
 
 **** Requirement
 
@@ -973,10 +995,6 @@ PENDING
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-PENDING
-
 **** Tests
 
 ***** TBD - TBD
@@ -989,7 +1007,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/4.md=.
 
-*** AC4.3 - The formula declares Typst as an optional dependency
+*** PENDING AC4.3 - The formula declares Typst as an optional dependency
 
 **** Requirement
 
@@ -1001,10 +1019,6 @@ The formula declares Typst as an optional dependency.
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-PENDING
-
 **** Tests
 
 ***** TBD - TBD
@@ -1017,7 +1031,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/4.md=.
 
-*** AC4.4 - =make release= increments version, updates formula SHA, and pushes
+*** PENDING AC4.4 - =make release= increments version, updates formula SHA, and pushes
 
 **** Requirement
 
@@ -1028,10 +1042,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/4.md][#4 - feat: Homebrew formula for first-folio]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -1050,7 +1060,7 @@ PENDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/5][#5 - feat: H3 tag system for within-scene elements]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC5.1 - H3 with =:prop:= tag emits =prop_text= event
+*** HOLD AC5.1 - H3 with =:prop:= tag emits =prop_text= event
 
 **** Requirement
 
@@ -1062,10 +1072,6 @@ H3 with =:prop:= tag emits =prop_text= event.
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-HOLDING
-
 **** Tests
 
 ***** RT (covered in test_folio_format_matrix.sh) - RT (covered in test_folio_format_matrix.sh)
@@ -1078,7 +1084,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/5.md=.
 
-*** AC5.2 - H3 with =:transition:= tag emits =transition= event
+*** HOLD AC5.2 - H3 with =:transition:= tag emits =transition= event
 
 **** Requirement
 
@@ -1090,10 +1096,6 @@ H3 with =:transition:= tag emits =transition= event.
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-HOLDING
-
 **** Tests
 
 ***** RT (covered in test_folio_format_matrix.sh) - RT (covered in test_folio_format_matrix.sh)
@@ -1106,7 +1108,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/5.md=.
 
-*** AC5.3 - Untagged H3 continues to emit =stage_direction= event
+*** HOLD AC5.3 - Untagged H3 continues to emit =stage_direction= event
 
 **** Requirement
 
@@ -1118,10 +1120,6 @@ Untagged H3 continues to emit =stage_direction= event.
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-HOLDING
-
 **** Tests
 
 ***** RT (covered in test_folio_convert.sh) - RT (covered in test_folio_convert.sh)
@@ -1134,7 +1132,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/5.md=.
 
-*** AC5.4 - H5 transitions and =- *"TEXT"*= prop text remain supported (deprecated)
+*** HOLD AC5.4 - H5 transitions and =- *"TEXT"*= prop text remain supported (deprecated)
 
 **** Requirement
 
@@ -1146,10 +1144,6 @@ H5 transitions and =- *"TEXT"*= prop text remain supported (deprecated).
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
 
-**** Status
-
-HOLDING
-
 **** Tests
 
 ***** RT (covered in test_folio_convert.sh) - RT (covered in test_folio_convert.sh)
@@ -1162,7 +1156,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/5.md=.
 
-*** AC5.5 - Org emitter outputs =:prop:= and =:transition:= tags (not deprecated syntax)
+*** HOLD AC5.5 - Org emitter outputs =:prop:= and =:transition:= tags (not deprecated syntax)
 
 **** Requirement
 
@@ -1173,10 +1167,6 @@ Org emitter outputs =:prop:= and =:transition:= tags (not deprecated syntax).
 - *Introduced by:* [[file:archive/migrated-tickets/5.md][#5 - feat: H3 tag system for within-scene elements]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1195,7 +1185,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/6][#6 - feat: cover letter generation from org :cover: tag]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC6.1 - =:letter:= tagged H1 is parsed as letter structure
+*** HOLD AC6.1 - =:letter:= tagged H1 is parsed as letter structure
 
 **** Requirement
 
@@ -1206,10 +1196,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1223,7 +1209,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** AC6.2 - Each =:to:= recipient generates a separate PDF
+*** HOLD AC6.2 - Each =:to:= recipient generates a separate PDF
 
 **** Requirement
 
@@ -1234,10 +1220,6 @@ Each =:to:= recipient generates a separate PDF.
 - *Introduced by:* [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1251,7 +1233,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** AC6.3 - Placeholder substitution (=[org]=, =[moniker]=, any tag) works per recipient
+*** HOLD AC6.3 - Placeholder substitution (=[org]=, =[moniker]=, any tag) works per recipient
 
 **** Requirement
 
@@ -1262,10 +1244,6 @@ Placeholder substitution (=[org]=, =[moniker]=, any tag) works per recipient.
 - *Introduced by:* [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1279,7 +1257,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** AC6.4 - Missing fields fall back to defaults (date, closing, signoff, sender)
+*** HOLD AC6.4 - Missing fields fall back to defaults (date, closing, signoff, sender)
 
 **** Requirement
 
@@ -1290,10 +1268,6 @@ Missing fields fall back to defaults (date, closing, signoff, sender).
 - *Introduced by:* [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1307,7 +1281,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** AC6.5 - Letter renders as a properly formatted business letter in PDF
+*** HOLD AC6.5 - Letter renders as a properly formatted business letter in PDF
 
 **** Requirement
 
@@ -1318,10 +1292,6 @@ Letter renders as a properly formatted business letter in PDF.
 - *Introduced by:* [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1335,7 +1305,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** AC6.6 - Org markup (bold, italic, underline) renders in letter body
+*** HOLD AC6.6 - Org markup (bold, italic, underline) renders in letter body
 
 **** Requirement
 
@@ -1346,10 +1316,6 @@ Org markup (bold, italic, underline) renders in letter body.
 - *Introduced by:* [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1363,7 +1329,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** AC6.7 - Date expands from ISO to long form (1 May 2026)
+*** HOLD AC6.7 - Date expands from ISO to long form (1 May 2026)
 
 **** Requirement
 
@@ -1374,10 +1340,6 @@ Date expands from ISO to long form (1 May 2026).
 - *Introduced by:* [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1391,7 +1353,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** AC6.8 - All spacing configurable via folio.letter.* config
+*** HOLD AC6.8 - All spacing configurable via folio.letter.* config
 
 **** Requirement
 
@@ -1402,10 +1364,6 @@ All spacing configurable via folio.letter.* config.
 - *Introduced by:* [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1419,7 +1377,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** AC6.9 - Generic tag system: any H4 tag under :to: becomes a placeholder variable
+*** HOLD AC6.9 - Generic tag system: any H4 tag under :to: becomes a placeholder variable
 
 **** Requirement
 
@@ -1430,10 +1388,6 @@ Generic tag system: any H4 tag under :to: becomes a placeholder variable.
 - *Introduced by:* [[file:archive/migrated-tickets/6.md][#6 - feat: cover letter generation from org :cover: tag]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1452,7 +1406,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/8][#8 - feat: font-weight and font-stretch config keys]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC8.1 - =folio.font-weight= accepted as keyword (e.g
+*** HOLD AC8.1 - =folio.font-weight= accepted as keyword (e.g
 
 **** Requirement
 
@@ -1463,10 +1417,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/8.md][#8 - feat: font-weight and font-stretch config keys]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1480,7 +1430,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** AC8.2 - =folio.font-weight= accepted as numeric (100–900) and emitted unquoted
+*** HOLD AC8.2 - =folio.font-weight= accepted as numeric (100–900) and emitted unquoted
 
 **** Requirement
 
@@ -1491,10 +1441,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/8.md][#8 - feat: font-weight and font-stretch config keys]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1508,7 +1454,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** AC8.3 - =folio.font-stretch= accepted as percentage and emitted to Typst
+*** HOLD AC8.3 - =folio.font-stretch= accepted as percentage and emitted to Typst
 
 **** Requirement
 
@@ -1519,10 +1465,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/8.md][#8 - feat: font-weight and font-stretch config keys]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1536,7 +1478,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** AC8.4 - =folio.font-stretch= accepts plain number, treated as percentage
+*** HOLD AC8.4 - =folio.font-stretch= accepts plain number, treated as percentage
 
 **** Requirement
 
@@ -1547,10 +1489,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/8.md][#8 - feat: font-weight and font-stretch config keys]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1564,7 +1502,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** AC8.5 - Same keys work under =folio.letter= for letter rendering
+*** HOLD AC8.5 - Same keys work under =folio.letter= for letter rendering
 
 **** Requirement
 
@@ -1575,10 +1513,6 @@ Same keys work under =folio.letter= for letter rendering.
 - *Introduced by:* [[file:archive/migrated-tickets/8.md][#8 - feat: font-weight and font-stretch config keys]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1592,7 +1526,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** AC8.6 - When unset, Typst output omits weight/stretch (backward compatible)
+*** HOLD AC8.6 - When unset, Typst output omits weight/stretch (backward compatible)
 
 **** Requirement
 
@@ -1603,10 +1537,6 @@ When unset, Typst output omits weight/stretch (backward compatible).
 - *Introduced by:* [[file:archive/migrated-tickets/8.md][#8 - feat: font-weight and font-stretch config keys]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1620,7 +1550,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** AC8.7 - Documented in =examples/script.yaml.example= for both body and letter
+*** HOLD AC8.7 - Documented in =examples/script.yaml.example= for both body and letter
 
 **** Requirement
 
@@ -1631,10 +1561,6 @@ Documented in =examples/script.yaml.example= for both body and letter.
 - *Introduced by:* [[file:archive/migrated-tickets/8.md][#8 - feat: font-weight and font-stretch config keys]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1654,7 +1580,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/9][https://github.com/tigger-developer/first-folio/issues/9]]
 - *Source group:* Requirements and tests retained from the legacy ledger.
 
-*** AC9.1 - Given a manuscript command with Markdown or org-mode chapter files and a PDF target, First Folio creates one manuscript PDF at the target path
+*** HOLD AC9.1 - Given a manuscript command with Markdown or org-mode chapter files and a PDF target, First Folio creates one manuscript PDF at the target path
 
 **** Requirement
 
@@ -1665,10 +1591,6 @@ Given a manuscript command with Markdown or org-mode chapter files and a PDF tar
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1725,7 +1647,7 @@ HOLDING
 - *Status:* PASS
 - *Evidence:* Archived ticket #33 records the test as passing; current =make test= passed the maintained RT definition.
 
-*** AC9.2 - Given a quoted chapter glob or multiple explicit chapter paths, First Folio includes only the selected chapters in deterministic chapter order with a blank-line separator between files
+*** HOLD AC9.2 - Given a quoted chapter glob or multiple explicit chapter paths, First Folio includes only the selected chapters in deterministic chapter order with a blank-line separator between files
 
 **** Requirement
 
@@ -1736,10 +1658,6 @@ Given a quoted chapter glob or multiple explicit chapter paths, First Folio incl
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1778,7 +1696,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.3 - Given manuscript Markdown input, prose paragraphs, headings, parts, chapters, scene breaks, emphasis, private notes, and footnotes have corresponding manuscript events or Typst markup
+*** HOLD AC9.3 - Given manuscript Markdown input, prose paragraphs, headings, parts, chapters, scene breaks, emphasis, private notes, and footnotes have corresponding manuscript events or Typst markup
 
 **** Requirement
 
@@ -1789,10 +1707,6 @@ Given manuscript Markdown input, prose paragraphs, headings, parts, chapters, sc
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1831,7 +1745,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.4 - Given manuscript org-mode input, prose paragraphs, headings, parts, chapters, scene breaks, emphasis, noexport sections, and footnotes have corresponding manuscript events or Typst markup
+*** HOLD AC9.4 - Given manuscript org-mode input, prose paragraphs, headings, parts, chapters, scene breaks, emphasis, noexport sections, and footnotes have corresponding manuscript events or Typst markup
 
 **** Requirement
 
@@ -1842,10 +1756,6 @@ Given manuscript org-mode input, prose paragraphs, headings, parts, chapters, sc
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1884,7 +1794,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.5 - Given existing root =folio.font=, =folio.font-size=, =folio.page=, and =folio.margin= configuration, script, letter, and manuscript rendering inherit the same document defaults unless a mode or child override is present
+*** HOLD AC9.5 - Given existing root =folio.font=, =folio.font-size=, =folio.page=, and =folio.margin= configuration, script, letter, and manuscript rendering inherit the same document defaults unless a mode or child override is present
 
 **** Requirement
 
@@ -1895,10 +1805,6 @@ Given existing root =folio.font=, =folio.font-size=, =folio.page=, and =folio.ma
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1931,7 +1837,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.6 - Given root heading font configuration, script and manuscript headings inherit =folio.heading-font= and =folio.heading-font-size=, and missing heading values inherit from =folio.font= and =folio.font-size=
+*** HOLD AC9.6 - Given root heading font configuration, script and manuscript headings inherit =folio.heading-font= and =folio.heading-font-size=, and missing heading values inherit from =folio.font= and =folio.font-size=
 
 **** Requirement
 
@@ -1942,10 +1848,6 @@ Given root heading font configuration, script and manuscript headings inherit =f
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -1978,7 +1880,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.7 - Given manuscript-specific font configuration, manuscript child font settings override the manuscript mode defaults for only their own elements
+*** HOLD AC9.7 - Given manuscript-specific font configuration, manuscript child font settings override the manuscript mode defaults for only their own elements
 
 **** Requirement
 
@@ -1989,10 +1891,6 @@ Given manuscript-specific font configuration, manuscript child font settings ove
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2031,7 +1929,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.8 - Given British manuscript defaults, First Folio uses a publisher-friendly A4 manuscript layout with 20mm margins, a title page, running page header, new-page chapters, and part divider pages
+*** HOLD AC9.8 - Given British manuscript defaults, First Folio uses a publisher-friendly A4 manuscript layout with 20mm margins, a title page, running page header, new-page chapters, and part divider pages
 
 **** Requirement
 
@@ -2042,10 +1940,6 @@ Given British manuscript defaults, First Folio uses a publisher-friendly A4 manu
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2132,7 +2026,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.9 - Given US manuscript defaults, First Folio applies a Shunn-based manuscript override YAML on top of the British manuscript base without making US layout the global default
+*** HOLD AC9.9 - Given US manuscript defaults, First Folio applies a Shunn-based manuscript override YAML on top of the British manuscript base without making US layout the global default
 
 **** Requirement
 
@@ -2143,10 +2037,6 @@ Given US manuscript defaults, First Folio applies a Shunn-based manuscript overr
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2209,7 +2099,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.10 - Given no page configuration, every First Folio rendering mode uses A4 as the page size
+*** HOLD AC9.10 - Given no page configuration, every First Folio rendering mode uses A4 as the page size
 
 **** Requirement
 
@@ -2220,10 +2110,6 @@ Given no page configuration, every First Folio rendering mode uses A4 as the pag
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2256,7 +2142,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.11 - Given invalid manuscript inputs or output destinations, First Folio exits non-zero and writes a diagnostic to stderr without creating a misleading success artefact
+*** HOLD AC9.11 - Given invalid manuscript inputs or output destinations, First Folio exits non-zero and writes a diagnostic to stderr without creating a misleading success artefact
 
 **** Requirement
 
@@ -2267,10 +2153,6 @@ Given invalid manuscript inputs or output destinations, First Folio exits non-ze
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2309,7 +2191,7 @@ HOLDING
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC9.12 - Given manuscript TOC configuration, First Folio includes a table of contents by default and applies TOC-specific font and layout overrides when present
+*** HOLD AC9.12 - Given manuscript TOC configuration, First Folio includes a table of contents by default and applies TOC-specific font and layout overrides when present
 
 **** Requirement
 
@@ -2320,10 +2202,6 @@ Given manuscript TOC configuration, First Folio includes a table of contents by 
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2417,7 +2295,7 @@ HOLDING
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 - One source test is explicitly marked removed; that marker is preserved as =SUPERSEDED= under its test heading.
 
-*** AC9.13 - Given manuscript paragraph layout configuration, First Folio applies configurable line spacing, first-line paragraph indentation, and paragraph spacing with mode-specific defaults
+*** HOLD AC9.13 - Given manuscript paragraph layout configuration, First Folio applies configurable line spacing, first-line paragraph indentation, and paragraph spacing with mode-specific defaults
 
 **** Requirement
 
@@ -2428,10 +2306,6 @@ Given manuscript paragraph layout configuration, First Folio applies configurabl
 - *Introduced by:* [[file:archive/migrated-tickets/9.md][#9 - Manuscript PDF Mode]]
 - *Shipped or migrated:* Not recorded in source; cutover date 2026-07-14
 - *Additional provenance:* Legacy source ledger group Issue 9: Manuscript PDF Mode.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2475,7 +2349,7 @@ HOLDING
 - *Source heading:* Go Runtime Migration
 - *Source group:* Requirements and tests retained from the legacy ledger.
 
-*** AC10.1 - Given any supported command, the public =folio= executable dispatches =convert=, =letter=, and =manuscript= within one Go process and preserves the documented CLI contract
+*** HOLD AC10.1 - Given any supported command, the public =folio= executable dispatches =convert=, =letter=, and =manuscript= within one Go process and preserves the documented CLI contract
 
 **** Requirement
 
@@ -2486,10 +2360,6 @@ Given any supported command, the public =folio= executable dispatches =convert=,
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2516,7 +2386,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.2 - Given existing script inputs and targets, Go conversion preserves the accepted Org, Markdown, Fountain, Typst, and PDF structure, metadata, Unicode, warnings, and errors
+*** HOLD AC10.2 - Given existing script inputs and targets, Go conversion preserves the accepted Org, Markdown, Fountain, Typst, and PDF structure, metadata, Unicode, warnings, and errors
 
 **** Requirement
 
@@ -2527,10 +2397,6 @@ Given existing script inputs and targets, Go conversion preserves the accepted O
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2581,7 +2447,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.3 - Given existing letter inputs and configuration, Go letter generation preserves recipient selection, inline formatting, metadata, filenames, Typst, and PDF layout behaviour
+*** HOLD AC10.3 - Given existing letter inputs and configuration, Go letter generation preserves recipient selection, inline formatting, metadata, filenames, Typst, and PDF layout behaviour
 
 **** Requirement
 
@@ -2592,10 +2458,6 @@ Given existing letter inputs and configuration, Go letter generation preserves r
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2628,7 +2490,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.4 - Given existing manuscript inputs and presets, the integrated Go subcommand preserves the accepted Markdown/org contract, multi-input joining, configuration, Typst, and British/US PDF behaviour
+*** HOLD AC10.4 - Given existing manuscript inputs and presets, the integrated Go subcommand preserves the accepted Markdown/org contract, multi-input joining, configuration, Typst, and British/US PDF behaviour
 
 **** Requirement
 
@@ -2639,10 +2501,6 @@ Given existing manuscript inputs and presets, the integrated Go subcommand prese
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2681,7 +2539,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.5 - Given global, local, style-specific, root, and mode-specific YAML, one typed Go loader applies documented precedence consistently across all subcommands while ignoring unrelated companion-tool keys
+*** HOLD AC10.5 - Given global, local, style-specific, root, and mode-specific YAML, one typed Go loader applies documented precedence consistently across all subcommands while ignoring unrelated companion-tool keys
 
 **** Requirement
 
@@ -2692,10 +2550,6 @@ Given global, local, style-specific, root, and mode-specific YAML, one typed Go 
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2722,7 +2576,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.6 - Given hostile or syntax-significant input, Go rendering escapes each Typst context without compile failure or unintended markup execution
+*** HOLD AC10.6 - Given hostile or syntax-significant input, Go rendering escapes each Typst context without compile failure or unintended markup execution
 
 **** Requirement
 
@@ -2733,10 +2587,6 @@ Given hostile or syntax-significant input, Go rendering escapes each Typst conte
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2763,7 +2613,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.7 - Given PDF or Typst output, substantial layout is loaded from file-backed templates and no project-owned Go, Perl, or shell production code contains complex generated-Typst heredocs or equivalent string assembly
+*** HOLD AC10.7 - Given PDF or Typst output, substantial layout is loaded from file-backed templates and no project-owned Go, Perl, or shell production code contains complex generated-Typst heredocs or equivalent string assembly
 
 **** Requirement
 
@@ -2774,10 +2624,6 @@ Given PDF or Typst output, substantial layout is loaded from file-backed templat
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2804,7 +2650,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.8 - Given a clean checkout, build, install, test, lint, and release preparation operate through Go tooling and produce/install one =folio= binary with installation-safe assets
+*** HOLD AC10.8 - Given a clean checkout, build, install, test, lint, and release preparation operate through Go tooling and produce/install one =folio= binary with installation-safe assets
 
 **** Requirement
 
@@ -2815,10 +2661,6 @@ Given a clean checkout, build, install, test, lint, and release preparation oper
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2845,7 +2687,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.9 - Given the completed migration, First Folio has no Perl runtime/build/test/release dependency and no project-owned shell application or regression-test logic
+*** HOLD AC10.9 - Given the completed migration, First Folio has no Perl runtime/build/test/release dependency and no project-owned shell application or regression-test logic
 
 **** Requirement
 
@@ -2856,10 +2698,6 @@ Given the completed migration, First Folio has no Perl runtime/build/test/releas
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2886,7 +2724,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.10 - Given all accepted pre-migration fixtures, the Go implementation is behaviourally equivalent except for changes explicitly approved in separately referenced issues
+*** HOLD AC10.10 - Given all accepted pre-migration fixtures, the Go implementation is behaviourally equivalent except for changes explicitly approved in separately referenced issues
 
 **** Requirement
 
@@ -2897,10 +2735,6 @@ Given all accepted pre-migration fixtures, the Go implementation is behaviourall
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2927,7 +2761,7 @@ HOLDING
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** AC10.11 - Given completion of the migration, architecture, configuration, format, installation, contributor, dependency, and release documentation describe the Go-only implementation accurately
+*** HOLD AC10.11 - Given completion of the migration, architecture, configuration, format, installation, contributor, dependency, and release documentation describe the Go-only implementation accurately
 
 **** Requirement
 
@@ -2938,10 +2772,6 @@ Given completion of the migration, architecture, configuration, format, installa
 - *Introduced by:* Go Runtime Migration
 - *Shipped or migrated:* 2026-07-15
 - *Additional provenance:* [[https://github.com/tigger-developer/first-folio/issues/10][#10]]
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -2961,7 +2791,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/13][#13 - fix: resolve multi-input manuscript config from working directory]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC13.1 - Given exactly one resolved manuscript input, First Folio uses the input file's directory as the local configuration directory for the request
+*** PENDING AC13.1 - Given exactly one resolved manuscript input, First Folio uses the input file's directory as the local configuration directory for the request
 
 **** Requirement
 
@@ -2972,10 +2802,6 @@ Given exactly one resolved manuscript input, First Folio uses the input file's d
 - *Introduced by:* [[file:archive/migrated-tickets/13.md][#13 - fix: resolve multi-input manuscript config from working directory]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3001,7 +2827,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/13.md=.
 
-*** AC13.2 - Given more than one resolved manuscript input, First Folio uses the process working directory as the sole local configuration directory for the request, regardless of the inputs' directories or path forms
+*** PENDING AC13.2 - Given more than one resolved manuscript input, First Folio uses the process working directory as the sole local configuration directory for the request, regardless of the inputs' directories or path forms
 
 **** Requirement
 
@@ -3012,10 +2838,6 @@ Given more than one resolved manuscript input, First Folio uses the process work
 - *Introduced by:* [[file:archive/migrated-tickets/13.md][#13 - fix: resolve multi-input manuscript config from working directory]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3053,7 +2875,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/13.md=.
 
-*** AC13.3 - Given either input cardinality, manuscript configuration retains the established precedence of CLI values over local style-specific values, local base values, global style-specific values, global base values, and built-in presets
+*** PENDING AC13.3 - Given either input cardinality, manuscript configuration retains the established precedence of CLI values over local style-specific values, local base values, global style-specific values, global base values, and built-in presets
 
 **** Requirement
 
@@ -3064,10 +2886,6 @@ Given either input cardinality, manuscript configuration retains the established
 - *Introduced by:* [[file:archive/migrated-tickets/13.md][#13 - fix: resolve multi-input manuscript config from working directory]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3098,7 +2916,7 @@ PENDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/15][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC15.1 - The manuscript page-header format placeholder set includes =[author]=, =[title]=, =[page]=, =[part]=, and =[chapter]=; unknown bracket tokens remain unsubstituted in the rendered header
+*** PENDING AC15.1 - The manuscript page-header format placeholder set includes =[author]=, =[title]=, =[page]=, =[part]=, and =[chapter]=; unknown bracket tokens remain unsubstituted in the rendered header
 
 **** Requirement
 
@@ -3109,10 +2927,6 @@ The manuscript page-header format placeholder set includes =[author]=, =[title]=
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3156,7 +2970,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.2 - =folio.manuscript.page-footer= accepts the same fields and inheritance as =page-header=; when enabled it renders a running footer on manuscript body pages and remains absent from the title page and TOC
+*** PENDING AC15.2 - =folio.manuscript.page-footer= accepts the same fields and inheritance as =page-header=; when enabled it renders a running footer on manuscript body pages and remains absent from the title page and TOC
 
 **** Requirement
 
@@ -3167,10 +2981,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3226,7 +3036,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.3 - The =folio.manuscript.page= value accepts either a named preset (e.g
+*** PENDING AC15.3 - The =folio.manuscript.page= value accepts either a named preset (e.g
 
 **** Requirement
 
@@ -3237,10 +3047,6 @@ The =folio.manuscript.page= value accepts either a named preset (e.g. =a4=, =let
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3302,7 +3108,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.4 - =folio.manuscript.part.blank-page-before=, =part.blank-page-after=, =chapter.blank-page-before=, and =chapter.blank-page-after= each insert an unnumbered, empty page adjacent to the heading, independent of the corresponding =page-break-before= setting; all four defaults are =false=
+*** PENDING AC15.4 - =folio.manuscript.part.blank-page-before=, =part.blank-page-after=, =chapter.blank-page-before=, and =chapter.blank-page-after= each insert an unnumbered, empty page adjacent to the heading, independent of the corresponding =page-break-before= setting; all four defaults are =false=
 
 **** Requirement
 
@@ -3313,10 +3119,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3378,7 +3180,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.5 - Each title-page item (title, subtitle, author, date, word count, version, contact block) accepts an =align= value that is either a compass keyword (=left=, =center=, =right=) or a compound =V-H= pair drawn from ={top,center,bottom}-{left,center,right}=; the item is placed at the named corner flush to the manuscript margin; unknown values are rejected with a diagnostic naming the offending value
+*** PENDING AC15.5 - Each title-page item (title, subtitle, author, date, word count, version, contact block) accepts an =align= value that is either a compass keyword (=left=, =center=, =right=) or a compound =V-H= pair drawn from ={top,center,bottom}-{left,center,right}=; the item is placed at the named corner flush to the manuscript margin; unknown values are rejected with a diagnostic naming the offending value
 
 **** Requirement
 
@@ -3389,10 +3191,6 @@ Each title-page item (title, subtitle, author, date, word count, version, contac
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3472,7 +3270,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.6 - The =page-header.align= and =page-footer.align= values accept the compound page-pair aliases =left-right=, =right-left=, =left-center=, =right-center=, =center-left=, and =center-right=; *the first token controls alignment on LEFT (verso, even) pages and the second token controls alignment on RIGHT (recto, odd) pages*, matching the reader's view of an open book (page 1 = right, page 2 = left, page 3 = right, ...); unknown pair values are rejected with a diagnostic naming the offending value
+*** PENDING AC15.6 - The =page-header.align= and =page-footer.align= values accept the compound page-pair aliases =left-right=, =right-left=, =left-center=, =right-center=, =center-left=, and =center-right=; *the first token controls alignment on LEFT (verso, even) pages and the second token controls alignment on RIGHT (recto, odd) pages*, matching the reader's view of an open book (page 1 = right, page 2 = left, page 3 = right, ...); unknown pair values are rejected with a diagnostic naming the offending value
 
 **** Requirement
 
@@ -3483,10 +3281,6 @@ The =page-header.align= and =page-footer.align= values accept the compound page-
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3548,7 +3342,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.7 - =folio.manuscript.gutter= accepts a Typst-length value (default =0mm=); a non-zero gutter is added to the inside (binding-side) margin on both odd and even pages using Typst's =inside=/=outside= margin idiom; a =0mm= gutter leaves the running-page margin configuration byte-identical to the pre-issue-15 baseline
+*** PENDING AC15.7 - =folio.manuscript.gutter= accepts a Typst-length value (default =0mm=); a non-zero gutter is added to the inside (binding-side) margin on both odd and even pages using Typst's =inside=/=outside= margin idiom; a =0mm= gutter leaves the running-page margin configuration byte-identical to the pre-issue-15 baseline
 
 **** Requirement
 
@@ -3559,10 +3353,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3642,7 +3432,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.8 - Given no user configuration, =folio.manuscript.page-header.format= defaults to ="[title] • [chapter] • [author]"=, =page-header.align= defaults to =left-right=, =page-footer.enabled= defaults to =true=, =page-footer.format= defaults to ="[page]"=, and =page-footer.align= defaults to =center=
+*** PENDING AC15.8 - Given no user configuration, =folio.manuscript.page-header.format= defaults to ="[title] • [chapter] • [author]"=, =page-header.align= defaults to =left-right=, =page-footer.enabled= defaults to =true=, =page-footer.format= defaults to ="[page]"=, and =page-footer.align= defaults to =center=
 
 **** Requirement
 
@@ -3653,10 +3443,6 @@ Given no user configuration, =folio.manuscript.page-header.format= defaults to =
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3694,7 +3480,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.9 - =folio.manuscript.part.skip-header=, =part.skip-footer=, =chapter.skip-header=, and =chapter.skip-footer= (all default =false=) suppress the running header or footer on any page that renders the corresponding heading, via =#set page(header: none)= / =#set page(footer: none)= scoped to the heading macro
+*** PENDING AC15.9 - =folio.manuscript.part.skip-header=, =part.skip-footer=, =chapter.skip-header=, and =chapter.skip-footer= (all default =false=) suppress the running header or footer on any page that renders the corresponding heading, via =#set page(header: none)= / =#set page(footer: none)= scoped to the heading macro
 
 **** Requirement
 
@@ -3705,10 +3491,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3764,7 +3546,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.11 - =folio.manuscript.part.blank-page-before=, =part.blank-page-after=, =chapter.blank-page-before=, =chapter.blank-page-after=, =toc.blank-page-before=, and =toc.blank-page-after= accept the enum values =false= (default), =true= (unconditional blank page, backwards compatible with AC15.4's boolean semantics), =enforce-right= (Typst =pagebreak(to: "odd")= -- ensures the section starts on a recto page, inserting a blank only if needed), and =enforce-left= (Typst =pagebreak(to: "even")= -- ensures the section starts on a verso page)
+*** PENDING AC15.11 - =folio.manuscript.part.blank-page-before=, =part.blank-page-after=, =chapter.blank-page-before=, =chapter.blank-page-after=, =toc.blank-page-before=, and =toc.blank-page-after= accept the enum values =false= (default), =true= (unconditional blank page, backwards compatible with AC15.4's boolean semantics), =enforce-right= (Typst =pagebreak(to: "odd")= -- ensures the section starts on a recto page, inserting a blank only if needed), and =enforce-left= (Typst =pagebreak(to: "even")= -- ensures the section starts on a verso page)
 
 **** Requirement
 
@@ -3775,10 +3557,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -3834,7 +3612,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/15.md=.
 
-*** AC15.12 - +The British and US manuscript presets ship with per-item title-page corner defaults: =title.align: top-center=, =author.align: top-right=, =version.align: top-left=, =date.align: bottom-left=, =wordcount.align: bottom-right=, =contact.align: bottom-center=.+ *Withdrawn after visual review* -- the shipped defaults revert to the pre-issue-15 centred layout (contact top-left, title/subtitle/author centred, British footer grid at the bottom)
+*** SUPERSEDED AC15.12 - +The British and US manuscript presets ship with per-item title-page corner defaults: =title.align: top-center=, =author.align: top-right=, =version.align: top-left=, =date.align: bottom-left=, =wordcount.align: bottom-right=, =contact.align: bottom-center=.+ *Withdrawn after visual review* -- the shipped defaults revert to the pre-issue-15 centred layout (contact top-left, title/subtitle/author centred, British footer grid at the bottom)
 
 **** Requirement
 
@@ -3845,10 +3623,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/15.md][#15 - Manuscript config: additional page-layout fields and functionality]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-SUPERSEDED
 
 **** Tests
 
@@ -3880,7 +3654,7 @@ SUPERSEDED
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/16][#16 - Parity-aware book layout, Roman-numeral frontmatter, and numbering resets]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC16.1 - =folio.manuscript.page-numbering.frontmatter-format= accepts ="1"=, ="I"=, or ="i"=
+*** HOLD AC16.1 - =folio.manuscript.page-numbering.frontmatter-format= accepts ="1"=, ="I"=, or ="i"=
 
 **** Requirement
 
@@ -3891,10 +3665,6 @@ SUPERSEDED
 - *Introduced by:* [[file:archive/migrated-tickets/16.md][#16 - Parity-aware book layout, Roman-numeral frontmatter, and numbering resets]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -3926,7 +3696,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/16.md=.
 
-*** AC16.2 - =folio.manuscript.page-numbering.body-format= accepts ="1"=, ="I"=, or ="i"=
+*** HOLD AC16.2 - =folio.manuscript.page-numbering.body-format= accepts ="1"=, ="I"=, or ="i"=
 
 **** Requirement
 
@@ -3937,10 +3707,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/16.md][#16 - Parity-aware book layout, Roman-numeral frontmatter, and numbering resets]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -3960,7 +3726,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/16.md=.
 
-*** AC16.3 - =folio.manuscript.page-numbering.body-reset= accepts ="first-part-or-chapter"= (default) or ="never"=
+*** HOLD AC16.3 - =folio.manuscript.page-numbering.body-reset= accepts ="first-part-or-chapter"= (default) or ="never"=
 
 **** Requirement
 
@@ -3971,10 +3737,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/16.md][#16 - Parity-aware book layout, Roman-numeral frontmatter, and numbering resets]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -3994,7 +3756,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/16.md=.
 
-*** AC16.4 - =folio.manuscript.chapter.number-reset= accepts ="per-part"= (default, current behaviour) or ="never"=
+*** PENDING AC16.4 - =folio.manuscript.chapter.number-reset= accepts ="per-part"= (default, current behaviour) or ="never"=
 
 **** Requirement
 
@@ -4005,10 +3767,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/16.md][#16 - Parity-aware book layout, Roman-numeral frontmatter, and numbering resets]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4039,7 +3797,7 @@ PENDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/18][#18 - Semantic authoring of parts and chapters with configurable rendering]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC18.1 - Given an H1 heading whose text is a plain semantic name, the manuscript parser stores the heading's text as the part's semantic name and records the part's position-derived number (1, 2, 3, ...) starting from 1 for the first H1 in the source
+*** HOLD AC18.1 - Given an H1 heading whose text is a plain semantic name, the manuscript parser stores the heading's text as the part's semantic name and records the part's position-derived number (1, 2, 3, ...) starting from 1 for the first H1 in the source
 
 **** Requirement
 
@@ -4050,10 +3808,6 @@ Given an H1 heading whose text is a plain semantic name, the manuscript parser s
 - *Introduced by:* [[file:archive/migrated-tickets/18.md][#18 - Semantic authoring of parts and chapters with configurable rendering]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4079,7 +3833,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/18.md=.
 
-*** AC18.2 - Given an H1 or H2 heading whose text matches the pattern =Part <number>[<separator>] <name>= or =Chapter <number>[<separator>] <name>= (case-insensitive, number in arabic, roman, or a spelled-out word), the parser strips the prefix and captures the name remainder as the semantic name; source-order-derived numbering is used unless =part.explicit-numbering: source= (or the equivalent for chapter) opts in to using the parsed source number
+*** HOLD AC18.2 - Given an H1 or H2 heading whose text matches the pattern =Part <number>[<separator>] <name>= or =Chapter <number>[<separator>] <name>= (case-insensitive, number in arabic, roman, or a spelled-out word), the parser strips the prefix and captures the name remainder as the semantic name; source-order-derived numbering is used unless =part.explicit-numbering: source= (or the equivalent for chapter) opts in to using the parsed source number
 
 **** Requirement
 
@@ -4090,10 +3844,6 @@ Given an H1 or H2 heading whose text matches the pattern =Part <number>[<separat
 - *Introduced by:* [[file:archive/migrated-tickets/18.md][#18 - Semantic authoring of parts and chapters with configurable rendering]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4125,7 +3875,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/18.md=.
 
-*** AC18.3 - Each of =folio.manuscript.part.prefix=, =part.number-format=, =part.separator=, =part.suffix=, =part.show-name=, =part.show-number= and the corresponding six =chapter.*= keys is a first-class config key, layered per the existing precedence, and applies to every part or chapter heading rendered in the manuscript
+*** HOLD AC18.3 - Each of =folio.manuscript.part.prefix=, =part.number-format=, =part.separator=, =part.suffix=, =part.show-name=, =part.show-number= and the corresponding six =chapter.*= keys is a first-class config key, layered per the existing precedence, and applies to every part or chapter heading rendered in the manuscript
 
 **** Requirement
 
@@ -4136,10 +3886,6 @@ Each of =folio.manuscript.part.prefix=, =part.number-format=, =part.separator=, 
 - *Introduced by:* [[file:archive/migrated-tickets/18.md][#18 - Semantic authoring of parts and chapters with configurable rendering]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4219,7 +3965,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/18.md=.
 
-*** AC18.4 - The manuscript header and footer format placeholder set is extended so =[part]= and =[chapter]= return the *semantic name only* of the current part or chapter, and four new placeholders per level (=[part-number]=, =[part-prefix]=, =[part-full]=, =[chapter-number]=, =[chapter-prefix]=, =[chapter-full]=) provide the number, prefix, and fully rendered heading respectively
+*** HOLD AC18.4 - The manuscript header and footer format placeholder set is extended so =[part]= and =[chapter]= return the *semantic name only* of the current part or chapter, and four new placeholders per level (=[part-number]=, =[part-prefix]=, =[part-full]=, =[chapter-number]=, =[chapter-prefix]=, =[chapter-full]=) provide the number, prefix, and fully rendered heading respectively
 
 **** Requirement
 
@@ -4230,10 +3976,6 @@ The manuscript header and footer format placeholder set is extended so =[part]= 
 - *Introduced by:* [[file:archive/migrated-tickets/18.md][#18 - Semantic authoring of parts and chapters with configurable rendering]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4271,7 +4013,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/18.md=.
 
-*** AC18.5 - The =case-transform= config field on =part= and =chapter= (currently: =as-written=, =upper=) applies to the *fully rendered heading string* (prefix + number + separator + name + suffix) rather than only to the source-derived name; when combined with an explicit =part.name-case= / =chapter.name-case= field (values: =as-written=, =upper=, =lower=, =title=) the name-case field takes precedence for the name segment while =case-transform= applies to the composed whole
+*** HOLD AC18.5 - The =case-transform= config field on =part= and =chapter= (currently: =as-written=, =upper=) applies to the *fully rendered heading string* (prefix + number + separator + name + suffix) rather than only to the source-derived name; when combined with an explicit =part.name-case= / =chapter.name-case= field (values: =as-written=, =upper=, =lower=, =title=) the name-case field takes precedence for the name segment while =case-transform= applies to the composed whole
 
 **** Requirement
 
@@ -4282,10 +4024,6 @@ The =case-transform= config field on =part= and =chapter= (currently: =as-writte
 - *Introduced by:* [[file:archive/migrated-tickets/18.md][#18 - Semantic authoring of parts and chapters with configurable rendering]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4311,7 +4049,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/18.md=.
 
-*** AC18.6 - =folio.manuscript.page-header.alt-format= and =folio.manuscript.page-footer.alt-format= are optional format strings for right (recto) pages
+*** PENDING AC18.6 - =folio.manuscript.page-header.alt-format= and =folio.manuscript.page-footer.alt-format= are optional format strings for right (recto) pages
 
 **** Requirement
 
@@ -4322,10 +4060,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/18.md][#18 - Semantic authoring of parts and chapters with configurable rendering]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4368,7 +4102,7 @@ PENDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/21][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC21.1 - =folio.manuscript.copyright.enabled: false= (default) emits no copyright page anywhere; backwards-compatible with pre-issue-21 output
+*** HOLD AC21.1 - =folio.manuscript.copyright.enabled: false= (default) emits no copyright page anywhere; backwards-compatible with pre-issue-21 output
 
 **** Requirement
 
@@ -4379,10 +4113,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4402,7 +4132,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.2 - =copyright.enabled: true= with minimal config (no =credits=, no =body=) renders a copyright page after the title page containing a single default credit block (=Copyright © <year> / <folio.author>.=), no body paragraphs (empty preset body is possible), separator (if configured), and ISBN if provided
+*** PENDING AC21.2 - =copyright.enabled: true= with minimal config (no =credits=, no =body=) renders a copyright page after the title page containing a single default credit block (=Copyright © <year> / <folio.author>.=), no body paragraphs (empty preset body is possible), separator (if configured), and ISBN if provided
 
 **** Requirement
 
@@ -4413,10 +4143,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4442,7 +4168,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.3 - =credits:= list renders in order
+*** HOLD AC21.3 - =credits:= list renders in order
 
 **** Requirement
 
@@ -4453,10 +4179,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4482,7 +4204,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.4 - =body:= list renders as centred paragraphs in order, each rendered through the same markdown-mini pipeline as manuscript prose (supports =*bold*=, =*italic*=, en/em-dashes, curly quotes)
+*** HOLD AC21.4 - =body:= list renders as centred paragraphs in order, each rendered through the same markdown-mini pipeline as manuscript prose (supports =*bold*=, =*italic*=, en/em-dashes, curly quotes)
 
 **** Requirement
 
@@ -4493,10 +4215,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4522,7 +4240,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.5 - Separator renders centred with configurable space-before/space-after
+*** HOLD AC21.5 - Separator renders centred with configurable space-before/space-after
 
 **** Requirement
 
@@ -4533,10 +4251,6 @@ Separator renders centred with configurable space-before/space-after. =separator
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4556,7 +4270,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.6 - =publication:= list renders each line separately, centred
+*** HOLD AC21.6 - =publication:= list renders each line separately, centred
 
 **** Requirement
 
@@ -4567,10 +4281,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4596,7 +4306,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.7 - ISBN renders as =<isbn-label>: <isbn>= (label bold, value regular)
+*** HOLD AC21.7 - ISBN renders as =<isbn-label>: <isbn>= (label bold, value regular)
 
 **** Requirement
 
@@ -4607,10 +4317,6 @@ ISBN renders as =<isbn-label>: <isbn>= (label bold, value regular). Empty ISBN s
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -4636,7 +4342,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.8 - =isbn-barcode: none= (default) emits no barcode
+*** PENDING AC21.8 - =isbn-barcode: none= (default) emits no barcode
 
 **** Requirement
 
@@ -4647,10 +4353,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4712,7 +4414,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.9 - =copyright.skip-header: true= (default) adds the copyright page's physical page number to =folio-skip-header-pages= state, overriding any =page-header.frontmatter-format= that would otherwise render on frontmatter
+*** PENDING AC21.9 - =copyright.skip-header: true= (default) adds the copyright page's physical page number to =folio-skip-header-pages= state, overriding any =page-header.frontmatter-format= that would otherwise render on frontmatter
 
 **** Requirement
 
@@ -4723,10 +4425,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4752,7 +4450,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.10 - =copyright.blank-page-before: enforce-left= (default) uses Typst's =pagebreak(to: "even")= to land on verso
+*** PENDING AC21.10 - =copyright.blank-page-before: enforce-left= (default) uses Typst's =pagebreak(to: "even")= to land on verso
 
 **** Requirement
 
@@ -4763,10 +4461,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4798,7 +4492,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.11 - =position: after-title= (default) places the copyright emit between title and TOC
+*** PENDING AC21.11 - =position: after-title= (default) places the copyright emit between title and TOC
 
 **** Requirement
 
@@ -4809,10 +4503,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4838,7 +4528,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.12 - British preset ships stock =body:= with Irish/UK moral-rights, all-rights-reserved, and NLI/BL legal-deposit text
+*** PENDING AC21.12 - British preset ships stock =body:= with Irish/UK moral-rights, all-rights-reserved, and NLI/BL legal-deposit text
 
 **** Requirement
 
@@ -4849,10 +4539,6 @@ British preset ships stock =body:= with Irish/UK moral-rights, all-rights-reserv
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4872,7 +4558,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.13 - US preset ships stock =body:= with US all-rights-reserved and Library of Congress CIP text; no moral-rights sentence by default
+*** PENDING AC21.13 - US preset ships stock =body:= with US all-rights-reserved and Library of Congress CIP text; no moral-rights sentence by default
 
 **** Requirement
 
@@ -4883,10 +4569,6 @@ US preset ships stock =body:= with US all-rights-reserved and Library of Congres
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4906,7 +4588,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.14 - =folio.date= defaults to today's date (=time.Now()=) at config-load time when the field is unset in YAML
+*** PENDING AC21.14 - =folio.date= defaults to today's date (=time.Now()=) at config-load time when the field is unset in YAML
 
 **** Requirement
 
@@ -4917,10 +4599,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4946,7 +4624,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** AC21.15 - Typography inherits from manuscript body when unset: =copyright.font= from =manuscript.font=, =copyright.font-size= from =manuscript.font-size=, =copyright.line-spacing= from =manuscript.line-spacing=
+*** PENDING AC21.15 - Typography inherits from manuscript body when unset: =copyright.font= from =manuscript.font=, =copyright.font-size= from =manuscript.font-size=, =copyright.line-spacing= from =manuscript.line-spacing=
 
 **** Requirement
 
@@ -4957,10 +4635,6 @@ Typography inherits from manuscript body when unset: =copyright.font= from =manu
 - *Introduced by:* [[file:archive/migrated-tickets/21.md][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -4991,7 +4665,7 @@ PENDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/24][#24 - Frontmatter-format for page-header and page-footer]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC24.1 - =page-header.frontmatter-format= is a new optional =*string= field on =PageHeaderConfig= (yaml: =frontmatter-format=)
+*** HOLD AC24.1 - =page-header.frontmatter-format= is a new optional =*string= field on =PageHeaderConfig= (yaml: =frontmatter-format=)
 
 **** Requirement
 
@@ -5002,10 +4676,6 @@ PENDING
 - *Introduced by:* [[file:archive/migrated-tickets/24.md][#24 - Frontmatter-format for page-header and page-footer]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5031,7 +4701,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/24.md=.
 
-*** AC24.2 - =page-header.alt-frontmatter-format= mirrors =alt-format= semantics for the frontmatter region: when set, applies to right-hand (recto, odd) frontmatter pages while =frontmatter-format= applies to left-hand (verso, even) frontmatter pages
+*** HOLD AC24.2 - =page-header.alt-frontmatter-format= mirrors =alt-format= semantics for the frontmatter region: when set, applies to right-hand (recto, odd) frontmatter pages while =frontmatter-format= applies to left-hand (verso, even) frontmatter pages
 
 **** Requirement
 
@@ -5042,10 +4712,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/24.md][#24 - Frontmatter-format for page-header and page-footer]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5065,7 +4731,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/24.md=.
 
-*** AC24.3 - =page-footer.frontmatter-format= and =alt-frontmatter-format= provide the same fields and semantics for the running footer
+*** HOLD AC24.3 - =page-footer.frontmatter-format= and =alt-frontmatter-format= provide the same fields and semantics for the running footer
 
 **** Requirement
 
@@ -5076,10 +4742,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/24.md][#24 - Frontmatter-format for page-header and page-footer]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5099,7 +4761,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/24.md=.
 
-*** AC24.4 - The frontmatter/body boundary is marked at the first =#folio-part= or =#folio-chapter= call in the emit via a =folio-is-body= bool state
+*** PENDING AC24.4 - The frontmatter/body boundary is marked at the first =#folio-part= or =#folio-chapter= call in the emit via a =folio-is-body= bool state
 
 **** Requirement
 
@@ -5110,10 +4772,6 @@ The frontmatter/body boundary is marked at the first =#folio-part= or =#folio-ch
 - *Introduced by:* [[file:archive/migrated-tickets/24.md][#24 - Frontmatter-format for page-header and page-footer]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -5133,7 +4791,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/24.md=.
 
-*** AC24.5 - All existing header/footer tests continue to pass unchanged (backwards compatibility)
+*** PENDING AC24.5 - All existing header/footer tests continue to pass unchanged (backwards compatibility)
 
 **** Requirement
 
@@ -5144,10 +4802,6 @@ All existing header/footer tests continue to pass unchanged (backwards compatibi
 - *Introduced by:* [[file:archive/migrated-tickets/24.md][#24 - Frontmatter-format for page-header and page-footer]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -5161,7 +4815,7 @@ PENDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/24.md=.
 
-*** AC24.6 - Documentation updated: =docs/config.md= gains a "Frontmatter-format" section under both "Page-header" and "Page-footer" documenting the grammar table above with worked examples
+*** PENDING AC24.6 - Documentation updated: =docs/config.md= gains a "Frontmatter-format" section under both "Page-header" and "Page-footer" documenting the grammar table above with worked examples
 
 **** Requirement
 
@@ -5172,10 +4826,6 @@ Documentation updated: =docs/config.md= gains a "Frontmatter-format" section und
 - *Introduced by:* [[file:archive/migrated-tickets/24.md][#24 - Frontmatter-format for page-header and page-footer]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-PENDING
 
 **** Tests
 
@@ -5194,7 +4844,7 @@ PENDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/25][#25 - Add configurable manuscript paragraph justification]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC25.1 - Given manuscript paragraph configuration, First Folio justifies body paragraphs by default and honours an explicit ragged-right override without changing title-page or table-of-contents composition
+*** HOLD AC25.1 - Given manuscript paragraph configuration, First Folio justifies body paragraphs by default and honours an explicit ragged-right override without changing title-page or table-of-contents composition
 
 **** Requirement
 
@@ -5205,10 +4855,6 @@ Given manuscript paragraph configuration, First Folio justifies body paragraphs 
 - *Introduced by:* [[file:archive/migrated-tickets/25.md][#25 - Add configurable manuscript paragraph justification]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5245,7 +4891,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/29][#29 - Add total page count placeholder to manuscript headers and footers]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC29.1 - Given a manuscript page-header format containing =[total-pages]=, the header contains the final physical page count in Arabic numerals
+*** HOLD AC29.1 - Given a manuscript page-header format containing =[total-pages]=, the header contains the final physical page count in Arabic numerals
 
 **** Requirement
 
@@ -5256,10 +4902,6 @@ Given a manuscript page-header format containing =[total-pages]=, the header con
 - *Introduced by:* [[file:archive/migrated-tickets/29.md][#29 - Add total page count placeholder to manuscript headers and footers]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5279,7 +4921,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/29.md=.
 
-*** AC29.2 - Given a manuscript page-footer format containing =[total-pages]=, the footer contains the final physical page count in Arabic numerals
+*** HOLD AC29.2 - Given a manuscript page-footer format containing =[total-pages]=, the footer contains the final physical page count in Arabic numerals
 
 **** Requirement
 
@@ -5290,10 +4932,6 @@ Given a manuscript page-footer format containing =[total-pages]=, the footer con
 - *Introduced by:* [[file:archive/migrated-tickets/29.md][#29 - Add total page count placeholder to manuscript headers and footers]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5313,7 +4951,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/29.md=.
 
-*** AC29.3 - Given header or footer formats without =[total-pages]=, existing placeholder and unknown-token behaviour is unchanged
+*** HOLD AC29.3 - Given header or footer formats without =[total-pages]=, existing placeholder and unknown-token behaviour is unchanged
 
 **** Requirement
 
@@ -5324,10 +4962,6 @@ Given header or footer formats without =[total-pages]=, existing placeholder and
 - *Introduced by:* [[file:archive/migrated-tickets/29.md][#29 - Add total page count placeholder to manuscript headers and footers]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5353,7 +4987,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/31][https://github.com/tigger-developer/first-folio/issues/31]]
 - *Source group:* Requirements and tests retained from the legacy ledger.
 
-*** AC31.1 - =folio.manuscript.toc.continuation-padding-before= accepts a Typst length and reserves that height above TOC entries on every TOC page
+*** HOLD AC31.1 - =folio.manuscript.toc.continuation-padding-before= accepts a Typst length and reserves that height above TOC entries on every TOC page
 
 **** Requirement
 
@@ -5364,10 +4998,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/31.md][#31 - Continued Manuscript TOC Alignment]]
 - *Shipped or migrated:* 2026-08-07
 - *Additional provenance:* Legacy source ledger group Issue 31: Continued Manuscript TOC Alignment.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5405,7 +5035,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/32][#32 - Restore configurable TOC links and correct chapter numbering defaults]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** AC32.1 - =folio.manuscript.toc.links= is a boolean that defaults to =true=
+*** HOLD AC32.1 - =folio.manuscript.toc.links= is a boolean that defaults to =true=
 
 **** Requirement
 
@@ -5416,10 +5046,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/32.md][#32 - Restore configurable TOC links and correct chapter numbering defaults]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5451,7 +5077,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/32.md=.
 
-*** AC32.2 - =folio.manuscript.chapter.number-reset= defaults to =never=, producing continuous chapter counters across parts
+*** HOLD AC32.2 - =folio.manuscript.chapter.number-reset= defaults to =never=, producing continuous chapter counters across parts
 
 **** Requirement
 
@@ -5462,10 +5088,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/32.md][#32 - Restore configurable TOC links and correct chapter numbering defaults]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5491,7 +5113,7 @@ HOLDING
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/32.md=.
 
-*** AC32.3 - =folio.manuscript.chapter.number-format= accepts one segment (=1=, =I=, =i=) for chapter-only numbering or two dot-separated segments where the first formats the part and the second formats the chapter
+*** HOLD AC32.3 - =folio.manuscript.chapter.number-format= accepts one segment (=1=, =I=, =i=) for chapter-only numbering or two dot-separated segments where the first formats the part and the second formats the chapter
 
 **** Requirement
 
@@ -5502,10 +5124,6 @@ HOLDING
 - *Introduced by:* [[file:archive/migrated-tickets/32.md][#32 - Restore configurable TOC links and correct chapter numbering defaults]]
 - *Shipped or migrated:* Evidence recorded in the archived ticket; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Original AC row and later ticket evidence are preserved in the archive.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5542,7 +5160,7 @@ HOLDING
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/34][#34 - Expose manuscript letter spacing for body, header, and footer]]
 - *Source group:* Recovered delivered requirement from the archived ticket.
 
-*** AC34.1 - Expose manuscript letter spacing for body, header, and footer
+*** HOLD AC34.1 - Expose manuscript letter spacing for body, header, and footer
 
 **** Requirement
 
@@ -5553,10 +5171,6 @@ Expose font letter spacing for manuscript body text, running headers, and runnin
 - *Introduced by:* [[file:archive/migrated-tickets/34.md][#34 - Expose manuscript letter spacing for body, header, and footer]]
 - *Shipped or migrated:* Archived ticket records all RT and UT checks as passing; snapshot 2026-09-03T22:11:39Z.
 - *Additional provenance:* Recovered from the archived ticket because the pre-migration ledger ended at AC32.3.
-
-**** Status
-
-HOLDING
 
 **** Tests
 
@@ -5606,8 +5220,26 @@ HOLDING
 
 - Recovered from archived ticket #34; the ticket remains open only because explicit approval was not recorded in the legacy workflow.
 
-* Migration notes and footnotes
+** Migration notes and footnotes
 
 - Original source ledger metadata: the pre-migration Markdown ledger recorded the cutover date as 2026-07-14 and its last migrated entry as AC31.1 - Continued Manuscript TOC Alignment from #31 on 2026-08-07.
 - Current suite evidence: =make test= passed once on 2026-09-03; maintained RT statuses were corrected only where current test definitions provide the evidence.
 - Original status key was normalized to Org: ✅ passing, ⏳ pending, ❌ failing, and +🚫 removed+.
+* Migration record
+:PROPERTIES:
+:VISIBILITY: folded
+:END:
+
+** DONE SDLC migration - v2 to v3                      :migration:
+:PROPERTIES:
+:CUSTOM_ID: sdlc-migration
+:MIGRATED: 2026-09-06
+:END:
+
+- *Pre-migration state:* sdlc_v2_state_2026-09-06-4
+- *Migration branch:* sdlc-v3-migration-2026-09-06-4
+- *Ticket archive:* Not applicable.
+- *Historical requirements:* [[#legacy-acceptance-criteria][Legacy Acceptance Criteria (SDLC v1)]].
+- *Archived v2 work:* [[file:archive/sdlc-v2/][Archived Spec Kit work]].
+- *Assumptions:* None recorded by project initialization.
+- *Unresolved items:* None recorded by project initialization.
