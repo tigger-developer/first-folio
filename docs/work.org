@@ -78,7 +78,7 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** REVIEW W036 - Unified Font Configuration :feature:migration:
+** ABANDONED W036 - Unified Font Configuration :feature:migration:
 :PROPERTIES:
 :CUSTOM_ID: w-036
 :LEGACY_ID: 001
@@ -89,7 +89,10 @@ classification; it is provenance, not current state.
 :END:
 
 - *Specification:* [[file:archive/sdlc-v2/specs/001-unified-font-config/spec.md][Unified Font Configuration]]
-- *Migration evidence:* The specification remains Draft and its current audit verdict is NONE; no operator-authorized delivery, approval, or abandonment is recorded.
+- *Migration evidence:* The specification remained Draft and its final audit verdict was NONE.
+- *Operator disposition:* Abandoned on 2026-09-06. The archived specification
+  remains provenance only; [[file:../specs/039-unified-font-configuration/spec.org][W039 - Unified Font Configuration]]
+  is the fresh SDLC v3 definition.
 
 ** REVIEW W037 - Source Frontmatter Configuration :feature:migration:
 :PROPERTIES:
@@ -116,6 +119,18 @@ classification; it is provenance, not current state.
 
 - *Specification:* [[file:archive/sdlc-v2/specs/003-manuscript-block-layout/spec.md][Manuscript Block Layout]]
 - *Migration evidence:* The project owner explicitly authorized immediate delivery with BYPASS-GATE-7, and post-implementation validation is recorded.
+
+** TODO W039 - Unified Font Configuration :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-039
+:PRIORITY: P1
+:SOURCE: operator
+:CREATED: 2026-09-06
+:END:
+
+- *Specification:* [[file:../specs/039-unified-font-configuration/spec.org][W039 - Unified Font Configuration]]
+- *History:* Replaces the abandoned W036 definition without adopting its
+  specification or audit state.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:

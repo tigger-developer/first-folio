@@ -1,0 +1,50 @@
+#+TITLE: W039 - Audit Evidence
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+
+* Definition gate
+
+** Local review
+:PROPERTIES:
+:ROUND:    1
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =fcb13ec6fb0b5746ae4013f432a82ba4102eaa00a625ec66836be6af12791102=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Findings:*
+  1. AC039.5 - Clean breaking failure boundary treated a missing property as
+     invalid without distinguishing a valid partial higher layer from an
+     incomplete canonical base.
+  2. RT039.1 - Exercise every public font role derived its role inventory from
+     the artefact it was meant to challenge, allowing an omitted role to escape
+     the test.
+  3. RT039.2 - Copy the British base unchanged tested copy equivalence but did
+     not verify the requirement that the file expose the complete public
+     contract.
+- *Remediation:* Confined missing-property validity to the complete British
+  base, made the role inventory independent of that base, and added an
+  independent public-path inventory to the British-base test.
+
+** Local review
+:PROPERTIES:
+:ROUND:    2
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =bc8d3eeceeffd9b58ef36f971c46ad9e6924fc0c4f529191a50339c69b0995ef=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* None. The requirement remains one uniform breaking font contract;
+  the design separates layer merging from rejected role inheritance; security,
+  failure, migration, and operability boundaries are explicit; and every
+  criterion has proportionate RT, UT, or OT coverage at the appropriate
+  boundary.
+- *Remediation:* None.
+
+* Implementation gate
+
+No implementation review has been performed. Delivery is not authorized.

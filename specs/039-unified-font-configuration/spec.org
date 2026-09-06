@@ -1,0 +1,550 @@
+#+TITLE: W039 - Unified Font Configuration
+#+SUBTITLE: Unified change specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+DEFINITION_GATE: PENDING
+#+OPERATOR_SIGNOFF: PENDING
+
+* Specification Summary
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+- *Outcome:* Every configurable text role uses the same =font= block across
+  scripts, letters, and manuscripts.
+- *Before:* Font properties use inconsistent scalar, prefixed, and boolean keys;
+  script and manuscript modes also load separate British and US baselines.
+- *After:* One exhaustive British runtime base supplies explicit font defaults
+  for every role, while US and screenplay files contain only their differences.
+- *Changes:* The public font schema becomes a breaking six-property block;
+  legacy font keys fail; the existing regression pack is migrated without
+  losing behavioural coverage.
+- *Unchanged:* Configuration discovery and precedence, CLI option names, source
+  conversion, document semantics, layout, and supported outputs remain intact.
+- *Edge cases:* Partial higher-layer blocks merge by property; omitted role
+  blocks reveal the lower layer; roles never inherit fonts from other roles.
+- *Decisions:* Configuration layers are the only inheritance mechanism; no
+  legacy aliases or role-to-role font inheritance are supported.
+- *Next step:* Definition gate, then operator sign-off.
+
+The summary above accurately and completely represents the detailed
+specification below.
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+
+First Folio exposes the same typography concepts through incompatible public
+YAML shapes. Some roles support only family and size, some add weight or style,
+and script roles use =bold= and =italic= booleans. Consequently, a valid font
+variant such as bold extended cannot be configured consistently for every role.
+
+The runtime also selects separate British script and manuscript base files.
+This prevents one shipped file from being both the actual default authority and
+the exhaustive configuration reference promised to users.
+
+** Outcome
+
+First Folio has one consistent, breaking font-configuration contract and one
+exhaustive British runtime base for script, letter, and manuscript publishing.
+
+** Scope
+
+*** In scope
+
+- Replace every public font-family, size, weight, stretch, style,
+  letter-spacing, bold, and italic role setting with the same nested =font=
+  block.
+- Make =presets/british.yaml= the exhaustive lowest-precedence runtime base for
+  script, letter, and manuscript modes.
+- Make =presets/us.yaml= and =presets/screenplay.yaml= limited overlays that
+  contain only values differing from the British base.
+- Reject the retired font schema and malformed new font blocks before producing
+  output.
+- Migrate affected regression tests while retaining every maintained
+  behavioural check and its requirement lineage.
+- Update the public configuration reference, examples, and migration guidance.
+
+*** Out of scope
+
+- Source-frontmatter configuration or any new configuration-precedence layer.
+- New font properties, named typography styles, user-defined inheritance, or an
+  OpenType feature registry.
+- Changes to source parsing, document semantics, pagination, or non-typographic
+  layout.
+- A language or runtime migration.
+
+*** Unchanged
+
+- CLI flags remain the highest-precedence layer, followed by nearest local
+  style-specific configuration, nearest local base configuration, global
+  style-specific configuration, global base configuration, the selected built-in
+  style overlay, and the British base.
+- =folio convert --font= and =--font-size= retain their public meanings.
+- Org, Markdown, and Fountain stage-play conversion remains bidirectional; Typst
+  and PDF remain rendering outputs.
+- Org letter PDF generation and Markdown or Org manuscript Typst/PDF generation
+  retain their non-font behaviour.
+- First Folio continues to tolerate unrelated top-level namespaces such as
+  =yapper=; strict rejection is confined to First Folio font configuration.
+
+** Authority and starting point
+
+- *Project profile:* [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]]
+- *Product authority:* [[file:../../README.md][=README.md=]] and
+  [[file:../../docs/vision.md][=docs/vision.md=]].
+- *Architecture authority:* [[file:../../docs/ARCHITECTURE.md][=docs/ARCHITECTURE.md=]].
+- *Current configuration contract:* [[file:../../docs/config.md][=docs/config.md=]].
+- *Historical requirement or evidence:* [[file:../../docs/work.org][Legacy
+  acceptance criteria in =docs/work.org=]].
+- *Abandoned predecessor:* [[file:../../docs/archive/sdlc-v2/specs/001-unified-font-config/spec.md][SDLC v2 Unified Font Configuration]].
+  It is provenance only and is not an authority for this definition.
+- *Current implementation fact:* [[file:../../internal/config/config.go][The
+  loader selects separate script and manuscript baselines]]; manuscript
+  normalization in [[file:../../internal/manuscript/config.go][=internal/manuscript/config.go=]]
+  applies several role-to-role font fallbacks.
+
+** Constraints and dependencies
+
+- The canonical British file must be valid user YAML and valid as the embedded
+  runtime base. An unchanged copy at a supported user configuration location
+  must not change effective output.
+- The approved British, US, and screenplay rendered appearance is the migration
+  baseline. Generated Typst text may differ where explicit regular font values
+  replace omission, but observable rendering must not.
+- Typst remains the PDF renderer and Pandoc remains the rich manuscript
+  conversion boundary described by the architecture.
+
+** Decisions
+
+- This is an intentional breaking configuration change for the sole current
+  user. The application accepts no legacy font aliases after delivery.
+- Every =font= block has exactly these public properties: =family=, =size=,
+  =weight=, =stretch=, =style=, and =letter-spacing=.
+- The British base assigns all six properties explicitly for every font role.
+  No font role obtains an omitted property from another role.
+- A higher-precedence layer may provide a partial =font= block. Deep merge
+  preserves unspecified properties from the same role in lower layers.
+- Omitting a role's entire =font= block in an overlay leaves that role's lower
+  layer block unchanged.
+- The British file lists every accepted public configuration property. Runtime
+  defaults are assigned; optional or source-derived values are shown as
+  commented options with their source or absence semantics.
+- US and screenplay are both limited overlays. The current split manuscript
+  baseline and split US overrides are retired.
+- The existing =presets/british.yaml= was produced under the abandoned draft.
+  Delivery must reconcile it against current runtime baselines and approved
+  behaviour rather than treating it as requirement authority.
+
+** Unresolved blockers
+
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC039.1 - One uniform font block
+:PROPERTIES:
+:CUSTOM_ID: ac-039-1
+:END:
+
+- *Criterion:* Given any configurable font role in script, letter, or manuscript
+  output, the role accepts a =font= mapping with =family=, =size=, =weight=,
+  =stretch=, =style=, and =letter-spacing=, and each property affects only that
+  role.
+- *Proven by:* [[#rt-039-1][RT039.1 - Exercise every public font role]].
+
+** AC039.2 - One exhaustive British runtime base
+:PROPERTIES:
+:CUSTOM_ID: ac-039-2
+:END:
+
+- *Criterion:* Given no user configuration, script, letter, and manuscript modes
+  use =presets/british.yaml= as their shared lowest-precedence configuration;
+  copying that file unchanged to a supported user location leaves the effective
+  output unchanged.
+- *Proven by:* [[#rt-039-2][RT039.2 - Use and copy the British base]].
+
+** AC039.3 - Configuration-layer inheritance only
+:PROPERTIES:
+:CUSTOM_ID: ac-039-3
+:END:
+
+- *Criterion:* Given a higher-precedence partial font block, only its declared
+  properties replace the same role's lower-layer properties; changing another
+  role never supplies or alters the omitted values.
+- *Proven by:* [[#rt-039-3][RT039.3 - Preserve lower-layer font properties]].
+
+** AC039.4 - Limited style overlays
+:PROPERTIES:
+:CUSTOM_ID: ac-039-4
+:END:
+
+- *Criterion:* Given the US or screenplay style, its built-in file contains only
+  effective values that differ from the British base, and those values merge
+  over the same British base used by every mode.
+- *Proven by:* [[#rt-039-4][RT039.4 - Verify minimal style overlays]].
+
+** AC039.5 - Clean breaking failure boundary
+:PROPERTIES:
+:CUSTOM_ID: ac-039-5
+:END:
+
+- *Criterion:* Given a retired font key, scalar =font= value, unknown font-block
+  property, empty or null explicitly supplied font property, or invalid font
+  property value in First Folio configuration, the public command returns
+  non-zero, identifies the offending path on standard error, and produces no
+  requested output artefact.
+- *Proven by:* [[#rt-039-5][RT039.5 - Reject invalid font configuration]].
+
+** AC039.6 - Existing publishing behaviour remains
+:PROPERTIES:
+:CUSTOM_ID: ac-039-6
+:END:
+
+- *Criterion:* Given configuration expressed with the new font schema, existing
+  configuration discovery, command-line precedence, source conversion,
+  document semantics, non-font layout, and supported outputs retain their
+  approved behaviour.
+- *Proven by:* [[#rt-039-6][RT039.6 - Preserve public publishing workflows]] and
+  [[#ut-039-1][UT039.1 - Review representative rendered output]].
+
+** AC039.7 - Regression protection remains live
+:PROPERTIES:
+:CUSTOM_ID: ac-039-7
+:END:
+
+- *Criterion:* Given the maintained pre-change regression pack, every test
+  remains active or has an active replacement protecting the same behaviour;
+  a replacement retains the original requirement or test identifier as
+  provenance.
+- *Proven by:* [[#ot-039-1][OT039.1 - Reconcile regression lineage]] and the
+  passing maintained regression suite.
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT039.1 - Exercise every public font role
+:PROPERTIES:
+:CUSTOM_ID: rt-039-1
+:END:
+
+- *Covers:* [[#ac-039-1][AC039.1 - One uniform font block]].
+- *Boundary:* Built =folio= command and its script, letter, and manuscript
+  publishing entry points.
+- *Setup:* Table-driven fixtures independently enumerate the covered roles named
+  by this specification. Each case changes one of the six properties to a
+  distinctive valid value without changing another role, and asserts that the
+  canonical British base contains a complete block for the role.
+- *Action:* Invoke the applicable public command and inspect its Typst or PDF
+  output at the affected role.
+- *Expected:* The requested value is applied only to the selected role; every
+  role accepts all six properties.
+- *Retention:* Persistent regression suite under =make test=.
+
+** RT039.2 - Use and copy the British base
+:PROPERTIES:
+:CUSTOM_ID: rt-039-2
+:END:
+
+- *Covers:* [[#ac-039-2][AC039.2 - One exhaustive British runtime base]].
+- *Boundary:* Built =folio= command using its embedded defaults and supported
+  local configuration discovery.
+- *Setup:* Representative script, letter, and manuscript inputs; an independently
+  maintained table of accepted public configuration paths; one render with no
+  user config; and one with an unchanged copy of =presets/british.yaml= as its
+  nearest =script.yaml=.
+- *Action:* Compare the embedded loader's unconfigured effective tree with the
+  parsed British file, then produce the same public output from both setups for
+  all three modes.
+- *Expected:* The effective tree has the British file's hierarchy and values;
+  every accepted path is assigned or visibly documented as optional or
+  source-derived; and paired public outputs match.
+- *Retention:* Persistent regression suite under =make test=.
+
+** RT039.3 - Preserve lower-layer font properties
+:PROPERTIES:
+:CUSTOM_ID: rt-039-3
+:END:
+
+- *Covers:* [[#ac-039-3][AC039.3 - Configuration-layer inheritance only]].
+- *Boundary:* Built =folio manuscript= command with global, local, and
+  style-specific configuration layers.
+- *Setup:* Lower layers define a complete header font and a distinct manuscript
+  body font; a higher layer changes only the header stretch.
+- *Action:* Render a manuscript through the public command.
+- *Expected:* The header uses the higher-layer stretch and its own lower-layer
+  family, size, weight, style, and letter spacing. Changing the body font does
+  not change any header property.
+- *Retention:* Persistent regression suite under =make test=.
+
+** RT039.4 - Verify minimal style overlays
+:PROPERTIES:
+:CUSTOM_ID: rt-039-4
+:END:
+
+- *Covers:* [[#ac-039-4][AC039.4 - Limited style overlays]].
+- *Boundary:* Embedded preset loader plus public British, US, and screenplay
+  renders.
+- *Setup:* Parse the three shipped preset mappings and prepare representative
+  script and manuscript inputs.
+- *Action:* Compare each overlay property with the effective British value,
+  then render each supported style through the public command.
+- *Expected:* No overlay repeats an effective British value; omitted values
+  resolve from the British base; each style retains its approved differences.
+- *Retention:* Persistent regression suite under =make test=.
+
+** RT039.5 - Reject invalid font configuration
+:PROPERTIES:
+:CUSTOM_ID: rt-039-5
+:END:
+
+- *Covers:* [[#ac-039-5][AC039.5 - Clean breaking failure boundary]].
+- *Boundary:* Built =folio convert=, =folio letter=, and =folio manuscript=
+  commands.
+- *Setup:* Table-driven local configurations cover each invalid category in
+  AC039.5 - Clean breaking failure boundary.
+- *Action:* Request an output file from the applicable command.
+- *Expected:* Every case returns non-zero, names the full invalid path on
+  standard error, and leaves the requested output absent.
+- *Retention:* Persistent regression suite under =make test=.
+
+** RT039.6 - Preserve public publishing workflows
+:PROPERTIES:
+:CUSTOM_ID: rt-039-6
+:END:
+
+- *Covers:* [[#ac-039-6][AC039.6 - Existing publishing behaviour remains]].
+- *Boundary:* Built =folio= binary.
+- *Setup:* Existing canonical fixtures for Org, Markdown, and Fountain scripts;
+  Org letters; and Markdown and Org manuscripts, expressed with the new schema
+  where configuration is present.
+- *Action:* Run the supported text conversions and Typst/PDF publishing commands,
+  including =folio convert --font= and =--font-size= precedence cases.
+- *Expected:* Existing semantic and non-font assertions continue to pass; default
+  PDFs retain their approved appearance, and CLI font flags remain highest
+  precedence.
+- *Retention:* Existing persistent regressions remain under =make test=; changed
+  syntax assertions follow RED then GREEN as active replacements.
+
+** UT039.1 - Review representative rendered output
+:PROPERTIES:
+:CUSTOM_ID: ut-039-1
+:END:
+
+- *Covers:* [[#ac-039-6][AC039.6 - Existing publishing behaviour remains]].
+- *Reviewer:* Operator.
+- *Procedure:* Compare representative British script, British letter, British
+  manuscript, US script, US manuscript, and screenplay PDFs with their approved
+  pre-change appearance.
+- *Expected:* Typography and non-font layout are unchanged except where the
+  operator explicitly accepts a recorded difference.
+- *Record:* Write the dated result to =validation.org=.
+
+** OT039.1 - Reconcile regression lineage
+:PROPERTIES:
+:CUSTOM_ID: ot-039-1
+:END:
+
+- *Covers:* [[#ac-039-7][AC039.7 - Regression protection remains live]].
+- *Boundary:* Maintained test inventory immediately before and after delivery.
+- *Procedure:* Record the pre-change test names, classify each as unchanged or
+  replaced, and link each replacement to its predecessor and requirement before
+  running the full maintained suite.
+- *Expected:* Every pre-change test has one active outcome; none is deleted,
+  skipped, disabled, or weakened solely because its configuration syntax changed.
+- *Bounds:* One delivery-time comparison of repository-owned tests only; no
+  external service, persistent job, or new meta-test.
+- *Record:* Write the dated result to =validation.org=; do not add this check to
+  automated regression, CI, build, or scheduled execution.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+** Partial block in a higher layer
+
+- *Condition:* A user layer sets only one property in a role's =font= block.
+- *Required behaviour:* The other five properties remain those of the same role
+  in lower layers.
+- *Covered by:* [[#ac-039-3][AC039.3 - Configuration-layer inheritance only]]
+  and [[#rt-039-3][RT039.3 - Preserve lower-layer font properties]].
+
+** Entire role block omitted from an overlay
+
+- *Condition:* US, screenplay, global, or local configuration does not contain a
+  role's =font= block.
+- *Required behaviour:* The lower-layer block for that role remains unchanged;
+  no other role is consulted.
+- *Covered by:* [[#ac-039-3][AC039.3 - Configuration-layer inheritance only]]
+  and [[#rt-039-4][RT039.4 - Verify minimal style overlays]].
+
+** Retired or malformed font shape
+
+- *Condition:* First Folio configuration contains an old scalar, suffix, or
+  boolean font key, or a new =font= mapping with an unknown, null, empty, or
+  invalid property.
+- *Required behaviour:* Loading fails at the public command boundary before an
+  output artefact is created.
+- *Covered by:* [[#ac-039-5][AC039.5 - Clean breaking failure boundary]] and
+  [[#rt-039-5][RT039.5 - Reject invalid font configuration]].
+
+** Unrelated namespace
+
+- *Condition:* Configuration contains a =yapper= block or an otherwise tolerated
+  unrelated top-level key.
+- *Required behaviour:* Existing tolerance remains; font-schema validation does
+  not claim ownership of another namespace.
+- *Covered by:* [[#ac-039-6][AC039.6 - Existing publishing behaviour remains]]
+  and [[#rt-039-6][RT039.6 - Preserve public publishing workflows]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+
+- *Relevant components:* Embedded preset assets, the shared layered loader,
+  typed manuscript configuration, script and letter configuration consumers,
+  and the three Typst rendering paths.
+- *Ownership boundary:* First Folio owns =folio= configuration, validation,
+  effective font values, Typst data, and output lifecycle. Typst owns font
+  discovery and PDF typesetting; Pandoc owns supported manuscript conversion.
+- *Existing pattern:* Preserve map-based deep merging and source-directory
+  discovery, but replace split bases and role-specific font normalization.
+
+** High-level design
+
+*** Alternatives rejected
+
+- *Role-to-role inheritance:* Rejected because manuscript roles do not form a
+  clean parent hierarchy and hidden fallbacks make the effective font harder to
+  predict than explicit base values.
+- *Compatibility aliases:* Rejected because the operator selected one clean
+  breaking migration and is the sole current user.
+- *Separate script and manuscript bases:* Rejected because duplicated defaults
+  can drift and cannot provide one copyable runtime reference.
+
+*** Flow
+
+1. Load =presets/british.yaml= for every mode, then apply the selected US or
+   screenplay overlay when applicable.
+2. Apply global, global style-specific, nearest local, nearest local
+   style-specific, and CLI layers through the existing precedence and
+   property-level deep merge.
+3. Validate each First Folio font node, materialize complete role-local font
+   values, and pass those values to the existing render path.
+4. Render Typst or PDF through the existing process and preserve the current
+   output-creation boundary on failure.
+
+*** Interfaces and configuration
+
+- *Font interface:* Every font role uses:
+
+  #+begin_src yaml
+  font:
+    family: Libertinus Serif
+    size: 12pt
+    weight: regular
+    stretch: 100%
+    style: regular
+    letter-spacing: 0em
+  #+end_src
+
+- *Covered roles:* Root body and heading; letter body; script title-page items,
+  speech roles, stage directions, transitions, and section headings; manuscript
+  body, heading, monospace, quoted block, title-page items, running header,
+  running footer, contents body and heading, and copyright body and label.
+- *Property semantics:* Preserve supported family and Typst length forms;
+  named or numeric weights; percentage stretch including the established numeric
+  shorthand; =regular=, =italic=, or =oblique= style; and existing positive or
+  negative letter-spacing lengths.
+- *CLI compatibility:* =folio convert --font= writes the effective root
+  =font.family= and =--font-size= writes =font.size= without changing the flag
+  surface or precedence.
+- *Configuration compatibility:* Existing configuration files require a one-time
+  schema migration. No dual decoder or deprecation interval is provided.
+
+*** Data and state
+
+- Replace the separate British script and manuscript files with one active
+  =presets/british.yaml=.
+- Replace split US files with =presets/us.yaml= and retain screenplay as
+  =presets/screenplay.yaml=, each containing only differences.
+- Use one reusable, presence-aware internal font value for validation and
+  rendering. Presence is required while merging partial higher layers; the
+  effective value for every role is complete after the British base is applied.
+- Remove normalization that copies font values between roles. Retain ordinary
+  same-path deep merge across configuration layers.
+
+*** Failure behaviour
+
+- Validate First Folio font configuration after layers are merged but before
+  any requested output is opened or written.
+- Report the complete YAML path and invalid value or shape on standard error and
+  return non-zero.
+- Do not partially create PDF, Typst, or letter batch outputs after a
+  configuration failure.
+
+** Architecture impact
+
+*** Security impact
+
+- *Threat boundary:* Unchanged. The change parses the same trusted and untrusted
+  local YAML locations already accepted by the application.
+- *Data and secrets:* No new data, secret, log, network, or persistence path is
+  introduced.
+- *Access:* File-discovery boundaries and process privileges remain unchanged.
+- *Conclusion:* Strict path-aware validation reduces ambiguous input handling;
+  no additional security mitigation is required.
+
+*** Other relevant qualities
+
+- *Reliability:* One runtime base removes drift between script and manuscript
+  defaults. Regression lineage and public-boundary tests protect the breaking
+  migration.
+- *Performance:* The additional small mapping validation is negligible beside
+  document conversion and Typst rendering.
+- *Operability:* Release notes and configuration migration guidance must call
+  out the breaking schema. Rolling back the executable also requires restoring
+  an old-shape user configuration.
+- *Accessibility:* The exhaustive copyable YAML keeps every option discoverable
+  without reading implementation code.
+- *Portability:* Existing embedded assets and external Typst/Pandoc boundaries
+  remain unchanged.
+- *Maintainability:* One block type, one British base, and limited overlays
+  remove repeated defaults and role-specific typography paths.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- *Required reading:* [[file:../../internal/config/config.go][=internal/config/config.go=]],
+  [[file:../../internal/manuscript/config.go][=internal/manuscript/config.go=]],
+  [[file:../../presets/british-script.yaml][current script base]],
+  [[file:../../presets/british-manuscript.yaml][current manuscript base]], the
+  three current override files under =presets/=, and
+  [[file:../../docs/config.md][=docs/config.md=]]. The abandoned W036 draft is
+  provenance only.
+- *First implementation step:* Write
+  [[#rt-039-1][RT039.1 - Exercise every public font role]] at the built CLI
+  boundary and observe rejection or non-application of the new block as RED.
+- *Definition evidence:* [[file:audits.org][=audits.org=]].
+- *Validation evidence:* Create =validation.org= when UT039.1 or OT039.1 is
+  executed during delivery.
+- *Documentation impact:* Update =docs/config.md=,
+  =examples/script.yaml.example=, relevant generated CLI help only if its
+  described mapping changes, and release or migration notes used by this
+  project.
