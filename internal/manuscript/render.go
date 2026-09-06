@@ -435,13 +435,21 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 		case "section":
 			lines = append(lines, "#folio-section["+typstInline(block.Text, cfg)+"]")
 		case "paragraph":
-			lines = append(lines, typstInline(block.Text, cfg))
+			paragraph := typstInline(block.Text, cfg)
+			if block.ChapterOpening {
+				paragraph = wrapChapterOpeningParagraph(paragraph)
+			}
+			lines = append(lines, paragraph)
 		case "scene-break":
 			lines = append(lines, "#folio-scene-break()")
 		case "code":
 			lines = append(lines, "#folio-code["+escapeTypst(block.Text)+"]")
 		case "raw-typst":
-			lines = append(lines, block.Text)
+			raw := block.Text
+			if block.ChapterOpening {
+				raw = wrapChapterOpeningParagraph(raw)
+			}
+			lines = append(lines, raw)
 		case "footnote":
 			continue
 		default:
@@ -450,6 +458,15 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 		lines = append(lines, "")
 	}
 	return strings.Join(lines, "\n"), nil
+}
+
+func wrapChapterOpeningParagraph(text string) string {
+	opening, remainder, found := strings.Cut(text, "\n\n")
+	wrapped := "#par(first-line-indent: 0pt)[\n" + opening + "\n]"
+	if !found {
+		return wrapped
+	}
+	return wrapped + "\n\n" + remainder
 }
 
 // HeadingParts is the decomposed form of a rendered part or chapter heading.

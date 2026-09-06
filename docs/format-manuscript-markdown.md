@@ -40,6 +40,8 @@ Lists, tables, blockquotes, and fenced code blocks render with `0.5em` vertical 
 
 A backtick code span that is the only non-whitespace content on its source line uses the fenced-code block layout, including configured spacing and indentation. Any non-whitespace content before the opening backtick or after the closing backtick keeps the code span inline. For example, in ``but `echo "text" #because this is all code` ``, `but ` is prose and everything between the backticks, including `#because`, is inline code. Existing fenced blocks are unchanged. Org manuscript verbatim spans follow the same distinction through canonical Markdown conversion.
 
+Only a prose paragraph directly opening a chapter is flush left. Every other prose paragraph uses `folio.manuscript.paragraph-indent`, including prose after code blocks and blockquotes. When a chapter begins with a structural block, the prose following that block is indented normally.
+
 Fountain is not accepted by manuscript mode.
 
 ## Example

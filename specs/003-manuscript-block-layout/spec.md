@@ -5,19 +5,22 @@
 - **Outcome:** Manuscript blockquotes and fenced code have configurable
   clearance and whole-block indentation, and blockquotes have configurable
   typography; a code span occupying a complete source line uses the same block
-  layout as fenced code.
+  layout as fenced code; prose after a block retains normal paragraph
+  indentation.
 - **Before:** Fenced-code clearance used only side-specific settings;
   blockquotes had no dedicated clearance or font contract.
 - **After:** Equal spacing is available through `quoted-block-spacing` and
   `code-block-spacing`; whole-block left indentation is available through
   `quote-block-indent` and `code-block-indent`; quoted blocks use the shared
-  six-property `font` block; complete-line code spans become code blocks.
+  six-property `font` block; complete-line code spans become code blocks; only
+  a paragraph directly opening a chapter is flush left.
 - **Changes:** Side-specific code-block spacing remains available and overrides
   the equal-spacing value on its respective side; block indentation is separate
-  from prose first-line indentation.
+  from prose first-line indentation; structural blocks no longer suppress the
+  following paragraph's configured first-line indent.
 - **Unchanged:** Code embedded within a mixed-content line remains inline;
   inline and block code retain the manuscript monospace font; paragraph spacing
-  does not change.
+  and the configured indent length do not change.
 - **Edge cases:** Omitted quote-font properties inherit independently;
   side-specific code spacing may override only one side; invalid values fail
   before output; omitted block indents preserve the existing layout; existing
@@ -41,7 +44,8 @@ Status: Approved emergency change
 Input: Add configurable clearance around quoted and fenced-code manuscript
 blocks, separate whole-block left indents, and a reusable six-property font
 block for quoted text; classify a complete-line code span as a code block
-without changing mixed-content inline-code semantics.
+without changing mixed-content inline-code semantics; preserve normal prose
+indentation after blocks while keeping only chapter-opening prose flush left.
 
 ## Scope
 
@@ -54,6 +58,9 @@ without changing mixed-content inline-code semantics.
 - In scope: A Markdown code span that is the only non-whitespace content on its
   source line gains fenced-code block semantics. Org verbatim spans gain the
   same behaviour through the existing canonical Markdown conversion.
+- In scope: Prose paragraphs after code, quote, and other structural blocks use
+  the configured `paragraph-indent`; a prose paragraph directly opening a
+  chapter remains flush left.
 - Out of scope: Inline-code typography, code-block typography, paragraph
   spacing and first-line indentation, all other source parsing, and
   non-manuscript rendering **do not change**. The feature does not parse code or
@@ -155,6 +162,34 @@ retaining the manuscript monospace font.
 
    THEN it **remains inline code**
 
+### User Story 3 - Preserve prose indentation after blocks (Priority: P1)
+
+The user reads prose after displayed code or quotation with the same first-line
+indent used by other body paragraphs.
+
+Independent Test: A rendered manuscript leaves chapter-opening prose flush and
+applies the configured indent to prose after code and quote blocks.
+
+#### Acceptance Scenarios
+
+1. GIVEN a prose paragraph directly after a chapter heading
+
+   WHEN the manuscript is rendered
+
+   THEN that paragraph is **flush left**
+
+2. GIVEN prose immediately after a code block or blockquote
+
+   WHEN the manuscript is rendered
+
+   THEN its first line uses the configured **`paragraph-indent`**
+
+3. GIVEN a chapter whose first content is a code block or blockquote
+
+   WHEN a prose paragraph follows that block
+
+   THEN the paragraph uses the configured **`paragraph-indent`**
+
 ### Edge Cases
 
 - Omitted equal-spacing properties use `0.5em`.
@@ -169,6 +204,8 @@ retaining the manuscript monospace font.
 - Existing fenced code is preserved without reclassification.
 - A prose prefix such as `but ` keeps the span inline even when text beginning
   with `#` remains inside the code delimiters.
+- A structural block at the beginning of a chapter does not grant flush-left
+  treatment to a later prose paragraph.
 
 ## Requirements
 
@@ -221,6 +258,13 @@ retaining the manuscript monospace font.
   receive code-block spacing or indentation. Content inside the delimiters,
   including text beginning with `#`, MUST remain code and MUST NOT affect this
   classification.
+- FR-014 - **Indent prose after blocks**: Every prose paragraph other than one
+  directly opening a chapter MUST use the configured
+  `folio.manuscript.paragraph-indent`, including prose after code blocks and
+  blockquotes.
+- FR-015 - **Keep chapter-opening prose flush**: A prose paragraph directly
+  opening a chapter MUST remain flush left. If a structural block opens the
+  chapter, a later prose paragraph MUST use the configured paragraph indent.
 
 ### Key Entities
 
@@ -234,6 +278,8 @@ retaining the manuscript monospace font.
   of a quoted or fenced-code block.
 - **Complete-line code span**: Inline-code source syntax whose delimiters and
   surrounding whitespace occupy the whole source line.
+- **Chapter-opening prose**: A prose paragraph directly following a chapter
+  heading, before any structural block.
 
 ## Success Criteria
 
@@ -256,6 +302,9 @@ retaining the manuscript monospace font.
 - SC-007 - **Classify source lines exactly**: Complete-line code spans receive
   block layout in Markdown and Org manuscripts while code spans sharing a line
   with prose remain inline.
+- SC-008 - **Retain paragraph rhythm**: PDF layout evidence shows the first
+  chapter paragraph at the body margin and every tested paragraph after code or
+  quotation at the body margin plus the configured paragraph indent.
 
 ## Assumptions
 
@@ -281,5 +330,6 @@ retaining the manuscript monospace font.
   side-specific code spacing, and non-manuscript rendering.
 - Changes: Blockquotes gain dedicated spacing, indentation, and font
   configuration; fenced code gains equal-spacing and whole-block-indentation
-  settings; complete-line code spans gain fenced-code layout semantics.
+  settings; complete-line code spans gain fenced-code layout semantics; blocks
+  no longer suppress the following prose indent.
 - Supersedes: No established requirement is removed or weakened.

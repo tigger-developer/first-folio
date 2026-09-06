@@ -5,6 +5,7 @@ package manuscript
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os/exec"
 	"regexp"
@@ -64,6 +65,10 @@ func parseMarkdown(text string) (Document, error) {
 	}
 	text = removeMarkdownPrivateSections(text)
 	text = promoteStandaloneMarkdownCodeSpans(text)
+	chapterOpenings, err := pandocChapterOpeningParagraphs(text)
+	if err != nil {
+		return Document{}, err
+	}
 	typst, err := runPandoc("markdown-raw_html", "typst", text)
 	if err != nil {
 		return Document{}, err
@@ -72,8 +77,88 @@ func parseMarkdown(text string) (Document, error) {
 	if err != nil {
 		return Document{}, err
 	}
+	if err := applyChapterOpeningClassifications(blocks, chapterOpenings); err != nil {
+		return Document{}, err
+	}
 	doc.Blocks = blocks
 	return doc, nil
+}
+
+type pandocDocument struct {
+	PandocAPI []int                      `json:"pandoc-api-version"`
+	Meta      map[string]json.RawMessage `json:"meta"`
+	Blocks    []pandocBlock              `json:"blocks"`
+}
+
+type pandocBlock struct {
+	Type    string          `json:"t"`
+	Content json.RawMessage `json:"c,omitempty"`
+}
+
+func pandocChapterOpeningParagraphs(text string) ([]bool, error) {
+	encoded, err := runPandoc("markdown-raw_html", "json", text)
+	if err != nil {
+		return nil, err
+	}
+	var document pandocDocument
+	if err := json.Unmarshal([]byte(encoded), &document); err != nil {
+		return nil, fmt.Errorf("decode pandoc JSON: %w", err)
+	}
+	var openings []bool
+	for index, block := range document.Blocks {
+		if block.Type != "Header" {
+			continue
+		}
+		level, err := pandocHeaderLevel(block.Content)
+		if err != nil {
+			return nil, err
+		}
+		if level != 2 {
+			continue
+		}
+		isParagraph := index+1 < len(document.Blocks) &&
+			(document.Blocks[index+1].Type == "Para" || document.Blocks[index+1].Type == "Plain")
+		openings = append(openings, isParagraph)
+	}
+	return openings, nil
+}
+
+func pandocHeaderLevel(content json.RawMessage) (int, error) {
+	var fields []json.RawMessage
+	if err := json.Unmarshal(content, &fields); err != nil {
+		return 0, fmt.Errorf("decode pandoc header: %w", err)
+	}
+	if len(fields) == 0 {
+		return 0, fmt.Errorf("decode pandoc header: missing level")
+	}
+	var level int
+	if err := json.Unmarshal(fields[0], &level); err != nil {
+		return 0, fmt.Errorf("decode pandoc header level: %w", err)
+	}
+	return level, nil
+}
+
+func applyChapterOpeningClassifications(blocks []Block, openings []bool) error {
+	chapter := 0
+	for index := range blocks {
+		if blocks[index].Kind != "chapter" {
+			continue
+		}
+		if chapter >= len(openings) {
+			return fmt.Errorf("pandoc chapter classification count does not match Typst output")
+		}
+		if openings[chapter] {
+			if index+1 >= len(blocks) || blocks[index+1].Kind != "raw-typst" {
+				return fmt.Errorf("pandoc chapter-opening paragraph has no matching Typst block")
+			}
+			blocks[index+1].ChapterOpening = true
+		}
+		chapter++
+	}
+	if chapter != len(openings) {
+		return fmt.Errorf("pandoc chapter classification count does not match Typst output")
+	}
+	return nil
 }
 
 func promoteStandaloneMarkdownCodeSpans(text string) string {

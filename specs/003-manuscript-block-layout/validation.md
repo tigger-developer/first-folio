@@ -82,3 +82,27 @@ revision.
   Extracted text, bounding boxes, and the rendered page confirm that leading
   `but ` determines prose classification while all delimited content remains
   inline code.
+
+## OOT-004 - paragraph indentation survives structural blocks
+
+- Category: One-off test
+- Requirement: FR-014 - indent prose after blocks and FR-015 - keep
+  chapter-opening prose flush
+- Expected: In the project owner's supplied passage, the chapter-opening prose
+  begins at the body margin while prose after every code block begins at the
+  body margin plus `paragraph-indent`. A separate blockquote fixture produces
+  the same post-block indent.
+- Procedure: Render the supplied Markdown passage and a focused blockquote
+  fixture through the public manuscript command, extract Poppler bounding boxes,
+  and inspect the rendered content page at 120 DPI.
+- Status: PASS
+- Tested revision: Audited candidate diff
+  `c9f6c848a9f0872ee64562bfa9f9e62afc80780239a03e7b2fcb8857fb88e599`
+- Environment: macOS arm64, Go 1.26.3, Typst 0.14.2, Poppler 26.04.0
+- Tester: Claudius
+- Observed: The supplied passage produced a four-page A4 PDF of 32,290 bytes.
+  The chapter-opening prose began at `xMin=56.692913`; prose after complete-line
+  code blocks and subsequent ordinary prose began at `xMin=85.039370`. The
+  blockquote fixture placed its opening prose at `xMin=56.692913`, quoted text
+  at `xMin=68.692920`, and post-quote prose at `xMin=85.039370`. Inspection of
+  the supplied passage at 120 DPI confirmed the same visible indentation.

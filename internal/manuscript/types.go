@@ -18,10 +18,11 @@ type Metadata struct {
 }
 
 type Block struct {
-	Kind  string
-	Level int
-	Text  string
-	Lang  string
+	Kind           string
+	Level          int
+	Text           string
+	Lang           string
+	ChapterOpening bool
 	// AC18.1 / AC18.2: semantic-authoring fields for part and chapter blocks.
 	// Name is the semantic heading text after the parser has stripped any
 	// `Part N: ` / `Chapter N: ` prefix. Number is the source-order-derived

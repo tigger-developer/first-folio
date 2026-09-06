@@ -192,10 +192,55 @@
 - Model: `gpt-5.6-luna`
 - Verdict: **PASS**
 
+## Post-block paragraph indentation amendment
+
+### Code audit attempt 1
+
+- Candidate diff:
+  `d823fd71ab945ece85a86cdb66fae3d4969ba315aa4674ea52d85fa1ef84a9c3`
+- Harness: Hermes
+- Provider: `openai-codex`
+- Model: `gpt-5.6-luna`
+- Verdict: **FAIL**
+- Blocking finding: A chapter-opening footnote did not consume the opening
+  position, so later prose could receive the flush-left override.
+- Remediation: The renderer consumed that position for footnotes and a focused
+  regression reproduced the failure before passing with the correction.
+
+### Code audit attempt 2
+
+- Candidate diff:
+  `8790bb7ed7108447371a39bdb8537a80d3cb395163a1a40ffe269280968c29a6`
+- Harness: Hermes
+- Provider: `openai-codex`
+- Model: `gpt-5.6-luna`
+- Verdict: **FAIL**
+- Blocking finding: Generated Typst was classified through an incomplete
+  string-prefix heuristic, allowing an unlisted structural block to be treated
+  as chapter-opening prose.
+- Remediation: The prefix heuristic was removed. Pandoc's source block model
+  now identifies only a direct `Para` or `Plain` after a chapter heading as
+  chapter-opening prose. A raw Typst grid regression reproduces the former
+  failure.
+
+### Code audit attempt 3
+
+- Candidate diff:
+  `c9f6c848a9f0872ee64562bfa9f9e62afc80780239a03e7b2fcb8857fb88e599`
+- Harness: Hermes
+- Provider: `openai-codex`
+- Model: `gpt-5.6-luna`
+- Verdict: **PASS**
+- Advisory: Positively verify configured indentation after code, quote, and
+  structural chapter openings through generated Typst or PDF coordinates.
+- Disposition: Post-audit one-off PDF validation recorded the chapter-opening,
+  post-code, quote, and post-quote coordinates in `validation.md`.
+
 ## Current gate
 
 - Effective verdict: **PASS**
 - Consequence: Final verification may run against the audited implementation,
-  including the corrected prose-prefix boundary, Org parity, and surrounding
-  whitespace handling. The separate test audit remains a disclosed,
-  non-gating FAIL under the explicit emergency bypass.
+  including the corrected prose-prefix boundary, Org parity, surrounding
+  whitespace handling, and paragraph indentation after structural blocks. The
+  separate test audit remains a disclosed, non-gating FAIL under the explicit
+  emergency bypass.

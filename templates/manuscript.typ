@@ -412,7 +412,7 @@
   costs: (widow: {{if .WidowOrphanControl}}100%{{else}}0%{{end}}, orphan: {{if .WidowOrphanControl}}100%{{else}}0%{{end}}),
 )
 #set par(
-  first-line-indent: {{.Config.Folio.Manuscript.ParagraphIndent}},
+  first-line-indent: (amount: {{.Config.Folio.Manuscript.ParagraphIndent}}, all: true),
   justify: {{.Config.Folio.Manuscript.Justify}},
   spacing: {{.Spacing}},
   leading: {{.Leading}},
