@@ -1,0 +1,40 @@
+#+TITLE: Project Work Ledger
+#+STARTUP: overview
+#+TODO: TODO ACTIVE BLOCKED REVIEW | DONE ABANDONED
+#+OPTIONS: toc:2 num:nil
+
+#+begin_comment
+This is the canonical SDLC v3 work-ledger template.
+
+Use real Org headings and one monotonically increasing project-wide work number.
+Never reuse an identifier, including after abandonment or archival. A work item
+heading has the form "** TODO WNNN - Concise descriptor :type:" and properties
+for CUSTOM_ID, TYPE, PRIORITY, SOURCE, and CREATED. Put acceptance criteria,
+test definitions, edge cases, and solution design in the linked spec.org.
+#+end_comment
+
+* Open defects
+
+* Undelivered features
+
+* Active delivery
+
+* Human review
+
+* Closed work
+
+* Migration record
+
+** DONE SDLC migration - v2 to v3                      :migration:
+:PROPERTIES:
+:CUSTOM_ID: sdlc-migration
+:MIGRATED: 2026-09-06
+:END:
+
+- *Pre-migration state:* sdlc_v2_state_2026-09-06-2
+- *Migration branch:* sdlc-v3-migration-2026-09-06-2
+- *Ticket archive:* Not applicable.
+- *Historical requirements:* Not applicable.
+- *Archived v2 work:* [[file:archive/sdlc-v2/][Archived Spec Kit work]].
+- *Assumptions:* None recorded by project initialization.
+- *Unresolved items:* None recorded by project initialization.

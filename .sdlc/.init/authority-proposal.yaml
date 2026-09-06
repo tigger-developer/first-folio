@@ -1,0 +1,39 @@
+version: 1
+authorities:
+  product:
+    - path: docs/vision.md
+      descriptor: Product vision
+      rationale: Defines durable purpose, goals, supported formats, future direction, and non-goals.
+    - path: README.md
+      descriptor: Public product overview
+      rationale: Defines current commands, supported formats, dependencies, and user-facing configuration boundaries.
+  architecture:
+    - path: ARCHITECTURE.md
+      descriptor: System architecture
+      rationale: Defines runtime structure, component ownership, document models, configuration flow, and rendering boundaries.
+  requirements:
+    - path: docs/ACs.org
+      descriptor: Legacy acceptance-criteria ledger
+      rationale: Declares itself the sole authority for legacy requirements and preserves their status, provenance, and test traceability.
+migrated_work:
+  - path: docs/archive/sdlc-v2/specs/001-unified-font-config/spec.md
+    descriptor: Unified font configuration
+    disposition: unresolved
+    priority: P1
+    created: 2026-09-04
+    evidence: The specification remains Draft and its audit record has no effective verdict or recorded operator approval.
+  - path: docs/archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md
+    descriptor: Source frontmatter configuration
+    disposition: unresolved
+    priority: P1
+    created: 2026-09-05
+    evidence: The specification remains Draft; its effective audit PASS establishes planning eligibility, not operator approval, and planning is conditional on an approved schema authority.
+  - path: docs/archive/sdlc-v2/specs/003-manuscript-block-layout/spec.md
+    descriptor: Manuscript block layout
+    disposition: delivered
+    priority: P1
+    created: 2026-09-05
+    evidence: The project owner authorized emergency delivery with BYPASS-GATE-7, implementation commits are recorded, the final code gate is PASS, and post-implementation validations passed.
+warnings:
+  - "The SDLC v2 migration is not committed: the original .specify and specs paths are deleted in the working tree while docs/archive/sdlc-v2 is untracked."
+  - "Feature 002 records acceptance of several behavioural decisions, but not explicit approval of the specification; its Draft status and conditional planning language therefore require an unresolved disposition."
