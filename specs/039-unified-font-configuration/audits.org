@@ -94,21 +94,6 @@
   method without widening product scope.
 - *Remediation:* None.
 
-** Independent review incident
-:PROPERTIES:
-:ROUND:    1
-:CONTEXT:  /root/w039_implementation_audit
-:END:
-
-- *Artefact:* W039 - Unified Font Configuration implementation and regression
-  delta at commit =6aa9c40=.
-- *Audits:* =audit-test-code= and =audit-code=
-- *Result:* NO VERDICT. The retained external auditor exceeded the configured
-  eight-minute timeout and was interrupted on 2026-09-08.
-- *Classification:* Runner incident, not an audit finding and not a PASS.
-- *Next action:* Resume the same retained context only if the operator directs
-  a retry. Do not create a replacement auditor.
-
 ** Independent review
 :PROPERTIES:
 :ROUND:    2
@@ -350,3 +335,18 @@
   W039-created finding. The unscoped =golangci-lint run ./...= continues to
   report four pre-existing manuscript findings outside this change.
 - *Remediation:* None.
+
+** Independent review incident
+:PROPERTIES:
+:ROUND:    1
+:CONTEXT:  /root/w039_implementation_audit
+:END:
+
+- *Artefact:* W039 - Unified Font Configuration implementation and regression
+  delta at commit =6aa9c40=.
+- *Audits:* =audit-test-code= and =audit-code=
+- *Result:* NO VERDICT. The retained external auditor exceeded the configured
+  eight-minute timeout and was interrupted on 2026-09-08.
+- *Classification:* Runner incident, not an audit finding and not a PASS.
+- *Next action:* Resume the same retained context only if the operator directs
+  a retry. Do not create a replacement auditor.
