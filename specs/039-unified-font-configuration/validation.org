@@ -1,0 +1,41 @@
+#+TITLE: W039 - Validation Evidence
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+
+* User tests
+
+** UT039.1 - Review representative rendered output
+:PROPERTIES:
+:CUSTOM_ID: ut-039-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-039-6][AC039.6 - Existing publishing behaviour remains]]
+- Reviewer :: Operator
+- Status :: PENDING
+- Procedure :: Render the named baseline and candidate fixture matrix and
+  compare the paired PDFs under the conditions defined by UT039.1 - Review
+  representative rendered output.
+- Expected :: Typography and non-font layout are unchanged except for a
+  difference the operator explicitly accepts and records.
+- Result :: NOT RUN
+
+* One-off tests
+
+** OT039.1 - Reconcile regression lineage
+:PROPERTIES:
+:CUSTOM_ID: ot-039-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-039-7][AC039.7 - Regression protection remains live]]
+- Boundary :: Repository-owned tests and named test records at the baseline and
+  delivery-candidate revisions.
+- Status :: PENDING
+- Procedure :: Capture, classify, and reconcile the two maintained test
+  inventories under OT039.1 - Reconcile regression lineage.
+- Expected :: Every baseline test remains active or has a traced active
+  replacement protecting the same behaviour.
+- Bounds :: One delivery-time comparison with no external service or persistent
+  automation.
+- Result :: NOT RUN
+- Cleanup :: No external state; temporary captures are removed after the result
+  is recorded.

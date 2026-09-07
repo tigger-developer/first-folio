@@ -1,12 +1,28 @@
 # W039 normative end-state British configuration.
 #
-# This file is signed off with spec.org. Delivery copies its values and
-# hierarchy to presets/british.yaml. It is the exhaustive public configuration
-# reference and the shared lowest-precedence runtime base for script, letter,
-# and manuscript publishing.
+# This file forms part of the W039 definition and operator sign-off. Delivery
+# copies its values and hierarchy to presets/british.yaml. It is the exhaustive
+# public configuration reference and the shared lowest-precedence runtime base
+# for script, letter, and manuscript publishing.
 #
 # Every font role owns a complete six-property block. Omitted values in a
 # higher-precedence layer merge only with the same role in lower layers.
+
+# Optional source-metadata overrides. They remain commented so source document
+# metadata is used when an override is absent.
+# title: "Document title"                 # Overrides the source title.
+# subtitle: "Document subtitle"           # Overrides the source subtitle.
+# author: "Author name"                   # Overrides the source author.
+# date: "2 January 2006"                  # Overrides the source date.
+# version: "Draft 1"                      # Overrides the source version.
+# attribution: "by"                       # Overrides manuscript author attribution.
+# author-attribution: "by"                # Synonym for attribution; configure only one.
+# wordcount: "80,000 words"               # Overrides manuscript word-count display text.
+# contact-name: "Author name"             # Overrides manuscript contact name.
+# address: "Postal address"               # Overrides manuscript contact address.
+# phone: "+353 1 234 5678"                # Overrides manuscript contact telephone.
+# email: "author@example.invalid"         # Overrides manuscript contact email.
+# website: "https://example.invalid"      # Overrides manuscript contact website.
 
 render:
   stage-directions: true
@@ -512,11 +528,11 @@ folio:
       blank-page-before: enforce-left
       blank-page-after: false
       align: center
-      credits: ""
+      credits: []
       separator: "———"
       separator-space-before: 1.5em
       separator-space-after: 1.5em
-      publication: ""
+      publication: []
       publisher: ""
       publisher-preposition: "by"
       isbn: ""
@@ -543,4 +559,3 @@ folio:
         - "The moral rights of the authors and photographers to be identified as the creators of their work have been asserted."
         - "**All rights reserved.** No part of this publication, including text or images, may be reproduced, stored in a retrieval system, or transmitted in any form or by any means without prior written permission from the respective copyright holder."
         - "Legal deposit copies lodged with the National Library of Ireland, the five designated Irish libraries, and the British Library. A catalogue record is available from the National Library of Ireland."
-

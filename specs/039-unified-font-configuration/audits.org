@@ -148,6 +148,136 @@
   review.
 - *Remediation:* None.
 
+** Amended definition local review
+:PROPERTIES:
+:ROUND:    1
+:CYCLE:    normative-yaml
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =5ee91b4c58d94d1399fc077c6a050dd394f0a54b022aee4d2638996c742a6765=,
+  formed from the ordered SHA-256 records for =spec.org=, =british.yaml=, and
+  =validation.org=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* None. The change-specific summary heading follows the current
+  template; the normative YAML parses and contains the exact 33-role inventory
+  with six explicit properties per role; its delivery authority and runtime
+  destination are explicit; RT039.2 challenges it against an independent
+  accepted-path inventory and the installed content; and the selected UT and OT
+  have pending durable records.
+- *Remediation:* Converted simulated labels to native Org description lists,
+  added the semantic emphasis required by the ABC contract, and created the
+  pending validation record before this round.
+
+** Amended definition independent review
+:PROPERTIES:
+:ROUND:    1
+:CYCLE:    normative-yaml
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =5ee91b4c58d94d1399fc077c6a050dd394f0a54b022aee4d2638996c742a6765=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Blocking finding:* =DESIGN-039-NORMATIVE-YAML-TYPE=: The normative
+  =folio.manuscript.copyright.credits= value was a scalar, while the current
+  typed manuscript contract requires a string sequence. The attached file
+  would therefore fail before rendering as a runtime base.
+- *Resolved prior finding:* =SPEC-039-INVENTORY-CONTRADICTION= remains resolved.
+- *Remediation:* Changed =copyright.credits= to an empty sequence. The affected
+  local type review also found and corrected the analogous
+  =copyright.publication= string-sequence default.
+
+** Amended definition local review
+:PROPERTIES:
+:ROUND:    2
+:CYCLE:    normative-yaml
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =e0eccb886d9f8103650009f9e6af8018c58714eb725fc0a166a9dedcb2358e24=.
+- *Audits:* =audit-design= and the affected =audit-test-definitions= boundary
+- *Verdict:* PASS
+- *Findings:* None. The normative copyright body, credits, and publication
+  values now use their current typed sequence shapes; the 33 font blocks remain
+  complete; and RT039.2 still exercises the attached file through the runtime
+  configuration boundary.
+- *Remediation:* None.
+
+** Amended definition independent review
+:PROPERTIES:
+:ROUND:    2
+:CYCLE:    normative-yaml
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =e0eccb886d9f8103650009f9e6af8018c58714eb725fc0a166a9dedcb2358e24=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Blocking finding:* =DESIGN-039-EXHAUSTIVE-BASE-CONTENT=: The normative YAML
+  omitted documented source-derived top-level metadata paths, contradicting the
+  exhaustive public-configuration contract.
+- *Resolved prior finding:* =DESIGN-039-NORMATIVE-YAML-TYPE= is resolved; the
+  copyright sequence values and all 33 six-property font blocks have the
+  required shapes.
+- *Remediation:* Added all thirteen documented shared and manuscript top-level
+  metadata paths as commented options, explicitly preserving source metadata
+  when each override is absent.
+
+** Amended definition local review
+:PROPERTIES:
+:ROUND:    3
+:CYCLE:    normative-yaml
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =5c979cfb3e06732559159d2efdd83c25e3dc7e0853c6256f76a9729cc265db29=.
+- *Audits:* =audit-design= and the affected =audit-spec= exhaustive-content
+  boundary
+- *Verdict:* PASS
+- *Findings:* None. The attached file visibly documents the five shared and
+  eight manuscript-only metadata overrides while leaving them absent from the
+  parsed runtime base, so source-derived behaviour remains unchanged.
+- *Remediation:* None.
+
+** Amended definition independent review
+:PROPERTIES:
+:ROUND:    3
+:CYCLE:    normative-yaml
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =5c979cfb3e06732559159d2efdd83c25e3dc7e0853c6256f76a9729cc265db29=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* No blocking findings or advisories remain. The source-derived
+  metadata comments preserve absence semantics; all 33 font blocks contain
+  exactly the six required properties; copyright list values match their typed
+  decoder fields; and all prior definition-pack findings remain resolved.
+- *Remediation:* None.
+
 * Implementation gate
 
 No implementation review has been performed. Delivery is not authorized.
