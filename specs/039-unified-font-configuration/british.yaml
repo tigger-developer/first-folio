@@ -1,0 +1,546 @@
+# W039 normative end-state British configuration.
+#
+# This file is signed off with spec.org. Delivery copies its values and
+# hierarchy to presets/british.yaml. It is the exhaustive public configuration
+# reference and the shared lowest-precedence runtime base for script, letter,
+# and manuscript publishing.
+#
+# Every font role owns a complete six-property block. Omitted values in a
+# higher-precedence layer merge only with the same role in lower layers.
+
+render:
+  stage-directions: true
+  frontmatter: true
+  footnotes: true
+  character-table: true
+  transitions: true
+
+folio:
+  style: british
+
+  font:
+    family: Libertinus Serif
+    size: 12pt
+    weight: regular
+    stretch: 100%
+    style: regular
+    letter-spacing: 0em
+
+  heading:
+    font:
+      family: Libertinus Serif
+      size: 14pt
+      weight: regular
+      stretch: 100%
+      style: regular
+      letter-spacing: 0em
+
+  page: a4
+  margin: 25mm
+  default-format: pdf
+
+  title-page:
+    page-number: false
+
+    title:
+      align: center
+      font:
+        family: Libertinus Serif
+        size: 24pt
+        weight: bold
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      case-transform: as-written
+      position: third
+      space-before: 0
+
+    subtitle:
+      align: center
+      font:
+        family: Libertinus Serif
+        size: 14pt
+        weight: regular
+        stretch: 100%
+        style: italic
+        letter-spacing: 0em
+      case-transform: as-written
+      space-before: 1em
+
+    author:
+      align: center
+      font:
+        family: Libertinus Serif
+        size: 12pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      case-transform: as-written
+      prefix: "by "
+      space-before: 2em
+
+    date:
+      position: bottom-left
+      font:
+        family: Libertinus Serif
+        size: 10pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      case-transform: as-written
+      prefix: ""
+      suffix: ""
+
+    version:
+      position: bottom-right
+      font:
+        family: Libertinus Serif
+        size: 10pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      case-transform: as-written
+      prefix: ""
+      suffix: ""
+
+  positioning:
+    speech:
+      space-before: 1.6em
+      align: left
+
+      speaker:
+        align: left
+        indent: 0
+        font:
+          family: Libertinus Serif
+          size: 12pt
+          weight: bold
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+        case-transform: upper
+        prefix: ""
+        suffix: ":"
+
+      speech-instruction:
+        placement: same-line
+        align: left
+        indent: 0
+        font:
+          family: Libertinus Serif
+          size: 12pt
+          weight: regular
+          stretch: 100%
+          style: italic
+          letter-spacing: 0em
+        case-transform: as-written
+        prefix: "("
+        suffix: ")"
+
+      dialogue:
+        placement: same-line
+        align: left
+        indent: 0
+        wrap-indent: 7em
+        font:
+          family: Libertinus Serif
+          size: 12pt
+          weight: regular
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+        case-transform: as-written
+        prefix: ""
+        suffix: ""
+
+    stage-direction:
+      space-before: 1.6em
+      align: left
+      font:
+        family: Libertinus Serif
+        size: 12pt
+        weight: regular
+        stretch: 100%
+        style: italic
+        letter-spacing: 0em
+      case-transform: as-written
+      prefix: ""
+      suffix: ""
+      indent: 0
+      wrap-indent: 0
+
+    transition:
+      space-before: 1.6em
+      align: right
+      font:
+        family: Libertinus Serif
+        size: 12pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      case-transform: upper
+      prefix: ""
+      suffix: ""
+      indent: 0
+      wrap-indent: 0
+
+    frontmatter:
+      header:
+        align: left
+        font:
+          family: Libertinus Serif
+          size: 14pt
+          weight: bold
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+        case-transform: as-written
+        prefix: ""
+        suffix: ""
+        page-break-before: false
+        space-before: 2em
+
+    act-header:
+      align: center
+      font:
+        family: Libertinus Serif
+        size: 14pt
+        weight: bold
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      case-transform: as-written
+      prefix: ""
+      suffix: ""
+      page-break-before: true
+      space-before: 0em
+
+    scene-header:
+      align: left
+      font:
+        family: Libertinus Serif
+        size: 12pt
+        weight: bold
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      case-transform: as-written
+      prefix: ""
+      suffix: ""
+      page-break-before: false
+      space-before: 2em
+      space-after: 0.5em
+
+  letter:
+    font:
+      family: Libertinus Serif
+      size: 11pt
+      weight: regular
+      stretch: 100%
+      style: regular
+      letter-spacing: 0em
+    page: a4
+    margin-top: 25mm
+    margin-bottom: 25mm
+    margin-left: 30mm
+    margin-right: 25mm
+    space-before-closing: 0.8em
+    space-before-signoff: 1.5em
+    space-after-sender: 2em
+    space-after-recipient: 1em
+    space-after-date: 1em
+    space-after-subject: 0.5em
+
+  manuscript:
+    style: british
+    page: a4
+    margin: 20mm
+    gutter: 0mm
+    date-format: "2 January 2006"
+
+    font:
+      family: Libertinus Serif
+      size: 12pt
+      weight: regular
+      stretch: 100%
+      style: regular
+      letter-spacing: 0em
+
+    heading:
+      font:
+        family: Libertinus Sans
+        size: 14pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+
+    mono:
+      font:
+        family: Libertinus Mono
+        size: 10pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+
+    line-spacing: 1.5
+    justify: true
+    widow-orphan-control: true
+    paragraph-indent: 10mm
+    paragraph-spacing: 0pt
+    quoted-block-spacing: 0.5em
+    code-block-spacing: 0.5em
+    quote-block-indent: 0em
+    code-block-indent: 0em
+
+    quoted-block:
+      font:
+        family: Libertinus Serif
+        size: 12pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+
+    title-page:
+      enabled: true
+      page-number: false
+      include-title: true
+      include-subtitle: true
+      include-author: true
+      include-date: true
+      include-wordcount: true
+      include-contact-name: true
+      include-address: true
+      include-phone: true
+      include-email: true
+      include-website: true
+      include-version: true
+      title-block-align: center
+      footer-align: center
+
+      title:
+        align: ""
+        font:
+          family: Libertinus Sans
+          size: 20pt
+          weight: bold
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+
+      subtitle:
+        align: ""
+        font:
+          family: Libertinus Sans
+          size: 14pt
+          weight: regular
+          stretch: 100%
+          style: italic
+          letter-spacing: 0em
+
+      author:
+        align: ""
+        font:
+          family: Libertinus Sans
+          size: 12pt
+          weight: regular
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+        attribution: "by"
+
+      date:
+        align: ""
+        font:
+          family: Libertinus Sans
+          size: 10pt
+          weight: regular
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+
+      wordcount:
+        align: ""
+        font:
+          family: Libertinus Sans
+          size: 10pt
+          weight: regular
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+
+      version:
+        align: ""
+        font:
+          family: Libertinus Sans
+          size: 10pt
+          weight: regular
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+
+      contact:
+        align: top-left
+        font:
+          family: Libertinus Sans
+          size: 10pt
+          weight: regular
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+
+    page-header:
+      enabled: true
+      font:
+        family: Libertinus Sans
+        size: 10pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      format: "[title] • [chapter] • [author]"
+      # alt-format: ""                 # Inherits page-header.format.
+      # frontmatter-format: ""         # Inherits page-header.format.
+      # alt-frontmatter-format: ""     # Inherits page-header.alt-format.
+      align: left-right
+      distance-from-edge: 20mm
+      content-padding-after: 10mm
+
+    page-footer:
+      enabled: true
+      font:
+        family: Libertinus Sans
+        size: 10pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      format: "[page]"
+      # alt-format: ""                 # Inherits page-footer.format.
+      # frontmatter-format: ""         # Inherits page-footer.format.
+      # alt-frontmatter-format: ""     # Inherits page-footer.alt-format.
+      align: center
+      distance-from-edge: 20mm
+      content-padding-after: 10mm
+
+    toc:
+      enabled: true
+      links: true
+      title: "Contents"
+      page-break-before: true
+      blank-page-before: false
+      blank-page-after: false
+      font:
+        family: Libertinus Sans
+        size: 10pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      heading:
+        font:
+          family: Libertinus Sans
+          size: 16pt
+          weight: bold
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+      include-parts: true
+      include-chapters: true
+      include-sections: false
+      dot-leaders: true
+      page-numbers: true
+      line-spacing: 1.15em
+      part-gap-before: 0.5em
+      continuation-padding-before: 15mm
+      part-bold: true
+
+    scene-break:
+      marker: "#"
+
+    list:
+      space-before: 0.5em
+      space-after: 0.5em
+
+    table:
+      space-before: 0.5em
+      space-after: 0.5em
+
+    code-block:
+      # space-before: 0.5em # Overrides code-block-spacing above the block.
+      # space-after: 0.5em  # Overrides code-block-spacing below the block.
+
+    page-numbering:
+      frontmatter-format: "1"
+      body-format: "1"
+      body-reset: first-part-or-chapter
+
+    part:
+      page-break-before: true
+      blank-page-before: false
+      blank-page-after: false
+      skip-header: false
+      skip-footer: false
+      vertical-align: center
+      align: center
+      case-transform: as-written
+      number-reset: never
+
+    chapter:
+      page-break-before: true
+      blank-page-before: false
+      blank-page-after: false
+      skip-header: false
+      skip-footer: false
+      position: one-third
+      align: center
+      case-transform: as-written
+      space-after: 2em
+      number-reset: never
+
+    copyright:
+      enabled: false
+      position: after-title
+      skip-header: true
+      skip-footer: false
+      blank-page-before: enforce-left
+      blank-page-after: false
+      align: center
+      credits: ""
+      separator: "———"
+      separator-space-before: 1.5em
+      separator-space-after: 1.5em
+      publication: ""
+      publisher: ""
+      publisher-preposition: "by"
+      isbn: ""
+      isbn-label: "ISBN"
+      isbn-barcode: none
+      font:
+        family: Libertinus Serif
+        size: 12pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
+      label:
+        font:
+          family: Libertinus Serif
+          size: 12pt
+          weight: bold
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+      line-spacing: 1.4
+      block-spacing: 0.75em
+      body:
+        - "The moral rights of the authors and photographers to be identified as the creators of their work have been asserted."
+        - "**All rights reserved.** No part of this publication, including text or images, may be reproduced, stored in a retrieval system, or transmitted in any form or by any means without prior written permission from the respective copyright holder."
+        - "Legal deposit copies lodged with the National Library of Ireland, the five designated Irish libraries, and the British Library. A catalogue record is available from the National Library of Ireland."
+

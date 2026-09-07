@@ -2,7 +2,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+DEFINITION_GATE: PASS
+#+DEFINITION_GATE: PENDING
 #+OPERATOR_SIGNOFF: PENDING
 
 * Specification Summary
@@ -24,7 +24,8 @@
 - *Edge cases:* Partial higher-layer blocks merge by property; omitted role
   blocks reveal the lower layer; roles never inherit fonts from other roles.
 - *Decisions:* Configuration layers are the only inheritance mechanism; no
-  legacy aliases or role-to-role font inheritance are supported.
+  legacy aliases or role-to-role font inheritance are supported. The retained
+  =presets/british.yaml= is the delivery scaffold, not discarded baggage.
 - *Next step:* Definition gate, then operator sign-off.
 
 The summary above accurately and completely represents the detailed
@@ -104,6 +105,11 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
   acceptance criteria in =docs/work.org=]].
 - *Abandoned predecessor:* [[file:../../docs/archive/sdlc-v2/specs/001-unified-font-config/spec.md][SDLC v2 Unified Font Configuration]].
   It is provenance only and is not an authority for this definition.
+- *Retained implementation artefact:* [[file:../../presets/british.yaml][The
+  existing =presets/british.yaml=]] was created during W036. Its 33 font-block
+  locations, non-font hierarchy, comments, and candidate values are delivery
+  input to preserve and reconcile. Its requirement claims, current-runtime
+  claim, and role-to-role inheritance semantics are not authority.
 - *Current implementation fact:* [[file:../../internal/config/config.go][The
   loader selects separate script and manuscript baselines]]; manuscript
   normalization in [[file:../../internal/manuscript/config.go][=internal/manuscript/config.go=]]
@@ -142,10 +148,12 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 - US and screenplay are both limited overlays. The current split manuscript
   baseline and split US overrides are retired.
 - The existing =presets/british.yaml= was produced under the abandoned draft.
-  Delivery must reconcile it against current runtime baselines and approved
-  behaviour rather than treating it as requirement authority. Its commented
-  font properties and role-inheritance comments are specifically rejected and
-  must be replaced by complete role-local blocks.
+  Delivery must edit it in place as the starting scaffold and reconcile it
+  against current runtime baselines, the accepted public-path inventory, and
+  approved behaviour rather than treating it as requirement authority. Preserve
+  correct hierarchy, non-font documentation, and candidate values. Replace its
+  inaccurate runtime claim and every commented font property or role-inheritance
+  comment with the complete role-local values required by W039.
 
 ** Unresolved blockers
 
@@ -578,8 +586,9 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 
 *** Data and state
 
-- Replace the separate British script and manuscript files with one active
-  =presets/british.yaml=.
+- Promote and revise the retained =presets/british.yaml= scaffold in place,
+  then replace the separate British script and manuscript files with that one
+  active base. Do not recreate the exhaustive hierarchy from scratch.
 - Replace split US files with =presets/us.yaml= and retain screenplay as
   =presets/screenplay.yaml=, each containing only differences.
 - Use one reusable, presence-aware internal font value for validation and
@@ -634,12 +643,14 @@ exhaustive British runtime base for script, letter, and manuscript publishing.
 :END:
 
 - *Required reading:* [[file:../../internal/config/config.go][=internal/config/config.go=]],
+  [[file:../../presets/british.yaml][retained British scaffold]],
   [[file:../../internal/manuscript/config.go][=internal/manuscript/config.go=]],
   [[file:../../presets/british-script.yaml][current script base]],
   [[file:../../presets/british-manuscript.yaml][current manuscript base]], the
   three current override files under =presets/=, and
   [[file:../../docs/config.md][=docs/config.md=]]. The abandoned W036 draft is
-  provenance only.
+  provenance only; its retained YAML artefact is explicitly useful delivery
+  input under the constraints above.
 - *First implementation step:* Write
   [[#rt-039-1][RT039.1 - Exercise every public font role]] at the built CLI
   boundary and observe rejection or non-application of the new block as RED.
