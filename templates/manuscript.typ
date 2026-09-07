@@ -57,9 +57,7 @@
 #let folio-section(body) = {
   v(1.2em)
   align(left)[#text(
-    font: "{{.Config.Folio.Manuscript.HeadingFont}}",
-    size: {{.Config.Folio.Manuscript.HeadingFontSize}},
-    weight: "{{.Config.Folio.Manuscript.HeadingFontWeight}}",
+    {{fontArgs .Config.Folio.Manuscript.Heading.Font}}
   )[#heading(level: 3, outlined: {{.Config.Folio.Manuscript.TOC.IncludeSections}})[#body]]]
   v(0.4em)
 }
@@ -105,9 +103,7 @@
   }
   align({{.Config.Folio.Manuscript.Part.Align}} + {{.PartVertical}})[
     #text(
-      font: "{{.Config.Folio.Manuscript.HeadingFont}}",
-      size: {{.Config.Folio.Manuscript.HeadingFontSize}},
-      weight: "{{.Config.Folio.Manuscript.HeadingFontWeight}}",
+      {{fontArgs .Config.Folio.Manuscript.Heading.Font}}
     )[
       #heading(level: 1, outlined: {{.Config.Folio.Manuscript.TOC.IncludeParts}})[#body]
     ]
@@ -151,9 +147,7 @@
   v({{.ChapterPosition}})
   align({{.Config.Folio.Manuscript.Chapter.Align}})[
     #text(
-      font: "{{.Config.Folio.Manuscript.HeadingFont}}",
-      size: {{.Config.Folio.Manuscript.HeadingFontSize}},
-      weight: "{{.Config.Folio.Manuscript.HeadingFontWeight}}",
+      {{fontArgs .Config.Folio.Manuscript.Heading.Font}}
     )[
       #heading(level: 2, outlined: {{.Config.Folio.Manuscript.TOC.IncludeChapters}})[#body]
     ]
@@ -173,9 +167,7 @@
     below: {{.Config.Folio.Manuscript.CodeBlock.SpaceAfter}},
   )[
     #text(
-      font: "{{.Config.Folio.Manuscript.MonoFont}}",
-      size: {{.Config.Folio.Manuscript.MonoFontSize}},
-      weight: "{{.Config.Folio.Manuscript.MonoFontWeight}}",
+      {{fontArgs .Config.Folio.Manuscript.Mono.Font}}
     )[#body]
   ]
 }
@@ -206,12 +198,7 @@
   below: {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
 )[
   #pad(left: {{.Config.Folio.Manuscript.QuoteBlockIndent.Value}})[#text(
-    font: "{{.QuotedBlockFamily}}",
-    size: {{.Config.Folio.Manuscript.QuotedBlock.Font.Size}},
-    weight: {{.QuotedBlockWeight}},
-    stretch: {{.Config.Folio.Manuscript.QuotedBlock.Font.Stretch}},
-    style: "{{.QuotedBlockStyle}}",
-    tracking: {{.Config.Folio.Manuscript.QuotedBlock.Font.LetterSpacing}},
+    {{fontArgs .Config.Folio.Manuscript.QuotedBlock.Font}}
   )[#it]]
 ]
 
@@ -219,15 +206,11 @@
   above: {{.Config.Folio.Manuscript.CodeBlock.SpaceBefore}},
   below: {{.Config.Folio.Manuscript.CodeBlock.SpaceAfter}},
 )[#pad(left: {{.Config.Folio.Manuscript.CodeBlockIndent.Value}})[#text(
-  font: "{{.Config.Folio.Manuscript.MonoFont}}",
-  size: {{.Config.Folio.Manuscript.MonoFontSize}},
-  weight: "{{.Config.Folio.Manuscript.MonoFontWeight}}",
+  {{fontArgs .Config.Folio.Manuscript.Mono.Font}}
 )[#it]]]
 
 #show raw.where(block: false): it => text(
-  font: "{{.Config.Folio.Manuscript.MonoFont}}",
-  size: {{.Config.Folio.Manuscript.MonoFontSize}},
-  weight: "{{.Config.Folio.Manuscript.MonoFontWeight}}",
+  {{fontArgs .Config.Folio.Manuscript.Mono.Font}}
 )[#it]
 
 #set page(
@@ -237,9 +220,7 @@
 )
 
 #set text(
-  font: "{{.Config.Folio.Manuscript.Font}}",
-  size: {{.Config.Folio.Manuscript.FontSize}},
-  weight: "{{.Config.Folio.Manuscript.FontWeight}}",
+  {{fontArgs .Config.Folio.Manuscript.Font}}
 )
 
 {{if and (not .IsUS) .Config.Folio.Manuscript.TitlePage.Enabled}}
@@ -250,15 +231,15 @@
       columns: (1fr, 1fr, 1fr),
       align: (left, {{.FooterGroupAlignExpr}}, right),
       [
-        {{if and .Config.Folio.Manuscript.TitlePage.IncludeVersion (not .VersionAlignExpr)}}#text(font: "{{.Config.Folio.Manuscript.VersionFont}}", size: {{.Config.Folio.Manuscript.VersionFontSize}}, weight: "{{.Config.Folio.Manuscript.VersionFontWeight}}")[{{.Meta.Version}}]{{end}}
+        {{if and .Config.Folio.Manuscript.TitlePage.IncludeVersion (not .VersionAlignExpr)}}#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Version.Font}})[{{.Meta.Version}}]{{end}}
       ],
       [
-        {{if and .Config.Folio.Manuscript.TitlePage.IncludeWordCount (not .WordCountAlignExpr)}}#text(font: "{{.Config.Folio.Manuscript.WordCountFont}}", size: {{.Config.Folio.Manuscript.WordCountFontSize}}, weight: "{{.Config.Folio.Manuscript.WordCountFontWeight}}")[
+        {{if and .Config.Folio.Manuscript.TitlePage.IncludeWordCount (not .WordCountAlignExpr)}}#text({{fontArgs .Config.Folio.Manuscript.TitlePage.WordCount.Font}})[
           #if "{{.Meta.WordCount}}" != "" [{{.Meta.WordCount}}]
         ]{{end}}
       ],
       [
-        {{if and .Config.Folio.Manuscript.TitlePage.IncludeDate (not .DateAlignExpr)}}#text(font: "{{.Config.Folio.Manuscript.DateFont}}", size: {{.Config.Folio.Manuscript.DateFontSize}}, weight: "{{.Config.Folio.Manuscript.DateFontWeight}}")[{{.Meta.Date}}]{{end}}
+        {{if and .Config.Folio.Manuscript.TitlePage.IncludeDate (not .DateAlignExpr)}}#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Date.Font}})[{{.Meta.Date}}]{{end}}
       ],
     )
   ],
@@ -270,74 +251,64 @@
   #stack(
     dir: ttb,
     spacing: 0.25em,
-    {{if and .Config.Folio.Manuscript.TitlePage.IncludeContactName .Meta.ContactName}}[#text(font: "{{.Config.Folio.Manuscript.ContactFont}}", size: {{.Config.Folio.Manuscript.ContactFontSize}}, weight: "{{.Config.Folio.Manuscript.ContactFontWeight}}")[{{.Meta.ContactName}}]],{{end}}
-    {{if and .Config.Folio.Manuscript.TitlePage.IncludeAddress .Meta.Address}}[#text(font: "{{.Config.Folio.Manuscript.ContactFont}}", size: {{.Config.Folio.Manuscript.ContactFontSize}}, weight: "{{.Config.Folio.Manuscript.ContactFontWeight}}")[{{.Meta.Address}}]],{{end}}
-    {{if and .Config.Folio.Manuscript.TitlePage.IncludePhone .Meta.Phone}}[#text(font: "{{.Config.Folio.Manuscript.ContactFont}}", size: {{.Config.Folio.Manuscript.ContactFontSize}}, weight: "{{.Config.Folio.Manuscript.ContactFontWeight}}")[{{.Meta.Phone}}]],{{end}}
-    {{if and .Config.Folio.Manuscript.TitlePage.IncludeEmail .Meta.Email}}[#text(font: "{{.Config.Folio.Manuscript.ContactFont}}", size: {{.Config.Folio.Manuscript.ContactFontSize}}, weight: "{{.Config.Folio.Manuscript.ContactFontWeight}}")[{{.Meta.Email}}]],{{end}}
-    {{if and .Config.Folio.Manuscript.TitlePage.IncludeWebsite .Meta.Website}}[#text(font: "{{.Config.Folio.Manuscript.ContactFont}}", size: {{.Config.Folio.Manuscript.ContactFontSize}}, weight: "{{.Config.Folio.Manuscript.ContactFontWeight}}")[{{.Meta.Website}}]],{{end}}
+    {{if and .Config.Folio.Manuscript.TitlePage.IncludeContactName .Meta.ContactName}}[#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Contact.Font}})[{{.Meta.ContactName}}]],{{end}}
+    {{if and .Config.Folio.Manuscript.TitlePage.IncludeAddress .Meta.Address}}[#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Contact.Font}})[{{.Meta.Address}}]],{{end}}
+    {{if and .Config.Folio.Manuscript.TitlePage.IncludePhone .Meta.Phone}}[#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Contact.Font}})[{{.Meta.Phone}}]],{{end}}
+    {{if and .Config.Folio.Manuscript.TitlePage.IncludeEmail .Meta.Email}}[#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Contact.Font}})[{{.Meta.Email}}]],{{end}}
+    {{if and .Config.Folio.Manuscript.TitlePage.IncludeWebsite .Meta.Website}}[#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Contact.Font}})[{{.Meta.Website}}]],{{end}}
   )
 ]
 {{end}}
 {{if .TitleAlignExpr}}#place({{.TitleAlignExpr}}{{if .TitleFloatable}}, float: true{{end}})[
   {{if .Config.Folio.Manuscript.TitlePage.IncludeTitle}}
   #text(
-    font: "{{.Config.Folio.Manuscript.TitleFont}}",
-    size: {{.Config.Folio.Manuscript.TitleFontSize}},
-    weight: "{{.Config.Folio.Manuscript.TitleFontWeight}}",
+    {{fontArgs .Config.Folio.Manuscript.TitlePage.Title.Font}}
   )[{{.Meta.Title}}]
   {{end}}
 ]{{end}}
 {{if .SubtitleAlignExpr}}#place({{.SubtitleAlignExpr}}{{if .SubtitleFloatable}}, float: true{{end}})[
   {{if .Config.Folio.Manuscript.TitlePage.IncludeSubtitle}}#if "{{.Meta.Subtitle}}" != "" [
     #text(
-      font: "{{.Config.Folio.Manuscript.SubtitleFont}}",
-      size: {{.Config.Folio.Manuscript.SubtitleFontSize}},
-      weight: "{{.Config.Folio.Manuscript.SubtitleFontWeight}}",
-      style: "{{.Config.Folio.Manuscript.SubtitleFontStyle}}",
+      {{fontArgs .Config.Folio.Manuscript.TitlePage.Subtitle.Font}}
     )[{{.Meta.Subtitle}}]
   ]{{end}}
 ]{{end}}
 {{if .AuthorAlignExpr}}#place({{.AuthorAlignExpr}}{{if .AuthorFloatable}}, float: true{{end}})[
   {{if .Config.Folio.Manuscript.TitlePage.IncludeAuthor}}#if "{{.Meta.Author}}" != "" [
-    #text(font: "{{.Config.Folio.Manuscript.AuthorFont}}", size: {{.Config.Folio.Manuscript.AuthorFontSize}}, weight: "{{.Config.Folio.Manuscript.AuthorFontWeight}}")[{{if .Meta.AuthorAttribution}}{{.Meta.AuthorAttribution}} {{end}}{{.Meta.Author}}]
+    #text({{fontArgs .Config.Folio.Manuscript.TitlePage.Author.Font}})[{{if .Meta.AuthorAttribution}}{{.Meta.AuthorAttribution}} {{end}}{{.Meta.Author}}]
   ]{{end}}
 ]{{end}}
 {{if .DateAlignExpr}}#place({{.DateAlignExpr}}{{if .DateFloatable}}, float: true{{end}})[
-  {{if .Config.Folio.Manuscript.TitlePage.IncludeDate}}#text(font: "{{.Config.Folio.Manuscript.DateFont}}", size: {{.Config.Folio.Manuscript.DateFontSize}}, weight: "{{.Config.Folio.Manuscript.DateFontWeight}}")[{{.Meta.Date}}]{{end}}
+  {{if .Config.Folio.Manuscript.TitlePage.IncludeDate}}#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Date.Font}})[{{.Meta.Date}}]{{end}}
 ]{{end}}
 {{if .WordCountAlignExpr}}#place({{.WordCountAlignExpr}}{{if .WordCountFloatable}}, float: true{{end}})[
-  {{if .Config.Folio.Manuscript.TitlePage.IncludeWordCount}}#text(font: "{{.Config.Folio.Manuscript.WordCountFont}}", size: {{.Config.Folio.Manuscript.WordCountFontSize}}, weight: "{{.Config.Folio.Manuscript.WordCountFontWeight}}")[{{.Meta.WordCount}}]{{end}}
+  {{if .Config.Folio.Manuscript.TitlePage.IncludeWordCount}}#text({{fontArgs .Config.Folio.Manuscript.TitlePage.WordCount.Font}})[{{.Meta.WordCount}}]{{end}}
 ]{{end}}
 {{if .VersionAlignExpr}}#place({{.VersionAlignExpr}}{{if .VersionFloatable}}, float: true{{end}})[
-  {{if .Config.Folio.Manuscript.TitlePage.IncludeVersion}}#text(font: "{{.Config.Folio.Manuscript.VersionFont}}", size: {{.Config.Folio.Manuscript.VersionFontSize}}, weight: "{{.Config.Folio.Manuscript.VersionFontWeight}}")[{{.Meta.Version}}]{{end}}
+  {{if .Config.Folio.Manuscript.TitlePage.IncludeVersion}}#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Version.Font}})[{{.Meta.Version}}]{{end}}
 ]{{end}}
 #align({{.TitleBlockAlignExpr}})[
   {{if and .Config.Folio.Manuscript.TitlePage.IncludeTitle (not .TitleAlignExpr)}}
   #text(
-    font: "{{.Config.Folio.Manuscript.TitleFont}}",
-    size: {{.Config.Folio.Manuscript.TitleFontSize}},
-    weight: "{{.Config.Folio.Manuscript.TitleFontWeight}}",
+    {{fontArgs .Config.Folio.Manuscript.TitlePage.Title.Font}}
   )[{{.Meta.Title}}]
   {{end}}
   {{if and .Config.Folio.Manuscript.TitlePage.IncludeSubtitle (not .SubtitleAlignExpr)}}#if "{{.Meta.Subtitle}}" != "" [
     #v(1em)
     #text(
-      font: "{{.Config.Folio.Manuscript.SubtitleFont}}",
-      size: {{.Config.Folio.Manuscript.SubtitleFontSize}},
-      weight: "{{.Config.Folio.Manuscript.SubtitleFontWeight}}",
-      style: "{{.Config.Folio.Manuscript.SubtitleFontStyle}}",
+      {{fontArgs .Config.Folio.Manuscript.TitlePage.Subtitle.Font}}
     )[{{.Meta.Subtitle}}]
   ]{{end}}
   {{if and .Config.Folio.Manuscript.TitlePage.IncludeAuthor (not .AuthorAlignExpr)}}#if "{{.Meta.Author}}" != "" [
     #v(2em)
-    #text(font: "{{.Config.Folio.Manuscript.AuthorFont}}", size: {{.Config.Folio.Manuscript.AuthorFontSize}}, weight: "{{.Config.Folio.Manuscript.AuthorFontWeight}}")[{{if .Meta.AuthorAttribution}}{{.Meta.AuthorAttribution}} {{end}}{{.Meta.Author}}]
+    #text({{fontArgs .Config.Folio.Manuscript.TitlePage.Author.Font}})[{{if .Meta.AuthorAttribution}}{{.Meta.AuthorAttribution}} {{end}}{{.Meta.Author}}]
   ]{{end}}
 ]
 
 {{if and .IsUS (not .WordCountAlignExpr)}}
 {{if .Config.Folio.Manuscript.TitlePage.IncludeWordCount}}#if "{{.Meta.WordCount}}" != "" [
   #place(bottom + center, float: true)[
-    #text(font: "{{.Config.Folio.Manuscript.WordCountFont}}", size: {{.Config.Folio.Manuscript.WordCountFontSize}}, weight: "{{.Config.Folio.Manuscript.WordCountFontWeight}}")[{{.Meta.WordCount}}]
+    #text({{fontArgs .Config.Folio.Manuscript.TitlePage.WordCount.Font}})[{{.Meta.WordCount}}]
   ]
 ]{{end}}
 {{end}}
@@ -361,12 +332,10 @@
 {{.Config.Folio.Manuscript.TOC.BlankPageBefore.TypstDirective}}
 #place(top + left, dy: -folio-toc-continuation-padding)[
   #text(
-    font: "{{.Config.Folio.Manuscript.TOC.HeadingFont}}",
-    size: {{.Config.Folio.Manuscript.TOC.HeadingFontSize}},
-    weight: "{{.Config.Folio.Manuscript.TOC.HeadingFontWeight}}",
+    {{fontArgs .Config.Folio.Manuscript.TOC.Heading.Font}}
   )[{{.Config.Folio.Manuscript.TOC.Title}}]
 ]
-#text(font: "{{.Config.Folio.Manuscript.TOC.Font}}", size: {{.Config.Folio.Manuscript.TOC.FontSize}}, weight: "{{.Config.Folio.Manuscript.TOC.FontWeight}}")[
+#text({{fontArgs .Config.Folio.Manuscript.TOC.Font}})[
   #set par(leading: {{.Config.Folio.Manuscript.TOC.LineSpacing}})
   #show outline.entry: it => block(
     above: if it.level == 1 { {{.Config.Folio.Manuscript.TOC.PartGapBefore}} } else { 0pt },
@@ -408,7 +377,7 @@
 #set text(
   top-edge: 0.8em,
   bottom-edge: -0.2em,
-  tracking: {{.Config.Folio.Manuscript.LetterSpacing}},
+  tracking: {{.Config.Folio.Manuscript.Font.LetterSpacing}},
   costs: (widow: {{if .WidowOrphanControl}}100%{{else}}0%{{end}}, orphan: {{if .WidowOrphanControl}}100%{{else}}0%{{end}}),
 )
 #set par(
@@ -442,11 +411,7 @@
     } else {
       align({{.FooterAlignExpr}})[
         #text(
-          font: "{{.Config.Folio.Manuscript.PageFooter.Font}}",
-          size: {{.Config.Folio.Manuscript.PageFooter.FontSize}},
-          weight: "{{.Config.Folio.Manuscript.PageFooter.FontWeight}}",{{if .Config.Folio.Manuscript.PageFooter.FontStyle}}
-          style: "{{.Config.Folio.Manuscript.PageFooter.FontStyle}}",{{end}}
-          tracking: {{.Config.Folio.Manuscript.PageFooter.LetterSpacing}},
+          {{fontArgs .Config.Folio.Manuscript.PageFooter.Font}}
         )[{{if .HasFooterFrontmatter}}#{ if is-body { {{if .HasFooterAlt}}if calc.odd(pg) { [{{.FooterAlt}}] } else { [{{.Footer}}] }{{else}}[{{.Footer}}]{{end}} } else { {{if .HasFooterAltFrontmatter}}if calc.odd(pg) { [{{.FooterAltFrontmatter}}] } else { [{{.FooterFrontmatter}}] }{{else}}[{{.FooterFrontmatter}}]{{end}} } }{{else}}{{if .HasFooterAlt}}#{ if calc.odd(pg) { [{{.FooterAlt}}] } else { [{{.Footer}}] } }{{else}}{{.Footer}}{{end}}{{end}}]
       ]
     }
@@ -459,11 +424,7 @@
     } else {
       align({{.HeaderAlignExpr}})[
         #text(
-          font: "{{.Config.Folio.Manuscript.PageHeader.Font}}",
-          size: {{.Config.Folio.Manuscript.PageHeader.FontSize}},
-          weight: "{{.Config.Folio.Manuscript.PageHeader.FontWeight}}",{{if .Config.Folio.Manuscript.PageHeader.FontStyle}}
-          style: "{{.Config.Folio.Manuscript.PageHeader.FontStyle}}",{{end}}
-          tracking: {{.Config.Folio.Manuscript.PageHeader.LetterSpacing}},
+          {{fontArgs .Config.Folio.Manuscript.PageHeader.Font}}
         )[{{if .HasHeaderFrontmatter}}#{ if is-body { {{if .HasHeaderAlt}}if calc.odd(pg) { [{{.HeaderAlt}}] } else { [{{.Header}}] }{{else}}[{{.Header}}]{{end}} } else { {{if .HasHeaderAltFrontmatter}}if calc.odd(pg) { [{{.HeaderAltFrontmatter}}] } else { [{{.HeaderFrontmatter}}] }{{else}}[{{.HeaderFrontmatter}}]{{end}} } }{{else}}{{if .HasHeaderAlt}}#{ if calc.odd(pg) { [{{.HeaderAlt}}] } else { [{{.Header}}] } }{{else}}{{.Header}}{{end}}{{end}}]
       ]
     }

@@ -50,19 +50,14 @@ func TestManuscriptBlockSpacingAndQuoteFontCanBeConfigured(t *testing.T) {
 	typst := readFile(t, output)
 
 	assertContains(t, typst, `#quote(block: true)[`)
-	assertContains(t, typst, strings.Join([]string{
+	for _, fragment := range []string{
 		"#show quote.where(block: true): it => block(",
-		"  above: 1.25em,",
-		"  below: 1.25em,",
-		")[",
-		"  #pad(left: 2em)[#text(",
-		`    font: "Libertinus \"Serif\"",`,
-		"    size: 11pt,",
-		`    weight: "semibold",`,
-		"    stretch: 125%,",
-		`    style: "italic",`,
-		"    tracking: 0.03em,",
-	}, "\n"))
+		"above: 1.25em", "below: 1.25em", "#pad(left: 2em)[#text(",
+		`font: "Libertinus \"Serif\""`, "size: 11pt", `weight: "semibold"`,
+		"stretch: 125%", `style: "italic"`, "tracking: 0.03em",
+	} {
+		assertContains(t, typst, fragment)
+	}
 	assertContains(t, typst, strings.Join([]string{
 		"#show raw.where(block: true): it => block(",
 		"  above: 1.75em,",
@@ -143,23 +138,19 @@ func TestQuotedBlockFontPropertiesInheritWhenOmitted(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			typst := renderIssue15Manuscript(t, test.configYAML)
-			assertContains(t, typst, strings.Join([]string{
+			for _, fragment := range []string{
 				"#show quote.where(block: true): it => block(",
-				"  above: 0.5em,",
-				"  below: 0.5em,",
-				")[",
-				"  #pad(left: 0em)[#text(",
-				`    font: "Libertinus Serif",`,
-				"    size: 12pt,",
-				`    weight: "regular",`,
-				"    stretch: 100%,",
-				"    " + test.wantStyle,
-				"    tracking: 0em,",
-			}, "\n"))
+				"above: 0.5em", "below: 0.5em", "#pad(left: 0em)[#text(",
+				`font: "Libertinus Serif"`, "size: 12pt", `weight: "regular"`,
+				"stretch: 100%", test.wantStyle, "tracking: 0em",
+			} {
+				assertContains(t, typst, fragment)
+			}
 		})
 	}
 }
 
+// W039 replacement: inheritance is now from the lower layer at this same role path.
 func TestQuotedBlockFontPropertiesInheritIndependently(t *testing.T) {
 	configured := map[string]string{
 		"family":         "Quoted Serif",
@@ -187,10 +178,6 @@ func TestQuotedBlockFontPropertiesInheritIndependently(t *testing.T) {
 			lines := []string{
 				"folio:",
 				"  manuscript:",
-				"    font: Libertinus Serif",
-				"    font-size: 12pt",
-				"    font-weight: regular",
-				"    letter-spacing: 0em",
 				"    quoted-block:",
 				"      font:",
 			}
@@ -213,12 +200,12 @@ func TestQuotedBlockFontPropertiesInheritIndependently(t *testing.T) {
 			for property, value := range test.expected {
 				want[property] = value
 			}
-			assertContains(t, typst, `    font: "`+want["family"]+`",`)
-			assertContains(t, typst, "    size: "+want["size"]+",")
-			assertContains(t, typst, `    weight: "`+want["weight"]+`",`)
-			assertContains(t, typst, "    stretch: "+want["stretch"]+",")
-			assertContains(t, typst, `    style: "`+want["style"]+`",`)
-			assertContains(t, typst, "    tracking: "+want["letter-spacing"]+",")
+			assertContains(t, typst, `font: "`+want["family"]+`",`)
+			assertContains(t, typst, "size: "+want["size"]+",")
+			assertContains(t, typst, `weight: "`+want["weight"]+`",`)
+			assertContains(t, typst, "stretch: "+want["stretch"]+",")
+			assertContains(t, typst, `style: "`+want["style"]+`",`)
+			assertContains(t, typst, "tracking: "+want["letter-spacing"]+",")
 		})
 	}
 }
@@ -242,7 +229,7 @@ func TestQuotedBlockFontStyleMappings(t *testing.T) {
 				"        style: " + test.configured,
 				"",
 			}, "\n"))
-			assertContains(t, typst, `    style: "`+test.expected+`",`)
+			assertContains(t, typst, `style: "`+test.expected+`",`)
 		})
 	}
 }
@@ -250,9 +237,8 @@ func TestQuotedBlockFontStyleMappings(t *testing.T) {
 func TestBlockSpacingDefaultsWithoutPresetValues(t *testing.T) {
 	var cfg Config
 	normalizeConfig(&cfg)
-	if err := validateConfig(&cfg); err != nil {
-		t.Fatalf("defaulted configuration is invalid: %v", err)
-	}
+	// W039 requires fonts to come from the merged British base, while these
+	// non-font normalization defaults remain independently testable.
 	if got := cfg.Folio.Manuscript.QuotedBlockSpacing.Value; got != "0.5em" {
 		t.Fatalf("quoted-block spacing = %q, want 0.5em", got)
 	}
@@ -278,8 +264,8 @@ func TestQuotedBlockFontAcceptsNumericWeightAndPlainStretch(t *testing.T) {
 		"",
 	}, "\n"))
 
-	assertContains(t, typst, "    weight: 250,")
-	assertContains(t, typst, "    stretch: 125%,")
+	assertContains(t, typst, "weight: 250,")
+	assertContains(t, typst, "stretch: 125%,")
 }
 
 func TestPreciseCodeBlockSpacingOverridesEqualSpacing(t *testing.T) {

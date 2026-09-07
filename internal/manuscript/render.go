@@ -59,10 +59,6 @@ type templateData struct {
 	ChapterPosition    string
 	SceneBreakMarker   string
 	HasContact         bool
-	QuotedBlockFamily  string
-	QuotedBlockWeight  string
-	QuotedBlockStyle   string
-
 	// Page dimensions: either a named preset or a custom W x H (both non-empty means custom).
 	PageSpec PageSpec
 
@@ -194,9 +190,6 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 		ChapterPosition:         chapterPosition(cfg.Folio.Manuscript.Chapter.Position),
 		SceneBreakMarker:        escapeTypst(cfg.Folio.Manuscript.SceneBreak.Marker),
 		HasContact:              hasContactBlock(doc.Metadata, cfg),
-		QuotedBlockFamily:       typstutil.EscapeString(cfg.Folio.Manuscript.QuotedBlock.Font.Family),
-		QuotedBlockWeight:       typstFontWeight(cfg.Folio.Manuscript.QuotedBlock.Font.Weight),
-		QuotedBlockStyle:        typstFontStyle(cfg.Folio.Manuscript.QuotedBlock.Font.Style),
 		PageSpec:                pageSpec,
 		Gutter:                  cfg.Folio.Manuscript.Gutter,
 		GutterActive:            isGutterActive(cfg.Folio.Manuscript.Gutter),
@@ -238,7 +231,9 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("loading Typst template: %w", err)
 	}
-	tmpl, err := template.New("manuscript.typ").Parse(string(raw))
+	tmpl, err := template.New("manuscript.typ").Funcs(template.FuncMap{
+		"fontArgs": manuscriptFontArgs,
+	}).Parse(string(raw))
 	if err != nil {
 		return "", fmt.Errorf("parsing Typst template: %w", err)
 	}
@@ -855,7 +850,8 @@ func hasContactBlock(meta Metadata, cfg Config) bool {
 }
 
 func typstInline(text string, cfg Config) string {
-	return renderInlineMarkup(text, cfg.Folio.Manuscript.MonoFont, cfg.Folio.Manuscript.MonoFontSize, cfg.Folio.Manuscript.MonoFontWeight)
+	mono := cfg.Folio.Manuscript.Mono.Font
+	return renderInlineMarkup(text, mono.Family, mono.Size, mono.Weight)
 }
 
 func renderInlineMarkup(text string, monoFont string, monoSize string, monoWeight string) string {
@@ -981,6 +977,12 @@ func typstFontWeight(value string) string {
 		return value
 	}
 	return `"` + value + `"`
+}
+
+func manuscriptFontArgs(font FontConfig) string {
+	return fmt.Sprintf(`font: "%s", size: %s, weight: %s, stretch: %s, style: "%s", tracking: %s,`,
+		typstutil.EscapeString(font.Family), font.Size, typstFontWeight(font.Weight),
+		font.Stretch, typstFontStyle(font.Style), font.LetterSpacing)
 }
 
 func escapeTypst(text string) string {

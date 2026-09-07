@@ -22,7 +22,6 @@ import (
 
 var (
 	dimensionRE = regexp.MustCompile(`^(?:0|-?(?:\d+(?:\.\d+)?)(?:pt|mm|cm|in|em|%))$`)
-	weightRE    = regexp.MustCompile(`^(?:[1-9]00|thin|extralight|light|regular|medium|semibold|bold|extrabold|black)$`)
 	alignRE     = regexp.MustCompile(`^(?:left|center|right)$`)
 	pageRE      = regexp.MustCompile(`^[A-Za-z0-9-]+$`)
 
@@ -36,36 +35,44 @@ var (
 )
 
 type scriptTemplateData struct {
-	Page, Margin, Font, FontSize                     string
-	GlobalWeight, GlobalStretch                      string
-	DialogueSameLine                                 bool
-	SpeechSpace, DialogueIndent, DialogueWrap        string
-	SpeakerWeight, SpeakerContent, SpeakerAlign      string
-	SpeakerIndent                                    string
-	InstructionOpen, InstructionClose                string
-	InstructionPrefix, InstructionSuffix             string
-	InstructionAlign                                 string
-	DirectionSpace, DirectionAlign, DirectionIndent  string
-	DirectionOpen, DirectionClose                    string
-	TransitionIndent                                 string
-	ActSpace, ActAlign, ActFont, ActSize             string
-	ActWeight, ActOpen, ActClose                     string
-	SceneSpace, SceneAfter, SceneAlign               string
-	SceneFont, SceneSize, SceneWeight                string
-	SceneOpen, SceneClose                            string
-	FrontmatterSpace, FrontmatterAlign               string
-	FrontmatterSize, FrontmatterWeight               string
-	HasTitle, HasSubtitle, HasAuthor                 bool
-	TitlePageNumber                                  bool
-	Title, Subtitle, Author, AuthorPrefixInline      string
-	AuthorPrefixLines                                []string
-	TitleAlign, TitleOffset, TitleFont, TitleSize    string
-	TitleWeight, TitleStyle                          string
-	SubtitleSpace, SubtitleFont, SubtitleSize        string
-	SubtitleStyle                                    string
-	AuthorSpace, AuthorFont, AuthorSize, AuthorStyle string
-	FooterLeft, FooterRight                          string
-	Body                                             string
+	Page, Margin                                       string
+	RootFont, HeadingFont                              typstFontData
+	DialogueSameLine                                   bool
+	SpeechSpace, DialogueIndent, DialogueWrap          string
+	SpeakerFont                                        typstFontData
+	SpeakerContent, SpeakerAlign                       string
+	SpeakerIndent                                      string
+	InstructionOpen, InstructionClose                  string
+	InstructionPrefix, InstructionSuffix               string
+	InstructionAlign                                   string
+	InstructionFont                                    typstFontData
+	DialogueFont                                       typstFontData
+	DirectionSpace, DirectionAlign, DirectionIndent    string
+	DirectionOpen, DirectionClose                      string
+	DirectionFont                                      typstFontData
+	TransitionSpace, TransitionAlign, TransitionIndent string
+	TransitionFont                                     typstFontData
+	ActSpace, ActAlign, ActOpen, ActClose              string
+	ActFont                                            typstFontData
+	SceneSpace, SceneAfter, SceneAlign                 string
+	SceneFont                                          typstFontData
+	SceneOpen, SceneClose                              string
+	FrontmatterSpace, FrontmatterAlign                 string
+	FrontmatterFont                                    typstFontData
+	HasTitle, HasSubtitle, HasAuthor                   bool
+	TitlePageNumber                                    bool
+	Title, Subtitle, Author, AuthorPrefixInline        string
+	AuthorPrefixLines                                  []string
+	TitleAlign, TitleOffset                            string
+	TitleFont, SubtitleFont, AuthorFont                typstFontData
+	DateFont, VersionFont                              typstFontData
+	SubtitleSpace, AuthorSpace                         string
+	FooterLeft, FooterRight                            string
+	Body                                               string
+}
+
+type typstFontData struct {
+	Family, Size, Weight, Stretch, Style, LetterSpacing string
 }
 
 func renderPlayDocument(doc play.Document, cfg config.Config, target string, toStdout bool, force bool, stdout io.Writer) error {
@@ -106,15 +113,33 @@ func renderPlayTypst(doc play.Document, cfg config.Config) (string, error) {
 }
 
 func newScriptTemplateData(doc play.Document, cfg config.Config) (scriptTemplateData, error) {
-	font := cfg.String("folio.font", "Libertinus Serif")
-	fontSize := cfg.String("folio.font-size", "12pt")
+	var fontErr error
+	font := func(path string) typstFontData {
+		if fontErr != nil {
+			return typstFontData{}
+		}
+		value, err := cfg.Font(path)
+		if err != nil {
+			fontErr = err
+			return typstFontData{}
+		}
+		return typstFontData{
+			Family: escapeTypstString(value.Family), Size: value.Size,
+			Weight: typstWeight(value.Weight), Stretch: value.Stretch,
+			Style: typstStyle(value.Style), LetterSpacing: value.LetterSpacing,
+		}
+	}
 	data := scriptTemplateData{
-		Page: cfg.String("folio.page", "a4"), Margin: cfg.String("folio.margin", "25mm"), Font: escapeTypstString(font), FontSize: fontSize,
+		Page: cfg.String("folio.page", "a4"), Margin: cfg.String("folio.margin", "25mm"),
+		RootFont:          font("folio.font"),
+		HeadingFont:       font("folio.heading.font"),
 		SpeechSpace:       cfg.String("folio.positioning.speech.space-before", "1.6em"),
 		DialogueIndent:    typstDimension(cfg.String("folio.positioning.speech.dialogue.indent", "0")),
 		DialogueWrap:      cfg.String("folio.positioning.speech.dialogue.wrap-indent", "7em"),
 		DialogueSameLine:  cfg.String("folio.positioning.speech.dialogue.placement", "same-line") == "same-line",
-		SpeakerWeight:     boolWeight(cfg.Bool("folio.positioning.speech.speaker.bold", true)),
+		SpeakerFont:       font("folio.positioning.speech.speaker.font"),
+		InstructionFont:   font("folio.positioning.speech.speech-instruction.font"),
+		DialogueFont:      font("folio.positioning.speech.dialogue.font"),
 		SpeakerAlign:      validAlign(cfg.String("folio.positioning.speech.speaker.align", "left")),
 		SpeakerIndent:     typstDimension(cfg.String("folio.positioning.speech.speaker.indent", "0")),
 		InstructionPrefix: instructionDelimiter(cfg.String("folio.positioning.speech.speech-instruction.prefix", "(")),
@@ -123,39 +148,33 @@ func newScriptTemplateData(doc play.Document, cfg config.Config) (scriptTemplate
 		DirectionSpace:    cfg.String("folio.positioning.stage-direction.space-before", "1.6em"),
 		DirectionAlign:    validAlign(cfg.String("folio.positioning.stage-direction.align", "left")),
 		DirectionIndent:   typstDimension(cfg.String("folio.positioning.stage-direction.indent", "0")),
+		DirectionFont:     font("folio.positioning.stage-direction.font"),
+		TransitionSpace:   cfg.String("folio.positioning.transition.space-before", "1.6em"),
+		TransitionAlign:   validAlign(cfg.String("folio.positioning.transition.align", "right")),
 		TransitionIndent:  typstDimension(cfg.String("folio.positioning.transition.indent", "0")),
+		TransitionFont:    font("folio.positioning.transition.font"),
 		ActSpace:          cfg.String("folio.positioning.act-header.space-before", "0em"),
 		ActAlign:          validAlign(cfg.String("folio.positioning.act-header.align", "center")),
-		ActFont:           escapeTypstString(cfg.InheritedString("folio.positioning.act-header", "font", font)),
-		ActSize:           cfg.String("folio.positioning.act-header.font-size", "14pt"),
-		ActWeight:         boolWeight(cfg.Bool("folio.positioning.act-header.bold", true)),
+		ActFont:           font("folio.positioning.act-header.font"),
 		SceneSpace:        cfg.String("folio.positioning.scene-header.space-before", "2em"),
 		SceneAfter:        cfg.String("folio.positioning.scene-header.space-after", "0.5em"),
 		SceneAlign:        validAlign(cfg.String("folio.positioning.scene-header.align", "left")),
-		SceneFont:         escapeTypstString(cfg.InheritedString("folio.positioning.scene-header", "font", font)),
-		SceneSize:         cfg.String("folio.positioning.scene-header.font-size", "12pt"),
-		SceneWeight:       boolWeight(cfg.Bool("folio.positioning.scene-header.bold", true)),
+		SceneFont:         font("folio.positioning.scene-header.font"),
 		FrontmatterSpace:  cfg.String("folio.positioning.frontmatter.header.space-before", "2em"),
 		FrontmatterAlign:  validAlign(cfg.String("folio.positioning.frontmatter.header.align", "left")),
-		FrontmatterSize:   cfg.String("folio.positioning.frontmatter.header.font-size", "14pt"),
-		FrontmatterWeight: boolWeight(cfg.Bool("folio.positioning.frontmatter.header.bold", true)),
+		FrontmatterFont:   font("folio.positioning.frontmatter.header.font"),
 		TitlePageNumber:   cfg.Bool("folio.title-page.page-number", false),
 		Title:             escapeTypstContent(doc.Metadata["title"]), Subtitle: escapeTypstContent(doc.Metadata["subtitle"]), Author: escapeTypstContent(doc.Metadata["author"]),
-		TitleAlign: validAlign(cfg.String("folio.title-page.title.align", "center")), TitleFont: escapeTypstString(cfg.InheritedString("folio.title-page.title", "font", font)),
-		TitleSize: cfg.String("folio.title-page.title.font-size", "24pt"), TitleWeight: boolWeight(cfg.Bool("folio.title-page.title.bold", true)), TitleStyle: boolStyle(cfg.Bool("folio.title-page.title.italic", false)),
-		SubtitleSpace: cfg.String("folio.title-page.subtitle.space-before", "1em"), SubtitleFont: escapeTypstString(cfg.InheritedString("folio.title-page.subtitle", "font", font)),
-		SubtitleSize: cfg.String("folio.title-page.subtitle.font-size", "14pt"), SubtitleStyle: boolStyle(cfg.Bool("folio.title-page.subtitle.italic", true)),
-		AuthorSpace: cfg.String("folio.title-page.author.space-before", "2em"), AuthorFont: escapeTypstString(cfg.InheritedString("folio.title-page.author", "font", font)),
-		AuthorSize: cfg.String("folio.title-page.author.font-size", "12pt"), AuthorStyle: boolStyle(cfg.Bool("folio.title-page.author.italic", false)),
+		TitleAlign: validAlign(cfg.String("folio.title-page.title.align", "center")), TitleFont: font("folio.title-page.title.font"),
+		SubtitleSpace: cfg.String("folio.title-page.subtitle.space-before", "1em"), SubtitleFont: font("folio.title-page.subtitle.font"),
+		AuthorSpace: cfg.String("folio.title-page.author.space-before", "2em"), AuthorFont: font("folio.title-page.author.font"),
+		DateFont: font("folio.title-page.date.font"), VersionFont: font("folio.title-page.version.font"),
+	}
+	if fontErr != nil {
+		return scriptTemplateData{}, fontErr
 	}
 	data.AuthorPrefixInline, data.AuthorPrefixLines = authorPrefix(cfg.String("folio.title-page.author.prefix", ""))
 	data.HasTitle, data.HasSubtitle, data.HasAuthor = data.Title != "", data.Subtitle != "", data.Author != ""
-	if cfg.Bool("folio.positioning.stage-direction.italic", true) {
-		data.DirectionOpen, data.DirectionClose = "_", " _"
-	}
-	if cfg.Bool("folio.positioning.speech.speech-instruction.italic", true) {
-		data.InstructionOpen, data.InstructionClose = "_", "_"
-	}
 	data.SpeakerContent = caseExpression(cfg.String("folio.positioning.speech.speaker.case-transform", "upper"), escapeTypstContent(cfg.String("folio.positioning.speech.speaker.prefix", ""))+"#name"+escapeTypstContent(cfg.String("folio.positioning.speech.speaker.suffix", ":")))
 	data.ActOpen, data.ActClose = caseDelimiters(cfg.String("folio.positioning.act-header.case-transform", "as-written"))
 	data.SceneOpen, data.SceneClose = caseDelimiters(cfg.String("folio.positioning.scene-header.case-transform", "as-written"))
@@ -163,9 +182,7 @@ func newScriptTemplateData(doc play.Document, cfg config.Config) (scriptTemplate
 	if cfg.String("folio.title-page.title.position", "third") != "third" {
 		data.TitleOffset = "40%"
 	}
-	data.GlobalWeight = optionalWeight(cfg.String("folio.font-weight", ""))
-	data.GlobalStretch = optionalStretch(cfg.String("folio.font-stretch", ""))
-	data.FooterLeft, data.FooterRight = titleFooter(doc, cfg)
+	data.FooterLeft, data.FooterRight = titleFooter(doc, cfg, data.DateFont, data.VersionFont)
 	data.Body = renderPlayBody(doc, cfg)
 	if err := validateScriptData(data); err != nil {
 		return scriptTemplateData{}, err
@@ -235,10 +252,8 @@ func renderPlayBody(doc play.Document, cfg config.Config) string {
 		case play.EventPropText:
 			lines = append(lines, "#prop-text["+inlineTypst(event.Text, footnotes)+"]")
 		case play.EventTransition:
-			align := validAlign(cfg.String("folio.positioning.transition.align", "right"))
 			content := caseExpression(cfg.String("folio.positioning.transition.case-transform", "upper"), inlineTypst(event.Text, footnotes))
-			indent := typstDimension(cfg.String("folio.positioning.transition.indent", "0"))
-			lines = append(lines, "#v("+cfg.String("folio.positioning.transition.space-before", "1.6em")+")", "#pad(left: "+indent+")[#align("+align+")["+content+"]]")
+			lines = append(lines, "#transition["+content+"]")
 		case play.EventCharacterTableStart:
 			var rows []string
 			for i+1 < len(doc.Events) && doc.Events[i+1].Kind == play.EventCharacterTableRow {
@@ -299,13 +314,13 @@ func escapeTypstString(value string) string {
 
 func validateScriptData(data scriptTemplateData) error {
 	for name, value := range map[string]string{
-		"font-size": data.FontSize, "margin": data.Margin, "speech spacing": data.SpeechSpace, "dialogue indent": data.DialogueIndent, "dialogue wrap": data.DialogueWrap,
-		"speaker indent": data.SpeakerIndent, "direction spacing": data.DirectionSpace, "direction indent": data.DirectionIndent, "transition indent": data.TransitionIndent,
-		"act spacing": data.ActSpace, "act size": data.ActSize,
-		"scene spacing": data.SceneSpace, "scene after": data.SceneAfter, "scene size": data.SceneSize,
-		"frontmatter spacing": data.FrontmatterSpace, "frontmatter size": data.FrontmatterSize,
-		"title size": data.TitleSize, "subtitle spacing": data.SubtitleSpace, "subtitle size": data.SubtitleSize,
-		"author spacing": data.AuthorSpace, "author size": data.AuthorSize,
+		"font-size": data.RootFont.Size, "margin": data.Margin, "speech spacing": data.SpeechSpace, "dialogue indent": data.DialogueIndent, "dialogue wrap": data.DialogueWrap,
+		"speaker indent": data.SpeakerIndent, "direction spacing": data.DirectionSpace, "direction indent": data.DirectionIndent, "transition spacing": data.TransitionSpace, "transition indent": data.TransitionIndent,
+		"act spacing": data.ActSpace, "act size": data.ActFont.Size,
+		"scene spacing": data.SceneSpace, "scene after": data.SceneAfter, "scene size": data.SceneFont.Size,
+		"frontmatter spacing": data.FrontmatterSpace, "frontmatter size": data.FrontmatterFont.Size,
+		"title size": data.TitleFont.Size, "subtitle spacing": data.SubtitleSpace, "subtitle size": data.SubtitleFont.Size,
+		"author spacing": data.AuthorSpace, "author size": data.AuthorFont.Size,
 	} {
 		if !dimensionRE.MatchString(value) {
 			return fmt.Errorf("invalid %s value %q", name, value)
@@ -365,45 +380,39 @@ func writerIsTerminal(writer io.Writer) bool {
 	return err == nil && info.Mode()&os.ModeCharDevice != 0
 }
 
-func titleFooter(doc play.Document, cfg config.Config) (string, string) {
+func titleFooter(doc play.Document, cfg config.Config, dateFont, versionFont typstFontData) (string, string) {
 	slots := map[string][]string{}
-	for _, item := range []struct{ value, position, size string }{
-		{doc.Metadata["version"], cfg.String("folio.title-page.version.position", "bottom-right"), cfg.String("folio.title-page.version.font-size", "10pt")},
-		{doc.Metadata["date"], cfg.String("folio.title-page.date.position", "bottom-left"), cfg.String("folio.title-page.date.font-size", "10pt")},
+	for _, item := range []struct {
+		value, position string
+		font            typstFontData
+	}{
+		{doc.Metadata["version"], cfg.String("folio.title-page.version.position", "bottom-right"), versionFont},
+		{doc.Metadata["date"], cfg.String("folio.title-page.date.position", "bottom-left"), dateFont},
 	} {
 		if item.value != "" {
-			slots[item.position] = append(slots[item.position], "#text(size: "+item.size+")["+escapeTypstContent(item.value)+"]")
+			slots[item.position] = append(slots[item.position], "#text("+item.font.Args()+")["+escapeTypstContent(item.value)+"]")
 		}
 	}
 	return strings.Join(slots["bottom-left"], " #linebreak() "), strings.Join(slots["bottom-right"], " #linebreak() ")
 }
 
-func optionalWeight(value string) string {
-	value = strings.ToLower(strings.TrimSpace(value))
-	if value == "" {
-		return ""
-	}
-	if !weightRE.MatchString(value) {
-		return ""
-	}
-	if _, err := strconv.Atoi(value); err == nil {
-		return ", weight: " + value
-	}
-	return `, weight: "` + value + `"`
+func (font typstFontData) Args() string {
+	return fmt.Sprintf(`font: "%s", size: %s, weight: %s, stretch: %s, style: "%s", tracking: %s`,
+		font.Family, font.Size, font.Weight, font.Stretch, font.Style, font.LetterSpacing)
 }
 
-func optionalStretch(value string) string {
-	value = strings.TrimSpace(value)
-	if value == "" {
-		return ""
+func typstWeight(value string) string {
+	if _, err := strconv.Atoi(value); err == nil {
+		return value
 	}
-	if !strings.HasSuffix(value, "%") {
-		value += "%"
+	return `"` + escapeTypstString(strings.ToLower(strings.TrimSpace(value))) + `"`
+}
+
+func typstStyle(value string) string {
+	if strings.EqualFold(strings.TrimSpace(value), "regular") {
+		return "normal"
 	}
-	if !dimensionRE.MatchString(value) {
-		return ""
-	}
-	return ", stretch: " + value
+	return strings.ToLower(strings.TrimSpace(value))
 }
 
 func caseExpression(transform string, content string) string {
@@ -422,20 +431,6 @@ func caseDelimiters(transform string) (string, string) {
 	default:
 		return "", ""
 	}
-}
-
-func boolWeight(value bool) string {
-	if value {
-		return "bold"
-	}
-	return "regular"
-}
-
-func boolStyle(value bool) string {
-	if value {
-		return "italic"
-	}
-	return "normal"
 }
 
 func validAlign(value string) string {

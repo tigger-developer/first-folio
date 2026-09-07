@@ -1,5 +1,5 @@
 // ABOUTME: Loads and deep-merges shared First Folio YAML configuration.
-// ABOUTME: Provides dotted, inherited, boolean, and typed access for every mode.
+// ABOUTME: Provides dotted, boolean, font, and typed access for every mode.
 package config
 
 import (
@@ -36,11 +36,7 @@ func Load(opts Options) (Config, error) {
 	if opts.Mode == "" {
 		opts.Mode = ModeScript
 	}
-	baseName := "presets/british-script.yaml"
-	if opts.Mode == ModeManuscript {
-		baseName = "presets/british-manuscript.yaml"
-	}
-	base, err := readEmbedded(baseName)
+	base, err := readEmbedded("presets/british.yaml")
 	if err != nil {
 		return Config{}, err
 	}
@@ -62,27 +58,21 @@ func Load(opts Options) (Config, error) {
 	}
 	style := selectStyle(opts.Mode, global, local, opts.CLI)
 
-	if opts.Mode == ModeManuscript && style == "us" {
-		override, err := readEmbedded("presets/us-overrides-manuscript.yaml")
+	name := ""
+	switch style {
+	case "us":
+		name = "presets/us.yaml"
+	case "screenplay":
+		if opts.Mode != ModeManuscript {
+			name = "presets/screenplay.yaml"
+		}
+	}
+	if name != "" {
+		override, err := readEmbedded(name)
 		if err != nil {
 			return Config{}, err
 		}
 		deepMerge(base, override)
-	} else if opts.Mode != ModeManuscript {
-		name := ""
-		switch style {
-		case "us":
-			name = "presets/us-overrides-script.yaml"
-		case "screenplay":
-			name = "presets/us-screenplay-overrides.yaml"
-		}
-		if name != "" {
-			override, err := readEmbedded(name)
-			if err != nil {
-				return Config{}, err
-			}
-			deepMerge(base, override)
-		}
 	}
 
 	deepMerge(base, global)
@@ -102,6 +92,9 @@ func Load(opts Options) (Config, error) {
 	setPath(base, "folio.style", style)
 	if opts.Mode == ModeManuscript {
 		setPath(base, "folio.manuscript.style", style)
+	}
+	if err := validateFonts(base); err != nil {
+		return Config{}, err
 	}
 	return Config{data: base}, nil
 }
@@ -144,17 +137,6 @@ func (c Config) Bool(path string, fallback bool) bool {
 		}
 	}
 	return fallback
-}
-
-func (c Config) InheritedString(path string, key string, fallback string) string {
-	parts := strings.Split(path, ".")
-	for len(parts) > 0 {
-		if value, ok := c.Get(strings.Join(append(parts, key), ".")); ok {
-			return fmt.Sprint(value)
-		}
-		parts = parts[:len(parts)-1]
-	}
-	return c.String(key, fallback)
 }
 
 func (c Config) Decode(target any) error {
@@ -293,6 +275,14 @@ func styleSuffix(style string) string {
 func applyCLI(base map[string]any, values map[string]any) {
 	for key, value := range values {
 		if key == "style" || value == nil {
+			continue
+		}
+		switch key {
+		case "font":
+			setPath(base, "folio.font.family", value)
+			continue
+		case "font-size":
+			setPath(base, "folio.font.size", value)
 			continue
 		}
 		if _, ok := (Config{data: base}).Get("folio." + key); ok {

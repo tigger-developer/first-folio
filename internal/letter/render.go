@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -18,7 +19,7 @@ import (
 )
 
 type templateData struct {
-	Page, Font, FontSize, Weight, Stretch                                    string
+	Page, Font, FontSize, Weight, Stretch, Style, LetterSpacing              string
 	MarginTop, MarginBottom, MarginLeft, MarginRight                         string
 	SpaceBeforeClosing, SpaceBeforeSignoff                                   string
 	SpaceAfterSender, SpaceAfterRecipient, SpaceAfterDate, SpaceAfterSubject string
@@ -33,8 +34,13 @@ var (
 )
 
 func RenderTypst(letter Letter, cfg config.Config) (string, error) {
+	font, err := cfg.Font("folio.letter.font")
+	if err != nil {
+		return "", err
+	}
 	data := templateData{
-		Page: cfg.String("folio.letter.page", "a4"), Font: escapeString(cfg.String("folio.letter.font", "Libertinus Serif")), FontSize: cfg.String("folio.letter.font-size", "11pt"),
+		Page: cfg.String("folio.letter.page", "a4"), Font: escapeString(font.Family), FontSize: font.Size,
+		Weight: letterWeight(font.Weight), Stretch: font.Stretch, Style: letterStyle(font.Style), LetterSpacing: font.LetterSpacing,
 		MarginTop: cfg.String("folio.letter.margin-top", "25mm"), MarginBottom: cfg.String("folio.letter.margin-bottom", "25mm"), MarginLeft: cfg.String("folio.letter.margin-left", "30mm"), MarginRight: cfg.String("folio.letter.margin-right", "25mm"),
 		SpaceBeforeClosing: cfg.String("folio.letter.space-before-closing", "1.2em"), SpaceBeforeSignoff: cfg.String("folio.letter.space-before-signoff", "1.5em"),
 		SpaceAfterSender: cfg.String("folio.letter.space-after-sender", "2em"), SpaceAfterRecipient: cfg.String("folio.letter.space-after-recipient", "1em"), SpaceAfterDate: cfg.String("folio.letter.space-after-date", "1em"), SpaceAfterSubject: cfg.String("folio.letter.space-after-subject", "0.5em"),
@@ -49,8 +55,6 @@ func RenderTypst(letter Letter, cfg config.Config) (string, error) {
 		}
 		data.Contact += escapeContent(letter.Contact)
 	}
-	data.Weight = optionalLetterWeight(cfg.String("folio.letter.font-weight", ""))
-	data.Stretch = optionalLetterStretch(cfg.String("folio.letter.font-stretch", ""))
 	raw, err := folio.Assets.ReadFile("templates/letter.typ")
 	if err != nil {
 		return "", fmt.Errorf("loading letter template: %w", err)
@@ -154,20 +158,16 @@ func escapeString(value string) string {
 	return typstutil.EscapeString(value)
 }
 
-func optionalLetterWeight(value string) string {
-	if strings.TrimSpace(value) == "" {
-		return ""
+func letterWeight(value string) string {
+	if _, err := strconv.Atoi(value); err == nil {
+		return value
 	}
-	return `, weight: "` + escapeString(strings.ToLower(strings.TrimSpace(value))) + `"`
+	return `"` + escapeString(strings.ToLower(strings.TrimSpace(value))) + `"`
 }
 
-func optionalLetterStretch(value string) string {
-	value = strings.TrimSpace(value)
-	if value == "" {
-		return ""
+func letterStyle(value string) string {
+	if strings.EqualFold(strings.TrimSpace(value), "regular") {
+		return "normal"
 	}
-	if !strings.HasSuffix(value, "%") {
-		value += "%"
-	}
-	return ", stretch: " + value
+	return strings.ToLower(strings.TrimSpace(value))
 }

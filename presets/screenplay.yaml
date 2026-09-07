@@ -1,0 +1,71 @@
+# American screenplay differences from the shared British base.
+
+folio:
+  font:
+    family: Courier Prime
+
+  title-page:
+    title:
+      position: center
+      font:
+        family: Courier Prime
+        size: 12pt
+        weight: regular
+    subtitle:
+      font:
+        family: Courier Prime
+        size: 12pt
+        style: regular
+    author:
+      prefix: "Written by\n"
+      font:
+        family: Courier Prime
+    date:
+      position: bottom-right
+      font:
+        family: Courier Prime
+    version:
+      font:
+        family: Courier Prime
+
+  positioning:
+    speech:
+      space-before: 1em
+      speaker:
+        align: center
+        suffix: ""
+        font:
+          family: Courier Prime
+          weight: regular
+      speech-instruction:
+        placement: new-line
+        align: center
+        font:
+          family: Courier Prime
+      dialogue:
+        placement: new-line
+        indent: 25.4mm
+        wrap-indent: 25.4mm
+        font:
+          family: Courier Prime
+    stage-direction:
+      font:
+        family: Courier Prime
+        style: regular
+    transition:
+      indent: 101.6mm
+      font:
+        family: Courier Prime
+    frontmatter:
+      header:
+        font:
+          family: Courier Prime
+    act-header:
+      case-transform: upper
+      font:
+        family: Courier Prime
+    scene-header:
+      align: center
+      case-transform: upper
+      font:
+        family: Courier Prime

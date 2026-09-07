@@ -197,14 +197,14 @@ Hello.[fn:note]
 		want   []string
 		absent []string
 	}{
-		{"root layout", "folio:\n  font: Test Font\n  font-size: 10pt\n  page: a5\n  margin: 18mm\n", []string{`font: "Test Font"`, "size: 10pt", `paper: "a5"`, "margin: 18mm"}, nil},
-		{"speaker", "folio:\n  positioning:\n    speech:\n      speaker:\n        bold: false\n        suffix: \"\"\n", []string{`weight: "regular"`, "#upper[#name]"}, []string{"#name:"}},
-		{"direction", "folio:\n  positioning:\n    stage-direction:\n      italic: false\n      align: center\n      space-before: 3em\n", []string{"#align(center)[#body]", "above: 3em"}, nil},
-		{"headers", "folio:\n  positioning:\n    act-header:\n      align: left\n      font-size: 18pt\n      bold: false\n      case-transform: upper\n    scene-header:\n      align: center\n      font-size: 14pt\n      case-transform: upper\n", []string{"align(left)", "size: 18pt", `weight: "regular"`, "#upper[#title]", "align(center)", "size: 14pt"}, nil},
-		{"title", "folio:\n  title-page:\n    title:\n      font-size: 18pt\n      bold: false\n      italic: true\n    subtitle:\n      italic: false\n    author:\n      prefix: \"\"\n", []string{"size: 18pt", `style: "italic"`, "A Subtitle", "Example Author"}, []string{"by Example Author"}},
+		{"root layout", "folio:\n  font:\n    family: Test Font\n    size: 10pt\n  page: a5\n  margin: 18mm\n", []string{`font: "Test Font"`, "size: 10pt", `paper: "a5"`, "margin: 18mm"}, nil},
+		{"speaker", "folio:\n  positioning:\n    speech:\n      speaker:\n        font:\n          weight: regular\n        suffix: \"\"\n", []string{`weight: "regular"`, "#upper[#name]"}, []string{"#name:"}},
+		{"direction", "folio:\n  positioning:\n    stage-direction:\n      font:\n        style: regular\n      align: center\n      space-before: 3em\n", []string{"#align(center)[#text(", `style: "normal"`, "above: 3em"}, nil},
+		{"headers", "folio:\n  positioning:\n    act-header:\n      align: left\n      font:\n        size: 18pt\n        weight: regular\n      case-transform: upper\n    scene-header:\n      align: center\n      font:\n        size: 14pt\n      case-transform: upper\n", []string{"align(left)", "size: 18pt", `weight: "regular"`, "#upper[#title]", "align(center)", "size: 14pt"}, nil},
+		{"title", "folio:\n  title-page:\n    title:\n      font:\n        size: 18pt\n        weight: regular\n        style: italic\n    subtitle:\n      font:\n        style: regular\n    author:\n      prefix: \"\"\n", []string{"size: 18pt", `style: "italic"`, "A Subtitle", "Example Author"}, []string{"by Example Author"}},
 		{"filtered", "render:\n  stage-directions: false\n  frontmatter: false\n  footnotes: false\n  transitions: false\n", []string{"#dialogue"}, []string{"Night.", "Intro text.", "#footnote", "CUT TO"}},
 		{"us style", "folio:\n  style: us\n", []string{"spacing: 0em", "#align(left)"}, []string{"columns: (7em, 1fr)"}},
-		{"screenplay style", "folio:\n  style: screenplay\n", []string{`font: "Courier Prime"`, "#v(40%)", `weight: "regular"`, "pad(left: 25.4mm, right: 25.4mm)", "#align(center)[_(#direction)_]", "#pad(left: 101.6mm)[#align(right)", "#align(left)[#body]", "#upper[#title]", ")[Written by]", "#v(0.3em)", ")[Example Author]"}, []string{"columns: (7em, 1fr)", "#align(left)[_#body _]", "Written by\\nExample Author"}},
+		{"screenplay style", "folio:\n  style: screenplay\n", []string{`font: "Courier Prime"`, "#v(40%)", `weight: "regular"`, "pad(left: 25.4mm, right: 25.4mm)", "#align(center)[#text(", "pad(left: 101.6mm)[#align(right)", "#align(left)[#text(", "#upper[#title]", ")[Written by]", "#v(0.3em)", ")[Example Author]"}, []string{"columns: (7em, 1fr)", "Written by\\nExample Author"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -239,17 +239,17 @@ func TestConfigLayerMatrixParity(t *testing.T) {
 	t.Setenv("HOME", home)
 	source := filepath.Join(dir, "play.org")
 	writeAppFile(t, source, "#+TITLE: Source\n* ACT ONE\n**** CÁIT\nHello.\n")
-	writeAppFile(t, filepath.Join(home, ".config", "first-folio", "script.yaml"), "title: Global\nfolio:\n  font: Global Font\n  margin: 30mm\n")
+	writeAppFile(t, filepath.Join(home, ".config", "first-folio", "script.yaml"), "title: Global\nfolio:\n  font:\n    family: Global Font\n  margin: 30mm\n")
 	writeAppFile(t, filepath.Join(home, ".config", "first-folio", "script-us.yaml"), "folio:\n  margin: 28mm\n")
-	writeAppFile(t, filepath.Join(dir, "script.yaml"), "title: Local\nfolio:\n  style: us\n  font: Local Font\n")
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), "title: Local\nfolio:\n  style: us\n  font:\n    family: Local Font\n")
 	writeAppFile(t, filepath.Join(dir, "script-us.yaml"), "folio:\n  page: a5\n")
 	target := filepath.Join(dir, "out.typ")
-	status, _, stderr := runApp(t, "convert", source, target, "--font", "CLI Font")
+	status, _, stderr := runApp(t, "convert", source, target, "--font", "CLI Font", "--font-size", "13pt")
 	if status != 0 {
 		t.Fatal(stderr)
 	}
 	output := readAppFile(t, target)
-	for _, fragment := range []string{"Local", `font: "CLI Font"`, "margin: 28mm", `paper: "a5"`} {
+	for _, fragment := range []string{"Local", `font: "CLI Font", size: 13pt`, "margin: 28mm", `paper: "a5"`} {
 		if !strings.Contains(output, fragment) {
 			t.Errorf("layered output missing %q:\n%s", fragment, output)
 		}

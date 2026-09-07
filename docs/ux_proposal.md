@@ -39,7 +39,7 @@ The commands have genuinely different shapes. The UI must reflect that rather th
 
 The style options are asymmetric on purpose:
 
-- `convert` has three styles: **British Stageplay**, **US Stageplay**, and **Screenplay**. Stageplay layout differs by nation (typography, title-page conventions), which is why British and US are distinct. Screenplay is a single industry-standard format (Courier Prime, standard title-page conventions) that applies regardless of nation - there is no "British Screenplay" and none is intended. Verified in `internal/config/config.go:65-80` and `presets/us-screenplay-overrides.yaml`.
+- `convert` has three styles: **British Stageplay**, **US Stageplay**, and **Screenplay**. Stageplay layout differs by nation (typography, title-page conventions), which is why British and US are distinct. Screenplay is a single industry-standard format (Courier Prime, standard title-page conventions) that applies regardless of nation - there is no "British Screenplay" and none is intended. The runtime differences are defined in `presets/us.yaml` and `presets/screenplay.yaml`.
 - `manuscript` has two because "screenplay" is a script format and does not apply to prose. Prose manuscripts vary only by nation.
 - `letter` has no style flag at all; letters use one layout (see `docs/config.md` §Letter settings).
 
@@ -127,7 +127,7 @@ Primary action: `Render Manuscript`.
 - **Errors**: non-zero exit codes surface an alert with the last stderr line as the title and the full stderr in a "Show details" disclosure.
 - **Cancellation**: `Run` becomes `Cancel` while a subprocess is active and sends SIGTERM.
 - **Recent files**: each command remembers its last N inputs in `UserDefaults`, keyed by command. No cross-command sharing (the source formats overlap but the intent does not).
-- **Drag-and-drop**: dragging a file onto the sidebar selects the appropriate mode by extension (`.fountain` → Convert, multiple `.md` → Manuscript, single `.org` → last-used of Convert/Letter/Manuscript). This is a convenience, not a substitute for the picker.
+- **Drag-and-drop**: dragging a file onto the sidebar selects the appropriate mode by extension (`.fountain` -> Convert, multiple `.md` -> Manuscript, single `.org` -> last-used of Convert/Letter/Manuscript). This is a convenience, not a substitute for the picker.
 
 ## Configuration
 
@@ -136,7 +136,7 @@ The app does not write config files in MVP (matches the CLI contract in `docs/co
 - Read `~/.config/first-folio/script.yaml` at launch, if present, to prefill default style, font, and page size in the Convert screen.
 - Show the resolved config sources in a Preferences sheet: global path, nearest local ancestor path (if a source file is loaded), active style-specific siblings, and the CLI overrides that will be added by the app's current field values. This is a diagnostic aid so a writer can see why an output looks the way it does.
 
-**No bundled script.yaml.** The app ships without a `script.yaml` inside its bundle. Defaults come from `folio` itself - the CLI already embeds `presets/british-script.yaml` (see `internal/config/config.go:39` and `assets.go`) and applies it when no user config is present. Duplicating those defaults in the app bundle would create two sources of truth that could drift. If the app needs to render fields with default values (for example in the post-MVP Preferences pane), it obtains them by asking `folio` (via a schema/effective-config CLI mode - see Open Question 6), not from an app-local file.
+**No bundled script.yaml.** The app ships without a `script.yaml` inside its bundle. Defaults come from `folio` itself - the CLI embeds the shared `presets/british.yaml` base and applies it when no user config is present. Duplicating those defaults in the app bundle would create two sources of truth that could drift. If the app needs to render fields with default values (for example in the post-MVP Preferences pane), it obtains them by asking `folio` (via a schema/effective-config CLI mode - see Open Question 6), not from an app-local file.
 
 The app never edits `script.yaml` in MVP. Users who want a persistent change edit the file themselves; the app rereads it on next launch or when explicitly refreshed.
 
@@ -163,7 +163,7 @@ The pane is a scroll view of collapsible blocks matching the config schema in `d
 
 - **Shared metadata** (`title`, `subtitle`, `author`, `date`, `version`)
 - **Shared rendering options** (`render.*` toggles)
-- **PDF settings** (`folio.font`, `folio.font-size`, `folio.margin`, `folio.page`, `folio.style`, `folio.default-format`)
+- **PDF settings** (`folio.font.*`, `folio.heading.font.*`, `folio.margin`, `folio.page`, `folio.style`, `folio.default-format`)
 - **Title page** (`folio.title-page.*`)
 - **Positioning** (`folio.positioning.*`, itself nested: `speech`, `stage-direction`, `transition`, headers)
 - **Letter** (`folio.letter.*`)
@@ -178,10 +178,10 @@ Each field row shows:
 - The dotted key (e.g. `folio.positioning.speech.speaker.case`)
 - A control appropriate to the field's type, with **dropdown options** wherever the CLI accepts a fixed set:
   - Enums (`style`, `page`, `case-transform`, `align`, `position`) -> `Picker` with the configuration contract's accepted values
-  - Booleans (`render.*`, `folio.positioning.stage-direction.italic`) -> `Toggle`
-  - Sizes (`font-size`, `margin`, `indent`) -> text field with a dropdown of common values (`10pt`, `11pt`, `12pt`; `20mm`, `25mm`, `30mm`) plus free text for anything else
-  - Fonts → text field with a dropdown of fonts installed on the system that Typst can see
-  - Free-form strings (`title`, `author`) → plain text field
+  - Booleans (`render.*`, `folio.manuscript.justify`) -> `Toggle`
+  - Sizes (`font.size`, `margin`, `indent`) -> text field with a dropdown of common values (`10pt`, `11pt`, `12pt`; `20mm`, `25mm`, `30mm`) plus free text for anything else
+  - Fonts -> text field with a dropdown of fonts installed on the system that Typst can see
+  - Free-form strings (`title`, `author`) -> plain text field
 - A subtle secondary line showing the resolved value under the current scope, and which layer it came from (`from global`, `from local`, `from built-in`) - so users can tell whether their edit will actually take effect.
 - A revert-to-inherited affordance (small `↺` icon) that removes the key from this scope and lets a lower layer win again.
 
@@ -190,7 +190,7 @@ Each field row shows:
 The editor validates and rejects invalid config before writing to disk. No `Save` action can produce a `script.yaml` that `folio` would refuse to load.
 
 - Enum fields are constrained at the control level - a dropdown cannot yield an out-of-set value.
-- Size fields (`font-size`, `margin`, `indent`) are validated against Typst's length syntax; anything typed free-form is checked before save.
+- Size fields (`font.size`, `margin`, `indent`) are validated against Typst's length syntax; anything typed free-form is checked before save.
 - Cross-field constraints (for example, `folio.style: screenplay` disabling `folio.positioning.speech.speaker.case` if the screenplay preset pins it) are surfaced as inline warnings, not silent overrides.
 - The final gate is a dry-run: on `Save`, the app writes the candidate YAML to a temporary file and invokes `folio` in a validate-only mode against it. If the CLI rejects the file, the app shows the CLI's error, does not touch the real `script.yaml`, and keeps the pane in edit state. This requires a validate-only mode on the CLI (e.g. `folio config --validate PATH`); see Open Question 6.
 - Malformed YAML that reaches the editor (from an external edit) is displayed with the parser's line/column error and the pane refuses to enter edit mode until the user either fixes the file externally or discards changes.

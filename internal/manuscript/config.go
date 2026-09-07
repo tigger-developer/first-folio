@@ -99,79 +99,47 @@ type Config struct {
 }
 
 type Folio struct {
-	Style           string           `yaml:"style"`
-	Font            string           `yaml:"font"`
-	FontSize        string           `yaml:"font-size"`
-	FontWeight      string           `yaml:"font-weight"`
-	HeadingFont     string           `yaml:"heading-font"`
-	HeadingFontSize string           `yaml:"heading-font-size"`
-	Page            string           `yaml:"page"`
-	Margin          string           `yaml:"margin"`
-	Manuscript      ManuscriptConfig `yaml:"manuscript"`
+	Style      string           `yaml:"style"`
+	Font       FontConfig       `yaml:"font"`
+	Heading    FontContainer    `yaml:"heading"`
+	Page       string           `yaml:"page"`
+	Margin     string           `yaml:"margin"`
+	Manuscript ManuscriptConfig `yaml:"manuscript"`
 }
 
 type ManuscriptConfig struct {
-	Style               string              `yaml:"style"`
-	Page                string              `yaml:"page"`
-	Margin              string              `yaml:"margin"`
-	Font                string              `yaml:"font"`
-	FontSize            string              `yaml:"font-size"`
-	FontWeight          string              `yaml:"font-weight"`
-	HeadingFont         string              `yaml:"heading-font"`
-	HeadingFontSize     string              `yaml:"heading-font-size"`
-	HeadingFontWeight   string              `yaml:"heading-font-weight"`
-	MonoFont            string              `yaml:"mono-font"`
-	MonoFontSize        string              `yaml:"mono-font-size"`
-	MonoFontWeight      string              `yaml:"mono-font-weight"`
-	TitleFont           string              `yaml:"title-font"`
-	TitleFontSize       string              `yaml:"title-font-size"`
-	TitleFontWeight     string              `yaml:"title-font-weight"`
-	SubtitleFont        string              `yaml:"subtitle-font"`
-	SubtitleFontSize    string              `yaml:"subtitle-font-size"`
-	SubtitleFontWeight  string              `yaml:"subtitle-font-weight"`
-	SubtitleFontStyle   string              `yaml:"subtitle-font-style"`
-	AuthorFont          string              `yaml:"author-font"`
-	AuthorFontSize      string              `yaml:"author-font-size"`
-	AuthorFontWeight    string              `yaml:"author-font-weight"`
-	Attribution         string              `yaml:"attribution"`
-	AuthorAttribution   string              `yaml:"author-attribution"`
-	DateFont            string              `yaml:"date-font"`
-	DateFontSize        string              `yaml:"date-font-size"`
-	DateFontWeight      string              `yaml:"date-font-weight"`
-	DateFormat          string              `yaml:"date-format"`
-	VersionFont         string              `yaml:"version-font"`
-	VersionFontSize     string              `yaml:"version-font-size"`
-	VersionFontWeight   string              `yaml:"version-font-weight"`
-	WordCountFont       string              `yaml:"wordcount-font"`
-	WordCountFontSize   string              `yaml:"wordcount-font-size"`
-	WordCountFontWeight string              `yaml:"wordcount-font-weight"`
-	ContactFont         string              `yaml:"contact-font"`
-	ContactFontSize     string              `yaml:"contact-font-size"`
-	ContactFontWeight   string              `yaml:"contact-font-weight"`
-	LineSpacing         string              `yaml:"line-spacing"`
-	LetterSpacing       string              `yaml:"letter-spacing"`
-	Justify             *bool               `yaml:"justify"`
-	WidowOrphanControl  *bool               `yaml:"widow-orphan-control"`
-	ParagraphIndent     string              `yaml:"paragraph-indent"`
-	ParagraphSpacing    string              `yaml:"paragraph-spacing"`
-	QuotedBlockSpacing  ConfigString        `yaml:"quoted-block-spacing"`
-	CodeBlockSpacing    ConfigString        `yaml:"code-block-spacing"`
-	QuoteBlockIndent    ConfigString        `yaml:"quote-block-indent"`
-	CodeBlockIndent     ConfigString        `yaml:"code-block-indent"`
-	QuotedBlock         QuotedBlockConfig   `yaml:"quoted-block"`
-	PageHeader          PageHeaderConfig    `yaml:"page-header"`
-	PageFooter          PageFooterConfig    `yaml:"page-footer"`
-	Gutter              string              `yaml:"gutter"`
-	TOC                 TOCConfig           `yaml:"toc"`
-	TitlePage           TitlePageConfig     `yaml:"title-page"`
-	SceneBreak          SceneBreakConfig    `yaml:"scene-break"`
-	List                SpacedBlockConfig   `yaml:"list"`
-	Table               SpacedBlockConfig   `yaml:"table"`
-	CodeBlock           SpacedBlockConfig   `yaml:"code-block"`
-	Part                HeadingConfig       `yaml:"part"`
-	Chapter             HeadingConfig       `yaml:"chapter"`
-	Copyright           CopyrightConfig     `yaml:"copyright"`
-	PageNumbering       PageNumberingConfig `yaml:"page-numbering"`
+	Style              string              `yaml:"style"`
+	Page               string              `yaml:"page"`
+	Margin             string              `yaml:"margin"`
+	Font               FontConfig          `yaml:"font"`
+	Heading            FontContainer       `yaml:"heading"`
+	Mono               FontContainer       `yaml:"mono"`
+	Attribution        string              `yaml:"attribution"`
+	AuthorAttribution  string              `yaml:"author-attribution"`
+	DateFormat         string              `yaml:"date-format"`
+	LineSpacing        string              `yaml:"line-spacing"`
+	Justify            *bool               `yaml:"justify"`
+	WidowOrphanControl *bool               `yaml:"widow-orphan-control"`
+	ParagraphIndent    string              `yaml:"paragraph-indent"`
+	ParagraphSpacing   string              `yaml:"paragraph-spacing"`
+	QuotedBlockSpacing ConfigString        `yaml:"quoted-block-spacing"`
+	CodeBlockSpacing   ConfigString        `yaml:"code-block-spacing"`
+	QuoteBlockIndent   ConfigString        `yaml:"quote-block-indent"`
+	CodeBlockIndent    ConfigString        `yaml:"code-block-indent"`
+	QuotedBlock        QuotedBlockConfig   `yaml:"quoted-block"`
+	PageHeader         PageHeaderConfig    `yaml:"page-header"`
+	PageFooter         PageFooterConfig    `yaml:"page-footer"`
+	Gutter             string              `yaml:"gutter"`
+	TOC                TOCConfig           `yaml:"toc"`
+	TitlePage          TitlePageConfig     `yaml:"title-page"`
+	SceneBreak         SceneBreakConfig    `yaml:"scene-break"`
+	List               SpacedBlockConfig   `yaml:"list"`
+	Table              SpacedBlockConfig   `yaml:"table"`
+	CodeBlock          SpacedBlockConfig   `yaml:"code-block"`
+	Part               HeadingConfig       `yaml:"part"`
+	Chapter            HeadingConfig       `yaml:"chapter"`
+	Copyright          CopyrightConfig     `yaml:"copyright"`
+	PageNumbering      PageNumberingConfig `yaml:"page-numbering"`
 }
 
 // #16 PageNumberingConfig -- controls the page-number style on frontmatter
@@ -203,22 +171,21 @@ type CopyrightConfig struct {
 	// single default line is generated from folio.author and the folio.date year:
 	// `Copyright © YEAR Author Name.` To omit the credit block entirely, set credits
 	// to an empty list AND unset folio.author.
-	Credits              []string `yaml:"credits"`
-	Body                 []string `yaml:"body"`
-	Separator            string   `yaml:"separator"`
-	SeparatorSpaceBefore string   `yaml:"separator-space-before"`
-	SeparatorSpaceAfter  string   `yaml:"separator-space-after"`
-	Publication          []string `yaml:"publication"`
-	Publisher            string   `yaml:"publisher"`
-	PublisherPreposition string   `yaml:"publisher-preposition"`
-	ISBN                 string   `yaml:"isbn"`
-	ISBNLabel            string   `yaml:"isbn-label"`
-	ISBNBarcode          string   `yaml:"isbn-barcode"` // "none" (default), "render", "file", "render-and-file"
-	Font                 string   `yaml:"font"`
-	FontSize             string   `yaml:"font-size"`
-	HeadingFontWeight    string   `yaml:"heading-font-weight"`
-	LineSpacing          string   `yaml:"line-spacing"`
-	BlockSpacing         string   `yaml:"block-spacing"`
+	Credits              []string      `yaml:"credits"`
+	Body                 []string      `yaml:"body"`
+	Separator            string        `yaml:"separator"`
+	SeparatorSpaceBefore string        `yaml:"separator-space-before"`
+	SeparatorSpaceAfter  string        `yaml:"separator-space-after"`
+	Publication          []string      `yaml:"publication"`
+	Publisher            string        `yaml:"publisher"`
+	PublisherPreposition string        `yaml:"publisher-preposition"`
+	ISBN                 string        `yaml:"isbn"`
+	ISBNLabel            string        `yaml:"isbn-label"`
+	ISBNBarcode          string        `yaml:"isbn-barcode"` // "none" (default), "render", "file", "render-and-file"
+	Font                 FontConfig    `yaml:"font"`
+	Label                FontContainer `yaml:"label"`
+	LineSpacing          string        `yaml:"line-spacing"`
+	BlockSpacing         string        `yaml:"block-spacing"`
 }
 
 type TitlePageConfig struct {
@@ -247,17 +214,14 @@ type TitlePageConfig struct {
 }
 
 type TitlePageItemConfig struct {
-	Align string `yaml:"align"`
+	Align string     `yaml:"align"`
+	Font  FontConfig `yaml:"font"`
 }
 
 type PageHeaderConfig struct {
-	Enabled       bool   `yaml:"enabled"`
-	Font          string `yaml:"font"`
-	FontSize      string `yaml:"font-size"`
-	FontWeight    string `yaml:"font-weight"`
-	FontStyle     string `yaml:"font-style"`
-	LetterSpacing string `yaml:"letter-spacing"`
-	Format        string `yaml:"format"`
+	Enabled bool       `yaml:"enabled"`
+	Font    FontConfig `yaml:"font"`
+	Format  string     `yaml:"format"`
 	// #24: frontmatter-format / alt-frontmatter-format apply on frontmatter pages
 	// (title, copyright, TOC, and any page before the first part/chapter). nil ->
 	// fall back to Format / AltFormat. Non-nil empty string -> blank header on
@@ -278,13 +242,9 @@ type PageHeaderConfig struct {
 // Enabled is a *bool so normalizeConfig can distinguish "unset" (default true) from
 // an explicit `enabled: false`.
 type PageFooterConfig struct {
-	Enabled       *bool  `yaml:"enabled,omitempty"`
-	Font          string `yaml:"font"`
-	FontSize      string `yaml:"font-size"`
-	FontWeight    string `yaml:"font-weight"`
-	FontStyle     string `yaml:"font-style"`
-	LetterSpacing string `yaml:"letter-spacing"`
-	Format        string `yaml:"format"`
+	Enabled *bool      `yaml:"enabled,omitempty"`
+	Font    FontConfig `yaml:"font"`
+	Format  string     `yaml:"format"`
 	// #24: frontmatter-format / alt-frontmatter-format apply on frontmatter pages.
 	// nil -> fall back to Format / AltFormat. Non-nil empty string -> blank footer
 	// on frontmatter. Non-nil non-empty -> use this format on frontmatter.
@@ -298,27 +258,23 @@ type PageFooterConfig struct {
 }
 
 type TOCConfig struct {
-	Enabled           bool          `yaml:"enabled"`
-	Links             bool          `yaml:"links"`
-	Title             string        `yaml:"title"`
-	Font              string        `yaml:"font"`
-	FontSize          string        `yaml:"font-size"`
-	FontWeight        string        `yaml:"font-weight"`
-	HeadingFont       string        `yaml:"heading-font"`
-	HeadingFontSize   string        `yaml:"heading-font-size"`
-	HeadingFontWeight string        `yaml:"heading-font-weight"`
-	IncludeParts      bool          `yaml:"include-parts"`
-	IncludeChapters   bool          `yaml:"include-chapters"`
-	IncludeSections   bool          `yaml:"include-sections"`
-	DotLeaders        bool          `yaml:"dot-leaders"`
-	PageNumbers       bool          `yaml:"page-numbers"`
-	PageBreakBefore   bool          `yaml:"page-break-before"`
-	BlankPageBefore   BlankPageMode `yaml:"blank-page-before"`
-	BlankPageAfter    BlankPageMode `yaml:"blank-page-after"`
-	LineSpacing       string        `yaml:"line-spacing"`
-	PartGapBefore     string        `yaml:"part-gap-before"`
-	ContinuationPad   string        `yaml:"continuation-padding-before"`
-	PartBold          bool          `yaml:"part-bold"`
+	Enabled         bool          `yaml:"enabled"`
+	Links           bool          `yaml:"links"`
+	Title           string        `yaml:"title"`
+	Font            FontConfig    `yaml:"font"`
+	Heading         FontContainer `yaml:"heading"`
+	IncludeParts    bool          `yaml:"include-parts"`
+	IncludeChapters bool          `yaml:"include-chapters"`
+	IncludeSections bool          `yaml:"include-sections"`
+	DotLeaders      bool          `yaml:"dot-leaders"`
+	PageNumbers     bool          `yaml:"page-numbers"`
+	PageBreakBefore bool          `yaml:"page-break-before"`
+	BlankPageBefore BlankPageMode `yaml:"blank-page-before"`
+	BlankPageAfter  BlankPageMode `yaml:"blank-page-after"`
+	LineSpacing     string        `yaml:"line-spacing"`
+	PartGapBefore   string        `yaml:"part-gap-before"`
+	ContinuationPad string        `yaml:"continuation-padding-before"`
+	PartBold        bool          `yaml:"part-bold"`
 }
 
 type SceneBreakConfig struct {
@@ -331,6 +287,10 @@ type SpacedBlockConfig struct {
 }
 
 type QuotedBlockConfig struct {
+	Font FontConfig `yaml:"font"`
+}
+
+type FontContainer struct {
 	Font FontConfig `yaml:"font"`
 }
 
@@ -353,61 +313,7 @@ func (s *ConfigString) UnmarshalYAML(node *yaml.Node) error {
 	return node.Decode(&s.Value)
 }
 
-// FontConfig is the shared six-property font block introduced for quoted
-// manuscript blocks and intended for reuse by the unified font migration.
-type FontConfig struct {
-	Family        string `yaml:"family"`
-	Size          string `yaml:"size"`
-	Weight        string `yaml:"weight"`
-	Stretch       string `yaml:"stretch"`
-	Style         string `yaml:"style"`
-	LetterSpacing string `yaml:"letter-spacing"`
-	set           map[string]bool
-}
-
-func (f *FontConfig) UnmarshalYAML(node *yaml.Node) error {
-	if node.Kind != yaml.MappingNode {
-		return fmt.Errorf("folio.manuscript.quoted-block.font must be a mapping")
-	}
-	f.set = make(map[string]bool, len(node.Content)/2)
-	for index := 0; index < len(node.Content); index += 2 {
-		key := node.Content[index].Value
-		valueNode := node.Content[index+1]
-		f.set[key] = true
-		var target *string
-		switch key {
-		case "family":
-			target = &f.Family
-		case "size":
-			target = &f.Size
-		case "weight":
-			target = &f.Weight
-		case "stretch":
-			target = &f.Stretch
-		case "style":
-			target = &f.Style
-		case "letter-spacing":
-			target = &f.LetterSpacing
-		default:
-			return fmt.Errorf("folio.manuscript.quoted-block.font.%s is not supported", key)
-		}
-		if valueNode.Tag == "!!null" {
-			*target = ""
-			continue
-		}
-		if valueNode.Kind != yaml.ScalarNode {
-			return fmt.Errorf("folio.manuscript.quoted-block.font.%s must be a scalar value", key)
-		}
-		if err := valueNode.Decode(target); err != nil {
-			return fmt.Errorf("decoding folio.manuscript.quoted-block.font.%s: %w", key, err)
-		}
-	}
-	return nil
-}
-
-func (f *FontConfig) propertyWasSet(name string) bool {
-	return f.set != nil && f.set[name]
-}
+type FontConfig = sharedconfig.Font
 
 var typstLengthRE = regexp.MustCompile(`^([+-]?(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+))(pt|mm|cm|in|em)$`)
 
@@ -714,46 +620,10 @@ func normalizeConfig(cfg *Config) {
 	ms := &folio.Manuscript
 	fill(&folio.Page, "a4")
 	fill(&folio.Margin, "25mm")
-	fill(&folio.Font, "Libertinus Serif")
-	fill(&folio.FontSize, "12pt")
-	fill(&folio.FontWeight, "regular")
-	fill(&folio.HeadingFont, folio.Font)
-	fill(&folio.HeadingFontSize, folio.FontSize)
 	fill(&ms.Page, folio.Page)
 	fill(&ms.Margin, folio.Margin)
-	fill(&ms.Font, folio.Font)
-	fill(&ms.FontSize, folio.FontSize)
-	fill(&ms.FontWeight, folio.FontWeight)
-	fill(&ms.HeadingFont, folio.HeadingFont)
-	fill(&ms.HeadingFontSize, folio.HeadingFontSize)
-	fill(&ms.HeadingFontWeight, "regular")
-	fill(&ms.MonoFont, "Libertinus Mono")
-	fill(&ms.MonoFontSize, ms.FontSize)
-	fill(&ms.MonoFontWeight, "regular")
-	fill(&ms.TitleFont, ms.HeadingFont)
-	fill(&ms.TitleFontSize, "20pt")
-	fill(&ms.TitleFontWeight, "bold")
-	fill(&ms.SubtitleFont, ms.HeadingFont)
-	fill(&ms.SubtitleFontSize, "14pt")
-	fill(&ms.SubtitleFontWeight, "regular")
-	fill(&ms.AuthorFont, ms.HeadingFont)
-	fill(&ms.AuthorFontSize, ms.FontSize)
-	fill(&ms.AuthorFontWeight, "regular")
-	fill(&ms.DateFont, ms.HeadingFont)
-	fill(&ms.DateFontSize, "10pt")
-	fill(&ms.DateFontWeight, "regular")
 	fill(&ms.DateFormat, "2 January 2006")
-	fill(&ms.VersionFont, ms.HeadingFont)
-	fill(&ms.VersionFontSize, "10pt")
-	fill(&ms.VersionFontWeight, "regular")
-	fill(&ms.WordCountFont, ms.HeadingFont)
-	fill(&ms.WordCountFontSize, "10pt")
-	fill(&ms.WordCountFontWeight, "regular")
-	fill(&ms.ContactFont, ms.HeadingFont)
-	fill(&ms.ContactFontSize, "10pt")
-	fill(&ms.ContactFontWeight, "regular")
 	fill(&ms.LineSpacing, "1.5")
-	fill(&ms.LetterSpacing, "0em")
 	if ms.Justify == nil {
 		justify := true
 		ms.Justify = &justify
@@ -771,19 +641,6 @@ func normalizeConfig(cfg *Config) {
 	defaultConfigString(&ms.CodeBlockSpacing, "0.5em")
 	defaultConfigString(&ms.QuoteBlockIndent, "0em")
 	defaultConfigString(&ms.CodeBlockIndent, "0em")
-	inheritFontProperty(&ms.QuotedBlock.Font, "family", &ms.QuotedBlock.Font.Family, ms.Font)
-	inheritFontProperty(&ms.QuotedBlock.Font, "size", &ms.QuotedBlock.Font.Size, ms.FontSize)
-	inheritFontProperty(&ms.QuotedBlock.Font, "weight", &ms.QuotedBlock.Font.Weight, ms.FontWeight)
-	inheritFontProperty(&ms.QuotedBlock.Font, "stretch", &ms.QuotedBlock.Font.Stretch, "100%")
-	inheritFontProperty(&ms.QuotedBlock.Font, "style", &ms.QuotedBlock.Font.Style, "regular")
-	inheritFontProperty(&ms.QuotedBlock.Font, "letter-spacing", &ms.QuotedBlock.Font.LetterSpacing, ms.LetterSpacing)
-	ms.QuotedBlock.Font.Weight = strings.ToLower(strings.TrimSpace(ms.QuotedBlock.Font.Weight))
-	ms.QuotedBlock.Font.Stretch = normalizeFontStretch(ms.QuotedBlock.Font.Stretch)
-	ms.QuotedBlock.Font.Style = strings.ToLower(strings.TrimSpace(ms.QuotedBlock.Font.Style))
-	fill(&ms.PageHeader.Font, ms.HeadingFont)
-	fill(&ms.PageHeader.FontSize, "10pt")
-	fill(&ms.PageHeader.FontWeight, "regular")
-	fill(&ms.PageHeader.LetterSpacing, ms.LetterSpacing)
 	fill(&ms.PageHeader.Format, "[title] • [chapter] • [author]")
 	fill(&ms.PageHeader.Align, "left-right")
 	fill(&ms.PageHeader.DistanceFromEdge, ms.Margin)
@@ -792,11 +649,6 @@ func normalizeConfig(cfg *Config) {
 		t := true
 		ms.PageFooter.Enabled = &t
 	}
-	fill(&ms.PageFooter.Font, ms.PageHeader.Font)
-	fill(&ms.PageFooter.FontSize, ms.PageHeader.FontSize)
-	fill(&ms.PageFooter.FontWeight, ms.PageHeader.FontWeight)
-	fill(&ms.PageFooter.FontStyle, ms.PageHeader.FontStyle)
-	fill(&ms.PageFooter.LetterSpacing, ms.LetterSpacing)
 	fill(&ms.PageFooter.Format, "[page]")
 	fill(&ms.PageFooter.Align, "center")
 	fill(&ms.PageFooter.DistanceFromEdge, ms.Margin)
@@ -804,12 +656,6 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.Gutter, "0mm")
 	fill(&ms.TitlePage.Contact.Align, "top-left")
 	fill(&ms.TOC.Title, "Contents")
-	fill(&ms.TOC.Font, ms.HeadingFont)
-	fill(&ms.TOC.FontSize, "11pt")
-	fill(&ms.TOC.FontWeight, "regular")
-	fill(&ms.TOC.HeadingFont, ms.HeadingFont)
-	fill(&ms.TOC.HeadingFontSize, "16pt")
-	fill(&ms.TOC.HeadingFontWeight, "bold")
 	fill(&ms.TOC.LineSpacing, "1.15em")
 	fill(&ms.TOC.PartGapBefore, "0.5em")
 	fill(&ms.TOC.ContinuationPad, "15mm")
@@ -849,9 +695,6 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.Copyright.PublisherPreposition, "by")
 	fill(&ms.Copyright.ISBNLabel, "ISBN")
 	fill(&ms.Copyright.ISBNBarcode, "none")
-	fill(&ms.Copyright.Font, ms.Font)
-	fill(&ms.Copyright.FontSize, ms.FontSize)
-	fill(&ms.Copyright.HeadingFontWeight, "bold")
 	// #21: copyright page uses a more generous default line-spacing than body
 	// prose. British / US body may be 1.0 (single) or 2.0 (double) — neither is
 	// ideal for a densely-set legal boilerplate page. 1.4 gives publisher-typical
@@ -867,20 +710,6 @@ func normalizeConfig(cfg *Config) {
 	// Parts have no scope above them; hardcode "never" for symmetry / future-proofing
 	// but never actually reset the part counter.
 	fill(&ms.Part.NumberReset, "never")
-}
-
-func normalizeFontStretch(value string) string {
-	value = strings.TrimSpace(value)
-	if value != "" && !strings.HasSuffix(value, "%") {
-		return value + "%"
-	}
-	return value
-}
-
-func inheritFontProperty(font *FontConfig, name string, target *string, value string) {
-	if !font.propertyWasSet(name) && *target == "" {
-		*target = value
-	}
 }
 
 func defaultConfigString(target *ConfigString, value string) {

@@ -12,7 +12,8 @@ func TestLoadScriptPrecedence(t *testing.T) {
 	home := t.TempDir()
 	project := t.TempDir()
 	writeYAML(t, filepath.Join(home, ".config", "first-folio", "script.yaml"), `folio:
-  font: Global Font
+  font:
+    family: Global Font
   page: a5
   margin: 30mm
 yapper:
@@ -20,7 +21,7 @@ yapper:
     CÁIT: voice-id
 `)
 	writeYAML(t, filepath.Join(home, ".config", "first-folio", "script-us.yaml"), "folio:\n  margin: 22mm\n")
-	writeYAML(t, filepath.Join(project, "script.yaml"), "folio:\n  style: us\n  font: Local Font\n")
+	writeYAML(t, filepath.Join(project, "script.yaml"), "folio:\n  style: us\n  font:\n    family: Local Font\n")
 	writeYAML(t, filepath.Join(project, "script-us.yaml"), "folio:\n  page: a4\n")
 
 	cfg, err := Load(Options{
@@ -32,7 +33,7 @@ yapper:
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertValue(t, cfg, "folio.font", "CLI Font")
+	assertValue(t, cfg, "folio.font.family", "CLI Font")
 	assertValue(t, cfg, "folio.page", "a4")
 	assertValue(t, cfg, "folio.margin", "22mm")
 	assertValue(t, cfg, "folio.style", "us")
@@ -40,22 +41,24 @@ yapper:
 }
 
 func TestInheritedValue(t *testing.T) {
-	cfg := Config{data: map[string]any{
+	base := map[string]any{
 		"folio": map[string]any{
-			"font": "Root Font",
+			"font": map[string]any{"family": "Root Font", "size": "12pt"},
 			"positioning": map[string]any{
 				"speech": map[string]any{
-					"font":    "Speech Font",
-					"speaker": map[string]any{"bold": false},
+					"speaker": map[string]any{"font": map[string]any{"family": "Speaker Font"}},
 				},
 			},
 		},
-	}}
-	if got := cfg.InheritedString("folio.positioning.speech.speaker", "font", ""); got != "Speech Font" {
-		t.Fatalf("inherited font = %q", got)
 	}
-	if cfg.Bool("folio.positioning.speech.speaker.bold", true) {
-		t.Fatal("explicit false should override true fallback")
+	overlay := map[string]any{"folio": map[string]any{"font": map[string]any{"size": "11pt"}}}
+	deepMerge(base, overlay)
+	cfg := Config{data: base}
+	assertValue(t, cfg, "folio.font.family", "Root Font")
+	assertValue(t, cfg, "folio.font.size", "11pt")
+	assertValue(t, cfg, "folio.positioning.speech.speaker.font.family", "Speaker Font")
+	if _, ok := cfg.Get("folio.positioning.speech.speaker.font.size"); ok {
+		t.Fatal("speaker font must not inherit size from folio.font")
 	}
 }
 
@@ -69,10 +72,10 @@ func TestLoadScreenplayPresetAndStyleSpecificConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 	assertValue(t, cfg, "folio.style", "screenplay")
-	assertValue(t, cfg, "folio.font", "Courier Prime")
-	assertValue(t, cfg, "folio.title-page.title.font-size", "12pt")
+	assertValue(t, cfg, "folio.font.family", "Courier Prime")
+	assertValue(t, cfg, "folio.title-page.title.font.size", "12pt")
 	assertValue(t, cfg, "folio.positioning.speech.speaker.align", "center")
-	assertValue(t, cfg, "folio.positioning.stage-direction.italic", false)
+	assertValue(t, cfg, "folio.positioning.stage-direction.font.style", "regular")
 	assertValue(t, cfg, "folio.margin", "18mm")
 }
 

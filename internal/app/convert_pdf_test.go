@@ -28,15 +28,17 @@ Price is $5 and path is C:\tmp.[fn:cost]
 [fn:cost] A **bold** note.
 `)
 	writeAppFile(t, filepath.Join(dir, "script.yaml"), `folio:
-  font: Libertinus Serif
-  font-size: 11pt
+  font:
+    family: Libertinus Serif
+    size: 11pt
   page: a4
   margin: 20mm
   positioning:
     speech:
       space-before: 2em
       speaker:
-        bold: false
+        font:
+          weight: regular
       dialogue:
         wrap-indent: 8em
 `)

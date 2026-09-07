@@ -1,11 +1,28 @@
-# Canonical British configuration contract.
+# W039 normative end-state British configuration.
 #
-# This file defines the complete public configuration contract for script,
-# letter, and manuscript rendering. Every `font` block exposes the same fields
-# in the same order. Assigned fields are defaults owned by that role. Commented
-# fields are valid user options that inherit from the named parent when omitted.
-# Feature 001 - Unified Font Configuration requires the application to load this
-# file as its runtime base.
+# This file forms part of the W039 definition and operator sign-off. Delivery
+# copies its values and hierarchy to presets/british.yaml. It is the exhaustive
+# public configuration reference and the shared lowest-precedence runtime base
+# for script, letter, and manuscript publishing.
+#
+# Every font role owns a complete six-property block. Omitted values in a
+# higher-precedence layer merge only with the same role in lower layers.
+
+# Optional source-metadata overrides. They remain commented so source document
+# metadata is used when an override is absent.
+# title: "Document title"                 # Overrides the source title.
+# subtitle: "Document subtitle"           # Overrides the source subtitle.
+# author: "Author name"                   # Overrides the source author.
+# date: "2 January 2006"                  # Overrides the source date.
+# version: "Draft 1"                      # Overrides the source version.
+# attribution: "by"                       # Overrides manuscript author attribution.
+# author-attribution: "by"                # Synonym for attribution; configure only one.
+# wordcount: "80,000 words"               # Overrides manuscript word-count display text.
+# contact-name: "Author name"             # Overrides manuscript contact name.
+# address: "Postal address"               # Overrides manuscript contact address.
+# phone: "+353 1 234 5678"                # Overrides manuscript contact telephone.
+# email: "author@example.invalid"         # Overrides manuscript contact email.
+# website: "https://example.invalid"      # Overrides manuscript contact website.
 
 render:
   stage-directions: true
@@ -27,12 +44,12 @@ folio:
 
   heading:
     font:
-      # family: Libertinus Serif # Inherits folio.font.family.
+      family: Libertinus Serif
       size: 14pt
-      # weight: regular         # Inherits folio.font.weight.
-      # stretch: 100%           # Inherits folio.font.stretch.
-      # style: regular          # Inherits folio.font.style.
-      # letter-spacing: 0em     # Inherits folio.font.letter-spacing.
+      weight: regular
+      stretch: 100%
+      style: regular
+      letter-spacing: 0em
 
   page: a4
   margin: 25mm
@@ -44,12 +61,12 @@ folio:
     title:
       align: center
       font:
-        # family: Libertinus Serif # Inherits folio.heading.font.family.
+        family: Libertinus Serif
         size: 24pt
         weight: bold
-        # stretch: 100%           # Inherits folio.heading.font.stretch.
+        stretch: 100%
         style: regular
-        # letter-spacing: 0em     # Inherits folio.heading.font.letter-spacing.
+        letter-spacing: 0em
       case-transform: as-written
       position: third
       space-before: 0
@@ -57,24 +74,24 @@ folio:
     subtitle:
       align: center
       font:
-        # family: Libertinus Serif # Inherits folio.heading.font.family.
+        family: Libertinus Serif
         size: 14pt
         weight: regular
-        # stretch: 100%           # Inherits folio.heading.font.stretch.
+        stretch: 100%
         style: italic
-        # letter-spacing: 0em     # Inherits folio.heading.font.letter-spacing.
+        letter-spacing: 0em
       case-transform: as-written
       space-before: 1em
 
     author:
       align: center
       font:
-        # family: Libertinus Serif # Inherits folio.heading.font.family.
+        family: Libertinus Serif
         size: 12pt
         weight: regular
-        # stretch: 100%           # Inherits folio.heading.font.stretch.
+        stretch: 100%
         style: regular
-        # letter-spacing: 0em     # Inherits folio.heading.font.letter-spacing.
+        letter-spacing: 0em
       case-transform: as-written
       prefix: "by "
       space-before: 2em
@@ -82,12 +99,12 @@ folio:
     date:
       position: bottom-left
       font:
-        # family: Libertinus Serif # Inherits folio.font.family.
+        family: Libertinus Serif
         size: 10pt
-        # weight: regular         # Inherits folio.font.weight.
-        # stretch: 100%           # Inherits folio.font.stretch.
-        # style: regular          # Inherits folio.font.style.
-        # letter-spacing: 0em     # Inherits folio.font.letter-spacing.
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
       case-transform: as-written
       prefix: ""
       suffix: ""
@@ -95,12 +112,12 @@ folio:
     version:
       position: bottom-right
       font:
-        # family: Libertinus Serif # Inherits folio.font.family.
+        family: Libertinus Serif
         size: 10pt
-        # weight: regular         # Inherits folio.font.weight.
-        # stretch: 100%           # Inherits folio.font.stretch.
-        # style: regular          # Inherits folio.font.style.
-        # letter-spacing: 0em     # Inherits folio.font.letter-spacing.
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
       case-transform: as-written
       prefix: ""
       suffix: ""
@@ -114,12 +131,12 @@ folio:
         align: left
         indent: 0
         font:
-          # family: Libertinus Serif # Inherits folio.font.family.
-          # size: 12pt               # Inherits folio.font.size.
+          family: Libertinus Serif
+          size: 12pt
           weight: bold
-          # stretch: 100%             # Inherits folio.font.stretch.
+          stretch: 100%
           style: regular
-          # letter-spacing: 0em       # Inherits folio.font.letter-spacing.
+          letter-spacing: 0em
         case-transform: upper
         prefix: ""
         suffix: ":"
@@ -129,12 +146,12 @@ folio:
         align: left
         indent: 0
         font:
-          # family: Libertinus Serif # Inherits folio.font.family.
-          # size: 12pt               # Inherits folio.font.size.
-          # weight: regular          # Inherits folio.font.weight.
-          # stretch: 100%             # Inherits folio.font.stretch.
+          family: Libertinus Serif
+          size: 12pt
+          weight: regular
+          stretch: 100%
           style: italic
-          # letter-spacing: 0em       # Inherits folio.font.letter-spacing.
+          letter-spacing: 0em
         case-transform: as-written
         prefix: "("
         suffix: ")"
@@ -145,12 +162,12 @@ folio:
         indent: 0
         wrap-indent: 7em
         font:
-          # family: Libertinus Serif # Inherits folio.font.family.
-          # size: 12pt               # Inherits folio.font.size.
-          # weight: regular          # Inherits folio.font.weight.
-          # stretch: 100%             # Inherits folio.font.stretch.
-          # style: regular           # Inherits folio.font.style.
-          # letter-spacing: 0em       # Inherits folio.font.letter-spacing.
+          family: Libertinus Serif
+          size: 12pt
+          weight: regular
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
         case-transform: as-written
         prefix: ""
         suffix: ""
@@ -159,12 +176,12 @@ folio:
       space-before: 1.6em
       align: left
       font:
-        # family: Libertinus Serif # Inherits folio.font.family.
-        # size: 12pt               # Inherits folio.font.size.
-        # weight: regular          # Inherits folio.font.weight.
-        # stretch: 100%             # Inherits folio.font.stretch.
+        family: Libertinus Serif
+        size: 12pt
+        weight: regular
+        stretch: 100%
         style: italic
-        # letter-spacing: 0em       # Inherits folio.font.letter-spacing.
+        letter-spacing: 0em
       case-transform: as-written
       prefix: ""
       suffix: ""
@@ -175,12 +192,12 @@ folio:
       space-before: 1.6em
       align: right
       font:
-        # family: Libertinus Serif # Inherits folio.font.family.
-        # size: 12pt               # Inherits folio.font.size.
-        # weight: regular          # Inherits folio.font.weight.
-        # stretch: 100%             # Inherits folio.font.stretch.
-        # style: regular           # Inherits folio.font.style.
-        # letter-spacing: 0em       # Inherits folio.font.letter-spacing.
+        family: Libertinus Serif
+        size: 12pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
       case-transform: upper
       prefix: ""
       suffix: ""
@@ -191,12 +208,12 @@ folio:
       header:
         align: left
         font:
-          # family: Libertinus Serif # Inherits folio.heading.font.family.
+          family: Libertinus Serif
           size: 14pt
           weight: bold
-          # stretch: 100%             # Inherits folio.heading.font.stretch.
-          # style: regular            # Inherits folio.heading.font.style.
-          # letter-spacing: 0em       # Inherits folio.heading.font.letter-spacing.
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
         case-transform: as-written
         prefix: ""
         suffix: ""
@@ -206,12 +223,12 @@ folio:
     act-header:
       align: center
       font:
-        # family: Libertinus Serif # Inherits folio.heading.font.family.
-        # size: 14pt               # Inherits folio.heading.font.size.
+        family: Libertinus Serif
+        size: 14pt
         weight: bold
-        # stretch: 100%             # Inherits folio.heading.font.stretch.
-        # style: regular            # Inherits folio.heading.font.style.
-        # letter-spacing: 0em       # Inherits folio.heading.font.letter-spacing.
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
       case-transform: as-written
       prefix: ""
       suffix: ""
@@ -221,12 +238,12 @@ folio:
     scene-header:
       align: left
       font:
-        # family: Libertinus Serif # Inherits folio.heading.font.family.
+        family: Libertinus Serif
         size: 12pt
         weight: bold
-        # stretch: 100%             # Inherits folio.heading.font.stretch.
-        # style: regular            # Inherits folio.heading.font.style.
-        # letter-spacing: 0em       # Inherits folio.heading.font.letter-spacing.
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
       case-transform: as-written
       prefix: ""
       suffix: ""
@@ -238,10 +255,10 @@ folio:
     font:
       family: Libertinus Serif
       size: 11pt
-      # weight: regular      # Inherits folio.font.weight.
-      # stretch: 100%        # Inherits folio.font.stretch.
-      # style: regular       # Inherits folio.font.style.
-      # letter-spacing: 0em  # Inherits folio.font.letter-spacing.
+      weight: regular
+      stretch: 100%
+      style: regular
+      letter-spacing: 0em
     page: a4
     margin-top: 25mm
     margin-bottom: 25mm
@@ -262,30 +279,30 @@ folio:
     date-format: "2 January 2006"
 
     font:
-      # family: Libertinus Serif # Inherits folio.font.family.
-      # size: 12pt               # Inherits folio.font.size.
-      # weight: regular          # Inherits folio.font.weight.
-      # stretch: 100%            # Inherits folio.font.stretch.
-      # style: regular           # Inherits folio.font.style.
-      # letter-spacing: 0em     # Inherits folio.font.letter-spacing.
+      family: Libertinus Serif
+      size: 12pt
+      weight: regular
+      stretch: 100%
+      style: regular
+      letter-spacing: 0em
 
     heading:
       font:
         family: Libertinus Sans
         size: 14pt
         weight: regular
-        # stretch: 100%        # Inherits folio.manuscript.font.stretch.
-        # style: regular       # Inherits folio.manuscript.font.style.
-        # letter-spacing: 0em  # Inherits folio.manuscript.font.letter-spacing.
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
 
     mono:
       font:
         family: Libertinus Mono
         size: 10pt
         weight: regular
-        # stretch: 100%        # Inherits folio.manuscript.font.stretch.
-        # style: regular       # Inherits folio.manuscript.font.style.
-        # letter-spacing: 0em  # Inherits folio.manuscript.font.letter-spacing.
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
 
     line-spacing: 1.5
     justify: true
@@ -299,12 +316,12 @@ folio:
 
     quoted-block:
       font:
-        # family: Libertinus Serif # Inherits folio.manuscript.font.family.
-        # size: 12pt               # Inherits folio.manuscript.font.size.
-        # weight: regular          # Inherits folio.manuscript.font.weight.
-        # stretch: 100%            # Inherits folio.manuscript.font.stretch.
-        # style: regular           # Inherits folio.manuscript.font.style.
-        # letter-spacing: 0em      # Inherits folio.manuscript.font.letter-spacing.
+        family: Libertinus Serif
+        size: 12pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
 
     title-page:
       enabled: true
@@ -326,83 +343,83 @@ folio:
       title:
         align: ""
         font:
-          # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+          family: Libertinus Sans
           size: 20pt
           weight: bold
-          # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
-          # style: regular          # Inherits folio.manuscript.heading.font.style.
-          # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
 
       subtitle:
         align: ""
         font:
-          # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+          family: Libertinus Sans
           size: 14pt
           weight: regular
-          # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
+          stretch: 100%
           style: italic
-          # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+          letter-spacing: 0em
 
       author:
         align: ""
         font:
-          # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+          family: Libertinus Sans
           size: 12pt
           weight: regular
-          # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
-          # style: regular          # Inherits folio.manuscript.heading.font.style.
-          # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
         attribution: "by"
 
       date:
         align: ""
         font:
-          # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+          family: Libertinus Sans
           size: 10pt
           weight: regular
-          # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
-          # style: regular          # Inherits folio.manuscript.heading.font.style.
-          # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
 
       wordcount:
         align: ""
         font:
-          # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+          family: Libertinus Sans
           size: 10pt
           weight: regular
-          # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
-          # style: regular          # Inherits folio.manuscript.heading.font.style.
-          # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
 
       version:
         align: ""
         font:
-          # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+          family: Libertinus Sans
           size: 10pt
           weight: regular
-          # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
-          # style: regular          # Inherits folio.manuscript.heading.font.style.
-          # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
 
       contact:
         align: top-left
         font:
-          # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+          family: Libertinus Sans
           size: 10pt
           weight: regular
-          # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
-          # style: regular          # Inherits folio.manuscript.heading.font.style.
-          # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
 
     page-header:
       enabled: true
       font:
-        # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+        family: Libertinus Sans
         size: 10pt
         weight: regular
-        # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
-        # style: regular          # Inherits folio.manuscript.heading.font.style.
-        # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
       format: "[title] • [chapter] • [author]"
       # alt-format: ""                 # Inherits page-header.format.
       # frontmatter-format: ""         # Inherits page-header.format.
@@ -414,12 +431,12 @@ folio:
     page-footer:
       enabled: true
       font:
-        # family: Libertinus Sans # Inherits folio.manuscript.page-header.font.family.
-        # size: 10pt              # Inherits folio.manuscript.page-header.font.size.
-        # weight: regular         # Inherits folio.manuscript.page-header.font.weight.
-        # stretch: 100%           # Inherits folio.manuscript.page-header.font.stretch.
-        # style: regular          # Inherits folio.manuscript.page-header.font.style.
-        # letter-spacing: 0em     # Inherits folio.manuscript.page-header.font.letter-spacing.
+        family: Libertinus Sans
+        size: 10pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
       format: "[page]"
       # alt-format: ""                 # Inherits page-footer.format.
       # frontmatter-format: ""         # Inherits page-footer.format.
@@ -436,20 +453,20 @@ folio:
       blank-page-before: false
       blank-page-after: false
       font:
-        # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+        family: Libertinus Sans
         size: 10pt
         weight: regular
-        # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
-        # style: regular          # Inherits folio.manuscript.heading.font.style.
-        # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
       heading:
         font:
-          # family: Libertinus Sans # Inherits folio.manuscript.heading.font.family.
+          family: Libertinus Sans
           size: 16pt
           weight: bold
-          # stretch: 100%           # Inherits folio.manuscript.heading.font.stretch.
-          # style: regular          # Inherits folio.manuscript.heading.font.style.
-          # letter-spacing: 0em     # Inherits folio.manuscript.heading.font.letter-spacing.
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
       include-parts: true
       include-chapters: true
       include-sections: false
@@ -511,31 +528,31 @@ folio:
       blank-page-before: enforce-left
       blank-page-after: false
       align: center
-      credits: ""
+      credits: []
       separator: "———"
       separator-space-before: 1.5em
       separator-space-after: 1.5em
-      publication: ""
+      publication: []
       publisher: ""
       publisher-preposition: "by"
       isbn: ""
       isbn-label: "ISBN"
       isbn-barcode: none
       font:
-        # family: Libertinus Serif # Inherits folio.manuscript.font.family.
-        # size: 12pt               # Inherits folio.manuscript.font.size.
-        # weight: regular          # Inherits folio.manuscript.font.weight.
-        # stretch: 100%            # Inherits folio.manuscript.font.stretch.
-        # style: regular           # Inherits folio.manuscript.font.style.
-        # letter-spacing: 0em      # Inherits folio.manuscript.font.letter-spacing.
+        family: Libertinus Serif
+        size: 12pt
+        weight: regular
+        stretch: 100%
+        style: regular
+        letter-spacing: 0em
       label:
         font:
-          # family: Libertinus Serif # Inherits folio.manuscript.copyright.font.family.
-          # size: 12pt               # Inherits folio.manuscript.copyright.font.size.
+          family: Libertinus Serif
+          size: 12pt
           weight: bold
-          # stretch: 100%            # Inherits folio.manuscript.copyright.font.stretch.
-          # style: regular           # Inherits folio.manuscript.copyright.font.style.
-          # letter-spacing: 0em      # Inherits folio.manuscript.copyright.font.letter-spacing.
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
       line-spacing: 1.4
       block-spacing: 0.75em
       body:

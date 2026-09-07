@@ -13,7 +13,7 @@ func TestRT_20_1_WalkUpFindsScriptInParent(t *testing.T) {
 	home := t.TempDir()
 	project := t.TempDir()
 	subdir := filepath.Join(project, "part0")
-	writeYAML(t, filepath.Join(project, "script.yaml"), "folio:\n  font: Root Font\n")
+	writeYAML(t, filepath.Join(project, "script.yaml"), "folio:\n  font:\n    family: Root Font\n")
 	// Create the subdirectory so LocalDir is a real path.
 	writeYAML(t, filepath.Join(subdir, "placeholder.md"), "ignored")
 
@@ -21,7 +21,7 @@ func TestRT_20_1_WalkUpFindsScriptInParent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertValue(t, cfg, "folio.font", "Root Font")
+	assertValue(t, cfg, "folio.font.family", "Root Font")
 }
 
 // RT-20.2: script.yaml directly in LocalDir wins over any parent script.yaml.
@@ -29,15 +29,15 @@ func TestRT_20_2_NearerScriptWinsOverAncestor(t *testing.T) {
 	home := t.TempDir()
 	project := t.TempDir()
 	subdir := filepath.Join(project, "part1")
-	writeYAML(t, filepath.Join(project, "script.yaml"), "folio:\n  font: Root Font\n")
-	writeYAML(t, filepath.Join(subdir, "script.yaml"), "folio:\n  font: Subdir Font\n")
+	writeYAML(t, filepath.Join(project, "script.yaml"), "folio:\n  font:\n    family: Root Font\n")
+	writeYAML(t, filepath.Join(subdir, "script.yaml"), "folio:\n  font:\n    family: Subdir Font\n")
 
 	cfg, err := Load(Options{Mode: ModeManuscript, Home: home, LocalDir: subdir})
 	if err != nil {
 		t.Fatal(err)
 	}
 	// Nearest wins: subdir/script.yaml overrides project/script.yaml.
-	assertValue(t, cfg, "folio.font", "Subdir Font")
+	assertValue(t, cfg, "folio.font.family", "Subdir Font")
 }
 
 // RT-20.3: with no script.yaml anywhere on the walk path, Load still succeeds
@@ -52,8 +52,8 @@ func TestRT_20_3_NoScriptOnWalkPathSucceeds(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expected success with no local script.yaml on walk path, got %v", err)
 	}
-	// Preset font should be present (Libertinus Serif from british-manuscript.yaml).
-	assertValue(t, cfg, "folio.font", "Libertinus Serif")
+	// Preset font should be present (Libertinus Serif from the shared British base).
+	assertValue(t, cfg, "folio.font.family", "Libertinus Serif")
 }
 
 // RT-20.4: the walk stops at the home directory boundary; a script.yaml above
@@ -64,7 +64,7 @@ func TestRT_20_4_WalkStopsAtHomeBoundary(t *testing.T) {
 	// Place a script.yaml *above* the home directory. Walk from a subdir of
 	// home should NOT reach it.
 	parentOfHome := filepath.Dir(home)
-	writeYAML(t, filepath.Join(parentOfHome, "script.yaml"), "folio:\n  font: Should Not Be Loaded\n")
+	writeYAML(t, filepath.Join(parentOfHome, "script.yaml"), "folio:\n  font:\n    family: Should Not Be Loaded\n")
 	subdir := filepath.Join(home, "project", "part0")
 	writeYAML(t, filepath.Join(subdir, "placeholder.md"), "ignored")
 
@@ -73,7 +73,7 @@ func TestRT_20_4_WalkStopsAtHomeBoundary(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Preset default, NOT "Should Not Be Loaded".
-	if font, _ := cfg.Get("folio.font"); font == "Should Not Be Loaded" {
+	if font, _ := cfg.Get("folio.font.family"); font == "Should Not Be Loaded" {
 		t.Fatalf("walk crossed home boundary and read forbidden script.yaml")
 	}
 }
@@ -84,13 +84,13 @@ func TestRT_20_5_StyleSuffixedSiblingFoundAtWalkTarget(t *testing.T) {
 	home := t.TempDir()
 	project := t.TempDir()
 	subdir := filepath.Join(project, "part0")
-	writeYAML(t, filepath.Join(project, "script.yaml"), "folio:\n  style: us\n  font: Root Font\n")
-	writeYAML(t, filepath.Join(project, "script-us.yaml"), "folio:\n  font: US Override Font\n")
+	writeYAML(t, filepath.Join(project, "script.yaml"), "folio:\n  style: us\n  font:\n    family: Root Font\n")
+	writeYAML(t, filepath.Join(project, "script-us.yaml"), "folio:\n  font:\n    family: US Override Font\n")
 	writeYAML(t, filepath.Join(subdir, "placeholder.md"), "ignored")
 
 	cfg, err := Load(Options{Mode: ModeManuscript, Home: home, LocalDir: subdir})
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertValue(t, cfg, "folio.font", "US Override Font")
+	assertValue(t, cfg, "folio.font.family", "US Override Font")
 }

@@ -1,5 +1,5 @@
 // ABOUTME: Regression tests for manuscript, running-header, and running-footer letter spacing.
-// ABOUTME: Verifies YAML inheritance and the generated Typst tracking values.
+// ABOUTME: Verifies same-role YAML layering and generated Typst tracking values.
 
 package manuscript
 
@@ -47,19 +47,20 @@ func TestRT_34_1_LetterSpacingDefaultsToZeroEm(t *testing.T) {
 	assertContains(t, extractFooterBlock(t, typst), "tracking: 0em,")
 }
 
-// RT-34.2: header and footer inherit manuscript letter spacing when unset.
+// RT-34.2: changing manuscript tracking does not alter header or footer tracking.
 func TestRT_34_2_HeaderAndFooterInheritManuscriptLetterSpacing(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
 		"  manuscript:",
-		"    letter-spacing: 0.04em",
+		"    font:",
+		"      letter-spacing: 0.04em",
 		"",
 	}, "\n"))
 	body := extractBodyPageBlock(t, typst)
 
 	assertContains(t, body, "tracking: 0.04em,")
-	assertContains(t, extractHeaderBlock(t, typst), "tracking: 0.04em,")
-	assertContains(t, extractFooterBlock(t, typst), "tracking: 0.04em,")
+	assertContains(t, extractHeaderBlock(t, typst), "tracking: 0em")
+	assertContains(t, extractFooterBlock(t, typst), "tracking: 0em")
 }
 
 // RT-34.3: header and footer can override manuscript letter spacing independently.
@@ -67,11 +68,14 @@ func TestRT_34_3_HeaderAndFooterLetterSpacingOverrides(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
 		"  manuscript:",
-		"    letter-spacing: 0.01em",
+		"    font:",
+		"      letter-spacing: 0.01em",
 		"    page-header:",
-		"      letter-spacing: 0.08em",
+		"      font:",
+		"        letter-spacing: 0.08em",
 		"    page-footer:",
-		"      letter-spacing: -0.02em",
+		"      font:",
+		"        letter-spacing: -0.02em",
 		"",
 	}, "\n"))
 
@@ -79,19 +83,21 @@ func TestRT_34_3_HeaderAndFooterLetterSpacingOverrides(t *testing.T) {
 	assertContains(t, extractFooterBlock(t, typst), "tracking: -0.02em,")
 }
 
-// RT-34.4: a header override does not implicitly change an unset footer override.
+// RT-34.4: a header override does not implicitly change the footer role.
 func TestRT_34_4_FooterInheritsManuscriptNotHeaderOverride(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
 		"  manuscript:",
-		"    letter-spacing: 0.01em",
+		"    font:",
+		"      letter-spacing: 0.01em",
 		"    page-header:",
-		"      letter-spacing: 0.08em",
+		"      font:",
+		"        letter-spacing: 0.08em",
 		"",
 	}, "\n"))
 
 	assertContains(t, extractHeaderBlock(t, typst), "tracking: 0.08em,")
-	assertContains(t, extractFooterBlock(t, typst), "tracking: 0.01em,")
+	assertContains(t, extractFooterBlock(t, typst), "tracking: 0em")
 }
 
 // RT-34.5: Typst compiles em-based and negative letter-spacing values in all three positions.
@@ -102,11 +108,14 @@ func TestRT_34_5_LetterSpacingCompiles(t *testing.T) {
 	writeFile(t, filepath.Join(dir, "script.yaml"), strings.Join([]string{
 		"folio:",
 		"  manuscript:",
-		"    letter-spacing: 0.02em",
+		"    font:",
+		"      letter-spacing: 0.02em",
 		"    page-header:",
-		"      letter-spacing: 0.08em",
+		"      font:",
+		"        letter-spacing: 0.08em",
 		"    page-footer:",
-		"      letter-spacing: -0.01em",
+		"      font:",
+		"        letter-spacing: -0.01em",
 		"",
 	}, "\n"))
 	writeFile(t, filepath.Join(dir, "manuscript.md"), strings.Join([]string{
@@ -146,7 +155,8 @@ func renderLetterSpacingPDF(t *testing.T, spacing string) string {
 	writeFile(t, filepath.Join(dir, "script.yaml"), strings.Join([]string{
 		"folio:",
 		"  manuscript:",
-		"    letter-spacing: " + spacing,
+		"    font:",
+		"      letter-spacing: " + spacing,
 		"    title-page:",
 		"      enabled: false",
 		"    toc:",
@@ -154,11 +164,13 @@ func renderLetterSpacingPDF(t *testing.T, spacing string) string {
 		"    page-header:",
 		"      enabled: true",
 		"      format: HEADERTRACK",
-		"      letter-spacing: " + spacing,
+		"      font:",
+		"        letter-spacing: " + spacing,
 		"    page-footer:",
 		"      enabled: true",
 		"      format: FOOTERTRACK",
-		"      letter-spacing: " + spacing,
+		"      font:",
+		"        letter-spacing: " + spacing,
 		"",
 	}, "\n"))
 	writeFile(t, filepath.Join(dir, "manuscript.md"), strings.Join([]string{

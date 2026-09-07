@@ -77,12 +77,13 @@ date: "2026-04-26"
 version: "Draft v3"
 
 folio:
-  font: EB Garamond
-  font-size: 11pt
+  font:
+    family: EB Garamond
+    size: 11pt
   page: a4
 ```
 
-Configuration is merged by key. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the global style-specific file, global `script.yaml`, the selected built-in style override, and the British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
+Configuration is merged by key. Every typography role uses the same six-property `font` block; partial blocks inherit only from the same role in lower layers. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the global style-specific file, global `script.yaml`, the selected built-in style overlay, and the shared British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
 
 See [docs/config.md](docs/config.md) for the configuration reference and [examples/script.yaml.example](examples/script.yaml.example) for an annotated example.
 
