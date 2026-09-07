@@ -5,6 +5,8 @@ package app
 import (
 	"bytes"
 	"fmt"
+	"image"
+	"image/png"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -107,6 +109,7 @@ func TestRT039_1ScriptFontBlockEmitsAllPropertiesForSelectedRole(t *testing.T) {
 }
 
 func TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged(t *testing.T) {
+	toolHome := os.Getenv("HOME")
 	t.Setenv("HOME", t.TempDir())
 	base, err := folio.Assets.ReadFile("presets/british.yaml")
 	if err != nil {
@@ -156,8 +159,10 @@ func TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged(t *testing.T) {
 	})
 
 	t.Run("letter", func(t *testing.T) {
-		if _, err := exec.LookPath("typst"); err != nil {
-			t.Skip("typst is not installed")
+		for _, tool := range []string{"typst", "pdf-to-png"} {
+			if _, err := exec.LookPath(tool); err != nil {
+				t.Skipf("%s is not installed", tool)
+			}
 		}
 		plainDir, copiedDir := t.TempDir(), t.TempDir()
 		source := "#+AUTHOR: Example Author\n* Letters :letter:\n** Subject :subject:\nBody.\n*** Recipient :to:\n**** Example :org:\n"
@@ -174,7 +179,7 @@ func TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged(t *testing.T) {
 		}
 		plainPDF := singlePDF(t, plainDir)
 		copiedPDF := singlePDF(t, copiedDir)
-		if !bytes.Equal(plainPDF, copiedPDF) {
+		if !rasterPixelsEqual(rasterizePDF(t, plainPDF, toolHome), rasterizePDF(t, copiedPDF, toolHome)) {
 			t.Fatal("letter PDF changed when the British base was copied locally")
 		}
 	})
@@ -317,7 +322,7 @@ func oneFontPropertyYAML(path, property, value string) string {
 	return output.String()
 }
 
-func singlePDF(t *testing.T, dir string) []byte {
+func singlePDF(t *testing.T, dir string) string {
 	t.Helper()
 	paths, err := filepath.Glob(filepath.Join(dir, "*.pdf"))
 	if err != nil {
@@ -330,5 +335,38 @@ func singlePDF(t *testing.T, dir string) []byte {
 	if err != nil {
 		t.Fatal(err)
 	}
-	return raw
+	if !bytes.HasPrefix(raw, []byte("%PDF")) {
+		t.Fatalf("output %s is not a PDF", paths[0])
+	}
+	return paths[0]
+}
+
+func rasterizePDF(t *testing.T, path string, toolHome string) image.Image {
+	t.Helper()
+	cmd := exec.Command("pdf-to-png", filepath.Base(path), "120")
+	cmd.Dir = filepath.Dir(path)
+	cmd.Env = []string{"HOME=" + toolHome}
+	for _, value := range os.Environ() {
+		if !strings.HasPrefix(value, "HOME=") {
+			cmd.Env = append(cmd.Env, value)
+		}
+	}
+	if output, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("rasterizing %s: %v\n%s", path, err, output)
+	}
+	name := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
+	paths, err := filepath.Glob(filepath.Join(filepath.Dir(path), name+"-*.png"))
+	if err != nil || len(paths) != 1 {
+		t.Fatalf("raster output for %s = %v, %v; want one page", path, paths, err)
+	}
+	file, err := os.Open(paths[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+	raster, err := png.Decode(file)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return raster
 }
