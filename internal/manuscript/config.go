@@ -4,7 +4,6 @@ package manuscript
 
 import (
 	"fmt"
-	"math"
 	"os"
 	"regexp"
 	"strconv"
@@ -317,11 +316,6 @@ type FontConfig = sharedconfig.Font
 
 var typstLengthRE = regexp.MustCompile(`^([+-]?(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+))(pt|mm|cm|in|em)$`)
 
-var typstFontWeights = map[string]bool{
-	"thin": true, "extralight": true, "light": true, "regular": true,
-	"medium": true, "semibold": true, "bold": true, "extrabold": true, "black": true,
-}
-
 type HeadingConfig struct {
 	PageBreakBefore bool          `yaml:"page-break-before"`
 	BlankPageBefore BlankPageMode `yaml:"blank-page-before"`
@@ -445,23 +439,7 @@ func validateQuotedBlockConfig(ms *ManuscriptConfig) error {
 	if err := validateTypstLength("folio.manuscript.code-block-indent", ms.CodeBlockIndent.Value, true, false); err != nil {
 		return err
 	}
-	font := &ms.QuotedBlock.Font
-	if strings.TrimSpace(font.Family) == "" {
-		return fmt.Errorf("folio.manuscript.quoted-block.font.family must not be empty")
-	}
-	if err := validateTypstLength("folio.manuscript.quoted-block.font.size", font.Size, false, false); err != nil {
-		return err
-	}
-	if err := validateFontWeight("folio.manuscript.quoted-block.font.weight", font.Weight); err != nil {
-		return err
-	}
-	if err := validateFontStretch("folio.manuscript.quoted-block.font.stretch", font.Stretch); err != nil {
-		return err
-	}
-	if err := validateFontStyle("folio.manuscript.quoted-block.font.style", font.Style); err != nil {
-		return err
-	}
-	return validateTypstLength("folio.manuscript.quoted-block.font.letter-spacing", font.LetterSpacing, true, true)
+	return nil
 }
 
 func validateTypstLength(path string, value string, allowZero bool, allowNegative bool) error {
@@ -480,36 +458,6 @@ func validateTypstLength(path string, value string, allowZero bool, allowNegativ
 		return fmt.Errorf("%s %q must be greater than zero", path, value)
 	}
 	return nil
-}
-
-func validateFontWeight(path string, value string) error {
-	value = strings.ToLower(strings.TrimSpace(value))
-	if typstFontWeights[value] {
-		return nil
-	}
-	weight, err := strconv.Atoi(value)
-	if err == nil && weight >= 100 && weight <= 900 {
-		return nil
-	}
-	return fmt.Errorf("%s %q must be a Typst weight name or a number from 100 to 900", path, value)
-}
-
-func validateFontStretch(path string, value string) error {
-	value = strings.TrimSuffix(strings.TrimSpace(value), "%")
-	stretch, err := strconv.ParseFloat(value, 64)
-	if err != nil || math.IsNaN(stretch) || math.IsInf(stretch, 0) || stretch <= 0 {
-		return fmt.Errorf("%s %q must be a positive percentage or plain number", path, value)
-	}
-	return nil
-}
-
-func validateFontStyle(path string, value string) error {
-	switch strings.ToLower(strings.TrimSpace(value)) {
-	case "regular", "italic", "oblique":
-		return nil
-	default:
-		return fmt.Errorf("%s %q must be regular, italic, or oblique", path, value)
-	}
 }
 
 // validatePageNumbering enforces the "1" / "I" / "i" enum for both format fields

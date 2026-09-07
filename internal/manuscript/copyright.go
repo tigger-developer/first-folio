@@ -321,10 +321,3 @@ func copyrightLeading(spacing string) string {
 	// Otherwise pass through (already an em/pt length).
 	return spacing
 }
-
-func orFallback(v, fallback string) string {
-	if strings.TrimSpace(v) == "" {
-		return fallback
-	}
-	return v
-}

@@ -20,6 +20,7 @@ type Font struct {
 	LetterSpacing string `yaml:"letter-spacing"`
 }
 
+// FontRolePaths lists every public role governed by the uniform font contract.
 var FontRolePaths = []string{
 	"folio.font",
 	"folio.heading.font",

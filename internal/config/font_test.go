@@ -85,6 +85,40 @@ func TestRT039_1EveryPublicFontRoleUsesSixPropertyBlock(t *testing.T) {
 	}
 }
 
+func TestFontReturnsCompleteValidatedValue(t *testing.T) {
+	cfg, err := Load(Options{Mode: ModeScript, Home: t.TempDir(), LocalDir: t.TempDir()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	font, err := cfg.Font("folio.font")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := Font{
+		Family: "Libertinus Serif", Size: "12pt", Weight: "regular",
+		Stretch: "100%", Style: "regular", LetterSpacing: "0em",
+	}
+	if font != want {
+		t.Fatalf("Font(folio.font) = %#v, want %#v", font, want)
+	}
+
+	for _, test := range []struct {
+		name string
+		cfg  Config
+		path string
+	}{
+		{"missing", Config{data: map[string]any{}}, "folio.font"},
+		{"not mapping", Config{data: map[string]any{"folio": map[string]any{"font": "Serif"}}}, "folio.font"},
+		{"not normalized", Config{data: map[string]any{"folio": map[string]any{"font": map[string]any{"family": 42}}}}, "folio.font"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			if _, err := test.cfg.Font(test.path); err == nil || !strings.Contains(err.Error(), test.path) {
+				t.Fatalf("Font(%s) error = %v, want full path", test.path, err)
+			}
+		})
+	}
+}
+
 // RT039.1: every path/property combination survives the public configuration merge independently.
 func TestRT039_1EveryPublicFontPropertyCanBeConfiguredIndependently(t *testing.T) {
 	distinctive := map[string]string{
