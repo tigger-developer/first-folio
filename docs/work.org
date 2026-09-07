@@ -132,6 +132,22 @@ classification; it is provenance, not current state.
 - *History:* Replaces the abandoned W036 definition without adopting its
   specification or audit state.
 
+** TODO W040 - Exclude cover-letter sections from document rendering :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-040
+:SOURCE: operator
+:CREATED: 2026-09-08
+:END:
+
+- *Observed behaviour:* Rendering =examples/about-time.org= as a script emits
+  its =:letter:= subtree as play front matter. The same output appears at the
+  pre-W039 baseline and the W039 candidate, so this is a *pre-existing defect*.
+- *Required outcome:* Script and manuscript generation *exclude =:letter:=
+  sections*, while =folio letter= continues to consume them.
+- *Sequencing:* Define and deliver this defect *after W039 closes*. It is
+  outside W039 and does not alter the current no-regression decision.
+- *Specification:* Not yet defined.
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria
