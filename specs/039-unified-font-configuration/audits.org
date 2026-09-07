@@ -280,4 +280,58 @@
 
 * Implementation gate
 
-No implementation review has been performed. Delivery is not authorized.
+** Local review
+:PROPERTIES:
+:ROUND:    1
+:END:
+
+- *Artefact:* W039 - Unified Font Configuration implementation and regression
+  delta at commit =8c1513a=.
+- *Audits:* =audit-test-code= and =audit-code=
+- *Verdict:* FAIL
+- *Findings:*
+  1. =TEST-039-FONT-ACCESSOR=: The new effective-font accessor had no direct
+     package-level success or failure coverage.
+  2. =CODE-039-DUPLICATE-VALIDATION=: Manuscript quoted-block validation
+     duplicated the shared font domain and could drift from the new single
+     runtime authority.
+  3. =CODE-039-UNUSED-HELPER=: The manuscript migration left one newly unused
+     helper.
+- *Remediation:* Added direct accessor coverage, removed the redundant
+  manuscript font validation, and removed the newly unused helper.
+
+** Local review
+:PROPERTIES:
+:ROUND:    2
+:END:
+
+- *Artefact:* W039 - Unified Font Configuration implementation and regression
+  delta at commit =e0096e0=.
+- *Audits:* =audit-test-code= and =audit-code=
+- *Verdict:* FAIL
+- *Finding:* =TEST-039-PDF-STABILITY=: The copied-base letter regression
+  compared complete PDF bytes. A full-suite execution showed that this was not
+  a stable assertion for equivalent rendering.
+- *Remediation:* Retained the public letter PDF boundary but changed the
+  equivalence assertion to decoded raster pixels using the repository's
+  existing PDF raster method.
+
+** Local review
+:PROPERTIES:
+:ROUND:    3
+:END:
+
+- *Artefact:* W039 - Unified Font Configuration implementation and regression
+  delta at commit =456aa69=.
+- *Audits:* =audit-test-code= and =audit-code=
+- *Verdict:* PASS
+- *Findings:* None. The 198 path-property cases now exercise same-role merging
+  and isolation; every role reaches its script, letter, or manuscript Typst
+  boundary; copied-base and multi-layer public-command behaviour are covered;
+  malformed configuration fails before output; and migrated legacy tests retain
+  their identifiers and assertions.
+- *Current checks:* =make test= passed across all Go packages; =make lint=
+  passed; and =golangci-lint run --new-from-rev=5c493b7 ./...= reported no
+  W039-created finding. The unscoped =golangci-lint run ./...= continues to
+  report four pre-existing manuscript findings outside this change.
+- *Remediation:* None.
