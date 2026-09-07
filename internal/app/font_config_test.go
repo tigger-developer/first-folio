@@ -3,11 +3,15 @@
 package app
 
 import (
+	"bytes"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	folio "github.com/tigger-developer/first-folio"
 )
 
 var scriptFontRolePaths = []string{
@@ -100,6 +104,121 @@ func TestRT039_1ScriptFontBlockEmitsAllPropertiesForSelectedRole(t *testing.T) {
 	typst := readAppFile(t, target)
 	assertAppContains(t, typst, `#text(font: "W039 Act", size: 13.5pt, weight: 650, stretch: 117.5%, style: "oblique", tracking: -0.03em)`)
 	assertAppContains(t, typst, `font: "Libertinus Serif", size: 12pt, weight: "bold"`)
+}
+
+func TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	base, err := folio.Assets.ReadFile("presets/british.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("script", func(t *testing.T) {
+		plainDir, copiedDir := t.TempDir(), t.TempDir()
+		source := "#+TITLE: W039\n* ACT ONE\n**** CÁIT\nHello.\n"
+		plainSource := filepath.Join(plainDir, "play.org")
+		copiedSource := filepath.Join(copiedDir, "play.org")
+		writeAppFile(t, plainSource, source)
+		writeAppFile(t, copiedSource, source)
+		writeAppFile(t, filepath.Join(copiedDir, "script.yaml"), string(base))
+		plainOutput := filepath.Join(plainDir, "play.typ")
+		copiedOutput := filepath.Join(copiedDir, "play.typ")
+		for _, args := range [][]string{{"convert", plainSource, plainOutput}, {"convert", copiedSource, copiedOutput}} {
+			status, _, stderr := runApp(t, args...)
+			if status != 0 {
+				t.Fatal(stderr)
+			}
+		}
+		if plain, copied := readAppFile(t, plainOutput), readAppFile(t, copiedOutput); plain != copied {
+			t.Fatal("script output changed when the British base was copied locally")
+		}
+	})
+
+	t.Run("manuscript", func(t *testing.T) {
+		plainDir, copiedDir := t.TempDir(), t.TempDir()
+		source := "---\ntitle: W039\nauthor: Example Author\n---\n\n## Chapter One\n\nBody.\n"
+		plainSource := filepath.Join(plainDir, "chapter.md")
+		copiedSource := filepath.Join(copiedDir, "chapter.md")
+		writeAppFile(t, plainSource, source)
+		writeAppFile(t, copiedSource, source)
+		writeAppFile(t, filepath.Join(copiedDir, "script.yaml"), string(base))
+		plainOutput := filepath.Join(plainDir, "manuscript.typ")
+		copiedOutput := filepath.Join(copiedDir, "manuscript.typ")
+		for _, args := range [][]string{{"manuscript", plainSource, plainOutput}, {"manuscript", copiedSource, copiedOutput}} {
+			status, _, stderr := runApp(t, args...)
+			if status != 0 {
+				t.Fatal(stderr)
+			}
+		}
+		if plain, copied := readAppFile(t, plainOutput), readAppFile(t, copiedOutput); plain != copied {
+			t.Fatal("manuscript output changed when the British base was copied locally")
+		}
+	})
+
+	t.Run("letter", func(t *testing.T) {
+		if _, err := exec.LookPath("typst"); err != nil {
+			t.Skip("typst is not installed")
+		}
+		plainDir, copiedDir := t.TempDir(), t.TempDir()
+		source := "#+AUTHOR: Example Author\n* Letters :letter:\n** Subject :subject:\nBody.\n*** Recipient :to:\n**** Example :org:\n"
+		plainSource := filepath.Join(plainDir, "letters.org")
+		copiedSource := filepath.Join(copiedDir, "letters.org")
+		writeAppFile(t, plainSource, source)
+		writeAppFile(t, copiedSource, source)
+		writeAppFile(t, filepath.Join(copiedDir, "script.yaml"), string(base))
+		for _, args := range [][]string{{"letter", plainSource, "--dir", plainDir, "--prefix", "w039"}, {"letter", copiedSource, "--dir", copiedDir, "--prefix", "w039"}} {
+			status, _, stderr := runApp(t, args...)
+			if status != 0 {
+				t.Fatal(stderr)
+			}
+		}
+		plainPDF := singlePDF(t, plainDir)
+		copiedPDF := singlePDF(t, copiedDir)
+		if !bytes.Equal(plainPDF, copiedPDF) {
+			t.Fatal("letter PDF changed when the British base was copied locally")
+		}
+	})
+}
+
+func TestRT039_3ManuscriptFontMergesSameRoleAcrossPublicLayers(t *testing.T) {
+	home := t.TempDir()
+	project := t.TempDir()
+	t.Setenv("HOME", home)
+	writeAppFile(t, filepath.Join(home, ".config", "first-folio", "script.yaml"), `folio:
+  manuscript:
+    page-header:
+      font:
+        family: W039 Layered Header
+        weight: 643
+`)
+	writeAppFile(t, filepath.Join(project, "script.yaml"), `folio:
+  style: us
+  manuscript:
+    font:
+      family: W039 Body Must Not Leak
+    page-header:
+      font:
+        size: 13.5pt
+`)
+	writeAppFile(t, filepath.Join(project, "script-us.yaml"), `folio:
+  manuscript:
+    page-header:
+      font:
+        stretch: 117.5%
+`)
+	source := filepath.Join(project, "chapter.md")
+	target := filepath.Join(project, "manuscript.typ")
+	writeAppFile(t, source, "---\ntitle: W039\nauthor: Example Author\n---\n\n## Chapter One\n\nBody.\n")
+	status, _, stderr := runApp(t, "manuscript", source, target)
+	if status != 0 {
+		t.Fatal(stderr)
+	}
+	typst := readAppFile(t, target)
+	assertAppContains(t, typst, `font: "W039 Layered Header", size: 13.5pt, weight: 643, stretch: 117.5%, style: "normal", tracking: 0em`)
+	assertAppContains(t, typst, `font: "W039 Body Must Not Leak", size: 10pt`)
+	if strings.Contains(typst, `font: "W039 Body Must Not Leak", size: 13.5pt`) {
+		t.Fatal("manuscript body font leaked into the page-header role")
+	}
 }
 
 func TestRT039_5PublicCommandsRejectFontErrorsBeforeOutput(t *testing.T) {
@@ -196,4 +315,20 @@ func oneFontPropertyYAML(path, property, value string) string {
 	}
 	fmt.Fprintf(&output, "%s%s: %s\n", strings.Repeat("  ", len(strings.Split(path, "."))), property, value)
 	return output.String()
+}
+
+func singlePDF(t *testing.T, dir string) []byte {
+	t.Helper()
+	paths, err := filepath.Glob(filepath.Join(dir, "*.pdf"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(paths) != 1 {
+		t.Fatalf("found %d PDF outputs in %s, want one", len(paths), dir)
+	}
+	raw, err := os.ReadFile(paths[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	return raw
 }
