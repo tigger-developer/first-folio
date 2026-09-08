@@ -92,7 +92,8 @@ func spacingProject(t *testing.T, bodySpacing string, tocSpacing string, tocEnab
 		"    line-spacing: " + strconv.Quote(bodySpacing),
 		"    toc:",
 		"      enabled: " + strconv.FormatBool(tocEnabled),
-		"      font-size: 10pt",
+		"      font:",
+		"        size: 10pt",
 		"      line-spacing: " + strconv.Quote(tocSpacing),
 		"",
 	}, "\n"))

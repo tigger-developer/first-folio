@@ -49,7 +49,7 @@ func renderCopyrightPage(meta Metadata, cfg Config) string {
 	}
 
 	// Content wrapper: font + alignment + block layout.
-	b.WriteString(fmt.Sprintf("#text(font: %q, size: %s)[\n", c.Font, orFallback(c.FontSize, "10pt")))
+	b.WriteString(fmt.Sprintf("#text(%s)[\n", manuscriptFontArgs(c.Font)))
 	b.WriteString(fmt.Sprintf("#set par(leading: %s)\n", copyrightLeading(c.LineSpacing)))
 	b.WriteString(fmt.Sprintf("#align(%s)[\n", copyrightAlignExpr(c.Align)))
 
@@ -138,15 +138,15 @@ func composeCopyrightBlocks(meta Metadata, cfg Config, c CopyrightConfig) (top, 
 		}
 	}
 	if c.Publisher != "" {
-		bottom = append(bottom, fmt.Sprintf("%s #text(weight: %q)[%s]",
+		bottom = append(bottom, fmt.Sprintf("%s #text(%s)[%s]",
 			escapeTypst(c.PublisherPreposition),
-			c.HeadingFontWeight,
+			manuscriptFontArgs(c.Label.Font),
 			escapeTypst(c.Publisher),
 		))
 	}
 	if c.ISBN != "" {
-		bottom = append(bottom, fmt.Sprintf("#text(weight: %q)[%s]: %s",
-			c.HeadingFontWeight,
+		bottom = append(bottom, fmt.Sprintf("#text(%s)[%s]: %s",
+			manuscriptFontArgs(c.Label.Font),
 			escapeTypst(c.ISBNLabel),
 			escapeTypst(c.ISBN),
 		))
@@ -224,7 +224,7 @@ func isMarkdownRule(s string) bool {
 }
 
 var (
-	markdownBoldRE = regexp.MustCompile(`\*\*([^*]+)\*\*`)
+	markdownBoldRE   = regexp.MustCompile(`\*\*([^*]+)\*\*`)
 	markdownItalicRE = regexp.MustCompile(`(?:^|[^*])(\*[^*]+\*)(?:[^*]|$)`)
 )
 
@@ -320,11 +320,4 @@ func copyrightLeading(spacing string) string {
 	}
 	// Otherwise pass through (already an em/pt length).
 	return spacing
-}
-
-func orFallback(v, fallback string) string {
-	if strings.TrimSpace(v) == "" {
-		return fallback
-	}
-	return v
 }

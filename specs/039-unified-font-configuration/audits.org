@@ -1,0 +1,352 @@
+#+TITLE: W039 - Audit Evidence
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+
+* Definition gate
+
+** Local review
+:PROPERTIES:
+:ROUND:    1
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =fcb13ec6fb0b5746ae4013f432a82ba4102eaa00a625ec66836be6af12791102=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Findings:*
+  1. AC039.5 - Clean breaking failure boundary treated a missing property as
+     invalid without distinguishing a valid partial higher layer from an
+     incomplete canonical base.
+  2. RT039.1 - Exercise every public font role derived its role inventory from
+     the artefact it was meant to challenge, allowing an omitted role to escape
+     the test.
+  3. RT039.2 - Copy the British base unchanged tested copy equivalence but did
+     not verify the requirement that the file expose the complete public
+     contract.
+- *Remediation:* Confined missing-property validity to the complete British
+  base, made the role inventory independent of that base, and added an
+  independent public-path inventory to the British-base test.
+
+** Local review
+:PROPERTIES:
+:ROUND:    2
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =bc8d3eeceeffd9b58ef36f971c46ad9e6924fc0c4f529191a50339c69b0995ef=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* None. The requirement remains one uniform breaking font contract;
+  the design separates layer merging from rejected role inheritance; security,
+  failure, migration, and operability boundaries are explicit; and every
+  criterion has proportionate RT, UT, or OT coverage at the appropriate
+  boundary.
+- *Remediation:* None.
+
+** Independent review
+:PROPERTIES:
+:ROUND:    1
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =bc8d3eeceeffd9b58ef36f971c46ad9e6924fc0c4f529191a50339c69b0995ef=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Blocking findings:*
+  1. =SPEC-039-ROLE-PATHS=: The font-role descriptions did not supply exact
+     YAML paths or a complete authoritative inventory.
+  2. =SPEC-039-COMPLETE-BLOCK-CONTRADICTION=: Explicit six-property British
+     blocks conflicted with the allowance for commented optional values.
+  3. =DESIGN-039-INHERITANCE-CONTRACT=: The design did not establish how
+     complete role-local values arise without prohibited role inheritance.
+  4. =SPEC-039-BASELINE=: Approved pre-change appearance was not tied to a
+     reproducible artefact or revision.
+  5. =TEST-039-PATH-INVENTORY=: The independent accepted-path table used by
+     RT039.2 was neither defined nor named as an authority.
+  6. =TEST-039-ROLE-COVERAGE=: RT039.1 lacked exact enumerated role paths and
+     observable per-property isolation assertions.
+  7. =TEST-039-INVALID-DOMAIN=: The admissible values, coercions, and limits for
+     the six font properties were incomplete.
+- *Advisory:* =TEST-039-LINEAGE=: Name the maintained regression inventory and
+  define how generated or parameterized tests are counted.
+- *Remediation:* Added an explicit 33-role path table, a six-property domain
+  table, same-path completeness flow, baseline revision and fixtures, a
+  deterministic public-path inventory, 198 role-property assertions, and an
+  exact regression-lineage counting method.
+
+** Local review
+:PROPERTIES:
+:ROUND:    3
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =874fe8c4a0db0601d8de403acd195e7faccd1af83c3e3ae16167471eed1adff4=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* None. The retained requirement now names its exact font roles,
+  valid property domains, public configuration inventory, baseline evidence,
+  same-path merge invariant, observable regression assertions, and test-lineage
+  method without widening product scope.
+- *Remediation:* None.
+
+** Independent review
+:PROPERTIES:
+:ROUND:    2
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =874fe8c4a0db0601d8de403acd195e7faccd1af83c3e3ae16167471eed1adff4=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Blocking finding:* =SPEC-039-INVENTORY-CONTRADICTION=: The accepted public
+  path union included retired scalar and prefixed font paths from the baseline
+  documentation and active presets, contradicting AC039.5 - Clean breaking
+  failure boundary.
+- *Resolved prior findings:* All seven first-round blockers and the lineage
+  advisory were otherwise resolved.
+- *Remediation:* Partitioned the baseline union into non-font and retired-font
+  inventories, defined the 198 replacement font leaves, excluded every retired
+  font path from the post-change accepted set, and made those retired paths
+  explicit RT039.5 rejection cases.
+
+** Local review
+:PROPERTIES:
+:ROUND:    4
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =a5df147041901cd6568420c0fd48ce154d4ded170f49414ab84fbf55fc32cb5d=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* None. The post-change accepted inventory now retains all non-font
+  paths, rejects all retired font paths, and adds only the exact replacement
+  font-property paths.
+- *Remediation:* None.
+
+** Independent review
+:PROPERTIES:
+:ROUND:    3
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefact:* [[file:spec.org][W039 - Unified Font Configuration]]
+- *Revision:* SHA-256
+  =a5df147041901cd6568420c0fd48ce154d4ded170f49414ab84fbf55fc32cb5d=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* No blocking findings or advisories remain. The accepted-path
+  partition resolves =SPEC-039-INVENTORY-CONTRADICTION=; the specification,
+  design, and RT, UT, and OT definitions are coherent for definition-time
+  review.
+- *Remediation:* None.
+
+** Amended definition local review
+:PROPERTIES:
+:ROUND:    1
+:CYCLE:    normative-yaml
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =5ee91b4c58d94d1399fc077c6a050dd394f0a54b022aee4d2638996c742a6765=,
+  formed from the ordered SHA-256 records for =spec.org=, =british.yaml=, and
+  =validation.org=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* None. The change-specific summary heading follows the current
+  template; the normative YAML parses and contains the exact 33-role inventory
+  with six explicit properties per role; its delivery authority and runtime
+  destination are explicit; RT039.2 challenges it against an independent
+  accepted-path inventory and the installed content; and the selected UT and OT
+  have pending durable records.
+- *Remediation:* Converted simulated labels to native Org description lists,
+  added the semantic emphasis required by the ABC contract, and created the
+  pending validation record before this round.
+
+** Amended definition independent review
+:PROPERTIES:
+:ROUND:    1
+:CYCLE:    normative-yaml
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =5ee91b4c58d94d1399fc077c6a050dd394f0a54b022aee4d2638996c742a6765=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Blocking finding:* =DESIGN-039-NORMATIVE-YAML-TYPE=: The normative
+  =folio.manuscript.copyright.credits= value was a scalar, while the current
+  typed manuscript contract requires a string sequence. The attached file
+  would therefore fail before rendering as a runtime base.
+- *Resolved prior finding:* =SPEC-039-INVENTORY-CONTRADICTION= remains resolved.
+- *Remediation:* Changed =copyright.credits= to an empty sequence. The affected
+  local type review also found and corrected the analogous
+  =copyright.publication= string-sequence default.
+
+** Amended definition local review
+:PROPERTIES:
+:ROUND:    2
+:CYCLE:    normative-yaml
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =e0eccb886d9f8103650009f9e6af8018c58714eb725fc0a166a9dedcb2358e24=.
+- *Audits:* =audit-design= and the affected =audit-test-definitions= boundary
+- *Verdict:* PASS
+- *Findings:* None. The normative copyright body, credits, and publication
+  values now use their current typed sequence shapes; the 33 font blocks remain
+  complete; and RT039.2 still exercises the attached file through the runtime
+  configuration boundary.
+- *Remediation:* None.
+
+** Amended definition independent review
+:PROPERTIES:
+:ROUND:    2
+:CYCLE:    normative-yaml
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =e0eccb886d9f8103650009f9e6af8018c58714eb725fc0a166a9dedcb2358e24=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* FAIL
+- *Blocking finding:* =DESIGN-039-EXHAUSTIVE-BASE-CONTENT=: The normative YAML
+  omitted documented source-derived top-level metadata paths, contradicting the
+  exhaustive public-configuration contract.
+- *Resolved prior finding:* =DESIGN-039-NORMATIVE-YAML-TYPE= is resolved; the
+  copyright sequence values and all 33 six-property font blocks have the
+  required shapes.
+- *Remediation:* Added all thirteen documented shared and manuscript top-level
+  metadata paths as commented options, explicitly preserving source metadata
+  when each override is absent.
+
+** Amended definition local review
+:PROPERTIES:
+:ROUND:    3
+:CYCLE:    normative-yaml
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =5c979cfb3e06732559159d2efdd83c25e3dc7e0853c6256f76a9729cc265db29=.
+- *Audits:* =audit-design= and the affected =audit-spec= exhaustive-content
+  boundary
+- *Verdict:* PASS
+- *Findings:* None. The attached file visibly documents the five shared and
+  eight manuscript-only metadata overrides while leaving them absent from the
+  parsed runtime base, so source-derived behaviour remains unchanged.
+- *Remediation:* None.
+
+** Amended definition independent review
+:PROPERTIES:
+:ROUND:    3
+:CYCLE:    normative-yaml
+:CONTEXT:  /root/w039_definition_audit
+:END:
+
+- *Artefacts:* [[file:spec.org][W039 - Unified Font Configuration]],
+  [[file:british.yaml][normative end-state British configuration]], and
+  [[file:validation.org][planned non-automated validation evidence]].
+- *Revision:* SHA-256 manifest
+  =5c979cfb3e06732559159d2efdd83c25e3dc7e0853c6256f76a9729cc265db29=.
+- *Audits:* =audit-spec=, =audit-design=, and =audit-test-definitions=
+- *Verdict:* PASS
+- *Findings:* No blocking findings or advisories remain. The source-derived
+  metadata comments preserve absence semantics; all 33 font blocks contain
+  exactly the six required properties; copyright list values match their typed
+  decoder fields; and all prior definition-pack findings remain resolved.
+- *Remediation:* None.
+
+* Implementation gate
+
+** Local review
+:PROPERTIES:
+:ROUND:    1
+:END:
+
+- *Artefact:* W039 - Unified Font Configuration implementation and regression
+  delta at commit =8c1513a=.
+- *Audits:* =audit-test-code= and =audit-code=
+- *Verdict:* FAIL
+- *Findings:*
+  1. =TEST-039-FONT-ACCESSOR=: The new effective-font accessor had no direct
+     package-level success or failure coverage.
+  2. =CODE-039-DUPLICATE-VALIDATION=: Manuscript quoted-block validation
+     duplicated the shared font domain and could drift from the new single
+     runtime authority.
+  3. =CODE-039-UNUSED-HELPER=: The manuscript migration left one newly unused
+     helper.
+- *Remediation:* Added direct accessor coverage, removed the redundant
+  manuscript font validation, and removed the newly unused helper.
+
+** Local review
+:PROPERTIES:
+:ROUND:    2
+:END:
+
+- *Artefact:* W039 - Unified Font Configuration implementation and regression
+  delta at commit =e0096e0=.
+- *Audits:* =audit-test-code= and =audit-code=
+- *Verdict:* FAIL
+- *Finding:* =TEST-039-PDF-STABILITY=: The copied-base letter regression
+  compared complete PDF bytes. A full-suite execution showed that this was not
+  a stable assertion for equivalent rendering.
+- *Remediation:* Retained the public letter PDF boundary but changed the
+  equivalence assertion to decoded raster pixels using the repository's
+  existing PDF raster method.
+
+** Local review
+:PROPERTIES:
+:ROUND:    3
+:END:
+
+- *Artefact:* W039 - Unified Font Configuration implementation and regression
+  delta at commit =456aa69=.
+- *Audits:* =audit-test-code= and =audit-code=
+- *Verdict:* PASS
+- *Findings:* None. The 198 path-property cases now exercise same-role merging
+  and isolation; every role reaches its script, letter, or manuscript Typst
+  boundary; copied-base and multi-layer public-command behaviour are covered;
+  malformed configuration fails before output; and migrated legacy tests retain
+  their identifiers and assertions.
+- *Current checks:* =make test= passed across all Go packages; =make lint=
+  passed; and =golangci-lint run --new-from-rev=5c493b7 ./...= reported no
+  W039-created finding. The unscoped =golangci-lint run ./...= continues to
+  report four pre-existing manuscript findings outside this change.
+- *Remediation:* None.
+
+** Independent review incident
+:PROPERTIES:
+:ROUND:    1
+:CONTEXT:  /root/w039_implementation_audit
+:END:
+
+- *Artefact:* W039 - Unified Font Configuration implementation and regression
+  delta at commit =6aa9c40=.
+- *Audits:* =audit-test-code= and =audit-code=
+- *Result:* NO VERDICT. The retained external auditor exceeded the configured
+  eight-minute timeout and was interrupted on 2026-09-08.
+- *Classification:* Runner incident, not an audit finding and not a PASS.
+- *Next action:* Resume the same retained context only if the operator directs
+  a retry. Do not create a replacement auditor.

@@ -81,7 +81,7 @@ func TestRT_15_7_PageFooterDefaultDisabled(t *testing.T) {
 	t.Skip("RT-15.7 removed: page-footer default changed to enabled with centered [page] -- see RT-15.54")
 }
 
-// RT-15.8: page-footer.font, font-size, font-weight propagate to footer typography.
+// RT-15.8: page-footer.font properties propagate to footer typography.
 func TestRT_15_8_PageFooterTypographyPropagates(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
@@ -89,9 +89,10 @@ func TestRT_15_8_PageFooterTypographyPropagates(t *testing.T) {
 		"    page-footer:",
 		"      enabled: true",
 		"      format: \"footer-marker\"",
-		"      font: Courier",
-		"      font-size: 9pt",
-		"      font-weight: bold",
+		"      font:",
+		"        family: Courier",
+		"        size: 9pt",
+		"        weight: bold",
 		"",
 	}, "\n"))
 	body := extractBodyPageBlock(t, typst)
@@ -154,25 +155,26 @@ func TestRT_15_11_PageFooterAbsentFromTitleAndTOC(t *testing.T) {
 	assertNotContains(t, titleTOC, `footer-marker-should-not-be-on-title-or-toc`)
 }
 
-// RT-15.12: missing page-footer typography inherits from page-header (which inherits from root).
+// RT-15.12: page-footer typography remains role-local when page-header changes.
 func TestRT_15_12_PageFooterInheritsFromHeader(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
 		"  manuscript:",
 		"    page-header:",
-		"      font: \"HeaderFont\"",
-		"      font-size: 8pt",
-		"      font-weight: light",
+		"      font:",
+		"        family: \"HeaderFont\"",
+		"        size: 8pt",
+		"        weight: light",
 		"    page-footer:",
 		"      enabled: true",
 		"      format: \"footer-marker\"",
 		"",
 	}, "\n"))
-	body := extractBodyPageBlock(t, typst)
-	// Footer text() should use the header's font/size/weight because page-footer didn't set them.
-	assertContains(t, body, `font: "HeaderFont"`)
-	assertContains(t, body, `size: 8pt`)
-	assertContains(t, body, `weight: "light"`)
+	footer := extractFooterBlock(t, typst)
+	assertContains(t, footer, `font: "Libertinus Sans"`)
+	assertContains(t, footer, `size: 10pt`)
+	assertContains(t, footer, `weight: "regular"`)
+	assertNotContains(t, footer, `font: "HeaderFont"`)
 }
 
 // -----------------------------------------------------------------------------
@@ -575,7 +577,9 @@ func TestRT_15_43_FooterPairRightCenter(t *testing.T) {
 
 // RT-15.44: scalar align: right continues to apply uniformly (backwards compatible).
 // Under the state-based skip-header wrapper, the header line becomes:
-//   header: context { if state("folio-skip-header").get() { none } else { align(right)[...] } },
+//
+//	header: context { if state("folio-skip-header").get() { none } else { align(right)[...] } },
+//
 // which no longer contains calc.odd (the pair conditional).
 func TestRT_15_44_ScalarAlignAppliesUniformly(t *testing.T) {
 	typst := renderIssue15Manuscript(t, "folio:\n  manuscript:\n    page-header:\n      align: right\n")

@@ -1,0 +1,100 @@
+# American stage-play and Shunn-style prose manuscript differences.
+# Every omitted value comes from the shared British base.
+
+folio:
+  positioning:
+    speech:
+      speaker:
+        suffix: ""
+      speech-instruction:
+        placement: new-line
+      dialogue:
+        placement: new-line
+        wrap-indent: 0em
+    scene-header:
+      align: center
+      case-transform: upper
+
+  manuscript:
+    style: us
+    margin: 25mm
+    font:
+      family: Menlo
+      size: 10pt
+    heading:
+      font:
+        family: Menlo
+        size: 10pt
+    mono:
+      font:
+        family: Iosevka Custom
+        size: 9pt
+        weight: bold
+    line-spacing: 2
+    paragraph-indent: 12.7mm
+
+    quoted-block:
+      font:
+        family: Menlo
+        size: 10pt
+
+    title-page:
+      title:
+        font:
+          family: Menlo
+          size: 10pt
+          weight: regular
+      subtitle:
+        font:
+          family: Menlo
+          size: 10pt
+      author:
+        font:
+          family: Menlo
+          size: 10pt
+      date:
+        font:
+          family: Menlo
+      wordcount:
+        font:
+          family: Menlo
+      version:
+        font:
+          family: Menlo
+      contact:
+        font:
+          family: Menlo
+
+    date-format: "January 2, 2006"
+
+    page-header:
+      font:
+        family: Menlo
+
+    page-footer:
+      font:
+        family: Menlo
+
+    toc:
+      font:
+        family: Menlo
+      heading:
+        font:
+          family: Menlo
+          size: 10pt
+          weight: regular
+
+    part:
+      case-transform: upper
+
+    copyright:
+      font:
+        family: Menlo
+        size: 10pt
+      label:
+        font:
+          family: Menlo
+          size: 10pt
+      body:
+        - "**All rights reserved.** No part of this publication may be reproduced, stored in a retrieval system, or transmitted, in any form or by any means, electronic, mechanical, photocopying, recording, or otherwise, without the prior written permission of the copyright holder."
+        - "A CIP catalog record for this book has been applied for from the Library of Congress."

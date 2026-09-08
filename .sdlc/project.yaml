@@ -16,8 +16,6 @@ project:
     kind: application
     migration_source: v2
     primary_branch: master
-sdlc:
-    revision: 457499ef44f1e728814c4e2243eaf2fa82c04820
 standards:
     technologies:
         - API

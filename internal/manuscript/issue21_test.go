@@ -136,7 +136,8 @@ func TestRT_21_9_ISBNLabelBoldValueRegular(t *testing.T) {
 		"      isbn: \"978-0-000000-00-2\"",
 		"",
 	}, "\n"))
-	assertContains(t, typst, `#text(weight: "bold")[ISBN]`)
+	assertContains(t, typst, `#text(font: "Libertinus Serif", size: 12pt, weight: "bold"`)
+	assertContains(t, typst, `)[ISBN]`)
 	assertContains(t, typst, ": 978-0-000000-00-2")
 }
 
@@ -225,7 +226,7 @@ func TestRT_21_15_InvalidISBNRejected(t *testing.T) {
 		"  manuscript:",
 		"    copyright:",
 		"      enabled: true",
-		"      isbn: \"978-0-000000-00-9\"",  // wrong check digit
+		"      isbn: \"978-0-000000-00-9\"", // wrong check digit
 		"",
 	}, "\n"), "invalid EAN-13 check digit")
 }

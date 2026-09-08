@@ -1,5 +1,5 @@
-// ABOUTME: Regression tests for issue #19 -- page-header/page-footer font-style.
-// ABOUTME: Verifies font-style: italic|oblique lands as `style: "..."` in generated Typst.
+// ABOUTME: Regression tests for issue #19 -- page-header/page-footer font style.
+// ABOUTME: Verifies nested style values land in generated Typst without cross-role inheritance.
 package manuscript
 
 import (
@@ -7,35 +7,37 @@ import (
 	"testing"
 )
 
-// RT-19.1: page-header.font-style: italic emits style: "italic" inside the header text() call.
+// RT-19.1: page-header.font.style: italic emits style: "italic" inside the header text() call.
 func TestRT_19_1_PageHeaderFontStyleItalic(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
 		"  manuscript:",
 		"    page-header:",
 		"      enabled: true",
-		"      font-style: italic",
+		"      font:",
+		"        style: italic",
 		"",
 	}, "\n"))
 	header := extractHeaderBlock(t, typst)
 	assertContains(t, header, `style: "italic"`)
 }
 
-// RT-19.2: page-header.font-style: oblique emits style: "oblique".
+// RT-19.2: page-header.font.style: oblique emits style: "oblique".
 func TestRT_19_2_PageHeaderFontStyleOblique(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
 		"  manuscript:",
 		"    page-header:",
 		"      enabled: true",
-		"      font-style: oblique",
+		"      font:",
+		"        style: oblique",
 		"",
 	}, "\n"))
 	header := extractHeaderBlock(t, typst)
 	assertContains(t, header, `style: "oblique"`)
 }
 
-// RT-19.3: unset font-style emits no style: argument (byte-identical to pre-fix output).
+// RT-19.3: the complete British block emits its explicit regular style as Typst normal.
 func TestRT_19_3_PageHeaderFontStyleUnsetEmitsNoStyle(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
@@ -45,10 +47,10 @@ func TestRT_19_3_PageHeaderFontStyleUnsetEmitsNoStyle(t *testing.T) {
 		"",
 	}, "\n"))
 	header := extractHeaderBlock(t, typst)
-	assertNotContains(t, header, `style:`)
+	assertContains(t, header, `style: "normal"`)
 }
 
-// RT-19.4: page-footer.font-style: italic emits style: "italic" inside the footer text() call.
+// RT-19.4: page-footer.font.style: italic emits style: "italic" inside the footer text() call.
 func TestRT_19_4_PageFooterFontStyleItalic(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
@@ -56,27 +58,29 @@ func TestRT_19_4_PageFooterFontStyleItalic(t *testing.T) {
 		"    page-footer:",
 		"      enabled: true",
 		"      format: \"[page]\"",
-		"      font-style: italic",
+		"      font:",
+		"        style: italic",
 		"",
 	}, "\n"))
 	footer := extractFooterBlock(t, typst)
 	assertContains(t, footer, `style: "italic"`)
 }
 
-// RT-19.5: page-footer.font-style unset inherits from page-header.font-style.
+// RT-19.5: page-footer.font.style remains role-local when page-header changes.
 func TestRT_19_5_PageFooterFontStyleInheritsFromHeader(t *testing.T) {
 	typst := renderIssue15Manuscript(t, strings.Join([]string{
 		"folio:",
 		"  manuscript:",
 		"    page-header:",
-		"      font-style: italic",
+		"      font:",
+		"        style: italic",
 		"    page-footer:",
 		"      enabled: true",
 		"      format: \"[page]\"",
 		"",
 	}, "\n"))
 	footer := extractFooterBlock(t, typst)
-	assertContains(t, footer, `style: "italic"`)
+	assertContains(t, footer, `style: "normal"`)
 }
 
 // extractHeaderBlock returns the `header: context { ... }` region of the running-page

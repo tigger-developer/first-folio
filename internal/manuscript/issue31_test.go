@@ -65,7 +65,8 @@ func renderContinuationTOC(t *testing.T, padding string) (string, string) {
 		"folio:",
 		"  manuscript:",
 		"    toc:",
-		"      font-size: 10pt",
+		"      font:",
+		"        size: 10pt",
 		"      line-spacing: 1.15em",
 	}
 	if padding != "" {

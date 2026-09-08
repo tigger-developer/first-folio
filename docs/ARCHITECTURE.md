@@ -56,7 +56,7 @@ Letters have a smaller recipient-oriented model because their sender, recipient,
 
 Local discovery begins at the source directory and walks upwards towards HOME. Only the nearest `script.yaml` is selected; its style-specific sibling is loaded from the same directory. For a multi-file manuscript, the first resolved input determines that starting directory.
 
-The loader provides dotted and inherited access for scripts and letters, and typed decoding for manuscript layout. Root `folio.*` values remain shared defaults; child mode values override only their own elements.
+The loader deep-merges ordinary keys and partial font blocks, validates every effective font role, and provides typed font values to each renderer. Font properties inherit only through configuration layers at the same role path. The exhaustive British preset is the shared lowest-precedence base for scripts, letters, and manuscripts; US and screenplay presets contain only their differences.
 
 ## Rendering
 

@@ -1,0 +1,72 @@
+#+TITLE: W039 - Validation Evidence
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+
+* User tests
+
+** UT039.1 - Review representative rendered output
+:PROPERTIES:
+:CUSTOM_ID: ut-039-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-039-6][AC039.6 - Existing publishing behaviour remains]]
+- Reviewer :: Operator
+- Date :: 2026-09-08
+- Status :: PASS
+- Procedure :: Render baseline commit
+  =d00c7f5de646eedacfda1484f15fcc7bfdf06a0b= and candidate commit
+  =8f69bab14fe6dbb23fd51543774c9a4bac4d826b= from the repository's canonical
+  script examples: =examples/about-time.org=, =examples/one-day.md=, and
+  =examples/one-day.fountain=. Render all four letters from
+  =examples/about-time.org= and both existing manuscript examples. Compare
+  British, US, and screenplay outputs where applicable.
+- Expected :: Typography and non-font layout are unchanged except for a
+  difference the operator explicitly accepts and records.
+- Automated evidence :: All 17 PDF pairs retained their extracted text and
+  page count. The repository's =pdf-to-png= method rasterized 169 paired pages
+  at 120 DPI; all 169 pairs had identical dimensions and decoded pixels.
+- Operator evidence :: Taḋg reviewed the canonical-fixture evidence and
+  recorded =UT039.1= as PASS on 2026-09-08.
+- Exclusion :: The pre-existing leak of =:letter:= sections into script front
+  matter appears in both revisions and is tracked separately as
+  [[file:../../docs/work.org::#w-040][W040 - Exclude cover-letter sections from document rendering]].
+- Result :: PASS. The candidate introduces no typography or non-font layout
+  difference in the reviewed matrix.
+
+* One-off tests
+
+** OT039.1 - Reconcile regression lineage
+:PROPERTIES:
+:CUSTOM_ID: ot-039-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-039-7][AC039.7 - Regression protection remains live]]
+- Boundary :: Repository-owned tests and named test records at the baseline and
+  delivery-candidate revisions.
+- Date :: 2026-09-08
+- Status :: PASS
+- Procedure :: Capture, classify, and reconcile the two maintained test
+  inventories under OT039.1 - Reconcile regression lineage.
+- Expected :: Every baseline test remains active or has a traced active
+  replacement protecting the same behaviour.
+- Bounds :: One delivery-time comparison with no external service or persistent
+  automation.
+- Go inventory :: Baseline =go test -json ./...= reported 362 fully qualified
+  test and subtest names; the candidate reported 868. All 362 baseline names
+  remain with the same outcome, no name was removed or replaced, and 506 names
+  were added. The test-source diff removes no Go test declaration.
+- Record inventory :: The work ledger and its linked specifications contain 427
+  baseline RT, UT, and OT identifiers and 435 candidate identifiers. All 427
+  baseline identifiers remain; the eight additions are =RT039.1= through
+  =RT039.6=, =UT039.1=, and =OT039.1=.
+- Skips :: Both revisions retain the same two deliberate skips with the same
+  reasons: =RT-27.3= was removed because print-production contents must not
+  contain link annotations, and =RT-15.7= was replaced by =RT-15.54= when the
+  default footer became enabled.
+- Maintained suite :: Baseline and candidate inventory runs passed. The
+  candidate =make test= also passed across every Go package.
+- Result :: PASS. Every baseline item has an unchanged active outcome; no
+  replacement mapping is required, and no item was deleted, newly skipped,
+  disabled, or weakened for the font-schema migration.
+- Cleanup :: No external state was created. Temporary captures are removed
+  after this record is committed.

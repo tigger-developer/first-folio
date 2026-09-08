@@ -8,12 +8,11 @@
 # script.yaml. A script-<style>.yaml sibling is then applied for the active style.
 # Per-project values override global values; CLI flags override everything.
 #
-# First Folio only reads this file — it never modifies or creates it.
+# First Folio only reads this file --- it never modifies or creates it.
 #
-# Everything below is commented out by default — uncomment only what you
-# want to override. Script/letter defaults come from british-script.yaml;
-# manuscript defaults come from british-manuscript.yaml. See presets/ for the
-# active base and style-override values.
+# Everything below is commented out by default --- uncomment only what you
+# want to override. All modes start from presets/british.yaml; presets/us.yaml
+# and presets/screenplay.yaml contain only style differences.
 
 # --- Shared metadata ---
 # Override #+TITLE, #+AUTHOR, etc. from the source. Usually leave these
@@ -34,12 +33,17 @@
 
 # --- First Folio PDF rendering ---
 # folio:
-#   font: Libertinus Serif       # any installed font; e.g. EB Garamond, Asap
-#   font-size: 12pt
-#   heading-font: Libertinus Sans
-#   heading-font-size: 14pt
-#   font-weight: regular         # optional: thin, light, regular, bold, black, or 100-900
-#   font-stretch: 100%           # optional: 75%, 100%, 125% — pin a variant (e.g. avoid Asap Condensed fallback)
+#   font:
+#     family: Libertinus Serif   # any installed font; e.g. EB Garamond, Asap
+#     size: 12pt
+#     weight: regular            # thin, light, regular, bold, black, or 100-900
+#     stretch: 100%              # e.g. 75%, 100%, 125%
+#     style: regular             # regular | italic | oblique
+#     letter-spacing: 0em
+#   heading:
+#     font:
+#       family: Libertinus Sans
+#       size: 14pt
 #   margin: 25mm
 #   page: a4                     # or us-letter
 #   default-format: pdf
@@ -49,16 +53,18 @@
   #   page-number: false
   #   title:
   #     align: center            # left | center | right
-  #     font-size: 24pt
-  #     bold: true
-  #     italic: false
+  #     font:
+  #       size: 24pt
+  #       weight: bold
+  #       style: regular
   #     case-transform: as-written   # upper | lower | as-written | small-caps
   #     position: third          # third | top | center | bottom
   #     space-before: 0
   #   subtitle:
   #     align: center
-  #     font-size: 14pt
-  #     italic: true
+  #     font:
+  #       size: 14pt
+  #       style: italic
   #     space-before: 1em
   #   author:
   #     align: center
@@ -66,10 +72,12 @@
   #     space-before: 2em
   #   date:
   #     position: bottom-left
-  #     font-size: 10pt
+  #     font:
+  #       size: 10pt
   #   version:
   #     position: bottom-right
-  #     font-size: 10pt
+  #     font:
+  #       size: 10pt
 
   # --- Per-element positioning ---
   # positioning:
@@ -78,17 +86,20 @@
   #     speaker:
   #       case-transform: upper        # how speaker name appears
   #       suffix: ":"                  # or "" for new-line style
-  #       bold: true
+  #       font:
+  #         weight: bold
   #     dialogue:
   #       placement: same-line         # same-line | new-line
   #       wrap-indent: 7em
   #     speech-instruction:
   #       prefix: "("
   #       suffix: ")"
-  #       italic: true
+  #       font:
+  #         style: italic
   #
   #   stage-direction:
-  #     italic: true
+  #     font:
+  #       style: italic
   #     space-before: 1.6em
   #
   #   transition:
@@ -98,20 +109,25 @@
   #
   #   act-header:
   #     align: center
-  #     bold: true
+  #     font:
+  #       weight: bold
   #     page-break-before: true
   #
   #   scene-header:
   #     align: left
-  #     bold: true
+  #     font:
+  #       weight: bold
   #     space-before: 2em
 
   # --- Cover letter rendering (folio letter) ---
   # letter:
-  #   font: Libertinus Serif       # may differ from script body font
-  #   font-size: 11pt
-  #   font-weight: regular         # optional: thin, light, regular, bold, black, or 100-900
-  #   font-stretch: 100%           # optional: pin a variant (e.g. avoid Asap Condensed fallback)
+  #   font:
+  #     family: Libertinus Serif   # may differ from script body font
+  #     size: 11pt
+  #     weight: regular
+  #     stretch: 100%
+  #     style: regular
+  #     letter-spacing: 0em
   #   page: a4
   #   margin-top: 25mm
   #   margin-bottom: 25mm
@@ -130,15 +146,17 @@
   #   page: a4
   #   margin: 20mm
   #   gutter: 0mm
-  #   font: Libertinus Serif
-  #   font-size: 12pt
-  #   font-weight: regular
-  #   heading-font: Libertinus Sans
-  #   heading-font-size: 14pt
-  #   heading-font-weight: regular
-  #   mono-font: Libertinus Mono
-  #   mono-font-size: 10pt
-  #   mono-font-weight: regular
+  #   font:
+  #     family: Libertinus Serif
+  #     size: 12pt
+  #   heading:
+  #     font:
+  #       family: Libertinus Sans
+  #       size: 14pt
+  #   mono:
+  #     font:
+  #       family: Libertinus Mono
+  #       size: 10pt
   #   line-spacing: 1.5
   #   justify: true
   #   widow-orphan-control: true

@@ -1,4 +1,4 @@
-<!-- Version: 0.8 | Last updated: 2026-08-10 -->
+<!-- Version: 0.9 | Last updated: 2026-09-07 -->
 
 # Configuration
 
@@ -31,7 +31,7 @@ All config sources are read and merged. Each layer overrides individual keys fro
 | 6 | Selected built-in style override |
 | 7 (lowest) | British built-in base preset |
 
-**Example:** Global config sets `folio.font: "EB Garamond"` and `folio.page: a4`. A local config sets only `folio.font: "Georgia"`. The merged result uses Georgia for the font and a4 for the page - the local config overrides one key without erasing the rest.
+**Example:** Global config sets `folio.font.family: "EB Garamond"` and `folio.page: a4`. A local config sets only `folio.font.size: 11pt`. The merged root font uses EB Garamond at 11pt and the page remains a4. Font properties merge only at the same role path.
 
 ## Schema
 
@@ -67,12 +67,8 @@ All First Folio-specific settings live under the `folio:` key.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `font` | string | `Libertinus Serif` | Body font family |
-| `font-size` | string | `12pt` | Body font size |
-| `font-weight` | string | font default | Optional Typst font weight |
-| `font-stretch` | string | font default | Optional Typst font stretch |
-| `heading-font` | string | inherits `font` | Default heading font family |
-| `heading-font-size` | string | inherits `font-size` | Default heading font size |
+| `font` | font block | British root font | Body typography |
+| `heading.font` | font block | British heading font | Shared heading typography |
 | `margin` | string | `25mm` | Page margins |
 | `page` | string | `a4` | Page size |
 | `default-format` | string | `pdf` | Default output format when no target file or `--to` given |
@@ -93,20 +89,42 @@ Script layout is configured beneath `folio.title-page` and `folio.positioning`. 
 
 The effective CLI layout overrides are `--font`, `--font-size`, `--margin`, and `--page`; `--style` selects the preset layer. Other layout changes belong in `script.yaml`. See `folio convert --help` for the public CLI surface.
 
+#### Uniform font blocks
+
+Every configurable typography role uses the same mapping:
+
+```yaml
+font:
+  family: Libertinus Serif
+  size: 12pt
+  weight: regular
+  stretch: 100%
+  style: regular
+  letter-spacing: 0em
+```
+
+The six properties are:
+
+| Property | Accepted values |
+|---|---|
+| `family` | Non-empty string |
+| `size` | Positive decimal with `pt`, `mm`, `cm`, `in`, or `em` |
+| `weight` | `thin`, `extralight`, `light`, `regular`, `medium`, `semibold`, `bold`, `extrabold`, `black`, or an integer from 100 through 900 |
+| `stretch` | Positive finite decimal, optionally followed by `%`; a plain number means percent |
+| `style` | `regular`, `italic`, or `oblique` |
+| `letter-spacing` | Signed decimal with `pt`, `mm`, `cm`, `in`, or `em`; zero is valid |
+
+Higher-precedence files may set only the properties they change. Omitted properties come from the lower layer at the same role path. A role never inherits font properties from its parent or from another role. The old scalar, prefixed, `bold`, and `italic` font keys are rejected with their full paths.
+
+The exhaustive [British base](../presets/british.yaml) is both the lowest-precedence runtime configuration and the public inventory. [US](../presets/us.yaml) and [screenplay](../presets/screenplay.yaml) contain only differences from it.
+
 ### Letter settings (`folio.letter:`)
 
-Letters use one layout rather than British/US variants. Supported keys are `font`, `font-size`, `font-weight`, `font-stretch`, `page`, `margin-top`, `margin-bottom`, `margin-left`, `margin-right`, `space-before-closing`, `space-before-signoff`, `space-after-sender`, `space-after-recipient`, `space-after-date`, and `space-after-subject`.
+Letters use one layout rather than British/US variants. Supported keys are `font` using the uniform six-property block, `page`, `margin-top`, `margin-bottom`, `margin-left`, `margin-right`, `space-before-closing`, `space-before-signoff`, `space-after-sender`, `space-after-recipient`, `space-after-date`, and `space-after-subject`.
 
 ### Manuscript settings (`folio.manuscript:`)
 
-Manuscript settings inherit from root `folio:` values unless a manuscript or child override is present. The inheritance model is:
-
-1. Child override, such as `folio.manuscript.toc.font`
-2. Manuscript override, such as `folio.manuscript.font`
-3. Root default, such as `folio.font`
-4. Active preset default
-
-For heading fonts, `folio.manuscript.heading-font` inherits from `folio.heading-font`, which inherits from `folio.font`.
+Manuscript settings use the same configuration-file precedence as scripts and letters. Font inheritance is strictly same-path layering. For example, `folio.manuscript.page-header.font.style` may inherit from that exact path in the British base, but never from `folio.manuscript.font` or `folio.manuscript.heading.font`.
 
 Common manuscript keys:
 
@@ -114,17 +132,16 @@ Common manuscript keys:
 |---|---|---|---|
 | `page` | string | `a4` | inherited |
 | `margin` | string | `20mm` | `25mm` |
-| `font` | string | `Libertinus Serif` | `Menlo` |
-| `heading-font` | string | `Libertinus Sans` | `Menlo` |
-| `mono-font` | string | `Libertinus Mono` | `Iosevka Custom` |
+| `font` | font block | Libertinus Serif, 12pt | Menlo, 10pt |
+| `heading.font` | font block | Libertinus Sans, 14pt | Menlo, 10pt |
+| `mono.font` | font block | Libertinus Mono, 10pt | Iosevka Custom, 9pt bold |
 | `line-spacing` | number | `1.5` | `2` |
-| `letter-spacing` | Typst length | `0em` | inherited (`0em`) |
 | `justify` | bool | `true` | inherited (`true`) |
 | `widow-orphan-control` | bool | `true` | inherited (`true`) |
 | `paragraph-indent` | string | `10mm` | `12.7mm` |
 | `paragraph-spacing` | string | `0` | `0` |
 
-`folio.manuscript.line-spacing` accepts a baseline multiplier or an explicit Typst length. With a multiplier, `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. A length such as `2em` is passed through without adding another unit. `folio.manuscript.letter-spacing` maps to Typst font tracking and defaults to `0em`; positive and negative Typst lengths are accepted. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap. `folio.manuscript.justify` controls body-text justification.
+`folio.manuscript.line-spacing` accepts a baseline multiplier or an explicit Typst length. With a multiplier, `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. A length such as `2em` is passed through without adding another unit. `folio.manuscript.font.letter-spacing` controls body tracking; header and footer tracking use their own font blocks. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap. `folio.manuscript.justify` controls body-text justification.
 
 `folio.manuscript.widow-orphan-control` defaults to `true`, preventing a single paragraph line from being stranded at the bottom or top of a page. Set it to `false` to allow paragraphs to split freely at page boundaries. This setting does not keep whole paragraphs together.
 
@@ -132,33 +149,27 @@ Common manuscript keys:
 
 #### Complete manuscript key inventory
 
-The built-in files [british-manuscript.yaml](../presets/british-manuscript.yaml) and [us-overrides-manuscript.yaml](../presets/us-overrides-manuscript.yaml) are the canonical default values. Every accepted `folio.manuscript` key is listed below; omitted child typography inherits from the manuscript heading or body typography as described above.
+The built-in [British base](../presets/british.yaml) is the canonical default and exhaustive inventory. The [US overlay](../presets/us.yaml) contains only differences. Every font entry below means the uniform six-property block.
 
 | Group | Accepted keys |
 |---|---|
 | Core | `style`, `page`, `margin`, `gutter`, `line-spacing`, `justify`, `widow-orphan-control`, `paragraph-indent`, `paragraph-spacing` |
-| Body typography | `font`, `font-size`, `font-weight`, `letter-spacing` |
-| Heading typography | `heading-font`, `heading-font-size`, `heading-font-weight` |
-| Monospace typography | `mono-font`, `mono-font-size`, `mono-font-weight` |
-| Title typography | `title-font`, `title-font-size`, `title-font-weight` |
-| Subtitle typography | `subtitle-font`, `subtitle-font-size`, `subtitle-font-weight`, `subtitle-font-style` |
-| Author typography | `author-font`, `author-font-size`, `author-font-weight`, `attribution`, `author-attribution` |
-| Date typography | `date-font`, `date-font-size`, `date-font-weight`, `date-format` |
-| Version typography | `version-font`, `version-font-size`, `version-font-weight` |
-| Word-count typography | `wordcount-font`, `wordcount-font-size`, `wordcount-font-weight` |
-| Contact typography | `contact-font`, `contact-font-size`, `contact-font-weight` |
+| Body typography | `font` |
+| Heading typography | `heading.font` |
+| Monospace typography | `mono.font` |
+| Title-page typography | `title-page.<item>.font`, where `<item>` is `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, or `contact` |
 
 | Nested block | Accepted child keys |
 |---|---|
-| `page-header` | `enabled`, `font`, `font-size`, `font-weight`, `font-style`, `letter-spacing`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
-| `page-footer` | `enabled`, `font`, `font-size`, `font-weight`, `font-style`, `letter-spacing`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
-| `toc` | `enabled`, `links`, `title`, `font`, `font-size`, `font-weight`, `heading-font`, `heading-font-size`, `heading-font-weight`, `include-parts`, `include-chapters`, `include-sections`, `dot-leaders`, `page-numbers`, `page-break-before`, `blank-page-before`, `blank-page-after`, `line-spacing`, `part-gap-before`, `continuation-padding-before`, `part-bold` |
+| `page-header` | `enabled`, `font`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
+| `page-footer` | `enabled`, `font`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
+| `toc` | `enabled`, `links`, `title`, `font`, `heading.font`, `include-parts`, `include-chapters`, `include-sections`, `dot-leaders`, `page-numbers`, `page-break-before`, `blank-page-before`, `blank-page-after`, `line-spacing`, `part-gap-before`, `continuation-padding-before`, `part-bold` |
 | `title-page` | `enabled`, `page-number`, `include-title`, `include-subtitle`, `include-author`, `include-date`, `include-wordcount`, `include-contact-name`, `include-address`, `include-phone`, `include-email`, `include-website`, `include-version`, `title-block-align`, `footer-align` |
-| `title-page.<item>` | `align`, where `<item>` is `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, or `contact` |
+| `title-page.<item>` | `align`, `font`, where `<item>` is `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, or `contact` |
 | `scene-break` | `marker` |
 | `quoted-block-spacing`, `code-block-spacing` | Equal clearance above and below quoted and fenced-code blocks |
 | `quote-block-indent`, `code-block-indent` | Left inset applied to every line of quoted and fenced-code blocks; defaults to `0em` |
-| `quoted-block.font` | `family`, `size`, `weight`, `stretch`, `style`, `letter-spacing`; omitted properties inherit from the manuscript font |
+| `quoted-block.font` | Uniform font block; omitted properties inherit only from the same path in a lower configuration layer |
 | `list`, `table`, `code-block` | `space-before`, `space-after`; code-block values override `code-block-spacing` on their respective side |
 | `page-numbering` | `frontmatter-format`, `body-format`, `body-reset` |
 
@@ -182,7 +193,7 @@ The `copyright` block accepts:
 |---|---|
 | Page control | `enabled`, `position`, `skip-header`, `skip-footer`, `blank-page-before`, `blank-page-after`, `align` |
 | Content | `credits`, `body`, `separator`, `separator-space-before`, `separator-space-after`, `publication`, `publisher`, `publisher-preposition`, `isbn`, `isbn-label`, `isbn-barcode` |
-| Typography | `font`, `font-size`, `heading-font-weight`, `line-spacing`, `block-spacing` |
+| Typography | `font`, `label.font`, `line-spacing`, `block-spacing` |
 
 ### Page-header format placeholders
 
@@ -232,9 +243,7 @@ When `alt-format` is unset, `format` renders on every page (unchanged from AC15.
 
 ### Page-footer block
 
-`folio.manuscript.page-footer` mirrors the fields of `folio.manuscript.page-header`. Typography fields (`font`, `font-size`, `font-weight`, `font-style`) inherit from `page-header` when unset. `letter-spacing` is independent: both header and footer inherit `folio.manuscript.letter-spacing` unless individually overridden. Default: enabled with a centred `[page]` number, `distance-from-edge` and `content-padding-after` matching `page-header`. Set `page-footer.enabled: false` to omit the running footer.
-
-Both `page-header` and `page-footer` accept `font-style` alongside `font`, `font-size`, and `font-weight`. Accepted values are `regular` (default), `italic`, and `oblique`. When unset, no `style:` argument is emitted, preserving the default upright rendering. Their `letter-spacing` values map to Typst tracking and accept values such as `0.05em` or `-0.01em`.
+`folio.manuscript.page-footer` mirrors the non-font fields of `folio.manuscript.page-header`. Each has its own complete `font` block in the British base. A partial user block merges only with the lower layer at that exact header or footer path. Default: enabled with a centred `[page]` number, `distance-from-edge` and `content-padding-after` matching `page-header`. Set `page-footer.enabled: false` to omit the running footer.
 
 ### Frontmatter-format (issue #24)
 
@@ -504,7 +513,7 @@ Unknown alignment values (e.g. `middle-middle`, `bottom-diagonal`) are rejected 
 
 `folio.manuscript.toc.continuation-padding-before` reserves space above entries on every table-of-contents page. The Contents heading occupies that band on page one, and continuation pages leave it blank, keeping entry lists vertically aligned. The British default is `15mm`, inherited by the US preset.
 
-US manuscript style is selected with `folio.manuscript.style: us` or `folio.style: us`, or with `folio manuscript --style us ...`. The US override is layered on top of the British manuscript preset and does not change the page size to `us-letter`; page size changes require explicit user config.
+US manuscript style is selected with `folio.manuscript.style: us` or `folio.style: us`, or with `folio manuscript --style us ...`. The unified US overlay is layered on top of the shared British base and does not change the page size to `us-letter`; page size changes require explicit user config.
 
 Manuscript metadata supports `title`, `subtitle`, `author`, `attribution`, `date`, `version`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`. `wordcount` is display text, not a numeric field; values such as `about 90,000 words`, `approx 100k words`, and `20.000 mots` render as entered.
 
@@ -548,8 +557,9 @@ indent = 5em
 **New format (`~/.config/first-folio/script.yaml`):**
 ```yaml
 folio:
-  font: EB Garamond
-  font-size: 11pt
+  font:
+    family: EB Garamond
+    size: 11pt
   margin: 25mm
   page: a4
   positioning:
@@ -558,8 +568,35 @@ folio:
         wrap-indent: 5em
 ```
 
+## Migration from the retired font schema
+
+The 0.9 font configuration is intentionally breaking. Move each old font value into the corresponding role's `font` block. Replace role-local `bold` and `italic` booleans with `weight` and `style`.
+
+```yaml
+# Retired
+folio:
+  font: EB Garamond
+  font-size: 11pt
+  positioning:
+    stage-direction:
+      italic: true
+
+# Current
+folio:
+  font:
+    family: EB Garamond
+    size: 11pt
+  positioning:
+    stage-direction:
+      font:
+        style: italic
+```
+
+The current configuration may contain a partial font block because its remaining properties come from the same role in the British base. Retired keys are rejected rather than translated silently.
+
 ## Changelog
 
+- 0.9 (2026-09-07): Unified every typography role under a six-property font block and replaced split runtime presets with one British base plus limited US and screenplay overlays.
 - 0.8 (2026-08-10): Documented nearest-ancestor and style-sibling discovery, the complete manuscript key inventory, justification, and metric custom-page examples.
 - 0.7 (2026-08-09): Restored linked manuscript TOCs by default, documented the annotation-free override, and added continuous and part-qualified chapter numbering.
 - 0.6 (2026-08-07): Added configurable reserved space above continued table-of-contents entries.
