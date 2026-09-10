@@ -1,3 +1,7 @@
+---
+schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
+---
+
 # The Bus Stop
 
 **A Short Play**

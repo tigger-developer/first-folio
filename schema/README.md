@@ -1,25 +1,31 @@
-# Source Document Schemas
+---
+title: First Folio Source Schemas
+version: "0.3"
+updated: "2026-09-10"
+---
 
-First Folio distinguishes scripts, prose manuscripts, and letters. Stage plays
-and screenplays share the script structure; their rendering styles differ.
+# Source Schemas
 
-| Document | Org schema | Markdown schema |
+These documents define First Folio's supported source syntax.
+
+| Document type | Org | Markdown |
 |---|---|---|
-| Stage play or screenplay | [script.org](script.org) | [script.md](script.md) |
-| Prose manuscript | [manuscript.org](manuscript.org) | [manuscript.md](manuscript.md) |
-| Letter sections | [letter.org](letter.org) | Not defined |
+| Stage play or screenplay | [Script schema](script.org) | [Script schema](script.md) |
+| Prose manuscript | [Manuscript schema](manuscript.org) | [Manuscript schema](manuscript.md) |
 
-Org documents declare `#+SCHEMA: <full URL>` in keyword frontmatter. Markdown
-documents declare `schema: <full URL>` in YAML frontmatter. The URL points to
-the corresponding file under
+The Markdown schemas describe First Folio's limited syntax, not general
+Markdown conformance. Stage plays and screenplays share a source structure;
+the selected rendering style determines their layout.
+
+[Letters](letter.org) are **Org-only**. An Org script can contain both play and
+letter sections. The script declares the Org script schema, which references
+the separate Org letter schema.
+
+Org uses `#+SCHEMA: <full URL>`. Markdown uses YAML `schema: <full URL>`.
+The URL points to the corresponding file under
 `https://github.com/tigger-developer/first-folio/blob/master/schema/`.
-Each schema links back to an appropriate example through `../examples/`.
+Each schema links to a matching source example under `../examples/`.
 
-An Org script may include both the play and `:letter:` sections. It declares
-the script schema, which references the letter schema. Play conversion must
-exclude letter sections; `folio letter` generates only recipient letters.
-
-These documents define the requested schema declarations and conversion rules.
-Automatic schema emission and play-conversion exclusion still require the
-implementation work recorded in [W041 - Document schemas and schema frontmatter](../docs/work.org#w-041)
-and [W040 - Exclude cover-letter sections from document rendering](../docs/work.org#w-040).
+Conversion adds a schema declaration only to Org and Markdown output. The
+existing manuscript command writes Typst/PDF, and the letter command writes
+PDF; a schema definition does not add an output mode.

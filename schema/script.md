@@ -1,160 +1,22 @@
-<!-- Version: 0.1 | Last updated: 2026-09-10 -->
+---
+title: First Folio Markdown Script Schema
+version: "0.3"
+updated: "2026-09-10"
+---
 
 # Markdown Script Schema
 
-## Schema Declaration
+First Folio supports the **limited Markdown script syntax defined here** for
+stage plays and screenplays. The rendering style controls page layout; both
+use the same source grammar. Markdown constructs outside this grammar have no
+promised interpretation or conversion fidelity.
 
-Stage plays and screenplays use this schema. Every Markdown script example and every conversion to this format must include the full schema URL in frontmatter:
+**Reference example:** [One Day](../examples/one-day.md).
 
-```yaml
----
-schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
----
-```
+## Frontmatter and title
 
-Conversion must select the schema for the **destination format and document type**, including when the source has no schema field. The schema URL identifies the document structure; it is not body text or a typography preset.
-
-**Reference example:** [one-day.md](../examples/one-day.md).
-
-**Implementation status:** This document defines the requested schema contract. Automatic schema emission is pending the converter changes tracked by [W041 - Document schemas and schema frontmatter](../docs/work.org#w-041). Existing converter metadata behaviour is described below; it does not yet implement this declaration.
-
-## Scripts and Letters
-
-An Org source converted to Markdown can contain both the play and cover letters. Letter sections follow the [Org Letter Schema](letter.org). The combined Org document declares the script schema; the `:letter:` subtree supplies the letter structure.
-
-Play conversion must ignore each `:letter:` section and its descendants, including when writing Org, Markdown, Fountain, Typst, or PDF. The `folio letter` subcommand generates only recipient letters from those sections, using shared document metadata where required; it does not generate the play.
-
-**Implementation status:** Exclusion during play conversion is required here and tracked by [W040 - Exclude cover-letter sections from document rendering](../docs/work.org#w-040); it has not yet been corrected in the converter.
-
-**Combined example:** [about-time.org](../examples/about-time.org). 
-
-## Existing Format Contract
-
-First Folio uses a convention-based Markdown format to represent stage plays. The format uses standard Markdown elements (headers, bold, italic, tables) with specific structural conventions that allow round-trip parsing.
-
-**External references:**
-- [CommonMark Specification](https://commonmark.org)
-- [GitHub Flavoured Markdown](https://github.github.com/gfm/) (tables)
-
-**Intro sections:** `##` headings before the first character dialogue (e.g. Synopsis, Setting, Scene List) are automatically detected as intro material. These render identically to act headers but can be toggled with `render.frontmatter` in [config](../docs/config.md).
-
-## Element Schema
-
-### Front Matter
-
-The document title is a level-1 ATX heading. The subtitle (if present) appears as a bold line below the title. The author appears as an italic string prefixed with "by". An optional version/date line uses the exact delimiter form shown below.
-
-```markdown
----
-schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
----
-
-# The Importance of Being Earnest
-
-**A Trivial Comedy for Serious People**
-
-*by Oscar Wilde*
-
---- Draft 3 | 2026-08-10 ---
-```
-
-`title`, `subtitle`, `author`, `version`, and `date` are represented. Other front matter keys are not included in Markdown output.
-
-### Acts (H2)
-
-Level-2 headings represent acts.
-
-```markdown
-## Act I
-## Act II
-## Epilogue
-```
-
-### Scenes (H3)
-
-Level-3 headings represent scenes.
-
-```markdown
-### Scene 1
-### Scene 2 — The Garden
-```
-
-### Stage Directions
-
-Standalone italic paragraphs (a paragraph consisting entirely of `*text*`). These must be separated from surrounding elements by blank lines.
-
-```markdown
-*A morning room in Algernon's flat in Half-Moon Street.*
-
-*JACK enters through the French windows.*
-```
-
-When parsing, a paragraph is identified as a stage direction if it begins and ends with `*` and contains no `**bold**` character-name pattern.
-
-### Characters
-
-A bold name followed by a colon, optionally followed by an italic parenthetical direction.
-
-```markdown
-**ALGERNON:**
-**JACK:** *(earnestly)*
-**LADY BRACKNELL:** *(rising)*
-```
-
-The parser detects the pattern `**NAME:**` at the start of a line. If `*(direction)*` follows on the same line, it is captured as the character's parenthetical.
-
-### Dialogue
-
-Plain text following a character line. Multiple lines are preserved as-is.
-
-```markdown
-**ALGERNON:**
-I don't think there is much likelihood, Jack,
-of you and Miss Fairfax being united.
-```
-
-A blank line after dialogue separates it from the next element.
-
-### Character Table
-
-A standard Markdown table with "Character" and "Description" headers (or similar).
-
-```markdown
-| Character | Description                  |
-|-----------|------------------------------|
-| ALGERNON  | A young man about town       |
-| JACK      | His friend, also young       |
-| LANE      | Algernon's manservant        |
-```
-
-### Prop Text
-
-Bold-italic quoted text, standalone on its own line.
-
-```markdown
-***"WELCOME TO THE GARDEN PARTY"***
-```
-
-### Transitions
-
-A blockquote-style line represents a transition. First Folio treats this as a dramatic transition, not a general Markdown blockquote.
-
-```markdown
-> BLACKOUT
-> CUT TO:
-```
-
-### Footnotes
-
-Standard Markdown footnote syntax.
-
-```markdown
-A famous verse[^verse] is quoted here.
-
-[^verse]: From Tennyson's "In Memoriam", Canto 27.
-```
-
-## Complete Example
+The schema declaration is YAML frontmatter. Title, subtitle, author, version,
+and date retain First Folio's existing visible forms below it:
 
 ```markdown
 ---
@@ -163,29 +25,95 @@ schema: https://github.com/tigger-developer/first-folio/blob/master/schema/scrip
 
 # A Short Play
 
-**A Trivial Comedy**
+**A Play in One Act**
 
 *by A. Playwright*
 
-| Character | Description        |
-|-----------|--------------------|
-| BOB       | An ordinary man    |
-| CÁIT      | His neighbour      |
-
-## Act I
-
-### Scene 1
-
-*A kitchen. Morning. Sunlight through the window.*
-
-**BOB:**
-Good morning.
-
-*BOB crosses to the kettle.*
-
-**CÁIT:** *(entering)*
-Is the kettle on?
-
-**BOB:** *(cheerfully)*
-Just boiled.
+--- Draft 1 | 2026-09-10 ---
 ```
+
+- The first level-one heading supplies the title.
+- A bold line immediately below it supplies the optional subtitle.
+- An italic `by` line supplies the author.
+- The version/date line uses the exact `--- version | date ---` form.
+- YAML `schema` identifies the format. Other YAML fields do not replace these
+  visible metadata forms.
+
+Every conversion to `.md` or `.markdown` adds this schema declaration, including
+when the input has none. A source schema value is replaced with the destination
+schema. A declaration is consumed as metadata when read back, never as dialogue.
+Malformed YAML or a missing closing frontmatter delimiter produces an error.
+Schema URLs are not fetched and do not select a different document type.
+
+## Dramatic structure
+
+| Source form | Meaning |
+|---|---|
+| `## Act I` | Act or other major play division |
+| `### Scene 1` | Scene within an act |
+| `*A kitchen. Morning.*` on its own line | Stage direction or screenplay action |
+| `**ALEX:**` | Speaker cue |
+| `**ALEX:** *(softly)*` | Speaker cue with a direction |
+| Plain lines following a cue | Dialogue |
+| `> BLACKOUT` | Transition |
+| `***"KEEP OUT"***` | Text displayed within the play |
+
+Speaker names support Unicode. The colon belongs inside the bold cue. Separate
+cues, directions, and scene or act headings with blank lines. Dialogue may
+span several lines.
+
+A `>` line means a **dramatic transition**, not a general prose quotation.
+The supported standalone direction form starts and ends with one asterisk.
+These conventions do not establish support for arbitrary nested Markdown.
+
+## Cast and introductory material
+
+A cast table precedes the first speaker cue and has name and description
+columns:
+
+```markdown
+| Character | Description |
+|-----------|-------------|
+| ALEX      | A visitor   |
+| CÁIT      | The host    |
+```
+
+Major sections before the first act containing a speaker cue are introductory
+material, for example Synopsis or Setting. They use `##` headings and plain
+text. Their rendering is controlled by `render.frontmatter`.
+
+## Footnotes
+
+A reference uses `[^note]`; its definition starts a line with `[^note]:`.
+Definitions are emitted after the play body.
+
+```markdown
+**ALEX:**
+That was the ninth bell.[^bell]
+
+[^bell]: The clock normally strikes eight times.
+```
+
+## Conversion limits
+
+Org and Markdown have different heading and cue forms. The converter maps
+the dramatic structure between them. It does not translate every inline
+emphasis marker between formats, so identical inline styling is not guaranteed.
+
+Fountain conversion has additional losses described in the
+[format and fidelity reference](../docs/formats.md). This schema declaration
+is emitted only for Markdown output; Org uses its own declaration and
+Fountain, Typst, and PDF receive none.
+
+## Related documentation
+
+- [Markdown play format reference](../docs/format-markdown.md).
+- [Rendering configuration](../docs/config.md).
+
+## Revision history
+
+- 0.3, 2026-09-10: Define only First Folio's limited script grammar; use YAML
+  document-version metadata. General Markdown references and the misplaced
+  Org-section discussion have been removed.
+- 0.2, 2026-09-10: Record schema emission and output boundaries.
+- 0.1, 2026-09-10: Initial definition, superseded by this rewrite.

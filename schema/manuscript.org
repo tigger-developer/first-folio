@@ -1,104 +1,110 @@
-#+TITLE: Org Manuscript Schema
+#+TITLE: First Folio Org Manuscript Schema
+#+VERSION: 0.3
+#+DATE: 2026-09-10
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+VERSION: 0.1
+
+* Scope
+
+This schema describes *prose manuscript source*, separate from the script
+format. =folio manuscript= accepts Org manuscripts and renders Typst or PDF.
+It interprets Org through First Folio's manuscript model and does not expose
+an Org manuscript output command.
+
+- Reference example :: [[file:../examples/dummy-manuscript.org][The Glass Orchard]].
+- Equivalent source contract :: [[file:manuscript.md][Markdown manuscript schema]].
+
+* Frontmatter
+
+Place document keywords at column one before the body:
+
+#+begin_src org
+#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.org
+#+TITLE: The Glass Orchard
+#+SUBTITLE: A Novel
+#+AUTHOR: Example Author
+#+ATTRIBUTION: by
 #+DATE: 2026-09-10
-
-* Schema Declaration
-:PROPERTIES:
-:CUSTOM_ID: schema-declaration
-:END:
-Prose manuscripts use this schema. Every Org manuscript example and every conversion to this format must include the full schema URL in frontmatter:
-
-#+begin_src org
-,#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.org
+#+VERSION: Draft 1
+#+WORDCOUNT: about 90,000 words
+#+CONTACT-NAME: Example Agent
+#+ADDRESS: 100 Example Street / Sample City
+#+PHONE: +353 1 000 0000
+#+EMAIL: author@example.invalid
+#+WEBSITE: https://example.invalid
 #+end_src
 
-Conversion must select the schema for the *destination format and document type*, including when the source has no schema field. The schema URL identifies the document structure; it is not body text or a typography preset.
+- =SCHEMA= :: Identifies manuscript structure rather than play structure.
+- =TITLE=, =SUBTITLE=, =AUTHOR= :: Manuscript identification.
+- =ATTRIBUTION= :: Optional prefix before the author name; empty by default.
+  The format reference also specifies =AUTHOR-ATTRIBUTION= as an alias.
+- =DATE=, =VERSION= :: Manuscript date and draft label.
+- =WORDCOUNT= :: Display text, not a computed count. Values such as
+  =about 90,000 words= and =90000= are retained as entered.
+- =CONTACT-NAME=, =ADDRESS=, =PHONE=, =EMAIL=, =WEBSITE= :: Optional contact
+  details. Contact name does not fall back to the author name.
 
-*Reference example:* [[file:../examples/dummy-manuscript.org][dummy-manuscript.org]].
+Write dates as ISO dates. Their rendered appearance, and the inclusion of
+contact details, are controlled by manuscript configuration.
 
-*Implementation status:* This document defines the requested schema contract. Automatic schema emission is pending the converter changes tracked by [[file:../docs/work.org::#w-041][W041 - Document schemas and schema frontmatter]]. The current public manuscript command writes Typst/PDF; public Org/Markdown manuscript output remains a separate scope decision.
+Known implementation gap: the format reference specifies the Org attribution
+keywords above, but the current Org metadata parser does not retain them.
+They are documented contract fields, not verified current source overrides.
 
-* Existing Format Contract
-:PROPERTIES:
-:CUSTOM_ID: existing-format-contract
-:END:
-Org-mode manuscript input uses org front matter and headings for prose manuscript structure. It is separate from the org-mode stage-play contract.
+* Document structure
 
-* Metadata Contract
-:PROPERTIES:
-:CUSTOM_ID: metadata-contract
-:END:
-All org front matter values are treated as manuscript strings. =#+WORDCOUNT: about 90,000 words=, =#+WORDCOUNT: approx 100k words=, =#+WORDCOUNT: 20.000 mots=, and =#+WORDCOUNT: 90000= are all valid because the field is rendered as entered. Dates should be written as ISO strings such as =2026-07-06=; rendered output uses =folio.manuscript.date-format=.
+| Source form | Manuscript meaning |
+|-------------+--------------------|
+| =* PART ONE= | Part division |
+| =** Chapter 1= | Chapter |
+| =*** Section= and deeper headings | Local section |
+| Plain paragraphs separated by blank lines | Prose |
+| =-----= or =_____= alone on a line | Scene break |
 
-Supported front matter fields are =TITLE=, =SUBTITLE=, =AUTHOR=, =ATTRIBUTION=, =DATE=, =VERSION=, =WORDCOUNT=, =CONTACT-NAME=, =ADDRESS=, =PHONE=, =EMAIL=, and =WEBSITE=. =ATTRIBUTION= is optional and defaults to empty; when set, it prefixes the author name with a space, so =#+ATTRIBUTION: by= and =#+AUTHOR: Example Author= render as =by Example Author=. =AUTHOR-ATTRIBUTION= is accepted as a compatibility alias. =CONTACT-NAME= is optional and is used only for the title-page contact block; it does not default to the manuscript author.
+Part and chapter headings are prose divisions, not acts and scenes. Chapter
+and part numbering and page layout are controlled by manuscript configuration.
+Scene breaks render using the configured marker, which defaults to a centred
+=#=.
 
-* Element Schema
-:PROPERTIES:
-:CUSTOM_ID: element-schema
-:END:
-| Org syntax                         | Manuscript meaning                                                      |
-|------------------------------------+-------------------------------------------------------------------------|
-| =#+TITLE: The Glass Orchard=       | Manuscript title                                                        |
-| =#+SUBTITLE: A Novel=              | Subtitle                                                                |
-| =#+AUTHOR: Example Author=         | Author name                                                             |
-| =#+ATTRIBUTION: by=                | Optional author attribution prefix                                      |
-| =#+DATE: 2026-07-06=               | Manuscript date                                                         |
-| =#+VERSION: Draft 4=               | Draft/version marker                                                    |
-| =#+WORDCOUNT: about 90,000 words=  | Approximate word count                                                  |
-| =#+CONTACT-NAME: Example Agent=    | Optional title-page contact name                                        |
-| =#+ADDRESS: ...=                   | Postal address                                                          |
-| =#+PHONE: ...=                     | Phone number                                                            |
-| =#+EMAIL: ...=                     | Email address                                                           |
-| =#+WEBSITE: ...=                   | Website                                                                 |
-| =* PART ONE=                       | Part divider page                                                       |
-| =** Chapter 1=                     | Chapter start page                                                      |
-| =*** Section= and deeper           | Local section heading                                                   |
-| Plain paragraphs                   | Body prose                                                              |
-| =-----= or =_____= on its own line | Section break, rendered as the configured manuscript scene-break marker |
-| =*bold*=                           | Bold text                                                               |
-| =/italic/=                         | Italic text                                                             |
-| =+deleted+=                        | Strikethrough text                                                      |
-| ~=code=~ and source blocks         | Monospace text                                                          |
-| =--= and =---=                     | En dash and em dash                                                     |
-| =[fn:name]= and =[fn:name] Text=   | Footnote reference and definition                                       |
-| Quotes, links, lists, and tables   | Standard org-mode document elements                                     |
-| Heading tagged =:noexport:=        | Private section excluded with children                                  |
+Only a prose paragraph immediately opening a chapter is flush left. Other
+paragraphs use the configured indentation, including prose after a structural
+block at the start of a chapter.
 
-Fountain is not accepted by manuscript mode. Source-document images are not supported.
+* Inline text and supporting blocks
 
-Section breaks default to a centred =#= marker in rendered manuscripts. Override =folio.manuscript.scene-break.marker= in YAML config to use another marker.
+| Source form | Meaning |
+|-------------+---------|
+| =*bold*= | Bold |
+| =/italic/= | Italic |
+| =+deleted+= | Strikethrough |
+| ~=code=~ | Monospace text |
+| =--= and =---= within text | En dash and em dash |
+| =[fn:note]= | Footnote reference |
+| =[fn:note] Explanation.= on its own line | Footnote definition |
 
-Lists, tables, and source blocks render with =0.5em= vertical padding before and after by default. Override =folio.manuscript.list.space-before=, =folio.manuscript.list.space-after=, =folio.manuscript.table.space-before=, =folio.manuscript.table.space-after=, =folio.manuscript.code-block.space-before=, and =folio.manuscript.code-block.space-after= to adjust this spacing.
+A verbatim span within prose stays inline. A verbatim span occupying an entire
+line follows the manuscript code-block layout.
 
-* Example
-:PROPERTIES:
-:CUSTOM_ID: example
-:END:
-#+begin_src org
-,#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.org
-,#+TITLE: The Glass Orchard
-,#+SUBTITLE: A Novel
-,#+AUTHOR: Example Author
-,#+ATTRIBUTION: by
-,#+DATE: 2026-07-06
-,#+VERSION: Draft 4
-,#+WORDCOUNT: about 90,000 words
-,#+CONTACT-NAME: Example Agent
-,#+ADDRESS: 100 Example Street / Sample City / Exampleland
-,#+PHONE: +353 1 000 0000
-,#+EMAIL: author@example.invalid
-,#+WEBSITE: https://example.invalid
+The supported supporting blocks are Org quote blocks, source blocks, links,
+lists, and tables, as illustrated by the linked example. Their typography and
+spacing belong to [[file:../docs/config.md][manuscript configuration]].
 
-,* PART ONE
-,** Chapter 1
-The rain had been falling since Tuesday. The ledger flashed *WAIT* -- then the latch answered --- and Mira typed =nine-bell=.
+A heading tagged =:noexport:= excludes that heading and its descendants until
+the next heading of the same or a higher level.
 
------
+* Boundaries
 
-By noon, the hands had moved backwards twice.
+Source-document images and Fountain input are outside the manuscript contract.
+The presence of a schema URL does not add an output format. This declaration
+is required for Org manuscript examples and for any Org manuscript output;
+there is currently no writer for the latter.
 
-,*** Notes :noexport:
-This planning note is excluded.
-#+end_src
+The existing Markdown manuscript serializer uses the Markdown manuscript URL.
+Typst and PDF output do not receive a schema declaration.
+
+* Reference and revision history
+
+- [[file:../docs/format-manuscript-org.md][Org manuscript format reference]].
+- 0.3, 2026-09-10 :: Rewrite around prose structure, metadata, and supported blocks.
+- 0.2, 2026-09-10 :: Record output boundaries.
+- 0.1, 2026-09-10 :: Initial definition; superseded by this rewrite.

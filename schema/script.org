@@ -1,235 +1,124 @@
-#+TITLE: Org Script Schema
+#+TITLE: First Folio Org Script Schema
+#+VERSION: 0.3
+#+DATE: 2026-09-10
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+VERSION: 0.1
+
+* Scope
+
+This is First Folio's Org source format for *stage plays and screenplays*.
+Both use the same document structure. British stage-play, US stage-play, and
+screenplay styles control the rendered layout, not the source schema.
+
+- Play example :: [[file:../examples/play-example.org][One Day]].
+- Screenplay example :: [[file:../examples/cold-open.org][Cold Open]].
+- Combined play and letters :: [[file:../examples/about-time.org][About Time]].
+
+* Frontmatter
+
+Place keyword lines at the beginning of the document, starting at column one:
+
+#+begin_src org
+#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
+#+TITLE: A Short Play
+#+SUBTITLE: A Play in One Act
+#+AUTHOR: A. Playwright
 #+DATE: 2026-09-10
-
-* Schema Declaration
-:PROPERTIES:
-:CUSTOM_ID: schema-declaration
-:END:
-Stage plays and screenplays use this schema. Every Org script example and every conversion to this format must include the full schema URL in frontmatter:
-
-#+begin_src org
-,#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
+#+VERSION: Draft 1
 #+end_src
 
-Conversion must select the schema for the *destination format and document type*, including when the source has no schema field. The schema URL identifies the document structure; it is not body text or a typography preset.
+- =SCHEMA= :: Identifies this source format. Org conversion output always adds
+  this value, even when the input has no schema declaration.
+- =TITLE=, =SUBTITLE=, =AUTHOR=, =DATE=, =VERSION= :: Document metadata retained
+  by the Org writer when present.
+- Other keywords :: May be captured on input, but preservation through text
+  conversion is not guaranteed.
 
-*Reference example:* [[file:../examples/play-example.org][play-example.org]].
+The output declaration describes the destination. Converting to Markdown
+changes it to the [[file:script.md][Markdown script schema]]. Schema declarations
+are not added to Fountain, Typst, or PDF output.
 
-*Implementation status:* This document defines the requested schema contract. Automatic schema emission is pending the converter changes tracked by [[file:../docs/work.org::#w-041][W041 - Document schemas and schema frontmatter]]. Existing converter metadata behaviour is described below; it does not yet implement this declaration.
+* Play structure
 
-* Scripts and Letters
-:PROPERTIES:
-:CUSTOM_ID: scripts-and-letters
-:END:
-An Org script can contain both the play and cover letters. Letter sections follow the [[file:letter.org][Org Letter Schema]]. The combined Org document declares the script schema; the =:letter:= subtree supplies the letter structure.
+Heading levels have fixed meanings. A heading starts at column one with the
+indicated number of stars followed by a space.
 
-Play conversion must ignore each =:letter:= section and its descendants, including when writing Org, Markdown, Fountain, Typst, or PDF. The =folio letter= subcommand generates only recipient letters from those sections, using shared document metadata where required; it does not generate the play.
+| Source form | Meaning |
+|-------------+---------|
+| =* Act I= | Act or other major play division |
+| =** Scene 1= | Scene within an act |
+| =*** A kitchen. Morning.= | Stage direction or screenplay action |
+| =**** ALEX= | Speaker cue |
+| Plain lines after a speaker cue | Dialogue |
+| =*** BLACKOUT :transition:= | Transition |
+| =*** KEEP OUT :prop:= | Text displayed within the play |
 
-*Implementation status:* Exclusion during play conversion is required here and tracked by [[file:../docs/work.org::#w-040][W040 - Exclude cover-letter sections from document rendering]]; it has not yet been corrected in the converter.
+Speaker names may contain Unicode characters. Use uppercase names to distinguish
+names from attached directions: =**** ALEX softly=, =**** ALEX (softly)=,
+and =**** ALEX, softly= identify the same speaker and direction. Multiple
+dialogue lines are retained; empty lines are not separate dramatic events.
 
-*Combined example:* [[file:../examples/about-time.org][about-time.org]]. *Screenplay example:* [[file:../examples/cold-open.org][cold-open.org]].
+A level-five heading is also accepted as a historical transition form. The
+writer uses the level-three =:transition:= form.
 
-* Existing Format Contract
-:PROPERTIES:
-:CUSTOM_ID: existing-format-contract
-:END:
-Org-mode is the primary authoring format for First Folio. It uses Emacs org-mode heading levels to encode the hierarchical structure of a stage play. The element definitions below describe the supported play structure and conversion limits.
+** Cast table
 
-*External reference:* [[https://orgmode.org/manual/Document-Structure.html][orgmode.org - Document Structure]]
-
-*Intro sections:* H1 headings before the first character dialogue (e.g. Synopsis, Setting, Scene List) are automatically detected as intro material. These render the same as act headers but can be toggled with =render.frontmatter= in [[file:../docs/config.md][config]].
-
-* Element Schema
-:PROPERTIES:
-:CUSTOM_ID: element-schema
-:END:
-** Front Matter
-:PROPERTIES:
-:CUSTOM_ID: front-matter
-:END:
-Org-mode keyword lines at the top of the file. Any =#+KEY: value= line is captured by the parser. Org emission preserves =TITLE=, =SUBTITLE=, =AUTHOR=, =DATE=, and =VERSION=; arbitrary keys are not guaranteed to survive a text-format round trip.
-
-#+begin_src org
-,#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
-,#+TITLE: The Importance of Being Earnest
-,#+AUTHOR: Oscar Wilde
-,#+SUBTITLE: A Trivial Comedy for Serious People
-,#+TEMPLATE: play
-#+end_src
-
-Standard emitted keys are =TITLE=, =SUBTITLE=, =AUTHOR=, =DATE=, and =VERSION=.
-
-** Acts (H1)
-:PROPERTIES:
-:CUSTOM_ID: acts-h1
-:END:
-Level-1 headings represent acts. The heading text becomes the act title.
+A level-one =CHARACTERS= or =CHARACTER= heading introduces a two-column cast
+table. The heading match is case-insensitive. Each data row contains a name
+and description; separator rows are ignored.
 
 #+begin_src org
-,* Act I
-,* Act II
-,* Epilogue
+| ALEX | A visitor |
+| CÁIT | The host  |
 #+end_src
 
-The special heading =* CHARACTERS= (case-insensitive, singular or plural) is not an act - it introduces a character table (see below).
+** Introductory material
 
-** Scenes (H2)
-:PROPERTIES:
-:CUSTOM_ID: scenes-h2
-:END:
-Level-2 headings represent scenes within an act.
+Major sections before the first act containing a speaker cue are introductory
+material, for example Synopsis or Setting. The =render.frontmatter=
+configuration setting controls their inclusion in rendered output.
 
-#+begin_src org
-,** Scene 1
-,** Scene 2 — The Garden
-#+end_src
+** Footnotes and inline text
 
-** Stage Directions (H3)
-:PROPERTIES:
-:CUSTOM_ID: stage-directions-h3
-:END:
-Level-3 headings represent stage directions (also called action text or narrative). These describe setting, movement, and physical action.
+An inline =[fn:note]= refers to a definition of the form
+=[fn:note] Explanation.= on its own line. Definitions are emitted after the
+play body.
 
-#+begin_src org
-,*** A morning room in Algernon's flat in Half-Moon Street.
-,*** JACK enters through the French windows.
-#+end_src
+Org inline markup is interpreted by the Org-aware PDF renderer. Text conversion
+does not translate every inline marker into the destination syntax; equivalent
+inline appearance across Org, Markdown, and Fountain is not guaranteed.
 
-Org-mode inline markup is retained in event text and interpreted by the Org-aware PDF renderer. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
+The historical prop form =- *"KEEP OUT"*= is accepted. Org output uses the
+=:prop:= heading form shown above.
 
-** Characters (H4)
-:PROPERTIES:
-:CUSTOM_ID: characters-h4
-:END:
-Level-4 headings introduce a character who is about to speak. The heading contains the character name in ALL CAPS, optionally followed by a parenthetical direction.
+* Excluded sections and letters
 
-#+begin_src org
-,**** ALGERNON
-,**** JACK earnestly
-,**** LADY BRACKNELL (rising)
-,**** GWENDOLEN, with great feeling
-#+end_src
+A heading tagged =:noexport:= excludes its whole subtree. Ordinary play content
+resumes at the next heading of the same or a higher level.
 
-All of the following direction formats are normalized to the same internal representation:
+An Org script may also contain *both the play and cover letters*. Such a file
+keeps the script schema in its document frontmatter. Its level-one =:letter:=
+sections follow the separate [[file:letter.org][Org letter schema]].
 
-| Syntax               | Name | Direction |
-|----------------------+------+-----------|
-| =**** BOB softly=    | BOB  | softly    |
-| =**** BOB (softly)=  | BOB  | softly    |
-| =**** BOB, softly=   | BOB  | softly    |
-| =**** BOB, (softly)= | BOB  | softly    |
-| =**** BOB=           | BOB  | (none)    |
+The required command boundary is:
 
-Character names support Unicode: =CÁIT=, =MAIRÉAD=, =SÉAN=.
+- =folio convert= converts the play and *excludes letter subtrees*.
+- =folio letter= generates *only recipient letters* from the same source.
 
-** Dialogue
-:PROPERTIES:
-:CUSTOM_ID: dialogue
-:END:
-Plain text following an H4 heading. Multiple lines are preserved. Blank lines are consumed silently.
+Letter exclusion during play conversion is a known outstanding defect recorded
+as [[file:../docs/work.org::#w-040][W040 - Exclude cover-letter sections from document rendering]].
+The schema declares the required boundary; the schema-field change does not
+itself resolve that defect.
 
-#+begin_src org
-,**** ALGERNON
-I don't think there is much likelihood, Jack,
-of you and Miss Fairfax being united.
-#+end_src
+* Related documentation
 
-The same inline-markup limitation applies to dialogue: PDF rendering understands the Org source markers, while text-format emission preserves the event text rather than normalizing all target markers.
+- [[file:../docs/format-org.md][Org play format reference]].
+- [[file:../docs/formats.md][Conversion model and fidelity limits]].
+- [[file:../docs/config.md][Rendering configuration]].
 
-** Character Table
-:PROPERTIES:
-:CUSTOM_ID: character-table
-:END:
-A level-1 heading =* CHARACTERS= (or =* CHARACTER=) followed by an org table listing the cast.
+* Revision history
 
-#+begin_src org
-,* CHARACTERS
-|----------+------------------------------|
-| ALGERNON | A young man about town       |
-| JACK     | His friend, also young       |
-| LANE     | Algernon's manservant        |
-|----------+------------------------------|
-#+end_src
-
-Separator rows (=|---+---|=) are ignored. Each data row emits a =character_table_row= event with the name and description.
-
-** Prop Text
-:PROPERTIES:
-:CUSTOM_ID: prop-text
-:END:
-On-stage text (signs, letters, placards) uses a level-3 heading tagged =:prop:=. The parser also accepts the historical list-item form.
-
-#+begin_src org
-,*** WELCOME TO THE GARDEN PARTY                              :prop:
-
-- *"WELCOME TO THE GARDEN PARTY"*
-#+end_src
-
-Both forms emit the same =prop_text= event. First Folio emits the tagged-heading form when writing Org.
-
-** Transitions
-:PROPERTIES:
-:CUSTOM_ID: transitions
-:END:
-A transition uses a level-3 heading tagged =:transition:=. The parser also accepts a level-5 heading as a compatibility form.
-
-#+begin_src org
-,*** BLACKOUT                                                :transition:
-#+end_src
-
-** Footnotes
-:PROPERTIES:
-:CUSTOM_ID: footnotes
-:END:
-Org-mode footnote definitions. The reference =[fn:name]= appears inline in dialogue or directions; the definition appears on its own line.
-
-#+begin_src org
-[fn:verse] From Tennyson's "In Memoriam", Canto 27.
-#+end_src
-
-** Noexport Sections
-:PROPERTIES:
-:CUSTOM_ID: noexport-sections
-:END:
-Any heading tagged =:noexport:= is excluded from output, along with all its children.
-
-#+begin_src org
-,*** Notes on staging :noexport:
-These are private notes and will not appear in any output.
-#+end_src
-
-* Complete Example
-:PROPERTIES:
-:CUSTOM_ID: complete-example
-:END:
-#+begin_src org
-,#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
-,#+TITLE: A Short Play
-,#+AUTHOR: A. Playwright
-
-,* CHARACTERS
-|------+------------------|
-| BOB  | An ordinary man  |
-| CÁIT | His neighbour    |
-|------+------------------|
-
-,* Act I
-,** Scene 1
-,*** A kitchen. Morning. Sunlight through the window.
-,**** BOB
-Good morning.
-
-,*** BOB crosses to the kettle.
-
-,**** CÁIT (entering)
-Is the kettle on?
-
-,**** BOB cheerfully
-Just boiled.
-
-,*** Research notes :noexport:
-- Look up kettle brands for period accuracy.
-#+end_src
+- 0.3, 2026-09-10 :: Rewrite around First Folio's source grammar, with direct
+  keyword examples and a separate Org letter contract.
+- 0.2, 2026-09-10 :: Record schema emission and output boundaries.
+- 0.1, 2026-09-10 :: Initial definition; superseded by this rewrite.

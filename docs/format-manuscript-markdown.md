@@ -1,10 +1,15 @@
-<!-- Version: 0.2 | Last updated: 2026-08-10 -->
+---
+version: "0.3"
+updated: "2026-09-10"
+---
 
 # Markdown Manuscript Format
 
-Markdown manuscript input is a prose contract, separate from the Markdown stage-play contract.
+Markdown manuscript input is a limited prose contract, separate from the Markdown stage-play contract. The [Markdown manuscript schema](../schema/manuscript.md) defines its source declaration and supported structures.
 
 ## Metadata Contract
+
+Examples declare `schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md` in YAML frontmatter. The existing Markdown serializer emits that declaration even with empty metadata. The public manuscript command continues to write Typst/PDF only, without a schema declaration in those outputs.
 
 All YAML frontmatter values are treated as manuscript strings. Quote values when that keeps the intent clearest, but the parser also accepts YAML scalars and converts them to strings, so `wordcount: about 90,000 words`, `wordcount: approx 100k words`, `wordcount: 20.000 mots`, and `wordcount: 90000` are all valid. Dates should be written as ISO strings such as `2026-07-06`; rendered output uses `folio.manuscript.date-format`.
 
@@ -28,9 +33,9 @@ Supported frontmatter fields are `title`, `subtitle`, `author`, `attribution`, `
 | Fenced code blocks | Monospace code block |
 | `--` and `---` | En dash and em dash |
 | `[^name]` and `[^name]: text` | Footnote reference and definition |
-| Blockquotes, links, lists, and tables | Standard Markdown document elements |
+| Blockquotes, links, lists, and tables | Supporting prose elements illustrated by the manuscript example |
 | HTML comments | Private notes, excluded |
-| Heading ending `<!-- noexport -->` | Private section excluded until the next same-or-higher heading |
+| Heading ending with an HTML comment containing `noexport` | Private section excluded until the next same-or-higher heading |
 
 Setext headings are not part of the manuscript contract; use ATX headings (`#`, `##`, `###`) only. HTML blocks and source-document images are not supported.
 
@@ -48,6 +53,7 @@ Fountain is not accepted by manuscript mode.
 
 ```markdown
 ---
+schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md
 title: The Glass Orchard
 subtitle: A Novel
 author: Example Author
@@ -72,7 +78,13 @@ The rain had been falling since Tuesday. The ledger flashed **WAIT** -- then the
 
 By noon, the hands had moved backwards twice.
 
-### Notes <!-- noexport -->
-
-This planning note is excluded.
 ```
+
+The previous example also included a private Notes section containing the text
+"This planning note is excluded." That illustrates the legacy exclusion rule
+described in the table; the example no longer embeds HTML-comment syntax.
+
+## Revision History
+
+- 0.3, 2026-09-10: Add the manuscript schema declaration, use YAML document-version metadata, and describe private-section syntax without embedding HTML comments.
+- 0.2, 2026-08-10: Previous manuscript-reference revision.

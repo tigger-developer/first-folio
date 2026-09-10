@@ -1,8 +1,13 @@
-<!-- Version: 0.2 | Last updated: 2026-08-10 -->
+---
+version: "0.3"
+updated: "2026-09-10"
+---
 
 # Org-mode Manuscript Format
 
 Org-mode manuscript input uses org front matter and headings for prose manuscript structure. It is separate from the org-mode stage-play contract.
+
+The [Org manuscript schema](../schema/manuscript.org) defines its declaration and source structure. Examples include the full schema URL. The public manuscript command writes Typst/PDF; there is currently no manuscript Org writer.
 
 ## Metadata Contract
 
@@ -49,6 +54,7 @@ Lists, tables, and source blocks render with `0.5em` vertical padding before and
 ## Example
 
 ```org
+#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.org
 #+TITLE: The Glass Orchard
 #+SUBTITLE: A Novel
 #+AUTHOR: Example Author
@@ -73,3 +79,8 @@ By noon, the hands had moved backwards twice.
 *** Notes :noexport:
 This planning note is excluded.
 ```
+
+## Revision History
+
+- 0.3, 2026-09-10: Add the Org manuscript schema declaration and use YAML document-version metadata.
+- 0.2, 2026-08-10: Previous manuscript-reference revision.

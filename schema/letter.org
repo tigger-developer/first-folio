@@ -1,114 +1,86 @@
-#+TITLE: Org Letter Schema
+#+TITLE: First Folio Org Letter Schema
+#+VERSION: 0.3
+#+DATE: 2026-09-10
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+VERSION: 0.1
-#+DATE: 2026-09-10
 
-* Purpose and schema declaration
+* Scope
 
-This schema defines the Org letter sections consumed by =folio letter=.
-An Org file can contain *both letters and a play*. A combined document uses
-the [[file:script.org][Org Script Schema]] in its document frontmatter; its
-=:letter:= sections follow this letter schema.
+Letters are an *Org-only* document type. =folio letter= reads tagged Org
+sections and generates recipient-specific PDFs. There is *no Markdown letter
+format* and no Markdown letter conversion.
 
-A letter-only Org document declares:
+An Org file may contain both a play and cover letters. It declares the
+[[file:script.org][Org script schema]], while its =:letter:= subtrees follow this
+letter schema. =folio letter= uses those subtrees and shared document metadata;
+it does not generate the play.
 
-#+begin_src org
-,#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/letter.org
-,#+TITLE: A Short Play
-,#+AUTHOR: A. Playwright
-#+end_src
+- Reference example :: [[file:../examples/about-time.org][About Time, with play and letter sections]].
 
-- Reference example :: [[file:../examples/about-time.org][About Time, a combined play and letters document]].
-- Conversion boundary :: Play conversion *ignores letter sections and their
-  descendants*. This applies to Org, Markdown, Fountain, Typst, and PDF output.
-- Letter generation :: The =folio letter= subcommand *generates only letters*,
-  one PDF per selected recipient. It does not generate the play.
-- Implementation status :: Letter generation is the existing command contract.
-  Play-conversion exclusion is required by this schema and remains tracked by
-  [[file:../docs/work.org::#w-040][W040 - Exclude cover-letter sections from document rendering]].
-  Schema frontmatter emission is pending
-  [[file:../docs/work.org::#w-041][W041 - Document schemas and schema frontmatter]].
-
-* Letter structure
-
-** Letter section
-
-A level-one heading tagged =:letter:= starts a letter section. The next
-level-one heading without that tag returns to the rest of the document.
+A letter-only Org source declares:
 
 #+begin_src org
-,* Cover letters :letter:
+#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/letter.org
+#+AUTHOR: A. Playwright
+#+TITLE: A Short Play
 #+end_src
 
-** Sender and subject
+The PDF output does not receive a schema declaration.
 
-A level-two =:sender:= heading supplies the sender address. A level-two
-=:subject:= heading starts a letter; following plain paragraphs form its body.
-One letter section can contain several subjects and recipient groups.
+* Section grammar
 
-#+begin_src org
-,** A. Playwright / 1 Example Street / Dublin :sender:
-,** Submission of A Short Play :subject:
-Dear [moniker],
+| Heading form | Meaning |
+|--------------+---------|
+| =* Cover letters :letter:= | Start of a letter section |
+| =** A. Playwright / Dublin :sender:= | Sender address |
+| =** Submission of A Short Play :subject:= | New subject and letter body |
+| Plain paragraphs following the subject | Body text |
+| =*** Yours sincerely :closing:= | Closing |
+| =*** A. Playwright :signoff:= | Signature text |
+| =*** Editor / Example Theatre / Dublin :to:= | Recipient address |
+| =**** Example Theatre :org:= | Recipient organization |
+| =**** Alex :moniker:= | Recipient salutation value |
+| =*** [2026-09-10 Thu]= | Letter date |
 
-Please find the script for [title] attached for consideration by [org].
-#+end_src
+The next level-one heading without =:letter:= ends the section. A subject
+requires at least one recipient to produce a letter. Several =:to:= headings
+produce separate letters from the same body. Several =:subject:= headings
+allow different letter bodies in one section.
 
-Placeholder substitution applies to the *body*. The subject heading contains
-literal subject text; placeholders in subjects are not substituted by the
-current parser.
+Sender information applies to subsequent subjects until another sender is
+specified. Missing sender and sign-off values fall back to =#+AUTHOR:=;
+a missing closing defaults to =Yours sincerely=.
 
-** Closing, sign-off, and date
+* Metadata and body substitutions
 
-- Closing :: A level-three =:closing:= heading; defaults to =Yours sincerely=.
-- Sign-off :: A level-three =:signoff:= heading; defaults to =#+AUTHOR:=.
-- Sender fallback :: When absent, the sender also defaults to =#+AUTHOR:=.
-- Date :: A level-three Org timestamp heading supplies the letter date.
+Shared document keywords supply values such as =title=, =subtitle=, =author=,
+=date=, and =version=. =EMAIL= and =CONTACT= can supply sender contact details.
 
-#+begin_src org
-,*** Yours sincerely :closing:
-,*** A. Playwright :signoff:
-,*** [2026-09-10 Thu]
-#+end_src
+A body placeholder uses square brackets, for example =[title]= or =[org]=.
+A recipient's level-four tagged heading defines a value using the tag name:
+=**** Friday :deadline:= supplies =[deadline]=. Names use letters, digits,
+or underscores.
 
-** Recipients and substitutions
+- Recipient values override matching document values.
+- Unknown placeholders remain unchanged.
+- Substitution applies to the body, not the subject, closing, or sign-off.
 
-A level-three =:to:= heading identifies a recipient address. Level-four tagged
-headings beneath it define recipient values for body placeholders. Multiple
-recipients produce separate letters from the same body.
+* Command boundary
 
-#+begin_src org
-,*** Submissions Editor / Example Theatre / Dublin :to:
-,**** Example Theatre :org:
-,**** Alex :moniker:
-,**** Friday :deadline:
-#+end_src
+- =folio letter source.org= :: Generate the recipient letters only.
+- =--to RECIPIENT= :: Select matching recipients using a regular-expression
+  substring match.
+- =--dir DIRECTORY= :: Choose the PDF output directory.
+- =--prefix PREFIX= :: Choose the filename prefix.
 
-- Recipient values *take precedence* over matching document keywords.
-- Document frontmatter provides fallback values such as =[title]=,
-  =[author]=, =[subtitle]=, =[date]=, and =[version]=.
-- An unresolved placeholder remains literal, for example =[deadline]=.
-- Tag names supported by the parser contain word characters, such as letters,
-  digits, or underscores.
+Play conversion must ignore =:letter:= subtrees when processing a combined
+Org document. That exclusion is an outstanding implementation defect tracked
+by [[file:../docs/work.org::#w-040][W040 - Exclude cover-letter sections from document rendering]].
+It does not make letters part of any other source format.
 
-* Command selection
+* Reference and revision history
 
-The same combined Org source serves the two commands:
-
-#+begin_src sh
-folio convert examples/about-time.org play.md
-#+end_src
-
-This requests the play, excluding its letter sections under this schema.
-
-#+begin_src sh
-folio letter examples/about-time.org
-#+end_src
-
-This generates recipient letters only. =--to= filters recipients and =--dir=
-selects the output directory; see the
-[[file:../docs/folio-letter-help.md][letter command reference]].
-
-The current letter command reads Org and writes PDF. This schema does not
-define a Markdown letter syntax or promise letter text-format conversion.
+- [[file:../docs/folio-letter-help.md][Letter command reference]].
+- 0.3, 2026-09-10 :: Rewrite as an exclusively Org letter contract.
+- 0.2, 2026-09-10 :: Clarify PDF-only output.
+- 0.1, 2026-09-10 :: Initial definition; superseded by this rewrite.

@@ -201,6 +201,11 @@ classification; it is provenance, not current state.
   malformed Markdown frontmatter, and absence of schema text from other output.
   Example and documentation checks are one-off checks.
 - Validation record :: [[file:../specs/041-document-schemas/validation.org][W041 - Schema conversion validation]].
+- Schema review correction :: The operator rejected the initial schema prose.
+  The rewrite describes *First Folio's limited syntax*, uses *YAML version
+  frontmatter* in Markdown schema documents, and keeps *letters exclusively
+  Org*. Embedded Org keyword examples no longer include comma escapes.
+  This supersedes the initial schema presentation, whose history remains in Git.
 - Schema documents :: [[file:../schema/script.org][Org script]],
   [[file:../schema/script.md][Markdown script]],
   [[file:../schema/manuscript.org][Org manuscript]],

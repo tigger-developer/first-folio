@@ -1,4 +1,7 @@
-<!-- Version: 0.2 | Last updated: 2026-08-10 -->
+---
+version: "0.3"
+updated: "2026-09-10"
+---
 
 # Format Overview
 
@@ -9,9 +12,9 @@ First Folio converts stage plays between three text-based formats (org-mode, Mar
 | Format | Read | Write | Reference |
 |--------|------|-------|-----------|
 | [Org-mode play](format-org.md) | Yes | Yes | [orgmode.org](https://orgmode.org) |
-| [Markdown play](format-markdown.md) | Yes | Yes | [CommonMark](https://commonmark.org) |
+| [Markdown play](format-markdown.md) | Yes | Yes | [First Folio script subset](../schema/script.md) |
 | [Fountain](format-fountain.md) | Yes | Yes | [fountain.io](https://fountain.io) |
-| [Markdown manuscript](format-manuscript-markdown.md) | Yes | No | [CommonMark](https://commonmark.org) |
+| [Markdown manuscript](format-manuscript-markdown.md) | Yes | No | [First Folio manuscript subset](../schema/manuscript.md) |
 | [Org-mode manuscript](format-manuscript-org.md) | Yes | No | [orgmode.org](https://orgmode.org) |
 | PDF (via Typst) | - | Yes | [typst.app](https://typst.app) |
 
@@ -44,6 +47,7 @@ Not every format can represent every event natively. The matrix below shows whic
 |-------|----------|----------|----------|-----|
 | front_matter (title) | Lossless | Lossless | Lossless | Lossless |
 | front_matter (author) | Lossless | Lossless | Lossless | Lossless |
+| front_matter (schema) | Destination Org URL | Destination Markdown URL | Not emitted | Not rendered |
 | front_matter (other keys) | Selected keys | Lost | Selected keys | Selected keys rendered where applicable |
 | act_header | Lossless | Lossless | Degraded | Lossless |
 | scene_header | Lossless | Lossless | Lossless | Lossless |
@@ -66,7 +70,7 @@ Fountain is the format with the most fidelity concerns. See [format-fountain.md 
 - **Prop text** maps to Fountain's centred text (`>TEXT<`), which loses the semantic distinction between "on-stage text" and "centred action".
 - **Footnotes** map to Fountain Notes (`[[text]]`), which are not numbered and are invisible in formatted output. The name/number of the footnote is lost.
 
-Text emitters preserve only the metadata keys they explicitly render. Org output includes title, subtitle, author, date, and version; Markdown includes title, subtitle, and author; Fountain includes title, subtitle, author, version, and date. Other parsed metadata remains available to PDF rendering but is not guaranteed to survive a text-format round trip.
+Text emitters preserve only the metadata keys they explicitly render. Org and Markdown output include the destination schema plus title, subtitle, author, date, and version; Fountain includes title, subtitle, author, version, and date. Other parsed metadata remains available to PDF rendering but is not guaranteed to survive a text-format round trip. Schema declarations are generated only for Org and Markdown output, not Fountain, Typst, or PDF.
 
 ### Rendering toggles
 
@@ -85,3 +89,8 @@ Suppression is applied between the parser and emitter - the parser always emits 
 ## Manuscript Path
 
 `folio manuscript` is a prose rendering path rather than a stage-play conversion path. It accepts Markdown and org-mode manuscript contracts, rejects Fountain, and renders directly to Typst or PDF through the Go manuscript engine. It does not use the stage-play event stream because prose manuscripts have different structural elements: parts, chapters, sections, paragraphs, scene breaks, code, and manuscript metadata.
+
+## Revision History
+
+- 0.3, 2026-09-10: Record destination-schema metadata and link to First Folio's limited Markdown contracts instead of general standards.
+- 0.2, 2026-08-10: Previous format-overview revision.

@@ -1,3 +1,4 @@
+#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
 #+TITLE: Cold Open
 #+AUTHOR: A. Screenwriter
 #+SUBTITLE: A Short Film

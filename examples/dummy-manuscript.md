@@ -1,4 +1,5 @@
 ---
+schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md
 title: The Glass Orchard
 subtitle: A Novel
 author: Example Author

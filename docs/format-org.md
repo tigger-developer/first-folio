@@ -1,4 +1,7 @@
-<!-- Version: 0.4 | Last updated: 2026-08-10 -->
+---
+version: "0.5"
+updated: "2026-09-10"
+---
 
 # Org-mode Play Format
 
@@ -12,16 +15,17 @@ Org-mode is the primary authoring format for First Folio. It uses Emacs org-mode
 
 ### Front Matter
 
-Org-mode keyword lines at the top of the file. Any `#+KEY: value` line is captured by the parser. Org emission preserves `TITLE`, `SUBTITLE`, `AUTHOR`, `DATE`, and `VERSION`; arbitrary keys are not guaranteed to survive a text-format round trip.
+Org-mode keyword lines at the top of the file. Any `#+KEY: value` line is captured by the parser. Org emission adds the destination `SCHEMA` and preserves `TITLE`, `SUBTITLE`, `AUTHOR`, `DATE`, and `VERSION`; arbitrary keys are not guaranteed to survive a text-format round trip. See the [Org script schema](../schema/script.org).
 
 ```org
+#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
 #+TITLE: The Importance of Being Earnest
 #+AUTHOR: Oscar Wilde
 #+SUBTITLE: A Trivial Comedy for Serious People
 #+TEMPLATE: play
 ```
 
-Standard emitted keys are `TITLE`, `SUBTITLE`, `AUTHOR`, `DATE`, and `VERSION`.
+Standard emitted keys are `SCHEMA`, `TITLE`, `SUBTITLE`, `AUTHOR`, `DATE`, and `VERSION`. The schema declaration is added even if the source has none.
 
 ### Acts (H1)
 
@@ -145,6 +149,7 @@ These are private notes and will not appear in any output.
 ## Complete Example
 
 ```org
+#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
 #+TITLE: A Short Play
 #+AUTHOR: A. Playwright
 
@@ -171,3 +176,8 @@ Just boiled.
 *** Research notes :noexport:
 - Look up kettle brands for period accuracy.
 ```
+
+## Revision History
+
+- 0.5, 2026-09-10: Document automatic destination-schema emission and use YAML document-version metadata.
+- 0.4, 2026-08-10: Previous format-reference revision.

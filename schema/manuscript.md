@@ -1,97 +1,120 @@
-<!-- Version: 0.1 | Last updated: 2026-09-10 -->
+---
+title: First Folio Markdown Manuscript Schema
+version: "0.3"
+updated: "2026-09-10"
+---
 
 # Markdown Manuscript Schema
 
-## Schema Declaration
+This is First Folio's **limited Markdown prose format**, separate from its
+script format. Only the structures described here belong to the manuscript
+contract. `folio manuscript` reads this source and renders Typst or PDF.
 
-Prose manuscripts use this schema. Every Markdown manuscript example and every conversion to this format must include the full schema URL in frontmatter:
+**Reference example:** [The Glass Orchard](../examples/dummy-manuscript.md).
+
+## Frontmatter
+
+Document metadata is a YAML block at the beginning of the file:
 
 ```yaml
----
-schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md
----
-```
-
-Conversion must select the schema for the **destination format and document type**, including when the source has no schema field. The schema URL identifies the document structure; it is not body text or a typography preset.
-
-**Reference example:** [dummy-manuscript.md](../examples/dummy-manuscript.md).
-
-**Implementation status:** This document defines the requested schema contract. Automatic schema emission is pending the converter changes tracked by [W041 - Document schemas and schema frontmatter](../docs/work.org#w-041). The current public manuscript command writes Typst/PDF; public Org/Markdown manuscript output remains a separate scope decision.
-
-## Existing Format Contract
-
-Markdown manuscript input is a prose contract, separate from the Markdown stage-play contract.
-
-## Metadata Contract
-
-All YAML frontmatter values are treated as manuscript strings. Quote values when that keeps the intent clearest, but the parser also accepts YAML scalars and converts them to strings, so `wordcount: about 90,000 words`, `wordcount: approx 100k words`, `wordcount: 20.000 mots`, and `wordcount: 90000` are all valid. Dates should be written as ISO strings such as `2026-07-06`; rendered output uses `folio.manuscript.date-format`.
-
-Supported frontmatter fields are `title`, `subtitle`, `author`, `attribution`, `date`, `version`, `wordcount`, `contact-name`, `address`, `phone`, `email`, and `website`. `attribution` is optional and defaults to empty; when set, it prefixes the author name with a space, so `attribution: by` and `author: Example Author` render as `by Example Author`. `author-attribution` is accepted as a compatibility alias. `contact-name` is optional and is used only for the title-page contact block; it does not default to the manuscript author.
-
-## Element Schema
-
-| Markdown syntax | Manuscript meaning |
-|---|---|
-| YAML frontmatter bounded by `---` | Manuscript metadata |
-| `# PART ONE` | Part divider page |
-| `## Chapter 1` | Chapter start page |
-| `### Section` and deeper | Local section heading |
-| Plain paragraphs | Body prose |
-| `***` or `---` on its own line, surrounded by blank lines | Section break, rendered as the configured manuscript scene-break marker |
-| `**bold**` | Bold text |
-| `*italic*` | Italic text |
-| `~~deleted~~` | Strikethrough text |
-| `` `code` `` within a mixed-content line | Inline monospace text |
-| `` `code` `` as the only non-whitespace content on a line | Monospace code block |
-| Fenced code blocks | Monospace code block |
-| `--` and `---` | En dash and em dash |
-| `[^name]` and `[^name]: text` | Footnote reference and definition |
-| Blockquotes, links, lists, and tables | Standard Markdown document elements |
-| HTML comments | Private notes, excluded |
-| Heading ending `<!-- noexport -->` | Private section excluded until the next same-or-higher heading |
-
-Setext headings are not part of the manuscript contract; use ATX headings (`#`, `##`, `###`) only. HTML blocks and source-document images are not supported.
-
-Section breaks default to a centred `#` marker in rendered manuscripts. Override `folio.manuscript.scene-break.marker` in YAML config to use another marker.
-
-Lists, tables, blockquotes, and fenced code blocks render with `0.5em` vertical clearance before and after by default. Set `folio.manuscript.quoted-block-spacing` or `folio.manuscript.code-block-spacing` to change both sides of those blocks equally. The existing `folio.manuscript.code-block.space-before` and `folio.manuscript.code-block.space-after` properties override the equal code-block spacing on their respective sides. Set `folio.manuscript.quote-block-indent` or `folio.manuscript.code-block-indent` to inset every line of the corresponding block from the left; both default to `0em` and are independent of prose first-line indentation. Configure blockquote typography through `folio.manuscript.quoted-block.font`; its `family`, `size`, `weight`, `stretch`, `style`, and `letter-spacing` properties inherit independently from the manuscript font when omitted.
-
-A backtick code span that is the only non-whitespace content on its source line uses the fenced-code block layout, including configured spacing and indentation. Any non-whitespace content before the opening backtick or after the closing backtick keeps the code span inline. For example, in ``but `echo "text" #because this is all code` ``, `but ` is prose and everything between the backticks, including `#because`, is inline code. Existing fenced blocks are unchanged. Org manuscript verbatim spans follow the same distinction through canonical Markdown conversion.
-
-Only a prose paragraph directly opening a chapter is flush left. Every other prose paragraph uses `folio.manuscript.paragraph-indent`, including prose after code blocks and blockquotes. When a chapter begins with a structural block, the prose following that block is indented normally.
-
-Fountain is not accepted by manuscript mode.
-
-## Example
-
-```markdown
 ---
 schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md
 title: The Glass Orchard
 subtitle: A Novel
 author: Example Author
 attribution: by
-date: 2026-07-06
-version: Draft 2
+date: "2026-09-10"
+version: Draft 1
 wordcount: about 90,000 words
 contact-name: Example Agent
-address: 100 Example Street / Sample City / Exampleland
+address: 100 Example Street / Sample City
 phone: +353 1 000 0000
 email: author@example.invalid
 website: https://example.invalid
 ---
-
-# PART ONE
-
-## Chapter 1
-
-The rain had been falling since Tuesday. The ledger flashed **WAIT** -- then the latch answered --- and Mira typed `nine-bell`.
-
-***
-
-By noon, the hands had moved backwards twice.
-
-### Notes <!-- noexport -->
-
-This planning note is excluded.
 ```
+
+- `schema` identifies this source format.
+- `title`, `subtitle`, and `author` identify the manuscript.
+- `attribution` is an optional author prefix; it defaults to empty.
+  `author-attribution` is a compatibility alias.
+- `date` and `version` provide the manuscript date and draft label.
+- `wordcount` is display text, not a computed count. Numeric input is also
+  accepted and converted to text.
+- `contact-name`, `address`, `phone`, `email`, and `website` supply optional
+  contact details. Contact name does not default to the author.
+
+Metadata is interpreted as strings. ISO date strings preserve the date's
+meaning; manuscript configuration controls the rendered date format.
+The schema document's own YAML `version` describes this definition, while a
+manuscript's `version` describes its draft.
+
+## Prose structure
+
+| Source form | Meaning |
+|---|---|
+| `# PART ONE` | Part division |
+| `## Chapter 1` | Chapter |
+| `### Section` and deeper headings | Local section |
+| Plain paragraphs separated by blank lines | Prose |
+| `***` or `---` on its own line, with blank lines around it | Scene break |
+
+Only hash-prefixed headings are supported. Underlined headings are not.
+The scene-break marker defaults to a centred `#` in rendered output.
+Part and chapter numbering and layout are controlled by manuscript configuration.
+
+Only a prose paragraph immediately following a chapter heading is flush left.
+Other prose uses the configured paragraph indent, including prose after a
+blockquote or code block that opens a chapter.
+
+## Inline syntax and blocks
+
+| Source form | Meaning |
+|---|---|
+| `**bold**` | Bold |
+| `*italic*` | Italic |
+| `~~deleted~~` | Strikethrough |
+| A backtick code span within prose | Inline monospace text |
+| A backtick code span alone on a line | Monospace block |
+| A fenced code block | Monospace block |
+| `--` and `---` within text | En dash and em dash |
+| `[^note]` with a `[^note]: Explanation.` definition | Footnote |
+| `> Quoted prose.` | Blockquote |
+| `[label](URL)` | Link |
+| Bulleted and numbered lists | Lists |
+| Pipe tables | Tables |
+
+Blockquotes are prose quotations in this format. The linked example shows
+supported quotations, links, lists, tables, and emphasis together.
+
+## Limits and private material
+
+HTML blocks, source-document images, and Fountain input are outside the
+manuscript contract. Support for the listed constructs does not imply support
+for a general Markdown standard or every extension available in the parser.
+
+The existing parser excludes private sections marked by a heading followed by
+an HTML comment containing the word `noexport`, ending at the next heading of
+the same or a higher level. It also excludes standalone HTML-comment notes.
+This legacy convention is described here without embedding HTML comments in
+the schema document or its examples.
+
+## Output boundary
+
+The existing Markdown serializer adds this schema URL even when metadata is
+empty. The public manuscript command currently exposes Typst/PDF output only.
+The schema declaration does not itself introduce Markdown or Org output modes.
+Typst and PDF output do not receive a schema declaration.
+
+## Related documentation
+
+- [Markdown manuscript format reference](../docs/format-manuscript-markdown.md).
+- [Org manuscript schema](manuscript.org).
+- [Manuscript configuration](../docs/config.md).
+
+## Revision history
+
+- 0.3, 2026-09-10: Rewrite around the limited prose contract; use YAML version
+  metadata and remove literal HTML comments from the schema document.
+- 0.2, 2026-09-10: Record serializer and output boundaries.
+- 0.1, 2026-09-10: Initial definition, superseded by this rewrite.

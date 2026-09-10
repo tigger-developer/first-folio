@@ -10,6 +10,24 @@
   Markdown schema text entered Fountain/Typst output, and malformed frontmatter
   was treated as play text. Full regression and static checks follow implementation.
 
+- Implemented revision :: =08f345e - emit destination schemas for Org and Markdown=.
+- Focused result :: PASS. Source-format/style combinations, file and stdout
+  output, repeated conversions, missing metadata, invalid YAML, and manuscript
+  Markdown declarations passed after implementation.
+- Full regression :: PASS, =make test=. The first full run identified the
+  existing round-trip equality assertion's missing expectation for newly
+  generated schema metadata. The assertion now expects that exact destination
+  metadata and still compares every original semantic field and event.
+- Static checks :: =make lint= passed. =golangci-lint run ./...= reports the
+  same four findings both on this implementation and an extracted copy of
+  =8037652 - schema document checkpoint=: three unused declarations in
+  =copyright.go=, =render.go=, and =run.go=, and an empty branch in the
+  manuscript parser. These are existing findings, not suppressed checks.
+- Output boundary :: Fountain and Typst output are byte-identical for the
+  regression fixture with and without schema frontmatter. PDF regression tests
+  passed through the same Typst rendering path. No manuscript Org writer or
+  letter text-format writer was added.
+
 * OT041.1 - Schema and example declarations
 :PROPERTIES:
 :CUSTOM_ID: ot-041-1
@@ -22,7 +40,18 @@
   each example's frontmatter URL against its format and document type.
 - Expected :: Valid declarations and existing local link targets; example
   content outside the added frontmatter is preserved.
-- Status :: PENDING.
+- Status :: PASS, 2026-09-10.
+- Candidate :: Documentation/example working tree on
+  =08f345e - emit destination schemas for Org and Markdown=.
+- Evidence :: All five schema definitions and their index parse; all 30 local
+  links resolve. Markdown schema documents use YAML version metadata, contain
+  no literal HTML comments or external Markdown-standard references, and Org
+  declarations have no comma prefixes. All 11 example URLs match their format
+  and document type; removing only the added schema field/frontmatter restores
+  their exact contents from the schema-document checkpoint.
+- Review correction :: Initial schema prose was rejected by the operator.
+  Version 0.3 is the rewrite; this one-off check is technical validation, not
+  operator acceptance of that prose.
 
 * UT041.1 - Paired review of schema output
 :PROPERTIES:

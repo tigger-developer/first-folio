@@ -1,12 +1,11 @@
-<!-- Version: 0.4 | Last updated: 2026-08-10 -->
+---
+version: "0.5"
+updated: "2026-09-10"
+---
 
 # Markdown Play Format
 
-First Folio uses a convention-based Markdown format to represent stage plays. The format uses standard Markdown elements (headers, bold, italic, tables) with specific structural conventions that allow round-trip parsing.
-
-**External references:**
-- [CommonMark Specification](https://commonmark.org)
-- [GitHub Flavoured Markdown](https://github.github.com/gfm/) (tables)
+First Folio supports the limited Markdown play syntax described here and in the [Markdown script schema](../schema/script.md). Support is limited to the specified structural conventions; it does not imply general Markdown conformance.
 
 **Intro sections:** `##` headings before the first character dialogue (e.g. Synopsis, Setting, Scene List) are automatically detected as intro material. These render identically to act headers but can be toggled with `render.frontmatter` in [config](config.md).
 
@@ -14,9 +13,13 @@ First Folio uses a convention-based Markdown format to represent stage plays. Th
 
 ### Front Matter
 
-The document title is a level-1 ATX heading. The subtitle (if present) appears as a bold line below the title. The author appears as an italic string prefixed with "by". An optional version/date line uses the exact delimiter form shown below.
+The document begins with YAML frontmatter containing the destination `schema` URL. The document title is a level-1 ATX heading. The subtitle (if present) appears as a bold line below the title. The author appears as an italic string prefixed with "by". An optional version/date line uses the exact delimiter form shown below.
 
 ```markdown
+---
+schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
+---
+
 # The Importance of Being Earnest
 
 **A Trivial Comedy for Serious People**
@@ -26,7 +29,7 @@ The document title is a level-1 ATX heading. The subtitle (if present) appears a
 --- Draft 3 | 2026-08-10 ---
 ```
 
-`title`, `subtitle`, `author`, `version`, and `date` are represented. Other front matter keys are not included in Markdown output.
+`schema` is emitted in YAML. `title`, `subtitle`, `author`, `version`, and `date` retain their visible forms. Other YAML fields do not replace those forms. The writer adds the schema even when the source has none; input schema values do not override the destination URL. Malformed YAML or unclosed frontmatter produces an error.
 
 ### Acts (H2)
 
@@ -125,9 +128,13 @@ A famous verse[^verse] is quoted here.
 ## Complete Example
 
 ```markdown
+---
+schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
+---
+
 # A Short Play
 
-*A Trivial Comedy*
+**A Trivial Comedy**
 
 *by A. Playwright*
 
@@ -153,3 +160,8 @@ Is the kettle on?
 **BOB:** *(cheerfully)*
 Just boiled.
 ```
+
+## Revision History
+
+- 0.5, 2026-09-10: Add schema frontmatter, move document-version metadata to YAML, and remove general Markdown-standard references that did not define First Folio's supported subset.
+- 0.4, 2026-08-10: Previous format-reference revision.
