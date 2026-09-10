@@ -156,9 +156,10 @@ classification; it is provenance, not current state.
 :END:
 
 - Delivery mode :: *Paired development*, explicitly selected by the operator.
-  This skeleton records requirements as the work develops; the durable
-  specification and validation record will be consolidated from the paired
-  additions and operator review.
+  The initial skeleton recorded requirements during iteration. The paired
+  additions are now consolidated in the specification below; operator review
+  remains part of closure.
+- Specification :: [[file:../specs/041-document-schemas/spec.org][W041 - Document schemas and conversion frontmatter]].
 - Outcome :: Org and Markdown documents *identify their script or manuscript
   schema* through frontmatter.
 
@@ -232,18 +233,24 @@ classification; it is provenance, not current state.
 
 *** Baseline and pending decisions
 
-- Baseline :: The four =docs/format-*= references describe the existing
-  Org/Markdown script and manuscript contracts. The play Org emitter writes
-  only title, subtitle, author, date, and version; the play Markdown parser
-  has no YAML-frontmatter handling. Manuscript metadata parsing does not
-  retain a schema field.
+- Baseline history :: Before this change, the four =docs/format-*= references
+  described the existing Org/Markdown contracts. The play Org emitter wrote
+  only title, subtitle, author, date, and version, and the play Markdown parser
+  had no YAML-frontmatter handling. Those emission and parsing behaviours are
+  superseded by the converter iteration above. Manuscript metadata parsing
+  does not retain a schema field; its Markdown serializer emits a fixed URL.
 - Compatibility history :: Missing, unknown, and mismatched schema handling was
   initially open. This converter iteration uses the destination schema and
   does not introduce schema-based document routing or remote validation.
-- Scope :: Manuscript text-format output is not currently a public command
-  capability. Whether this iteration adds it is awaiting operator clarification.
-- Validation :: No operator validation or converter verification recorded yet.
-- Specification :: Skeleton only; consolidate after paired additions.
+- Scope history :: Public manuscript text-format output was initially an open
+  scope question. This iteration amends the existing Markdown serializer and
+  adds no public output mode; this boundary is explicit in the specification
+  for operator review.
+- Validation :: Converter and documentation checks are recorded in the linked
+  validation record. Operator user-test confirmation remains pending.
+- Consolidation :: The original skeleton-only record is superseded by the
+  linked specification, requested by the operator on 2026-09-10. Requirements
+  and decision history remain here as provenance.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:

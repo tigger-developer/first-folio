@@ -1,0 +1,406 @@
+#+TITLE: W041 - Document schemas and conversion frontmatter
+#+SUBTITLE: Consolidated paired-development specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+
+* Document schemas and conversion frontmatter
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+- Outcome :: Source documents *identify their First Folio syntax* through a
+  schema URL in frontmatter.
+- Before :: Format guides existed, but examples and text emitters *did not
+  consistently declare a schema*; script Markdown parsing did not consume YAML
+  schema frontmatter.
+- After :: Five schema definitions cover *Org and Markdown scripts and
+  manuscripts, plus Org letters*. Each definition and source example declares
+  its schema. Existing Org/Markdown emitters add the destination declaration.
+- Changes :: Script Markdown input *consumes schema metadata* before parsing
+  the body and rejects malformed frontmatter. Repeated conversion emits *one
+  destination declaration*.
+- Unchanged :: Fountain, Typst, and PDF receive *no schema declaration*.
+  Manuscript CLI output remains Typst/PDF; letter output remains PDF.
+  Letter-subtree exclusion remains the separate W040 defect.
+- Edge cases :: Missing or unfamiliar source schema strings, empty metadata,
+  malformed YAML, unclosed frontmatter, and repeated conversion are covered.
+- Decisions :: Markdown uses *First Folio's limited syntax*, with YAML metadata
+  and no HTML comments in the schema documents. Letters are *Org-only*.
+  URLs identify repository files; draft document versions are not approved
+  schema release numbers.
+- Next step :: Review this consolidation and the validation ledger, then apply
+  the paired closure checks. This document *does not record operator acceptance*.
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem and outcome
+
+Writers need a source document to *identify its supported syntax* without
+guessing from its extension alone. Schema documents must describe the
+application's actual script, prose, or letter contract and provide usable
+examples. Conversion must keep that declaration accurate for the destination.
+
+** Scope
+
+- Included :: Five definitions under =schema/=, their index, matching source
+  examples, affected format guides, script Org/Markdown emission and Markdown
+  frontmatter parsing, and the existing manuscript Markdown serializer.
+- Existing output boundary :: =folio convert= supports Org/Markdown script
+  output for British stage-play, US stage-play, and screenplay styles.
+  =folio manuscript= emits only Typst/PDF. Its internal Markdown serializer
+  is covered here, but *no public manuscript text-output mode is added*.
+- Letters :: =folio letter= consumes Org letter sections and emits recipient
+  PDFs. There is *no Markdown letter schema or conversion*, no new letter
+  text-output mode, and no new plural subcommand alias.
+- Separate defect :: A combined Org source can contain play and letter
+  sections. Play conversion is required to ignore letter sections, while the
+  letter command generates only letters. The existing play-conversion leak is
+  retained under [[file:../../docs/work.org::#w-040][W040 - Exclude cover-letter sections from document rendering]];
+  W041 *documents that limitation and does not implement the exclusion*.
+- Unchanged :: Existing body syntax, layout presets, configuration precedence,
+  external renderers, and command routing remain in force. A schema URL does
+  not select a document type or introduce a new parser dialect.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][Project authorities and conventions]].
+- Product :: [[file:../../docs/vision.md][First Folio vision and supported formats]].
+- Architecture :: [[file:../../docs/ARCHITECTURE.md][CLI, document models, and rendering boundaries]].
+- Requirements and history :: [[file:../../docs/work.org::#w-041][W041 - Document schemas and schema frontmatter]]
+  retains the paired instructions, amendments, and original URL proposal.
+- Format contracts :: [[file:../../docs/format-org.md][Org play]],
+  [[file:../../docs/format-markdown.md][Markdown play]],
+  [[file:../../docs/format-manuscript-org.md][Org manuscript]], and
+  [[file:../../docs/format-manuscript-markdown.md][Markdown manuscript]].
+- Schema authority :: [[file:../../schema/README.md][Source schema index]] links
+  to the five definitions. Their grammar is *referenced, not duplicated* here.
+- Baseline relationship :: The change adds descriptive metadata to existing
+  formats. Tests were introduced at =3db765f - destination-schema regression
+  tests= before implementation at =08f345e - destination-schema emission=.
+  Schema prose was rewritten at =ead5833 - supported-format schema rewrite=;
+  self-references were added at =dbcd66c - self-referencing schema frontmatter=.
+  These checkpoints are implementation history, not operator validation.
+
+** Decisions and constraints
+
+- Paired sequence :: Schema documents preceded code changes. Explicit
+  iteration instructions supplied the working specification; this document
+  consolidates the resulting scope rather than inventing an advance approval.
+- URL mapping :: The implemented full URL is
+  =https://github.com/tigger-developer/first-folio/blob/master/schema/=
+  followed by =script.org=, =script.md=, =manuscript.org=, =manuscript.md=, or
+  =letter.org=. This maps the original short URL proposal to repository files;
+  it remains part of the closure review.
+- Version meaning :: =0.3= in the current schema documents records drafting
+  history. It *does not establish an operator-approved schema release* and is
+  not added to converted documents as a schema-version field. Existing work
+  version metadata keeps its meaning. A release-version policy is outside
+  this change.
+- Compatibility :: Missing or unfamiliar source schema strings are accepted.
+  Output uses its *destination URL*, never the source URL. URLs are descriptive
+  and *are not fetched* or used for remote validation.
+- Review boundary :: The requested consolidation does not itself establish
+  acceptance of the schema prose, URL mapping, or user-test result.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC041.1 - Five project-specific schema definitions
+:PROPERTIES:
+:CUSTOM_ID: ac-041-1
+:END:
+
+- Criterion :: Separate script and manuscript schemas exist for Org and
+  Markdown, with one additional *Org-only letter schema*. They describe
+  First Folio's supported syntax and output limits, without asserting general
+  Markdown-standard conformance or promising Markdown letters.
+- Proven by :: [[#ot-041-1][OT041.1 - Schema and example declarations]] and
+  [[#ut-041-1][UT041.1 - Paired review of schema output]].
+
+** AC041.2 - Definitions and examples declare their schema
+:PROPERTIES:
+:CUSTOM_ID: ac-041-2
+:END:
+
+- Criterion :: Each of the five schema definitions and every supplied
+  Org/Markdown source example declares the matching *full schema URL*.
+  Each definition links relatively to a matching source under =../examples/=.
+  Combined play/letter examples declare the script schema.
+- Proven by :: [[#ot-041-1][OT041.1 - Schema and example declarations]].
+
+** AC041.3 - Native frontmatter and usable examples
+:PROPERTIES:
+:CUSTOM_ID: ac-041-3
+:END:
+
+- Criterion :: Org declarations use =#+SCHEMA:= without a leading comma.
+  Markdown declarations use YAML =schema:= within =---= delimiters.
+  Markdown schema documents keep their version in YAML and contain *no HTML
+  comments*. Embedded examples follow the documented source conventions.
+- Proven by :: [[#ot-041-1][OT041.1 - Schema and example declarations]] and
+  [[#ut-041-1][UT041.1 - Paired review of schema output]].
+
+** AC041.4 - Script conversion declares the destination
+:PROPERTIES:
+:CUSTOM_ID: ac-041-4
+:END:
+
+- Criterion :: Org and Markdown script output contains *one destination schema
+  declaration*, for all supported source formats and British, US, and
+  screenplay styles. File and stdout output agree. Missing metadata or an
+  unfamiliar source schema does not suppress emission or replace the URL.
+- Proven by :: [[#rt-041-1][RT041.1 - Script destination declarations]].
+
+** AC041.5 - Round trips preserve body semantics
+:PROPERTIES:
+:CUSTOM_ID: ac-041-5
+:END:
+
+- Criterion :: Reading generated Markdown treats its schema frontmatter as
+  metadata. Repeated Org/Markdown conversion *does not duplicate declarations
+  or body content* and preserves the existing supported semantic contract.
+- Proven by :: [[#rt-041-2][RT041.2 - Schema round trips]].
+
+** AC041.6 - Malformed script frontmatter fails clearly
+:PROPERTIES:
+:CUSTOM_ID: ac-041-6
+:END:
+
+- Criterion :: An unclosed leading frontmatter block, malformed YAML, or a
+  schema collection incompatible with a scalar value causes script conversion
+  to *fail with a frontmatter diagnostic*, without converted stdout content.
+- Proven by :: [[#rt-041-3][RT041.3 - Invalid frontmatter rejection]].
+
+** AC041.7 - Other output formats exclude schema metadata
+:PROPERTIES:
+:CUSTOM_ID: ac-041-7
+:END:
+
+- Criterion :: Schema declarations are *not emitted into Fountain, Typst, or
+  PDF*. Adding an input schema declaration does not turn it into rendered
+  script body content.
+- Proven by :: [[#rt-041-4][RT041.4 - Non-text-schema output preservation]].
+
+** AC041.8 - Manuscript Markdown serialization declares its schema
+:PROPERTIES:
+:CUSTOM_ID: ac-041-8
+:END:
+
+- Criterion :: The existing manuscript Markdown serializer emits *one
+  manuscript Markdown schema declaration*, including when other metadata is
+  empty, while preserving the existing supported body and metadata output.
+- Proven by :: [[#rt-041-5][RT041.5 - Manuscript serializer declaration]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT041.1 - Script destination declarations
+:PROPERTIES:
+:CUSTOM_ID: rt-041-1
+:END:
+
+- Covers :: [[#ac-041-4][AC041.4 - Script conversion declares the destination]].
+- Boundary :: In-process public application command dispatch.
+- Procedure :: Convert Org, Markdown, and Fountain fixtures through each of
+  the three styles to =org=, =md=, and =markdown=, using stdout and files.
+  Include an unfamiliar source schema and an empty source.
+- Expected :: Matching full destination URL, retained dialogue, identical file
+  and stdout output, and declaration emission without title metadata.
+- Implementation :: =TestConvertDestinationSchema= and
+  =TestConvertSchemaWithEmptySource= in [[file:../../internal/app/schema_test.go][Script schema regression tests]].
+- Retention :: Existing Go suite through =make test=.
+
+** RT041.2 - Schema round trips
+:PROPERTIES:
+:CUSTOM_ID: rt-041-2
+:END:
+
+- Covers :: [[#ac-041-5][AC041.5 - Round trips preserve body semantics]].
+- Procedure :: Convert Org to Markdown to Org to Markdown to Markdown;
+  compare declaration and dialogue counts. Retain the full semantic parity
+  comparison, including the exact added destination metadata.
+- Expected :: One schema declaration and one copy of the dialogue at each
+  step; existing semantic fields and events survive the parity fixtures.
+- Implementation :: =TestConvertSchemaRoundTrip= in
+  [[file:../../internal/app/schema_test.go][Script schema regression tests]] and
+  [[file:../../internal/app/parity_test.go][Existing semantic parity tests]].
+- Retention :: Existing Go suite through =make test=.
+
+** RT041.3 - Invalid frontmatter rejection
+:PROPERTIES:
+:CUSTOM_ID: rt-041-3
+:END:
+
+- Covers :: [[#ac-041-6][AC041.6 - Malformed script frontmatter fails clearly]].
+- Procedure :: Supply unclosed frontmatter, malformed YAML, and a schema
+  sequence to the public application conversion handler.
+- Expected :: Non-zero exit status, empty stdout, and stderr identifying
+  frontmatter.
+- Implementation :: =TestConvertRejectsMalformedSchemaFrontmatter= in
+  [[file:../../internal/app/schema_test.go][Script schema regression tests]].
+- Retention :: Existing Go suite through =make test=.
+
+** RT041.4 - Non-text-schema output preservation
+:PROPERTIES:
+:CUSTOM_ID: rt-041-4
+:END:
+
+- Covers :: [[#ac-041-7][AC041.7 - Other output formats exclude schema metadata]].
+- Procedure :: Convert equivalent Markdown fixtures with and without schema
+  metadata to Fountain and Typst; run the maintained PDF regression suite.
+- Expected :: Byte-identical Fountain/Typst pairs and existing PDF assertions
+  preserved. PDF coverage is through the existing Typst rendering path;
+  no dedicated schema-bearing PDF pair comparison is claimed.
+- Implementation :: =TestConvertSchemaDoesNotEnterOtherFormats= in
+  [[file:../../internal/app/schema_test.go][Script schema regression tests]],
+  plus the maintained application rendering tests.
+- Retention :: Existing Go suite through =make test=.
+
+** RT041.5 - Manuscript serializer declaration
+:PROPERTIES:
+:CUSTOM_ID: rt-041-5
+:END:
+
+- Covers :: [[#ac-041-8][AC041.8 - Manuscript Markdown serialization declares its schema]].
+- Boundary :: Existing internal =RenderMarkdown= function; no manuscript CLI
+  Markdown output is represented by this test.
+- Procedure :: Serialize a paragraph with a title and with empty metadata.
+- Expected :: One matching schema in leading YAML, retained paragraph, and
+  retained title when present.
+- Implementation :: =TestRenderMarkdownIncludesManuscriptSchema= in
+  [[file:../../internal/manuscript/schema_test.go][Manuscript schema regression tests]].
+- Retention :: Existing Go suite through =make test=.
+
+** OT041.1 - Schema and example declarations
+:PROPERTIES:
+:CUSTOM_ID: ot-041-1
+:END:
+
+- Covers :: [[#ac-041-1][AC041.1 - Five project-specific schema definitions]],
+  [[#ac-041-2][AC041.2 - Definitions and examples declare their schema]], and
+  [[#ac-041-3][AC041.3 - Native frontmatter and usable examples]].
+- Procedure :: Parse the schema documents and YAML headers; resolve relative
+  links; check all five self-references and all 11 source-example URLs.
+  Compare examples with =8037652 - schema document checkpoint= after removing
+  only the added declaration. Review schema grammar against the format guides.
+- Expected :: Correct metadata and existing link targets, unchanged example
+  bodies, no comma-prefixed Org declarations or HTML comments in schemas,
+  and accurate limited-format and Org-letter boundaries.
+- Bounds :: One-off local documentation review; no remote URL fetch or
+  persistent prose regression test.
+- Record :: [[file:validation.org::#ot-041-1][OT041.1 - Schema and example evidence]].
+
+** UT041.1 - Paired review of schema output
+:PROPERTIES:
+:CUSTOM_ID: ut-041-1
+:END:
+
+- Covers :: [[#ac-041-1][AC041.1 - Five project-specific schema definitions]] and
+  [[#ac-041-3][AC041.3 - Native frontmatter and usable examples]], with operator
+  review of the conversion scope and URL mapping recorded above.
+- Reviewer :: Operator.
+- Procedure :: Inspect the schema prose, self-declarations, and representative
+  converted Org/Markdown. Confirm that this specification captures the intended
+  outcome, including the manuscript output boundary and separate letter defect.
+- Expected :: Explicit acceptance of the reviewed outcome; no acceptance
+  inferred from an instruction to implement or document it.
+- Record :: [[file:validation.org::#ut-041-1][UT041.1 - Paired review evidence]].
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+- Missing or unfamiliar declaration :: Emit the destination schema regardless;
+  covered by [[#rt-041-1][RT041.1 - Script destination declarations]].
+- Empty document or metadata :: Emit schema frontmatter even without a title;
+  covered by [[#rt-041-1][RT041.1 - Script destination declarations]] and
+  [[#rt-041-5][RT041.5 - Manuscript serializer declaration]].
+- Repeated conversion :: Do not accumulate metadata or dialogue; covered by
+  [[#rt-041-2][RT041.2 - Schema round trips]].
+- Leading =---= :: The script parser treats it as a frontmatter opener and
+  requires a closing delimiter; covered by
+  [[#rt-041-3][RT041.3 - Invalid frontmatter rejection]].
+- Combined play and letters :: Declare the script schema and reference the
+  Org letter grammar; document the separate exclusion defect without claiming
+  it resolved, covered by [[#ot-041-1][OT041.1 - Schema and example declarations]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Components and flow
+
+1. [[file:../../internal/play/parser.go][Script parsing]] consumes leading
+   Markdown YAML before body parsing, using the existing YAML dependency.
+   A non-empty schema becomes metadata; other YAML keys do not replace the
+   established visible script title, subtitle, author, date, and version forms.
+2. [[file:../../internal/play/emitter.go][Script emission]] initializes Org or
+   Markdown output with its fixed destination declaration, then uses the
+   existing metadata and body emitters. Styles share the same script schemas.
+3. [[file:../../internal/manuscript/serialize.go][Manuscript Markdown serialization]]
+   always opens YAML frontmatter and writes the fixed manuscript URL before
+   optional metadata. The public manuscript output interface is unchanged.
+
+** Failure and state
+
+- Validation :: Script frontmatter parsing rejects an absent closing delimiter
+  or YAML decoding failure before body conversion. Unknown scalar URLs are
+  descriptive, not an error or request to fetch a schema.
+- Persistence :: Only generated Org/Markdown output and maintained source
+  documentation gain declarations. No database, configuration migration,
+  cache, or release-version negotiation is introduced.
+- Compatibility :: Schema is new output metadata. Existing semantic parity
+  tests include that exact metadata while retaining all original comparisons.
+  Unrelated YAML keys are consumed but are not promised to round-trip.
+
+** Architecture impact
+
+- Security :: Local source YAML is parsed through an existing dependency.
+  Schema URLs trigger *no network access*, authorization change, or additional
+  data disclosure. File and process access boundaries remain unchanged.
+- Reliability :: Deterministic destination metadata prevents stale source URLs
+  and repeated-conversion duplication.
+- Performance and portability :: No new external process, service, or runtime
+  dependency is added for declarations.
+- Accessibility :: Plain-text native frontmatter and relative example links
+  make the grammar inspectable and copyable.
+- Maintainability :: Separate schemas retain the distinct script, manuscript,
+  and letter models rather than introducing a general Markdown dialect.
+- Operability :: This specification records repository behaviour; installation,
+  release, and publication are separate actions.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Reading :: Start with this specification, the project profile, linked schema
+  definitions, architecture, format guides, and validation record.
+- Evidence :: [[file:validation.org][Schema conversion validation]] retains
+  observed RED/GREEN, regression, static-check, documentation, and user-review
+  evidence. Test results are not duplicated here as approval claims.
+- Remaining closure work :: Confirm this consolidation and the current user
+  validation record with the operator, and run applicable change-scoped paired
+  audits. Audit records belong in harness-managed =audits.yaml=; no audit
+  verdict is inferred from tests or this specification.
+- Documentation outcome :: Schema definitions, their index, examples, and the
+  four format guides were amended. Product output-mode and architecture
+  boundaries remain unchanged, so this change needs no new command or
+  architecture authority. The work ledger links here and preserves provenance.
+- Known limits :: The manuscript CLI has no Org/Markdown output mode, letters
+  have no Markdown representation, and W040 letter exclusion is not delivered
+  by W041. Existing broader-linter findings remain described in the evidence.
+- Closure authority :: The operator determines closure after the required
+  evidence and review; this consolidation does not change the work item's
+  lifecycle keyword.

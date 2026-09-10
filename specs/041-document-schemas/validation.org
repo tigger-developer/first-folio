@@ -4,6 +4,13 @@
 * Converter iteration
 
 - Authority :: [[file:../../docs/work.org::#w-041][W041 - Document schemas and schema frontmatter]], paired development.
+- Specification :: [[file:spec.org][W041 - Document schemas and conversion frontmatter]].
+- Regression trace :: Recorded converter results cover
+  [[file:spec.org::#rt-041-1][RT041.1 - Script destination declarations]],
+  [[file:spec.org::#rt-041-2][RT041.2 - Schema round trips]],
+  [[file:spec.org::#rt-041-3][RT041.3 - Invalid frontmatter rejection]],
+  [[file:spec.org::#rt-041-4][RT041.4 - Non-text-schema output preservation]], and
+  [[file:spec.org::#rt-041-5][RT041.5 - Manuscript serializer declaration]].
 - Automated evidence :: RED observed on 2026-09-10 against the production code
   at =8037652 - schema document checkpoint=. The focused application and
   manuscript tests failed because output lacked schema declarations, incoming
@@ -34,6 +41,7 @@
 :END:
 
 - Category :: One-off documentation check.
+- Definition :: [[file:spec.org::#ot-041-1][OT041.1 - Schema and example declarations]].
 - Requirement :: Every Org/Markdown example identifies the matching schema;
   schemas contain relative links to examples.
 - Procedure :: Parse schema documents, resolve their local links, and check
@@ -52,6 +60,16 @@
 - Review correction :: Initial schema prose was rejected by the operator.
   Version 0.3 is the rewrite; this one-off check is technical validation, not
   operator acceptance of that prose.
+- Supplement, 2026-09-10 :: All five schema self-references were checked against
+  their exact full URLs at =dbcd66c - self-referencing schema frontmatter=.
+  During specification consolidation on that revision, Pandoc parsed both
+  specification and validation documents, their 57 links resolved, and their
+  custom identifiers were unique within each file. Sanitization and
+  =git diff --check= passed. These are documentation checks; the converter
+  suite was not rerun for this documentation-only amendment.
+- Presentation :: A temporary Markdown review copy was generated. The configured
+  preview executable was unavailable, so no browser rendering or human review
+  is inferred.
 
 * UT041.1 - Paired review of schema output
 :PROPERTIES:
@@ -59,6 +77,7 @@
 :END:
 
 - Category :: User test.
+- Definition :: [[file:spec.org::#ut-041-1][UT041.1 - Paired review of schema output]].
 - Requirement :: Org and Markdown conversions identify the intended schema.
 - Procedure :: Review representative converted Org and Markdown and the
   documented limits of the existing manuscript and letter output commands.
