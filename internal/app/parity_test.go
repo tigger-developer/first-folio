@@ -142,6 +142,15 @@ func TestScriptFormatRoundTrips(t *testing.T) {
 			returned := runScriptRoundTrip(t, route[0], route[1])
 			want := parseScriptDocument(t, route[0], scriptRoundTripSources[route[0]])
 			got := parseScriptDocument(t, route[0], returned)
+			if route[0] == play.FormatOrg || route[0] == play.FormatMarkdown {
+				schema := "https://github.com/tigger-developer/first-folio/blob/master/schema/script.org"
+				if route[0] == play.FormatMarkdown {
+					schema = "https://github.com/tigger-developer/first-folio/blob/master/schema/script.md"
+				}
+				// Schema is newly generated destination metadata; all source semantics remain exact.
+				want.Metadata["schema"] = schema
+				want.Events = append([]play.Event{{Kind: play.EventFrontMatter, Key: "schema", Text: schema}}, want.Events...)
+			}
 			if !reflect.DeepEqual(got, want) {
 				t.Errorf("semantic document changed\nwant: %#v\n got: %#v\nreturned source:\n%s", want, got, returned)
 			}

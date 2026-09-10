@@ -22,7 +22,7 @@ func Emit(doc Document, format Format) (Output, error) {
 }
 
 func emitOrg(doc Document) Output {
-	var lines []string
+	lines := []string{"#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org"}
 	appendOrgMetadata(&lines, doc.Metadata)
 	footnotes := map[string]string{}
 	for _, event := range doc.Events {
@@ -59,7 +59,7 @@ func emitOrg(doc Document) Output {
 }
 
 func emitMarkdown(doc Document) Output {
-	var lines []string
+	lines := []string{"---", "schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md", "---", ""}
 	if title := doc.Metadata["title"]; title != "" {
 		lines = append(lines, "# "+title)
 		if subtitle := doc.Metadata["subtitle"]; subtitle != "" {

@@ -15,10 +15,8 @@ func RenderMarkdown(doc Document) string {
 }
 
 func appendMarkdownFrontmatter(lines *[]string, meta Metadata) {
-	if meta == (Metadata{}) {
-		return
-	}
 	*lines = append(*lines, "---")
+	appendFrontmatterLine(lines, "schema", "https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md")
 	appendFrontmatterLine(lines, "title", meta.Title)
 	appendFrontmatterLine(lines, "subtitle", meta.Subtitle)
 	appendFrontmatterLine(lines, "author", meta.Author)

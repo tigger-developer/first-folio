@@ -8,6 +8,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"gopkg.in/yaml.v3"
 )
 
 var (
@@ -135,7 +137,10 @@ func parseOrg(source string) (Document, error) {
 
 func parseMarkdown(source string) (Document, error) {
 	doc := Document{Metadata: map[string]string{}}
-	lines := splitLines(source)
+	lines, err := parseMarkdownSchema(&doc, splitLines(source))
+	if err != nil {
+		return Document{}, err
+	}
 	seenTitle, expectMetadata, inTable, seenCharacter := false, false, false, false
 	for _, line := range lines {
 		if !seenTitle && strings.HasPrefix(line, "# ") {
@@ -230,6 +235,31 @@ func parseMarkdown(source string) (Document, error) {
 		doc.Events = append(doc.Events, Event{Kind: EventCharacterTableEnd})
 	}
 	return doc, nil
+}
+
+// parseMarkdownSchema consumes document frontmatter before the play-body parser.
+// Other metadata retains the existing heading-based contract; schema is descriptive.
+func parseMarkdownSchema(doc *Document, lines []string) ([]string, error) {
+	if len(lines) == 0 || strings.TrimSpace(lines[0]) != "---" {
+		return lines, nil
+	}
+	end := 1
+	for end < len(lines) && strings.TrimSpace(lines[end]) != "---" {
+		end++
+	}
+	if end == len(lines) {
+		return nil, fmt.Errorf("Markdown frontmatter has no closing --- delimiter")
+	}
+	var metadata struct {
+		Schema string `yaml:"schema"`
+	}
+	if err := yaml.Unmarshal([]byte(strings.Join(lines[1:end], "\n")), &metadata); err != nil {
+		return nil, fmt.Errorf("parsing Markdown frontmatter: %w", err)
+	}
+	if metadata.Schema != "" {
+		addMetadata(doc, "schema", metadata.Schema)
+	}
+	return lines[end+1:], nil
 }
 
 func parseFountain(source string, path string) (Document, []string, error) {
