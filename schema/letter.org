@@ -1,0 +1,114 @@
+#+TITLE: Org Letter Schema
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+VERSION: 0.1
+#+DATE: 2026-09-10
+
+* Purpose and schema declaration
+
+This schema defines the Org letter sections consumed by =folio letter=.
+An Org file can contain *both letters and a play*. A combined document uses
+the [[file:script.org][Org Script Schema]] in its document frontmatter; its
+=:letter:= sections follow this letter schema.
+
+A letter-only Org document declares:
+
+#+begin_src org
+,#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/letter.org
+,#+TITLE: A Short Play
+,#+AUTHOR: A. Playwright
+#+end_src
+
+- Reference example :: [[file:../examples/about-time.org][About Time, a combined play and letters document]].
+- Conversion boundary :: Play conversion *ignores letter sections and their
+  descendants*. This applies to Org, Markdown, Fountain, Typst, and PDF output.
+- Letter generation :: The =folio letter= subcommand *generates only letters*,
+  one PDF per selected recipient. It does not generate the play.
+- Implementation status :: Letter generation is the existing command contract.
+  Play-conversion exclusion is required by this schema and remains tracked by
+  [[file:../docs/work.org::#w-040][W040 - Exclude cover-letter sections from document rendering]].
+  Schema frontmatter emission is pending
+  [[file:../docs/work.org::#w-041][W041 - Document schemas and schema frontmatter]].
+
+* Letter structure
+
+** Letter section
+
+A level-one heading tagged =:letter:= starts a letter section. The next
+level-one heading without that tag returns to the rest of the document.
+
+#+begin_src org
+,* Cover letters :letter:
+#+end_src
+
+** Sender and subject
+
+A level-two =:sender:= heading supplies the sender address. A level-two
+=:subject:= heading starts a letter; following plain paragraphs form its body.
+One letter section can contain several subjects and recipient groups.
+
+#+begin_src org
+,** A. Playwright / 1 Example Street / Dublin :sender:
+,** Submission of A Short Play :subject:
+Dear [moniker],
+
+Please find the script for [title] attached for consideration by [org].
+#+end_src
+
+Placeholder substitution applies to the *body*. The subject heading contains
+literal subject text; placeholders in subjects are not substituted by the
+current parser.
+
+** Closing, sign-off, and date
+
+- Closing :: A level-three =:closing:= heading; defaults to =Yours sincerely=.
+- Sign-off :: A level-three =:signoff:= heading; defaults to =#+AUTHOR:=.
+- Sender fallback :: When absent, the sender also defaults to =#+AUTHOR:=.
+- Date :: A level-three Org timestamp heading supplies the letter date.
+
+#+begin_src org
+,*** Yours sincerely :closing:
+,*** A. Playwright :signoff:
+,*** [2026-09-10 Thu]
+#+end_src
+
+** Recipients and substitutions
+
+A level-three =:to:= heading identifies a recipient address. Level-four tagged
+headings beneath it define recipient values for body placeholders. Multiple
+recipients produce separate letters from the same body.
+
+#+begin_src org
+,*** Submissions Editor / Example Theatre / Dublin :to:
+,**** Example Theatre :org:
+,**** Alex :moniker:
+,**** Friday :deadline:
+#+end_src
+
+- Recipient values *take precedence* over matching document keywords.
+- Document frontmatter provides fallback values such as =[title]=,
+  =[author]=, =[subtitle]=, =[date]=, and =[version]=.
+- An unresolved placeholder remains literal, for example =[deadline]=.
+- Tag names supported by the parser contain word characters, such as letters,
+  digits, or underscores.
+
+* Command selection
+
+The same combined Org source serves the two commands:
+
+#+begin_src sh
+folio convert examples/about-time.org play.md
+#+end_src
+
+This requests the play, excluding its letter sections under this schema.
+
+#+begin_src sh
+folio letter examples/about-time.org
+#+end_src
+
+This generates recipient letters only. =--to= filters recipients and =--dir=
+selects the output directory; see the
+[[file:../docs/folio-letter-help.md][letter command reference]].
+
+The current letter command reads Org and writes PDF. This schema does not
+define a Markdown letter syntax or promise letter text-format conversion.

@@ -110,6 +110,7 @@ make lint   # Go static analysis
 
 ## Documentation
 
+- [Source schemas](schema/README.md) - script, screenplay, manuscript, and letter definitions with source examples
 - [Vision](docs/vision.md) - project goals, supported formats, and direction of travel
 - [Architecture](ARCHITECTURE.md) - Go runtime, document models, configuration, and rendering boundaries
 - [Configuration](docs/config.md) - config schema, precedence, shared keys, migration

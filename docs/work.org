@@ -180,8 +180,18 @@ classification; it is provenance, not current state.
 - Operator clarification :: The converter must *add the field automatically*
   to any Org or Markdown output, for *stage plays, screenplays, and manuscripts*.
   A source declaration is not required for emission.
-- Proposed addition :: A *separate letter schema*, suggested by the operator;
-  embedded Org letter sections versus standalone letter formats remains open.
+- Letter addition :: Initially proposed as a separate schema; the operator
+  then specified that an Org script may contain *both letters and the play*.
+  =schema/letter.org= describes the embedded =:letter:= sections. Play
+  conversion *ignores those sections*; =folio letter= *generates only letters*.
+  This overlaps [[#w-040][W040 - Exclude cover-letter sections from document rendering]].
+- Iteration order :: The operator explicitly requested *schema documents first*,
+  before converter code changes.
+- Schema documents :: [[file:../schema/script.org][Org script]],
+  [[file:../schema/script.md][Markdown script]],
+  [[file:../schema/manuscript.org][Org manuscript]],
+  [[file:../schema/manuscript.md][Markdown manuscript]], and
+  [[file:../schema/letter.org][Org letters]].
 
 *** URL decision and provenance
 
