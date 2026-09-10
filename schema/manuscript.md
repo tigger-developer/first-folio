@@ -1,4 +1,5 @@
 ---
+schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md
 title: First Folio Markdown Manuscript Schema
 version: "0.3"
 updated: "2026-09-10"

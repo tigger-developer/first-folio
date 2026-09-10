@@ -1,4 +1,5 @@
 ---
+schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
 title: First Folio Markdown Script Schema
 version: "0.3"
 updated: "2026-09-10"

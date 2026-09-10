@@ -206,6 +206,10 @@ classification; it is provenance, not current state.
   frontmatter* in Markdown schema documents, and keeps *letters exclusively
   Org*. Embedded Org keyword examples no longer include comma escapes.
   This supersedes the initial schema presentation, whose history remains in Git.
+- Self-description :: Each schema document is itself an example and includes
+  its own *absolute schema URL* in document frontmatter: =#+SCHEMA:= for Org
+  and YAML =schema:= for Markdown. Drafting revisions do not by themselves
+  establish an operator-approved schema release version.
 - Schema documents :: [[file:../schema/script.org][Org script]],
   [[file:../schema/script.md][Markdown script]],
   [[file:../schema/manuscript.org][Org manuscript]],
