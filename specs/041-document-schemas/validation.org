@@ -1,0 +1,37 @@
+#+TITLE: W041 - Schema conversion validation
+#+STARTUP: overview
+
+* Converter iteration
+
+- Authority :: [[file:../../docs/work.org::#w-041][W041 - Document schemas and schema frontmatter]], paired development.
+- Automated evidence :: RED observed on 2026-09-10 against the production code
+  at =8037652 - schema document checkpoint=. The focused application and
+  manuscript tests failed because output lacked schema declarations, incoming
+  Markdown schema text entered Fountain/Typst output, and malformed frontmatter
+  was treated as play text. Full regression and static checks follow implementation.
+
+* OT041.1 - Schema and example declarations
+:PROPERTIES:
+:CUSTOM_ID: ot-041-1
+:END:
+
+- Category :: One-off documentation check.
+- Requirement :: Every Org/Markdown example identifies the matching schema;
+  schemas contain relative links to examples.
+- Procedure :: Parse schema documents, resolve their local links, and check
+  each example's frontmatter URL against its format and document type.
+- Expected :: Valid declarations and existing local link targets; example
+  content outside the added frontmatter is preserved.
+- Status :: PENDING.
+
+* UT041.1 - Paired review of schema output
+:PROPERTIES:
+:CUSTOM_ID: ut-041-1
+:END:
+
+- Category :: User test.
+- Requirement :: Org and Markdown conversions identify the intended schema.
+- Procedure :: Review representative converted Org and Markdown and the
+  documented limits of the existing manuscript and letter output commands.
+- Expected :: The operator accepts the emitted declarations and scope.
+- Status :: PENDING. No operator validation is inferred from authorization.

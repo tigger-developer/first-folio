@@ -187,6 +187,20 @@ classification; it is provenance, not current state.
   This overlaps [[#w-040][W040 - Exclude cover-letter sections from document rendering]].
 - Iteration order :: The operator explicitly requested *schema documents first*,
   before converter code changes.
+- Converter iteration :: After the schema-document checkpoint, the operator
+  requested schema emission *only for Markdown and Org output*. The current
+  script Org/Markdown emitters and manuscript Markdown serializer are in scope.
+  Stage-play and screenplay styles share the script URLs. Existing Fountain,
+  Typst, PDF, and letter output receive no schema declaration.
+- Round-trip compatibility :: Generated Markdown schema frontmatter must be
+  parsed as metadata when read back, rather than entering the play body.
+  Missing or unfamiliar source schema strings do not prevent conversion;
+  the output identifies its destination schema. Schema URLs are not fetched.
+- Checks selected :: Retained regression checks cover source-format and style
+  combinations, file/stdout output, repeated conversion, empty metadata,
+  malformed Markdown frontmatter, and absence of schema text from other output.
+  Example and documentation checks are one-off checks.
+- Validation record :: [[file:../specs/041-document-schemas/validation.org][W041 - Schema conversion validation]].
 - Schema documents :: [[file:../schema/script.org][Org script]],
   [[file:../schema/script.md][Markdown script]],
   [[file:../schema/manuscript.org][Org manuscript]],
@@ -214,8 +228,9 @@ classification; it is provenance, not current state.
   only title, subtitle, author, date, and version; the play Markdown parser
   has no YAML-frontmatter handling. Manuscript metadata parsing does not
   retain a schema field.
-- Compatibility :: Handling of missing, unknown, or mismatched schema values
-  remains to be agreed during the converter iteration.
+- Compatibility history :: Missing, unknown, and mismatched schema handling was
+  initially open. This converter iteration uses the destination schema and
+  does not introduce schema-based document routing or remote validation.
 - Scope :: Manuscript text-format output is not currently a public command
   capability. Whether this iteration adds it is awaiting operator clarification.
 - Validation :: No operator validation or converter verification recorded yet.
