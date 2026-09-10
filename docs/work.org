@@ -148,6 +148,69 @@ classification; it is provenance, not current state.
   outside W039 and does not alter the current no-regression decision.
 - *Specification:* Not yet defined.
 
+** ACTIVE W041 - Document schemas and schema frontmatter :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-041
+:SOURCE: operator
+:CREATED: 2026-09-10
+:END:
+
+- Delivery mode :: *Paired development*, explicitly selected by the operator.
+  This skeleton records requirements as the work develops; the durable
+  specification and validation record will be consolidated from the paired
+  additions and operator review.
+- Outcome :: Org and Markdown documents *identify their script or manuscript
+  schema* through frontmatter.
+
+*** Requirements recorded so far
+
+- Define *four separate schema documents*: =schema/script.org=,
+  =schema/manuscript.org=, =schema/script.md=, and =schema/manuscript.md=.
+  The script schemas cover stage plays and screenplay source structure;
+  manuscripts retain their separate prose structure.
+- Each schema includes a *relative link* to an appropriate source example
+  under =../examples/=, matching its source format and document type.
+- Org documents use =#+SCHEMA: <full URL>= in their keyword frontmatter.
+- Markdown documents use =schema: <full URL>= in YAML frontmatter bounded
+  by =---=.
+- *Every Org and Markdown example* includes the appropriate absolute schema
+  URL, including the canonical examples at the repository root.
+- Converted Org and Markdown output should *identify the target schema*.
+  Automatic emission and parsing require converter changes as well as docs.
+- Operator clarification :: The converter must *add the field automatically*
+  to any Org or Markdown output, for *stage plays, screenplays, and manuscripts*.
+  A source declaration is not required for emission.
+- Proposed addition :: A *separate letter schema*, suggested by the operator;
+  embedded Org letter sections versus standalone letter formats remains open.
+
+*** URL decision and provenance
+
+- Initial request :: The operator supplied URLs ending directly in
+  =first-folio/script.org=, =first-folio/manuscript.org=,
+  =first-folio/script.md=, and =first-folio/manuscript.md=.
+- Clarification :: Each example must contain the *full URL to its schema*,
+  while schema-to-example links remain relative.
+- Working URL form ::
+  =https://github.com/tigger-developer/first-folio/blob/master/schema/=
+  followed by the schema filename. This maps the requested URLs to their
+  repository file locations; operator review of this form remains pending.
+- Ticket decision :: The initial documentation-only, no-ticket instruction
+  was superseded by the explicit request to open a paired-development ticket.
+
+*** Baseline and pending decisions
+
+- Baseline :: The four =docs/format-*= references describe the existing
+  Org/Markdown script and manuscript contracts. The play Org emitter writes
+  only title, subtitle, author, date, and version; the play Markdown parser
+  has no YAML-frontmatter handling. Manuscript metadata parsing does not
+  retain a schema field.
+- Compatibility :: Handling of missing, unknown, or mismatched schema values
+  remains to be agreed during the converter iteration.
+- Scope :: Manuscript text-format output is not currently a public command
+  capability. Whether this iteration adds it is awaiting operator clarification.
+- Validation :: No operator validation or converter verification recorded yet.
+- Specification :: Skeleton only; consolidate after paired additions.
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria
