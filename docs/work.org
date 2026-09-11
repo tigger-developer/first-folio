@@ -252,6 +252,39 @@ classification; it is provenance, not current state.
   linked specification, requested by the operator on 2026-09-10. Requirements
   and decision history remain here as provenance.
 
+** TODO W042 - Manuscript monospace font stretch is not applied :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-042
+:SOURCE: operator
+:CREATED: 2026-09-11
+:END:
+
+- Report :: The operator reports that
+  =folio.manuscript.mono.font.stretch= *is not implemented*.
+- Existing requirement :: [[file:../specs/039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]]
+  requires each of the six font properties to *affect its configured role*;
+  the specification explicitly includes =folio.manuscript.mono.font=.
+- Source evidence :: In [[file:../internal/manuscript/render.go][the manuscript renderer]],
+  =typstInline= passes only monospace family, size, and weight to
+  =renderInlineMarkup=. Its backtick-inline-code branch emits =#text= with
+  those three properties and *omits stretch*.
+- Other rendering paths :: [[file:../templates/manuscript.typ][The manuscript template]]
+  uses the full monospace font arguments for raw-content rules and code
+  blocks. This does *not establish that the reported output works*; the
+  affected source construct and rendered result still need reproduction.
+- Coverage gap :: [[file:../internal/manuscript/font_test.go][The manuscript font-property regression]]
+  checks whether the stretch marker appears *anywhere in emitted Typst*;
+  that assertion does not establish that inline monospace text uses it.
+- Required outcome :: The configured monospace stretch *applies to manuscript
+  monospace content*, including inline code, under the existing role contract.
+- Follow-up :: Compare inline code and a code block with distinct stretch
+  values, inspect role-scoped Typst and rendered output, and record regression
+  evidence against AC039.1 - One uniform font block.
+- Evidence limit :: *Source inspection only* at intake; no rendered
+  reproduction or regression execution was performed for this report.
+- Specification :: Remediation not yet defined; implementation is not
+  authorized by this bug report.
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria
