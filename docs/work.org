@@ -252,7 +252,7 @@ classification; it is provenance, not current state.
   linked specification, requested by the operator on 2026-09-10. Requirements
   and decision history remain here as provenance.
 
-** TODO W042 - Manuscript monospace font stretch is not applied :defect:
+** REVIEW W042 - Manuscript monospace font stretch is not applied :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-042
 :SOURCE: operator
@@ -282,8 +282,15 @@ classification; it is provenance, not current state.
   evidence against AC039.1 - One uniform font block.
 - Evidence limit :: *Source inspection only* at intake; no rendered
   reproduction or regression execution was performed for this report.
-- Specification :: Remediation not yet defined; implementation is not
-  authorized by this bug report.
+- Intake scope :: Remediation was not defined when the bug was raised;
+  implementation was not authorized by that report.
+- Specification :: [[file:../specs/042-manuscript-monospace-stretch/spec.org][W042 - Apply manuscript monospace font stretch consistently]].
+- Analysis follow-up :: On 2026-09-11, the operator requested analysis and a
+  proposed solution. The linked specification records *CLI and PDF reproduction*
+  in Markdown and Org, narrowing the confirmed omission to section-heading
+  inline code. It supersedes the intake-only evidence limit above.
+- Proposal :: Route inline code through the existing full monospace template
+  rule. Production implementation and operator sign-off remain pending.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:

@@ -1,0 +1,319 @@
+#+TITLE: W042 - Apply manuscript monospace font stretch consistently
+#+SUBTITLE: Bug analysis and proposed solution
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Apply manuscript monospace font stretch consistently
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+- Outcome :: Manuscript inline code *uses the configured monospace font*,
+  including stretch, wherever the supported renderer emits it.
+- Before :: A reproduced *section-heading path omits stretch*, style, and
+  letter spacing. Paragraph code and fenced blocks already receive stretch.
+- After :: Inline code *uses the existing template rule* for all six font
+  properties. Regression evidence checks the affected content itself.
+- Changes :: Replace the incomplete inline font emission with *inline raw
+  content*; strengthen behavioural coverage and explain font-width selection.
+- Unchanged :: Configuration keys, defaults, layering, source syntax, ordinary
+  text, code-block layout, and Typst's font-selection semantics remain intact.
+- Edge cases :: Numeric weights, partial font blocks, nested emphasis, literal
+  special characters, and fonts without another width require coverage.
+- Decisions :: This is a *proposal for review*. Analysis and specification
+  writing are authorized; production implementation has not been requested.
+- Next step :: Review the proposal, then use the definition gate and operator
+  sign-off before normal delivery.
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Report and authority
+
+- Intake :: [[file:../../docs/work.org::#w-042][W042 - Manuscript monospace font stretch is not applied]].
+  The operator reported that =folio.manuscript.mono.font.stretch= is not
+  implemented, then requested analysis and a proposed solution in this spec.
+- Controlling requirement :: [[file:../039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]]
+  requires all six font properties to affect their selected role and explicitly
+  includes =folio.manuscript.mono.font=. This proposal *repairs that contract*;
+  it does not introduce another font schema.
+- Project :: [[file:../../.sdlc/project.yaml][Project profile]],
+  [[file:../../README.md][First Folio overview]],
+  [[file:../../docs/ARCHITECTURE.md][Architecture and rendering ownership]], and
+  [[file:../../docs/config.md][Configuration reference]].
+- Source contracts :: [[file:../../docs/format-manuscript-markdown.md][Markdown manuscript syntax]]
+  and [[file:../../docs/format-manuscript-org.md][Org manuscript syntax]].
+- External semantics :: [[https://typst.app/docs/reference/text/text/#parameters-stretch][Typst font stretch]]
+  selects a width available within a font family. A missing width uses the
+  nearest available face; *arbitrary geometric scaling is not promised*.
+
+** Reproduction and observed results
+:PROPERTIES:
+:CUSTOM_ID: diagnosis
+:END:
+
+- Baseline :: Commit =5108af665c0010b8f5ea72529de0106df8b89187=,
+  W042 bug-report checkpoint, tested on 2026-09-11.
+- Environment :: macOS arm64; Go 1.26.3; Pandoc 3.9.0.2; Typst 0.14.2;
+  Poppler =pdftotext= 26.04.0. A fresh binary was built from this revision.
+- Setup :: Two temporary source directories each contained a copy of
+  =presets/british.yaml= as =script.yaml=. Only the monospace family and
+  stretch were changed: =Iosevka Custom=, at =100%= or =75%=. Size remained
+  =10pt= and weight remained =regular=. =typst fonts --variants= confirmed
+  that this installed family exposes both normal and condensed widths.
+- Input :: The following Markdown, plus its equivalent Org input using
+  =* Part=, =** Probe=, =*** Section=, verbatim spans, and a source block:
+
+#+begin_src markdown
+## Probe
+
+Prose `INLINEPROBE` control.
+
+### Section `SECTIONPROBE`
+
+```
+BLOCKPROBE
+```
+#+end_src
+
+- Procedure :: Run =folio manuscript sample.md output.typ= and
+  =folio manuscript sample.md output.pdf=; repeat for Org and each configuration.
+  Extract word bounds with =pdftotext -bbox output.pdf output.html=.
+- Result :: *Both source formats produced the same measured widths*:
+
+| Content marker | Width at 100% | Width at 75% |
+|----------------+---------------+--------------|
+| INLINEPROBE    | 66.00pt       | 45.76pt      |
+| SECTIONPROBE   | 72.00pt       | 72.00pt      |
+| BLOCKPROBE     | 60.00pt       | 41.60pt      |
+
+- Interpretation :: *Section-heading code ignores the requested width* in
+  this reproduction; paragraph and block code select a narrower face.
+- Single-width control :: With =Libertinus Mono= at =100%= and =150%=,
+  the first-page SVG outputs were byte-identical. The installed font inventory
+  listed only normal-width faces for that family. This is consistent with
+  Typst's documented width selection and *does not establish a Folio defect*
+  for that control.
+- Limit :: The operator's original source construct, font family, and value
+  have not been supplied. The synthetic reproduction *establishes a defect*
+  but does not establish the cause of every possible reported no-change case.
+
+** Cause and existing coverage
+
+1. [[file:../../internal/manuscript/parser.go][The parser]] converts ordinary prose and
+   fenced blocks through Pandoc to Typst raw content. Section headings become
+   =section= blocks.
+2. [[file:../../internal/manuscript/render.go][The renderer]] sends section text through
+   =typstInline= and =renderInlineMarkup=. The backtick branch generates
+   =#text= with *only family, size, and weight*. It drops stretch, style, and
+   letter spacing; numeric weights are also emitted as quoted strings.
+3. [[file:../../templates/manuscript.typ][The template]] applies the complete font block
+   to =raw.where(block: false)=. The explicit =#text= emitted for section code
+   *bypasses that rule*. Its missing properties come from surrounding text.
+4. [[file:../../internal/manuscript/font_test.go][The existing manuscript font test]]
+   searches the whole emitted document for the changed property marker.
+   Its =mono.font/stretch= case *passed at the defective baseline*, because
+   template rules already contain that marker. It does not verify its use by
+   the affected content. This is a gap in
+   [[file:../039-unified-font-configuration/spec.org::#rt-039-1][RT039.1 - Exercise every public font role]].
+
+** Proposed scope and constraints
+
+- Repair *inline monospace rendering through the shared template rule*,
+  including its six existing font properties. Retain the current treatment of
+  ordinary prose, chapter/part casing, block spacing, and source parsing.
+- Preserve [[file:../039-unified-font-configuration/spec.org::#ac-039-3][AC039.3 - Configuration-layer inheritance only]]
+  and [[file:../039-unified-font-configuration/spec.org::#ac-039-5][AC039.5 - Clean breaking failure boundary]].
+- Exclude new scaling controls, font installation, font-family rewriting,
+  configuration-schema changes, and unrelated manuscript defects.
+- No product decision blocks this bounded proposal. *Operator review remains
+  required*; a different original symptom may require additional investigation.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC042.1 - Inline code receives its complete monospace font
+:PROPERTIES:
+:CUSTOM_ID: ac-042-1
+:END:
+
+- Criterion :: Supported manuscript inline code, including code within section
+  headings, *uses all six effective monospace font properties*. Stretch selects
+  the requested available width according to Typst's semantics.
+- Relationship :: Regression-specific application of
+  [[file:../039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]].
+- Proven by :: [[#rt-042-1][RT042.1 - Verify font properties at inline content]] and
+  [[#ut-042-1][UT042.1 - Compare rendered monospace widths]].
+
+** AC042.2 - Monospace changes preserve neighbouring content
+:PROPERTIES:
+:CUSTOM_ID: ac-042-2
+:END:
+
+- Criterion :: Changing the monospace font *does not change the effective font
+  of neighbouring ordinary text*. Literal code characters, supported enclosing
+  emphasis, heading casing, and existing block layout remain preserved, allowing
+  wrapping and pagination changes caused by the corrected code width.
+- Proven by :: [[#rt-042-2][RT042.2 - Preserve literals and role isolation]] and
+  [[#ut-042-1][UT042.1 - Compare rendered monospace widths]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT042.1 - Verify font properties at inline content
+:PROPERTIES:
+:CUSTOM_ID: rt-042-1
+:END:
+
+- Covers :: [[#ac-042-1][AC042.1 - Inline code receives its complete monospace font]].
+- Boundary :: Built =folio manuscript= command with Markdown and Org inputs,
+  emitted Typst, and local Typst compilation. Use existing Go test facilities.
+- Setup :: Include marked paragraph code, H3/H4 section code, and a code block.
+  Change one property at a time: family, size, named/numeric weight, stretch,
+  regular/italic/oblique style, and signed letter spacing. Include a combined
+  block and a partial higher-layer override. Use synthetic, isolated config.
+- Action :: Inspect the font settings *in effect at each marked code span*.
+  A test-only Typst context/metadata probe on emitted content may inspect these
+  values during compilation; it must not replace the production styling rules.
+- Expected :: Each marked span receives the complete selected role's values;
+  =117.5= and =117.5%= normalize equivalently, numeric weights compile, and
+  omitted properties retain their same-role lower-layer values. *A marker
+  elsewhere in the file cannot satisfy the assertion*.
+- Retention :: Persistent regression under =make test=; retain the lineage of
+  RT039.1 - Exercise every public font role. Observe the section-code stretch
+  case fail on the baseline before implementing.
+
+** RT042.2 - Preserve literals and role isolation
+:PROPERTIES:
+:CUSTOM_ID: rt-042-2
+:END:
+
+- Covers :: [[#ac-042-2][AC042.2 - Monospace changes preserve neighbouring content]].
+- Boundary :: Built CLI output and compiled PDF text using existing helpers.
+- Setup :: Code containing quotes, backslashes, underscores, brackets, hashes,
+  Unicode, and supported literal backticks; code within supported emphasis;
+  normal/uppercase heading controls; surrounding prose and standalone blocks.
+- Expected :: Code remains *literal and inline*, with no evaluation or doubled
+  escaping. Neighbouring prose retains its own font. Existing standalone-code
+  promotion, block padding, chapter casing, and text content remain unchanged.
+  Invalid monospace font values still fail before output creation under the
+  existing validation tests.
+- Retention :: Persistent regression under =make test=. Add only cases that
+  exercise this changed rendering path; retain existing parsing regressions.
+
+** UT042.1 - Compare rendered monospace widths
+:PROPERTIES:
+:CUSTOM_ID: ut-042-1
+:END:
+
+- Covers :: [[#ac-042-1][AC042.1 - Inline code receives its complete monospace font]]
+  and [[#ac-042-2][AC042.2 - Monospace changes preserve neighbouring content]].
+- Reviewer :: Operator.
+- Procedure :: Render the reproduction at 100% and 75% with a locally verified
+  family containing those widths. Present both PDFs at the same zoom, retaining
+  font inventory, tool versions, revision, and measured marker widths. Include
+  a single-width family as a documented nearest-face control.
+- Expected :: Paragraph, section-heading, and block code all select the
+  appropriate width; ordinary text retains its own typography and code remains
+  readable. No synthetic 25% compression is required.
+- Record :: [[file:validation.org][W042 - Rendered validation]]; the diagnostic
+  measurements above are *not operator acceptance*.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+- Missing width :: *Preserve Typst's nearest-face selection*; documented in
+  UT042.1 - Compare rendered monospace widths, under AC042.1 - Complete font.
+- Partial block :: Same-role layering supplies omitted values; covered by
+  RT042.1 - Verify font properties at inline content.
+- Enclosing styles :: The explicit mono font determines code typography even
+  within a styled heading or emphasis; surrounding text retains its style.
+  Covered by RT042.1 - Verify font properties at inline content and
+  RT042.2 - Preserve literals and role isolation.
+- Literal syntax :: Encode code text exactly once for a Typst string argument;
+  preserve existing source-delimiter handling. Covered by
+  RT042.2 - Preserve literals and role isolation.
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Recommended change
+
+1. Make the backtick branch of =renderInlineMarkup= emit *inline Typst raw
+   content*, using a correctly escaped string and =block: false=.
+2. Let the existing =raw.where(block: false)= template rule apply
+   =folio.manuscript.mono.font= through =manuscriptFontArgs=. It already maps
+   all six properties, including normalized numeric weights and regular style.
+3. Remove the now-unnecessary family/size/weight plumbing from inline rendering
+   and its recursive calls. Preserve parsing, ordinary-text transformations,
+   and the uppercase branch of =caseTransform=.
+4. Strengthen regression assertions at the actual content boundary. In
+   =docs/config.md=, explain stretch as *font-width selection* and distinguish
+   it from letter spacing, without changing the accepted value domain.
+
+** Feasibility evidence and alternatives
+
+- Bounded probe :: In temporary generated Typst only, replace the section's
+  incomplete =#text(...)[SECTIONPROBE]= with
+  =#raw("SECTIONPROBE", block: false)=. Compiling the 100% and 75% cases changed
+  section-code widths from *72.00pt to 49.92pt*, respectively. The paragraph
+  and block measurements were unchanged from the reproduction table.
+- Evidence boundary :: This validates the template route for that fixture;
+  *production code was not changed*. Escaping, combined styles, other headings,
+  and full regression validation remain delivery work.
+- Alternative :: Passing the full font value into =renderInlineMarkup= and
+  serializing all six arguments would also address the omission. It retains
+  two formatting routes and requires handling =caseTransform='s current
+  =Config{}= call. Reusing the existing raw-content rule avoids that duplication.
+- Rejected scope :: Artificial horizontal scaling changes the external font
+  contract and text-layout behaviour; it is not proposed for this defect.
+
+** Architecture and safety
+
+- Ownership :: Go continues to parse and emit content; the existing Typst
+  template owns monospace styling. *No new dependency or runtime* is needed.
+- Security :: Source text remains untrusted content. Escape quotes, backslashes,
+  and control characters for a Typst string using the established escaping
+  utility; do not insert code contents as executable Typst. No new filesystem,
+  network, secret, or access boundary is introduced.
+- Reliability :: One role rule reduces drift; content-specific tests expose
+  omissions that whole-document marker searches miss.
+- Compatibility :: Accepted configuration and source formats remain unchanged.
+  Corrected typography may change line wrapping where a property was ignored.
+- Performance and portability :: The change uses existing rendering facilities;
+  no material runtime-cost or platform change is expected. Persistent tests
+  must not depend on privately installed fonts; local font-dependent visual
+  evidence belongs in the user test.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: The authorities and affected files linked above, plus
+  [[file:../../internal/manuscript/manuscript_test.go][Inline markup regression tests]]
+  and [[file:../../internal/app/font_config_test.go][Public font-configuration tests]].
+- First implementation step :: Add RT042.1 - Verify font properties at inline
+  content and observe the specific section-code failure. Then implement the
+  shared raw-content route and verify RT042.2 - Preserve literals and isolation.
+- Checks :: Run affected regressions, =make test=, and =make lint= during
+  delivery. Run UT042.1 - Compare rendered monospace widths on the reviewed
+  candidate and record the operator's result.
+- Definition evidence :: A future definition audit belongs in harness-owned
+  =audits.yaml=. This proposal records no audit verdict or operator sign-off.
+- Documentation impact :: Update =docs/config.md= for stretch semantics during
+  delivery; reconcile this specification, its validation record, and the ledger.
+  The architecture and source syntax remain unchanged.

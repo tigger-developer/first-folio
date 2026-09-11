@@ -1,0 +1,25 @@
+#+TITLE: W042 - Rendered validation
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+
+* User tests
+
+** UT042.1 - Compare rendered monospace widths
+:PROPERTIES:
+:CUSTOM_ID: ut-042-1-result
+:END:
+
+- Category :: User test.
+- Status :: PENDING.
+- Covers :: [[file:spec.org::#ac-042-1][AC042.1 - Inline code receives its complete monospace font]]
+  and [[file:spec.org::#ac-042-2][AC042.2 - Monospace changes preserve neighbouring content]].
+- Procedure :: Render the specification's Markdown and Org fixtures at 100%
+  and 75% stretch using a family verified to contain both widths. Present
+  paired PDFs at equal zoom with tool versions, font inventory, tested revision,
+  and marker-width measurements. Include a single-width nearest-face control.
+- Expected :: Paragraph, section-heading, and block code select the configured
+  available width. Ordinary text retains its own typography, and code remains
+  readable. The single-width control follows Typst's nearest-face selection.
+- Reviewer :: Operator; acceptance has not been recorded.
+- Diagnostic distinction :: [[file:spec.org::#diagnosis][Baseline reproduction and temporary rendering probe]]
+  establish the defect and feasibility only; they are not candidate validation.
