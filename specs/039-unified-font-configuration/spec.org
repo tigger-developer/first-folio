@@ -2,7 +2,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+DEFINITION_GATE: PASS
+#+AUDIT_EVIDENCE: [[file:audits.org][Historical audit evidence]]
 #+OPERATOR_SIGNOFF: Taḋg, 2026-09-07
 
 * Unified Font Configuration
