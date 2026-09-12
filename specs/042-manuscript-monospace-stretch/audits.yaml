@@ -16,37 +16,37 @@ audits:
           model: ""
           reason: configuration-changed
           updated: "2026-09-12T17:22:23Z"
-      external_round: 4
-      status: active
-      updated: "2026-09-12T17:23:25Z"
-      revision: W042 definition set as supplied (spec.org sha256 `d076f293…`, validation.org sha256 `008a81e6…`)
-      verdict: FAIL
+      external_round: 5
+      status: passed
+      updated: "2026-09-12T17:54:32Z"
+      revision: W042 definition set as supplied (spec.org sha256 `802ee457…`, validation.org sha256 `d7227adb…`, with font-rendering-check.org diagnostic `167d32f5…`)
+      verdict: PASS
       response: |-
         GATE: definition
-        REVISION: W042 definition set as supplied (spec.org sha256 `d076f293…`, validation.org sha256 `008a81e6…`)
-        VERDICT: FAIL
+        REVISION: W042 definition set as supplied (spec.org sha256 `802ee457…`, validation.org sha256 `d7227adb…`, with font-rendering-check.org diagnostic `167d32f5…`)
+        VERDICT: PASS
 
-        Evidence read: all 28 manifest paths in full (the nine SDLC standards newly added this round, config.md and W039 spec.org sufficient for the claims relied on). No files edited, no commands run.
+        Evidence read: all 36 manifest paths (changed AUDITS.md and ISSUES.md, the added implementation, template, and diagnostic files, and the revised spec/validation read in full; unchanged standards and authorities retained from the prior session and reused where interpretation is unaffected). No files edited, no commands run.
 
-        Prior findings reassessed against the revised revision:
+        Prior findings resolved:
 
-        F2 (RT042.1 observation mechanism) — RESOLVED. The context/metadata probe is gone. RT042.1 now asserts the emitted construct containing each marker (inline raw content rather than a three-property `#text` wrapper), inspects the six arguments of the governing `raw.where(block: false)` rule in the generated artefact, and compiles the unmodified emitted document. An explicit evidence boundary defers resolved-width claims to UT042.1, and the W039 configuration-normalization scope creep ("`117.5` and `117.5%` normalize equivalently") has been removed and reassigned to the existing W039 regressions. These are observable public-output assertions, not source-text greps.
+        F1 (part/chapter title scope and uppercase-code) — RESOLVED. AC042.1 now explicitly includes section code and part/chapter title code in both casing modes and their outline entries; RT042.1's setup covers both modes and outline verification, RT042.2 adds per-mode title controls asserting body and outline text, and UT042.1/validation.org add title coverage. The scope decision rests on the operator's recorded direction ("narrowly scoped to the font attributes… this is in fact a bug"), which authorizes preserving existing casing and parsing rather than inventing new title semantics; the earlier casing recommendation is explicitly withdrawn rather than silently kept. The corrected upper-path observation is verified against the code: `escapeTypst` escapes `\ [ ] # $ @ _ * /` but not the backtick, so `caseTransform`'s `upper` branch emits `#upper[PART `CODE`]`, which Typst renders through the `raw.where(block: false)` rule — the earlier claim that this path lacked monospace interpretation was wrong, and the spec now records it as superseded with compiled evidence. The `as-written` defect (`typstInline(text, Config{})` producing empty font literals, an invalid empty size) is correctly included as a bug to repair.
 
-        F3 (unreconciled regression) — RESOLVED. RT042.2's "Existing assertion disposition" names `TestRenderInlineMarkup`, amends it in place, retains its identifier, links the changed assertion to RT042.2, and states exactly which assertions are preserved (dash conversion, bold, italic, literal `kevin_murray` content, downstream parsing) and which expected spelling is superseded. This follows the W039 lineage pattern.
+        F2, F3 — remain resolved as assessed previously (emitted-content/rule assertions at the public Typst boundary; `TestRenderInlineMarkup` in-place amendment with retained lineage).
 
-        Non-blocking observations from round 3: the normalization scope creep and the TOC-silence point are closed (the unresolved-title section now names TOC reconciliation as part of the required decision).
+        New material in this revision:
 
-        Findings requiring remediation
+        - AC042.3 / RT042.3 (manuscript heading size/weight override) is within the operator's "check all font object attributes are being rendered" follow-up: the diagnostic confirms a real AC039.1 gap (configured 13.5pt/medium becomes 18.9pt/bold at parts via Typst's heading defaults despite the serialized font arguments), and the show-set design step preserves the stored heading body so TOC entries keep the TOC role font — no cross-role leak. RT042.3 asserts at the unmodified compiled PDF via the existing `pdftohtml -xml -hidden` extraction pattern, with an explicit statement that the instrumented diagnostic is not the regression oracle; this is public-output behavioural evidence, not a source grep.
+        - The diagnostic record (font-rendering-check.org) states its probe limitations (layout-changing instrumentation, one representative fixture per object), retains a positive control, and records no audit verdicts, revisions, or session state — it is product evidence, not duplicated audit state. The spec links to `audits.yaml` only, which is permitted.
+        - No annotation records or blocks are present in spec.org; no feedback.yaml is required since no annotations were processed.
+        - The unused `folio.heading.font` script role is transparently recorded without inventing a consumer, removing configuration, or adding cross-role inheritance — the correct boundary for a font-attribute repair, and consistent with the W039 inventory which lists the path as accepted configuration.
 
-        F1 — Part/chapter title-scope and uppercase-code decision remains unresolved, and the specification is not sign-off-ready while it is. The new "Unresolved part/chapter title semantics" section correctly documents the facts: `caseTransform`'s `as-written` path calls `typstInline(text, Config{})`, producing empty font values including an invalid empty size literal, and this is the default path under the shipped British preset; the `upper` path escapes and uppercases backticks as ordinary content. The spec itself records "Decision required" and "Resolve the decision before delivery", and the audit context confirms no operator decision has been made; the earlier "w042 approved" predates this question. Per ISSUES.md, an open question that materially changes acceptance criteria must be resolved in the specification before implementation. The current artefacts are internally inconsistent around it:
+        Non-blocking observations (no gate action required):
 
-        - The Synopsis outcome still claims inline code uses the configured font "wherever the supported renderer emits it", but AC042.1 covers only "code within section headings" and RT042.1's setup covers paragraph code, H3/H4 section code, and a code block — the part/chapter route is in neither.
-        - RT042.2's "normal/uppercase heading controls" does not name which heading kinds it means; its meaning changes with the decision.
-        - The "Recommendation" (include title code; uppercase only surrounding text, preserve literal code text) is explicitly a proposal, not an approved behaviour change to uppercase-title semantics. It cannot be treated as resolved by the rerun request.
+        - The diagnostic's scratch path under `/var/folders/…` is machine-local and marked supplementary; acceptable as-is since the method and results are durable in the record.
+        - RT042.3's reference-text size comparison in `pdftohtml` extraction units is the right shape; delivery will need to confirm extraction precision is sufficient, which is implementation-gate territory.
 
-        Required remediation: obtain the operator's decision on (a) whether part/chapter heading code is in scope, and (b) if in scope, what `case-transform: upper` does to code spans in such headings, including TOC entry appearance. Then either include the route — extending AC042.1 and a test definition covering both `case-transform` values and the TOC outline path — or exclude it explicitly in AC042.1's wording, record the current empty-literal and upper-path behaviour as a known limitation, and tighten the Synopsis's "wherever the supported renderer emits it" to the routes actually covered. This is an operator decision on behaviour, not a documentary fix; the gate cannot pass on a spec that carries its own unresolved blocker.
-
-        Non-blocking observation (no gate action required): the "Test-design history" bullet in RT042.1 is acceptable as design revision history of the artefact itself; it records no audit verdict, round, session, or status, so it does not duplicate audit state. Keep it that way — do not add audit outcomes to the spec or validation.org; the audit record belongs solely to the harness in audits.yaml.
+        The definition is internally consistent, traceable to AC039.1 with per-test coverage, and its boundaries match the operator's recorded scope. It is ready for operator sign-off; nothing in this verdict authorizes implementation.
       history:
         - incident: start-failed
           evidence:
@@ -371,3 +371,147 @@ audits:
 
             Non-blocking observation (no gate action required): the "Test-design history" bullet in RT042.1 is acceptable as design revision history of the artefact itself; it records no audit verdict, round, session, or status, so it does not duplicate audit state. Keep it that way — do not add audit outcomes to the spec or validation.org; the audit record belongs solely to the harness in audits.yaml.
           updated: "2026-09-12T17:22:23Z"
+        - cache_key: sha256:f48d4fc21929c017292f998ca4737924f5bd17f09776dad0b42e373a8724109b
+          session_id: 20260912_182224_e2f213
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: eed4324da011035f285cb316958dd374f642068c6ee56faf8b1fbbeaeb88cc2a
+              bytes: 10313
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: f2a2511d89cbf407f0d96dc3845ee66264eb40eb18d638716475936f1fa9b723
+              bytes: 13368
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: bd32656992311c5b4da2f83ac154bfcb073a71fe987a8bf0d7618b05e7e5cf2c
+              bytes: 3994
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 97bbf89af1c65d159688b452a0434e77d9775f7a98dd1c822ffd264b41012bbb
+              bytes: 7807
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 8545a6297e21423a9ed1797bc3b6f90ac4425600606ae20152252d2da3c0cc42
+              bytes: 16332
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: dedd438f189d1d04c15b532f419927e6d94960ed26cf47a12a237e370e8be4d7
+              bytes: 11209
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 59522d1f15d3d204a9a3e3a648e5eca106344aa87e6b6302077fd2af6e177d83
+              bytes: 2813
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 5ed902d49dbb8321ea093fd60db68d5195e59c95c763c02e4ca0c09f6fa1e932
+              bytes: 13561
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: ff13cc489219ee25edc286689d40981ee87870b017fb756722e3ae839f072a0a
+              bytes: 5747
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 1f78f1fb32e49a5f158971db2b39e741de38f7ba233adf2090759c2faae5eda6
+              bytes: 34269
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: 918ed823b7fa80225ec0b408cf5691d1d5e26e4e3cc5121b030bfdf98dff64f3
+              bytes: 5937
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: bd55d6654c8fe8d86581ec7d7c292971570ade8997e91cf1f983ef2f665d0acd
+              bytes: 4195
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/font_config_test.go
+              sha256: d4db3bdd36375d31f7b4df29daa184f2a8266b4622b2df0a6274bad24fe6fdd8
+              bytes: 13618
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_render.go
+              sha256: 533743713a4be49db1ba5ebfc7dd914353a91bdea74438b277953543e5343f1f
+              bytes: 19506
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font.go
+              sha256: c1ac7c228c2d21fd7fc096e29e8445ca7506c4da683be4f5dcbf51301a28b482
+              bytes: 9462
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/font_test.go
+              sha256: 499232b0a3126c42f87709c4c0f003e63e970dae9c536079be41bada62c6e365
+              bytes: 2268
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/render.go
+              sha256: fd2e30cc250e4c429bc945333c61a694a5cc5c6916432f488910257049f6811a
+              bytes: 6099
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 219e5be58ed45a15e9bec8780b4a3263cda8ea07bcd7a988bc4d26e66a0287da
+              bytes: 26343
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_test.go
+              sha256: f0e33a037c3d3910ad35d66e4759e669c2715def1f553b043bc64c93972c12fd
+              bytes: 3424
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue27_test.go
+              sha256: 6fb2c0d156e703784bb00b0e2591797edf41936de4713f864c916a0dd763710d
+              bytes: 3998
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue32_test.go
+              sha256: 14b449086cb1f201a06d5305c37432571ec7f00371ef45dbf19e94ed0d61d973
+              bytes: 6750
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 703c66c54c1c2233596efe21bbbab16d14552af493a78c5ca7ab8661c33403e4
+              bytes: 31382
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 4cc8f008e50dda9f52e546cc9e29b4b5e771d7846999146b78170605126bac9b
+              bytes: 20092
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: dc7cd405ae58c7b968a99914d36ae2eb0c1af8608de29824e966f691b0748244
+              bytes: 36044
+            - path: /Users/tigger/code/tigoss/first-folio/internal/typst/escape.go
+              sha256: 51be2ae3aaa4c5d52a83f074d912b443e91d3838787ff4f0c80c5d609c5b485b
+              bytes: 529
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 866a5576a5a0a8ccd5014d5c4410466548284eeaccc041280ac0616a55720645
+              bytes: 13896
+            - path: /Users/tigger/code/tigoss/first-folio/specs/039-unified-font-configuration/spec.org
+              sha256: 6d5c73f935ee7c0654a427bcaee6db2530f2e244186935031e0e6e82245b4383
+              bytes: 33204
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/font-rendering-check.org
+              sha256: 167d32f56dee87326fe78531b36ef7014dd7a160c163e289a4678f9360766f9e
+              bytes: 9039
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/spec.org
+              sha256: 802ee457b5b746372cced794db8e7df0eb4d93baf4d240608e2250894d7499cd
+              bytes: 25525
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/validation.org
+              sha256: d7227adb737b2d3c55419880cdd767fdec4321630c184bf2a5de14297124e453
+              bytes: 1458
+            - path: /Users/tigger/code/tigoss/first-folio/templates/letter.typ
+              sha256: 6efe7e05ec3459a02f06980da7f386daa1cec909587c171ea7643ef63903cec9
+              bytes: 817
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 51a32bc2a56fe23f5d3e7910da6394df4733fc482c48f3ea0773802b51e23f1d
+              bytes: 20982
+            - path: /Users/tigger/code/tigoss/first-folio/templates/script.typ
+              sha256: bee4f5384759e0639b837bed45bd16274cfc96b321f9025cd8d88b4bc5a9a2ff
+              bytes: 3222
+          round: 5
+          revision: W042 definition set as supplied (spec.org sha256 `802ee457…`, validation.org sha256 `d7227adb…`, with font-rendering-check.org diagnostic `167d32f5…`)
+          verdict: PASS
+          response: |-
+            GATE: definition
+            REVISION: W042 definition set as supplied (spec.org sha256 `802ee457…`, validation.org sha256 `d7227adb…`, with font-rendering-check.org diagnostic `167d32f5…`)
+            VERDICT: PASS
+
+            Evidence read: all 36 manifest paths (changed AUDITS.md and ISSUES.md, the added implementation, template, and diagnostic files, and the revised spec/validation read in full; unchanged standards and authorities retained from the prior session and reused where interpretation is unaffected). No files edited, no commands run.
+
+            Prior findings resolved:
+
+            F1 (part/chapter title scope and uppercase-code) — RESOLVED. AC042.1 now explicitly includes section code and part/chapter title code in both casing modes and their outline entries; RT042.1's setup covers both modes and outline verification, RT042.2 adds per-mode title controls asserting body and outline text, and UT042.1/validation.org add title coverage. The scope decision rests on the operator's recorded direction ("narrowly scoped to the font attributes… this is in fact a bug"), which authorizes preserving existing casing and parsing rather than inventing new title semantics; the earlier casing recommendation is explicitly withdrawn rather than silently kept. The corrected upper-path observation is verified against the code: `escapeTypst` escapes `\ [ ] # $ @ _ * /` but not the backtick, so `caseTransform`'s `upper` branch emits `#upper[PART `CODE`]`, which Typst renders through the `raw.where(block: false)` rule — the earlier claim that this path lacked monospace interpretation was wrong, and the spec now records it as superseded with compiled evidence. The `as-written` defect (`typstInline(text, Config{})` producing empty font literals, an invalid empty size) is correctly included as a bug to repair.
+
+            F2, F3 — remain resolved as assessed previously (emitted-content/rule assertions at the public Typst boundary; `TestRenderInlineMarkup` in-place amendment with retained lineage).
+
+            New material in this revision:
+
+            - AC042.3 / RT042.3 (manuscript heading size/weight override) is within the operator's "check all font object attributes are being rendered" follow-up: the diagnostic confirms a real AC039.1 gap (configured 13.5pt/medium becomes 18.9pt/bold at parts via Typst's heading defaults despite the serialized font arguments), and the show-set design step preserves the stored heading body so TOC entries keep the TOC role font — no cross-role leak. RT042.3 asserts at the unmodified compiled PDF via the existing `pdftohtml -xml -hidden` extraction pattern, with an explicit statement that the instrumented diagnostic is not the regression oracle; this is public-output behavioural evidence, not a source grep.
+            - The diagnostic record (font-rendering-check.org) states its probe limitations (layout-changing instrumentation, one representative fixture per object), retains a positive control, and records no audit verdicts, revisions, or session state — it is product evidence, not duplicated audit state. The spec links to `audits.yaml` only, which is permitted.
+            - No annotation records or blocks are present in spec.org; no feedback.yaml is required since no annotations were processed.
+            - The unused `folio.heading.font` script role is transparently recorded without inventing a consumer, removing configuration, or adding cross-role inheritance — the correct boundary for a font-attribute repair, and consistent with the W039 inventory which lists the path as accepted configuration.
+
+            Non-blocking observations (no gate action required):
+
+            - The diagnostic's scratch path under `/var/folders/…` is machine-local and marked supplementary; acceptable as-is since the method and results are durable in the record.
+            - RT042.3's reference-text size comparison in `pdftohtml` extraction units is the right shape; delivery will need to confirm extraction precision is sufficient, which is implementation-gate territory.
+
+            The definition is internally consistent, traceable to AC039.1 with per-test coverage, and its boundaries match the operator's recorded scope. It is ready for operator sign-off; nothing in this verdict authorizes implementation.
+          updated: "2026-09-12T17:53:26Z"
