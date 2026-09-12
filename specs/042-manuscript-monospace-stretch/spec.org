@@ -1,4 +1,4 @@
-#+TITLE: W042 - Apply configured manuscript font attributes consistently
+#+TITLE: W042 - Restore configured stretch for inline monospace text
 #+SUBTITLE: Bug analysis and proposed solution
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
@@ -11,17 +11,29 @@
 
 ** Outcome
 
-- Repair *application of the six existing font attributes* in manuscript
-  monospace content and headings. This is a bug under the existing font contract.
+- Primary bug :: *Inline monospace text does not apply its configured font
+  stretch* on an affected manuscript rendering path. Restore application of
+  =folio.manuscript.mono.font.stretch=; this is the operator's original issue.
+- Supporting repairs :: Close the related gaps in the *six existing font
+  attributes* found during investigation. These findings support the original
+  bug repair; they do not replace it or introduce new features.
 
 ** Before
 
-- Section code *omits stretch, style, and letter spacing*; numeric weight fails
-  compilation. Default part/chapter title code emits empty font values.
-- Manuscript headings *override configured size and weight*.
+- Confirmed reproduction :: Inline monospace text in a section heading remains
+  *72pt wide at both 100% and 75% stretch*, despite the test font having both
+  widths. The renderer *omits the configured stretch* from that inline span.
+- Evidence limit :: Paragraph inline code responds to stretch in the same
+  fixture. That *does not establish that the operator's original example works*;
+  the exact reported case has not been reproduced. See [[#diagnosis][the recorded reproduction]].
+- Supporting findings :: Section code also omits style and letter spacing;
+  numeric weight fails compilation. Default part/chapter title code emits empty
+  font values, and manuscript headings override configured size and weight.
 
 ** After
 
+- Inline monospace text *uses the configured stretch* through the existing
+  monospace font rule, selecting the requested available font width.
 - Monospace content and ordinary heading text *use their complete role fonts*.
 - Tests check *the affected content*, including its table-of-contents appearance.
 
@@ -159,6 +171,8 @@ BLOCKPROBE
 
 ** All-font check
 
+- Priority :: This is a *supporting check*. The primary issue remains inline
+  monospace stretch not being applied, as reproduced above.
 - Evidence :: [[file:font-rendering-check.org][All 33 font objects and six attributes]],
   checked on 2026-09-12 at revision =1563008= before production changes.
 - Result :: Thirty objects applied all six values to the representative
