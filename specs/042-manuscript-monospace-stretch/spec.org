@@ -2,7 +2,7 @@
 #+SUBTITLE: Bug analysis and proposed solution
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: Taḋg, 2026-09-12; font rendering only against the signed-off canonical presets/british.yaml; primary inline monospace stretch repair and supporting font-attribute repairs approved.
+#+OPERATOR_SIGNOFF: PENDING revised delivery definition; Taḋg's 2026-09-12 scope exclusion is authoritative and recorded below. Earlier approval is retained in the scope history.
 
 * Synopsis
 :PROPERTIES:
@@ -11,36 +11,36 @@
 
 ** Outcome
 
-- Primary bug :: *Inline monospace text does not apply its configured font
-  stretch* on an affected manuscript rendering path. Restore application of
-  =folio.manuscript.mono.font.stretch=; this is the operator's original issue.
+- Primary report :: Investigate *inline monospace stretch in ordinary prose*
+  under =folio.manuscript.mono.font.stretch=. The operator's reported failure
+  *has not been reproduced on that path*.
 - Supporting repairs :: Close the related gaps in the *six existing font
   attributes* found during investigation. These findings support the original
   bug repair; they do not replace it or introduce new features.
 
 ** Before
 
-- Confirmed reproduction :: Inline monospace text in a section heading remains
-  *72pt wide at both 100% and 75% stretch*, despite the test font having both
-  widths. The renderer *omits the configured stretch* from that inline span.
+- Excluded reproduction :: The confirmed stretch omission was in *code inside
+  a section heading*, now ruled out of scope by the operator. It does not
+  establish the reported defect in ordinary prose.
 - Evidence limit :: Paragraph inline code responds to stretch in the same
   fixture. That *does not establish that the operator's original example works*;
   the exact reported case has not been reproduced. See [[#diagnosis][the recorded reproduction]].
-- Supporting findings :: Section code also omits style and letter spacing;
-  numeric weight fails compilation. Default part/chapter title code emits empty
-  font values, and manuscript headings override configured size and weight.
+- Supporting finding :: Ordinary manuscript headings override configured size
+  and weight. This font-attribute defect remains in scope; the findings about
+  code inside headings are retained as excluded history.
 
 ** After
 
 - Inline monospace text *uses the configured stretch* through the existing
   monospace font rule, selecting the requested available font width.
 - Monospace content and ordinary heading text *use their complete role fonts*.
-- Tests check *the affected content*, including its table-of-contents appearance.
+- Tests check *paragraph inline code and ordinary heading typography*.
 
 ** Changes
 
-- Reuse the inline-raw font rule and apply the heading font at the semantic
-  heading element; strengthen regression coverage.
+- Retain the ordinary-heading font requirement. Reconcile the earlier
+  heading-code-led design against the narrowed scope before further delivery.
 
 ** Unchanged
 
@@ -48,6 +48,8 @@
   inclusion, code-block spacing, and Typst's font-selection semantics.
 - The other active font roles keep their current application. No consumer is
   invented for the unused shared script heading font.
+- Exclusion :: *Code inside part, chapter, section or other headings*, including
+  their TOC appearances, is outside this bug fix's acceptance scope.
 
 ** Edge cases
 
@@ -60,12 +62,15 @@
   new features. The earlier proposed casing change is superseded.
 - The operator approved this rendering-only scope and invoked delivery on
   2026-09-12. This supersedes the earlier definition-only boundary.
+- Later direction :: The operator subsequently excluded heading code. That
+  decision supersedes the earlier inclusion, without removing ordinary heading
+  text or paragraph inline monospace from scope.
 
 ** Next step
 
-- Review the paired rendered evidence in [[file:validation.org][the validation record]]
-  for operator acceptance. The implementation and automated checks are recorded
-  under [[#delivery-result][Delivery result]]; operator closure remains pending.
+- Present paragraph inline-code examples at *100%, 150%, 200% and 50%* as
+  requested, and isolate the original reported failure. The earlier heading-code
+  comparison no longer defines operator acceptance.
 
 -----
 
@@ -96,6 +101,35 @@
 - External semantics :: [[https://typst.app/docs/reference/text/text/#parameters-stretch][Typst font stretch]]
   selects a width available within a font family. A missing width uses the
   nearest available face; *arbitrary geometric scaling is not promised*.
+
+** Operator scope correction, 2026-09-12
+:PROPERTIES:
+:CUSTOM_ID: scope-correction
+:END:
+
+- Authority :: The operator stated: "inline code in a chapter, part, section
+  etc is not a realistic use case" and "I'm going to rule these as out of scope".
+  In the rendered examples this means code within the headings themselves.
+- Current scope :: Ordinary paragraph inline monospace, its six existing font
+  attributes, neighbouring text isolation, and ordinary heading font attributes.
+  Standalone code remains a control. The canonical YAML is unchanged.
+- Excluded :: Code within headings and their corresponding TOC text. All
+  earlier requirements, fixtures and implementation proposals for those cases
+  below are *superseded as acceptance obligations* and retained as history.
+- Evidence consequence :: The baseline paragraph marker already changed from
+  66.00pt to 45.76pt at 100% and 75%. Neither that control nor the repaired
+  heading-code path proves remediation of the original paragraph report.
+- Existing implementation :: The previously delivered shared inline helper and
+  tests remain in the repository at this scope-recording checkpoint. Exclusion
+  does not itself require disabling syntax or reverting shared rendering code.
+  Their continued role must be reconciled against the revised definition.
+- Approval history :: Taḋg approved font rendering only against the signed-off
+  canonical YAML on 2026-09-12, including the then-proposed inline and supporting
+  repairs. The subsequent exclusion is approved operator direction; the revised
+  delivery definition remains pending rather than inheriting that earlier scope.
+- Presentation direction :: Replace the 75% comparison with paragraph examples
+  at 100%, 150%, 200% and 50%. Show the actual selected font widths and identify
+  any unavailable faces; do not simulate geometric scaling.
 
 ** Reproduction and observed results
 :PROPERTIES:
@@ -237,10 +271,11 @@ BLOCKPROBE
 :CUSTOM_ID: ac-042-1
 :END:
 
-- Criterion :: Supported manuscript inline code, including section code and
-  part/chapter title code in both casing modes and their included outline
-  entries, *uses all six effective monospace font properties*. Stretch selects
+- Criterion :: Supported manuscript inline code in ordinary paragraphs
+  *uses all six effective monospace font properties*. Stretch selects
   the requested available width according to Typst's semantics.
+- Scope history :: The earlier inclusion of heading and title code in both
+  casing modes and their outline entries is superseded by [[#scope-correction][the operator exclusion]].
 - Relationship :: Regression-specific application of
   [[file:../039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]].
 - Proven by :: [[#rt-042-1][RT042.1 - Verify font properties at inline content]] and
@@ -282,6 +317,18 @@ BLOCKPROBE
 :CUSTOM_ID: rt-042-1
 :END:
 
+- Current definition :: Exercise ordinary paragraph inline code through the
+  built CLI in both formats, changing family, size, named/numeric weight,
+  stretch, style and signed letter spacing individually and together. Include
+  partial same-role overrides, ordinary-text and standalone-code controls.
+  Inspect marked content and its complete effective font rule, then compile.
+  A reproduced in-scope failure is required before claiming a corrective change.
+- Superseded cases :: Heading/title code, their casing modes and code in TOC
+  entries no longer supply acceptance evidence. The earlier details below are
+  retained for regression lineage and implementation reconciliation.
+
+*** Earlier definition, narrowed by the operator exclusion
+
 - Covers :: [[#ac-042-1][AC042.1 - Inline code receives its complete monospace font]].
 - Boundary :: Built =folio manuscript= command with Markdown and Org inputs,
   emitted Typst, and local Typst compilation. Use existing Go test facilities.
@@ -321,6 +368,14 @@ BLOCKPROBE
 :CUSTOM_ID: rt-042-2
 :END:
 
+- Current definition :: Verify literal characters and supported emphasis around
+  paragraph inline code, neighbouring prose and standalone blocks through CLI
+  output and PDF extraction. Preserve parsing and ordinary heading casing.
+- Superseded cases :: Code within titles/headings and their outline entries
+  are excluded. The earlier title-specific assertions below are historical.
+
+*** Earlier definition, narrowed by the operator exclusion
+
 - Covers :: [[#ac-042-2][AC042.2 - Monospace changes preserve neighbouring content]].
 - Boundary :: Built CLI output and compiled PDF text using existing helpers.
 - Setup :: Code containing quotes, backslashes, underscores, brackets, hashes,
@@ -355,7 +410,7 @@ BLOCKPROBE
 - Boundary :: Built manuscript CLI with Markdown and Org, generated Typst,
   and compiled PDF using existing Go and PDF helpers.
 - Setup :: Plain marked part, chapter, and section headings; code and explicit
-  emphasis as separate controls; enabled TOC and running bands with distinct
+  emphasis in ordinary paragraphs as separate controls; enabled TOC and running bands with distinct
   fonts. Exercise all six heading properties independently and together,
   including named/numeric weights and partial overrides.
 - Expected :: The generated heading show-set rule carries the six effective
@@ -385,13 +440,14 @@ BLOCKPROBE
 - Covers :: [[#ac-042-1][AC042.1 - Inline code receives its complete monospace font]]
   and [[#ac-042-2][AC042.2 - Monospace changes preserve neighbouring content]].
 - Reviewer :: Operator.
-- Procedure :: Render the reproduction at 100% and 75% with a locally verified
-  family containing those widths. Present both PDFs at the same zoom, retaining
+- Procedure :: Render paragraph inline code at 100%, 150%, 200% and 50% with
+  a locally inventoried font family. Present all PDFs at the same zoom, retaining
   font inventory, tool versions, revision, and measured marker widths. Include
-  a single-width family as a documented nearest-face control.
-- Title coverage :: Include mixed-case code in part/chapter titles under
-  =as-written= and =upper=, with the corresponding TOC entries enabled.
-- Expected :: Paragraph, section-heading, part/chapter title, outline, and block code all select the
+  an explicit record of requested widths absent from the family.
+- Superseded coverage :: The earlier 75% pair and mixed-case title/TOC code
+  requirements in both casing modes are retained in the historical results;
+  heading code is no longer part of operator acceptance.
+- Expected :: Paragraph inline code and the standalone-code control select the
   appropriate width; ordinary text retains its own typography and code remains
   readable. No synthetic 25% compression is required.
 - Record :: [[file:validation.org][W042 - Rendered validation]]; the diagnostic
@@ -420,6 +476,11 @@ BLOCKPROBE
 :END:
 
 ** Recommended change
+
+- Current boundary :: The sequence below records the earlier delivered design.
+  Its heading-code rationale is superseded by [[#scope-correction][the scope correction]].
+  Step 4 still addresses ordinary heading typography. No additional paragraph
+  rendering repair is defined until an in-scope failure is isolated.
 
 1. Make the backtick branch of =renderInlineMarkup= emit *inline Typst raw
    content*, using a correctly escaped string and =block: false=.
@@ -496,12 +557,12 @@ BLOCKPROBE
   delivery; reconcile this specification, its validation record, and the ledger.
   The architecture and source syntax remain unchanged.
 
-* Delivery result
+* Earlier delivery result
 :PROPERTIES:
 :CUSTOM_ID: delivery-result
 :END:
 
-- Primary repair :: Inline code emitted by the manuscript renderer now uses
+- Historical heading-code result :: Inline code emitted by the manuscript renderer now uses
   the existing inline-raw font rule. In the candidate PDF comparison,
   =SECTIONCODE= measures *66.00pt at 100% and 45.76pt at 75% stretch*, in
   both body and outline, for Markdown and Org. The baseline reproduction
@@ -517,6 +578,9 @@ BLOCKPROBE
   [[file:audits.yaml][Retained audit evidence]] supplies the gate records.
 - Operator gate :: UT042.1 visual acceptance and work-item closure remain
   pending. The preceding proposal and diagnosis sections retain their history.
+- Later scope correction :: The heading-code measurements and repairs above
+  are excluded acceptance cases. They do not establish that the primary
+  ordinary-paragraph report was reproduced or repaired.
 
 * Hands-off mode decision log
 :PROPERTIES:

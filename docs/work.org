@@ -252,7 +252,7 @@ classification; it is provenance, not current state.
   linked specification, requested by the operator on 2026-09-10. Requirements
   and decision history remain here as provenance.
 
-** ACTIVE W042 - Inline monospace stretch and related font attributes are not consistently applied :defect:
+** REVIEW W042 - Inline monospace stretch and related font attributes are not consistently applied :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-042
 :SOURCE: operator
@@ -308,6 +308,15 @@ classification; it is provenance, not current state.
   changing its measured width from 66.00pt to 45.76pt. Operator visual acceptance
   and closure remain pending.
 - Audit evidence :: [[file:../specs/042-manuscript-monospace-stretch/audits.yaml][Retained audit record]].
+- Later scope correction :: On 2026-09-12 the operator excluded code inside
+  part, chapter, section and other headings, including corresponding TOC text.
+  The earlier heading-code requirements and results above are superseded as
+  acceptance obligations. Ordinary paragraph monospace and ordinary heading
+  font attributes remain in scope; the original paragraph failure remains
+  unreproduced. The item returns to REVIEW for the revised definition.
+- Requested examples :: The operator requested ordinary paragraph samples at
+  100%, 150%, 200% and 50%. The linked validation record contains those results.
+  Production code and test code were not changed by this scope correction.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:

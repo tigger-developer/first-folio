@@ -13,19 +13,21 @@
 - Status :: PENDING.
 - Covers :: [[file:spec.org::#ac-042-1][AC042.1 - Inline code receives its complete monospace font]]
   and [[file:spec.org::#ac-042-2][AC042.2 - Monospace changes preserve neighbouring content]].
-- Procedure :: Render the specification's Markdown and Org fixtures at 100%
-  and 75% stretch using a family verified to contain both widths. Present
+- Procedure :: Render ordinary paragraph inline code in Markdown and Org at
+  100%, 150%, 200% and 50%, recording the family's available faces. Present
   paired PDFs at equal zoom with tool versions, font inventory, tested revision,
   and marker-width measurements. Include a single-width nearest-face control.
-- Title coverage :: Include code in part/chapter titles with =as-written= and
+- Superseded title coverage :: The earlier procedure required code in part/chapter titles with =as-written= and
   =upper=, and enable corresponding TOC entries. Preserve mixed case under
-  =as-written= and existing uppercase code letters under =upper=.
-- Expected :: Paragraph, section-heading, title, outline and block code select the configured
+  =as-written= and existing uppercase code letters under =upper=. The operator
+  has excluded these heading-code and TOC cases from acceptance.
+- Expected :: Paragraph inline code and standalone-code controls select the configured
   available width. Ordinary text retains its own typography, and code remains
   readable. The single-width control follows Typst's nearest-face selection.
 - Reviewer :: Operator; acceptance has not been recorded.
 - Diagnostic distinction :: [[file:spec.org::#diagnosis][Baseline reproduction and temporary rendering probe]]
-  establish the defect and feasibility only; they are not candidate validation.
+  establish an excluded heading-code defect only. Paragraph code responded in
+  that baseline; the original paragraph report remains unreproduced.
 
 * Regression evidence
 
@@ -45,7 +47,12 @@
 - Evidence boundary :: These automated checks do not supply the operator's
   visual acceptance for UT042.1 - Compare rendered monospace widths.
 
-* Candidate PDF comparison
+* Earlier candidate PDF comparison
+
+- Scope disposition :: The heading/title/TOC code cases below are *SUPERSEDED*
+  as acceptance obligations by the operator's 2026-09-12 scope correction.
+  The measurements remain historical evidence, not a repair of the original
+  ordinary-paragraph report. Paragraph and block controls remain observations.
 
 - Date and revision :: 2026-09-12; production =fc792f4=, with the unchanged
   production files at checkpoint =446c0f9=. A freshly built =folio= emitted
@@ -131,5 +138,48 @@ title markers to =PARTCODE= and =CHAPTERCODE= as before.
   =review.html=, and =visual/= with each input, configuration, Typst, PDF,
   word bounds, logs and page images. It is machine-local and may expire;
   the procedure, fixtures, inventory summary and results above are durable.
-- Operator action :: Review the paired pages at equal zoom for code
-  readability and ordinary-text typography, then record the UT042.1 result.
+- Superseded operator action :: The earlier request to accept the heading-code
+  comparison is withdrawn. Paragraph examples follow below.
+
+* Requested paragraph examples, 2026-09-12
+
+- Purpose :: Demonstrate actual inline monospace rendering at the requested
+  *100%, 150%, 200% and 50%*. This is a presentation check, not a new regression
+  claim or operator acceptance.
+- Revision :: Production =fc792f4=, unchanged at =cee5ace=; Typst 0.14.2,
+  Pandoc 3.9.0.2 and Poppler 26.04.0 on macOS arm64.
+- Source :: Markdown paragraph =Before `monospace_0123` after.=, and the
+  equivalent Org paragraph with verbatim delimiters. No code occurs in a heading.
+- Configuration :: Copy the canonical YAML into each temporary =script.yaml=.
+  Set body and monospace size to =18pt=, monospace family to =Iosevka Custom=,
+  paragraph indent to =0pt=, and disable title page, TOC and running bands.
+  Between samples, change *only mono.font.stretch*.
+- Method :: Emit Typst through =folio manuscript=, compile the unmodified
+  output, extract =pdftotext -bbox= widths, and crop each first page to identical
+  coordinates at 144 dpi with =pdftoppm=. Both source formats agree.
+- Inventory :: Iosevka Custom exposes regular faces at 75% and 100%, with no
+  50%, 150% or 200% face in the installed family.
+
+| Requested stretch | Code width | Before width | After width |
+|-------------------+------------+--------------+-------------|
+|              100% |  151.200pt |     47.880pt |    36.594pt |
+|              150% |  151.200pt |     47.880pt |    36.594pt |
+|              200% |  151.200pt |     47.880pt |    36.594pt |
+|               50% |  104.832pt |     47.880pt |    36.594pt |
+
+- Observation :: The 100%, 150% and 200% requests produce identical widths;
+  50% selects narrower text. Neighbouring prose retains its widths. These
+  results agree with nearest-available-face selection, not geometric scaling.
+- Font-face verification :: All four generated Typst files carry their requested
+  stretch values. =pdffonts= reports =Iosevka-Custom= in the 100%, 150% and
+  200% PDFs, and =Iosevka-Custom-Condensed= in the 50% PDF. The operator's
+  screenshot shows the same two-width result. This does not establish that
+  face selection meets the operator's intended stretch behaviour.
+- Viewing :: The four enlarged paragraph excerpts were opened in htmlpreview.
+  Agent inspection of the 100% and 50% rasters confirms visible paragraph code
+  and neighbouring prose; human acceptance remains pending.
+- Local artefacts :: Temporary directory
+  =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.AtPFMp7TYJ/=
+  contains =comparison.md=, =render.rb=, =results.json= and the eight source,
+  config, Typst, PDF and image sets. This machine-local directory may expire;
+  the procedure and results above are durable.
