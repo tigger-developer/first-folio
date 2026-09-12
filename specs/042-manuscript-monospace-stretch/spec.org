@@ -490,6 +490,11 @@ BLOCKPROBE
 - Procedure :: Through the built CLI and unmodified PDF, measure a paragraph
   code marker at 100%, 150%, 200% and 50% in Markdown and Org with an embedded,
   single-width font. Compare against the 100% marker with 0.02pt tolerance.
+- Alignment reference :: Render a separate reference using the original native
+  inline-raw rule at 100%. Compare all four candidate percentages against its
+  vertical bounds and surrounding spaces. The candidate's own 100% output is
+  insufficient: the operator identified a baseline regression shared by every
+  percentage in that earlier comparison.
 - Expected :: Width ratios are 1, 1.5, 2 and 0.5; vertical bounds and ordinary
   glyph widths remain unchanged; following prose starts beyond the scaled code.
 - Wrapping :: A short multi-word source at a large font size wraps at spaces
@@ -529,6 +534,11 @@ BLOCKPROBE
   100%, scale each non-whitespace run horizontally in an inline box with reflow,
   and scale word spacing. Applying scaling per word preserves paragraph wrapping.
   All other mono font attributes still come from the shared font argument helper.
+- Baseline correction :: Measure each word's depth below its text baseline and
+  use that depth as the inline box's baseline offset. Keep the rule body in code
+  mode so template newlines do not introduce visible monospace spaces. This
+  corrects the vertical offset and trailing gap reported in the first
+  proportional candidate; no font metric or point offset is hard-coded.
 - Historical boundary :: The sequence below records the earlier delivered design.
   Its heading-code rationale is superseded by [[#scope-correction][the scope correction]].
   Step 4 still addresses ordinary heading typography. The proportional-width

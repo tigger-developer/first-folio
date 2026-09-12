@@ -214,6 +214,10 @@ title markers to =PARTCODE= and =CHAPTERCODE= as before.
 
 * Repaired paragraph preview
 
+- Subsequent finding :: Superseded by the baseline correction below. The
+  operator identified vertically misaligned code in this preview. Its checks
+  compared percentages with the same defective 100% candidate, so they did not
+  establish preservation of the original paragraph alignment.
 - Candidate :: =af3f41d=, built from the unchanged production source at
   =c3c3e56=. These are candidate observations; operator acceptance remains
   PENDING. Gate evidence is retained in [[file:audits.yaml][the audit record]].
@@ -240,3 +244,29 @@ title markers to =PARTCODE= and =CHAPTERCODE= as before.
   contains =comparison.md=, =render.rb=, =results.json= and the eight rendered
   fixture directories. These local artefacts may expire; measurements and the
   fixture procedure are retained here.
+
+* Paragraph baseline correction, 2026-09-12
+
+- Requirement :: RT042.4 - Proportional inline stretch preserves the original
+  baseline and surrounding spaces, as required by AC042.2 - Preserve neighbouring
+  content. The operator requested remediation after reviewing the preview.
+- RED :: At test checkpoint =ae063c4=, all eight Markdown/Org percentage cases
+  failed against a separate original-rule reference. At 18pt, prose was displaced
+  by 3.6pt; the gap after code was 10.837pt at 100%, against the original 4.5pt.
+- Change :: Candidate =96ba3c4= measures the text depth below the baseline and
+  applies it to the inline box. A code-mode rule body removes incidental markup
+  whitespace. Configuration, parsing and code-block rendering are unchanged.
+- GREEN :: The eight strengthened alignment/width cases and four wrapping
+  cases pass. =make test= and =make lint= pass against the same candidate.
+- Preview evidence :: Eight 18pt Iosevka Custom paragraphs, four each for Markdown
+  and Org, retain widths 151.2pt, 226.8pt, 302.4pt and 75.6pt at 100%, 150%, 200%
+  and 50%. Each code/prose vertical bound and surrounding gap matches the original
+  100% paragraph within 0.02pt. The trailing prose gap is 4.5pt at every ratio.
+- Viewing :: The regenerated excerpts use identical crop coordinates and scale.
+  Operator visual acceptance remains PENDING. These measurements establish the
+  candidate behaviour, not operator acceptance or a gate verdict.
+- Artefacts :: Local supplementary logs, sources, PDFs, bounds and preview are in
+  =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.66Lu9DE99v/=.
+  =baseline-red.log=, =baseline-green.log=, =make-test.log=, =make-lint.log= and
+  =preview-check.log= retain the command results. This directory may expire;
+  the procedure and measurements above are durable.
