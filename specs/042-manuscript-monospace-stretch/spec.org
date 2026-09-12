@@ -2,7 +2,7 @@
 #+SUBTITLE: Bug analysis and proposed solution
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING revised delivery definition; Taḋg's 2026-09-12 scope exclusion is authoritative and recorded below. Earlier approval is retained in the scope history.
+#+OPERATOR_SIGNOFF: Taḋg, 2026-09-12; implement proportional inline monospace stretch as the original bug repair. Heading code remains excluded. The clarification below supersedes the earlier font-face interpretation and pending-definition hold.
 
 * Synopsis
 :PROPERTIES:
@@ -11,6 +11,11 @@
 
 ** Outcome
 
+- Controlling clarification :: *Stretch means proportional horizontal scaling*
+  for paragraph inline monospace: 150% is 1.5 times its 100% width, 200% twice,
+  and 50% half, with unchanged glyph height and surrounding-text typography.
+  The operator confirmed this is the original bug and instructed its repair.
+  Earlier statements that nearest-face selection satisfies it are superseded.
 - Primary report :: Investigate *inline monospace stretch in ordinary prose*
   under =folio.manuscript.mono.font.stretch=. The operator's reported failure
   *has not been reproduced on that path*.
@@ -106,6 +111,22 @@
 :PROPERTIES:
 :CUSTOM_ID: scope-correction
 :END:
+
+- Subsequent clarification :: The operator identified the identical 100%, 150%
+  and 200% paragraph output as the bug to repair. The required implementation
+  applies horizontal scaling to inline monospace at its normal font width,
+  preserving vertical size and reserving the scaled width in paragraph layout.
+  No new key, font installation, heading-code requirement or parser change is
+  needed. This instruction supersedes the earlier pending-definition hold.
+- Regression :: RT042.4 - Proportional inline stretch compares compiled PDF
+  word widths at 100%, 150%, 200% and 50% in Markdown and Org, using an embedded
+  font. Require ratios 1, 1.5, 2 and 0.5 within 0.02pt, unchanged text heights
+  and neighbouring glyph widths, and no overlap with following prose. This
+  supplements retained font-attribute tests; observe failure before production.
+- Delivery mechanism :: Apply Typst horizontal =scale= with layout reflow to
+  inline raw content after setting its font face stretch to 100%, so available
+  condensed faces do not compound the requested scaling. Verify wrapping and
+  baseline alignment, then show actual Folio paragraph PDFs at the four values.
 
 - Authority :: The operator stated: "inline code in a chapter, part, section
   etc is not a realistic use case" and "I'm going to rule these as out of scope".
@@ -272,8 +293,9 @@ BLOCKPROBE
 :END:
 
 - Criterion :: Supported manuscript inline code in ordinary paragraphs
-  *uses all six effective monospace font properties*. Stretch selects
-  the requested available width according to Typst's semantics.
+  *uses all six effective monospace font properties*. Stretch scales its
+  horizontal width proportionally from the 100% face; glyph height is unchanged.
+  Earlier nearest-face-only semantics are superseded by the operator clarification.
 - Scope history :: The earlier inclusion of heading and title code in both
   casing modes and their outline entries is superseded by [[#scope-correction][the operator exclusion]].
 - Relationship :: Regression-specific application of

@@ -252,7 +252,7 @@ classification; it is provenance, not current state.
   linked specification, requested by the operator on 2026-09-10. Requirements
   and decision history remain here as provenance.
 
-** REVIEW W042 - Inline monospace stretch and related font attributes are not consistently applied :defect:
+** ACTIVE W042 - Inline monospace stretch and related font attributes are not consistently applied :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-042
 :SOURCE: operator
@@ -317,6 +317,11 @@ classification; it is provenance, not current state.
 - Requested examples :: The operator requested ordinary paragraph samples at
   100%, 150%, 200% and 50%. The linked validation record contains those results.
   Production code and test code were not changed by this scope correction.
+- Proportional-stretch clarification :: The operator confirmed that the
+  identical 100%, 150% and 200% paragraph output is the original bug and
+  instructed its repair. The pending-definition hold above is superseded.
+  Inline monospace must scale horizontally by the configured percentage,
+  retain its height and preserve neighbouring text. Heading code stays excluded.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
