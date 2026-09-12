@@ -21,13 +21,17 @@
   =upper=, and enable corresponding TOC entries. Preserve mixed case under
   =as-written= and existing uppercase code letters under =upper=. The operator
   has excluded these heading-code and TOC cases from acceptance.
-- Expected :: Paragraph inline code and standalone-code controls select the configured
-  available width. Ordinary text retains its own typography, and code remains
-  readable. The single-width control follows Typst's nearest-face selection.
+- Expected :: Paragraph inline code scales proportionally by the configured
+  percentage, even with a single-width font, while retaining glyph height.
+  Ordinary text retains its own typography and code remains readable. Existing
+  standalone-code rendering remains a control. The earlier nearest-face-only
+  expectation is superseded by the operator's clarification of the original bug.
 - Reviewer :: Operator; acceptance has not been recorded.
 - Diagnostic distinction :: [[file:spec.org::#diagnosis][Baseline reproduction and temporary rendering probe]]
   establish an excluded heading-code defect only. Paragraph code responded in
-  that baseline; the original paragraph report remains unreproduced.
+  that baseline by selecting a different face; that did not demonstrate the
+  proportional stretch the operator intended. The four-value example below
+  reproduces the clarified paragraph defect.
 
 * Regression evidence
 
@@ -141,7 +145,7 @@ title markers to =PARTCODE= and =CHAPTERCODE= as before.
 - Superseded operator action :: The earlier request to accept the heading-code
   comparison is withdrawn. Paragraph examples follow below.
 
-* Requested paragraph examples, 2026-09-12
+* Pre-repair paragraph examples, 2026-09-12
 
 - Purpose :: Demonstrate actual inline monospace rendering at the requested
   *100%, 150%, 200% and 50%*. This is a presentation check, not a new regression
@@ -183,3 +187,27 @@ title markers to =PARTCODE= and =CHAPTERCODE= as before.
   contains =comparison.md=, =render.rb=, =results.json= and the eight source,
   config, Typst, PDF and image sets. This machine-local directory may expire;
   the procedure and results above are durable.
+
+* Proportional inline stretch regression
+
+- Authority :: The operator confirmed proportional scaling is the original bug
+  and directed implementation. Heading code remains excluded.
+- RED :: RT042.4 - Proportional inline stretch at the =b268937= test checkpoint
+  measured the embedded DejaVu Sans Mono marker at 84.287pt for every percentage.
+  The 150%, 200% and 50% cases failed in both source formats, expecting
+  126.431pt, 168.574pt and 42.144pt respectively.
+- Wrapping check :: A whole-span scale initially displaced multi-word code from
+  paragraph flow. The added regression exposed that; scaling individual words
+  retains line breaks at spaces. A short source with a 24pt font keeps the Org
+  fixture on the actual inline route instead of its existing raw-block promotion.
+- GREEN :: At =af3f41d=, all eight proportional-width cases and four wrapping
+  cases pass through the real CLI and compiled PDF. Heights, vertical placement
+  and neighbouring word widths remain unchanged; following prose does not overlap.
+- Full checks :: =make test= and =make lint= passed on the same production
+  revision. Existing font-attribute and literal-content regressions remain active.
+- Environment :: Go 1.26.3, Typst 0.14.2, Pandoc 3.9.0.2, Poppler 26.04.0.
+  The regression uses embedded fonts with system fonts disabled.
+- Evidence :: Local supplementary logs are under
+  =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/=:
+  =red.log=, =wrap-red.log= and =green.log=. The directory may expire.
+- Operator acceptance :: PENDING for the repaired four-value paragraph examples.

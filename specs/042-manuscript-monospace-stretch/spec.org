@@ -16,9 +16,9 @@
   and 50% half, with unchanged glyph height and surrounding-text typography.
   The operator confirmed this is the original bug and instructed its repair.
   Earlier statements that nearest-face selection satisfies it are superseded.
-- Primary report :: Investigate *inline monospace stretch in ordinary prose*
-  under =folio.manuscript.mono.font.stretch=. The operator's reported failure
-  *has not been reproduced on that path*.
+- Primary report :: *Inline monospace stretch in ordinary prose* must change
+  rendered width proportionally. The identical 100%, 150% and 200% paragraph
+  examples reproduce the bug under the operator's clarified contract.
 - Supporting repairs :: Close the related gaps in the *six existing font
   attributes* found during investigation. These findings support the original
   bug repair; they do not replace it or introduce new features.
@@ -28,9 +28,9 @@
 - Excluded reproduction :: The confirmed stretch omission was in *code inside
   a section heading*, now ruled out of scope by the operator. It does not
   establish the reported defect in ordinary prose.
-- Evidence limit :: Paragraph inline code responds to stretch in the same
-  fixture. That *does not establish that the operator's original example works*;
-  the exact reported case has not been reproduced. See [[#diagnosis][the recorded reproduction]].
+- Evidence correction :: Selecting a condensed face in the earlier paragraph
+  fixture did not establish proportional stretch. The later four-value example
+  and RT042.4 - Proportional inline stretch establish the in-scope mismatch.
 - Supporting finding :: Ordinary manuscript headings override configured size
   and weight. This font-attribute defect remains in scope; the findings about
   code inside headings are retained as excluded history.
@@ -38,19 +38,19 @@
 ** After
 
 - Inline monospace text *uses the configured stretch* through the existing
-  monospace font rule, selecting the requested available font width.
+  monospace font rule, scaling normal-width glyphs horizontally by that ratio.
 - Monospace content and ordinary heading text *use their complete role fonts*.
 - Tests check *paragraph inline code and ordinary heading typography*.
 
 ** Changes
 
-- Retain the ordinary-heading font requirement. Reconcile the earlier
-  heading-code-led design against the narrowed scope before further delivery.
+- Scale inline code words and their spacing, with layout reflow and unchanged
+  vertical size. Retain the ordinary-heading font requirement and regressions.
 
 ** Unchanged
 
 - Keep configuration keys, defaults, layering, parsing, casing, outline
-  inclusion, code-block spacing, and Typst's font-selection semantics.
+  inclusion, code-block rendering, and other roles' font-selection semantics.
 - The other active font roles keep their current application. No consumer is
   invented for the unused shared script heading font.
 - Exclusion :: *Code inside part, chapter, section or other headings*, including
@@ -73,8 +73,8 @@
 
 ** Next step
 
-- Present paragraph inline-code examples at *100%, 150%, 200% and 50%* as
-  requested, and isolate the original reported failure. The earlier heading-code
+- Present the repaired paragraph output at *100%, 150%, 200% and 50%* as
+  requested. The earlier heading-code
   comparison no longer defines operator acceptance.
 
 -----
@@ -105,7 +105,9 @@
   and [[file:../../docs/format-manuscript-org.md][Org manuscript syntax]].
 - External semantics :: [[https://typst.app/docs/reference/text/text/#parameters-stretch][Typst font stretch]]
   selects a width available within a font family. A missing width uses the
-  nearest available face; *arbitrary geometric scaling is not promised*.
+  nearest available face. That mechanism alone does not meet the clarified
+  paragraph-inline contract; [[https://typst.app/docs/reference/layout/scale/][horizontal scaling with reflow]]
+  supplies proportional width while preserving height.
 
 ** Operator scope correction, 2026-09-12
 :PROPERTIES:
@@ -301,6 +303,7 @@ BLOCKPROBE
 - Relationship :: Regression-specific application of
   [[file:../039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]].
 - Proven by :: [[#rt-042-1][RT042.1 - Verify font properties at inline content]] and
+  [[#rt-042-4][RT042.4 - Proportional inline stretch]], plus
   [[#ut-042-1][UT042.1 - Compare rendered monospace widths]].
 
 ** AC042.2 - Monospace changes preserve neighbouring content
@@ -313,6 +316,7 @@ BLOCKPROBE
   emphasis, heading casing, and existing block layout remain preserved, allowing
   wrapping and pagination changes caused by the corrected code width.
 - Proven by :: [[#rt-042-2][RT042.2 - Preserve literals and role isolation]] and
+  [[#rt-042-4][RT042.4 - Proportional inline stretch]], plus
   [[#ut-042-1][UT042.1 - Compare rendered monospace widths]].
 
 ** AC042.3 - Heading text uses its configured font attributes
@@ -469,19 +473,41 @@ BLOCKPROBE
 - Superseded coverage :: The earlier 75% pair and mixed-case title/TOC code
   requirements in both casing modes are retained in the historical results;
   heading code is no longer part of operator acceptance.
-- Expected :: Paragraph inline code and the standalone-code control select the
-  appropriate width; ordinary text retains its own typography and code remains
-  readable. No synthetic 25% compression is required.
+- Expected :: Paragraph inline code widths follow ratios 1, 1.5, 2 and 0.5
+  from the normal-width face. Glyph height and neighbouring text remain unchanged.
+  Existing standalone-code rendering is a control, not changed by this repair.
+  The earlier nearest-face-only expectation is superseded.
 - Record :: [[file:validation.org][W042 - Rendered validation]]; the diagnostic
   measurements above are *not operator acceptance*.
+
+** RT042.4 - Proportional inline stretch
+:PROPERTIES:
+:CUSTOM_ID: rt-042-4
+:END:
+
+- Covers :: [[#ac-042-1][AC042.1 - Complete inline monospace font]] and
+  [[#ac-042-2][AC042.2 - Preserve neighbouring content]].
+- Procedure :: Through the built CLI and unmodified PDF, measure a paragraph
+  code marker at 100%, 150%, 200% and 50% in Markdown and Org with an embedded,
+  single-width font. Compare against the 100% marker with 0.02pt tolerance.
+- Expected :: Width ratios are 1, 1.5, 2 and 0.5; vertical bounds and ordinary
+  glyph widths remain unchanged; following prose starts beyond the scaled code.
+- Wrapping :: A short multi-word source at a large font size wraps at spaces
+  inside the paragraph, with ordinary text before and after it. Keep the source
+  short to avoid the existing Org conversion's promotion of wrapped raw source
+  to a standalone block; no parsing change is authorized.
+- Retention :: Preserve the earlier tests and their identifiers. The new
+  proportional-width regression fails against the earlier rendering rule.
 
 * Edge Cases
 :PROPERTIES:
 :CUSTOM_ID: edge-cases
 :END:
 
-- Missing width :: *Preserve Typst's nearest-face selection*; documented in
-  UT042.1 - Compare rendered monospace widths, under AC042.1 - Complete font.
+- Missing width :: *Scale from the normal-width face* regardless of whether
+  the family contains expanded or condensed variants. The earlier nearest-face
+  requirement for inline code is superseded; covered by RT042.4 - Proportional
+  inline stretch and UT042.1 - Compare rendered monospace widths.
 - Partial block :: Same-role layering supplies omitted values; covered by
   RT042.1 - Verify font properties at inline content.
 - Enclosing styles :: The explicit mono font determines code typography even
@@ -499,10 +525,14 @@ BLOCKPROBE
 
 ** Recommended change
 
-- Current boundary :: The sequence below records the earlier delivered design.
+- Current repair :: Within the existing inline-raw rule, set face stretch to
+  100%, scale each non-whitespace run horizontally in an inline box with reflow,
+  and scale word spacing. Applying scaling per word preserves paragraph wrapping.
+  All other mono font attributes still come from the shared font argument helper.
+- Historical boundary :: The sequence below records the earlier delivered design.
   Its heading-code rationale is superseded by [[#scope-correction][the scope correction]].
-  Step 4 still addresses ordinary heading typography. No additional paragraph
-  rendering repair is defined until an in-scope failure is isolated.
+  Step 4 still addresses ordinary heading typography. The proportional-width
+  repair above supersedes the earlier wait for an in-scope reproduction.
 
 1. Make the backtick branch of =renderInlineMarkup= emit *inline Typst raw
    content*, using a correctly escaped string and =block: false=.
@@ -522,7 +552,7 @@ BLOCKPROBE
    =docs/config.md=, explain stretch as *font-width selection* and distinguish
    it from letter spacing, without changing the accepted value domain.
 
-** Feasibility evidence and alternatives
+** Historical feasibility evidence and alternatives
 
 - Bounded probe :: In temporary generated Typst only, replace the section's
   incomplete =#text(...)[SECTIONPROBE]= with
@@ -540,8 +570,9 @@ BLOCKPROBE
   serializing all six arguments would also address the omission. It retains
   two formatting routes and requires handling =caseTransform='s current
   =Config{}= call. Reusing the existing raw-content rule avoids that duplication.
-- Rejected scope :: Artificial horizontal scaling changes the external font
-  contract and text-layout behaviour; it is not proposed for this defect.
+- Superseded rejection :: The earlier rejection of artificial horizontal scaling
+  misinterpreted the intended contract. The operator confirmed proportional
+  scaling is the original bug repair; the current design above implements it.
 
 ** Architecture and safety
 
@@ -568,7 +599,10 @@ BLOCKPROBE
 - Required reading :: The authorities and affected files linked above, plus
   [[file:../../internal/manuscript/manuscript_test.go][Inline markup regression tests]]
   and [[file:../../internal/app/font_config_test.go][Public font-configuration tests]].
-- First implementation step :: Add RT042.1 - Verify font properties at inline
+- Current delivery :: Observe RED/GREEN for RT042.4 - Proportional inline
+  stretch, retain the existing font regressions, run the full suite and lint,
+  then present the corrected paragraph examples for visual acceptance.
+- Earlier first implementation step :: Add RT042.1 - Verify font properties at inline
   content and observe the specific section-code failure. Then implement the
   shared raw-content route and verify RT042.2 - Preserve literals and isolation.
 - Checks :: Run affected regressions, =make test=, and =make lint= during

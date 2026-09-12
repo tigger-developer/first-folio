@@ -322,6 +322,10 @@ classification; it is provenance, not current state.
   instructed its repair. The pending-definition hold above is superseded.
   Inline monospace must scale horizontally by the configured percentage,
   retain its height and preserve neighbouring text. Heading code stays excluded.
+- Proportional repair :: The inline template now scales normal-width words and
+  spacing while retaining paragraph wrapping. The new PDF regressions verify
+  1.5, 2 and 0.5 width ratios, unchanged height and neighbouring text; the full
+  suite and lint also passed. The linked validation record retains the evidence.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:

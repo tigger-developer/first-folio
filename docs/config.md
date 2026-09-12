@@ -1,4 +1,4 @@
-<!-- Version: 0.11 | Last updated: 2026-09-12 -->
+<!-- Version: 0.12 | Last updated: 2026-09-12 -->
 
 # Configuration
 
@@ -115,6 +115,8 @@ The six properties are:
 | `letter-spacing` | Signed decimal with `pt`, `mm`, `cm`, `in`, or `em`; zero is valid |
 
 `stretch` selects an available width within the chosen font family. If that width is unavailable, Typst selects the nearest available face; it does not geometrically compress or expand the text. `letter-spacing` separately adjusts the space between characters.
+
+For **manuscript paragraph inline monospace**, `mono.font.stretch` instead specifies proportional horizontal scaling from the normal-width face: 150% is 1.5 times the width, 200% twice, and 50% half. Glyph height stays unchanged. Words and inter-word spacing scale, and paragraphs can still wrap between code words. This corrects the earlier interpretation of inline stretch as font-face selection only.
 
 Manuscript paragraph inline monospace text uses the complete `folio.manuscript.mono.font` block. Ordinary manuscript headings use `folio.manuscript.heading.font`, including its configured size and weight without implicit heading-level scaling or bold. Table-of-contents entries, running headers and footers retain their own font roles. Existing source emphasis and title casing still apply.
 
@@ -602,6 +604,7 @@ The current configuration may contain a partial font block because its remaining
 
 ## Changelog
 
+- 0.12 (2026-09-12): Corrected inline monospace stretch to proportional horizontal scaling, preserving glyph height, paragraph wrapping and neighbouring text.
 - 0.11 (2026-09-12): Recorded the exclusion of heading code and its TOC appearances from the font-rendering repair; paragraph code and ordinary heading typography remain in scope.
 - 0.10 (2026-09-12): Clarified font-width selection and corrected application of configured monospace and manuscript heading fonts, without changing configuration keys or defaults.
 - 0.9 (2026-09-07): Unified every typography role under a six-property font block and replaced split runtime presets with one British base plus limited US and screenplay overlays.
