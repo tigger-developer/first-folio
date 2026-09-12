@@ -1,4 +1,4 @@
-<!-- Version: 0.9 | Last updated: 2026-09-07 -->
+<!-- Version: 0.10 | Last updated: 2026-09-12 -->
 
 # Configuration
 
@@ -113,6 +113,10 @@ The six properties are:
 | `stretch` | Positive finite decimal, optionally followed by `%`; a plain number means percent |
 | `style` | `regular`, `italic`, or `oblique` |
 | `letter-spacing` | Signed decimal with `pt`, `mm`, `cm`, `in`, or `em`; zero is valid |
+
+`stretch` selects an available width within the chosen font family. If that width is unavailable, Typst selects the nearest available face; it does not geometrically compress or expand the text. `letter-spacing` separately adjusts the space between characters.
+
+Manuscript inline monospace text, including code in section and part/chapter headings, uses the complete `folio.manuscript.mono.font` block. Ordinary manuscript headings use `folio.manuscript.heading.font`, including its configured size and weight without implicit heading-level scaling or bold. Table-of-contents entries, running headers and footers retain their own font roles. Existing source emphasis and title casing still apply.
 
 Higher-precedence files may set only the properties they change. Omitted properties come from the lower layer at the same role path. A role never inherits font properties from its parent or from another role. The old scalar, prefixed, `bold`, and `italic` font keys are rejected with their full paths.
 
@@ -596,6 +600,7 @@ The current configuration may contain a partial font block because its remaining
 
 ## Changelog
 
+- 0.10 (2026-09-12): Clarified font-width selection and corrected application of configured monospace and manuscript heading fonts, without changing configuration keys or defaults.
 - 0.9 (2026-09-07): Unified every typography role under a six-property font block and replaced split runtime presets with one British base plus limited US and screenplay overlays.
 - 0.8 (2026-08-10): Documented nearest-ancestor and style-sibling discovery, the complete manuscript key inventory, justification, and metric custom-page examples.
 - 0.7 (2026-08-09): Restored linked manuscript TOCs by default, documented the annotation-free override, and added continuous and part-qualified chapter numbering.

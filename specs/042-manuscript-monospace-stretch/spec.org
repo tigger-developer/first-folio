@@ -494,3 +494,33 @@ BLOCKPROBE
 - Documentation impact :: Update =docs/config.md= for stretch semantics during
   delivery; reconcile this specification, its validation record, and the ledger.
   The architecture and source syntax remain unchanged.
+
+* Hands-off mode decision log
+:PROPERTIES:
+:CUSTOM_ID: hands-off-mode-decision-log
+:VISIBILITY: folded
+:END:
+
+** Delivery decisions recorded 2026-09-12T18:09:21Z :hands-off:review:
+
+*** Portable regression fonts
+
+- Decision :: Use embedded Typst font families in a temporary lower
+  configuration layer and compile with system fonts disabled. Partial local
+  overrides still exercise same-role inheritance; canonical YAML is unchanged.
+- Evidence :: The installed Typst embeds DejaVu Sans Mono, Libertinus Serif
+  and New Computer Modern, but not Libertinus Sans or Libertinus Mono.
+- Scope :: The font-dependent width comparison remains operator validation;
+  persistent tests require no privately installed fonts.
+
+*** Preserve existing source transformations
+
+- Decision :: Preserve the Org reader's level-four list route and its existing
+  escaped-bracket canonicalization. Preserve the uppercase title branch's
+  escaping of underscores inside backtick content. These source transformations
+  are outside the approved font-rendering scope.
+- Evidence :: Public Pandoc conversion and generated Folio output distinguish
+  these paths. The regression fixtures assert each existing path explicitly.
+- Effect :: These fixture corrections do not change production parsing or
+  casing. The existing inline-markup regression retains its name, dash and
+  emphasis checks, and Markdown parsing assertions.

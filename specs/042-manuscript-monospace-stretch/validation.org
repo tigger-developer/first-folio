@@ -26,3 +26,21 @@
 - Reviewer :: Operator; acceptance has not been recorded.
 - Diagnostic distinction :: [[file:spec.org::#diagnosis][Baseline reproduction and temporary rendering probe]]
   establish the defect and feasibility only; they are not candidate validation.
+
+* Regression evidence
+
+- RED :: At the =9b439e1= regression checkpoint, the new CLI tests exposed
+  section spans bypassing the mono rule, rejected numeric weights, missing
+  title raw output, and heading size/weight mismatches against plain PDF text.
+  Existing TOC and running-band font controls retained their own fonts.
+- Fixture correction :: The final fixtures preserve the existing Org
+  level-four list route, escaped-bracket conversion, and uppercase underscore
+  escaping. The specification's decision log records these rendering-scope
+  boundaries; production parsing was not changed.
+- GREEN :: At =fc792f4=, the manuscript rendering repair, all 30 new CLI/PDF
+  cases and the retained inline-markup regression passed. The complete
+  =make test= suite and =make lint= also passed on 2026-09-12.
+- Environment :: Go 1.26.3, Typst 0.14.2, Pandoc 3.9.0.2, and Poppler tools;
+  the new PDF regressions use embedded fonts with system fonts disabled.
+- Evidence boundary :: These automated checks do not supply the operator's
+  visual acceptance for UT042.1 - Compare rendered monospace widths.
