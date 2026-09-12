@@ -17,7 +17,10 @@
   and 75% stretch using a family verified to contain both widths. Present
   paired PDFs at equal zoom with tool versions, font inventory, tested revision,
   and marker-width measurements. Include a single-width nearest-face control.
-- Expected :: Paragraph, section-heading, and block code select the configured
+- Title coverage :: Include code in part/chapter titles with =as-written= and
+  =upper=, and enable corresponding TOC entries. Preserve mixed case under
+  =as-written= and existing uppercase code letters under =upper=.
+- Expected :: Paragraph, section-heading, title, outline and block code select the configured
   available width. Ordinary text retains its own typography, and code remains
   readable. The single-width control follows Typst's nearest-face selection.
 - Reviewer :: Operator; acceptance has not been recorded.

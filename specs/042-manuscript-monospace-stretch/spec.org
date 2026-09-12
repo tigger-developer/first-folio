@@ -1,30 +1,57 @@
-#+TITLE: W042 - Apply manuscript monospace font stretch consistently
+#+TITLE: W042 - Apply configured manuscript font attributes consistently
 #+SUBTITLE: Bug analysis and proposed solution
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
 #+OPERATOR_SIGNOFF: PENDING
 
-* Apply manuscript monospace font stretch consistently
+* Synopsis
 :PROPERTIES:
 :CUSTOM_ID: summary
 :END:
 
-- Outcome :: Manuscript inline code *uses the configured monospace font*,
-  including stretch, wherever the supported renderer emits it.
-- Before :: A reproduced *section-heading path omits stretch*, style, and
-  letter spacing. Paragraph code and fenced blocks already receive stretch.
-- After :: Inline code *uses the existing template rule* for all six font
-  properties. Regression evidence checks the affected content itself.
-- Changes :: Replace the incomplete inline font emission with *inline raw
-  content*; strengthen behavioural coverage and explain font-width selection.
-- Unchanged :: Configuration keys, defaults, layering, source syntax, ordinary
-  text, code-block layout, and Typst's font-selection semantics remain intact.
-- Edge cases :: Numeric weights, partial font blocks, nested emphasis, literal
-  special characters, and fonts without another width require coverage.
-- Decisions :: This is a *proposal for review*. Analysis and specification
-  writing are authorized; production implementation has not been requested.
-- Next step :: Resolve *part/chapter title scope and uppercase-code behaviour*,
-  then finalize the definition and operator sign-off before normal delivery.
+** Outcome
+
+- Repair *application of the six existing font attributes* in manuscript
+  monospace content and headings. This is a bug under the existing font contract.
+
+** Before
+
+- Section code *omits stretch, style, and letter spacing*; numeric weight fails
+  compilation. Default part/chapter title code emits empty font values.
+- Manuscript headings *override configured size and weight*.
+
+** After
+
+- Monospace content and ordinary heading text *use their complete role fonts*.
+- Tests check *the affected content*, including its table-of-contents appearance.
+
+** Changes
+
+- Reuse the inline-raw font rule and apply the heading font at the semantic
+  heading element; strengthen regression coverage.
+
+** Unchanged
+
+- Keep configuration keys, defaults, layering, parsing, casing, outline
+  inclusion, code-block spacing, and Typst's font-selection semantics.
+- The other active font roles keep their current application. No consumer is
+  invented for the unused shared script heading font.
+
+** Edge cases
+
+- Preserve literal code, enclosing emphasis, and role isolation; handle numeric
+  weights, partial overrides, and fonts without the requested width.
+
+** Decisions
+
+- The operator constrained the repair to *existing font attributes*, excluding
+  new features. The earlier proposed casing change is superseded.
+- Production implementation has not been requested; this remains a definition.
+
+** Next step
+
+- Review the revised definition and its expanded diagnostic evidence, then
+  finalize the definition before normal delivery.
 
 -----
 
@@ -120,7 +147,27 @@ BLOCKPROBE
    Its =mono.font/stretch= case *passed at the defective baseline*, because
    template rules already contain that marker. It does not verify its use by
    the affected content. This is a gap in
-   [[file:../039-unified-font-configuration/spec.org::#rt-039-1][RT039.1 - Exercise every public font role]].
+  [[file:../039-unified-font-configuration/spec.org::#rt-039-1][RT039.1 - Exercise every public font role]].
+
+5. Part/chapter =as-written= titles call the inline helper with =Config{}=,
+   producing *invalid empty font arguments* for code. Their =upper= route
+   preserves backtick delimiters for Typst and already uses the raw-content rule.
+6. The manuscript template wraps semantic headings in =text=. Typst's heading
+   styles then *override size and weight*: a configured =13.5pt= / =medium=
+   becomes =18.9pt= / =bold= for parts, =16.2pt= / =bold= for chapters,
+   and =13.5pt= / =bold= for sections.
+
+** All-font check
+
+- Evidence :: [[file:font-rendering-check.org][All 33 font objects and six attributes]],
+  checked on 2026-09-12 at revision =1563008= before production changes.
+- Result :: Thirty objects applied all six values to the representative
+  content checked. Monospace was partial; manuscript headings overrode values;
+  the shared script heading rule had no active content consumer.
+- Scope boundary :: Repair the confirmed *existing manuscript rendering paths*.
+  =folio.heading.font= is emitted but unused by current script content.
+  Assigning it a new consumer, removing it, or making other roles inherit from
+  it would change the contract; none is authorized by this font-attribute repair.
 
 ** Proposed scope and constraints
 
@@ -131,27 +178,34 @@ BLOCKPROBE
   and [[file:../039-unified-font-configuration/spec.org::#ac-039-5][AC039.5 - Clean breaking failure boundary]].
 - Exclude new scaling controls, font installation, font-family rewriting,
   configuration-schema changes, and unrelated manuscript defects.
-- Initial assessment :: The initial proposal identified no blocking product
-  decision. That assessment is *superseded by the title-semantics question
-  below*; a different original symptom may also require investigation.
+- History :: The initial monospace-only diagnosis is extended by the all-font
+  check to include the existing manuscript heading font. A different original
+  symptom may still require investigation.
 
-** Unresolved part/chapter title semantics
+** Operator scope clarification and title behaviour
 
 - Current path :: Part and chapter headings pass through =caseTransform=.
   Its =as-written= path calls =typstInline(text, Config{})=, so a backtick
   span receives *empty font values*, including an invalid empty size literal.
   The British defaults select =as-written= for both heading kinds.
-- Uppercase path :: =upper= uppercases and escapes the heading as ordinary
-  content; it does not interpret the code span as monospace content.
-- Decision required :: Whether part/chapter title code belongs in this repair,
-  and what uppercase conversion should do to its text and font. The general
-  inline-code criterion below *cannot authorize a silent behaviour choice*.
-- Recommendation :: Include title code, uppercase only surrounding title text,
-  and preserve literal code text with its monospace formatting. This is a
-  proposal, not an operator-approved change to uppercase-title semantics.
-- Definition boundary :: Resolve the decision before delivery. Reconcile the
-  summary, acceptance criterion, tests for both casing modes, and outlined
-  title appearance in the table of contents with the selected behaviour.
+- Corrected observation :: =upper= uppercases the whole composed heading,
+  including code letters. Its escaping helper leaves backticks intact, so Typst
+  renders that content as raw monospace text using the complete font rule.
+  The earlier claim that this path lacked monospace interpretation is superseded
+  by the compiled probe in the all-font check.
+- Operator direction :: On 2026-09-12 the operator required a bug repair
+  narrowly scoped to the font attributes common to current font definitions,
+  then requested checking all font objects and attributes.
+- Required behaviour :: Repair code in =as-written= part/chapter titles and
+  section headings. *Preserve the uppercase branch*, including uppercase code
+  letters. Both title modes use the existing monospace font rule after repair.
+- Outline behaviour :: Existing title text and casing appear in the table of
+  contents. Code retains its mono font; ordinary entries retain the TOC font
+  and the existing =toc.part-bold= option. Heading fonts must not leak into
+  outline entries or running-header/footer roles.
+- Superseded proposal :: Uppercasing only surrounding title text while keeping
+  code letters unchanged would introduce new casing behaviour. That earlier
+  recommendation is withdrawn under the operator's font-only boundary.
 
 * Acceptance Criteria
 :PROPERTIES:
@@ -163,8 +217,9 @@ BLOCKPROBE
 :CUSTOM_ID: ac-042-1
 :END:
 
-- Criterion :: Supported manuscript inline code, including code within section
-  headings, *uses all six effective monospace font properties*. Stretch selects
+- Criterion :: Supported manuscript inline code, including section code and
+  part/chapter title code in both casing modes and their included outline
+  entries, *uses all six effective monospace font properties*. Stretch selects
   the requested available width according to Typst's semantics.
 - Relationship :: Regression-specific application of
   [[file:../039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]].
@@ -183,6 +238,20 @@ BLOCKPROBE
 - Proven by :: [[#rt-042-2][RT042.2 - Preserve literals and role isolation]] and
   [[#ut-042-1][UT042.1 - Compare rendered monospace widths]].
 
+** AC042.3 - Heading text uses its configured font attributes
+:PROPERTIES:
+:CUSTOM_ID: ac-042-3
+:END:
+
+- Criterion :: Ordinary part, chapter, and section heading text uses all six
+  values from =folio.manuscript.heading.font=, including the configured size
+  without a level multiplier and the configured weight without an implicit
+  bold override. Explicit source emphasis retains its existing meaning.
+- Isolation :: TOC entries and running headers/footers retain their own role
+  fonts. Their existing content, casing, inclusion, and formatting options remain.
+- Relationship :: Repairs [[file:../039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]].
+- Proven by :: [[#rt-042-3][RT042.3 - Verify heading font application and isolation]].
+
 * Test Definitions
 :PROPERTIES:
 :CUSTOM_ID: test-definitions
@@ -196,13 +265,14 @@ BLOCKPROBE
 - Covers :: [[#ac-042-1][AC042.1 - Inline code receives its complete monospace font]].
 - Boundary :: Built =folio manuscript= command with Markdown and Org inputs,
   emitted Typst, and local Typst compilation. Use existing Go test facilities.
-- Setup :: Include marked paragraph code, H3/H4 section code, and a code block.
+- Setup :: Include marked paragraph code, H3/H4 section code, part/chapter
+  title code in both casing modes, their outline entries, and a code block.
   Change one property at a time: family, size, named/numeric weight, stretch,
   regular/italic/oblique style, and signed letter spacing. Include a combined
   block and a partial higher-layer override. Use synthetic, isolated config.
 - Action :: Inspect the *emitted construct containing each unique marker* and
   the applicable inline-raw rule in that generated Typst artefact. Require
-  section-code markers to occur in inline raw content, rather than an explicit
+  section and =as-written= title markers to occur in inline raw content, rather than an explicit
   three-property =#text= wrapper. Inspect all six arguments of the governing
   =raw.where(block: false)= rule, and compile the unmodified emitted document.
 - Expected :: The marked spans *use the inline-raw route*, its emitted rule
@@ -210,6 +280,9 @@ BLOCKPROBE
   omitted properties retain their same-role lower-layer values. Assertions on
   the rule alone cannot satisfy the content-routing assertion. Paragraph and
   block controls keep their existing routes.
+- Casing control :: Uppercase title code keeps its existing raw syntax and
+  uppercase letters; the case-transform branch is unchanged. Compile the
+  outline-enabled fixture and verify title/code text in body and outline.
 - Evidence boundary :: These assertions verify the public Typst output and
   successful compilation; they do not claim to inspect resolved glyph styles.
   Actual width selection is verified by
@@ -233,6 +306,9 @@ BLOCKPROBE
 - Setup :: Code containing quotes, backslashes, underscores, brackets, hashes,
   Unicode, and supported literal backticks; code within supported emphasis;
   normal/uppercase heading controls; surrounding prose and standalone blocks.
+- Title controls :: =as-written= keeps mixed-case code letters; =upper= keeps
+  its current whole-title uppercase conversion. Assert both body and outline
+  text, including literal code characters supported by each existing parser.
 - Expected :: Code remains *literal and inline*, with no evaluation or doubled
   escaping. Neighbouring prose retains its own font. Existing standalone-code
   promotion, block padding, chapter casing, and text content remain unchanged.
@@ -250,6 +326,37 @@ BLOCKPROBE
   Markdown parsing/rendering assertions. The obsolete output spelling is
   superseded; *its behavioural coverage remains active*.
 
+** RT042.3 - Verify heading font application and isolation
+:PROPERTIES:
+:CUSTOM_ID: rt-042-3
+:END:
+
+- Covers :: [[#ac-042-3][AC042.3 - Heading text uses its configured font attributes]].
+- Boundary :: Built manuscript CLI with Markdown and Org, generated Typst,
+  and compiled PDF using existing Go and PDF helpers.
+- Setup :: Plain marked part, chapter, and section headings; code and explicit
+  emphasis as separate controls; enabled TOC and running bands with distinct
+  fonts. Exercise all six heading properties independently and together,
+  including named/numeric weights and partial overrides.
+- Expected :: The generated heading show-set rule carries the six effective
+  values and applies to the semantic heading elements containing the markers.
+  Compile unmodified output. At =13.5pt= / =regular=, PDF heading glyph size and
+  font face match plain reference text with that same font block at each level;
+  the baseline's size multipliers and implicit bold must fail this comparison.
+  Use embedded Libertinus faces and the =pdftohtml -xml -hidden= extraction
+  approach retained in [[file:../../internal/manuscript/issue27_test.go][RT-27.6 - TOC part remains bold]]
+  and [[file:../../internal/manuscript/issue32_test.go][TOC PDF extraction helpers]],
+  associating each marker with its font record and bold markup. Compare size
+  against the plain reference in the same extraction units.
+- Isolation :: TOC ordinary entries retain TOC typography, including the
+  existing part-bold option; code retains mono typography. Running bands retain
+  their own fonts. Preserve all existing W039 role tests and add content-scoped
+  assertions for these newly exposed gaps; do not infer application from a
+  property marker elsewhere in the document.
+- Retention :: Persistent regression under =make test=. Observe the heading
+  size/weight failure before production edits. Context-instrumented diagnostic
+  output is not the regression oracle for an unmodified rendered artefact.
+
 ** UT042.1 - Compare rendered monospace widths
 :PROPERTIES:
 :CUSTOM_ID: ut-042-1
@@ -262,7 +369,9 @@ BLOCKPROBE
   family containing those widths. Present both PDFs at the same zoom, retaining
   font inventory, tool versions, revision, and measured marker widths. Include
   a single-width family as a documented nearest-face control.
-- Expected :: Paragraph, section-heading, and block code all select the
+- Title coverage :: Include mixed-case code in part/chapter titles under
+  =as-written= and =upper=, with the corresponding TOC entries enabled.
+- Expected :: Paragraph, section-heading, part/chapter title, outline, and block code all select the
   appropriate width; ordinary text retains its own typography and code remains
   readable. No synthetic 25% compression is required.
 - Record :: [[file:validation.org][W042 - Rendered validation]]; the diagnostic
@@ -299,8 +408,14 @@ BLOCKPROBE
    all six properties, including normalized numeric weights and regular style.
 3. Remove the now-unnecessary family/size/weight plumbing from inline rendering
    and its recursive calls. Preserve parsing, ordinary-text transformations,
-   and the uppercase branch of =caseTransform=.
-4. Strengthen regression assertions at the actual content boundary. In
+   and the uppercase branch of =caseTransform=. The =as-written= branch then
+   calls the simplified helper without constructing an empty configuration.
+4. Apply =manuscriptFontArgs(Heading.Font)= through a heading *show-set text
+   rule*, overriding Typst's default heading font values at the heading element.
+   Preserve semantic heading bodies, levels, and outline flags. Do not embed
+   heading-specific styling in the stored body, because outline entries reuse
+   that body and must retain the TOC role font.
+5. Strengthen regression assertions at the actual content boundary. In
    =docs/config.md=, explain stretch as *font-width selection* and distinguish
    it from letter spacing, without changing the accepted value domain.
 
@@ -311,6 +426,10 @@ BLOCKPROBE
   =#raw("SECTIONPROBE", block: false)=. Compiling the 100% and 75% cases changed
   section-code widths from *72.00pt to 49.92pt*, respectively. The paragraph
   and block measurements were unchanged from the reproduction table.
+- Heading probe :: A heading show-set rule in temporary generated output
+  restored the configured =13.5pt= / =medium= at all three heading levels,
+  while ordinary TOC entries retained =10pt= / =regular=. See the
+  [[file:font-rendering-check.org][all-font check]] for the diagnostic method and limits.
 - Evidence boundary :: This validates the template route for that fixture;
   *production code was not changed*. Escaping, combined styles, other headings,
   and full regression validation remain delivery work.
@@ -352,8 +471,7 @@ BLOCKPROBE
 - Checks :: Run affected regressions, =make test=, and =make lint= during
   delivery. Run UT042.1 - Compare rendered monospace widths on the reviewed
   candidate and record the operator's result.
-- Definition evidence :: A future definition audit belongs in harness-owned
-  =audits.yaml=. This proposal records no audit verdict or operator sign-off.
+- Definition evidence :: [[file:audits.yaml][Retained definition audit record]].
 - Documentation impact :: Update =docs/config.md= for stretch semantics during
   delivery; reconcile this specification, its validation record, and the ledger.
   The architecture and source syntax remain unchanged.

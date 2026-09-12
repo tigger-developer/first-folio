@@ -1,0 +1,139 @@
+#+TITLE: W042 - Check all configured font attributes
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+
+* Outcome
+
+- Scope :: All *33 current font objects*, with family, size, weight, stretch,
+  style, and letter spacing. This is diagnostic evidence for
+  [[file:spec.org][W042 - Apply configured manuscript font attributes consistently]].
+- Result :: *30 objects applied all six values* to the representative content
+  checked. Manuscript mono was partial; manuscript headings overrode size and
+  weight; the shared script heading object had no active content consumer.
+- Classification :: These are application gaps in the existing
+  [[file:../039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]]
+  contract. No new attributes or configuration inheritance are proposed.
+
+* Method and limits
+
+- Baseline :: Revision =1563008=, before production changes, checked 2026-09-12.
+  A fresh CLI binary was built from this checkout.
+- Inventory :: Recursively enumerate every font mapping in
+  [[file:../../presets/british.yaml][the British base]] and reconcile with
+  [[file:../../internal/config/font.go][FontRolePaths]]: 33 objects, 198 attributes.
+- Configuration :: One object at a time was overridden with =Libertinus Serif=,
+  =13.5pt=, =medium=, =117.5%=, =oblique=, and =0.13pt= letter spacing. All other
+  objects retained their explicit British defaults. Optional content was enabled.
+- Public route :: Use the built CLI's =convert=, =manuscript=, and =letter=
+  commands on synthetic Org play/letter and Markdown manuscript inputs.
+- Probe :: Add a temporary Typst text show rule to a copy of generated output.
+  Within context it records the content and =text.font=, =text.size=,
+  =text.weight=, =text.stretch=, =text.style=, and =text.tracking= as metadata.
+  =typst query= then associates six effective style requests with actual text.
+- Positive control :: A plain =13.5pt= / =medium= span reported those values;
+  a semantic level-one heading reported =18.9pt= / =bold=; an independently
+  styled raw span reported its own six values. This establishes that the probe
+  distinguishes inner overrides from outer settings.
+- Probe limitation :: Instrumentation inserts context content and *changes some
+  raster positions*. Original and instrumented glyph-symbol sets matched for
+  all three fixtures, but manuscript and script PNGs were not identical.
+  Consequently these are style-request diagnostics, not unchanged-layout
+  evidence, resolved font-face guarantees, or operator visual acceptance.
+- Coverage limitation :: Each object has one representative content fixture;
+  this does not establish every combination of styles, source syntax, placement,
+  or font availability. The title, section, and numeric-weight branches received
+  additional targeted checks below. Existing Markdown/Org width measurements
+  remain recorded in the main spec.
+- Regression result :: The focused existing =TestRT039_1= tests passed in
+  =internal/config=, =internal/app=, =internal/manuscript=, and =internal/letter=,
+  with no skips. Their emitted-marker checks do not expose the defects below.
+- Scratch evidence :: CLI outputs, scripts, queries and images were retained in
+  =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.2VpOQHnl5S=.
+  This machine-local scratch path is supplementary; the method and results here
+  are the durable record. No production code or persistent test was changed.
+
+* Object-by-object results
+
+- Six values :: A matching row means all six configured values reached the
+  named content in the diagnostic probe, with letter spacing mapped to tracking.
+
+| Font object | Result | Representative content |
+|-------------+--------+------------------------|
+| =folio.font= | Six values matched | ROOTPROBE |
+| =folio.heading.font= | Unused rule | No generated semantic heading uses this rule |
+| =folio.title-page.title.font= | Six values matched | TITLEPROBE |
+| =folio.title-page.subtitle.font= | Six values matched | SUBTITLEPROBE |
+| =folio.title-page.author.font= | Six values matched | by AUTHORPROBE |
+| =folio.title-page.date.font= | Six values matched | 2026-09-12 |
+| =folio.title-page.version.font= | Six values matched | VERSIONPROBE |
+| =folio.positioning.speech.speaker.font= | Six values matched | SPEAKERPROBE |
+| =folio.positioning.speech.speech-instruction.font= | Six values matched | instructionprobe |
+| =folio.positioning.speech.dialogue.font= | Six values matched | DIALOGUEPROBE |
+| =folio.positioning.stage-direction.font= | Six values matched | DIRECTIONPROBE |
+| =folio.positioning.transition.font= | Six values matched | CUT TO |
+| =folio.positioning.frontmatter.header.font= | Six values matched | INTROPROBE |
+| =folio.positioning.act-header.font= | Six values matched | ACTPROBE |
+| =folio.positioning.scene-header.font= | Six values matched | SCENEPROBE |
+| =folio.letter.font= | Six values matched | AUTHORPROBE, 12 September 2026, SUBJECTPROBE |
+| =folio.manuscript.font= | Six values matched | BODYPROBE and |
+| =folio.manuscript.heading.font= | Size/weight overridden | Part, chapter and section headings |
+| =folio.manuscript.mono.font= | Partial: paragraph/block match, section does not | INLINECODEPROBE, BLOCKCODEPROBE |
+| =folio.manuscript.quoted-block.font= | Six values matched | QUOTEPROBE |
+| =folio.manuscript.title-page.title.font= | Six values matched | TITLEPROBE |
+| =folio.manuscript.title-page.subtitle.font= | Six values matched | SUBTITLEPROBE |
+| =folio.manuscript.title-page.author.font= | Six values matched | AUTHORPROBE |
+| =folio.manuscript.title-page.date.font= | Six values matched | 12 September 2026 |
+| =folio.manuscript.title-page.wordcount.font= | Six values matched | WORDCOUNTPROBE |
+| =folio.manuscript.title-page.version.font= | Six values matched | VERSIONPROBE |
+| =folio.manuscript.title-page.contact.font= | Six values matched | CONTACTPROBE |
+| =folio.manuscript.page-header.font= | Six values matched | HEADERPROBE |
+| =folio.manuscript.page-footer.font= | Six values matched | FOOTERPROBE |
+| =folio.manuscript.toc.font= | Six values matched | PARTPROBE, CHAPTERPROBE, SECTIONPROBE with |
+| =folio.manuscript.toc.heading.font= | Six values matched | TOCTITLEPROBE |
+| =folio.manuscript.copyright.font= | Six values matched | CREDITPROBE, COPYRIGHTPROBE |
+| =folio.manuscript.copyright.label.font= | Six values matched | PUBLISHERPROBE, ISBNPROBE |
+
+* Confirmed gaps and bounded remedies
+
+** Manuscript monospace paths
+
+- Section code :: Family, size and named weight reach the span. Stretch, style
+  and tracking come from its surroundings instead of the mono role.
+- Numeric weight :: =650= becomes the string ="650"= in section code; compiling
+  the unmodified CLI output fails with Typst's expected-weight diagnostic.
+- Default title code :: =as-written= part/chapter titles emit an empty family,
+  size and weight because =caseTransform= supplies =Config{}=. The unmodified
+  output fails compilation with =expected expression= at the empty size.
+- Uppercase title code :: Contrary to the earlier analysis, uppercase code
+  already renders through Typst raw markup. The CLI emits, for example,
+  =PART `PARTCODEPROBE`=. Compilation succeeds and both outline/body code use
+  the complete mono font. The whole heading, including code letters, is uppercase.
+- Remedy :: Route the incomplete inline helper through the existing raw font
+  rule and remove its partial/empty font plumbing. Keep parsing and uppercase
+  conversion unchanged.
+
+** Manuscript heading font
+
+- Current result :: =13.5pt= / =medium= becomes =18.9pt= / =bold= for parts,
+  =16.2pt= / =bold= for chapters, and =13.5pt= / =bold= for sections. The other
+  four configured attributes reach the ordinary heading text.
+- Cause :: Full font arguments wrap a semantic heading; the heading's default
+  size/weight settings take precedence within it.
+- Bounded probe :: Adding a heading show-set text rule carrying the configured
+  font to temporary generated output makes all three levels report =13.5pt= /
+  =medium=, while ordinary TOC entries retain their own =10pt= / =regular= font.
+- Remedy :: Apply the configured font at the semantic heading through a show-set
+  rule. Preserve the heading body and outline structure. Putting the font inside
+  the stored body would also affect reused TOC content and is not the design.
+
+** Unused shared script heading font
+
+- Current result :: All six =folio.heading.font= attributes are serialized in
+  a =show heading: set text= rule. The current script emitter routes actual
+  headings through act, scene and frontmatter macros with their own font roles;
+  it emits no semantic heading content to consume the shared rule.
+- Boundary :: Record the unused object without inventing a new consumer,
+  deleting configuration, or introducing cross-role inheritance. Those choices
+  exceed repairing attributes on existing content paths.
+- Evidence :: [[file:../../internal/app/script_render.go][Script event-to-content routes]]
+  and [[file:../../templates/script.typ][Script template role rules]].

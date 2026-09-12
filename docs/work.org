@@ -252,7 +252,7 @@ classification; it is provenance, not current state.
   linked specification, requested by the operator on 2026-09-10. Requirements
   and decision history remain here as provenance.
 
-** REVIEW W042 - Manuscript monospace font stretch is not applied :defect:
+** REVIEW W042 - Configured manuscript font attributes are not consistently applied :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-042
 :SOURCE: operator
@@ -284,11 +284,17 @@ classification; it is provenance, not current state.
   reproduction or regression execution was performed for this report.
 - Intake scope :: Remediation was not defined when the bug was raised;
   implementation was not authorized by that report.
-- Specification :: [[file:../specs/042-manuscript-monospace-stretch/spec.org][W042 - Apply manuscript monospace font stretch consistently]].
+- Specification :: [[file:../specs/042-manuscript-monospace-stretch/spec.org][W042 - Apply configured manuscript font attributes consistently]].
 - Analysis follow-up :: On 2026-09-11, the operator requested analysis and a
   proposed solution. The linked specification records *CLI and PDF reproduction*
   in Markdown and Org, narrowing the confirmed omission to section-heading
   inline code. It supersedes the intake-only evidence limit above.
+- Scope clarification :: On 2026-09-12 the operator constrained the repair to
+  existing common font attributes and requested checking every font object.
+  [[file:../specs/042-manuscript-monospace-stretch/font-rendering-check.org][The 33-object diagnostic]]
+  extends the earlier analysis: title code has an empty-font path, manuscript
+  headings override size/weight, and the shared script heading rule is unused.
+  The proposed repair preserves casing, parsing, and the configuration schema.
 - Proposal :: Route inline code through the existing full monospace template
   rule. Production implementation and operator sign-off remain pending.
 
