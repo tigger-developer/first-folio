@@ -642,8 +642,11 @@ BLOCKPROBE
 - Verification :: [[file:validation.org][Regression and rendered evidence]] records
   the RED/GREEN checks, full suite, lint and 16 candidate PDF comparisons.
   [[file:audits.yaml][Retained audit evidence]] supplies the gate records.
-- Operator gate :: UT042.1 visual acceptance and work-item closure remain
-  pending. The preceding proposal and diagnosis sections retain their history.
+- Operator gate :: At this earlier checkpoint, UT042.1 visual acceptance and
+  work-item closure were pending. Taḋg subsequently accepted the revised
+  12pt Libertinus Serif / 10pt Iosevka Publish paragraph comparison on 2026-09-12,
+  as recorded in [[file:validation.org][W042 - Rendered validation]]. Work-item
+  closure remains outstanding. The preceding diagnosis retains its history.
 - Later scope correction :: The heading-code measurements and repairs above
   are excluded acceptance cases. They do not establish that the primary
   ordinary-paragraph report was reproduced or repaired.

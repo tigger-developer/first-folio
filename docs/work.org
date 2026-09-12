@@ -326,6 +326,13 @@ classification; it is provenance, not current state.
   spacing while retaining paragraph wrapping. The new PDF regressions verify
   1.5, 2 and 0.5 width ratios, unchanged height and neighbouring text; the full
   suite and lint also passed. The linked validation record retains the evidence.
+- Accepted paragraph result :: Taḋg accepted the 12pt Libertinus Serif / 10pt
+  Iosevka Publish comparison at 100%, 150%, 200% and 50% on 2026-09-12.
+  The implementation preserves the original baseline and surrounding spacing;
+  equivalent Org output matches the approved Markdown measurements. This
+  supersedes the earlier pending visual acceptance. Operator closure remains
+  outstanding; the validation and audit records linked above retain the evidence.
+
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
