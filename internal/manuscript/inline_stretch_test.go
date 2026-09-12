@@ -89,3 +89,44 @@ func inlinePDFWords(t *testing.T, pdf string) map[string]inlinePDFWord {
 		}
 	}
 }
+
+// RT042.4: multi-word inline code stays in paragraph flow and wraps between words.
+func TestRT042_4InlineStretchPreservesWrapping(t *testing.T) {
+	binary := buildFontCLI(t)
+	for _, format := range []string{"md", "org"} {
+		for _, percent := range []int{100, 200} {
+			t.Run(fmt.Sprintf("%s/%d", format, percent), func(t *testing.T) {
+				cfg := fontFixtureConfig()
+				setFontTestPath(cfg, "folio.manuscript.mono.font.stretch", fmt.Sprintf("%d%%", percent))
+				setFontTestPath(cfg, "folio.manuscript.mono.font.size", "24pt")
+				setFontTestPath(cfg, "folio.manuscript.font.size", "24pt")
+				setFontTestPath(cfg, "folio.manuscript.toc.enabled", false)
+				dir, path := fontFixture(t, format, false, cfg)
+				// Keep the source short: the existing Org conversion promotes wrapped raw source to a block.
+				code := "alpha beta gamma delta epsilon"
+				delimiter := "`"
+				if format == "org" {
+					delimiter = "="
+				}
+				writeFile(t, path, "Before "+delimiter+code+delimiter+" after.\n")
+				renderFontCLI(t, binary, dir, path)
+				words := inlinePDFWords(t, compileFontPDF(t, dir))
+				for _, marker := range strings.Fields("Before " + code + " after.") {
+					if _, ok := words[marker]; !ok {
+						t.Fatalf("wrapped PDF lost %s", marker)
+					}
+				}
+				// Different body/code fonts have different ascenders; 5pt permits that, not a new line.
+				if math.Abs(words["Before"].YMin-words["alpha"].YMin) > 5 {
+					t.Error("inline code was moved out of the opening paragraph line")
+				}
+				if words["epsilon"].YMin <= words["alpha"].YMin+5 {
+					t.Error("long inline code did not wrap between words")
+				}
+				if math.Abs(words["epsilon"].YMin-words["after."].YMin) > 5 || words["after."].XMin < words["epsilon"].XMax {
+					t.Error("following prose did not resume after the final inline code word")
+				}
+			})
+		}
+	}
+}

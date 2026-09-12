@@ -216,7 +216,15 @@
 
 #show raw.where(block: false): it => text(
   {{fontArgs .Config.Folio.Manuscript.Mono.Font}}
-)[#it]
+)[
+  // Scale the normal-width face so condensed variants do not compound stretch.
+  #set text(stretch: 100%, spacing: {{.Config.Folio.Manuscript.Mono.Font.Stretch}})
+  // Scale words independently to retain paragraph line breaks at spaces.
+  #show regex("\\S+"): word => box(scale(
+    x: {{.Config.Folio.Manuscript.Mono.Font.Stretch}}, y: 100%, reflow: true,
+  )[#word])
+  #it
+]
 
 #set page(
   {{if .PageSpec.Custom}}width: {{.PageSpec.Width}}, height: {{.PageSpec.Height}},{{else}}paper: "{{.PageSpec.Named}}",{{end}}
