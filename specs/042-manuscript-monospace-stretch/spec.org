@@ -23,8 +23,8 @@
   special characters, and fonts without another width require coverage.
 - Decisions :: This is a *proposal for review*. Analysis and specification
   writing are authorized; production implementation has not been requested.
-- Next step :: Review the proposal, then use the definition gate and operator
-  sign-off before normal delivery.
+- Next step :: Resolve *part/chapter title scope and uppercase-code behaviour*,
+  then finalize the definition and operator sign-off before normal delivery.
 
 -----
 
@@ -131,8 +131,27 @@ BLOCKPROBE
   and [[file:../039-unified-font-configuration/spec.org::#ac-039-5][AC039.5 - Clean breaking failure boundary]].
 - Exclude new scaling controls, font installation, font-family rewriting,
   configuration-schema changes, and unrelated manuscript defects.
-- No product decision blocks this bounded proposal. *Operator review remains
-  required*; a different original symptom may require additional investigation.
+- Initial assessment :: The initial proposal identified no blocking product
+  decision. That assessment is *superseded by the title-semantics question
+  below*; a different original symptom may also require investigation.
+
+** Unresolved part/chapter title semantics
+
+- Current path :: Part and chapter headings pass through =caseTransform=.
+  Its =as-written= path calls =typstInline(text, Config{})=, so a backtick
+  span receives *empty font values*, including an invalid empty size literal.
+  The British defaults select =as-written= for both heading kinds.
+- Uppercase path :: =upper= uppercases and escapes the heading as ordinary
+  content; it does not interpret the code span as monospace content.
+- Decision required :: Whether part/chapter title code belongs in this repair,
+  and what uppercase conversion should do to its text and font. The general
+  inline-code criterion below *cannot authorize a silent behaviour choice*.
+- Recommendation :: Include title code, uppercase only surrounding title text,
+  and preserve literal code text with its monospace formatting. This is a
+  proposal, not an operator-approved change to uppercase-title semantics.
+- Definition boundary :: Resolve the decision before delivery. Reconcile the
+  summary, acceptance criterion, tests for both casing modes, and outlined
+  title appearance in the table of contents with the selected behaviour.
 
 * Acceptance Criteria
 :PROPERTIES:
@@ -181,13 +200,25 @@ BLOCKPROBE
   Change one property at a time: family, size, named/numeric weight, stretch,
   regular/italic/oblique style, and signed letter spacing. Include a combined
   block and a partial higher-layer override. Use synthetic, isolated config.
-- Action :: Inspect the font settings *in effect at each marked code span*.
-  A test-only Typst context/metadata probe on emitted content may inspect these
-  values during compilation; it must not replace the production styling rules.
-- Expected :: Each marked span receives the complete selected role's values;
-  =117.5= and =117.5%= normalize equivalently, numeric weights compile, and
-  omitted properties retain their same-role lower-layer values. *A marker
-  elsewhere in the file cannot satisfy the assertion*.
+- Action :: Inspect the *emitted construct containing each unique marker* and
+  the applicable inline-raw rule in that generated Typst artefact. Require
+  section-code markers to occur in inline raw content, rather than an explicit
+  three-property =#text= wrapper. Inspect all six arguments of the governing
+  =raw.where(block: false)= rule, and compile the unmodified emitted document.
+- Expected :: The marked spans *use the inline-raw route*, its emitted rule
+  carries the configured six-property font, numeric weights compile, and
+  omitted properties retain their same-role lower-layer values. Assertions on
+  the rule alone cannot satisfy the content-routing assertion. Paragraph and
+  block controls keep their existing routes.
+- Evidence boundary :: These assertions verify the public Typst output and
+  successful compilation; they do not claim to inspect resolved glyph styles.
+  Actual width selection is verified by
+  [[#ut-042-1][UT042.1 - Compare rendered monospace widths]]. Use known available
+  public or embedded font families for compilation; no private font is required.
+- Test-design history :: This emitted-content check replaces the proposed
+  context/metadata probe, whose ability to observe styles inside the production
+  rule was not established. Configuration normalization remains covered by
+  the existing W039 - Unified Font Configuration regressions.
 - Retention :: Persistent regression under =make test=; retain the lineage of
   RT039.1 - Exercise every public font role. Observe the section-code stretch
   case fail on the baseline before implementing.
@@ -209,6 +240,15 @@ BLOCKPROBE
   existing validation tests.
 - Retention :: Persistent regression under =make test=. Add only cases that
   exercise this changed rendering path; retain existing parsing regressions.
+- Existing assertion disposition :: Amend =TestRenderInlineMarkup= in
+  [[file:../../internal/manuscript/manuscript_test.go][the inline markup regression]]
+  *in place*, retaining its name and linking its changed assertion to
+  RT042.2 - Preserve literals and role isolation. Update the four-argument
+  helper call for the simplified signature and replace its expected explicit
+  =#text= wrapper with the equivalent inline-raw construct. Preserve its
+  dash conversion, bold, italic, literal =kevin_murray= content, and subsequent
+  Markdown parsing/rendering assertions. The obsolete output spelling is
+  superseded; *its behavioural coverage remains active*.
 
 ** UT042.1 - Compare rendered monospace widths
 :PROPERTIES:
