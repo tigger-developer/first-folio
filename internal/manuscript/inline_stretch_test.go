@@ -8,6 +8,7 @@ import (
 	"io"
 	"math"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -22,16 +23,18 @@ func TestRT042_4ProportionalInlineStretch(t *testing.T) {
 				cfg := fontFixtureConfig()
 				setFontTestPath(cfg, "folio.manuscript.mono.font.stretch", fmt.Sprintf("%d%%", percent))
 				setFontTestPath(cfg, "folio.manuscript.toc.enabled", false)
+				setFontTestPath(cfg, "folio.manuscript.font.size", "18pt")
+				setFontTestPath(cfg, "folio.manuscript.mono.font.size", "18pt")
 				dir, path := fontFixture(t, format, false, cfg)
 				source := "Before `monospace_0123` after.\n"
 				if format == "org" {
 					source = "Before =monospace_0123= after.\n"
 				}
 				writeFile(t, path, source)
-				renderFontCLI(t, binary, dir, path)
+				output := renderFontCLI(t, binary, dir, path)
 				words := inlinePDFWords(t, compileFontPDF(t, dir))
 				if percent == 100 {
-					baseline = words
+					baseline = unscaledInlineReference(t, output)
 				}
 				for _, marker := range []string{"Before", "monospace_0123", "after."} {
 					word, ok := words[marker]
@@ -53,9 +56,28 @@ func TestRT042_4ProportionalInlineStretch(t *testing.T) {
 				if words["monospace_0123"].XMax >= words["after."].XMin {
 					t.Error("scaled code overlaps following prose")
 				}
+				gotGap := words["after."].XMin - words["monospace_0123"].XMax
+				wantGap := baseline["after."].XMin - baseline["monospace_0123"].XMax
+				if math.Abs(gotGap-wantGap) > 0.02 {
+					t.Errorf("space after inline code %.3fpt, want original %.3fpt", gotGap, wantGap)
+				}
 			})
 		}
 	}
+}
+
+// Render the original native inline rule as an independent alignment oracle.
+// Only this reference is modified; the candidate PDF uses unmodified CLI output.
+func unscaledInlineReference(t *testing.T, output string) map[string]inlinePDFWord {
+	t.Helper()
+	rule := fontOutputRule(t, output, "#show raw.where(block: false):")
+	font, _, ok := strings.Cut(rule, ")[")
+	if !ok {
+		t.Fatal("inline reference lacks the role font arguments")
+	}
+	dir := t.TempDir()
+	writeFile(t, filepath.Join(dir, "output.typ"), strings.Replace(output, rule, font+")[#it]", 1))
+	return inlinePDFWords(t, compileFontPDF(t, dir))
 }
 
 type inlinePDFWord struct {
