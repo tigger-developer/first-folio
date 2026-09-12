@@ -1,7 +1,7 @@
 #+TITLE: Project Work Ledger
 #+STARTUP: overview
 #+TODO: TODO ACTIVE BLOCKED REVIEW | DONE ABANDONED
-#+TYP_TODO: PENDING FAILING SUPERSEDED | HOLD ASSUMED_PASS
+#+TYP_TODO: PENDING FAILING SUPERSEDED | VALID ASSUMED_PASS
 #+TAGS: feature defect maintenance migration legacy
 #+OPTIONS: toc:2 num:nil
 
@@ -42,7 +42,7 @@ section defines their meanings.
 - =PENDING= :: The requirement or some required evidence remains unverified.
 - =FAILING= :: Current evidence shows that the requirement does not hold.
 - =SUPERSEDED= :: A named later requirement replaces or retires it.
-- =HOLD= :: The requirement remains current and its recorded evidence passes.
+- =VALID= :: The requirement remains current and its recorded evidence passes.
 - =ASSUMED_PASS= :: Migration inferred delivery under a recorded heuristic; it
   is not a contemporaneous test result.
 
@@ -359,7 +359,7 @@ authorities.
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/1][#1 - feat: unified folio CLI with multi-format conversion]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC1.1 - =folio convert= accepts a source file path and an optional target file path
+*** VALID AC1.1 - =folio convert= accepts a source file path and an optional target file path
 
 **** Requirement
 
@@ -407,7 +407,7 @@ authorities.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** HOLD AC1.2 - Supported extensions are =.org= (org-mode), =.md= (Markdown), =.fountain=/=.ftn= (Fountain), and =.pdf= (output only)
+*** VALID AC1.2 - Supported extensions are =.org= (org-mode), =.md= (Markdown), =.fountain=/=.ftn= (Fountain), and =.pdf= (output only)
 
 **** Requirement
 
@@ -449,7 +449,7 @@ Supported extensions are =.org= (org-mode), =.md= (Markdown), =.fountain=/=.ftn=
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** HOLD AC1.3 - Org-mode documents convert to Markdown, Fountain, and PDF with semantic play content preserved
+*** VALID AC1.3 - Org-mode documents convert to Markdown, Fountain, and PDF with semantic play content preserved
 
 **** Requirement
 
@@ -515,7 +515,7 @@ Org-mode documents convert to Markdown, Fountain, and PDF with semantic play con
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** HOLD AC1.4 - Markdown documents convert to org-mode, Fountain, and PDF with semantic play content preserved
+*** VALID AC1.4 - Markdown documents convert to org-mode, Fountain, and PDF with semantic play content preserved
 
 **** Requirement
 
@@ -569,7 +569,7 @@ Markdown documents convert to org-mode, Fountain, and PDF with semantic play con
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** HOLD AC1.5 - Fountain documents convert to org-mode, Markdown, and PDF with semantic play content preserved
+*** VALID AC1.5 - Fountain documents convert to org-mode, Markdown, and PDF with semantic play content preserved
 
 **** Requirement
 
@@ -623,7 +623,7 @@ Fountain documents convert to org-mode, Markdown, and PDF with semantic play con
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** HOLD AC1.6 - PDF is write-only
+*** VALID AC1.6 - PDF is write-only
 
 **** Requirement
 
@@ -653,7 +653,7 @@ PDF is write-only. Conversion from a =.pdf= source is an error with non-zero exi
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** HOLD AC1.7 - PDF output configuration (font, page size, margins, indent, direction styling) and default output format are configurable via CLI flags and config file, using the config system established in #2
+*** VALID AC1.7 - PDF output configuration (font, page size, margins, indent, direction styling) and default output format are configurable via CLI flags and config file, using the config system established in #2
 
 **** Requirement
 
@@ -695,7 +695,7 @@ PDF output configuration (font, page size, margins, indent, direction styling) a
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** HOLD AC1.8 - =folio --help=, =folio --version=, and =folio convert --help= provide usage information and version
+*** VALID AC1.8 - =folio --help=, =folio --version=, and =folio convert --help= provide usage information and version
 
 **** Requirement
 
@@ -731,7 +731,7 @@ PDF output configuration (font, page size, margins, indent, direction styling) a
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** HOLD AC1.9 - Dropped or degraded elements during conversion produce warnings on stderr without halting
+*** VALID AC1.9 - Dropped or degraded elements during conversion produce warnings on stderr without halting
 
 **** Requirement
 
@@ -767,7 +767,7 @@ Dropped or degraded elements during conversion produce warnings on stderr withou
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/1.md=.
 
-*** HOLD AC1.10 - Binary output (PDF) to an interactive terminal is refused with a descriptive error unless =--force= is given
+*** VALID AC1.10 - Binary output (PDF) to an interactive terminal is refused with a descriptive error unless =--force= is given
 
 **** Requirement
 
@@ -802,7 +802,7 @@ Binary output (PDF) to an interactive terminal is refused with a descriptive err
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/2][#2 - feat: unified YAML config with precedence chain and shared schema]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC2.1 - Configuration is read from YAML files named =script.yaml=
+*** VALID AC2.1 - Configuration is read from YAML files named =script.yaml=
 
 **** Requirement
 
@@ -832,7 +832,7 @@ Configuration is read from YAML files named =script.yaml=. First Folio never cre
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/2.md=.
 
-*** HOLD AC2.2 - All config sources are read and merged in precedence order: CLI flags > local =script.yaml= (source file directory) > =~/.config/first-folio/script.yaml= > built-in defaults
+*** VALID AC2.2 - All config sources are read and merged in precedence order: CLI flags > local =script.yaml= (source file directory) > =~/.config/first-folio/script.yaml= > built-in defaults
 
 **** Requirement
 
@@ -874,7 +874,7 @@ All config sources are read and merged in precedence order: CLI flags > local =s
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/2.md=.
 
-*** HOLD AC2.3 - First Folio reads shared metadata keys (=title=, =subtitle=, =author=, =draft-date=), shared rendering keys (=render-stage-directions=, =render-intro=, =render-footnotes=, =render-character-table=), and all keys under =folio:=
+*** VALID AC2.3 - First Folio reads shared metadata keys (=title=, =subtitle=, =author=, =draft-date=), shared rendering keys (=render-stage-directions=, =render-intro=, =render-footnotes=, =render-character-table=), and all keys under =folio:=
 
 **** Requirement
 
@@ -910,7 +910,7 @@ First Folio reads shared metadata keys (=title=, =subtitle=, =author=, =draft-da
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/2.md=.
 
-*** HOLD AC2.4 - The deprecated flat config at =~/.config/org-script/config= is not read
+*** VALID AC2.4 - The deprecated flat config at =~/.config/org-script/config= is not read
 
 **** Requirement
 
@@ -940,7 +940,7 @@ The deprecated flat config at =~/.config/org-script/config= is not read. The old
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/2.md=.
 
-*** HOLD AC2.5 - Config metadata (=title=, =subtitle=, =author=, =draft-date=) overrides any corresponding values found in the source document
+*** VALID AC2.5 - Config metadata (=title=, =subtitle=, =author=, =draft-date=) overrides any corresponding values found in the source document
 
 **** Requirement
 
@@ -1107,7 +1107,7 @@ Transitions are a supported event type (H5 or :transition: tagged H3).
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** HOLD AC3.6 - The =folio.style= configuration key and =--style= CLI flag select the British or US style, with CLI values taking precedence over local and global configuration and the US preset layering above the British preset
+*** VALID AC3.6 - The =folio.style= configuration key and =--style= CLI flag select the British or US style, with CLI values taking precedence over local and global configuration and the US preset layering above the British preset
 
 **** Requirement
 
@@ -1126,7 +1126,7 @@ The =folio.style= configuration key and =--style= CLI flag select the British or
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** HOLD AC3.7 - Style-specific user configuration files named =script-british.yaml= and =script-us.yaml= load at global and local levels and override style-agnostic files at the same level
+*** VALID AC3.7 - Style-specific user configuration files named =script-british.yaml= and =script-us.yaml= load at global and local levels and override style-agnostic files at the same level
 
 **** Requirement
 
@@ -1145,7 +1145,7 @@ Style-specific user configuration files named =script-british.yaml= and =script-
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/3.md=.
 
-*** HOLD AC3.8 - Character names found in stage-direction text are uppercased using word-boundary matching from the character table, while dialogue text is not modified
+*** VALID AC3.8 - Character names found in stage-direction text are uppercased using word-boundary matching from the character table, while dialogue text is not modified
 
 **** Requirement
 
@@ -1270,7 +1270,7 @@ The formula declares Typst as an optional dependency.
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/5][#5 - feat: H3 tag system for within-scene elements]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC5.1 - H3 with =:prop:= tag emits =prop_text= event
+*** VALID AC5.1 - H3 with =:prop:= tag emits =prop_text= event
 
 **** Requirement
 
@@ -1294,7 +1294,7 @@ H3 with =:prop:= tag emits =prop_text= event.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/5.md=.
 
-*** HOLD AC5.2 - H3 with =:transition:= tag emits =transition= event
+*** VALID AC5.2 - H3 with =:transition:= tag emits =transition= event
 
 **** Requirement
 
@@ -1318,7 +1318,7 @@ H3 with =:transition:= tag emits =transition= event.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/5.md=.
 
-*** HOLD AC5.3 - Untagged H3 continues to emit =stage_direction= event
+*** VALID AC5.3 - Untagged H3 continues to emit =stage_direction= event
 
 **** Requirement
 
@@ -1342,7 +1342,7 @@ Untagged H3 continues to emit =stage_direction= event.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/5.md=.
 
-*** HOLD AC5.4 - H5 transitions and =- *"TEXT"*= prop text remain supported (deprecated)
+*** VALID AC5.4 - H5 transitions and =- *"TEXT"*= prop text remain supported (deprecated)
 
 **** Requirement
 
@@ -1366,7 +1366,7 @@ H5 transitions and =- *"TEXT"*= prop text remain supported (deprecated).
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/5.md=.
 
-*** HOLD AC5.5 - Org emitter outputs =:prop:= and =:transition:= tags (not deprecated syntax)
+*** VALID AC5.5 - Org emitter outputs =:prop:= and =:transition:= tags (not deprecated syntax)
 
 **** Requirement
 
@@ -1395,7 +1395,7 @@ Org emitter outputs =:prop:= and =:transition:= tags (not deprecated syntax).
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/6][#6 - feat: cover letter generation from org :cover: tag]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC6.1 - =:letter:= tagged H1 is parsed as letter structure
+*** VALID AC6.1 - =:letter:= tagged H1 is parsed as letter structure
 
 **** Requirement
 
@@ -1419,7 +1419,7 @@ Org emitter outputs =:prop:= and =:transition:= tags (not deprecated syntax).
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** HOLD AC6.2 - Each =:to:= recipient generates a separate PDF
+*** VALID AC6.2 - Each =:to:= recipient generates a separate PDF
 
 **** Requirement
 
@@ -1443,7 +1443,7 @@ Each =:to:= recipient generates a separate PDF.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** HOLD AC6.3 - Placeholder substitution (=[org]=, =[moniker]=, any tag) works per recipient
+*** VALID AC6.3 - Placeholder substitution (=[org]=, =[moniker]=, any tag) works per recipient
 
 **** Requirement
 
@@ -1467,7 +1467,7 @@ Placeholder substitution (=[org]=, =[moniker]=, any tag) works per recipient.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** HOLD AC6.4 - Missing fields fall back to defaults (date, closing, signoff, sender)
+*** VALID AC6.4 - Missing fields fall back to defaults (date, closing, signoff, sender)
 
 **** Requirement
 
@@ -1491,7 +1491,7 @@ Missing fields fall back to defaults (date, closing, signoff, sender).
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** HOLD AC6.5 - Letter renders as a properly formatted business letter in PDF
+*** VALID AC6.5 - Letter renders as a properly formatted business letter in PDF
 
 **** Requirement
 
@@ -1515,7 +1515,7 @@ Letter renders as a properly formatted business letter in PDF.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** HOLD AC6.6 - Org markup (bold, italic, underline) renders in letter body
+*** VALID AC6.6 - Org markup (bold, italic, underline) renders in letter body
 
 **** Requirement
 
@@ -1539,7 +1539,7 @@ Org markup (bold, italic, underline) renders in letter body.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** HOLD AC6.7 - Date expands from ISO to long form (1 May 2026)
+*** VALID AC6.7 - Date expands from ISO to long form (1 May 2026)
 
 **** Requirement
 
@@ -1563,7 +1563,7 @@ Date expands from ISO to long form (1 May 2026).
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** HOLD AC6.8 - All spacing configurable via folio.letter.* config
+*** VALID AC6.8 - All spacing configurable via folio.letter.* config
 
 **** Requirement
 
@@ -1587,7 +1587,7 @@ All spacing configurable via folio.letter.* config.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/6.md=.
 
-*** HOLD AC6.9 - Generic tag system: any H4 tag under :to: becomes a placeholder variable
+*** VALID AC6.9 - Generic tag system: any H4 tag under :to: becomes a placeholder variable
 
 **** Requirement
 
@@ -1616,7 +1616,7 @@ Generic tag system: any H4 tag under :to: becomes a placeholder variable.
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/8][#8 - feat: font-weight and font-stretch config keys]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC8.1 - =folio.font-weight= accepted as keyword (e.g
+*** VALID AC8.1 - =folio.font-weight= accepted as keyword (e.g
 
 **** Requirement
 
@@ -1640,7 +1640,7 @@ Generic tag system: any H4 tag under :to: becomes a placeholder variable.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** HOLD AC8.2 - =folio.font-weight= accepted as numeric (100–900) and emitted unquoted
+*** VALID AC8.2 - =folio.font-weight= accepted as numeric (100–900) and emitted unquoted
 
 **** Requirement
 
@@ -1664,7 +1664,7 @@ Generic tag system: any H4 tag under :to: becomes a placeholder variable.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** HOLD AC8.3 - =folio.font-stretch= accepted as percentage and emitted to Typst
+*** VALID AC8.3 - =folio.font-stretch= accepted as percentage and emitted to Typst
 
 **** Requirement
 
@@ -1688,7 +1688,7 @@ Generic tag system: any H4 tag under :to: becomes a placeholder variable.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** HOLD AC8.4 - =folio.font-stretch= accepts plain number, treated as percentage
+*** VALID AC8.4 - =folio.font-stretch= accepts plain number, treated as percentage
 
 **** Requirement
 
@@ -1712,7 +1712,7 @@ Generic tag system: any H4 tag under :to: becomes a placeholder variable.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** HOLD AC8.5 - Same keys work under =folio.letter= for letter rendering
+*** VALID AC8.5 - Same keys work under =folio.letter= for letter rendering
 
 **** Requirement
 
@@ -1736,7 +1736,7 @@ Same keys work under =folio.letter= for letter rendering.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** HOLD AC8.6 - When unset, Typst output omits weight/stretch (backward compatible)
+*** VALID AC8.6 - When unset, Typst output omits weight/stretch (backward compatible)
 
 **** Requirement
 
@@ -1760,7 +1760,7 @@ When unset, Typst output omits weight/stretch (backward compatible).
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** HOLD AC8.7 - Documented in =examples/script.yaml.example= for both body and letter
+*** VALID AC8.7 - Documented in =examples/script.yaml.example= for both body and letter
 
 **** Requirement
 
@@ -1790,7 +1790,7 @@ Documented in =examples/script.yaml.example= for both body and letter.
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/9][https://github.com/tigger-developer/first-folio/issues/9]]
 - *Source group:* Requirements and tests retained from the legacy ledger.
 
-*** HOLD AC9.1 - Given a manuscript command with Markdown or org-mode chapter files and a PDF target, First Folio creates one manuscript PDF at the target path
+*** VALID AC9.1 - Given a manuscript command with Markdown or org-mode chapter files and a PDF target, First Folio creates one manuscript PDF at the target path
 
 **** Requirement
 
@@ -1857,7 +1857,7 @@ Given a manuscript command with Markdown or org-mode chapter files and a PDF tar
 - *Status:* PASS
 - *Evidence:* Archived ticket #33 records the test as passing; current =make test= passed the maintained RT definition.
 
-*** HOLD AC9.2 - Given a quoted chapter glob or multiple explicit chapter paths, First Folio includes only the selected chapters in deterministic chapter order with a blank-line separator between files
+*** VALID AC9.2 - Given a quoted chapter glob or multiple explicit chapter paths, First Folio includes only the selected chapters in deterministic chapter order with a blank-line separator between files
 
 **** Requirement
 
@@ -1906,7 +1906,7 @@ Given a quoted chapter glob or multiple explicit chapter paths, First Folio incl
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.3 - Given manuscript Markdown input, prose paragraphs, headings, parts, chapters, scene breaks, emphasis, private notes, and footnotes have corresponding manuscript events or Typst markup
+*** VALID AC9.3 - Given manuscript Markdown input, prose paragraphs, headings, parts, chapters, scene breaks, emphasis, private notes, and footnotes have corresponding manuscript events or Typst markup
 
 **** Requirement
 
@@ -1955,7 +1955,7 @@ Given manuscript Markdown input, prose paragraphs, headings, parts, chapters, sc
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.4 - Given manuscript org-mode input, prose paragraphs, headings, parts, chapters, scene breaks, emphasis, noexport sections, and footnotes have corresponding manuscript events or Typst markup
+*** VALID AC9.4 - Given manuscript org-mode input, prose paragraphs, headings, parts, chapters, scene breaks, emphasis, noexport sections, and footnotes have corresponding manuscript events or Typst markup
 
 **** Requirement
 
@@ -2004,7 +2004,7 @@ Given manuscript org-mode input, prose paragraphs, headings, parts, chapters, sc
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.5 - Given existing root =folio.font=, =folio.font-size=, =folio.page=, and =folio.margin= configuration, script, letter, and manuscript rendering inherit the same document defaults unless a mode or child override is present
+*** VALID AC9.5 - Given existing root =folio.font=, =folio.font-size=, =folio.page=, and =folio.margin= configuration, script, letter, and manuscript rendering inherit the same document defaults unless a mode or child override is present
 
 **** Requirement
 
@@ -2047,7 +2047,7 @@ Given existing root =folio.font=, =folio.font-size=, =folio.page=, and =folio.ma
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.6 - Given root heading font configuration, script and manuscript headings inherit =folio.heading-font= and =folio.heading-font-size=, and missing heading values inherit from =folio.font= and =folio.font-size=
+*** VALID AC9.6 - Given root heading font configuration, script and manuscript headings inherit =folio.heading-font= and =folio.heading-font-size=, and missing heading values inherit from =folio.font= and =folio.font-size=
 
 **** Requirement
 
@@ -2090,7 +2090,7 @@ Given root heading font configuration, script and manuscript headings inherit =f
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.7 - Given manuscript-specific font configuration, manuscript child font settings override the manuscript mode defaults for only their own elements
+*** VALID AC9.7 - Given manuscript-specific font configuration, manuscript child font settings override the manuscript mode defaults for only their own elements
 
 **** Requirement
 
@@ -2139,7 +2139,7 @@ Given manuscript-specific font configuration, manuscript child font settings ove
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.8 - Given British manuscript defaults, First Folio uses a publisher-friendly A4 manuscript layout with 20mm margins, a title page, running page header, new-page chapters, and part divider pages
+*** VALID AC9.8 - Given British manuscript defaults, First Folio uses a publisher-friendly A4 manuscript layout with 20mm margins, a title page, running page header, new-page chapters, and part divider pages
 
 **** Requirement
 
@@ -2236,7 +2236,7 @@ Given British manuscript defaults, First Folio uses a publisher-friendly A4 manu
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.9 - Given US manuscript defaults, First Folio applies a Shunn-based manuscript override YAML on top of the British manuscript base without making US layout the global default
+*** VALID AC9.9 - Given US manuscript defaults, First Folio applies a Shunn-based manuscript override YAML on top of the British manuscript base without making US layout the global default
 
 **** Requirement
 
@@ -2309,7 +2309,7 @@ Given US manuscript defaults, First Folio applies a Shunn-based manuscript overr
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.10 - Given no page configuration, every First Folio rendering mode uses A4 as the page size
+*** VALID AC9.10 - Given no page configuration, every First Folio rendering mode uses A4 as the page size
 
 **** Requirement
 
@@ -2352,7 +2352,7 @@ Given no page configuration, every First Folio rendering mode uses A4 as the pag
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.11 - Given invalid manuscript inputs or output destinations, First Folio exits non-zero and writes a diagnostic to stderr without creating a misleading success artefact
+*** VALID AC9.11 - Given invalid manuscript inputs or output destinations, First Folio exits non-zero and writes a diagnostic to stderr without creating a misleading success artefact
 
 **** Requirement
 
@@ -2401,7 +2401,7 @@ Given invalid manuscript inputs or output destinations, First Folio exits non-ze
 - Original source group: Issue 9: Manuscript PDF Mode.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC9.12 - Given manuscript TOC configuration, First Folio includes a table of contents by default and applies TOC-specific font and layout overrides when present
+*** VALID AC9.12 - Given manuscript TOC configuration, First Folio includes a table of contents by default and applies TOC-specific font and layout overrides when present
 
 **** Requirement
 
@@ -2505,7 +2505,7 @@ Given manuscript TOC configuration, First Folio includes a table of contents by 
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 - One source test is explicitly marked removed; that marker is preserved as =SUPERSEDED= under its test heading.
 
-*** HOLD AC9.13 - Given manuscript paragraph layout configuration, First Folio applies configurable line spacing, first-line paragraph indentation, and paragraph spacing with mode-specific defaults
+*** VALID AC9.13 - Given manuscript paragraph layout configuration, First Folio applies configurable line spacing, first-line paragraph indentation, and paragraph spacing with mode-specific defaults
 
 **** Requirement
 
@@ -2559,7 +2559,7 @@ Given manuscript paragraph layout configuration, First Folio applies configurabl
 - *Source heading:* Go Runtime Migration
 - *Source group:* Requirements and tests retained from the legacy ledger.
 
-*** HOLD AC10.1 - Given any supported command, the public =folio= executable dispatches =convert=, =letter=, and =manuscript= within one Go process and preserves the documented CLI contract
+*** VALID AC10.1 - Given any supported command, the public =folio= executable dispatches =convert=, =letter=, and =manuscript= within one Go process and preserves the documented CLI contract
 
 **** Requirement
 
@@ -2596,7 +2596,7 @@ Given any supported command, the public =folio= executable dispatches =convert=,
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.2 - Given existing script inputs and targets, Go conversion preserves the accepted Org, Markdown, Fountain, Typst, and PDF structure, metadata, Unicode, warnings, and errors
+*** VALID AC10.2 - Given existing script inputs and targets, Go conversion preserves the accepted Org, Markdown, Fountain, Typst, and PDF structure, metadata, Unicode, warnings, and errors
 
 **** Requirement
 
@@ -2657,7 +2657,7 @@ Given existing script inputs and targets, Go conversion preserves the accepted O
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.3 - Given existing letter inputs and configuration, Go letter generation preserves recipient selection, inline formatting, metadata, filenames, Typst, and PDF layout behaviour
+*** VALID AC10.3 - Given existing letter inputs and configuration, Go letter generation preserves recipient selection, inline formatting, metadata, filenames, Typst, and PDF layout behaviour
 
 **** Requirement
 
@@ -2700,7 +2700,7 @@ Given existing letter inputs and configuration, Go letter generation preserves r
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.4 - Given existing manuscript inputs and presets, the integrated Go subcommand preserves the accepted Markdown/org contract, multi-input joining, configuration, Typst, and British/US PDF behaviour
+*** VALID AC10.4 - Given existing manuscript inputs and presets, the integrated Go subcommand preserves the accepted Markdown/org contract, multi-input joining, configuration, Typst, and British/US PDF behaviour
 
 **** Requirement
 
@@ -2749,7 +2749,7 @@ Given existing manuscript inputs and presets, the integrated Go subcommand prese
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.5 - Given global, local, style-specific, root, and mode-specific YAML, one typed Go loader applies documented precedence consistently across all subcommands while ignoring unrelated companion-tool keys
+*** VALID AC10.5 - Given global, local, style-specific, root, and mode-specific YAML, one typed Go loader applies documented precedence consistently across all subcommands while ignoring unrelated companion-tool keys
 
 **** Requirement
 
@@ -2786,7 +2786,7 @@ Given global, local, style-specific, root, and mode-specific YAML, one typed Go 
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.6 - Given hostile or syntax-significant input, Go rendering escapes each Typst context without compile failure or unintended markup execution
+*** VALID AC10.6 - Given hostile or syntax-significant input, Go rendering escapes each Typst context without compile failure or unintended markup execution
 
 **** Requirement
 
@@ -2823,7 +2823,7 @@ Given hostile or syntax-significant input, Go rendering escapes each Typst conte
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.7 - Given PDF or Typst output, substantial layout is loaded from file-backed templates and no project-owned Go, Perl, or shell production code contains complex generated-Typst heredocs or equivalent string assembly
+*** VALID AC10.7 - Given PDF or Typst output, substantial layout is loaded from file-backed templates and no project-owned Go, Perl, or shell production code contains complex generated-Typst heredocs or equivalent string assembly
 
 **** Requirement
 
@@ -2860,7 +2860,7 @@ Given PDF or Typst output, substantial layout is loaded from file-backed templat
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.8 - Given a clean checkout, build, install, test, lint, and release preparation operate through Go tooling and produce/install one =folio= binary with installation-safe assets
+*** VALID AC10.8 - Given a clean checkout, build, install, test, lint, and release preparation operate through Go tooling and produce/install one =folio= binary with installation-safe assets
 
 **** Requirement
 
@@ -2897,7 +2897,7 @@ Given a clean checkout, build, install, test, lint, and release preparation oper
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.9 - Given the completed migration, First Folio has no Perl runtime/build/test/release dependency and no project-owned shell application or regression-test logic
+*** VALID AC10.9 - Given the completed migration, First Folio has no Perl runtime/build/test/release dependency and no project-owned shell application or regression-test logic
 
 **** Requirement
 
@@ -2934,7 +2934,7 @@ Given the completed migration, First Folio has no Perl runtime/build/test/releas
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.10 - Given all accepted pre-migration fixtures, the Go implementation is behaviourally equivalent except for changes explicitly approved in separately referenced issues
+*** VALID AC10.10 - Given all accepted pre-migration fixtures, the Go implementation is behaviourally equivalent except for changes explicitly approved in separately referenced issues
 
 **** Requirement
 
@@ -2971,7 +2971,7 @@ Given all accepted pre-migration fixtures, the Go implementation is behaviourall
 - Original source group: Go Runtime Migration.
 - Original requirement and test row was converted from =docs/ACs.md= without renumbering.
 
-*** HOLD AC10.11 - Given completion of the migration, architecture, configuration, format, installation, contributor, dependency, and release documentation describe the Go-only implementation accurately
+*** VALID AC10.11 - Given completion of the migration, architecture, configuration, format, installation, contributor, dependency, and release documentation describe the Go-only implementation accurately
 
 **** Requirement
 
@@ -3864,7 +3864,7 @@ Given no user configuration, =folio.manuscript.page-header.format= defaults to =
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/16][#16 - Parity-aware book layout, Roman-numeral frontmatter, and numbering resets]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC16.1 - =folio.manuscript.page-numbering.frontmatter-format= accepts ="1"=, ="I"=, or ="i"=
+*** VALID AC16.1 - =folio.manuscript.page-numbering.frontmatter-format= accepts ="1"=, ="I"=, or ="i"=
 
 **** Requirement
 
@@ -3906,7 +3906,7 @@ Given no user configuration, =folio.manuscript.page-header.format= defaults to =
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/16.md=.
 
-*** HOLD AC16.2 - =folio.manuscript.page-numbering.body-format= accepts ="1"=, ="I"=, or ="i"=
+*** VALID AC16.2 - =folio.manuscript.page-numbering.body-format= accepts ="1"=, ="I"=, or ="i"=
 
 **** Requirement
 
@@ -3936,7 +3936,7 @@ Given no user configuration, =folio.manuscript.page-header.format= defaults to =
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/16.md=.
 
-*** HOLD AC16.3 - =folio.manuscript.page-numbering.body-reset= accepts ="first-part-or-chapter"= (default) or ="never"=
+*** VALID AC16.3 - =folio.manuscript.page-numbering.body-reset= accepts ="first-part-or-chapter"= (default) or ="never"=
 
 **** Requirement
 
@@ -4007,7 +4007,7 @@ Given no user configuration, =folio.manuscript.page-header.format= defaults to =
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/18][#18 - Semantic authoring of parts and chapters with configurable rendering]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC18.1 - Given an H1 heading whose text is a plain semantic name, the manuscript parser stores the heading's text as the part's semantic name and records the part's position-derived number (1, 2, 3, ...) starting from 1 for the first H1 in the source
+*** VALID AC18.1 - Given an H1 heading whose text is a plain semantic name, the manuscript parser stores the heading's text as the part's semantic name and records the part's position-derived number (1, 2, 3, ...) starting from 1 for the first H1 in the source
 
 **** Requirement
 
@@ -4043,7 +4043,7 @@ Given an H1 heading whose text is a plain semantic name, the manuscript parser s
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/18.md=.
 
-*** HOLD AC18.2 - Given an H1 or H2 heading whose text matches the pattern =Part <number>[<separator>] <name>= or =Chapter <number>[<separator>] <name>= (case-insensitive, number in arabic, roman, or a spelled-out word), the parser strips the prefix and captures the name remainder as the semantic name; source-order-derived numbering is used unless =part.explicit-numbering: source= (or the equivalent for chapter) opts in to using the parsed source number
+*** VALID AC18.2 - Given an H1 or H2 heading whose text matches the pattern =Part <number>[<separator>] <name>= or =Chapter <number>[<separator>] <name>= (case-insensitive, number in arabic, roman, or a spelled-out word), the parser strips the prefix and captures the name remainder as the semantic name; source-order-derived numbering is used unless =part.explicit-numbering: source= (or the equivalent for chapter) opts in to using the parsed source number
 
 **** Requirement
 
@@ -4085,7 +4085,7 @@ Given an H1 or H2 heading whose text matches the pattern =Part <number>[<separat
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/18.md=.
 
-*** HOLD AC18.3 - Each of =folio.manuscript.part.prefix=, =part.number-format=, =part.separator=, =part.suffix=, =part.show-name=, =part.show-number= and the corresponding six =chapter.*= keys is a first-class config key, layered per the existing precedence, and applies to every part or chapter heading rendered in the manuscript
+*** VALID AC18.3 - Each of =folio.manuscript.part.prefix=, =part.number-format=, =part.separator=, =part.suffix=, =part.show-name=, =part.show-number= and the corresponding six =chapter.*= keys is a first-class config key, layered per the existing precedence, and applies to every part or chapter heading rendered in the manuscript
 
 **** Requirement
 
@@ -4175,7 +4175,7 @@ Each of =folio.manuscript.part.prefix=, =part.number-format=, =part.separator=, 
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/18.md=.
 
-*** HOLD AC18.4 - The manuscript header and footer format placeholder set is extended so =[part]= and =[chapter]= return the *semantic name only* of the current part or chapter, and four new placeholders per level (=[part-number]=, =[part-prefix]=, =[part-full]=, =[chapter-number]=, =[chapter-prefix]=, =[chapter-full]=) provide the number, prefix, and fully rendered heading respectively
+*** VALID AC18.4 - The manuscript header and footer format placeholder set is extended so =[part]= and =[chapter]= return the *semantic name only* of the current part or chapter, and four new placeholders per level (=[part-number]=, =[part-prefix]=, =[part-full]=, =[chapter-number]=, =[chapter-prefix]=, =[chapter-full]=) provide the number, prefix, and fully rendered heading respectively
 
 **** Requirement
 
@@ -4223,7 +4223,7 @@ The manuscript header and footer format placeholder set is extended so =[part]= 
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/18.md=.
 
-*** HOLD AC18.5 - The =case-transform= config field on =part= and =chapter= (currently: =as-written=, =upper=) applies to the *fully rendered heading string* (prefix + number + separator + name + suffix) rather than only to the source-derived name; when combined with an explicit =part.name-case= / =chapter.name-case= field (values: =as-written=, =upper=, =lower=, =title=) the name-case field takes precedence for the name segment while =case-transform= applies to the composed whole
+*** VALID AC18.5 - The =case-transform= config field on =part= and =chapter= (currently: =as-written=, =upper=) applies to the *fully rendered heading string* (prefix + number + separator + name + suffix) rather than only to the source-derived name; when combined with an explicit =part.name-case= / =chapter.name-case= field (values: =as-written=, =upper=, =lower=, =title=) the name-case field takes precedence for the name segment while =case-transform= applies to the composed whole
 
 **** Requirement
 
@@ -4312,7 +4312,7 @@ The =case-transform= config field on =part= and =chapter= (currently: =as-writte
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/21][#21 - Copyright page rendered from frontmatter with British/US preset text]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC21.1 - =folio.manuscript.copyright.enabled: false= (default) emits no copyright page anywhere; backwards-compatible with pre-issue-21 output
+*** VALID AC21.1 - =folio.manuscript.copyright.enabled: false= (default) emits no copyright page anywhere; backwards-compatible with pre-issue-21 output
 
 **** Requirement
 
@@ -4378,7 +4378,7 @@ The =case-transform= config field on =part= and =chapter= (currently: =as-writte
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** HOLD AC21.3 - =credits:= list renders in order
+*** VALID AC21.3 - =credits:= list renders in order
 
 **** Requirement
 
@@ -4414,7 +4414,7 @@ The =case-transform= config field on =part= and =chapter= (currently: =as-writte
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** HOLD AC21.4 - =body:= list renders as centred paragraphs in order, each rendered through the same markdown-mini pipeline as manuscript prose (supports =*bold*=, =*italic*=, en/em-dashes, curly quotes)
+*** VALID AC21.4 - =body:= list renders as centred paragraphs in order, each rendered through the same markdown-mini pipeline as manuscript prose (supports =*bold*=, =*italic*=, en/em-dashes, curly quotes)
 
 **** Requirement
 
@@ -4450,7 +4450,7 @@ The =case-transform= config field on =part= and =chapter= (currently: =as-writte
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** HOLD AC21.5 - Separator renders centred with configurable space-before/space-after
+*** VALID AC21.5 - Separator renders centred with configurable space-before/space-after
 
 **** Requirement
 
@@ -4480,7 +4480,7 @@ Separator renders centred with configurable space-before/space-after. =separator
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** HOLD AC21.6 - =publication:= list renders each line separately, centred
+*** VALID AC21.6 - =publication:= list renders each line separately, centred
 
 **** Requirement
 
@@ -4516,7 +4516,7 @@ Separator renders centred with configurable space-before/space-after. =separator
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/21.md=.
 
-*** HOLD AC21.7 - ISBN renders as =<isbn-label>: <isbn>= (label bold, value regular)
+*** VALID AC21.7 - ISBN renders as =<isbn-label>: <isbn>= (label bold, value regular)
 
 **** Requirement
 
@@ -4875,7 +4875,7 @@ Typography inherits from manuscript body when unset: =copyright.font= from =manu
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/24][#24 - Frontmatter-format for page-header and page-footer]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC24.1 - =page-header.frontmatter-format= is a new optional =*string= field on =PageHeaderConfig= (yaml: =frontmatter-format=)
+*** VALID AC24.1 - =page-header.frontmatter-format= is a new optional =*string= field on =PageHeaderConfig= (yaml: =frontmatter-format=)
 
 **** Requirement
 
@@ -4911,7 +4911,7 @@ Typography inherits from manuscript body when unset: =copyright.font= from =manu
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/24.md=.
 
-*** HOLD AC24.2 - =page-header.alt-frontmatter-format= mirrors =alt-format= semantics for the frontmatter region: when set, applies to right-hand (recto, odd) frontmatter pages while =frontmatter-format= applies to left-hand (verso, even) frontmatter pages
+*** VALID AC24.2 - =page-header.alt-frontmatter-format= mirrors =alt-format= semantics for the frontmatter region: when set, applies to right-hand (recto, odd) frontmatter pages while =frontmatter-format= applies to left-hand (verso, even) frontmatter pages
 
 **** Requirement
 
@@ -4941,7 +4941,7 @@ Typography inherits from manuscript body when unset: =copyright.font= from =manu
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/24.md=.
 
-*** HOLD AC24.3 - =page-footer.frontmatter-format= and =alt-frontmatter-format= provide the same fields and semantics for the running footer
+*** VALID AC24.3 - =page-footer.frontmatter-format= and =alt-frontmatter-format= provide the same fields and semantics for the running footer
 
 **** Requirement
 
@@ -5054,7 +5054,7 @@ Documentation updated: =docs/config.md= gains a "Frontmatter-format" section und
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/25][#25 - Add configurable manuscript paragraph justification]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC25.1 - Given manuscript paragraph configuration, First Folio justifies body paragraphs by default and honours an explicit ragged-right override without changing title-page or table-of-contents composition
+*** VALID AC25.1 - Given manuscript paragraph configuration, First Folio justifies body paragraphs by default and honours an explicit ragged-right override without changing title-page or table-of-contents composition
 
 **** Requirement
 
@@ -5101,7 +5101,7 @@ Given manuscript paragraph configuration, First Folio justifies body paragraphs 
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/29][#29 - Add total page count placeholder to manuscript headers and footers]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC29.1 - Given a manuscript page-header format containing =[total-pages]=, the header contains the final physical page count in Arabic numerals
+*** VALID AC29.1 - Given a manuscript page-header format containing =[total-pages]=, the header contains the final physical page count in Arabic numerals
 
 **** Requirement
 
@@ -5131,7 +5131,7 @@ Given a manuscript page-header format containing =[total-pages]=, the header con
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/29.md=.
 
-*** HOLD AC29.2 - Given a manuscript page-footer format containing =[total-pages]=, the footer contains the final physical page count in Arabic numerals
+*** VALID AC29.2 - Given a manuscript page-footer format containing =[total-pages]=, the footer contains the final physical page count in Arabic numerals
 
 **** Requirement
 
@@ -5161,7 +5161,7 @@ Given a manuscript page-footer format containing =[total-pages]=, the footer con
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/29.md=.
 
-*** HOLD AC29.3 - Given header or footer formats without =[total-pages]=, existing placeholder and unknown-token behaviour is unchanged
+*** VALID AC29.3 - Given header or footer formats without =[total-pages]=, existing placeholder and unknown-token behaviour is unchanged
 
 **** Requirement
 
@@ -5197,7 +5197,7 @@ Given header or footer formats without =[total-pages]=, existing placeholder and
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/31][https://github.com/tigger-developer/first-folio/issues/31]]
 - *Source group:* Requirements and tests retained from the legacy ledger.
 
-*** HOLD AC31.1 - =folio.manuscript.toc.continuation-padding-before= accepts a Typst length and reserves that height above TOC entries on every TOC page
+*** VALID AC31.1 - =folio.manuscript.toc.continuation-padding-before= accepts a Typst length and reserves that height above TOC entries on every TOC page
 
 **** Requirement
 
@@ -5245,7 +5245,7 @@ Given header or footer formats without =[total-pages]=, existing placeholder and
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/32][#32 - Restore configurable TOC links and correct chapter numbering defaults]]
 - *Source group:* Requirements and tests retained from the archived ticket.
 
-*** HOLD AC32.1 - =folio.manuscript.toc.links= is a boolean that defaults to =true=
+*** VALID AC32.1 - =folio.manuscript.toc.links= is a boolean that defaults to =true=
 
 **** Requirement
 
@@ -5287,7 +5287,7 @@ Given header or footer formats without =[total-pages]=, existing placeholder and
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/32.md=.
 
-*** HOLD AC32.2 - =folio.manuscript.chapter.number-reset= defaults to =never=, producing continuous chapter counters across parts
+*** VALID AC32.2 - =folio.manuscript.chapter.number-reset= defaults to =never=, producing continuous chapter counters across parts
 
 **** Requirement
 
@@ -5323,7 +5323,7 @@ Given header or footer formats without =[total-pages]=, existing placeholder and
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/32.md=.
 
-*** HOLD AC32.3 - =folio.manuscript.chapter.number-format= accepts one segment (=1=, =I=, =i=) for chapter-only numbering or two dot-separated segments where the first formats the part and the second formats the chapter
+*** VALID AC32.3 - =folio.manuscript.chapter.number-format= accepts one segment (=1=, =I=, =i=) for chapter-only numbering or two dot-separated segments where the first formats the part and the second formats the chapter
 
 **** Requirement
 
@@ -5370,7 +5370,7 @@ Given header or footer formats without =[total-pages]=, existing placeholder and
 - *Source issue:* [[https://github.com/tigger-developer/first-folio/issues/34][#34 - Expose manuscript letter spacing for body, header, and footer]]
 - *Source group:* Recovered delivered requirement from the archived ticket.
 
-*** HOLD AC34.1 - Expose manuscript letter spacing for body, header, and footer
+*** VALID AC34.1 - Expose manuscript letter spacing for body, header, and footer
 
 **** Requirement
 
