@@ -193,6 +193,11 @@
 #show strong: it => text(weight: "bold")[#it.body]
 #show emph: it => text(style: "italic")[#it.body]
 
+// Set the semantic heading's font without styling its body reused by the outline.
+#show heading: set text(
+  {{fontArgs .Config.Folio.Manuscript.Heading.Font}}
+)
+
 #show quote.where(block: true): it => block(
   above: {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
   below: {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},

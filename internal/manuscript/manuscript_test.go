@@ -427,7 +427,7 @@ func TestMarkdownInlineMarkupAndLiteralDelimitersRenderToTypst(t *testing.T) {
 
 func TestRenderInlineMarkup(t *testing.T) {
 	// RT042.2 retains the original literal/emphasis/dash assertions while replacing the incomplete font wrapper.
-	got := renderInlineMarkup("Dialogue begins --- like this -- then continues with **bold**, *italic*, and `kevin_murray`.", "Libertinus Mono", "10pt", "regular")
+	got := renderInlineMarkup("Dialogue begins --- like this -- then continues with **bold**, *italic*, and `kevin_murray`.")
 	want := `Dialogue begins — like this – then continues with *bold*, _italic_, and #raw("kevin_murray", block: false).`
 	if got != want {
 		t.Fatalf("unexpected inline render\nwant: %s\n got: %s", want, got)

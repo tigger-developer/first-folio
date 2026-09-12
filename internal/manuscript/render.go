@@ -428,9 +428,9 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 			lines = emitDirective(lines, hc.BlankPageAfter.TypstDirective())
 			firstPageBlock = false
 		case "section":
-			lines = append(lines, "#folio-section["+typstInline(block.Text, cfg)+"]")
+			lines = append(lines, "#folio-section["+typstInline(block.Text)+"]")
 		case "paragraph":
-			paragraph := typstInline(block.Text, cfg)
+			paragraph := typstInline(block.Text)
 			if block.ChapterOpening {
 				paragraph = wrapChapterOpeningParagraph(paragraph)
 			}
@@ -849,19 +849,18 @@ func hasContactBlock(meta Metadata, cfg Config) bool {
 		titlePage.IncludeWebsite && meta.Website != ""
 }
 
-func typstInline(text string, cfg Config) string {
-	mono := cfg.Folio.Manuscript.Mono.Font
-	return renderInlineMarkup(text, mono.Family, mono.Size, mono.Weight)
+func typstInline(text string) string {
+	return renderInlineMarkup(text)
 }
 
-func renderInlineMarkup(text string, monoFont string, monoSize string, monoWeight string) string {
+func renderInlineMarkup(text string) string {
 	var out strings.Builder
 	for i := 0; i < len(text); {
 		switch {
 		case strings.HasPrefix(text[i:], "`"):
 			if end := strings.Index(text[i+1:], "`"); end >= 0 {
 				content := text[i+1 : i+1+end]
-				out.WriteString(fmt.Sprintf(`#text(font: "%s", size: %s, weight: "%s")[%s]`, escapeTypst(monoFont), monoSize, escapeTypst(monoWeight), escapeTypst(content)))
+				out.WriteString(`#raw("` + typstutil.EscapeString(content) + `", block: false)`)
 				i += end + 2
 				continue
 			}
@@ -869,7 +868,7 @@ func renderInlineMarkup(text string, monoFont string, monoSize string, monoWeigh
 			if end := strings.Index(text[i+2:], "**"); end >= 0 {
 				content := text[i+2 : i+2+end]
 				out.WriteString("*")
-				out.WriteString(renderInlineMarkup(content, monoFont, monoSize, monoWeight))
+				out.WriteString(renderInlineMarkup(content))
 				out.WriteString("*")
 				i += end + 4
 				continue
@@ -878,7 +877,7 @@ func renderInlineMarkup(text string, monoFont string, monoSize string, monoWeigh
 			if end := strings.Index(text[i+1:], "*"); end >= 0 {
 				content := text[i+1 : i+1+end]
 				out.WriteString("_")
-				out.WriteString(renderInlineMarkup(content, monoFont, monoSize, monoWeight))
+				out.WriteString(renderInlineMarkup(content))
 				out.WriteString("_")
 				i += end + 2
 				continue
@@ -1004,7 +1003,7 @@ func caseTransform(text string, mode string) string {
 	if mode == "upper" {
 		return escapeTypst(strings.ToUpper(text))
 	}
-	return typstInline(text, Config{})
+	return typstInline(text)
 }
 
 func escapedMetadata(meta Metadata) Metadata {
