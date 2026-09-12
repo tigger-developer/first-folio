@@ -211,3 +211,32 @@ title markers to =PARTCODE= and =CHAPTERCODE= as before.
   =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/=:
   =red.log=, =wrap-red.log= and =green.log=. The directory may expire.
 - Operator acceptance :: PENDING for the repaired four-value paragraph examples.
+
+* Repaired paragraph preview
+
+- Candidate :: =af3f41d=, built from the unchanged production source at
+  =c3c3e56=. These are candidate observations; operator acceptance remains
+  PENDING. Gate evidence is retained in [[file:audits.yaml][the audit record]].
+- Method :: Repeat the earlier 18pt Iosevka Custom paragraph fixture at the
+  four requested percentages, through the built Folio CLI and unmodified Typst.
+  Markdown and Org each produce all four PDFs. Extract word bounds and crop
+  the excerpts to identical coordinates at 144 dpi.
+
+| Requested stretch | Code width | Ratio to 100% |
+|-------------------+------------+---------------|
+|              100% |    151.2pt |           1.0 |
+|              150% |    226.8pt |           1.5 |
+|              200% |    302.4pt |           2.0 |
+|               50% |     75.6pt |           0.5 |
+
+- Controls :: Both formats agree. Code and prose vertical bounds are unchanged
+  across percentages. =Before= remains 47.880pt wide and =after.= 36.594pt.
+  The temporary comparison script checks every ratio within 0.02pt.
+- Viewing :: All four candidate excerpts were inspected and opened in
+  htmlpreview. They show proportional horizontal changes with unchanged height;
+  this agent inspection does not supply operator acceptance.
+- Artefacts :: The existing supplementary directory
+  =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/=
+  contains =comparison.md=, =render.rb=, =results.json= and the eight rendered
+  fixture directories. These local artefacts may expire; measurements and the
+  fixture procedure are retained here.
