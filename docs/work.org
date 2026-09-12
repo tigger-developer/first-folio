@@ -252,7 +252,7 @@ classification; it is provenance, not current state.
   linked specification, requested by the operator on 2026-09-10. Requirements
   and decision history remain here as provenance.
 
-** ACTIVE W042 - Inline monospace stretch and related font attributes are not consistently applied :defect:
+** DONE W042 - Inline monospace stretch and related font attributes are not consistently applied :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-042
 :SOURCE: operator
@@ -330,8 +330,11 @@ classification; it is provenance, not current state.
   Iosevka Publish comparison at 100%, 150%, 200% and 50% on 2026-09-12.
   The implementation preserves the original baseline and surrounding spacing;
   equivalent Org output matches the approved Markdown measurements. This
-  supersedes the earlier pending visual acceptance. Operator closure remains
-  outstanding; the validation and audit records linked above retain the evidence.
+  supersedes the earlier pending visual acceptance. The validation and audit
+  records linked above retain the evidence.
+- Closure :: Taḋg approved closure and requested tagging and pushing the
+  accepted delivery on 2026-09-13. Earlier pending closure statements are
+  historical and superseded by this approval.
 
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
