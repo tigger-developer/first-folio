@@ -1,0 +1,126 @@
+version: 1
+audits:
+    - work_item: W042-manuscript-monospace-stretch
+      gate: definition
+      session_id: c0a81a08-a001-44a6-8eae-65d30162e87f
+      harness: claude
+      external_round: 2
+      status: incident
+      updated: "2026-09-12T15:17:17Z"
+      history:
+        - incident: start-failed
+          evidence:
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: ff13cc489219ee25edc286689d40981ee87870b017fb756722e3ae839f072a0a
+              bytes: 5747
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 1f78f1fb32e49a5f158971db2b39e741de38f7ba233adf2090759c2faae5eda6
+              bytes: 34269
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: 918ed823b7fa80225ec0b408cf5691d1d5e26e4e3cc5121b030bfdf98dff64f3
+              bytes: 5937
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: bd55d6654c8fe8d86581ec7d7c292971570ade8997e91cf1f983ef2f665d0acd
+              bytes: 4195
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/font_config_test.go
+              sha256: d4db3bdd36375d31f7b4df29daa184f2a8266b4622b2df0a6274bad24fe6fdd8
+              bytes: 13618
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 219e5be58ed45a15e9bec8780b4a3263cda8ea07bcd7a988bc4d26e66a0287da
+              bytes: 26343
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_test.go
+              sha256: f0e33a037c3d3910ad35d66e4759e669c2715def1f553b043bc64c93972c12fd
+              bytes: 3424
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 703c66c54c1c2233596efe21bbbab16d14552af493a78c5ca7ab8661c33403e4
+              bytes: 31382
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 4cc8f008e50dda9f52e546cc9e29b4b5e771d7846999146b78170605126bac9b
+              bytes: 20092
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: dc7cd405ae58c7b968a99914d36ae2eb0c1af8608de29824e966f691b0748244
+              bytes: 36044
+            - path: /Users/tigger/code/tigoss/first-folio/internal/typst/escape.go
+              sha256: 51be2ae3aaa4c5d52a83f074d912b443e91d3838787ff4f0c80c5d609c5b485b
+              bytes: 529
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 866a5576a5a0a8ccd5014d5c4410466548284eeaccc041280ac0616a55720645
+              bytes: 13896
+            - path: /Users/tigger/code/tigoss/first-folio/specs/039-unified-font-configuration/spec.org
+              sha256: 6d5c73f935ee7c0654a427bcaee6db2530f2e244186935031e0e6e82245b4383
+              bytes: 33204
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/spec.org
+              sha256: 8e2c3b45697ccf35bf663ab2e4a2df8626da7e5b0b0002e1e8b3c228de595c90
+              bytes: 16507
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/validation.org
+              sha256: 008a81e6ae0d8de8051d7bb793d0c80e0bf3b9c130e22289915061da076c44d0
+              bytes: 1224
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 51a32bc2a56fe23f5d3e7910da6394df4733fc482c48f3ea0773802b51e23f1d
+              bytes: 20982
+          round: 1
+          updated: "2026-09-12T15:16:21Z"
+        - incident: resume-failed
+          evidence:
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: ff13cc489219ee25edc286689d40981ee87870b017fb756722e3ae839f072a0a
+              bytes: 5747
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 1f78f1fb32e49a5f158971db2b39e741de38f7ba233adf2090759c2faae5eda6
+              bytes: 34269
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: 918ed823b7fa80225ec0b408cf5691d1d5e26e4e3cc5121b030bfdf98dff64f3
+              bytes: 5937
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: bd55d6654c8fe8d86581ec7d7c292971570ade8997e91cf1f983ef2f665d0acd
+              bytes: 4195
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/font_config_test.go
+              sha256: d4db3bdd36375d31f7b4df29daa184f2a8266b4622b2df0a6274bad24fe6fdd8
+              bytes: 13618
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 219e5be58ed45a15e9bec8780b4a3263cda8ea07bcd7a988bc4d26e66a0287da
+              bytes: 26343
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_test.go
+              sha256: f0e33a037c3d3910ad35d66e4759e669c2715def1f553b043bc64c93972c12fd
+              bytes: 3424
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 703c66c54c1c2233596efe21bbbab16d14552af493a78c5ca7ab8661c33403e4
+              bytes: 31382
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 4cc8f008e50dda9f52e546cc9e29b4b5e771d7846999146b78170605126bac9b
+              bytes: 20092
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: dc7cd405ae58c7b968a99914d36ae2eb0c1af8608de29824e966f691b0748244
+              bytes: 36044
+            - path: /Users/tigger/code/tigoss/first-folio/internal/typst/escape.go
+              sha256: 51be2ae3aaa4c5d52a83f074d912b443e91d3838787ff4f0c80c5d609c5b485b
+              bytes: 529
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 866a5576a5a0a8ccd5014d5c4410466548284eeaccc041280ac0616a55720645
+              bytes: 13896
+            - path: /Users/tigger/code/tigoss/first-folio/specs/039-unified-font-configuration/spec.org
+              sha256: 6d5c73f935ee7c0654a427bcaee6db2530f2e244186935031e0e6e82245b4383
+              bytes: 33204
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/spec.org
+              sha256: 8e2c3b45697ccf35bf663ab2e4a2df8626da7e5b0b0002e1e8b3c228de595c90
+              bytes: 16507
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/validation.org
+              sha256: 008a81e6ae0d8de8051d7bb793d0c80e0bf3b9c130e22289915061da076c44d0
+              bytes: 1224
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 51a32bc2a56fe23f5d3e7910da6394df4733fc482c48f3ea0773802b51e23f1d
+              bytes: 20982
+          round: 2
+          updated: "2026-09-12T15:17:14Z"
