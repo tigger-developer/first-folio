@@ -299,6 +299,15 @@ classification; it is provenance, not current state.
   rule. The earlier pending sign-off is superseded by the operator's approval
   on 2026-09-12, followed by an explicit delivery invocation. Scope is font
   rendering only against the signed-off canonical configuration YAML.
+- Delivery :: Inline code now uses the complete monospace rule, and semantic
+  headings use the configured heading font. The source findings above describe
+  the intake baseline; the canonical YAML and source transformations remain
+  unchanged.
+- Candidate validation :: [[file:../specs/042-manuscript-monospace-stretch/validation.org][Regression and rendered evidence]]
+  records the tests and 16 PDF comparisons, including section-code stretch
+  changing its measured width from 66.00pt to 45.76pt. Operator visual acceptance
+  and closure remain pending.
+- Audit evidence :: [[file:../specs/042-manuscript-monospace-stretch/audits.yaml][Retained audit record]].
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:

@@ -63,8 +63,9 @@
 
 ** Next step
 
-- Deliver the approved rendering repairs through regression tests and
-  implementation review, then present rendered evidence for operator acceptance.
+- Review the paired rendered evidence in [[file:validation.org][the validation record]]
+  for operator acceptance. The implementation and automated checks are recorded
+  under [[#delivery-result][Delivery result]]; operator closure remains pending.
 
 -----
 
@@ -147,7 +148,7 @@ BLOCKPROBE
   have not been supplied. The synthetic reproduction *establishes a defect*
   but does not establish the cause of every possible reported no-change case.
 
-** Cause and existing coverage
+** Baseline cause and existing coverage
 
 1. [[file:../../internal/manuscript/parser.go][The parser]] converts ordinary prose and
    fenced blocks through Pandoc to Typst raw content. Section headings become
@@ -203,7 +204,7 @@ BLOCKPROBE
 
 ** Operator scope clarification and title behaviour
 
-- Current path :: Part and chapter headings pass through =caseTransform=.
+- Baseline path :: Part and chapter headings pass through =caseTransform=.
   Its =as-written= path calls =typstInline(text, Config{})=, so a backtick
   span receives *empty font values*, including an invalid empty size literal.
   The British defaults select =as-written= for both heading kinds.
@@ -494,6 +495,28 @@ BLOCKPROBE
 - Documentation impact :: Update =docs/config.md= for stretch semantics during
   delivery; reconcile this specification, its validation record, and the ledger.
   The architecture and source syntax remain unchanged.
+
+* Delivery result
+:PROPERTIES:
+:CUSTOM_ID: delivery-result
+:END:
+
+- Primary repair :: Inline code emitted by the manuscript renderer now uses
+  the existing inline-raw font rule. In the candidate PDF comparison,
+  =SECTIONCODE= measures *66.00pt at 100% and 45.76pt at 75% stretch*, in
+  both body and outline, for Markdown and Org. The baseline reproduction
+  above remains historical evidence with its different marker.
+- Supporting repairs :: The same route applies all six monospace attributes,
+  accepts numeric weight, and renders =as-written= title code without an empty
+  configuration. A heading show-set rule applies configured size and weight
+  while preserving the ordinary outline and running-band fonts.
+- Scope :: The canonical configuration YAML, defaults, parser and uppercase
+  title branch are unchanged. No new font role or configuration is introduced.
+- Verification :: [[file:validation.org][Regression and rendered evidence]] records
+  the RED/GREEN checks, full suite, lint and 16 candidate PDF comparisons.
+  [[file:audits.yaml][Retained audit evidence]] supplies the gate records.
+- Operator gate :: UT042.1 visual acceptance and work-item closure remain
+  pending. The preceding proposal and diagnosis sections retain their history.
 
 * Hands-off mode decision log
 :PROPERTIES:

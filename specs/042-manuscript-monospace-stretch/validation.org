@@ -44,3 +44,92 @@
   the new PDF regressions use embedded fonts with system fonts disabled.
 - Evidence boundary :: These automated checks do not supply the operator's
   visual acceptance for UT042.1 - Compare rendered monospace widths.
+
+* Candidate PDF comparison
+
+- Date and revision :: 2026-09-12; production =fc792f4=, with the unchanged
+  production files at checkpoint =446c0f9=. A freshly built =folio= emitted
+  the unmodified Typst used in each PDF.
+- Executed preparation :: All *16 PDFs* rendered and their width comparisons
+  satisfied the expectations below. This is preparation for UT042.1, whose
+  operator acceptance remains *PENDING*.
+- Environment :: macOS arm64; Go 1.26.3; Typst 0.14.2; Pandoc 3.9.0.2;
+  Poppler =pdftotext= and =pdftoppm= 26.04.0.
+- Font inventory :: =typst fonts --variants= reported Iosevka Custom normal
+  style / weight 400 at =FontStretch(1000)= and =FontStretch(750)=.
+  Libertinus Mono exposed only normal style / weight 400 /
+  =FontStretch(1000)= (two installed entries).
+- Matrix :: Markdown and Org; =as-written= and =upper= title casing; Iosevka
+  Custom at 100% and 75%; Libertinus Mono at 100% and 150%.
+- Configuration :: Each temporary source directory contained a copy of the
+  canonical =presets/british.yaml= as =script.yaml=. Change only
+  =folio.manuscript.mono.font.family= and =stretch=, plus fixture presentation:
+  =title-page.enabled: false=, =toc.include-sections: true=,
+  =page-header.format: FONT RENDERING=, =page-footer.format: "[page]"=,
+  and the selected =part.case-transform= / =chapter.case-transform=.
+- Method :: Run =folio manuscript input.md output.typ= (or =input.org=), then
+  =typst compile output.typ output.pdf= and =pdftotext -bbox output.pdf -=.
+  Subtract each marked word's =xMin= from =xMax=. Require matching occurrence
+  counts, code widths narrower by more than 1pt for the two-width family,
+  and unchanged controls within 0.02pt. No generated Typst was instrumented.
+
+** Source fixtures
+
+#+begin_src markdown
+# Part `PartCode`
+
+## Chapter `ChapterCode`
+
+### Section `SECTIONCODE`
+
+NEIGHBOUR prose with `INLINECODE`.
+
+```
+BLOCKCODE
+```
+#+end_src
+
+#+begin_src org
+,* Part =PartCode=
+,** Chapter =ChapterCode=
+,*** Section =SECTIONCODE=
+
+NEIGHBOUR prose with =INLINECODE=.
+
+,#+begin_src text
+BLOCKCODE
+,#+end_src
+#+end_src
+
+** Measured widths
+
+Both formats and both title casing modes produced the same widths. Part,
+chapter and section markers each occur twice, in body and outline, with the
+same measurement. The other markers occur once. Uppercase mode changes the
+title markers to =PARTCODE= and =CHAPTERCODE= as before.
+
+| Marker      | Iosevka 100% | Iosevka 75% | Libertinus 100% | Libertinus 150% |
+|-------------+--------------+-------------+-----------------+-----------------|
+| PartCode    |      48.00pt |     33.28pt |         51.20pt |         51.20pt |
+| ChapterCode |      66.00pt |     45.76pt |         70.40pt |         70.40pt |
+| SECTIONCODE |      66.00pt |     45.76pt |         70.40pt |         70.40pt |
+| INLINECODE  |      60.00pt |     41.60pt |         64.00pt |         64.00pt |
+| BLOCKCODE   |      54.00pt |     37.44pt |         57.60pt |         57.60pt |
+| NEIGHBOUR   |     66.072pt |    66.072pt |        66.072pt |        66.072pt |
+
+- Interpretation :: The affected inline section code now selects the narrower
+  available face. Title and outline code do likewise. The ordinary-text and
+  nearest-face controls retain their widths. This is font selection, not an
+  assertion of exact geometric compression by the configured percentage.
+- Visual preparation :: All 48 pages were rasterized at the same 100 dpi.
+  Agent inspection of the Markdown chapter/section pair and Org uppercase
+  TOC/part pages found readable code and intact ordinary text. This limited
+  inspection is not operator visual acceptance.
+- Local artefacts :: The supplementary, temporary directory is
+  =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/=.
+  It contains =width-check.rb=, =width-results.json=, =font-inventory.txt=,
+  =review.html=, and =visual/= with each input, configuration, Typst, PDF,
+  word bounds, logs and page images. It is machine-local and may expire;
+  the procedure, fixtures, inventory summary and results above are durable.
+- Operator action :: Review the paired pages at equal zoom for code
+  readability and ordinary-text typography, then record the UT042.1 result.
