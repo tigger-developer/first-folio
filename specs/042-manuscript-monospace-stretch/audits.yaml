@@ -525,39 +525,9 @@ audits:
         harness: hermes
         provider: nous
         model: z-ai/glm-5.3
-      external_round: 2
-      status: passed
-      updated: "2026-09-12T18:15:33Z"
-      revision: fc792f4
-      verdict: PASS
-      response: |-
-        GATE: implementation
-        REVISION: fc792f4
-        VERDICT: PASS
-
-        Remediation review:
-
-        The sole prior finding is resolved. specs/039-unified-font-configuration/spec.org
-        now carries `#+AUDIT_EVIDENCE: [[file:audits.org][Historical audit evidence]]`
-        in place of the duplicated `#+DEFINITION_GATE: PASS` verdict. A link to the
-        audit record is the sanctioned mechanism; no audit verdict, session identity, or
-        harness state remains duplicated in any supplied specification, ticket, or
-        validation artefact. Pointing at the existing historical audits.org rather than
-        inventing or hand-migrating an audits.yaml for a closed pre-audits.yaml work
-        item is the correct minimal remediation and does not reopen the W039 definition
-        or alter any W039/W042 requirement.
-
-        The change is metadata-only: every production, test, template, preset, and
-        documentation hash is unchanged from the previously reviewed GREEN state at
-        fc792f4, so the prior assessment of the delta stands (RED evidence for the
-        intended failures, GREEN suite including full `make test` and `make lint`,
-        behavioural CLI/PDF tests at the user boundary, scoped production change
-        matching the operator-approved font-rendering-only contract, no new dependency,
-        runtime, or security surface).
-
-        Note, not a finding: UT042.1 - Compare rendered monospace widths remains PENDING
-        operator visual acceptance in validation.org. Per the testing standards that
-        user test blocks closure, not this implementation gate.
+      external_round: 5
+      status: exhausted
+      updated: "2026-09-12T18:36:00Z"
       history:
         - cache_key: sha256:763b9127254e376fb2e52ccc7669bc3c55d459cecaecfeffd5df85bd356ff60a
           session_id: 20260912_191056_8c60fe
@@ -919,3 +889,489 @@ audits:
             operator visual acceptance in validation.org. Per the testing standards that
             user test blocks closure, not this implementation gate.
           updated: "2026-09-12T18:14:51Z"
+        - cache_key: sha256:80c85e8414cbd231590d968150325af70da9d170b3b080a97559836e9791e149
+          session_id: 20260912_191056_8c60fe
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          incident: response-malformed
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: eed4324da011035f285cb316958dd374f642068c6ee56faf8b1fbbeaeb88cc2a
+              bytes: 10313
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: f2a2511d89cbf407f0d96dc3845ee66264eb40eb18d638716475936f1fa9b723
+              bytes: 13368
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: bd32656992311c5b4da2f83ac154bfcb073a71fe987a8bf0d7618b05e7e5cf2c
+              bytes: 3994
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 97bbf89af1c65d159688b452a0434e77d9775f7a98dd1c822ffd264b41012bbb
+              bytes: 7807
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 8545a6297e21423a9ed1797bc3b6f90ac4425600606ae20152252d2da3c0cc42
+              bytes: 16332
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: dedd438f189d1d04c15b532f419927e6d94960ed26cf47a12a237e370e8be4d7
+              bytes: 11209
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 59522d1f15d3d204a9a3e3a648e5eca106344aa87e6b6302077fd2af6e177d83
+              bytes: 2813
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 5ed902d49dbb8321ea093fd60db68d5195e59c95c763c02e4ca0c09f6fa1e932
+              bytes: 13561
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: ff13cc489219ee25edc286689d40981ee87870b017fb756722e3ae839f072a0a
+              bytes: 5747
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 2919faa19a1b557e8f2b851f5af442ba8437738133081fbdc72c3b2730471f5e
+              bytes: 36119
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: 918ed823b7fa80225ec0b408cf5691d1d5e26e4e3cc5121b030bfdf98dff64f3
+              bytes: 5937
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: bd55d6654c8fe8d86581ec7d7c292971570ade8997e91cf1f983ef2f665d0acd
+              bytes: 4195
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: af9ad317242fc76c9c850bf9e8f5be8dcf0cac623be2f4982e678a9b82e1fa43
+              bytes: 236577
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/font_config_test.go
+              sha256: d4db3bdd36375d31f7b4df29daa184f2a8266b4622b2df0a6274bad24fe6fdd8
+              bytes: 13618
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_render.go
+              sha256: 533743713a4be49db1ba5ebfc7dd914353a91bdea74438b277953543e5343f1f
+              bytes: 19506
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font.go
+              sha256: c1ac7c228c2d21fd7fc096e29e8445ca7506c4da683be4f5dcbf51301a28b482
+              bytes: 9462
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/font_test.go
+              sha256: 499232b0a3126c42f87709c4c0f003e63e970dae9c536079be41bada62c6e365
+              bytes: 2268
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/render.go
+              sha256: fd2e30cc250e4c429bc945333c61a694a5cc5c6916432f488910257049f6811a
+              bytes: 6099
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 219e5be58ed45a15e9bec8780b4a3263cda8ea07bcd7a988bc4d26e66a0287da
+              bytes: 26343
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 932ba5fd06da21ecdf0b288c0e369941c894dc1f494a4146924d09acbe65ca1f
+              bytes: 12307
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_test.go
+              sha256: f0e33a037c3d3910ad35d66e4759e669c2715def1f553b043bc64c93972c12fd
+              bytes: 3424
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: 3d1d9c901ff9d5841c787f02a48df2ae4c89de639d8654c85449973152146a43
+              bytes: 4683
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue27_test.go
+              sha256: 6fb2c0d156e703784bb00b0e2591797edf41936de4713f864c916a0dd763710d
+              bytes: 3998
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue32_test.go
+              sha256: 14b449086cb1f201a06d5305c37432571ec7f00371ef45dbf19e94ed0d61d973
+              bytes: 6750
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 431fc195f1d69d3dda4f095b8f9669e35daec15acfe513d43c0a830b1fb21f03
+              bytes: 31413
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 4cc8f008e50dda9f52e546cc9e29b4b5e771d7846999146b78170605126bac9b
+              bytes: 20092
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: bfca2d370d2a7db444c6c4af85214dbe11de2a3b9862ea84dab1041819c88acb
+              bytes: 35741
+            - path: /Users/tigger/code/tigoss/first-folio/internal/typst/escape.go
+              sha256: 51be2ae3aaa4c5d52a83f074d912b443e91d3838787ff4f0c80c5d609c5b485b
+              bytes: 529
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 866a5576a5a0a8ccd5014d5c4410466548284eeaccc041280ac0616a55720645
+              bytes: 13896
+            - path: /Users/tigger/code/tigoss/first-folio/specs/039-unified-font-configuration/spec.org
+              sha256: eb616c0d360c15a51f878bdc63065a9fe03ef8a815a3cee7e5a047ee56d3fe9d
+              bytes: 33245
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/font-rendering-check.org
+              sha256: 167d32f56dee87326fe78531b36ef7014dd7a160c163e289a4678f9360766f9e
+              bytes: 9039
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/spec.org
+              sha256: d7dccc9884d1994a7b30b8b7a1cee2e8c88bd85f9a00bdc43a775613e57310fd
+              bytes: 37824
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/validation.org
+              sha256: 515733f1e739f282f91cf510e6b7e1587de856cad8f01a1d9ebc9cce643c5dc5
+              bytes: 11769
+            - path: /Users/tigger/code/tigoss/first-folio/templates/letter.typ
+              sha256: 6efe7e05ec3459a02f06980da7f386daa1cec909587c171ea7643ef63903cec9
+              bytes: 817
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 191d4123e837e9add7e03d026844f85b98c8a704b5e1449c99c12dca701097d3
+              bytes: 21520
+            - path: /Users/tigger/code/tigoss/first-folio/templates/script.typ
+              sha256: bee4f5384759e0639b837bed45bd16274cfc96b321f9025cd8d88b4bc5a9a2ff
+              bytes: 3222
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/green.log
+              sha256: 42b2dc3556337eb1abdc51b5b548e1316f64dfc023355e239af79ad3826cdacd
+              bytes: 72
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/make-lint.log
+              sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+              bytes: 0
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/make-test.log
+              sha256: 6e3fdab0acf5ed237b8bcb66cc13322fbbe3c7ad492a741f88a0c04f1bf6295c
+              bytes: 618
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/proportional.diff
+              sha256: f3da800df50b5cc6386554160848567aa3e4b8ea42822659d84e6c7a5ae4c62a
+              bytes: 8316
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/red.log
+              sha256: b58acf5613453ef93e8296ea4f6748cd8e5bc27ddc075a39707723fd2eda4646
+              bytes: 1064
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/wrap-red.log
+              sha256: 7a2031e665b2b80055b38fb10052329cea1e97f54f935e832b041d71a578d494
+              bytes: 1436
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/green2.jsonl
+              sha256: f6c657c76f3cc24e3647d81778a86c30715f8fb0892a956dd794357f1d18de2a
+              bytes: 33489
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/heading-red-portable.log
+              sha256: d5b2206f94a9686db59ac4d0d10155d2e9969788debc9e1cbfc5b88cafb641a0
+              bytes: 2026
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/implementation.diff
+              sha256: 714f72fb2a79f59800f279ef13898016398cd0068ed865a5f602c0dcf6fee228
+              bytes: 19953
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/make-lint.log
+              sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+              bytes: 0
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/make-test.log
+              sha256: c7ad41701e973fc97f00a61021a387b408c0c1b97ff73685127e593001fdd697
+              bytes: 611
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/red.jsonl
+              sha256: 3f513844112178f9b487c1f9cf75bbe6a28deda17d3717cb280bbfb569417cf6
+              bytes: 457080
+          round: 3
+          updated: "2026-09-12T18:33:35Z"
+        - cache_key: sha256:e718b8968f832bac80baa5c3c88b5494894312923434fa14053d08830f79ae9f
+          session_id: 20260912_191056_8c60fe
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          incident: response-malformed
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: eed4324da011035f285cb316958dd374f642068c6ee56faf8b1fbbeaeb88cc2a
+              bytes: 10313
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: f2a2511d89cbf407f0d96dc3845ee66264eb40eb18d638716475936f1fa9b723
+              bytes: 13368
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: bd32656992311c5b4da2f83ac154bfcb073a71fe987a8bf0d7618b05e7e5cf2c
+              bytes: 3994
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 97bbf89af1c65d159688b452a0434e77d9775f7a98dd1c822ffd264b41012bbb
+              bytes: 7807
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 8545a6297e21423a9ed1797bc3b6f90ac4425600606ae20152252d2da3c0cc42
+              bytes: 16332
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: dedd438f189d1d04c15b532f419927e6d94960ed26cf47a12a237e370e8be4d7
+              bytes: 11209
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 59522d1f15d3d204a9a3e3a648e5eca106344aa87e6b6302077fd2af6e177d83
+              bytes: 2813
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 5ed902d49dbb8321ea093fd60db68d5195e59c95c763c02e4ca0c09f6fa1e932
+              bytes: 13561
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: ff13cc489219ee25edc286689d40981ee87870b017fb756722e3ae839f072a0a
+              bytes: 5747
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 2919faa19a1b557e8f2b851f5af442ba8437738133081fbdc72c3b2730471f5e
+              bytes: 36119
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: 918ed823b7fa80225ec0b408cf5691d1d5e26e4e3cc5121b030bfdf98dff64f3
+              bytes: 5937
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: bd55d6654c8fe8d86581ec7d7c292971570ade8997e91cf1f983ef2f665d0acd
+              bytes: 4195
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: af9ad317242fc76c9c850bf9e8f5be8dcf0cac623be2f4982e678a9b82e1fa43
+              bytes: 236577
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/font_config_test.go
+              sha256: d4db3bdd36375d31f7b4df29daa184f2a8266b4622b2df0a6274bad24fe6fdd8
+              bytes: 13618
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_render.go
+              sha256: 533743713a4be49db1ba5ebfc7dd914353a91bdea74438b277953543e5343f1f
+              bytes: 19506
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font.go
+              sha256: c1ac7c228c2d21fd7fc096e29e8445ca7506c4da683be4f5dcbf51301a28b482
+              bytes: 9462
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/font_test.go
+              sha256: 499232b0a3126c42f87709c4c0f003e63e970dae9c536079be41bada62c6e365
+              bytes: 2268
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/render.go
+              sha256: fd2e30cc250e4c429bc945333c61a694a5cc5c6916432f488910257049f6811a
+              bytes: 6099
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 219e5be58ed45a15e9bec8780b4a3263cda8ea07bcd7a988bc4d26e66a0287da
+              bytes: 26343
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 932ba5fd06da21ecdf0b288c0e369941c894dc1f494a4146924d09acbe65ca1f
+              bytes: 12307
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_test.go
+              sha256: f0e33a037c3d3910ad35d66e4759e669c2715def1f553b043bc64c93972c12fd
+              bytes: 3424
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: 3d1d9c901ff9d5841c787f02a48df2ae4c89de639d8654c85449973152146a43
+              bytes: 4683
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue27_test.go
+              sha256: 6fb2c0d156e703784bb00b0e2591797edf41936de4713f864c916a0dd763710d
+              bytes: 3998
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue32_test.go
+              sha256: 14b449086cb1f201a06d5305c37432571ec7f00371ef45dbf19e94ed0d61d973
+              bytes: 6750
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 431fc195f1d69d3dda4f095b8f9669e35daec15acfe513d43c0a830b1fb21f03
+              bytes: 31413
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 4cc8f008e50dda9f52e546cc9e29b4b5e771d7846999146b78170605126bac9b
+              bytes: 20092
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: bfca2d370d2a7db444c6c4af85214dbe11de2a3b9862ea84dab1041819c88acb
+              bytes: 35741
+            - path: /Users/tigger/code/tigoss/first-folio/internal/typst/escape.go
+              sha256: 51be2ae3aaa4c5d52a83f074d912b443e91d3838787ff4f0c80c5d609c5b485b
+              bytes: 529
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 866a5576a5a0a8ccd5014d5c4410466548284eeaccc041280ac0616a55720645
+              bytes: 13896
+            - path: /Users/tigger/code/tigoss/first-folio/specs/039-unified-font-configuration/spec.org
+              sha256: eb616c0d360c15a51f878bdc63065a9fe03ef8a815a3cee7e5a047ee56d3fe9d
+              bytes: 33245
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/font-rendering-check.org
+              sha256: 167d32f56dee87326fe78531b36ef7014dd7a160c163e289a4678f9360766f9e
+              bytes: 9039
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/spec.org
+              sha256: d7dccc9884d1994a7b30b8b7a1cee2e8c88bd85f9a00bdc43a775613e57310fd
+              bytes: 37824
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/validation.org
+              sha256: 515733f1e739f282f91cf510e6b7e1587de856cad8f01a1d9ebc9cce643c5dc5
+              bytes: 11769
+            - path: /Users/tigger/code/tigoss/first-folio/templates/letter.typ
+              sha256: 6efe7e05ec3459a02f06980da7f386daa1cec909587c171ea7643ef63903cec9
+              bytes: 817
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 191d4123e837e9add7e03d026844f85b98c8a704b5e1449c99c12dca701097d3
+              bytes: 21520
+            - path: /Users/tigger/code/tigoss/first-folio/templates/script.typ
+              sha256: bee4f5384759e0639b837bed45bd16274cfc96b321f9025cd8d88b4bc5a9a2ff
+              bytes: 3222
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/green.log
+              sha256: 42b2dc3556337eb1abdc51b5b548e1316f64dfc023355e239af79ad3826cdacd
+              bytes: 72
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/make-lint.log
+              sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+              bytes: 0
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/make-test.log
+              sha256: 6e3fdab0acf5ed237b8bcb66cc13322fbbe3c7ad492a741f88a0c04f1bf6295c
+              bytes: 618
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/proportional.diff
+              sha256: f3da800df50b5cc6386554160848567aa3e4b8ea42822659d84e6c7a5ae4c62a
+              bytes: 8316
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/red.log
+              sha256: b58acf5613453ef93e8296ea4f6748cd8e5bc27ddc075a39707723fd2eda4646
+              bytes: 1064
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/wrap-red.log
+              sha256: 7a2031e665b2b80055b38fb10052329cea1e97f54f935e832b041d71a578d494
+              bytes: 1436
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/green2.jsonl
+              sha256: f6c657c76f3cc24e3647d81778a86c30715f8fb0892a956dd794357f1d18de2a
+              bytes: 33489
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/heading-red-portable.log
+              sha256: d5b2206f94a9686db59ac4d0d10155d2e9969788debc9e1cbfc5b88cafb641a0
+              bytes: 2026
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/implementation.diff
+              sha256: 714f72fb2a79f59800f279ef13898016398cd0068ed865a5f602c0dcf6fee228
+              bytes: 19953
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/make-lint.log
+              sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+              bytes: 0
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/make-test.log
+              sha256: c7ad41701e973fc97f00a61021a387b408c0c1b97ff73685127e593001fdd697
+              bytes: 611
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/red.jsonl
+              sha256: 3f513844112178f9b487c1f9cf75bbe6a28deda17d3717cb280bbfb569417cf6
+              bytes: 457080
+          round: 4
+          updated: "2026-09-12T18:35:28Z"
+        - cache_key: sha256:bb593f8f86745fb083f9cbea2f446655f773cebcb21c39513e076ac1a86a7acb
+          session_id: 20260912_191056_8c60fe
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          incident: response-malformed
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: eed4324da011035f285cb316958dd374f642068c6ee56faf8b1fbbeaeb88cc2a
+              bytes: 10313
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: f2a2511d89cbf407f0d96dc3845ee66264eb40eb18d638716475936f1fa9b723
+              bytes: 13368
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: bd32656992311c5b4da2f83ac154bfcb073a71fe987a8bf0d7618b05e7e5cf2c
+              bytes: 3994
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 97bbf89af1c65d159688b452a0434e77d9775f7a98dd1c822ffd264b41012bbb
+              bytes: 7807
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 8545a6297e21423a9ed1797bc3b6f90ac4425600606ae20152252d2da3c0cc42
+              bytes: 16332
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: dedd438f189d1d04c15b532f419927e6d94960ed26cf47a12a237e370e8be4d7
+              bytes: 11209
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 59522d1f15d3d204a9a3e3a648e5eca106344aa87e6b6302077fd2af6e177d83
+              bytes: 2813
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 5ed902d49dbb8321ea093fd60db68d5195e59c95c763c02e4ca0c09f6fa1e932
+              bytes: 13561
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: ff13cc489219ee25edc286689d40981ee87870b017fb756722e3ae839f072a0a
+              bytes: 5747
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 2919faa19a1b557e8f2b851f5af442ba8437738133081fbdc72c3b2730471f5e
+              bytes: 36119
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: 918ed823b7fa80225ec0b408cf5691d1d5e26e4e3cc5121b030bfdf98dff64f3
+              bytes: 5937
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: bd55d6654c8fe8d86581ec7d7c292971570ade8997e91cf1f983ef2f665d0acd
+              bytes: 4195
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: af9ad317242fc76c9c850bf9e8f5be8dcf0cac623be2f4982e678a9b82e1fa43
+              bytes: 236577
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/font_config_test.go
+              sha256: d4db3bdd36375d31f7b4df29daa184f2a8266b4622b2df0a6274bad24fe6fdd8
+              bytes: 13618
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_render.go
+              sha256: 533743713a4be49db1ba5ebfc7dd914353a91bdea74438b277953543e5343f1f
+              bytes: 19506
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font.go
+              sha256: c1ac7c228c2d21fd7fc096e29e8445ca7506c4da683be4f5dcbf51301a28b482
+              bytes: 9462
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/font_test.go
+              sha256: 499232b0a3126c42f87709c4c0f003e63e970dae9c536079be41bada62c6e365
+              bytes: 2268
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/render.go
+              sha256: fd2e30cc250e4c429bc945333c61a694a5cc5c6916432f488910257049f6811a
+              bytes: 6099
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 219e5be58ed45a15e9bec8780b4a3263cda8ea07bcd7a988bc4d26e66a0287da
+              bytes: 26343
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 932ba5fd06da21ecdf0b288c0e369941c894dc1f494a4146924d09acbe65ca1f
+              bytes: 12307
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_test.go
+              sha256: f0e33a037c3d3910ad35d66e4759e669c2715def1f553b043bc64c93972c12fd
+              bytes: 3424
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: 3d1d9c901ff9d5841c787f02a48df2ae4c89de639d8654c85449973152146a43
+              bytes: 4683
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue27_test.go
+              sha256: 6fb2c0d156e703784bb00b0e2591797edf41936de4713f864c916a0dd763710d
+              bytes: 3998
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue32_test.go
+              sha256: 14b449086cb1f201a06d5305c37432571ec7f00371ef45dbf19e94ed0d61d973
+              bytes: 6750
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 431fc195f1d69d3dda4f095b8f9669e35daec15acfe513d43c0a830b1fb21f03
+              bytes: 31413
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 4cc8f008e50dda9f52e546cc9e29b4b5e771d7846999146b78170605126bac9b
+              bytes: 20092
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: bfca2d370d2a7db444c6c4af85214dbe11de2a3b9862ea84dab1041819c88acb
+              bytes: 35741
+            - path: /Users/tigger/code/tigoss/first-folio/internal/typst/escape.go
+              sha256: 51be2ae3aaa4c5d52a83f074d912b443e91d3838787ff4f0c80c5d609c5b485b
+              bytes: 529
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 866a5576a5a0a8ccd5014d5c4410466548284eeaccc041280ac0616a55720645
+              bytes: 13896
+            - path: /Users/tigger/code/tigoss/first-folio/specs/039-unified-font-configuration/spec.org
+              sha256: eb616c0d360c15a51f878bdc63065a9fe03ef8a815a3cee7e5a047ee56d3fe9d
+              bytes: 33245
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/font-rendering-check.org
+              sha256: 167d32f56dee87326fe78531b36ef7014dd7a160c163e289a4678f9360766f9e
+              bytes: 9039
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/spec.org
+              sha256: d7dccc9884d1994a7b30b8b7a1cee2e8c88bd85f9a00bdc43a775613e57310fd
+              bytes: 37824
+            - path: /Users/tigger/code/tigoss/first-folio/specs/042-manuscript-monospace-stretch/validation.org
+              sha256: 515733f1e739f282f91cf510e6b7e1587de856cad8f01a1d9ebc9cce643c5dc5
+              bytes: 11769
+            - path: /Users/tigger/code/tigoss/first-folio/templates/letter.typ
+              sha256: 6efe7e05ec3459a02f06980da7f386daa1cec909587c171ea7643ef63903cec9
+              bytes: 817
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 191d4123e837e9add7e03d026844f85b98c8a704b5e1449c99c12dca701097d3
+              bytes: 21520
+            - path: /Users/tigger/code/tigoss/first-folio/templates/script.typ
+              sha256: bee4f5384759e0639b837bed45bd16274cfc96b321f9025cd8d88b4bc5a9a2ff
+              bytes: 3222
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/green.log
+              sha256: 42b2dc3556337eb1abdc51b5b548e1316f64dfc023355e239af79ad3826cdacd
+              bytes: 72
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/make-lint.log
+              sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+              bytes: 0
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/make-test.log
+              sha256: 6e3fdab0acf5ed237b8bcb66cc13322fbbe3c7ad492a741f88a0c04f1bf6295c
+              bytes: 618
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/proportional.diff
+              sha256: f3da800df50b5cc6386554160848567aa3e4b8ea42822659d84e6c7a5ae4c62a
+              bytes: 8316
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/red.log
+              sha256: b58acf5613453ef93e8296ea4f6748cd8e5bc27ddc075a39707723fd2eda4646
+              bytes: 1064
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.8zE189q2oR/wrap-red.log
+              sha256: 7a2031e665b2b80055b38fb10052329cea1e97f54f935e832b041d71a578d494
+              bytes: 1436
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/green2.jsonl
+              sha256: f6c657c76f3cc24e3647d81778a86c30715f8fb0892a956dd794357f1d18de2a
+              bytes: 33489
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/heading-red-portable.log
+              sha256: d5b2206f94a9686db59ac4d0d10155d2e9969788debc9e1cbfc5b88cafb641a0
+              bytes: 2026
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/implementation.diff
+              sha256: 714f72fb2a79f59800f279ef13898016398cd0068ed865a5f602c0dcf6fee228
+              bytes: 19953
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/make-lint.log
+              sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+              bytes: 0
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/make-test.log
+              sha256: c7ad41701e973fc97f00a61021a387b408c0c1b97ff73685127e593001fdd697
+              bytes: 611
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.txyHQyleps/red.jsonl
+              sha256: 3f513844112178f9b487c1f9cf75bbe6a28deda17d3717cb280bbfb569417cf6
+              bytes: 457080
+          round: 5
+          updated: "2026-09-12T18:35:53Z"
