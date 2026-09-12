@@ -252,7 +252,7 @@ classification; it is provenance, not current state.
   linked specification, requested by the operator on 2026-09-10. Requirements
   and decision history remain here as provenance.
 
-** REVIEW W042 - Configured manuscript font attributes are not consistently applied :defect:
+** ACTIVE W042 - Inline monospace stretch and related font attributes are not consistently applied :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-042
 :SOURCE: operator
@@ -296,7 +296,9 @@ classification; it is provenance, not current state.
   headings override size/weight, and the shared script heading rule is unused.
   The proposed repair preserves casing, parsing, and the configuration schema.
 - Proposal :: Route inline code through the existing full monospace template
-  rule. Production implementation and operator sign-off remain pending.
+  rule. The earlier pending sign-off is superseded by the operator's approval
+  on 2026-09-12, followed by an explicit delivery invocation. Scope is font
+  rendering only against the signed-off canonical configuration YAML.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:

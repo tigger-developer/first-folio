@@ -2,7 +2,7 @@
 #+SUBTITLE: Bug analysis and proposed solution
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: Taḋg, 2026-09-12; font rendering only against the signed-off canonical presets/british.yaml; primary inline monospace stretch repair and supporting font-attribute repairs approved.
 
 * Synopsis
 :PROPERTIES:
@@ -58,12 +58,13 @@
 
 - The operator constrained the repair to *existing font attributes*, excluding
   new features. The earlier proposed casing change is superseded.
-- Production implementation has not been requested; this remains a definition.
+- The operator approved this rendering-only scope and invoked delivery on
+  2026-09-12. This supersedes the earlier definition-only boundary.
 
 ** Next step
 
-- Review the revised definition and its expanded diagnostic evidence, then
-  finalize the definition before normal delivery.
+- Deliver the approved rendering repairs through regression tests and
+  implementation review, then present rendered evidence for operator acceptance.
 
 -----
 
@@ -74,6 +75,10 @@
 
 ** Report and authority
 
+- Canonical contract :: The operator identified
+  [[file:../../presets/british.yaml][the canonical configuration YAML]] as the
+  originally signed-off specification. Its font schema, values and defaults
+  remain unchanged; this repair makes rendering honour that contract.
 - Intake :: [[file:../../docs/work.org::#w-042][W042 - Manuscript monospace font stretch is not applied]].
   The operator reported that =folio.manuscript.mono.font.stretch= is not
   implemented, then requested analysis and a proposed solution in this spec.
