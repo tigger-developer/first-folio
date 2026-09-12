@@ -10,7 +10,8 @@
 :END:
 
 - Category :: User test.
-- Status :: PENDING.
+- Status :: PASS; operator visual acceptance recorded on 2026-09-12 for the
+  12pt Libertinus Serif / 10pt Iosevka Publish comparison below.
 - Covers :: [[file:spec.org::#ac-042-1][AC042.1 - Inline code receives its complete monospace font]]
   and [[file:spec.org::#ac-042-2][AC042.2 - Monospace changes preserve neighbouring content]].
 - Procedure :: Render ordinary paragraph inline code in Markdown and Org at
@@ -26,7 +27,8 @@
   Ordinary text retains its own typography and code remains readable. Existing
   standalone-code rendering remains a control. The earlier nearest-face-only
   expectation is superseded by the operator's clarification of the original bug.
-- Reviewer :: Operator; acceptance has not been recorded.
+- Reviewer :: Taḋg: "that's it, perfect, pls implement" after reviewing the
+  four-value paragraph comparison. This supersedes the earlier pending status.
 - Diagnostic distinction :: [[file:spec.org::#diagnosis][Baseline reproduction and temporary rendering probe]]
   establish an excluded heading-code defect only. Paragraph code responded in
   that baseline by selecting a different face; that did not demonstrate the
@@ -270,3 +272,31 @@ title markers to =PARTCODE= and =CHAPTERCODE= as before.
   =baseline-red.log=, =baseline-green.log=, =make-test.log=, =make-lint.log= and
   =preview-check.log= retain the command results. This directory may expire;
   the procedure and measurements above are durable.
+
+* Accepted paragraph comparison, 2026-09-12
+
+- User test :: UT042.1 - Compare rendered monospace widths: PASS, accepted by
+  Taḋg after viewing the 100%, 150%, 200% and 50% paragraph examples.
+- Candidate :: Production =96ba3c4=, unchanged at repository checkpoint
+  =b3bce36=. The preview used a fresh build of this implementation.
+- Configuration :: Regular 12pt Libertinus Serif prose with regular 10pt
+  Iosevka Publish inline code. Only monospace stretch differs between samples;
+  these fixture choices do not change the canonical configuration defaults.
+- Source :: Two ordinary paragraphs: "Normal paragraph text with" followed by
+  the inline code marker =monospace_0123= and "inline."; then "She typed"
+  followed by inline code =quiet words= and "and continued writing."
+- Measurements :: The marker widths are 70pt, 105pt, 140pt and 35pt respectively.
+  All four preserve the original native paragraph's vertical bounds and
+  surrounding spacing within 0.02pt. PDF font records confirm Libertinus Serif
+  and Iosevka Publish; no substitute font was used.
+- Format coverage :: The approved preview shows Markdown output. A subsequent
+  equivalent Org render at each percentage matches every extracted word and
+  glyph bound within 0.02pt. This is measured format equivalence, not a separate
+  claim of human review of the Org PDFs.
+- Viewing :: Both paragraphs were presented at identical enlargement and crop
+  for each percentage. Full PDFs retain the configured point sizes.
+- Artefacts :: The supplementary local directory
+  =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.sKJGoNAizb/=
+  contains =comparison.html=, =render.rb=, =results.json=, =render-check.log=,
+  and the source/configuration/Typst/PDF sets. It may expire; the reproducible
+  fixture description and measurements above are durable.
