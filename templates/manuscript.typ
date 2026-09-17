@@ -161,6 +161,23 @@
   v(1em)
 }
 
+// Render the configured monospace stretch as proportional horizontal scaling, so every
+// consumer of the mono role widens identically whatever face the family actually provides.
+// Words scale independently and inter-word spacing scales with them: paragraphs still break
+// between code words, and code blocks keep both their column alignment and their pagination.
+#let folio-mono-stretch(body) = {
+  // Scale the normal-width face so condensed variants do not compound stretch.
+  set text(stretch: 100%, spacing: {{.Config.Folio.Manuscript.Mono.Font.Stretch}})
+  show regex("\\S+"): word => context {
+    // Scaling loses the text baseline; retain the actual depth below it.
+    let descent = measure(text(top-edge: "baseline", word)).height
+    box(baseline: descent, scale(
+      x: {{.Config.Folio.Manuscript.Mono.Font.Stretch}}, y: 100%, reflow: true,
+    )[#word])
+  }
+  body
+}
+
 #let folio-code(body) = {
   block(
     above: {{.Config.Folio.Manuscript.CodeBlock.SpaceBefore}},
@@ -168,7 +185,7 @@
   )[
     #text(
       {{fontArgs .Config.Folio.Manuscript.Mono.Font}}
-    )[#body]
+    )[#folio-mono-stretch(body)]
   ]
 }
 
@@ -212,23 +229,11 @@
   below: {{.Config.Folio.Manuscript.CodeBlock.SpaceAfter}},
 )[#pad(left: {{.Config.Folio.Manuscript.CodeBlockIndent.Value}})[#text(
   {{fontArgs .Config.Folio.Manuscript.Mono.Font}}
-)[#it]]]
+)[#folio-mono-stretch(it)]]]
 
 #show raw.where(block: false): it => text(
   {{fontArgs .Config.Folio.Manuscript.Mono.Font}}
-)[#{
-  // Scale the normal-width face so condensed variants do not compound stretch.
-  set text(stretch: 100%, spacing: {{.Config.Folio.Manuscript.Mono.Font.Stretch}})
-  // Scale words independently to retain paragraph line breaks at spaces.
-  show regex("\\S+"): word => context {
-    // Scaling loses the text baseline; retain the actual depth below it.
-    let descent = measure(text(top-edge: "baseline", word)).height
-    box(baseline: descent, scale(
-      x: {{.Config.Folio.Manuscript.Mono.Font.Stretch}}, y: 100%, reflow: true,
-    )[#word])
-  }
-  it
-}]
+)[#folio-mono-stretch(it)]
 
 #set page(
   {{if .PageSpec.Custom}}width: {{.PageSpec.Width}}, height: {{.PageSpec.Height}},{{else}}paper: "{{.PageSpec.Named}}",{{end}}
