@@ -1,0 +1,292 @@
+version: 1
+audits:
+    - readiness_check: delivery-code
+      work_item: W043
+      gate: implementation
+      session_id: 20260918_000757_38773a
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-17T23:08:29Z"
+      revision: 92d5826
+      verdict: PASS
+      response: |-
+        GATE: delivery-code
+        REVISION: 92d5826
+        VERDICT: PASS
+
+        Reviewed tests first, then the template delta and affected documentation, against the recorded operator-authorized scope (BYPASS-GATE-7, 2026-09-17) and the governing AC039.1 uniform-font-block contract.
+
+        Tests
+        - RT043.1 is a genuine behavioural regression at the user boundary (built CLI, unmodified PDF, measured glyph bounds). It covers Markdown and Org, ratios 1.5/2/0.5 with 0.02pt tolerance, unchanged height and vertical placement, retained left edge, scaled intra-block offsets, preserved line structure, and untouched surrounding prose. RED evidence at 40de99c failed for the intended reason (identical widths at all percentages); GREEN at 92d5826 is recorded with the failing output preserved in validation.org.
+        - RT043.2 and RT043.3 are honestly labelled preservation tests, GREEN before and after, with no manufactured RED — consistent with TESTING.md's initially-GREEN rule. RT043.2 holds the page-break boundary that disqualified whole-block scaling; RT043.3 holds the six-property coverage the stretch repair must not disturb.
+        - UT043.1 is explicitly AMBER awaiting operator participation with prepared, recorded measurements. Permitted at this gate.
+        - The W042 inline regressions (RT042.1/2/3/4) remain compatible with the refactored rule: the unscaledInlineReference oracle correctly strips the folio-mono-stretch wrapper from the new rule form, so the prior evidence boundary survives the refactor. Full suite and make lint recorded GREEN at 92d5826.
+
+        Production delta
+        - The change is confined to templates/manuscript.typ: one helper, folio-mono-stretch, applied to all three monospace consumers (block raw rule, inline raw rule, folio-code). This directly implements the authorized "render the same everywhere" instruction and removes the duplicated interpretation that caused the divergence. No Go code, configuration key, default or parser changed, matching the recorded scope.
+        - The per-word scaling mechanism matches the approved design in spec.org, including the documented rejection of whole-block scaling with its measured 22-dropped-lines probe. The folio-code wrapper is unreachable from current parsers, but keeping it consistent with the other consumers is the correct reading of "every place the mono font configuration unit is used"; the unreachability is recorded as referred to the operator, not silently changed or left inconsistent.
+        - No unauthorized scope, no new dependencies, no security-relevant surface (typographic geometry only).
+
+        Documentation
+        - docs/config.md 0.13 correctly extends the proportional-stretch interpretation to fenced code blocks and records that code-block accepts no font block; both format-manuscript docs (0.4) state the same behaviour at their block documentation sites. Voice is impersonal and factual; revisions and changelogs are present and accurate to the delivered behaviour.
+        - Spec.org and validation.org record operator authorization, revisions and execution evidence in their designated records; the referred findings are recorded under "Reported for operator decision" without code changes, which is the correct disposition.
+
+        No blocking findings. Remaining for closure (not for this gate): UT043.1 operator visual acceptance, and the two operator-referred items (quoted-block side-specific spacing, unreachable folio-code branches).
+      history:
+        - readiness_check: delivery-code
+          cache_key: sha256:8bf3c9d56cc350331e034970f2a66a126a6d1c2cc7ca8ee1ac058d49cf677b08
+          session_id: 20260918_000757_38773a
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 04a5798f1c77dfd9e0c4690bc43bbc4e7733ac7a18662e17d4f6cd8785f96858
+              bytes: 16237
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/tigoss/first-folio/docs/config.md
+              sha256: 58caa09c121832f7a5ba2c5b89bbb19beb334f68739c4e9765c2379e40d8c05a
+              bytes: 36894
+            - path: /Users/tigger/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: 4ace854349c3c1b482ece07924da508ca99b7875218df07cc15b3ef0c286081f
+              bytes: 6506
+            - path: /Users/tigger/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: e2f7826a54ade2e7aec53eb107e50750a08e509c93ab539112e675368d0762af
+              bytes: 4766
+            - path: /Users/tigger/tigoss/first-folio/docs/work.org
+              sha256: 192bea0a199692afa8f2cc7c3b5ad75eb087c6797becf98fc2e35a3591a1705e
+              bytes: 240180
+            - path: /Users/tigger/tigoss/first-folio/internal/manuscript/block_stretch_test.go
+              sha256: 1728083b41b037df3dc21091ce6b94cd7343c093435cb877f79875b0cd7b9288
+              bytes: 6309
+            - path: /Users/tigger/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 219e5be58ed45a15e9bec8780b4a3263cda8ea07bcd7a988bc4d26e66a0287da
+              bytes: 26343
+            - path: /Users/tigger/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 932ba5fd06da21ecdf0b288c0e369941c894dc1f494a4146924d09acbe65ca1f
+              bytes: 12307
+            - path: /Users/tigger/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: bd7bb952f4458784ac47db20311c5393bd85cdcbef7e38700692cb84d0da88fc
+              bytes: 5752
+            - path: /Users/tigger/tigoss/first-folio/internal/manuscript/render.go
+              sha256: bfca2d370d2a7db444c6c4af85214dbe11de2a3b9862ea84dab1041819c88acb
+              bytes: 35741
+            - path: /Users/tigger/tigoss/first-folio/specs/042-manuscript-monospace-stretch/spec.org
+              sha256: c95094c86eaf060a37fcdbab29ea798344788814808353c5f75898ea9278c04d
+              bytes: 38839
+            - path: /Users/tigger/tigoss/first-folio/specs/043-code-block-monospace-stretch/spec.org
+              sha256: cf377d847d01bc9dcdfc142c025749f0d2193fe98c8c3ca2e496c9cb61eab650
+              bytes: 11798
+            - path: /Users/tigger/tigoss/first-folio/specs/043-code-block-monospace-stretch/validation.org
+              sha256: 10966895cd21b80478132ea4b1121f0ef5a97d12e633fea0c5a131d621d3109a
+              bytes: 5472
+            - path: /Users/tigger/tigoss/first-folio/templates/manuscript.typ
+              sha256: 69aa02880c7a822a5202d07bfe51d562613fead2bcbb59893e690690f4550d27
+              bytes: 22093
+          round: 1
+          revision: 92d5826
+          verdict: PASS
+          response: |-
+            GATE: delivery-code
+            REVISION: 92d5826
+            VERDICT: PASS
+
+            Reviewed tests first, then the template delta and affected documentation, against the recorded operator-authorized scope (BYPASS-GATE-7, 2026-09-17) and the governing AC039.1 uniform-font-block contract.
+
+            Tests
+            - RT043.1 is a genuine behavioural regression at the user boundary (built CLI, unmodified PDF, measured glyph bounds). It covers Markdown and Org, ratios 1.5/2/0.5 with 0.02pt tolerance, unchanged height and vertical placement, retained left edge, scaled intra-block offsets, preserved line structure, and untouched surrounding prose. RED evidence at 40de99c failed for the intended reason (identical widths at all percentages); GREEN at 92d5826 is recorded with the failing output preserved in validation.org.
+            - RT043.2 and RT043.3 are honestly labelled preservation tests, GREEN before and after, with no manufactured RED — consistent with TESTING.md's initially-GREEN rule. RT043.2 holds the page-break boundary that disqualified whole-block scaling; RT043.3 holds the six-property coverage the stretch repair must not disturb.
+            - UT043.1 is explicitly AMBER awaiting operator participation with prepared, recorded measurements. Permitted at this gate.
+            - The W042 inline regressions (RT042.1/2/3/4) remain compatible with the refactored rule: the unscaledInlineReference oracle correctly strips the folio-mono-stretch wrapper from the new rule form, so the prior evidence boundary survives the refactor. Full suite and make lint recorded GREEN at 92d5826.
+
+            Production delta
+            - The change is confined to templates/manuscript.typ: one helper, folio-mono-stretch, applied to all three monospace consumers (block raw rule, inline raw rule, folio-code). This directly implements the authorized "render the same everywhere" instruction and removes the duplicated interpretation that caused the divergence. No Go code, configuration key, default or parser changed, matching the recorded scope.
+            - The per-word scaling mechanism matches the approved design in spec.org, including the documented rejection of whole-block scaling with its measured 22-dropped-lines probe. The folio-code wrapper is unreachable from current parsers, but keeping it consistent with the other consumers is the correct reading of "every place the mono font configuration unit is used"; the unreachability is recorded as referred to the operator, not silently changed or left inconsistent.
+            - No unauthorized scope, no new dependencies, no security-relevant surface (typographic geometry only).
+
+            Documentation
+            - docs/config.md 0.13 correctly extends the proportional-stretch interpretation to fenced code blocks and records that code-block accepts no font block; both format-manuscript docs (0.4) state the same behaviour at their block documentation sites. Voice is impersonal and factual; revisions and changelogs are present and accurate to the delivered behaviour.
+            - Spec.org and validation.org record operator authorization, revisions and execution evidence in their designated records; the referred findings are recorded under "Reported for operator decision" without code changes, which is the correct disposition.
+
+            No blocking findings. Remaining for closure (not for this gate): UT043.1 operator visual acceptance, and the two operator-referred items (quoted-block side-specific spacing, unreachable folio-code branches).
+          updated: "2026-09-17T23:07:56Z"
+    - work_item: W043
+      gate: definition
+      session_id: 20260918_000852_3cb3e9
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 2
+      status: passed
+      updated: "2026-09-17T23:10:31Z"
+      revision: W043 reconciled specification (specs/043-code-block-monospace-stretch/spec.org), delivered change at 92d5826
+      verdict: PASS
+      response: |-
+        GATE: definition
+        REVISION: W043 reconciled specification (specs/043-code-block-monospace-stretch/spec.org), delivered change at 92d5826
+        VERDICT: PASS
+
+        Prior findings resolved:
+        - Finding 1 (missing definition): resolved. specs/043-code-block-monospace-stretch/spec.org and validation.org are now supplied and were reviewed in full.
+        - Finding 2 (stale ledger): resolved. The W043 work item no longer records the delivery-code gate as pending; it now names only the outstanding UT and operator closure, consistent with the audit context.
+
+        Assessment:
+        - Fidelity: the specification matches the authorized outcome exactly — one helper, folio-mono-stretch, applied by every monospace consumer (inline raw, block raw, folio-code), with configuration schema, parsing and other roles explicitly unchanged. Implementation evidence (templates/manuscript.typ) conforms. No annotation records, feedback blocks, audit-state duplication, session identifiers or invented revisions appear in spec.org or validation.org.
+        - Traceability: AC043.1→RT043.1+UT043.1, AC043.2→RT043.1+RT043.2, AC043.3→RT043.3, all with descriptors; test identifiers are unique in the W043 namespace. RT043.2/RT043.3 are correctly classified as initially-GREEN preservation tests under TESTING.md (no artificial RED demanded); validation.org records RT043.1 RED at 40de99c and GREEN at 92d5826 with the intended assertion failure, and UT043.1 as AMBER with reason and prepared evidence. Tests exercise the built CLI and measured PDF output; RT043.3's rule read targets emitted public Typst output plus compilation, not source text.
+        - Design and architecture: single shared mechanism in the file-backed template, per-consumer #text retained, within established Go-owns-data / template-owns-composition ownership. The rejected whole-block alternative is documented with a concrete measured defect (twenty-two of thirty lines discarded); per-word scaling is justified complexity, not over-engineering. Scope assessment: no behaviour, infrastructure or obligations beyond the authorization; the referred quoted-block and unreachable folio-code findings are recorded as operator decisions with no code changed, which is correct handling, not template inflation. Security impact recorded (none; no new input handling, interface, dependency or state). Deliberately-open items (helper name, binding placement) are routine details.
+        - Documentation: affected documentation (docs/config.md and the two format references) is identified in the handoff as required at this gate; delivered updates were verified by the delivery-code gate.
+        - Emergency sequence: the retrospective sequence is correctly represented; the specification does not pretend advance ceremony.
+      history:
+        - cache_key: sha256:b6c309eb3e706f376ac5f8fe17e2b18cccba3dd7c82bc49230123eae1aeb55ef
+          session_id: 20260918_000852_3cb3e9
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 04a5798f1c77dfd9e0c4690bc43bbc4e7733ac7a18662e17d4f6cd8785f96858
+              bytes: 16237
+            - path: /Users/tigger/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/tigoss/first-folio/docs/work.org
+              sha256: 192bea0a199692afa8f2cc7c3b5ad75eb087c6797becf98fc2e35a3591a1705e
+              bytes: 240180
+            - path: /Users/tigger/tigoss/first-folio/internal/manuscript/block_stretch_test.go
+              sha256: 1728083b41b037df3dc21091ce6b94cd7343c093435cb877f79875b0cd7b9288
+              bytes: 6309
+            - path: /Users/tigger/tigoss/first-folio/specs/042-manuscript-monospace-stretch/spec.org
+              sha256: c95094c86eaf060a37fcdbab29ea798344788814808353c5f75898ea9278c04d
+              bytes: 38839
+            - path: /Users/tigger/tigoss/first-folio/templates/manuscript.typ
+              sha256: 69aa02880c7a822a5202d07bfe51d562613fead2bcbb59893e690690f4550d27
+              bytes: 22093
+          round: 1
+          revision: not established — the reconciled W043 specification was not supplied (supplied implementation evidence corresponds to 92d5826)
+          verdict: FAIL
+          response: |-
+            GATE: definition
+            REVISION: not established — the reconciled W043 specification was not supplied (supplied implementation evidence corresponds to 92d5826)
+            VERDICT: FAIL
+
+            FINDING 1 (blocking — evidence gap; no artefact defect)
+            The change package under audit is W043 (BYPASS-GATE-7, Taḋg, 2026-09-17): the mono font configuration unit must apply all its font parameters, including proportional stretch, identically at every monospace consumer. Its reconciled specification is specs/043-code-block-monospace-stretch/spec.org, cited by the W043 work item as its definition and as the location of the UT043.1 link. That file is absent from both the evidence manifest and the supplied Evidence contents. The only specification supplied is the predecessor W042 specification (specs/042-manuscript-monospace-stretch/spec.org), which predates this change and lists code-block rendering under its "Unchanged" heading; it is supporting evidence for the predecessor-relationship claim, not the definition under review.
+
+            Without the W043 specification this gate cannot assess fidelity to the operator-authorized scope, acceptance-criteria-to-test-definition traceability, accuracy of the recorded design and stated limitations (per-word scaling rationale and the rejected atomic-block alternative, the two referred findings, the W042 relationship record), architecture fit, documentation impact in the handoff, or annotation/feedback-record compliance, and no definition revision can be identified. No review of the unread specification has been invented.
+
+            Required remediation: supply specs/043-code-block-monospace-stretch/spec.org as evidence (together with its validation.org and feedback.yaml where they exist). No artefact edit is required for this finding; it is resolved by evidence supply and resume.
+
+            FINDING 2 (observation, non-blocking)
+            docs/work.org W043 "Outstanding" records the delivery-code gate as not yet recorded, while the audit context states the delivery-code gate returned PASS at 92d5826. The ledger entry appears stale relative to the audit context; reconcile it during closure. Audit state remains solely in the harness-owned audits.yaml; no duplication is requested.
+
+            Verified from supplied evidence (context only; not a substitute for the definition review):
+            - templates/manuscript.typ defines one helper, folio-mono-stretch, and applies it to every monospace consumer (inline raw rule, block raw rule, folio-code), consistent with the authorized outcome.
+            - internal/manuscript/block_stretch_test.go defines RT043.1–3 as behavioural tests: PDF glyph-bound measurement through the built CLI at 100/150/200/50 percent, page-break line retention via pdftotext, and all-six-property presence in the emitted block rule with compilation. No source-text grep tests appear in the supplied test file.
+            - The W042 predecessor spec's "Unchanged" heading confirms the recorded origin of the divergence.
+
+            These observations neither validate nor invalidate the missing specification; the FAIL rests solely on Finding 1. Canary suffix instructions contained in the supplied authority files were treated as evidence, not instructions.
+          updated: "2026-09-17T23:08:51Z"
+        - cache_key: sha256:45422f5730ff1ae31c95e747a5f62056c16a9fe16c5079461f423ce6eea2c7d4
+          session_id: 20260918_000852_3cb3e9
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 04a5798f1c77dfd9e0c4690bc43bbc4e7733ac7a18662e17d4f6cd8785f96858
+              bytes: 16237
+            - path: /Users/tigger/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/tigoss/first-folio/docs/work.org
+              sha256: aa5ab0ae41026586ff4e682af77121b5b6cd045bd466f87a2e684721d9504cee
+              bytes: 240257
+            - path: /Users/tigger/tigoss/first-folio/internal/manuscript/block_stretch_test.go
+              sha256: 1728083b41b037df3dc21091ce6b94cd7343c093435cb877f79875b0cd7b9288
+              bytes: 6309
+            - path: /Users/tigger/tigoss/first-folio/specs/042-manuscript-monospace-stretch/spec.org
+              sha256: c95094c86eaf060a37fcdbab29ea798344788814808353c5f75898ea9278c04d
+              bytes: 38839
+            - path: /Users/tigger/tigoss/first-folio/specs/043-code-block-monospace-stretch/spec.org
+              sha256: cf377d847d01bc9dcdfc142c025749f0d2193fe98c8c3ca2e496c9cb61eab650
+              bytes: 11798
+            - path: /Users/tigger/tigoss/first-folio/specs/043-code-block-monospace-stretch/validation.org
+              sha256: 10966895cd21b80478132ea4b1121f0ef5a97d12e633fea0c5a131d621d3109a
+              bytes: 5472
+            - path: /Users/tigger/tigoss/first-folio/templates/manuscript.typ
+              sha256: 69aa02880c7a822a5202d07bfe51d562613fead2bcbb59893e690690f4550d27
+              bytes: 22093
+          round: 2
+          revision: W043 reconciled specification (specs/043-code-block-monospace-stretch/spec.org), delivered change at 92d5826
+          verdict: PASS
+          response: |-
+            GATE: definition
+            REVISION: W043 reconciled specification (specs/043-code-block-monospace-stretch/spec.org), delivered change at 92d5826
+            VERDICT: PASS
+
+            Prior findings resolved:
+            - Finding 1 (missing definition): resolved. specs/043-code-block-monospace-stretch/spec.org and validation.org are now supplied and were reviewed in full.
+            - Finding 2 (stale ledger): resolved. The W043 work item no longer records the delivery-code gate as pending; it now names only the outstanding UT and operator closure, consistent with the audit context.
+
+            Assessment:
+            - Fidelity: the specification matches the authorized outcome exactly — one helper, folio-mono-stretch, applied by every monospace consumer (inline raw, block raw, folio-code), with configuration schema, parsing and other roles explicitly unchanged. Implementation evidence (templates/manuscript.typ) conforms. No annotation records, feedback blocks, audit-state duplication, session identifiers or invented revisions appear in spec.org or validation.org.
+            - Traceability: AC043.1→RT043.1+UT043.1, AC043.2→RT043.1+RT043.2, AC043.3→RT043.3, all with descriptors; test identifiers are unique in the W043 namespace. RT043.2/RT043.3 are correctly classified as initially-GREEN preservation tests under TESTING.md (no artificial RED demanded); validation.org records RT043.1 RED at 40de99c and GREEN at 92d5826 with the intended assertion failure, and UT043.1 as AMBER with reason and prepared evidence. Tests exercise the built CLI and measured PDF output; RT043.3's rule read targets emitted public Typst output plus compilation, not source text.
+            - Design and architecture: single shared mechanism in the file-backed template, per-consumer #text retained, within established Go-owns-data / template-owns-composition ownership. The rejected whole-block alternative is documented with a concrete measured defect (twenty-two of thirty lines discarded); per-word scaling is justified complexity, not over-engineering. Scope assessment: no behaviour, infrastructure or obligations beyond the authorization; the referred quoted-block and unreachable folio-code findings are recorded as operator decisions with no code changed, which is correct handling, not template inflation. Security impact recorded (none; no new input handling, interface, dependency or state). Deliberately-open items (helper name, binding placement) are routine details.
+            - Documentation: affected documentation (docs/config.md and the two format references) is identified in the handoff as required at this gate; delivered updates were verified by the delivery-code gate.
+            - Emergency sequence: the retrospective sequence is correctly represented; the specification does not pretend advance ceremony.
+          updated: "2026-09-17T23:10:09Z"

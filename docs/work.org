@@ -371,9 +371,9 @@ classification; it is provenance, not current state.
 - Evidence :: [[file:../specs/043-code-block-monospace-stretch/validation.org][Regression and rendered validation]]
   records RT043.1 RED before the change and GREEN after it, two retained
   preservation tests, and the full suite and lint passing at =92d5826=.
+- Audit evidence :: [[file:../specs/043-code-block-monospace-stretch/audits.yaml][Retained audit record]].
 - Outstanding :: [[file:../specs/043-code-block-monospace-stretch/spec.org::#ut-043-1][UT043.1 - Compare rendered code-block and inline widths]]
-  awaits operator participation, and the delivery-code gate and operator
-  closure are not yet recorded.
+  awaits operator participation, and operator closure is not yet recorded.
 - Referred, not delivered :: =folio.manuscript.quoted-block= accepts only a
   font block, so quoted-block clearance can be set only symmetrically through
   =quoted-block-spacing=; values at =quoted-block.space-before= are silently
