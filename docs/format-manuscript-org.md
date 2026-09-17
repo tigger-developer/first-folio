@@ -1,6 +1,7 @@
 ---
-version: "0.3"
-updated: "2026-09-10"
+title: Org-mode Manuscript Format
+version: "0.4"
+last-updated: 2026-09-17
 ---
 
 # Org-mode Manuscript Format
@@ -51,6 +52,8 @@ Section breaks default to a centred `#` marker in rendered manuscripts. Override
 
 Lists, tables, and source blocks render with `0.5em` vertical padding before and after by default. Override `folio.manuscript.list.space-before`, `folio.manuscript.list.space-after`, `folio.manuscript.table.space-before`, `folio.manuscript.table.space-after`, `folio.manuscript.code-block.space-before`, and `folio.manuscript.code-block.space-after` to adjust this spacing.
 
+Source blocks take their typography from `folio.manuscript.mono.font`, the same role as verbatim spans; `folio.manuscript.code-block` carries layout only. A configured `stretch` scales the block horizontally by that percentage, matching inline verbatim text, while the block keeps its glyph height, its column alignment and its page breaks.
+
 ## Example
 
 ```org
@@ -82,5 +85,6 @@ This planning note is excluded.
 
 ## Revision History
 
+- 0.4, 2026-09-17: Record that source blocks take their typography from the monospace font role, that configured stretch scales them proportionally, and that `code-block` carries layout only.
 - 0.3, 2026-09-10: Add the Org manuscript schema declaration and use YAML document-version metadata.
 - 0.2, 2026-08-10: Previous manuscript-reference revision.

@@ -337,6 +337,50 @@ classification; it is provenance, not current state.
   historical and superseded by this approval.
 
 
+** ACTIVE W043 - Configured monospace stretch is not applied to code blocks :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-043
+:SOURCE: operator
+:CREATED: 2026-09-17
+:END:
+
+- Authorization :: Taḋg invoked =BYPASS-GATE-7= on 2026-09-17. The bounded
+  request is that the mono font implement stretch *in every place the mono font
+  configuration unit is used*, applying all font parameters and rendering them
+  the same way.
+- Report :: =folio.manuscript.mono.font.stretch= reached fenced code blocks as
+  a plain Typst face-width selection while paragraph inline monospace scaled
+  proportionally. One configuration unit produced *two different rendered
+  results*; in a single-width family the block setting had no effect at all.
+- Origin :: [[file:../specs/042-manuscript-monospace-stretch/spec.org][W042 - Restore configured stretch for inline monospace text]]
+  listed code-block rendering under its *Unchanged* heading, so the divergence
+  is a known consequence of that change's narrow scope rather than a fault it
+  introduced.
+- Governing requirement :: [[file:../specs/039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]]
+  requires each of the six font properties to affect its configured role.
+- Confirmed correct :: =folio.manuscript.code-block= accepts no font block.
+  The operator confirmed that code blocks legitimately take their typography
+  from =folio.manuscript.mono.font=, so only the stretch *interpretation* was
+  at fault; all six properties already reached the block rule.
+- Definition :: [[file:../specs/043-code-block-monospace-stretch/spec.org][Reconciled specification and solution design]].
+- Delivery :: One template helper, =folio-mono-stretch=, now owns the
+  proportional scaling and is applied by every monospace consumer. Per-word
+  scaling was retained over scaling each block as a unit because an atomically
+  scaled block cannot break across pages; a measured probe of the rejected
+  alternative *discarded twenty-two of thirty lines*.
+- Evidence :: [[file:../specs/043-code-block-monospace-stretch/validation.org][Regression and rendered validation]]
+  records RT043.1 RED before the change and GREEN after it, two retained
+  preservation tests, and the full suite and lint passing at =92d5826=.
+- Outstanding :: [[file:../specs/043-code-block-monospace-stretch/spec.org::#ut-043-1][UT043.1 - Compare rendered code-block and inline widths]]
+  awaits operator participation, and the delivery-code gate and operator
+  closure are not yet recorded.
+- Referred, not delivered :: =folio.manuscript.quoted-block= accepts only a
+  font block, so quoted-block clearance can be set only symmetrically through
+  =quoted-block-spacing=; values at =quoted-block.space-before= are silently
+  ignored. Code blocks have side-specific overrides. This missing capability
+  awaits the operator's scope decision and *no code was changed for it*.
+
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria

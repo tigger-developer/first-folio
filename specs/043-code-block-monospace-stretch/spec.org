@@ -1,0 +1,278 @@
+#+TITLE: W043 - Apply the configured monospace stretch to code blocks
+#+SUBTITLE: Emergency change reconciled from the authorized bounded request
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_AUTHORIZATION: Taḋg, 2026-09-17, BYPASS-GATE-7. The mono font must implement stretch in every place the mono font configuration unit is used; all font parameters must apply and render the same way.
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Before
+
+- =folio.manuscript.mono.font.stretch= reached fenced code blocks as a plain
+  Typst =stretch= argument, which *selects an available face width* in the
+  configured family.
+- The identical configuration value reached paragraph inline monospace through
+  a rule that *scales the normal-width face horizontally* by the same ratio.
+- One configuration unit therefore produced *two different rendered results*
+  depending on where the monospace role was used. With a family offering a
+  single width, such as DejaVu Sans Mono or Libertinus Mono, the block setting
+  had *no observable effect at all*.
+
+** After
+
+- Fenced code blocks scale horizontally by the configured percentage, matching
+  paragraph inline monospace: 150% is 1.5 times the 100% width, 200% twice,
+  and 50% half, with *unchanged glyph height*.
+- Inter-word spacing and leading indentation inside the block scale with the
+  glyphs, so the *monospace column grid stays aligned*.
+- The block keeps its *left edge, line structure and pagination*.
+
+** Changes
+
+- One template helper, =folio-mono-stretch=, owns the proportional scaling and
+  is applied by every monospace consumer in the manuscript template.
+
+** Unchanged
+
+- Configuration keys, defaults, layering, validation and parsing.
+- Code-block spacing and indentation, quoted-block typography and spacing, and
+  every other role's font-selection semantics.
+- Paragraph inline monospace rendering, which already behaved as specified.
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Origin of the divergence
+
+[[file:../042-manuscript-monospace-stretch/spec.org][W043's predecessor, W042 - Restore configured stretch for inline monospace text]]
+repaired paragraph inline monospace and listed *code-block rendering under its
+"Unchanged" heading*. The divergence is therefore a known consequence of that
+change's deliberately narrow scope, not an oversight introduced by it. The
+operator has since classified the remaining inconsistency as a defect.
+
+** Governing requirement
+
+[[file:../039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]]
+requires each of the six font properties to affect its configured role. Every
+font role shares one schema, so a role's properties must not be applied
+selectively or interpreted differently by individual consumers.
+
+** Verified intake evidence
+
+- =folio.manuscript.code-block= accepts only =space-before= and =space-after=;
+  it has *no font block*, which the operator confirmed as correct. Code blocks
+  legitimately take their typography from =folio.manuscript.mono.font=.
+- All six font properties already reached the block rule. *Only the stretch
+  semantics diverged*, so this change corrects interpretation, not coverage.
+
+* Acceptance criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC043.1 - Code blocks scale by the configured monospace stretch :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-043-1
+:END:
+
+GIVEN a manuscript containing a fenced code block
+WHEN =folio.manuscript.mono.font.stretch= is configured
+THEN the rendered code *width changes by that percentage*, relative to its
+100% rendering, *even in a family providing a single width*
+AND the *glyph height and vertical placement are unchanged*
+AND *surrounding prose retains its own typography*.
+
+Proved by [[#rt-043-1][RT043.1 - Proportional block stretch]] and
+[[#ut-043-1][UT043.1 - Compare rendered code-block and inline widths]].
+
+** AC043.2 - Stretched code blocks keep their alignment and pagination :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-043-2
+:END:
+
+GIVEN a stretched fenced code block whose lines are indented
+WHEN the manuscript is rendered
+THEN the block *retains its left edge*
+AND *inner spacing and indentation scale with the glyphs*, preserving the
+monospace column grid
+AND each source line *remains a distinct rendered line*
+AND a block longer than the remaining page *still breaks across pages with no
+line dropped*.
+
+Proved by [[#rt-043-1][RT043.1 - Proportional block stretch]] and
+[[#rt-043-2][RT043.2 - Stretched blocks retain every line]].
+
+** AC043.3 - Code blocks receive every configured monospace property :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-043-3
+:END:
+
+GIVEN any of the six =folio.manuscript.mono.font= properties
+WHEN a fenced code block is rendered
+THEN the governing block rule *carries that configured value*, as the
+paragraph inline monospace rule already does.
+
+Proved by [[#rt-043-3][RT043.3 - Block font properties reach content]].
+
+* Solution design
+:PROPERTIES:
+:CUSTOM_ID: design
+:END:
+
+** Chosen mechanism
+
+[[file:../../templates/manuscript.typ][The manuscript template]] defines one
+helper, =folio-mono-stretch=, holding the proportional-scaling rule previously
+written inline in the =raw.where(block: false)= show rule:
+
+#+begin_src typst
+#let folio-mono-stretch(body) = {
+  set text(stretch: 100%, spacing: <configured stretch>)
+  show regex("\\S+"): word => context {
+    let descent = measure(text(top-edge: "baseline", word)).height
+    box(baseline: descent, scale(
+      x: <configured stretch>, y: 100%, reflow: true,
+    )[#word])
+  }
+  body
+}
+#+end_src
+
+Each monospace consumer keeps its own =#text= call carrying the complete font
+arguments, and wraps its body in the helper. The consumers are the block raw
+rule, the inline raw rule and =folio-code=.
+
+- Rationale :: The divergence existed *because the monospace rendering rule was
+  duplicated*. A single owner of the mechanism makes the two interpretations
+  impossible to separate again. Retaining the per-consumer =#text= call keeps
+  each rule self-describing in the emitted Typst, which the existing regression
+  tests read as the output boundary.
+- Resetting =stretch= to 100% inside the helper prevents a condensed or
+  expanded face from *compounding* the geometric scale.
+- Scaling inter-word spacing by the same ratio keeps whitespace proportional to
+  the glyphs, which is what preserves the monospace grid in a block.
+
+** Rejected alternative
+
+Scaling each block as a unit, =scale(x: S, origin: left + top)[#it]=, produces
+*identical geometry* for a short block and is simpler to read. It was rejected
+because the scaled block becomes an *atomic layout box that cannot break across
+pages*. A measured probe of a thirty-line block on a short page rendered eight
+lines on one page and *silently discarded the remaining twenty-two*. Per-word
+scaling rendered all thirty across five pages.
+[[#rt-043-2][RT043.2 - Stretched blocks retain every line]] holds this boundary.
+
+** Security impact
+
+None. The change alters typographic geometry in generated Typst markup. It adds
+no input handling, no external interface, no dependency and no state.
+
+** Deliberately left open
+
+The emitted helper name and the placement of the =#let= binding within the
+template are routine details.
+
+* Test definitions
+:PROPERTIES:
+:CUSTOM_ID: tests
+:END:
+
+Tests run through the built =folio= CLI and measure the unmodified rendered PDF,
+matching the established manuscript font-regression boundary.
+
+** RT043.1 - Proportional block stretch :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-043-1
+:END:
+
+- Category :: Automated regression test.
+- Covers :: [[#ac-043-1][AC043.1 - Code blocks scale by the configured monospace stretch]]
+  and [[#ac-043-2][AC043.2 - Stretched code blocks keep their alignment and pagination]].
+- Method :: For Markdown and Org input at 100%, 150%, 200% and 50%, render a
+  two-line fenced block whose second line is indented, surrounded by prose, in a
+  single-width font. Measure PDF glyph bounds.
+- Expected :: Each code word's width is the 100% width times the configured
+  ratio; vertical bounds are unchanged; the block's left edge is unchanged; each
+  word's offset from that edge scales by the ratio; the two source lines remain
+  two rendered lines; surrounding prose word widths are unchanged.
+
+** RT043.2 - Stretched blocks retain every line :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-043-2
+:END:
+
+- Category :: Automated regression test.
+- Covers :: [[#ac-043-2][AC043.2 - Stretched code blocks keep their alignment and pagination]].
+- Method :: For Markdown and Org input at 150%, render an eighty-line block of
+  uniquely numbered lines and extract the complete PDF text.
+- Expected :: Every numbered line is present in the rendered output.
+- Purpose :: This is a *preservation test*, GREEN before the change. It holds
+  the boundary that disqualified the rejected whole-block scaling alternative.
+
+** RT043.3 - Block font properties reach content :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-043-3
+:END:
+
+- Category :: Automated regression test.
+- Covers :: [[#ac-043-3][AC043.3 - Code blocks receive every configured monospace property]].
+- Method :: For Markdown and Org input, configure all six monospace properties
+  with non-default values and read the governing block rule in the emitted
+  Typst, then compile the document.
+- Expected :: The block rule carries every configured value and the document
+  compiles.
+- Purpose :: This is a *preservation test*, GREEN before the change. It holds
+  the property coverage that the stretch repair must not disturb.
+
+** UT043.1 - Compare rendered code-block and inline widths :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-043-1
+:END:
+
+- Category :: User test.
+- Covers :: [[#ac-043-1][AC043.1 - Code blocks scale by the configured monospace stretch]].
+- Method :: User validation. Present manuscripts rendered at 100%, 150%, 200%
+  and 50% containing both a fenced code block and paragraph inline monospace,
+  at equal zoom, recording tool versions, the font family's available faces and
+  the tested revision.
+- Expected :: A code block and inline code at the same configured stretch read
+  as the *same typographic treatment*, the block stays legible and aligned, and
+  the result is typographically acceptable for a manuscript.
+
+* Affected documentation
+:PROPERTIES:
+:CUSTOM_ID: documentation
+:END:
+
+- [[file:../../docs/config.md][Configuration reference]] :: States the
+  proportional-stretch interpretation for manuscript monospace, previously
+  restricted to paragraph inline monospace.
+- [[file:../../docs/format-manuscript-markdown.md][Markdown manuscript format]]
+  and [[file:../../docs/format-manuscript-org.md][Org manuscript format]] ::
+  Describe code-block typography where each format documents its blocks.
+
+* Reported for operator decision
+:PROPERTIES:
+:CUSTOM_ID: referred
+:END:
+
+These were found while delivering the authorized change. They are *not part of
+it* and no code was changed for them.
+
+- Quoted-block spacing has no side-specific override :: =folio.manuscript.code-block=
+  accepts =space-before= and =space-after=, which override =code-block-spacing=
+  per side. =folio.manuscript.quoted-block= accepts *only a font block*, so
+  quoted-block clearance can be set only symmetrically through
+  =quoted-block-spacing=. Values supplied at =quoted-block.space-before= are
+  *silently ignored*. This is a missing capability, not a broken one.
+- =folio-code= is unreachable :: [[file:../../internal/manuscript/render.go][The renderer]]
+  emits =#folio-code[...]= for a block of kind =code=, and
+  [[file:../../internal/manuscript/serialize.go][the serializer]] handles the
+  same kind, but *no parser produces it*. Standalone code spans reach the block
+  raw rule instead. The template helper was kept consistent with the other
+  monospace consumers; the unreachable Go branches were left untouched.

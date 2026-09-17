@@ -1,4 +1,8 @@
-<!-- Version: 0.12 | Last updated: 2026-09-12 -->
+---
+title: Configuration
+version: "0.13"
+last-updated: 2026-09-17
+---
 
 # Configuration
 
@@ -116,9 +120,11 @@ The six properties are:
 
 `stretch` selects an available width within the chosen font family. If that width is unavailable, Typst selects the nearest available face; it does not geometrically compress or expand the text. `letter-spacing` separately adjusts the space between characters.
 
-For **manuscript paragraph inline monospace**, `mono.font.stretch` instead specifies proportional horizontal scaling from the normal-width face: 150% is 1.5 times the width, 200% twice, and 50% half. Glyph height stays unchanged. Words and inter-word spacing scale, and paragraphs can still wrap between code words. This corrects the earlier interpretation of inline stretch as font-face selection only.
+For **manuscript monospace**, `mono.font.stretch` instead specifies proportional horizontal scaling from the normal-width face: 150% is 1.5 times the width, 200% twice, and 50% half. Glyph height stays unchanged. Words and inter-word spacing scale, so paragraphs can still wrap between code words and code blocks keep their column alignment and their page breaks. This corrects the earlier interpretation of monospace stretch as font-face selection only.
 
-Manuscript paragraph inline monospace text uses the complete `folio.manuscript.mono.font` block. Ordinary manuscript headings use `folio.manuscript.heading.font`, including its configured size and weight without implicit heading-level scaling or bold. Table-of-contents entries, running headers and footers retain their own font roles. Existing source emphasis and title casing still apply.
+Paragraph inline monospace and fenced code blocks receive the same treatment: they are one font role, so a given `mono.font` configuration renders identically wherever monospace appears. Scaling applied to inline code from version 0.12 was extended to code blocks in version 0.13.
+
+Manuscript monospace text uses the complete `folio.manuscript.mono.font` block. Ordinary manuscript headings use `folio.manuscript.heading.font`, including its configured size and weight without implicit heading-level scaling or bold. Table-of-contents entries, running headers and footers retain their own font roles. Existing source emphasis and title casing still apply.
 
 Code within headings and their table-of-contents entries is outside the manuscript font-rendering repair's acceptance scope. The earlier documentation included those cases; that inclusion was withdrawn on 2026-09-12. This scope change does not disable existing syntax.
 
@@ -180,6 +186,8 @@ The built-in [British base](../presets/british.yaml) is the canonical default an
 | `quoted-block.font` | Uniform font block; omitted properties inherit only from the same path in a lower configuration layer |
 | `list`, `table`, `code-block` | `space-before`, `space-after`; code-block values override `code-block-spacing` on their respective side |
 | `page-numbering` | `frontmatter-format`, `body-format`, `body-reset` |
+
+`code-block` controls layout only and accepts no font block. Fenced-code typography comes from `folio.manuscript.mono.font`, the same role as inline code. Quoted blocks differ: they carry their own `quoted-block.font`.
 
 The `part` and `chapter` blocks share this shape:
 
@@ -604,6 +612,7 @@ The current configuration may contain a partial font block because its remaining
 
 ## Changelog
 
+- 0.13 (2026-09-17): Extended proportional monospace stretch to fenced code blocks, so one `mono.font` configuration renders identically wherever monospace appears, and recorded that `code-block` accepts no font block.
 - 0.12 (2026-09-12): Corrected inline monospace stretch to proportional horizontal scaling, preserving glyph height, paragraph wrapping and neighbouring text.
 - 0.11 (2026-09-12): Recorded the exclusion of heading code and its TOC appearances from the font-rendering repair; paragraph code and ordinary heading typography remain in scope.
 - 0.10 (2026-09-12): Clarified font-width selection and corrected application of configured monospace and manuscript heading fonts, without changing configuration keys or defaults.

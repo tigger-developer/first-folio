@@ -1,0 +1,125 @@
+#+TITLE: W043 - Rendered validation
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Environment
+
+- Platform :: macOS, Darwin arm64.
+- Toolchain :: Go 1.26.3, Typst 0.14.2, Pandoc 3.9.0.2, Poppler =pdftotext=
+  26.09.0.
+- Font isolation :: The PDF regressions compile with =--ignore-system-fonts= and
+  a fixture configuration supplying DejaVu Sans Mono, a *single-width family*.
+  That family is what makes the defect observable: face selection cannot change
+  its width, so any width change must come from proportional scaling.
+
+* Regression tests
+
+** GREEN RT043.1 - Proportional block stretch :testdef:
+:PROPERTIES:
+:REVISION: 92d5826 - apply configured monospace stretch to code blocks
+:COMMAND: go test ./internal/manuscript -run TestRT043_1ProportionalBlockStretch
+:EVIDENCE: Eight cases pass across Markdown and Org at 150%, 200% and 50%, measured against each format's 100% rendering. See the dated runs below.
+:END:
+
+*** Run 2026-09-17, before the change
+
+Executed at =40de99c= plus the new test file, with the template unchanged.
+Observed the intended behavioural failure: code width was *identical at every
+configured percentage*, so the configured stretch had no effect.
+
+#+begin_example
+block_stretch_test.go:75: codeA width 54.185pt, want 81.277pt at 150%
+block_stretch_test.go:75: codeA width 54.185pt, want 108.369pt at 200%
+block_stretch_test.go:75: codeA width 54.185pt, want 27.092pt at 50%
+block_stretch_test.go:89: codeC offset from the block edge 21.674pt, want 32.511pt at 150%
+#+end_example
+
+The same failures appeared for Org input, confirming the defect was not
+specific to one reader.
+
+*** Run 2026-09-17, after the change
+
+Executed at =92d5826=. All eight subtests pass: measured widths, offsets from
+the block edge, unchanged vertical bounds, retained line structure and
+unchanged surrounding prose.
+
+#+begin_example
+ok  github.com/tigger-developer/first-folio/internal/manuscript
+#+end_example
+
+** GREEN RT043.2 - Stretched blocks retain every line :testdef:
+:PROPERTIES:
+:REVISION: 92d5826 - apply configured monospace stretch to code blocks
+:COMMAND: go test ./internal/manuscript -run TestRT043_2StretchedBlockRetainsEveryLine
+:EVIDENCE: All eighty numbered lines are present in the rendered PDF for Markdown and Org at 150%, both before and after the change.
+:END:
+
+*** Run 2026-09-17
+
+Preservation test; GREEN before the change and retained GREEN after it. No
+artificial RED was manufactured.
+
+Its value is the boundary it holds. A measured Typst probe of the rejected
+whole-block scaling alternative rendered *eight of thirty lines on one page and
+discarded the remaining twenty-two*, because an atomically scaled block cannot
+break across pages. The delivered per-word mechanism rendered all thirty across
+five pages.
+
+** GREEN RT043.3 - Block font properties reach content :testdef:
+:PROPERTIES:
+:REVISION: 92d5826 - apply configured monospace stretch to code blocks
+:COMMAND: go test ./internal/manuscript -run TestRT043_3BlockFontPropertiesReachContent
+:EVIDENCE: The governing block rule carries all six configured font values for Markdown and Org, and each document compiles.
+:END:
+
+*** Run 2026-09-17
+
+Preservation test; GREEN before the change and retained GREEN after it. It
+establishes that the stretch repair did not disturb family, size, weight,
+style or letter-spacing coverage in the block rule.
+
+* User tests
+
+** AMBER UT043.1 - Compare rendered code-block and inline widths :testdef:
+:PROPERTIES:
+:REASON: Awaiting operator participation; typographic acceptability is a visual judgement that the automated measurements do not supply.
+:END:
+
+- Prepared evidence :: A rendered comparison at 100% and 200% using the
+  project's own default Libertinus Mono is recorded below. Operator acceptance
+  has *not* been recorded.
+
+*** Prepared measurement 2026-09-17
+
+Revision =92d5826=. A chapter containing paragraph inline monospace and a
+fenced block with a four-space indented line, rendered at 100% and 200% with
+=folio.manuscript.mono.font.stretch= as the only difference.
+
+| Marker                  | 100%     | 200%     | Ratio |
+|-------------------------+----------+----------+-------|
+| =def= width             | 19.200pt | 38.400pt | 2.00  |
+| =align(a,= edge offset  | 25.600pt | 51.200pt | 2.00  |
+| =return= edge offset    | 25.600pt | 51.200pt | 2.00  |
+| =inline_code= width     | 70.400pt | 140.800pt | 2.00 |
+
+The block's left edge stayed at 56.693pt and both code lines held their
+vertical positions, 349.193pt and 364.193pt. The four-space indent scaled with
+the glyphs, so the column grid remained aligned. Paragraph inline monospace
+scaled by the same ratio, which is the *equivalence the change was authorized
+to produce*.
+
+* Suite evidence
+
+- Complete suite :: =make test= passed at =92d5826= on 2026-09-17 across every
+  package.
+- Static checks :: =make lint=, which runs =go vet ./...=, passed. =gofmt -l .=
+  reported no files.
+- Pre-existing lint findings :: =golangci-lint run ./...= reports four findings,
+  all in files this change does not touch: an unused =markdownItalicRE= in
+  =copyright.go=, unused =templateExistsForTests= in =render.go=, unused
+  =usageError= in =run.go=, and an empty branch in =parser.go=. They are
+  recorded as observed state, not as work delivered here.
+- Evidence boundary :: These automated checks do not supply the operator's
+  visual acceptance for
+  [[file:spec.org::#ut-043-1][UT043.1 - Compare rendered code-block and inline widths]].
