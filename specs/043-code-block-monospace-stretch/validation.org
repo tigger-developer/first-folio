@@ -81,14 +81,16 @@ style or letter-spacing coverage in the block rule.
 
 * User tests
 
-** AMBER UT043.1 - Compare rendered code-block and inline widths :testdef:
+** GREEN UT043.1 - Compare rendered code-block and inline widths :testdef:
 :PROPERTIES:
-:REASON: Awaiting operator participation; typographic acceptability is a visual judgement that the automated measurements do not supply.
+:REVISION: 92d5826 - apply configured monospace stretch to code blocks
+:EVIDENCE: Approved 2026-09-18. Four rendered manuscripts at 100%, 150%, 200% and 50%, each carrying a fenced code block and paragraph inline monospace on one page, were accepted as showing the same scaling in both places.
 :END:
 
-- Prepared evidence :: A rendered comparison at 100% and 200% using the
-  project's own default Libertinus Mono is recorded below. Operator acceptance
-  has *not* been recorded.
+- Method :: User validation.
+- Observed outcome :: Code blocks and paragraph inline monospace render at the
+  same configured stretch as *one consistent typographic treatment*. The earlier
+  pending acceptance recorded below is superseded by this result.
 
 *** Prepared measurement 2026-09-17
 

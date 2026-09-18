@@ -337,7 +337,7 @@ classification; it is provenance, not current state.
   historical and superseded by this approval.
 
 
-** ACTIVE W043 - Configured monospace stretch is not applied to code blocks :defect:
+** DONE W043 - Configured monospace stretch is not applied to code blocks :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-043
 :SOURCE: operator
@@ -372,14 +372,131 @@ classification; it is provenance, not current state.
   records RT043.1 RED before the change and GREEN after it, two retained
   preservation tests, and the full suite and lint passing at =92d5826=.
 - Audit evidence :: [[file:../specs/043-code-block-monospace-stretch/audits.yaml][Retained audit record]].
-- Outstanding :: [[file:../specs/043-code-block-monospace-stretch/spec.org::#ut-043-1][UT043.1 - Compare rendered code-block and inline widths]]
-  awaits operator participation, and operator closure is not yet recorded.
+- User test :: [[file:../specs/043-code-block-monospace-stretch/spec.org::#ut-043-1][UT043.1 - Compare rendered code-block and inline widths]]
+  passed on 2026-09-18 against revision =92d5826=. Four rendered manuscripts at
+  100%, 150%, 200% and 50% showed code blocks and paragraph inline monospace
+  receiving the same treatment. This supersedes the earlier pending status.
+- Closure :: Approved 2026-09-18.
+- Confirmed at closure :: For the monospace role, configured stretch now scales
+  the drawn glyphs and *no longer selects a different font file*. Measured with
+  Iosevka Custom, which provides a real 75%-width face: inline and block both
+  render 90.0pt against a 120.0pt baseline at 75%, the exact geometric ratio,
+  rather than the 83.2pt that face selection produces. *Every other font role
+  still selects a face*, as
+  [[file:config.md][the configuration reference]] records; no work item covers
+  changing that and none was requested.
 - Referred, not delivered :: =folio.manuscript.quoted-block= accepts only a
   font block, so quoted-block clearance can be set only symmetrically through
   =quoted-block-spacing=; values at =quoted-block.space-before= are silently
   ignored. Code blocks have side-specific overrides. This missing capability
   awaits the operator's scope decision and *no code was changed for it*.
 
+
+** TODO W044 - Consistent block configuration shape and a code-block font override :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-044
+:SOURCE: operator
+:CREATED: 2026-09-18
+:END:
+
+Skeleton ticket. Requirements, design and tests are defined by =define-change=;
+the notes below record the operator's intent and the verified starting state.
+
+*** Intent
+
+- Consistent spacing shape :: Quoted blocks must accept the *same top and
+  bottom spacing structure* that code blocks already accept, so one rule
+  explains both instead of two exceptions.
+- Deprecation, not breakage :: Configuring the superseded key must continue to
+  work and *emit a deprecation warning*. This is explicitly not a breaking
+  change.
+- Code-block font override :: =folio.manuscript.code-block= must accept a
+  *font object* that overrides the monospace role for fenced code blocks. When
+  absent, code blocks continue to use =folio.manuscript.mono.font= exactly as
+  they do now.
+
+*** Verified starting state
+
+- =folio.manuscript.quoted-block= carries *only a font block*
+  ([[file:../internal/manuscript/config.go][=QuotedBlockConfig=]]). Clearance
+  comes from the scalar =quoted-block-spacing=, default =0.5em=, applied
+  equally to both sides. Values supplied at =quoted-block.space-before= are
+  *silently ignored*; a probe produced no diagnostic and no effect.
+- =folio.manuscript.code-block= carries =space-before= and =space-after=
+  (=SpacedBlockConfig=), which override the scalar =code-block-spacing= per
+  side, and *no font block*.
+- The two families are also spelled inconsistently: =quoted-block-spacing=
+  against =quote-block-indent=.
+
+*** Open questions for definition
+
+- Which keys become deprecated :: The operator asked for a warning on "the old
+  value". Code blocks currently keep *both* a scalar and a nested pair, so
+  making quoted blocks match could either add the nested pair while retaining
+  both scalars, or deprecate both scalars in favour of nested pairs on both
+  sides. This must be decided explicitly, not inferred.
+- Font-role inheritance :: A =code-block.font= that falls back to
+  =folio.manuscript.mono.font= *departs from the established role contract*,
+  which states that a role never inherits font properties from its parent or
+  from another role. Adding the role also requires it in the valid font-role
+  paths in [[file:../internal/config/font.go][the font validator]]. The
+  departure is deliberate operator direction and must be recorded as such.
+- Whether the =quote-block-indent= spelling is corrected under this change or
+  left alone.
+
+*** Related
+
+- Originates from the closure review of [[#w-043][W043 - Configured monospace stretch is not applied to code blocks]],
+  which confirmed that code blocks correctly take their typography from the
+  monospace role today.
+
+** TODO W045 - Block indentation in em resolves against an unpredictable basis :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-045
+:SOURCE: operator
+:CREATED: 2026-09-18
+:END:
+
+Skeleton ticket. Requirements, design and tests are defined by =define-change=;
+the notes below record the operator's report and the measured starting state.
+
+*** Report
+
+Indenting a code block alongside prose using =em= produces a *different
+physical indent* from the same =em= value on prose, so the two cannot be
+aligned. The operator has adopted fixed millimetre values as a workaround. In
+CSS this would be expressed with a root-relative unit.
+
+*** Measured starting state
+
+With a 56.693pt page margin:
+
+| Configuration              | Body 18pt, mono 9pt | Body 18pt, mono 18pt |
+|----------------------------+---------------------+----------------------|
+| =paragraph-indent: 1em=    | 18.0pt              | 18.0pt               |
+| =code-block-indent: 1em=   | 14.4pt              | 14.4pt               |
+
+- The code-block indent *does not track the configured monospace size at all*.
+  It is 0.8 times the body size in both columns.
+- The 0.8 factor is *Typst's own default*: inside a raw block, text size is
+  scaled to 0.8em of the surrounding size. An isolated Typst probe with no
+  project template reproduced it exactly.
+- The cause is placement: =pad(left: ...)= sits *outside* the call that applies
+  the configured monospace font, so the configured size is never in scope when
+  the =em= is resolved.
+- Consequently =code-block-indent: 1em= means neither one prose em nor one code
+  em.
+- Typst provides *no root-relative unit*: =1rem= is rejected with
+  =invalid number suffix: rem=. Supported units are =pt=, =mm=, =cm=, =in= and
+  =em=.
+
+*** Scope questions for definition
+
+- Whether =em= should resolve against a defined, documented basis, or whether
+  the trap should be documented and fixed units recommended instead.
+- Whether =quote-block-indent= has the same defect. It was not measured.
+- Any compatibility effect on existing configurations that already use =em=
+  here and have been tuned to the current behaviour.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
