@@ -382,9 +382,9 @@ classification; it is provenance, not current state.
   Iosevka Custom, which provides a real 75%-width face: inline and block both
   render 90.0pt against a 120.0pt baseline at 75%, the exact geometric ratio,
   rather than the 83.2pt that face selection produces. *Every other font role
-  still selects a face*, as
-  [[file:config.md][the configuration reference]] records; no work item covers
-  changing that and none was requested.
+  still selects a face*; extending the geometric mechanism across the remaining
+  roles is carried by [[#w-046][W046 - Extend proportional stretch to every font role]].
+  The earlier note that no work item covered this is superseded.
 - Referred, not delivered :: =folio.manuscript.quoted-block= accepts only a
   font block, so quoted-block clearance can be set only symmetrically through
   =quoted-block-spacing=; values at =quoted-block.space-before= are silently
@@ -497,6 +497,87 @@ With a 56.693pt page margin:
 - Whether =quote-block-indent= has the same defect. It was not measured.
 - Any compatibility effect on existing configurations that already use =em=
   here and have been tuned to the current behaviour.
+
+** TODO W046 - Extend proportional stretch to every font role :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-046
+:SOURCE: operator
+:CREATED: 2026-09-18
+:END:
+
+Skeleton ticket. Requirements, design and tests are defined by =define-change=;
+the notes below record the operator's report and the measured starting state.
+
+*** Report
+
+Configured =stretch= must *scale the drawn glyphs* for every font role, as it
+now does for monospace. It must *not* select a different font file from the
+family. The font swap was the original problem; the monospace repair was
+understood at the time to be the whole of it, and it was not.
+
+*** Measured starting state
+
+[[file:../internal/config/font.go][The font validator]] governs *33 roles*
+under the uniform six-property contract, spanning manuscript, letter and stage
+play. Exactly one, =folio.manuscript.mono.font=, scales geometrically. The
+*other 32 select a face*.
+
+Measured with Iosevka Custom, which provides a genuine 75%-width face, ten
+characters at 20pt:
+
+| Role                       | 100%    | 75%    | Ratio | Mechanism         |
+|----------------------------+---------+--------+-------+-------------------|
+| Monospace, inline          | 120.0pt | 90.0pt | 0.750 | glyphs scaled     |
+| Monospace, code block      | 120.0pt | 90.0pt | 0.750 | glyphs scaled     |
+| Manuscript body prose      | 120.0pt | 83.2pt | 0.693 | *font file swapped* |
+
+Only a geometric scale can produce the exact requested ratio. A face swap
+lands wherever the family's available widths happen to fall, and does nothing
+at all in a single-width family.
+
+*** Compatibility
+
+Every shipped preset sets =stretch: 100%=, at which both mechanisms are
+identical. *No shipped default changes behaviour.* The visible effect is
+confined to configurations that set a non-100% value on a role, where rendered
+width will change. Whether that warrants a deprecation path or a documented
+release note is a decision for definition.
+
+*** Design questions for definition
+
+- Generalizing the mechanism :: The existing helper reads the monospace stretch
+  directly and is not parameterized. Serving 33 roles needs a helper that takes
+  the ratio, or an equivalent design.
+- Two different call shapes :: The manuscript monospace rules wrap content in
+  an explicit =#text(...)= call that the helper can sit inside. Other roles do
+  not. [[file:../templates/letter.typ][The letter template]] applies its font
+  through a document-level =#set text(...)=, and
+  [[file:../templates/script.typ][the stage-play template]] applies roles at
+  several call sites. The monospace approach cannot simply be copied.
+- Prose layout :: The monospace mechanism scales each word as an independent
+  box. Applying that to justified body prose raises questions about
+  justification and hyphenation that *have not been resolved*. A probe compared
+  plain and per-word-boxed prose and produced identical line breaking, but
+  hyphenation did not engage in either case, so it established nothing about
+  hyphenation. This must be settled with evidence before implementation.
+- Non-flowing roles :: Table-of-contents entries with dot leaders, running
+  headers and footers, and aligned title-page items may interact with scaling
+  differently from body text.
+- The inert argument :: Where the geometric mechanism applies, it resets
+  =stretch= to 100% so a condensed face cannot compound the scale. The
+  =stretch:= value emitted in the surrounding font arguments therefore has no
+  rendering effect. Several existing regression tests assert that value's
+  presence. Whether to keep emitting it, and what the tests should assert
+  instead, needs deciding.
+
+*** Related
+
+- Raised from the closure review of [[#w-043][W043 - Configured monospace stretch is not applied to code blocks]],
+  which established that the monospace role no longer swaps faces and that no
+  other role had been changed.
+- [[#w-044][W044 - Consistent block configuration shape and a code-block font override]]
+  proposes a =code-block.font= role, which would become a further consumer of
+  whatever mechanism this change adopts.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
