@@ -1,0 +1,52 @@
+#+TITLE: W047 - Bundle Iosevka Publish as the default monospace font
+#+SUBTITLE: Paired development skeleton
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+
+* Objective
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+Copy *Iosevka Publish from the local system into the project* and ship it as
+the *default monospace font*.
+
+* Scope and constraints
+
+- Delivery mode :: *Paired development*.
+- Default :: Replace =Libertinus Mono= at =folio.manuscript.mono.font.family=
+  with *Iosevka Publish*.
+- Distribution :: Make the bundled font available to the installed application,
+  including on systems without a separate installation of that font.
+- Compatibility :: Preserve *explicit font overrides*, other monospace font
+  properties, and the existing proportional-stretch behaviour.
+- Boundary :: Other font roles and the separate proposed code-block font
+  configuration remain outside this change.
+
+* Baseline and evidence
+
+- [[file:../../presets/british.yaml][British base preset]] defines the current
+  monospace family as =Libertinus Mono=.
+- [[file:../../assets.go][Embedded runtime assets]] currently include help,
+  presets and templates; font packaging needs to be established.
+- Local inventory, 2026-09-21 :: Eight =IosevkaPublish-*.ttf= files are present
+  under =~/Library/Fonts=: Regular, Italic, Bold, BoldItalic, Extended,
+  ExtendedItalic, ExtendedBold and ExtendedBoldItalic. Internal family metadata
+  and redistribution notices have not yet been checked.
+- Authorities :: [[file:../../docs/vision.md][Product vision]] and
+  [[file:../../docs/ARCHITECTURE.md][Application architecture]].
+- Related work :: [[file:../042-manuscript-monospace-stretch/spec.org][W042 - Inline monospace stretch]]
+  and [[file:../043-code-block-monospace-stretch/spec.org][W043 - Code-block monospace stretch]]
+  establish the rendering behaviour to preserve.
+- Existing coverage :: [[file:../../internal/config/font_test.go][Font configuration tests]]
+  and [[file:../../internal/manuscript/font_test.go][Manuscript font-role tests]].
+
+* Next paired iteration
+
+- Verify the font metadata, required variants and redistribution notices.
+- Establish packaging and Typst font discovery for the installed application.
+- Record the bounded implementation and validation details before coding.
+- Validate default rendering, explicit overrides and operation without a
+  system-installed copy; retain a visual comparison for paired review.
+
+This is a *skeleton*, with no implementation or validation results recorded.

@@ -579,6 +579,18 @@ release note is a decision for definition.
   proposes a =code-block.font= role, which would become a further consumer of
   whatever mechanism this change adopts.
 
+** TODO W047 - Bundle Iosevka Publish as the default monospace font :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-047
+:SOURCE: operator
+:CREATED: 2026-09-21
+:END:
+
+- Delivery mode :: *Paired development*.
+- Objective :: Copy *Iosevka Publish from the local system into the project*
+  and ship it as the *default monospace font*.
+- Specification :: [[file:../specs/047-bundled-iosevka-publish/spec.org][W047 - Bundle Iosevka Publish as the default monospace font]].
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria
