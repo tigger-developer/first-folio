@@ -185,7 +185,7 @@
   architecture; historical title-page tests constrain retained placement.
 - Evidence :: [[file:validation.org][Alignment verification]] and
   [[file:audits.yaml][Independent review record]].
-- Documentation impact :: Update =docs/config.md= and preset comments. Product
-  vision and architecture remain accurate: the shared loader owns validation,
-  presets own defaults and templates own composition.
+- Documentation impact :: Update =docs/config.md=, preset comments and the
+  architecture's shared-loader validation boundary. Product vision is unaffected;
+  presets still own defaults and templates own composition.
 - Closure :: Requires current verification and the operator's closure decision.

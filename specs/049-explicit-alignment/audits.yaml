@@ -1,0 +1,181 @@
+version: 1
+audits:
+    - readiness_check: delivery-code
+      work_item: W049
+      gate: implementation
+      session_id: 26a77166-c699-442f-a89c-ce64dbf879c9
+      harness: claude
+      model: claude-opus-5
+      configured:
+        harness: claude
+        model: claude-opus-5
+      external_round: 1
+      status: passed
+      updated: "2026-09-24T21:02:41Z"
+      revision: 60251f4
+      verdict: PROVISIONAL PASS
+      response: |-
+        GATE: delivery-code
+        REVISION: 60251f4
+        VERDICT: PROVISIONAL PASS
+
+        ## Bounded follow-up required (does not invalidate implementation sign-off)
+
+        - **F1 — `docs/ARCHITECTURE.md` Configuration section is incomplete on the new validation boundary.** Line 59 still reads "deep-merges ordinary keys and partial font blocks, validates every effective font role, and provides typed font values". The delta makes `internal/config` the owner of a second validated domain and moves the YAML→Typst allowlist boundary into the loader (spec §Security impact; `internal/config/alignment.go:40-64` running at `config.go:99-101`, after every merge layer and before typed decode). The renderers still contain alignment parsers (`internal/manuscript/alignment.go`), so the ownership split is not self-evident from the code. **Required correction:** extend that paragraph to state that the loader validates every shipped alignment field against its allowlist after layer merging. `docs/config.md:522-541` already covers the user-facing contract and needs nothing further.
+
+        ## Verified as conformant
+
+        - **Inventory is exhaustive.** I enumerated every `align` / `*-align` key in `presets/british.yaml` independently: 27 paths, matching `alignmentFamilies` (15 + 1 + 2 + 3 + 6) and the test's `alignmentFields` exactly. `us.yaml` and `screenplay.yaml` introduce no alignment path outside that set.
+        - **AC049.1.** Validation runs after all shared layers and CLI overrides, before decode or output; non-string, null, empty, whitespace, unknown and compound-malformed values fail with path, `%#v` of the rejected input and the allowed list. Inactive roles and other modes are covered because the British base always supplies all 27 paths.
+        - **AC049.2.** `TitleItemAlign("group")` returns an empty expression, so the six items fall through to the existing group branch (`templates/manuscript.typ:284-328`); `group` is rejected at `title-block-align`, `footer-align` and `contact.align` (family 4 excludes it), which `TestRT049GroupRejectedOutsideTitleItems` covers — its skip predicate correctly excludes only the six, since `title-block-align` does not match `.align`.
+        - **AC049.3.** Omitted overrides inherit (validation reads merged values); explicit null fails as specified; empty/null `publisher`, `isbn`, `prefix`, `suffix` remain accepted and are exercised for both manuscript and script PDF output.
+        - **Test quality.** Tests act through the built executable and assert real PDF word geometry rather than template text, per TESTING.md "test from the user's boundary"; each test carries an adjacent RT descriptor; the implemented cases match the RT049.1/.2/.3 actions and expectations item for item (ten invalid forms, both output extensions, nine title compounds, twelve page-pair forms, five vertical aliases). `t.Setenv` use is consistent with the absence of `t.Parallel`.
+        - **Preset delta.** Six `align: group` values, two explanatory comment lines (340-341), and the US `include-date` / `include-version: false` flags. `RT039_4` still holds because British ships `true` for both. `TestRT039_2BritishBaseIsNormativeSharedRuntimeBase` compares the load against the installed asset, so the changed defaults keep it valid, and its comment records the supersession without deleting the historical fixture.
+        - **Security.** Net improvement: `chapter.align`, `part.align`, `copyright.align` and the running-matter aligns previously reached `align(...)` in the template unfiltered; they are now allowlisted, with `#panic()` among the rejected inputs.
+        - **Scope and proportionality.** One 65-line file, six preset values, one template footer row, one documentation section. No new dependency, framework or configuration layer.
+
+        ## Observations — not findings, no action required at this gate
+
+        - **Residual unvalidated placement keys.** `folio.manuscript.chapter.position` and `part`/`title-page` `position` values still interpolate raw into Typst (`render.go:923-934` returns the input unchanged on an unknown value). Pre-existing and explicitly outside the authorized alignment inventory (spec §Edge Cases).
+        - **Narrowed undocumented vocabulary.** Typst's `start` / `end` would previously have passed through the script positioning fields; they now fail. Authorized by AC049.1 and documented at `docs/config.md:539`.
+        - **Stale font/spacing facts in `docs/config.md:149-156`** (body 12pt, "Libertinus Mono, 10pt", `paragraph-indent: 10mm`) do not match the preset text supplied. These are font/spacing keys, i.e. the user-owned uncommitted preset area excluded from this delta — raised for the operator, not as W049 remediation.
+        - **Failure messages** at `alignment_config_test.go:92,95,117,119` state the expectation but not the observed coordinates.
+        - **`TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged`** fails identically at baseline and candidate on the external `pdf-to-png` helper, so it does not currently evidence base-copy output stability; OT049.1's baseline/candidate word-box comparison covers that ground independently and more strictly.
+
+        ## Limits of this review
+
+        - This adapter has read-only file access: no shell, no `git`. I could not execute tests or diff the tree, so RT/OT GREEN and the three identical baseline/candidate failures rest on the `validation.org` record, which states them specifically and does not claim a GREEN full suite.
+        - The `presets/british.yaml` text supplied is the working tree, which includes the user's uncommitted font/spacing/header edits; my assessment of that file is confined to the six `align` values, the two added comments and the alignment inventory.
+        - No audit status, revision or finding was written to any specification, ticket or other file; nothing was edited.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-1802657078.log
+          readiness_check: delivery-code
+          cache_key: sha256:6f6f3e10d633e1b8288a405af4fbf8e2511ed46fa9e2ce3a256ffb503693a015
+          session_id: 26a77166-c699-442f-a89c-ce64dbf879c9
+          harness: claude
+          model: claude-opus-5
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 66982ab8b25b26ea1bfaf40577bf4955bf0c804cfd035ab582c6d9ff658e2581
+              bytes: 16627
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: fbceb4dffd2ab69a3edcd1dd924873bdbe5298cffa4c2e65548e04541fb78f73
+              bytes: 5027
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 0f69cb0103f5f81e6e99d62c4d769b859dce0e19c2dd107f4e4e2a4282b365a6
+              bytes: 39983
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 4e3202c21ed1797108079acddf5473ce1fcd9928e9fb5550afe479a671d30b70
+              bytes: 252144
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/alignment.go
+              sha256: 17a1301beadcde721c3afe0958306dd33715d8068b7a80214d279d052c6ee99e
+              bytes: 2928
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config.go
+              sha256: 892697e7b63887b4d282c5edc4064686bfd7748dab18d830e1f5d2285a5f95cb
+              bytes: 7611
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font_test.go
+              sha256: 985fbe0a2d56b8113ef83a9cd0b2a983212fe2b5ba03cc1f7aff7d9498e5d6f1
+              bytes: 12210
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/alignment.go
+              sha256: 39308f0af95d29f3fe5898439e53712e44cb08f47f91f6f2b4ddc47f12cbe613
+              bytes: 5398
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/alignment_config_test.go
+              sha256: da59d5625c9e8eaf602493e20a388e6307d7b04b6f92c42aa92d501b6c6e07ef
+              bytes: 9215
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: aa8acb5b04f7cecf05c26fff5dde516e6459794c78893d149839fd28380eed92
+              bytes: 26512
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_config_enhancements_test.go
+              sha256: 414a06e9c13fd5cebb96231de00917776f2d6157d21df2284b4a29f9c621e1fa
+              bytes: 38920
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: b812c1cb39a2b1101159aac0a30233b072d08790045daab59b3f28f22a26f2c6
+              bytes: 14058
+            - path: /Users/tigger/code/tigoss/first-folio/presets/screenplay.yaml
+              sha256: a647a042d12507692b2f2acb60ec929e157d1e794f1f827a7114e2f65be0972d
+              bytes: 1437
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: fdbe2cea840eb80f77a35675dc65256563c23f2b567f4cbe02dadf9ebfdacdb8
+              bytes: 2143
+            - path: /Users/tigger/code/tigoss/first-folio/specs/049-explicit-alignment/spec.org
+              sha256: 4955999ffe04a30568352a2cf7c1cf4b5fb1c07daaf50db3f08d3749a891ba32
+              bytes: 10179
+            - path: /Users/tigger/code/tigoss/first-folio/specs/049-explicit-alignment/validation.org
+              sha256: 02cdb57a16f50562276a6279aa9606118ad0f177b13ba418ed902b7bfc6e407a
+              bytes: 5477
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 15e6b3546ef45b9da999552dda6e1981aabbbdecfc1a1e41402103c84026b63c
+              bytes: 22937
+          round: 1
+          revision: 60251f4
+          verdict: PROVISIONAL PASS
+          response: |-
+            GATE: delivery-code
+            REVISION: 60251f4
+            VERDICT: PROVISIONAL PASS
+
+            ## Bounded follow-up required (does not invalidate implementation sign-off)
+
+            - **F1 — `docs/ARCHITECTURE.md` Configuration section is incomplete on the new validation boundary.** Line 59 still reads "deep-merges ordinary keys and partial font blocks, validates every effective font role, and provides typed font values". The delta makes `internal/config` the owner of a second validated domain and moves the YAML→Typst allowlist boundary into the loader (spec §Security impact; `internal/config/alignment.go:40-64` running at `config.go:99-101`, after every merge layer and before typed decode). The renderers still contain alignment parsers (`internal/manuscript/alignment.go`), so the ownership split is not self-evident from the code. **Required correction:** extend that paragraph to state that the loader validates every shipped alignment field against its allowlist after layer merging. `docs/config.md:522-541` already covers the user-facing contract and needs nothing further.
+
+            ## Verified as conformant
+
+            - **Inventory is exhaustive.** I enumerated every `align` / `*-align` key in `presets/british.yaml` independently: 27 paths, matching `alignmentFamilies` (15 + 1 + 2 + 3 + 6) and the test's `alignmentFields` exactly. `us.yaml` and `screenplay.yaml` introduce no alignment path outside that set.
+            - **AC049.1.** Validation runs after all shared layers and CLI overrides, before decode or output; non-string, null, empty, whitespace, unknown and compound-malformed values fail with path, `%#v` of the rejected input and the allowed list. Inactive roles and other modes are covered because the British base always supplies all 27 paths.
+            - **AC049.2.** `TitleItemAlign("group")` returns an empty expression, so the six items fall through to the existing group branch (`templates/manuscript.typ:284-328`); `group` is rejected at `title-block-align`, `footer-align` and `contact.align` (family 4 excludes it), which `TestRT049GroupRejectedOutsideTitleItems` covers — its skip predicate correctly excludes only the six, since `title-block-align` does not match `.align`.
+            - **AC049.3.** Omitted overrides inherit (validation reads merged values); explicit null fails as specified; empty/null `publisher`, `isbn`, `prefix`, `suffix` remain accepted and are exercised for both manuscript and script PDF output.
+            - **Test quality.** Tests act through the built executable and assert real PDF word geometry rather than template text, per TESTING.md "test from the user's boundary"; each test carries an adjacent RT descriptor; the implemented cases match the RT049.1/.2/.3 actions and expectations item for item (ten invalid forms, both output extensions, nine title compounds, twelve page-pair forms, five vertical aliases). `t.Setenv` use is consistent with the absence of `t.Parallel`.
+            - **Preset delta.** Six `align: group` values, two explanatory comment lines (340-341), and the US `include-date` / `include-version: false` flags. `RT039_4` still holds because British ships `true` for both. `TestRT039_2BritishBaseIsNormativeSharedRuntimeBase` compares the load against the installed asset, so the changed defaults keep it valid, and its comment records the supersession without deleting the historical fixture.
+            - **Security.** Net improvement: `chapter.align`, `part.align`, `copyright.align` and the running-matter aligns previously reached `align(...)` in the template unfiltered; they are now allowlisted, with `#panic()` among the rejected inputs.
+            - **Scope and proportionality.** One 65-line file, six preset values, one template footer row, one documentation section. No new dependency, framework or configuration layer.
+
+            ## Observations — not findings, no action required at this gate
+
+            - **Residual unvalidated placement keys.** `folio.manuscript.chapter.position` and `part`/`title-page` `position` values still interpolate raw into Typst (`render.go:923-934` returns the input unchanged on an unknown value). Pre-existing and explicitly outside the authorized alignment inventory (spec §Edge Cases).
+            - **Narrowed undocumented vocabulary.** Typst's `start` / `end` would previously have passed through the script positioning fields; they now fail. Authorized by AC049.1 and documented at `docs/config.md:539`.
+            - **Stale font/spacing facts in `docs/config.md:149-156`** (body 12pt, "Libertinus Mono, 10pt", `paragraph-indent: 10mm`) do not match the preset text supplied. These are font/spacing keys, i.e. the user-owned uncommitted preset area excluded from this delta — raised for the operator, not as W049 remediation.
+            - **Failure messages** at `alignment_config_test.go:92,95,117,119` state the expectation but not the observed coordinates.
+            - **`TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged`** fails identically at baseline and candidate on the external `pdf-to-png` helper, so it does not currently evidence base-copy output stability; OT049.1's baseline/candidate word-box comparison covers that ground independently and more strictly.
+
+            ## Limits of this review
+
+            - This adapter has read-only file access: no shell, no `git`. I could not execute tests or diff the tree, so RT/OT GREEN and the three identical baseline/candidate failures rest on the `validation.org` record, which states them specifically and does not claim a GREEN full suite.
+            - The `presets/british.yaml` text supplied is the working tree, which includes the user's uncommitted font/spacing/header edits; my assessment of that file is confined to the six `align` values, the two added comments and the alignment inventory.
+            - No audit status, revision or finding was written to any specification, ticket or other file; nothing was edited.
+          updated: "2026-09-24T20:54:47Z"

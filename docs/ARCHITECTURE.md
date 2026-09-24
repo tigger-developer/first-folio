@@ -1,4 +1,8 @@
-<!-- Version: 0.3 | Last updated: 2026-08-10 -->
+---
+title: Architecture
+version: "0.4"
+last-updated: 2026-09-24
+---
 
 # Architecture
 
@@ -56,7 +60,7 @@ Letters have a smaller recipient-oriented model because their sender, recipient,
 
 Local discovery begins at the source directory and walks upwards towards HOME. Only the nearest `script.yaml` is selected; its style-specific sibling is loaded from the same directory. For a multi-file manuscript, the first resolved input determines that starting directory.
 
-The loader deep-merges ordinary keys and partial font blocks, validates every effective font role, and provides typed font values to each renderer. Font properties inherit only through configuration layers at the same role path. The exhaustive British preset is the shared lowest-precedence base for scripts, letters, and manuscripts; US and screenplay presets contain only their differences.
+The loader deep-merges ordinary keys and partial font blocks, validates every effective font role and every shipped alignment field against its allowlist after layer merging, and provides typed values to each renderer. Alignment validation occurs before typed decode or output; renderer alignment parsers translate accepted values into layout expressions. Font properties inherit only through configuration layers at the same role path. The exhaustive British preset is the shared lowest-precedence base for scripts, letters, and manuscripts; US and screenplay presets contain only their differences.
 
 ## Rendering
 
@@ -79,3 +83,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 ## Migration History
 
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
+
+## Document History
+
+- 0.4 (2026-09-24): Clarified shared-loader ownership of resolved alignment validation.
+- 0.3 (2026-08-10): Previous architecture baseline.
