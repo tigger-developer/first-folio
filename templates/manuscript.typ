@@ -327,12 +327,16 @@
   ]{{end}}
 ]
 
-{{if and .IsUS (not .WordCountAlignExpr)}}
-{{if .Config.Folio.Manuscript.TitlePage.IncludeWordCount}}#if "{{.Meta.WordCount}}" != "" [
-  #place(bottom + center, float: true)[
-    #text({{fontArgs .Config.Folio.Manuscript.TitlePage.WordCount.Font}})[{{.Meta.WordCount}}]
-  ]
-]{{end}}
+{{if .IsUS}}
+#place(bottom, float: true)[
+  #grid(
+    columns: (1fr, 1fr, 1fr),
+    align: (left, {{.FooterGroupAlignExpr}}, right),
+    [{{if and .Config.Folio.Manuscript.TitlePage.IncludeVersion (not .VersionAlignExpr)}}#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Version.Font}})[{{.Meta.Version}}]{{end}}],
+    [{{if and .Config.Folio.Manuscript.TitlePage.IncludeWordCount (not .WordCountAlignExpr)}}#text({{fontArgs .Config.Folio.Manuscript.TitlePage.WordCount.Font}})[{{.Meta.WordCount}}]{{end}}],
+    [{{if and .Config.Folio.Manuscript.TitlePage.IncludeDate (not .DateAlignExpr)}}#text({{fontArgs .Config.Folio.Manuscript.TitlePage.Date.Font}})[{{.Meta.Date}}]{{end}}],
+  )
+]
 {{end}}
 
 {{if .Config.Folio.Manuscript.TOC.PageBreakBefore}}#pagebreak(){{end}}

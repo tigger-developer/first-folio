@@ -1,0 +1,91 @@
+#+TITLE: W049 - Alignment verification
+#+STARTUP: overview
+#+TODO: AMBER RED | GREEN
+
+* Environment and candidate
+- Date :: 2026-09-24.
+- Baseline :: =0794b69= - accepted W048 spacing closure.
+- Candidate :: Baseline plus W049 shared alignment validation, explicit preset
+  groups, US inclusion flags, title-page footer rendering, tests and docs.
+- Environment :: macOS arm64; Go, Typst, Pandoc and Poppler CLI tools.
+- Isolation :: Test HOME directories and Go build cache are under OS temporary
+  directories. Unrelated British preset edits remain outside the candidate.
+
+* Regression results
+** GREEN RT049.1 - Rejection and diagnostic boundary :testdef:
+:PROPERTIES:
+:REVISION: 0794b69 plus W049 source and regression changes
+:COMMAND: go test ./internal/manuscript -run TestRT049 -count=1
+:EVIDENCE: All 27 paths reject ten invalid input forms for both Typst and PDF, naming the field, rejected input and expected values, without creating output. Group is rejected at all other alignment paths.
+:END:
+- RED :: Before production changes, empty script alignments were accepted and
+  created output; copyright alignment =42= also produced output. Malformed typed
+  values lacked field-specific allowed-value guidance.
+- GREEN :: Final focused run passed in 8.297 seconds, including empty, whitespace,
+  null, unknown keyword, malformed compound, expression-like string, boolean,
+  number, sequence and mapping inputs. Both selected output extensions were checked.
+
+** GREEN RT049.2 - Grouped title-page rendering :testdef:
+:PROPERTIES:
+:REVISION: 0794b69 plus W049 source and regression changes
+:COMMAND: go test ./internal/manuscript -run TestRT049 -count=1
+:EVIDENCE: British/US, omitted/explicit group cases preserve separated centred title items; inclusion flags produce the expected footer items in one row.
+:END:
+- RED :: Before implementation, explicit =group= was rejected and enabling US
+  date/version did not display those items.
+- Refinement RED :: A first implementation placed the three US items as separate
+  bottom floats. A row-alignment assertion failed for both US cases; the template
+  now uses one three-column row.
+- Fixture correction :: The isolated suite exposed duplicate probe words in the
+  default running header. The PDF word-map helper retained the final occurrence.
+  The title-page fixture now explicitly disables running headers and footers.
+- GREEN :: Included in the final 8.297-second focused run.
+
+** GREEN RT049.3 - Accepted values and content :testdef:
+:PROPERTIES:
+:REVISION: 0794b69 plus W049 source and regression changes
+:COMMAND: go test ./internal/manuscript -run TestRT049 -count=1
+:EVIDENCE: Compass, title compounds, page pairs, part vertical aliases and horizontal chapter values produced output. Empty optional strings and null publisher/ISBN/prefix/suffix values were accepted; null-content script and manuscript PDFs rendered.
+:END:
+- RED :: The new =group= case failed before implementation.
+- Preservation :: Existing valid forms and empty optional content were initially
+  accepted; no artificial RED was introduced for retained behaviour.
+- GREEN :: Included in the final focused run above.
+
+* One-off verification
+** GREEN OT049.1 - Default layout preservation :testdef:
+:PROPERTIES:
+:REVISION: 0794b69 baseline versus W049 production candidate with committed presets
+:EVIDENCE: British and US PDFs have identical pdftotext -bbox word records before and after the change.
+:END:
+- Method :: Two local CLI builds from OS-temporary exports, with isolated HOME;
+  four PDFs from identical synthetic title/subtitle/author/date/version/word-count
+  metadata and one body paragraph. TOC disabled; other committed defaults retained.
+- Comparison :: All =<word>= records matched exactly for both styles, stronger
+  than the defined 0.03pt tolerance. Date/version remain absent from default US
+  output and present in British output.
+- Costs and changes :: No external service, installation or source edits.
+
+* Broader checks and limits
+- =make lint= :: Passed in the working checkout after the implementation.
+- =git diff --check= :: Passed.
+- Historical fixture :: The W039 source-equality assertion is superseded because
+  W049 intentionally changes six alignment defaults. The historical YAML is
+  retained; the behavioural check that copying the installed base preserves
+  resolved configuration remains in the maintained test.
+- Live suite :: Not GREEN. Existing uncommitted British preset values differ
+  from several test expectations; the external PDF raster helper also fails.
+- Isolation :: Baseline and candidate exports retain committed presets and use
+  the same temporary build cache. The initial candidate run exposed a removed
+  assertion's unused import and the running-header fixture issue; both were
+  corrected before final verification.
+- Final isolated suite :: Baseline and candidate failed exactly the same three
+  top-level tests: =TestScriptSourceFormatsRasterizeInAllStyles=,
+  =TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged= and
+  =TestExamplePDFsRasterize=. Each reports =local: -A: invalid option= from
+  the external =pdf-to-png= helper's shell setup. No additional candidate test
+  failed. Neither full-suite result is GREEN.
+- Final candidate package durations :: Shared configuration 0.526 seconds;
+  manuscript 51.288 seconds including its external rasterization failure.
+- Boundaries :: No external-helper repair, installation, release or remote
+  synchronization was performed.

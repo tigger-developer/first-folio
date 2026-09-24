@@ -1,0 +1,191 @@
+#+TITLE: W049 - Explicit alignment defaults and validation
+#+SCHEMA: 8
+#+SUBTITLE: Emergency change reconciled from the bounded request
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+** Outcome
+- Configuration supplies *explicit alignment choices* and rejects invalid values.
+** Before
+- Empty title-page alignments selected *hidden grouping*; other invalid values
+  could fall back silently or reach the renderer.
+** After
+- Six title-page items use *=group=*; invalid resolved alignments *fail before output*.
+** Changes
+- Shared validation covers *all shipped alignment fields*.
+- US date/version omission is *explicit*; enabling either produces its content.
+** Unchanged
+- *Optional empty content*, preset precedence and default title-page placement remain.
+- Unrelated British preset edits remain *outside this change*.
+** Edge cases
+- Null, non-string, empty and unknown alignment values *fail*, even for disabled roles.
+- Omitted overrides *inherit*; =group= is valid only for six title-page items.
+** Decisions
+- Group is an *explicit layout choice*, preserving established grouped spacing.
+** Next step
+- Retain verification, review the reconciled definition and obtain *closure*.
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+** Authority and scope
+- Authorization :: =BYPASS-GATE-7= on 2026-09-24 for explicit alignment defaults,
+  hard errors for invalid alignments, and preservation of optional empty content.
+- Scope :: Shipped British/US alignment defaults, shared configuration validation,
+  title-page grouping, migration documentation and behavioural verification.
+- Exclusions :: No new general page-layout system, font changes, spacing-unit
+  changes, manuscript edits, installation or release.
+- Authorities :: [[file:../../.sdlc/project.yaml][Project profile]],
+  [[file:../../docs/vision.md][Product vision]],
+  [[file:../../docs/ARCHITECTURE.md][Configuration and rendering architecture]],
+  [[file:../../docs/config.md][Configuration contract]] and
+  [[file:../../docs/work.org][Work and historical requirements]].
+** Baseline and compatibility
+- Historical contract :: W039 - Unified Font Configuration made the British
+  YAML the exhaustive shared base. Its attached historical YAML retains the
+  old empty alignments; this change *supersedes those six values*. The installed
+  preset remains authoritative. The historical attachment is retained unchanged.
+- Behavioural evidence :: RT-15.29 through RT-15.47 in
+  =internal/manuscript/manuscript_config_enhancements_test.go= protect placement
+  and running-page pairs. Those placements remain supported.
+- Intentional break :: Explicit empty/null alignment overrides now fail.
+  Replacing an empty item alignment with =group= preserves grouped behaviour.
+- Scope decisions :: =group= names the existing layout, without adding new order
+  or gap controls. US defaults retain omission of date/version through explicit
+  inclusion flags; enabling them uses the defined footer row.
+- Existing edits :: Font, paragraph, block gap, header and chapter-gap edits in
+  =presets/british.yaml= are not part of this ticket.
+
+* Acceptance Criteria
+** AC049.1 - Invalid resolved alignment fails :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-049-1
+:END:
+- Criterion :: Every shipped alignment field has a *valid explicit resolved
+  value*. Empty, null, non-string and unknown values produce a *nonzero error*
+  naming the field, rejected input and allowed values, before Typst/PDF output.
+  Validation applies even when the role is disabled or belongs to another mode.
+- Proven by :: [[#rt-049-1][RT049.1 - Rejection and diagnostic boundary]].
+** AC049.2 - Explicit group placement preserves layout :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-049-2
+:END:
+- Criterion :: The base uses =group= for title, subtitle, author, date, word count
+  and version. Title items retain *ordered spacing*; footer items occupy
+  *left, middle and right columns*. Independent placements remain supported.
+- Criterion :: US *explicitly omits* date/version by default. Enabling them
+  includes them in their configured group or independent position.
+- Proven by :: [[#rt-049-2][RT049.2 - Grouped title-page rendering]] and
+  [[#ot-049-1][OT049.1 - Default layout preservation]].
+** AC049.3 - Inheritance and empty content remain valid :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-049-3
+:END:
+- Criterion :: An omitted override *inherits* its lower-layer value. Valid
+  alignment forms retain their meaning. Optional empty/null publisher and ISBN
+  values and empty prefix/suffix content *remain accepted*.
+- Proven by :: [[#rt-049-3][RT049.3 - Accepted values and content]] and
+  [[#rt-049-2][RT049.2 - Grouped title-page rendering]].
+
+* Test Definitions
+** RT049.1 - Rejection and diagnostic boundary :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-049-1
+:END:
+- Covers :: [[#ac-049-1][AC049.1 - Invalid resolved alignment fails]].
+- Boundary :: Built =folio= executable with isolated HOME and project YAML.
+- Action :: For all 27 shipped alignment paths, submit empty/whitespace strings,
+  null, unknown keywords, malformed compounds, expression-like text, booleans,
+  numbers, lists and maps; request Typst and PDF through the owning mode.
+  Also submit =group= at each path outside the six eligible title-page items.
+- Expected :: *Nonzero exit*, field and expected-value guidance, and *no output*.
+- Retention :: =TestRT049RejectInvalidAlignment= and
+  =TestRT049GroupRejectedOutsideTitleItems= under =make test=.
+** RT049.2 - Grouped title-page rendering :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-049-2
+:END:
+- Covers :: [[#ac-049-2][AC049.2 - Explicit group placement preserves layout]] and
+  [[#ac-049-3][AC049.3 - Inheritance and empty content remain valid]].
+- Action :: Render British and US PDFs with omitted item alignments and with six
+  explicit =group= values. Inspect PDF word coordinates with Poppler. Enable
+  US date/version and render again.
+- Expected :: Title/subtitle/author are centred and *vertically separated*;
+  word count is near the bottom. British footer date/version are present; US
+  defaults omit them. Enabling US date/version gives a *single footer row* in
+  version/word-count/date order, with vertical tolerance 2pt.
+- Retention :: =TestRT049GroupedTitlePage= under =make test=.
+** RT049.3 - Accepted values and content :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-049-3
+:END:
+- Covers :: [[#ac-049-3][AC049.3 - Inheritance and empty content remain valid]].
+- Action :: Exercise compass and all nine title compounds, header/footer page
+  pairs, part vertical forms/aliases, and horizontal chapter values through
+  the built CLI. Supply empty optional publisher/ISBN and prefix/suffix strings;
+  also render both manuscript and script PDFs with null optional content.
+- Expected :: *Successful output*. Existing placement regressions retain their
+  established coverage; no new test framework is introduced.
+- Retention :: =TestRT049AcceptedAlignmentAndEmptyContent= and
+  =TestRT049NullOptionalContent= under =make test=.
+** OT049.1 - Default layout preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-049-1
+:END:
+- Covers :: [[#ac-049-2][AC049.2 - Explicit group placement preserves layout]].
+- Procedure :: Build baseline and candidate exports with committed presets;
+  render identical synthetic British and US title pages and compare Poppler
+  word boxes. All displayed words retain their positions within 0.03pt.
+- Bounds :: Local tools only, two builds and four PDFs, OS temporary directories.
+  No external services, installation or source manuscript modifications.
+- Rationale :: This is a one-off migration comparison. Automated geometry
+  establishes preservation; no new subjective typography decision requires a UT.
+
+* Edge Cases
+- *Explicit null does not mean inherit* for alignment. Omitting an override does.
+- *Invalid inactive roles fail* at the common boundary, matching font validation.
+- *=group= is not a compass value*: contact, group alignment controls and running
+  matter reject it. Each retains its documented vocabulary.
+- Unrecognized fields outside the shipped alignment inventory remain outside
+  this change; the shared loader's general unknown-key policy is unchanged.
+
+* Solution Design
+** Configuration and rendering
+- The shared loader validates a *finite inventory of paths and vocabularies*
+  after merging and before typed decode or output. No renderer can turn a
+  resolved empty alignment into a default.
+- Trim surrounding whitespace. Preserve case-insensitive part vertical aliases;
+  other alignment keywords remain case-sensitive.
+- The six title-item =group= values map to the existing group branch in the
+  manuscript template. Other accepted values produce independent placement.
+- British footer remains in the page footer. US uses a bottom-placed three-column
+  row; date/version flags default to false. The title group retains its existing
+  order and gaps. Configuration defines group participation and group alignment;
+  templates retain ownership of composition.
+- No dependencies, schema framework or new group-order/gap controls are needed.
+- Structural review :: Confirm validation occurs after all shared layers, before
+  output, and that no unrelated preset edits enter the change.
+** Security impact
+- The existing YAML-to-Typst *trust boundary is strengthened* with allowlists.
+  Expression-like alignment input fails before interpolation. No access,
+  network, secret handling or durable data changes are introduced.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+- Route :: Emergency implementation followed by durable reconciliation.
+- Required reading :: Project profile, configuration reference and linked
+  architecture; historical title-page tests constrain retained placement.
+- Evidence :: [[file:validation.org][Alignment verification]] and
+  [[file:audits.yaml][Independent review record]].
+- Documentation impact :: Update =docs/config.md= and preset comments. Product
+  vision and architecture remain accurate: the shared loader owns validation,
+  presets own defaults and templates own composition.
+- Closure :: Requires current verification and the operator's closure decision.

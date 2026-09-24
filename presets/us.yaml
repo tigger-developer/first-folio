@@ -39,6 +39,8 @@ folio:
         size: 10pt
 
     title-page:
+      include-date: false
+      include-version: false
       title:
         font:
           family: Menlo

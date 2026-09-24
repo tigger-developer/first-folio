@@ -337,11 +337,13 @@ folio:
       include-email: true
       include-website: true
       include-version: true
+      # group keeps items in the standard title or footer layout.
+      # Empty alignment values are invalid; omitted overrides inherit this base.
       title-block-align: center
       footer-align: center
 
       title:
-        align: ""
+        align: group
         font:
           family: Libertinus Sans
           size: 20pt
@@ -351,7 +353,7 @@ folio:
           letter-spacing: 0em
 
       subtitle:
-        align: ""
+        align: group
         font:
           family: Libertinus Sans
           size: 14pt
@@ -361,7 +363,7 @@ folio:
           letter-spacing: 0em
 
       author:
-        align: ""
+        align: group
         font:
           family: Libertinus Sans
           size: 12pt
@@ -372,7 +374,7 @@ folio:
         attribution: "by"
 
       date:
-        align: ""
+        align: group
         font:
           family: Libertinus Sans
           size: 10pt
@@ -382,7 +384,7 @@ folio:
           letter-spacing: 0em
 
       wordcount:
-        align: ""
+        align: group
         font:
           family: Libertinus Sans
           size: 10pt
@@ -392,7 +394,7 @@ folio:
           letter-spacing: 0em
 
       version:
-        align: ""
+        align: group
         font:
           family: Libertinus Sans
           size: 10pt

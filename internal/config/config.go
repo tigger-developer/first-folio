@@ -96,6 +96,9 @@ func Load(opts Options) (Config, error) {
 	if err := validateFonts(base); err != nil {
 		return Config{}, err
 	}
+	if err := validateAlignments(base); err != nil {
+		return Config{}, err
+	}
 	return Config{data: base}, nil
 }
 

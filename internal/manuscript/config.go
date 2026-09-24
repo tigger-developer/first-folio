@@ -598,7 +598,6 @@ func normalizeConfig(cfg *Config) {
 	defaultConfigString(&ms.QuoteBlockIndent, "0em")
 	defaultConfigString(&ms.CodeBlockIndent, "0em")
 	fill(&ms.PageHeader.Format, "[title] • [chapter] • [author]")
-	fill(&ms.PageHeader.Align, "left-right")
 	fill(&ms.PageHeader.DistanceFromEdge, ms.Margin)
 	fill(&ms.PageHeader.ContentPaddingAfter, "10mm")
 	if ms.PageFooter.Enabled == nil {
@@ -606,11 +605,9 @@ func normalizeConfig(cfg *Config) {
 		ms.PageFooter.Enabled = &t
 	}
 	fill(&ms.PageFooter.Format, "[page]")
-	fill(&ms.PageFooter.Align, "center")
 	fill(&ms.PageFooter.DistanceFromEdge, ms.Margin)
 	fill(&ms.PageFooter.ContentPaddingAfter, "10mm")
 	fill(&ms.Gutter, "0mm")
-	fill(&ms.TitlePage.Contact.Align, "top-left")
 	fill(&ms.TOC.Title, "Contents")
 	fill(&ms.TOC.LineSpacing, "1.15em")
 	fill(&ms.TOC.PartGapBefore, "0.5em")
@@ -622,12 +619,7 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.Table.SpaceAfter, "0.5em")
 	fill(&ms.CodeBlock.SpaceBefore, ms.CodeBlockSpacing.Value)
 	fill(&ms.CodeBlock.SpaceAfter, ms.CodeBlockSpacing.Value)
-	fill(&ms.TitlePage.TitleBlockAlign, "center")
-	fill(&ms.TitlePage.FooterAlign, "center")
-	fill(&ms.Part.Align, "center")
-	fill(&ms.Part.VerticalAlign, "center")
 	fill(&ms.Part.CaseTransform, "as-written")
-	fill(&ms.Chapter.Align, "center")
 	fill(&ms.Chapter.Position, "one-third")
 	fill(&ms.Chapter.CaseTransform, "as-written")
 	fill(&ms.Chapter.SpaceAfter, "2em")
@@ -644,7 +636,6 @@ func normalizeConfig(cfg *Config) {
 	if ms.Copyright.BlankPageBefore == BlankPageMode("") {
 		ms.Copyright.BlankPageBefore = BlankPageMode("enforce-left")
 	}
-	fill(&ms.Copyright.Align, "center")
 	fill(&ms.Copyright.Separator, "———")
 	fill(&ms.Copyright.SeparatorSpaceBefore, "1.5em")
 	fill(&ms.Copyright.SeparatorSpaceAfter, "1.5em")

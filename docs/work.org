@@ -605,6 +605,19 @@ release note is a decision for definition.
 - Outcome :: Body spacing uses *numeric multipliers of the font's normal line
   interval*; paragraph gaps retain *length units*.
 
+** ACTIVE W049 - Explicit alignment defaults and validation :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-049
+:SOURCE: operator
+:CREATED: 2026-09-24
+:END:
+
+- Specification :: [[file:../specs/049-explicit-alignment/spec.org][W049 - Explicit alignment defaults and validation]].
+- Validation :: [[file:../specs/049-explicit-alignment/validation.org][W049 - Alignment verification]].
+- Delivery route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-24.
+- Scope :: Explicit title-page group defaults and strict resolved alignment
+  validation; optional empty content remains valid.
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria

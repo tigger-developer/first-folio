@@ -9,13 +9,14 @@ import (
 
 // TitleItemAlign returns the Typst alignment expression for a title-page item align value.
 // Accepted forms:
+//   - group: retain the standard title-page group layout
 //   - bare compass keyword: left | center | right -> horizontal + horizon (Typst's vertical centre)
 //   - compound V-H: V in {top, center, bottom}, H in {left, center, right}
 //
 // Returns an error whose message names the offending value if the input is not recognized.
 func TitleItemAlign(value string) (string, error) {
 	value = strings.TrimSpace(value)
-	if value == "" {
+	if value == "group" {
 		return "", nil
 	}
 	switch value {
@@ -28,7 +29,7 @@ func TitleItemAlign(value string) (string, error) {
 	}
 	parts := strings.Split(value, "-")
 	if len(parts) != 2 {
-		return "", fmt.Errorf("invalid title-page alignment %q: expected compass keyword (left|center|right) or compound V-H (e.g. top-left, bottom-center)", value)
+		return "", fmt.Errorf("invalid title-page alignment %q: expected group, compass keyword (left|center|right) or compound V-H (e.g. top-left, bottom-center)", value)
 	}
 	vert, ok := titleVertical[parts[0]]
 	if !ok {

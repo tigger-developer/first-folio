@@ -5,7 +5,6 @@ package config
 import (
 	"fmt"
 	"math"
-	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -167,26 +166,16 @@ func TestRT039_1EveryPublicFontPropertyCanBeConfiguredIndependently(t *testing.T
 	}
 }
 
-// RT039.2: the signed definition file is the installed base and every mode starts from it.
+// RT039.2: every mode starts from the installed base and copying it preserves defaults.
+// W049 supersedes the historical W039 empty alignments; that fixture remains provenance.
 func TestRT039_2BritishBaseIsNormativeSharedRuntimeBase(t *testing.T) {
-	attachedRaw, err := os.ReadFile("../../specs/039-unified-font-configuration/british.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
 	installedRaw, err := folio.Assets.ReadFile("presets/british.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
-	attached, err := parseYAML("attached british.yaml", attachedRaw)
 	if err != nil {
 		t.Fatal(err)
 	}
 	installed, err := parseYAML("installed british.yaml", installedRaw)
 	if err != nil {
 		t.Fatal(err)
-	}
-	if !reflect.DeepEqual(installed, attached) {
-		t.Fatal("installed presets/british.yaml differs from the signed normative YAML")
 	}
 	for _, mode := range []Mode{ModeScript, ModeLetter, ModeManuscript} {
 		home := t.TempDir()

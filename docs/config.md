@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.14"
+version: "0.15"
 last-updated: 2026-09-24
 ---
 
@@ -521,11 +521,24 @@ Rendered outcomes for the source above with the config above:
 
 ### Title-page item alignment
 
-`folio.manuscript.title-page.<item>.align` accepts either a compass keyword (`left`, `center`, `right`) or a compound `V-H` value where V is in `{top, center, bottom}` and H is in `{left, center, right}` (for example `top-left`, `bottom-center`). Items placed with a per-item align hug the manuscript margin at the named corner. Supported items are `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, and `contact`.
+`folio.manuscript.title-page.<item>.align` accepts `left`, `center`, `right`, or a compound `V-H` value. V is `top`, `center` or `bottom`; H is `left`, `center` or `right`. Bare compass values use vertical centre. These values position an item independently. Supported items are `title`, `subtitle`, `author`, `date`, `wordcount`, `version` and `contact`.
 
-Legacy `folio.manuscript.title-page.title-block-align` continues to control the title/subtitle/author group when no per-item align is set; `footer-align` continues to control the US grid footer (version/word-count/date row) on the title page.
+The six items other than `contact` also accept **`group`**, their British base default:
 
-Unknown alignment values (e.g. `middle-middle`, `bottom-diagonal`) are rejected at config load with a diagnostic naming the offending value.
+- Title, subtitle and author remain in the title group, retaining their order and spacing. `title-block-align` controls that group's placement.
+- Version, word count and date form the bottom row, in that order. Version is left-aligned and date is right-aligned; `footer-align` controls word-count alignment in the middle column. British uses the page footer; US uses the bottom of the title-page content area.
+- US explicitly sets `include-date: false` and `include-version: false`. Enabling either includes it in the row, or at its configured independent placement.
+- Contact defaults to `top-left` and does not accept `group`.
+
+The earlier description of `footer-align` as a US-only grid setting was incorrect. It controls the middle column of the British and US title-page footer groups.
+
+**Migration:** replace the former `align: ""` on those six items with `align: group`, or omit the override to inherit the base. Replacing it with `center` instead changes the item to independent placement and can overlap other items.
+
+All shipped alignment fields are validated **after configuration layers merge**, including fields for disabled elements and other output modes. Empty strings, whitespace-only values, null, non-string values and unknown keywords are errors naming the field, rejected value and accepted values. An omitted override inherits the lower layer. Explicit invalid values never request a fallback.
+
+Script alignments and manuscript part/chapter/copyright horizontal alignments accept `left`, `center` or `right`. Manuscript `part.vertical-align` accepts `top`, `center` or `bottom`, retaining `middle` and `horizon` as centre aliases. Title-page `title-block-align` and `footer-align` accept the compass and V-H forms above, but not `group`. Running header/footer alignment retains its [page-pair syntax](#book-layout-page-pair-alignment). Surrounding whitespace is trimmed; vertical part keywords also retain case-insensitive handling.
+
+Empty or null optional metadata such as `publisher` and `isbn`, and empty prefix/suffix strings, remain valid. Commented YAML examples are not active configuration.
 
 `folio.manuscript.toc.enabled` defaults to `true`. Set it to `false` to suppress the generated table of contents.
 
@@ -615,6 +628,8 @@ folio:
 The current configuration may contain a partial font block because its remaining properties come from the same role in the British base. Retired keys are rejected rather than translated silently.
 
 ## Changelog
+
+- 0.15 (2026-09-24): Alignment defaults use explicit group placement; resolved invalid alignments fail before output. US title-page date/version omission is explicit and inclusion flags are honoured. Historical empty alignment values require migration.
 
 - 0.13 (2026-09-17): Extended proportional monospace stretch to fenced code blocks, so one `mono.font` configuration renders identically wherever monospace appears, and recorded that `code-block` accepts no font block.
 - 0.12 (2026-09-12): Corrected inline monospace stretch to proportional horizontal scaling, preserving glyph height, paragraph wrapping and neighbouring text.
