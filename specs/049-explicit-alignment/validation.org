@@ -14,7 +14,7 @@
 * Regression results
 ** GREEN RT049.1 - Rejection and diagnostic boundary :testdef:
 :PROPERTIES:
-:REVISION: a9a4a98 plus the W049 cross-mode regression extension
+:REVISION: 7beb970 - cross-mode alignment regression extension
 :COMMAND: go test ./internal/manuscript -run TestRT049 -count=1
 :EVIDENCE: All 27 paths reject ten invalid input forms for both Typst and PDF, naming the field, rejected input and expected values, without creating output. Group is rejected at all other alignment paths.
 :END:

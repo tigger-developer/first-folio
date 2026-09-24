@@ -605,7 +605,7 @@ release note is a decision for definition.
 - Outcome :: Body spacing uses *numeric multipliers of the font's normal line
   interval*; paragraph gaps retain *length units*.
 
-** ACTIVE W049 - Explicit alignment defaults and validation :defect:
+** REVIEW W049 - Explicit alignment defaults and validation :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-049
 :SOURCE: operator
