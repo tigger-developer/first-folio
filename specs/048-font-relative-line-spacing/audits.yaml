@@ -137,3 +137,146 @@ audits:
 
             **Not raised as findings:** the `docs/config.md` default rows for `font`, `mono.font` and `paragraph-indent` differ from the working-tree `presets/british.yaml`, but those preset values are operator-owned edits outside this delta and the committed baseline could not be inspected from the supplied evidence; the `line-spacing` row that W048 owns is accurate.
           updated: "2026-09-24T18:00:46Z"
+    - work_item: W048
+      gate: definition
+      session_id: 363a41c5-912f-402f-8a5e-401f7a5ffed6
+      harness: claude
+      model: claude-opus-5
+      configured:
+        harness: claude
+        model: claude-opus-5
+      external_round: 1
+      status: passed
+      updated: "2026-09-24T18:15:37Z"
+      revision: ad68c71
+      verdict: PASS
+      response: |-
+        EHLO SOUL OPS DOC ARCH TEST CODE
+
+        I have read the canonical agent instructions in full. I pledge to uphold their rules, the spirit of these same rules, and that I will not attempt to game these same rules.
+
+        **Note on canary scope:** `~/.agents/sdlc/MAIN.md` was not supplied to this audit adapter and was not read, so I claim no additional SDLC canary components beyond the four authorities I read in full (`DOCUMENTATION.md`, `ARCHITECTURE.md`, `TESTING.md`, `CODING.md`).
+
+        ```
+        GATE: definition
+        REVISION: ad68c71
+        VERDICT: PASS
+        ```
+
+        **Evidence read in full:** the four SDLC authorities above, `.sdlc/project.yaml`, `docs/ARCHITECTURE.md`, `docs/vision.md`, `docs/config.md` (lines 1-400, covering the whole manuscript configuration contract), `spec.org`, `validation.org`, `internal/manuscript/config.go`, `render.go`, `line_spacing_test.go`, `issue30_test.go`, `templates/manuscript.typ`, `presets/british.yaml`, `presets/us.yaml`, and targeted `docs/work.org` sections (W041-W048 ledger entries, AC9.13 and its test subtree, legacy tail). **Not read:** `internal/manuscript/manuscript_test.go` — the renamed `TestManuscriptHeaderPaddingOverride` is implemented test code and belongs to the implementation gates; I make no claim about its contents.
+
+        **Retrospective checks that passed**
+
+        - **Fidelity to BYPASS-GATE-7 scope.** Delivered behaviour is multiplier-only body spacing, length rejection, additive length paragraph gaps, and the shipped preset values. Nothing outside that appears in `config.go:375-384` or `templates/manuscript.typ:399-420`. `presets/british.yaml:307` is `1.5` and `presets/us.yaml:33` is `2`, matching AC048.1 and the `docs/config.md:152` table; the remaining uncommitted British edits (11.5pt body, Iosevka Publish mono, 5mm indent) are untouched by this change and correctly excluded by `spec.org:56`.
+        - **Traceability, both directions.** AC048.1-3 each name their verifying tests; RT048.1/.2 → `TestRT048RenderedLineAndParagraphSpacing`, RT048.3 → `TestRT048RejectInvalidLineSpacing`, RT048.4 → `TestRT048PresetSpacingDefaults`, UT048.1 → AMBER in `validation.org`. `docs/work.org:2817-2829` marks RT-30.1 and RT-30.2 `SUPERSEDED` with a `Superseded by:` link to this spec and retains the original evidence, so the spec's supersession claim is verified and no identifier is recycled.
+        - **Design resolved, not over-built.** The delta is one `context` show rule plus one validator branch: no new dependency, package, abstraction or persistent state. `normal-interval = line-box + 0.65em`, `leading = normal-interval * multiplier - line-box`, `spacing = leading + paragraph-spacing` matches the spec formula exactly, and the wrapper's placement after frontmatter (`manuscript.typ:411`) is what keeps TOC (`:361-364`) and copyright (`:341,:390`) spacing independent, as claimed. A materially simpler design meeting AC048.1 is not apparent; the 0.65em coupling to Typst's default `par.leading` is named in an adjacent comment and is *behaviourally* verified, because RT048.1 compares against a separately compiled native reference rather than a hardcoded metric.
+        - **Changed contract handled.** The break is explicit (`spec.org:52-54`), the end state is single-semantics, there is no parallel old/new path needing a retirement condition, and migration guidance exists in both the diagnostic (`config.go:379`) and `docs/config.md:158-162`. This satisfies CODING.md's compatibility rule.
+        - **Security impact.** Body spacing is reformatted from a parsed float before template insertion (`config.go:381`) and paragraph gaps pass an anchored unit allowlist (`config.go:318,454`), so no unvalidated text reaches the Typst source. The spec's no-network, no-privilege statement is accurate.
+        - **Test definitions and classification.** Four RTs at the CLI/PDF boundary for objective, regression-prone behaviour; one UT for readability judgement that cannot be automated honestly. No RT is a source-text grep. RED evidence with concrete observed values is recorded for RT048.1-.3, RT048.4 is declared an initially GREEN preservation check (permitted), and the diagnostic refinement records new assertions RED before the message changed. Compound conditions are covered: two fonts, two sizes, multipliers 0.75/1/1.5/2, gaps 0/0.5em/5mm, eleven invalid values across both Typst and PDF targets with a no-output-file assertion, and both quoted and unquoted numeric forms (the latter via the presets).
+        - **Record hygiene.** `spec.org` contains no annotation record or block in any form, and no audit findings, status, revisions, round numbers or session identifiers; it links `audits.yaml` as evidence only. No `feedback.yaml` was supplied, so there was nothing to reconcile. `validation.org` reports its limits honestly, including that no full-suite GREEN is claimed and that baseline and candidate fail the same three external `pdf-to-png` tests.
+
+        **Non-blocking observations** (none is a condition of this verdict; each is the operator's call)
+
+        - **Validation revision naming.** Every RT node carries `:REVISION: 08c2b88 plus W048 source and test changes`, while the final GREEN run is described in prose as `4c487d9` plus refinements. The audited commit `ad68c71` is not named against any test node. Traceable as written, but naming the committed revision for the final run would be more precise.
+        - **`line-spacing` now carries three meanings.** Body is a font-relative multiplier, `toc.line-spacing` is a leading length (`1.15em`), and `copyright.line-spacing` is a bare `1.4`. `docs/config.md:162` documents that they are separate. Separately, legacy `AC21.15` (PENDING) states copyright typography inherits from `manuscript.line-spacing`; `normalizeConfig` implements no such inheritance (`config.go:658` fills `1.4` unconditionally), so nothing regresses, but that legacy requirement's wording is now semantically divergent from the body key and may warrant a disposition.
+        - **Extreme compression is untested.** Computed leading turns negative below roughly `0.5` for Libertinus Serif. The spec's edge case predicts glyph overlap; the tested floor is `0.75`, so the prediction is unverified at that extreme. Low consequence and fully reversible.
+        - **Documentary voice.** `spec.org:28` ("Review the rendered comparison and record...") and `:179` ("remain human decisions") describe who acts or decides, which DOCUMENTATION.md's impersonal-voice rule discourages. Editorial only.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-3956299561.log
+          cache_key: sha256:5606e681970c61c7ac9ab05e12ce1b3b985df9168aa81d8b5a6899f139760cf6
+          session_id: 363a41c5-912f-402f-8a5e-401f7a5ffed6
+          harness: claude
+          model: claude-opus-5
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 49e6ad31f733256dfbc20ac4cff46d5ca6ce664bc1e360b8d418c59d772d8e3c
+              bytes: 37975
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 8180ff2e57af3a88caeb82b230f16c21ec5b8ba5ddeb6108ebeae53bdca7a133
+              bytes: 251523
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 6a8a178761cd1324a559fc16ebcf55b530c081f16413dfbd6f70f6fc9c7bca9e
+              bytes: 26873
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue30_test.go
+              sha256: ce54592db4ca6d34e0bbbfec861fe5c74ffb175c83b5e17e26cace316c4d2d12
+              bytes: 3385
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/line_spacing_test.go
+              sha256: b17fa405e28cca55e59134b72821bc831edae1605de85a8374d26149cbf8d127
+              bytes: 5328
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: bb783f81af0417842336cdab59e70f5ae2d4012b75da6c877b0d880a297afdb7
+              bytes: 31241
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: de92a356804c44c0feac1afed70f9f78eadae820802dd34c0493f23df7edefc2
+              bytes: 13893
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: 46ee6e30145972c87f0d8886e68b1969325954ef7e639888d20c46e15ce7a05e
+              bytes: 2088
+            - path: /Users/tigger/code/tigoss/first-folio/specs/048-font-relative-line-spacing/spec.org
+              sha256: eedbf9739a14896de3c73f27c6e9e34d6772ebf639012d10f2719782e5625d30
+              bytes: 8562
+            - path: /Users/tigger/code/tigoss/first-folio/specs/048-font-relative-line-spacing/validation.org
+              sha256: 58f40fe3c70e0666d2b7fbfbe87b62e595d4278af654882aeae348158220f1ca
+              bytes: 5406
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 5eecebe249bcacb002c3b63e58328aa3ee431b82bb1f30b89e54bab8a99b862a
+              bytes: 22529
+          round: 1
+          revision: ad68c71
+          verdict: PASS
+          response: |-
+            EHLO SOUL OPS DOC ARCH TEST CODE
+
+            I have read the canonical agent instructions in full. I pledge to uphold their rules, the spirit of these same rules, and that I will not attempt to game these same rules.
+
+            **Note on canary scope:** `~/.agents/sdlc/MAIN.md` was not supplied to this audit adapter and was not read, so I claim no additional SDLC canary components beyond the four authorities I read in full (`DOCUMENTATION.md`, `ARCHITECTURE.md`, `TESTING.md`, `CODING.md`).
+
+            ```
+            GATE: definition
+            REVISION: ad68c71
+            VERDICT: PASS
+            ```
+
+            **Evidence read in full:** the four SDLC authorities above, `.sdlc/project.yaml`, `docs/ARCHITECTURE.md`, `docs/vision.md`, `docs/config.md` (lines 1-400, covering the whole manuscript configuration contract), `spec.org`, `validation.org`, `internal/manuscript/config.go`, `render.go`, `line_spacing_test.go`, `issue30_test.go`, `templates/manuscript.typ`, `presets/british.yaml`, `presets/us.yaml`, and targeted `docs/work.org` sections (W041-W048 ledger entries, AC9.13 and its test subtree, legacy tail). **Not read:** `internal/manuscript/manuscript_test.go` — the renamed `TestManuscriptHeaderPaddingOverride` is implemented test code and belongs to the implementation gates; I make no claim about its contents.
+
+            **Retrospective checks that passed**
+
+            - **Fidelity to BYPASS-GATE-7 scope.** Delivered behaviour is multiplier-only body spacing, length rejection, additive length paragraph gaps, and the shipped preset values. Nothing outside that appears in `config.go:375-384` or `templates/manuscript.typ:399-420`. `presets/british.yaml:307` is `1.5` and `presets/us.yaml:33` is `2`, matching AC048.1 and the `docs/config.md:152` table; the remaining uncommitted British edits (11.5pt body, Iosevka Publish mono, 5mm indent) are untouched by this change and correctly excluded by `spec.org:56`.
+            - **Traceability, both directions.** AC048.1-3 each name their verifying tests; RT048.1/.2 → `TestRT048RenderedLineAndParagraphSpacing`, RT048.3 → `TestRT048RejectInvalidLineSpacing`, RT048.4 → `TestRT048PresetSpacingDefaults`, UT048.1 → AMBER in `validation.org`. `docs/work.org:2817-2829` marks RT-30.1 and RT-30.2 `SUPERSEDED` with a `Superseded by:` link to this spec and retains the original evidence, so the spec's supersession claim is verified and no identifier is recycled.
+            - **Design resolved, not over-built.** The delta is one `context` show rule plus one validator branch: no new dependency, package, abstraction or persistent state. `normal-interval = line-box + 0.65em`, `leading = normal-interval * multiplier - line-box`, `spacing = leading + paragraph-spacing` matches the spec formula exactly, and the wrapper's placement after frontmatter (`manuscript.typ:411`) is what keeps TOC (`:361-364`) and copyright (`:341,:390`) spacing independent, as claimed. A materially simpler design meeting AC048.1 is not apparent; the 0.65em coupling to Typst's default `par.leading` is named in an adjacent comment and is *behaviourally* verified, because RT048.1 compares against a separately compiled native reference rather than a hardcoded metric.
+            - **Changed contract handled.** The break is explicit (`spec.org:52-54`), the end state is single-semantics, there is no parallel old/new path needing a retirement condition, and migration guidance exists in both the diagnostic (`config.go:379`) and `docs/config.md:158-162`. This satisfies CODING.md's compatibility rule.
+            - **Security impact.** Body spacing is reformatted from a parsed float before template insertion (`config.go:381`) and paragraph gaps pass an anchored unit allowlist (`config.go:318,454`), so no unvalidated text reaches the Typst source. The spec's no-network, no-privilege statement is accurate.
+            - **Test definitions and classification.** Four RTs at the CLI/PDF boundary for objective, regression-prone behaviour; one UT for readability judgement that cannot be automated honestly. No RT is a source-text grep. RED evidence with concrete observed values is recorded for RT048.1-.3, RT048.4 is declared an initially GREEN preservation check (permitted), and the diagnostic refinement records new assertions RED before the message changed. Compound conditions are covered: two fonts, two sizes, multipliers 0.75/1/1.5/2, gaps 0/0.5em/5mm, eleven invalid values across both Typst and PDF targets with a no-output-file assertion, and both quoted and unquoted numeric forms (the latter via the presets).
+            - **Record hygiene.** `spec.org` contains no annotation record or block in any form, and no audit findings, status, revisions, round numbers or session identifiers; it links `audits.yaml` as evidence only. No `feedback.yaml` was supplied, so there was nothing to reconcile. `validation.org` reports its limits honestly, including that no full-suite GREEN is claimed and that baseline and candidate fail the same three external `pdf-to-png` tests.
+
+            **Non-blocking observations** (none is a condition of this verdict; each is the operator's call)
+
+            - **Validation revision naming.** Every RT node carries `:REVISION: 08c2b88 plus W048 source and test changes`, while the final GREEN run is described in prose as `4c487d9` plus refinements. The audited commit `ad68c71` is not named against any test node. Traceable as written, but naming the committed revision for the final run would be more precise.
+            - **`line-spacing` now carries three meanings.** Body is a font-relative multiplier, `toc.line-spacing` is a leading length (`1.15em`), and `copyright.line-spacing` is a bare `1.4`. `docs/config.md:162` documents that they are separate. Separately, legacy `AC21.15` (PENDING) states copyright typography inherits from `manuscript.line-spacing`; `normalizeConfig` implements no such inheritance (`config.go:658` fills `1.4` unconditionally), so nothing regresses, but that legacy requirement's wording is now semantically divergent from the body key and may warrant a disposition.
+            - **Extreme compression is untested.** Computed leading turns negative below roughly `0.5` for Libertinus Serif. The spec's edge case predicts glyph overlap; the tested floor is `0.75`, so the prediction is unverified at that extreme. Low consequence and fully reversible.
+            - **Documentary voice.** `spec.org:28` ("Review the rendered comparison and record...") and `:179` ("remain human decisions") describe who acts or decides, which DOCUMENTATION.md's impersonal-voice rule discourages. Editorial only.
+          updated: "2026-09-24T18:09:22Z"
