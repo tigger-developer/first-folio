@@ -3,7 +3,7 @@
 #+SUBTITLE: Emergency change reconciled from the bounded request
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-09-24
 
 * Synopsis
 :PROPERTIES:
@@ -25,7 +25,7 @@
 ** Decisions
 - Native Typst font metrics and its normal interline gap define *single spacing*.
 ** Next step
-- Review the rendered comparison and record *user validation and closure*.
+- Retain the accepted *spacing and validation evidence*.
 
 * Context
 :PROPERTIES:

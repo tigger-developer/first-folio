@@ -591,7 +591,7 @@ release note is a decision for definition.
   and ship it as the *default monospace font*.
 - Specification :: [[file:../specs/047-bundled-iosevka-publish/spec.org][W047 - Bundle Iosevka Publish as the default monospace font]].
 
-** ACTIVE W048 - Font-relative manuscript line spacing :defect:
+** DONE W048 - Font-relative manuscript line spacing :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-048
 :SOURCE: operator
@@ -601,6 +601,7 @@ release note is a decision for definition.
 - Specification :: [[file:../specs/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]].
 - Validation :: [[file:../specs/048-font-relative-line-spacing/validation.org][W048 - Spacing verification]].
 - Delivery route :: *Emergency*, authorized with =BYPASS-GATE-7= on 2026-09-24.
+- Closure :: Accepted and closed 2026-09-24.
 - Outcome :: Body spacing uses *numeric multipliers of the font's normal line
   interval*; paragraph gaps retain *length units*.
 
