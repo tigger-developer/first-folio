@@ -1,0 +1,139 @@
+version: 1
+audits:
+    - readiness_check: delivery-code
+      work_item: W048
+      gate: implementation
+      session_id: 913944cc-dce0-438c-908e-58a1b8953b6b
+      harness: claude
+      model: claude-opus-5
+      configured:
+        harness: claude
+        model: claude-opus-5
+      external_round: 1
+      status: passed
+      updated: "2026-09-24T18:06:31Z"
+      revision: 4c487d9
+      verdict: PROVISIONAL PASS
+      response: |-
+        GATE: delivery-code
+        REVISION: 4c487d9
+        VERDICT: PROVISIONAL PASS
+
+        **Scope reviewed:** the W048 delta against the recorded `BYPASS-GATE-7` scope in `specs/048-font-relative-line-spacing/spec.org`, its evidence in `validation.org`, the implemented tests (`line_spacing_test.go`, `issue30_test.go`, amended `manuscript_test.go`), production code (`internal/manuscript/config.go`, `render.go`, `templates/manuscript.typ`), presets, and `docs/config.md`. Uncommitted operator-owned `presets/british.yaml` edits other than `line-spacing: 1.5` were treated as outside the delta, as stated in the audit context.
+
+        **Verified**
+
+        - **Native interval calculation** conforms to the recorded design: `templates/manuscript.typ:411-420` measures the body line box under the restored `top-edge: "cap-height" / bottom-edge: "baseline"` edges and derives `leading = (line-box + 0.65em) * multiplier - line-box`, with `spacing: leading + paragraph-spacing`. The wrapper is placed after frontmatter, so TOC and copyright spacing remain independent (`RT-30.3` and the TOC assertions in `manuscript_test.go:38,104,167` still pass).
+        - **Invalid-input rejection** at the configuration trust boundary (`config.go:377-381`) rejects lengths, zero, negatives, empty, malformed and non-finite values before any Typst or PDF output, and canonicalizes with `strconv.FormatFloat(…,'f',-1,64)`, so only a finite decimal literal is ever interpolated into the template — no injection path, and quoted numerics still parse.
+        - **Paragraph spacing** retains the existing length allowlist (`validateTypstLength` with `allowZero=true, allowNegative=false`), matching AC048.2 including `0`, `0.5em`, `5mm`.
+        - **Defaults**: `presets/british.yaml:307` is `1.5`, `presets/us.yaml:33` is `2`, matching AC048.1 and the still-valid `RT-9.55`/`RT-9.56` in `docs/work.org:2799-2809`.
+        - **Evidence**: RT048.1-.3 record executed RED with concrete pre-change values and current GREEN; RT048.4 is a justified initially-GREEN preservation test; UT048.1 is explicitly AMBER for operator validation, which delivery-code permits. `validation.org` records environment, candidate, commands and limits without overstating the suite.
+        - **Regression risk from the three failing top-level tests** is answered by evidence, not assertion: baseline and candidate exports both fail exactly `TestScriptSourceFormatsRasterizeInAllStyles`, `TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged` and `TestExamplePDFsRasterize` with `local: -A: invalid option` from the external `pdf-to-png` helper. That is an external-tool defect outside this change's ownership; the suite is correctly not claimed GREEN.
+        - **Traceability**: `RT-30.1` and `RT-30.2` are marked `SUPERSEDED` with explicit "Superseded by W048" links and retained historical evidence (`docs/work.org:2817-2829`); identifiers are not reused and `RT048.x` is newly allocated. `issue30_test.go:15-17` records the retirement in place rather than deleting it silently.
+        - **Documentation**: `docs/config.md` records multiplier-only semantics, the `0.65em` native gap, migration guidance for lengths, and the retained additive paragraph gap (lines 152, 158, 160, 162), with frontmatter version `0.14` and a matching changelog entry. `docs/work.org:594-605` carries the W048 item. Architecture and vision are unaffected; config precedence is unchanged.
+        - No new dependency, no scope expansion, no persistent state, no widened access.
+
+        **Findings — bounded, reversible follow-up (none invalidates implementation sign-off)**
+
+        1. **Conversation narration in `spec.org`.** Two passages paraphrase the operator exchange, contrary to DOCUMENTATION.md's impersonal-voice and specification-purpose rules: line 37, "The same request was extended to verification of the shipped preset values", and lines 56-57, "was corrected to =1.5= under the explicit preset instruction". Required correction: state the scope and the state factually, e.g. "Scope also covers the shipped preset values" and "The body line-spacing value =1.5em= is corrected to =1.5=, restoring the committed value." Keep the `BYPASS-GATE-7` authorization and date, which are permitted approval metadata.
+        2. **Diagnostic omits the offending value.** `config.go:379` names the field and gives guidance but, unlike every sibling validator in the same file (`validateTypstLength`, `validatePageNumbering`, `validateISBN13`) and the project's established "diagnostic naming the offending value" convention, does not echo the rejected input. AC048.3 does not require it, so this is a convention departure rather than a defect. Required correction: include the received value, e.g. `folio.manuscript.line-spacing %q must be a positive finite multiplier …`.
+        3. **Test name no longer matches its assertions.** `TestManuscriptSpacingOverridesAreIndependent` (`manuscript_test.go:107-129`) now asserts only header padding; the spacing-independence behaviour moved to RT048.2. Required correction: rename it to the behaviour it now checks, or fold it into the header-padding test, retaining the pointer comment.
+        4. **Provenance of the `0.65em` constant is not stated in the code.** `templates/manuscript.typ:409-414` says "including Typst's normal interline gap" without recording that `0.65em` is Typst's default `par.leading`, on which the native-interval model depends across Typst versions. The dependency is regression-protected by RT048.1's independent native reference, so this is a comment gap only. Required correction: name the source of the constant in the adjacent comment.
+
+        **Not raised as findings:** the `docs/config.md` default rows for `font`, `mono.font` and `paragraph-indent` differ from the working-tree `presets/british.yaml`, but those preset values are operator-owned edits outside this delta and the committed baseline could not be inspected from the supplied evidence; the `line-spacing` row that W048 owns is accurate.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-121821055.log
+          readiness_check: delivery-code
+          cache_key: sha256:4e9406772471a1bc9e837f3ee46b23dd37b83edea5131d974f9131777b6d94be
+          session_id: 913944cc-dce0-438c-908e-58a1b8953b6b
+          harness: claude
+          model: claude-opus-5
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 91b7470f9f1a71dc4de066d1acf7fe3528b9bb5e849e0683bac9d409a91563a8
+              bytes: 5241
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 49e6ad31f733256dfbc20ac4cff46d5ca6ce664bc1e360b8d418c59d772d8e3c
+              bytes: 37975
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 8180ff2e57af3a88caeb82b230f16c21ec5b8ba5ddeb6108ebeae53bdca7a133
+              bytes: 251523
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 744a4f75ce29a7e6a0c606c9345f171265625835e51de1127ccfea791f6a719a
+              bytes: 26854
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue30_test.go
+              sha256: ce54592db4ca6d34e0bbbfec861fe5c74ffb175c83b5e17e26cace316c4d2d12
+              bytes: 3385
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/line_spacing_test.go
+              sha256: 5225d976dde68ab71935765f9663dfc2c2486173d813b3dac93ec3f987b8c5b0
+              bytes: 5306
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: ed0f98b99f184e052912f6afa6700bb3cf96c64335ff54e32ba282c61ad602f7
+              bytes: 31250
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: de92a356804c44c0feac1afed70f9f78eadae820802dd34c0493f23df7edefc2
+              bytes: 13893
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: 46ee6e30145972c87f0d8886e68b1969325954ef7e639888d20c46e15ce7a05e
+              bytes: 2088
+            - path: /Users/tigger/code/tigoss/first-folio/specs/048-font-relative-line-spacing/spec.org
+              sha256: 53334b326df95435d429bb7f33fbef75815b158c334da19ae7f1fc52d5d446a1
+              bytes: 8633
+            - path: /Users/tigger/code/tigoss/first-folio/specs/048-font-relative-line-spacing/validation.org
+              sha256: ee20940285e46e7138c1b82938b9170420eb2aab6103242ea4296736de7f36ff
+              bytes: 4823
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: f54748bfda6400680b043e8b0c7c612b4b86f9bc5961d89e8416a8db120e8a3e
+              bytes: 22530
+          round: 1
+          revision: 4c487d9
+          verdict: PROVISIONAL PASS
+          response: |-
+            GATE: delivery-code
+            REVISION: 4c487d9
+            VERDICT: PROVISIONAL PASS
+
+            **Scope reviewed:** the W048 delta against the recorded `BYPASS-GATE-7` scope in `specs/048-font-relative-line-spacing/spec.org`, its evidence in `validation.org`, the implemented tests (`line_spacing_test.go`, `issue30_test.go`, amended `manuscript_test.go`), production code (`internal/manuscript/config.go`, `render.go`, `templates/manuscript.typ`), presets, and `docs/config.md`. Uncommitted operator-owned `presets/british.yaml` edits other than `line-spacing: 1.5` were treated as outside the delta, as stated in the audit context.
+
+            **Verified**
+
+            - **Native interval calculation** conforms to the recorded design: `templates/manuscript.typ:411-420` measures the body line box under the restored `top-edge: "cap-height" / bottom-edge: "baseline"` edges and derives `leading = (line-box + 0.65em) * multiplier - line-box`, with `spacing: leading + paragraph-spacing`. The wrapper is placed after frontmatter, so TOC and copyright spacing remain independent (`RT-30.3` and the TOC assertions in `manuscript_test.go:38,104,167` still pass).
+            - **Invalid-input rejection** at the configuration trust boundary (`config.go:377-381`) rejects lengths, zero, negatives, empty, malformed and non-finite values before any Typst or PDF output, and canonicalizes with `strconv.FormatFloat(…,'f',-1,64)`, so only a finite decimal literal is ever interpolated into the template — no injection path, and quoted numerics still parse.
+            - **Paragraph spacing** retains the existing length allowlist (`validateTypstLength` with `allowZero=true, allowNegative=false`), matching AC048.2 including `0`, `0.5em`, `5mm`.
+            - **Defaults**: `presets/british.yaml:307` is `1.5`, `presets/us.yaml:33` is `2`, matching AC048.1 and the still-valid `RT-9.55`/`RT-9.56` in `docs/work.org:2799-2809`.
+            - **Evidence**: RT048.1-.3 record executed RED with concrete pre-change values and current GREEN; RT048.4 is a justified initially-GREEN preservation test; UT048.1 is explicitly AMBER for operator validation, which delivery-code permits. `validation.org` records environment, candidate, commands and limits without overstating the suite.
+            - **Regression risk from the three failing top-level tests** is answered by evidence, not assertion: baseline and candidate exports both fail exactly `TestScriptSourceFormatsRasterizeInAllStyles`, `TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged` and `TestExamplePDFsRasterize` with `local: -A: invalid option` from the external `pdf-to-png` helper. That is an external-tool defect outside this change's ownership; the suite is correctly not claimed GREEN.
+            - **Traceability**: `RT-30.1` and `RT-30.2` are marked `SUPERSEDED` with explicit "Superseded by W048" links and retained historical evidence (`docs/work.org:2817-2829`); identifiers are not reused and `RT048.x` is newly allocated. `issue30_test.go:15-17` records the retirement in place rather than deleting it silently.
+            - **Documentation**: `docs/config.md` records multiplier-only semantics, the `0.65em` native gap, migration guidance for lengths, and the retained additive paragraph gap (lines 152, 158, 160, 162), with frontmatter version `0.14` and a matching changelog entry. `docs/work.org:594-605` carries the W048 item. Architecture and vision are unaffected; config precedence is unchanged.
+            - No new dependency, no scope expansion, no persistent state, no widened access.
+
+            **Findings — bounded, reversible follow-up (none invalidates implementation sign-off)**
+
+            1. **Conversation narration in `spec.org`.** Two passages paraphrase the operator exchange, contrary to DOCUMENTATION.md's impersonal-voice and specification-purpose rules: line 37, "The same request was extended to verification of the shipped preset values", and lines 56-57, "was corrected to =1.5= under the explicit preset instruction". Required correction: state the scope and the state factually, e.g. "Scope also covers the shipped preset values" and "The body line-spacing value =1.5em= is corrected to =1.5=, restoring the committed value." Keep the `BYPASS-GATE-7` authorization and date, which are permitted approval metadata.
+            2. **Diagnostic omits the offending value.** `config.go:379` names the field and gives guidance but, unlike every sibling validator in the same file (`validateTypstLength`, `validatePageNumbering`, `validateISBN13`) and the project's established "diagnostic naming the offending value" convention, does not echo the rejected input. AC048.3 does not require it, so this is a convention departure rather than a defect. Required correction: include the received value, e.g. `folio.manuscript.line-spacing %q must be a positive finite multiplier …`.
+            3. **Test name no longer matches its assertions.** `TestManuscriptSpacingOverridesAreIndependent` (`manuscript_test.go:107-129`) now asserts only header padding; the spacing-independence behaviour moved to RT048.2. Required correction: rename it to the behaviour it now checks, or fold it into the header-padding test, retaining the pointer comment.
+            4. **Provenance of the `0.65em` constant is not stated in the code.** `templates/manuscript.typ:409-414` says "including Typst's normal interline gap" without recording that `0.65em` is Typst's default `par.leading`, on which the native-interval model depends across Typst versions. The dependency is regression-protected by RT048.1's independent native reference, so this is a comment gap only. Required correction: name the source of the constant in the adjacent comment.
+
+            **Not raised as findings:** the `docs/config.md` default rows for `font`, `mono.font` and `paragraph-indent` differ from the working-tree `presets/british.yaml`, but those preset values are operator-owned edits outside this delta and the committed baseline could not be inspected from the supplied evidence; the `line-spacing` row that W048 owns is accurate.
+          updated: "2026-09-24T18:00:46Z"

@@ -376,7 +376,7 @@ func validateConfig(cfg *Config) error {
 	ms := &cfg.Folio.Manuscript
 	multiplier, err := strconv.ParseFloat(strings.TrimSpace(ms.LineSpacing), 64)
 	if err != nil || math.IsNaN(multiplier) || math.IsInf(multiplier, 0) || multiplier <= 0 {
-		return fmt.Errorf("folio.manuscript.line-spacing must be a positive finite multiplier such as 1.0 or 1.5; use paragraph-spacing for lengths such as 0.5em or 5mm")
+		return fmt.Errorf("folio.manuscript.line-spacing %q must be a positive finite multiplier such as 1.0 or 1.5; use paragraph-spacing for lengths such as 0.5em or 5mm", ms.LineSpacing)
 	}
 	ms.LineSpacing = strconv.FormatFloat(multiplier, 'f', -1, 64)
 	if err := validateTypstLength("folio.manuscript.paragraph-spacing", ms.ParagraphSpacing, true, false); err != nil {

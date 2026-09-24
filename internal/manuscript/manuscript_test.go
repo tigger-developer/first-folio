@@ -104,7 +104,7 @@ func TestUSManuscriptOverridesBritishWithoutChangingPageSize(t *testing.T) {
 	assertContains(t, typst, `#set par(leading: 1.15em)`)
 }
 
-func TestManuscriptSpacingOverridesAreIndependent(t *testing.T) {
+func TestManuscriptHeaderPaddingOverride(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
 	dir := t.TempDir()
 	writeFile(t, filepath.Join(dir, "script.yaml"), strings.Join([]string{

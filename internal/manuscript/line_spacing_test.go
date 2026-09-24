@@ -69,7 +69,7 @@ func TestRT048RejectInvalidLineSpacing(t *testing.T) {
 				if err == nil {
 					t.Errorf("accepted invalid line-spacing %q", value)
 				}
-				for _, required := range []string{"folio.manuscript.line-spacing", "positive finite multiplier", "1.0", "paragraph-spacing"} {
+				for _, required := range []string{"folio.manuscript.line-spacing", strconv.Quote(value), "positive finite multiplier", "1.0", "paragraph-spacing"} {
 					if !strings.Contains(string(data), required) {
 						t.Errorf("diagnostic missing %q: %s", required, data)
 					}

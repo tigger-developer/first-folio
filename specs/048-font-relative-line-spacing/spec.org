@@ -34,7 +34,7 @@
 ** Authority and scope
 - Authorization :: =BYPASS-GATE-7= on 2026-09-24 for *multiplier-only manuscript
   body line spacing*, rejection of lengths, and *length-based paragraph gaps*.
-  The same request was extended to verification of the shipped preset values.
+  Scope also covers the shipped preset values.
 - Scope :: =folio.manuscript.line-spacing= and =paragraph-spacing=, their
   rendering, defaults, diagnostics, regression evidence and documentation.
 - Exclusions :: *No changes* to contents or copyright spacing, unrelated font
@@ -53,8 +53,8 @@
   settings gain *font-relative spacing*, so pagination can change. There is no
   exact unit-stripping migration; select the intended multiplier.
 - Existing edits :: Unrelated changes to =presets/british.yaml= remain outside
-  this change. Its body =1.5em= was corrected to =1.5= under the explicit preset
-  instruction; this restores that setting to its committed value.
+  this change. The body line-spacing value =1.5em= is corrected to =1.5=,
+  restoring the committed value.
 
 * Acceptance Criteria
 :PROPERTIES:

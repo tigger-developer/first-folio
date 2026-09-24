@@ -406,7 +406,7 @@
   first-line-indent: (amount: {{.Config.Folio.Manuscript.ParagraphIndent}}, all: true),
   justify: {{.Config.Folio.Manuscript.Justify}},
 )
-// Scale the native font interval, including Typst's normal interline gap.
+// Scale the native font interval; 0.65em is Typst's default par.leading.
 // This wrapper starts after frontmatter so TOC and copyright spacing stay independent.
 #show: body => context {
   let line-box = measure(text("Hg")).height

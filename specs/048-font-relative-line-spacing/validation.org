@@ -47,6 +47,11 @@
   either reached Typst compilation or lacked the required guidance.
 - GREEN :: =1em=, =5mm=, =12pt=, =0=, =-1=, =NaN=, =+Inf=, =-Inf=, empty,
   =abc= and =true= all passed the rejection assertions in the focused run.
+- Diagnostic refinement :: A further RED run confirmed that the diagnostic
+  omitted the rejected value. Quoted-value assertions were added before the
+  diagnostic was updated to include that value. The subsequent focused run
+  passed in 9.034 seconds, including these assertions and all W048/TOC cases,
+  on =4c487d9= plus diagnostic, comment, test-name and document refinements.
 
 ** GREEN RT048.4 - Preset defaults :testdef:
 :PROPERTIES:
@@ -70,6 +75,9 @@
 
 * Broader verification and limits
 - =make lint= :: Passed in the live checkout.
+- Refinement checks :: =make lint= passed again. The renamed
+  =TestManuscriptHeaderPaddingOverride= passed against the candidate with
+  committed presets (0.160 seconds); its assertions are unchanged.
 - =git diff --check= :: Passed.
 - Full live =make test= :: Failed. Several assertions expect committed preset
   values that differ from the existing uncommitted British preset. The external
