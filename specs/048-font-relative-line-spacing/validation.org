@@ -63,15 +63,21 @@
   preset inspection; no artificial failing run was manufactured.
 
 * User validation
-** AMBER UT048.1 - Visual spacing review :testdef:
+** GREEN UT048.1 - Visual spacing review :testdef:
 :PROPERTIES:
-:REASON: Rendered comparison prepared; user validation has not yet been received.
+:REVISION: 4c487d9 comparison; rendering unchanged by ad68c71 and 6cd5238
+:EVIDENCE: Four-page spacing comparison visually accepted on 2026-09-24.
 :END:
 - Method :: User validation.
 - Sample :: Four-page =spacing-comparison.pdf= in the session temporary output
   directory: 1x, 1.5x and 2x with zero extra gap, then 1x with 5mm extra gap.
 - Font :: Libertinus Serif at 12pt with identical synthetic prose.
-- Current observations :: No human acceptance is recorded.
+- Result, 2026-09-24 :: Visual spacing accepted after opening the comparison
+  PDF in the system viewer. No readability or paragraph-gap correction required.
+- Applicability :: Later changes affect diagnostic wording, test naming,
+  comments and records; the accepted rendering is unchanged.
+*** Prior state
+- AMBER :: Rendered comparison prepared; user validation had not yet been received.
 
 * Broader verification and limits
 - =make lint= :: Passed in the live checkout.
