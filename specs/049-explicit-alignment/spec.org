@@ -104,9 +104,12 @@
   null, unknown keywords, malformed compounds, expression-like text, booleans,
   numbers, lists and maps; request Typst and PDF through the owning mode.
   Also submit =group= at each path outside the six eligible title-page items.
+  Submit an empty manuscript title alignment through script conversion and an
+  empty script speaker alignment through manuscript rendering, for both formats.
 - Expected :: *Nonzero exit*, field and expected-value guidance, and *no output*.
 - Retention :: =TestRT049RejectInvalidAlignment= and
-  =TestRT049GroupRejectedOutsideTitleItems= under =make test=.
+  =TestRT049GroupRejectedOutsideTitleItems= and
+  =TestRT049RejectAlignmentFromAnotherMode= under =make test=.
 ** RT049.2 - Grouped title-page rendering :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-049-2

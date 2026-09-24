@@ -14,7 +14,7 @@
 * Regression results
 ** GREEN RT049.1 - Rejection and diagnostic boundary :testdef:
 :PROPERTIES:
-:REVISION: 0794b69 plus W049 source and regression changes
+:REVISION: a9a4a98 plus the W049 cross-mode regression extension
 :COMMAND: go test ./internal/manuscript -run TestRT049 -count=1
 :EVIDENCE: All 27 paths reject ten invalid input forms for both Typst and PDF, naming the field, rejected input and expected values, without creating output. Group is rejected at all other alignment paths.
 :END:
@@ -24,6 +24,16 @@
 - GREEN :: Final focused run passed in 8.297 seconds, including empty, whitespace,
   null, unknown keyword, malformed compound, expression-like string, boolean,
   number, sequence and mapping inputs. Both selected output extensions were checked.
+
+- Cross-mode extension, 2026-09-24 :: Initially GREEN preservation checks submit
+  empty manuscript title alignment through script conversion and empty script
+  speaker alignment through manuscript rendering. Both Typst and PDF requests
+  fail with field/expected-value diagnostics and no output.
+- Extended candidate :: =a9a4a98= - architecture ownership clarification plus
+  =TestRT049RejectAlignmentFromAnotherMode=. No production changes.
+- Extended focused run :: All W049 tests passed in 7.834 seconds. =make lint=
+  passed again. Earlier default-layout and isolated-suite evidence remains
+  applicable because production files and earlier tests are unchanged.
 
 ** GREEN RT049.2 - Grouped title-page rendering :testdef:
 :PROPERTIES:

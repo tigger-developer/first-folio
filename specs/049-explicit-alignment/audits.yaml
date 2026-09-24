@@ -179,3 +179,168 @@ audits:
             - The `presets/british.yaml` text supplied is the working tree, which includes the user's uncommitted font/spacing/header edits; my assessment of that file is confined to the six `align` values, the two added comments and the alignment inventory.
             - No audit status, revision or finding was written to any specification, ticket or other file; nothing was edited.
           updated: "2026-09-24T20:54:47Z"
+    - work_item: W049
+      gate: definition
+      session_id: e8d8daa7-e887-47a7-8608-a722ad7b3d05
+      harness: claude
+      model: claude-opus-5
+      configured:
+        harness: claude
+        model: claude-opus-5
+      external_round: 1
+      status: passed
+      updated: "2026-09-24T21:18:22Z"
+      revision: a9a4a98 plus the supplied working-tree evidence (tested candidate 60251f4; user-owned uncommitted `presets/british.yaml` edits excluded)
+      verdict: PROVISIONAL PASS
+      response: |-
+        `EHLO SOUL OPS AUDIT ARCH DOC TEST SECURITY CODE EMERGENCY`
+
+        I have read the canonical agent instructions in full. I pledge to uphold their rules, the spirit of these same rules, and that I will not attempt to game these same rules.
+
+        GATE: definition
+        REVISION: a9a4a98 plus the supplied working-tree evidence (tested candidate 60251f4; user-owned uncommitted `presets/british.yaml` edits excluded)
+        VERDICT: PROVISIONAL PASS
+
+        **Condition (bounded, reversible; does not invalidate definition sign-off)**
+
+        - **AC049.1 cross-mode clause is not exercised by its only proving test.** AC049.1 asserts validation applies "even when the role is disabled or belongs to another mode". RT049.1's defined Action submits each path "through the owning mode", and `internal/manuscript/alignment_config_test.go:42` selects `manuscript` for `folio.manuscript.*` and `convert` otherwise. The disabled-role condition **is** covered (the fixture disables `page-header`, `page-footer` and `toc`, and those `.align` paths are still rejected). The other-mode condition is not: no case submits an invalid `folio.manuscript.*.align` through `folio convert`, or an invalid script alignment through `folio manuscript`. The implementation does validate all 27 paths irrespective of `Mode` (`internal/config/config.go:99`, `internal/config/alignment.go:40-63`), so this is a coverage gap in a compound requirement (TESTING.md, "Cover each independent condition in a compound requirement"), not a behavioural defect. **Remediation:** either extend RT049.1's Action and retention with one cross-mode case (initially GREEN preservation evidence is legitimate; no artificial RED required), or narrow AC049.1's wording to the condition actually proven. Either is documentary/test-definition work within the existing allowance.
+
+        **Observations — no action required at this gate, not verdict conditions**
+
+        - The newly reachable US title-page footer row (enabling `include-date` / `include-version` previously produced nothing) is behaviour beyond a pure validation fix. It is disclosed in spec.org Context ("Scope decisions"), traced to AC049.2/RT049.2, and default US output is unchanged per OT049.1. It is already before the operator (`#+OPERATOR_SIGNOFF: PENDING`); no auditor action.
+        - Non-alignment placement fields interpolated into Typst (`folio.manuscript.chapter.position` via `templates/manuscript.typ:147`, script `title-page.*.position`) remain unvalidated. Pre-existing, explicitly outside the authorized scope, and the spec's security claim is correctly scoped to alignment only — it does not assert the boundary is closed. Not grounds for a finding here.
+
+        **Checks satisfied**
+
+        - **Annotations/audit state:** spec.org contains no annotation record or block of any kind (only `:PROPERTIES:` drawers with `CUSTOM_ID`); no findings, verdicts, revisions, round numbers or session IDs are duplicated — audits.yaml is linked, which AUDITS.md permits. No `feedback.yaml` was supplied.
+        - **Schema/traceability:** 3 ACs `:ac:`, 4 tests `:testdef:`, IDs matching across both documents; validation.org declares `#+TODO: AMBER RED | GREEN`, carries RT `REVISION`/`COMMAND`/`EVIDENCE` and OT `REVISION`/`EVIDENCE`; no execution states in spec.org; no RT-ID reuse (RT-15.x preserved, RT049.x new). Every AC has a proving test; no orphan tests.
+        - **Test classification:** OT049.1 is correctly a one-off (baseline-versus-candidate build comparison cannot be a persistent RT) with recorded bounds and rationale; the absence of a UT is explicitly reasoned and the asserted outcomes are objective geometry. External raster-helper failures are disclosed as identical in baseline and candidate, with no passing full suite claimed.
+        - **Architecture/design:** one allowlist table in the shared loader, applied after layer merging and before typed decode/output (`config.go:96-102`, before `Decode`/`normalizeConfig` in `manuscript/config.go:355-372`); templates retain composition; no new dependency, framework, abstraction or group-order/gap controls; a structural implementation-review check is stated for the validation boundary. Proportionate, no template inflation, and consistent with `docs/ARCHITECTURE.md` 0.4.
+        - **Intentional break:** recorded with consequence and migration (`spec.org` Context; `docs/config.md:535`), satisfying CODING.md's compatibility rule; the W039 historical attachment is retained and its supersession is stated rather than silently erased.
+        - **Security:** the allowlist genuinely closes an injection path — `part.align`, `chapter.align` and `copyright.align` are interpolated raw into Typst (`templates/manuscript.typ:104,148`) and were previously unvalidated; the spec's claim is accurate and scoped.
+        - **Documentation:** impersonal factual voice, no conversation narration or personal attribution, concise approval metadata; affected documentation identified in the handoff (config.md, preset comments, architecture boundary), and `examples/script.yaml.example` is unaffected (fully commented, no manuscript title-page `align` values).
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-3939787277.log
+          cache_key: sha256:6a8bbb1129868b0fc6728f76a666e6f472b0c9c0219b661e84e2b5f3e7507884
+          session_id: e8d8daa7-e887-47a7-8608-a722ad7b3d05
+          harness: claude
+          model: claude-opus-5
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 66982ab8b25b26ea1bfaf40577bf4955bf0c804cfd035ab582c6d9ff658e2581
+              bytes: 16627
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: fbceb4dffd2ab69a3edcd1dd924873bdbe5298cffa4c2e65548e04541fb78f73
+              bytes: 5027
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 0de32abcd844bd282eea723bcd1ed13a76813555fdb3023c986ead988f3908b6
+              bytes: 5630
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 0f69cb0103f5f81e6e99d62c4d769b859dce0e19c2dd107f4e4e2a4282b365a6
+              bytes: 39983
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 4e3202c21ed1797108079acddf5473ce1fcd9928e9fb5550afe479a671d30b70
+              bytes: 252144
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/alignment.go
+              sha256: 17a1301beadcde721c3afe0958306dd33715d8068b7a80214d279d052c6ee99e
+              bytes: 2928
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config.go
+              sha256: 892697e7b63887b4d282c5edc4064686bfd7748dab18d830e1f5d2285a5f95cb
+              bytes: 7611
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font_test.go
+              sha256: 985fbe0a2d56b8113ef83a9cd0b2a983212fe2b5ba03cc1f7aff7d9498e5d6f1
+              bytes: 12210
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/alignment.go
+              sha256: 39308f0af95d29f3fe5898439e53712e44cb08f47f91f6f2b4ddc47f12cbe613
+              bytes: 5398
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/alignment_config_test.go
+              sha256: da59d5625c9e8eaf602493e20a388e6307d7b04b6f92c42aa92d501b6c6e07ef
+              bytes: 9215
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: aa8acb5b04f7cecf05c26fff5dde516e6459794c78893d149839fd28380eed92
+              bytes: 26512
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_config_enhancements_test.go
+              sha256: 414a06e9c13fd5cebb96231de00917776f2d6157d21df2284b4a29f9c621e1fa
+              bytes: 38920
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: b812c1cb39a2b1101159aac0a30233b072d08790045daab59b3f28f22a26f2c6
+              bytes: 14058
+            - path: /Users/tigger/code/tigoss/first-folio/presets/screenplay.yaml
+              sha256: a647a042d12507692b2f2acb60ec929e157d1e794f1f827a7114e2f65be0972d
+              bytes: 1437
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: fdbe2cea840eb80f77a35675dc65256563c23f2b567f4cbe02dadf9ebfdacdb8
+              bytes: 2143
+            - path: /Users/tigger/code/tigoss/first-folio/specs/049-explicit-alignment/spec.org
+              sha256: 5eb667217d0c22294b10cdfb3f820edf48982a3605c2d49d025e2cbd8256ef0a
+              bytes: 10185
+            - path: /Users/tigger/code/tigoss/first-folio/specs/049-explicit-alignment/validation.org
+              sha256: 02cdb57a16f50562276a6279aa9606118ad0f177b13ba418ed902b7bfc6e407a
+              bytes: 5477
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 15e6b3546ef45b9da999552dda6e1981aabbbdecfc1a1e41402103c84026b63c
+              bytes: 22937
+          round: 1
+          revision: a9a4a98 plus the supplied working-tree evidence (tested candidate 60251f4; user-owned uncommitted `presets/british.yaml` edits excluded)
+          verdict: PROVISIONAL PASS
+          response: |-
+            `EHLO SOUL OPS AUDIT ARCH DOC TEST SECURITY CODE EMERGENCY`
+
+            I have read the canonical agent instructions in full. I pledge to uphold their rules, the spirit of these same rules, and that I will not attempt to game these same rules.
+
+            GATE: definition
+            REVISION: a9a4a98 plus the supplied working-tree evidence (tested candidate 60251f4; user-owned uncommitted `presets/british.yaml` edits excluded)
+            VERDICT: PROVISIONAL PASS
+
+            **Condition (bounded, reversible; does not invalidate definition sign-off)**
+
+            - **AC049.1 cross-mode clause is not exercised by its only proving test.** AC049.1 asserts validation applies "even when the role is disabled or belongs to another mode". RT049.1's defined Action submits each path "through the owning mode", and `internal/manuscript/alignment_config_test.go:42` selects `manuscript` for `folio.manuscript.*` and `convert` otherwise. The disabled-role condition **is** covered (the fixture disables `page-header`, `page-footer` and `toc`, and those `.align` paths are still rejected). The other-mode condition is not: no case submits an invalid `folio.manuscript.*.align` through `folio convert`, or an invalid script alignment through `folio manuscript`. The implementation does validate all 27 paths irrespective of `Mode` (`internal/config/config.go:99`, `internal/config/alignment.go:40-63`), so this is a coverage gap in a compound requirement (TESTING.md, "Cover each independent condition in a compound requirement"), not a behavioural defect. **Remediation:** either extend RT049.1's Action and retention with one cross-mode case (initially GREEN preservation evidence is legitimate; no artificial RED required), or narrow AC049.1's wording to the condition actually proven. Either is documentary/test-definition work within the existing allowance.
+
+            **Observations — no action required at this gate, not verdict conditions**
+
+            - The newly reachable US title-page footer row (enabling `include-date` / `include-version` previously produced nothing) is behaviour beyond a pure validation fix. It is disclosed in spec.org Context ("Scope decisions"), traced to AC049.2/RT049.2, and default US output is unchanged per OT049.1. It is already before the operator (`#+OPERATOR_SIGNOFF: PENDING`); no auditor action.
+            - Non-alignment placement fields interpolated into Typst (`folio.manuscript.chapter.position` via `templates/manuscript.typ:147`, script `title-page.*.position`) remain unvalidated. Pre-existing, explicitly outside the authorized scope, and the spec's security claim is correctly scoped to alignment only — it does not assert the boundary is closed. Not grounds for a finding here.
+
+            **Checks satisfied**
+
+            - **Annotations/audit state:** spec.org contains no annotation record or block of any kind (only `:PROPERTIES:` drawers with `CUSTOM_ID`); no findings, verdicts, revisions, round numbers or session IDs are duplicated — audits.yaml is linked, which AUDITS.md permits. No `feedback.yaml` was supplied.
+            - **Schema/traceability:** 3 ACs `:ac:`, 4 tests `:testdef:`, IDs matching across both documents; validation.org declares `#+TODO: AMBER RED | GREEN`, carries RT `REVISION`/`COMMAND`/`EVIDENCE` and OT `REVISION`/`EVIDENCE`; no execution states in spec.org; no RT-ID reuse (RT-15.x preserved, RT049.x new). Every AC has a proving test; no orphan tests.
+            - **Test classification:** OT049.1 is correctly a one-off (baseline-versus-candidate build comparison cannot be a persistent RT) with recorded bounds and rationale; the absence of a UT is explicitly reasoned and the asserted outcomes are objective geometry. External raster-helper failures are disclosed as identical in baseline and candidate, with no passing full suite claimed.
+            - **Architecture/design:** one allowlist table in the shared loader, applied after layer merging and before typed decode/output (`config.go:96-102`, before `Decode`/`normalizeConfig` in `manuscript/config.go:355-372`); templates retain composition; no new dependency, framework, abstraction or group-order/gap controls; a structural implementation-review check is stated for the validation boundary. Proportionate, no template inflation, and consistent with `docs/ARCHITECTURE.md` 0.4.
+            - **Intentional break:** recorded with consequence and migration (`spec.org` Context; `docs/config.md:535`), satisfying CODING.md's compatibility rule; the W039 historical attachment is retained and its supersession is stated rather than silently erased.
+            - **Security:** the allowlist genuinely closes an injection path — `part.align`, `chapter.align` and `copyright.align` are interpolated raw into Typst (`templates/manuscript.typ:104,148`) and were previously unvalidated; the spec's claim is accurate and scoped.
+            - **Documentation:** impersonal factual voice, no conversation narration or personal attribution, concise approval metadata; affected documentation identified in the handoff (config.md, preset comments, architecture boundary), and `examples/script.yaml.example` is unaffected (fully commented, no manuscript title-page `align` values).
+          updated: "2026-09-24T21:06:43Z"

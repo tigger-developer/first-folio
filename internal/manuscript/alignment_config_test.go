@@ -204,3 +204,28 @@ func TestRT049NullOptionalContent(t *testing.T) {
 		commandOutput(t, exec.Command(binary, command.mode, filepath.Join(dir, command.source), filepath.Join(dir, command.mode+".pdf")))
 	}
 }
+
+// RT049.1: invalid settings in another mode still fail at the shared boundary.
+func TestRT049RejectAlignmentFromAnotherMode(t *testing.T) {
+	binary := buildFontCLI(t)
+	for _, c := range []struct{ field, mode, source string }{
+		{"folio.manuscript.title-page.title.align", "convert", "play.org"},
+		{"folio.positioning.speech.speaker.align", "manuscript", "input.md"},
+	} {
+		t.Run(c.mode, func(t *testing.T) {
+			cfg := map[string]any{}
+			setFontTestPath(cfg, c.field, "")
+			dir := alignmentFixture(t, cfg)
+			for _, ext := range []string{"typ", "pdf"} {
+				output := filepath.Join(dir, "output."+ext)
+				data, err := exec.Command(binary, c.mode, filepath.Join(dir, c.source), output).CombinedOutput()
+				if err == nil || !strings.Contains(string(data), c.field) || !strings.Contains(string(data), "expected") {
+					t.Fatalf("expected rejection naming %s through %s: %s (%v)", c.field, c.mode, data, err)
+				}
+				if _, err := os.Stat(output); !os.IsNotExist(err) {
+					t.Errorf("invalid alignment created output: %v", err)
+				}
+			}
+		})
+	}
+}
