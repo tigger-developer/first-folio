@@ -1,0 +1,88 @@
+#+TITLE: W048 - Line and paragraph spacing verification
+#+STARTUP: overview
+#+TODO: AMBER RED | GREEN
+
+* Environment and candidate
+- Date :: 2026-09-24.
+- Environment :: macOS arm64, Go 1.26.3, Typst 0.14.2, Pandoc 3.9.0.2,
+  Poppler =pdftotext=.
+- Candidate :: Baseline =08c2b88= (Iosevka Publish skeleton) plus the W048
+  configuration, renderer, body template, test and documentation changes.
+- Existing preset changes :: Preserved outside the W048 commit. The authorized
+  correction from =1.5em= to =1.5= restores the committed body spacing value.
+- Test caches and generated outputs :: Operating-system temporary directories.
+
+* Regression results
+** GREEN RT048.1 - Rendered multipliers :testdef:
+:PROPERTIES:
+:REVISION: 08c2b88 plus W048 source and test changes
+:COMMAND: go test ./internal/manuscript -run 'TestRT048|TestRT_30_3' -count=1 -v
+:EVIDENCE: All rendered multiplier cases passed within 0.03pt of independent native Typst intervals.
+:END:
+- Matrix :: Libertinus Serif and DejaVu Sans Mono; 10pt and 16pt; multipliers
+  0.75, 1, 1.5 and 2; three paragraph-gap settings.
+- RED :: Before implementation, Libertinus Serif at 10pt and multiplier 1
+  produced a 10.000pt interval instead of the native 13.080pt. Multiplier 1.5
+  produced 15.000pt instead of 19.620pt. Other matrix cases also failed.
+- GREEN :: The final focused run passed in 8.837 seconds, including the
+  unchanged contents-spacing regression.
+
+** GREEN RT048.2 - Additive paragraph gaps :testdef:
+:PROPERTIES:
+:REVISION: 08c2b88 plus W048 source and test changes
+:COMMAND: go test ./internal/manuscript -run TestRT048RenderedLineAndParagraphSpacing -count=1
+:EVIDENCE: Zero, 0.5em and 5mm added exactly the specified paragraph gap within 0.03pt without changing intra-paragraph intervals.
+:END:
+- RED :: Before implementation, the paragraph interval inherited the incorrect
+  font-size-based interval. At 10pt/1x/5mm it was 24.173pt rather than 27.253pt.
+- GREEN :: Included in the final focused run above; all 48 combinations passed.
+
+** GREEN RT048.3 - Invalid-value rejection :testdef:
+:PROPERTIES:
+:REVISION: 08c2b88 plus W048 source and test changes
+:COMMAND: go test ./internal/manuscript -run TestRT048RejectInvalidLineSpacing -count=1
+:EVIDENCE: Eleven invalid values failed for both Typst and PDF before creating output, with field-specific multiplier and paragraph-spacing guidance.
+:END:
+- RED :: Before implementation, lengths and zero were accepted; other values
+  either reached Typst compilation or lacked the required guidance.
+- GREEN :: =1em=, =5mm=, =12pt=, =0=, =-1=, =NaN=, =+Inf=, =-Inf=, empty,
+  =abc= and =true= all passed the rejection assertions in the focused run.
+
+** GREEN RT048.4 - Preset defaults :testdef:
+:PROPERTIES:
+:REVISION: 08c2b88 plus W048 source and test changes
+:COMMAND: go test ./internal/manuscript -run TestRT048PresetSpacingDefaults -count=1
+:EVIDENCE: Omitted body and paragraph spacing matched explicit British 1.5/0pt and US 2/0pt in rendered PDF coordinates.
+:END:
+- Purpose :: Initially GREEN preservation check added after the authorized
+  preset inspection; no artificial failing run was manufactured.
+
+* User validation
+** AMBER UT048.1 - Visual spacing review :testdef:
+:PROPERTIES:
+:REASON: Rendered comparison prepared; user validation has not yet been received.
+:END:
+- Method :: User validation.
+- Sample :: Four-page =spacing-comparison.pdf= in the session temporary output
+  directory: 1x, 1.5x and 2x with zero extra gap, then 1x with 5mm extra gap.
+- Font :: Libertinus Serif at 12pt with identical synthetic prose.
+- Current observations :: No human acceptance is recorded.
+
+* Broader verification and limits
+- =make lint= :: Passed in the live checkout.
+- =git diff --check= :: Passed.
+- Full live =make test= :: Failed. Several assertions expect committed preset
+  values that differ from the existing uncommitted British preset. The external
+  rasterization helper also failed. This is not recorded as a passing suite.
+- Isolation :: Exported baseline =08c2b88= with =git archive= into an OS
+  temporary directory. Exported a second copy and overlaid only W048 source,
+  template and test changes, keeping committed presets in both. Ran
+  =go test ./...= in each, using the same environment and temporary Go cache.
+- Baseline and candidate :: Both failed exactly the same three top-level tests:
+  =TestScriptSourceFormatsRasterizeInAllStyles=,
+  =TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged= and
+  =TestExamplePDFsRasterize=. Each failure reported =local: -A: invalid option=
+  from the external =pdf-to-png= helper's shell setup. No additional test failed
+  in the isolated candidate. Neither full-suite run is GREEN.
+- Boundaries :: No shell-tool repair, user-preset reset, manuscript edit,
+  installation, release or remote synchronization was performed.

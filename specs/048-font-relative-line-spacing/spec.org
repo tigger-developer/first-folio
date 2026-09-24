@@ -1,0 +1,179 @@
+#+TITLE: W048 - Font-relative manuscript line spacing
+#+SCHEMA: 8
+#+SUBTITLE: Emergency change reconciled from the bounded request
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+** Outcome
+- Body line spacing uses *multipliers of the font's normal baseline interval*.
+** Before
+- Numeric values scaled *point size*, while lengths specified *additional gaps*.
+** After
+- =1.0=, =1.5= and =2.0= multiply the same *native single-spacing interval*.
+** Changes
+- Body lengths and invalid multipliers are *rejected before output*.
+- Paragraph spacing remains an *additional length*.
+** Unchanged
+- Contents, copyright, font selection and configuration precedence remain separate.
+** Edge cases
+- Positive multipliers below one *compress spacing*; zero and non-finite values fail.
+** Decisions
+- Native Typst font metrics and its normal interline gap define *single spacing*.
+** Next step
+- Review the rendered comparison and record *user validation and closure*.
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+** Authority and scope
+- Authorization :: =BYPASS-GATE-7= on 2026-09-24 for *multiplier-only manuscript
+  body line spacing*, rejection of lengths, and *length-based paragraph gaps*.
+  The same request was extended to verification of the shipped preset values.
+- Scope :: =folio.manuscript.line-spacing= and =paragraph-spacing=, their
+  rendering, defaults, diagnostics, regression evidence and documentation.
+- Exclusions :: *No changes* to contents or copyright spacing, unrelated font
+  work, source manuscripts, installed binaries or release publication.
+- Authorities :: [[file:../../docs/vision.md][Product vision]],
+  [[file:../../docs/ARCHITECTURE.md][Application architecture]],
+  [[file:../../docs/config.md][Configuration contract]] and
+  [[file:../../docs/work.org][Work and historical requirements]].
+** Starting point and compatibility
+- Baseline :: The body template used a *one-em line box*. Numeric values
+  subtracted one before emitting extra leading; explicit lengths passed through.
+- Relationship :: Refines AC9.13 - Configurable paragraph layout. Supersedes
+  RT-30.1 - Body length acceptance and RT-30.2 - Font-size-based numeric spacing;
+  their original evidence remains in the work ledger and archived ticket 30.
+- Intentional break :: Length-valued body spacing now fails. Existing numeric
+  settings gain *font-relative spacing*, so pagination can change. There is no
+  exact unit-stripping migration; select the intended multiplier.
+- Existing edits :: Unrelated changes to =presets/british.yaml= remain outside
+  this change. Its body =1.5em= was corrected to =1.5= under the explicit preset
+  instruction; this restores that setting to its committed value.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+** AC048.1 - Font-relative line intervals :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-048-1
+:END:
+- Body prose uses a *positive finite numeric multiplier* of the normal interval
+  for the selected body font and size. =1.0= matches native single spacing;
+  =1.5= and =2.0= scale it proportionally. Positive values below one are not clamped.
+- Defaults remain *British 1.5* and *US 2*, with same-path overrides preserved.
+- Verified by :: [[#rt-048-1][RT048.1 - Rendered multipliers]],
+  [[#rt-048-4][RT048.4 - Preset defaults]] and
+  [[#ut-048-1][UT048.1 - Visual spacing review]].
+** AC048.2 - Independent paragraph gaps :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-048-2
+:END:
+- Paragraph spacing accepts *non-negative lengths* including =0.5em= and =5mm=.
+  Zero adds *no extra gap*. Paragraph gaps do not change within-paragraph spacing.
+- Verified by :: [[#rt-048-2][RT048.2 - Additive paragraph gaps]] and
+  [[#ut-048-1][UT048.1 - Visual spacing review]].
+** AC048.3 - Actionable invalid-value rejection :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-048-3
+:END:
+- Lengths, zero, negatives, empty or malformed strings and non-finite body
+  multipliers *fail before writing Typst or PDF output*. The diagnostic identifies
+  =folio.manuscript.line-spacing=, gives numeric examples and points to
+  =paragraph-spacing= for lengths. Quoted numeric values remain accepted.
+- Verified by :: [[#rt-048-3][RT048.3 - Invalid-value rejection]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+** RT048.1 - Rendered multipliers :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-048-1
+:END:
+- Covers :: [[#ac-048-1][AC048.1 - Font-relative line intervals]].
+- Method :: Built CLI renders PDF with Libertinus Serif and DejaVu Sans Mono at
+  10pt and 16pt, with =0.75=, =1=, =1.5= and =2=. Compare two same-font line
+  baselines against a separately compiled native Typst reference.
+- Expected :: Every interval equals *native interval times multiplier*, within
+  0.03pt. Retained in =TestRT048RenderedLineAndParagraphSpacing=.
+** RT048.2 - Additive paragraph gaps :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-048-2
+:END:
+- Covers :: [[#ac-048-2][AC048.2 - Independent paragraph gaps]].
+- Method :: The same rendered matrix uses =0=, =0.5em= and =5mm= paragraph gaps.
+- Expected :: The next paragraph baseline adds *exactly the configured length*
+  to the line interval within 0.03pt; within-paragraph spacing stays unchanged.
+** RT048.3 - Invalid-value rejection :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-048-3
+:END:
+- Covers :: [[#ac-048-3][AC048.3 - Actionable invalid-value rejection]].
+- Method :: Built CLI receives =1em=, =5mm=, =12pt=, =0=, =-1=, =NaN=, =+Inf=,
+  =-Inf=, empty text, =abc= and =true=, targeting Typst and PDF.
+- Expected :: Nonzero exit, *field-specific multiplier and migration guidance*,
+  and *no output file*. Retained in =TestRT048RejectInvalidLineSpacing=.
+** RT048.4 - Preset defaults :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-048-4
+:END:
+- Covers :: [[#ac-048-1][AC048.1 - Font-relative line intervals]].
+- Method :: Built CLI renders British and US with body spacing and paragraph
+  spacing omitted, then explicitly set to =1.5=/=2= and =0pt= respectively.
+- Expected :: Corresponding line and paragraph coordinates *match within 0.03pt*.
+  Retained in =TestRT048PresetSpacingDefaults=.
+** UT048.1 - Visual spacing review :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-048-1
+:END:
+- Covers :: [[#ac-048-1][AC048.1 - Font-relative line intervals]] and
+  [[#ac-048-2][AC048.2 - Independent paragraph gaps]].
+- Method :: *User validation* of generated PDFs at =1.0=, =1.5= and =2.0=,
+  with zero and length-based paragraph gaps.
+- Expected :: Single spacing is readable without compensating configuration;
+  larger multipliers expand consistently and paragraph gaps remain independent.
+
+* Edge Cases
+- *Compressed spacing* can overlap glyphs; positive values remain an explicit choice.
+- Mixed-size inline objects can require taller lines; the multiplier defines
+  *ordinary body prose*, not a constraint that clips larger content.
+- Invalid paragraph lengths fail configuration validation; no Typst expressions
+  are accepted as paragraph spacing.
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+- Configuration :: The existing loader validates and canonicalizes the numeric
+  string before output. Paragraph gaps use the existing length validator.
+- Rendering :: The existing body template restores Typst's native =cap-height=
+  and =baseline= text edges. In the body font context it measures the line box
+  and defines normal interval as *line-box height plus 0.65em*. Extra leading is
+  =normal interval * multiplier - line-box height=. Paragraph spacing adds the
+  configured gap to that leading. Frontmatter precedes this body-only wrapper.
+- Verification :: The independent native Typst PDF reference has no custom
+  line-height calculation; PDF coordinates establish the expected interval.
+- Architecture :: Existing Go validation and file-backed Typst composition
+  retain their responsibilities. *No new dependency* or persistent state.
+- Security :: Configured body spacing is parsed as finite numeric data before
+  template insertion; paragraph gaps are restricted to supported lengths.
+  *No network, privilege or data-access change*.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+- Route :: Emergency implementation followed by durable reconciliation; no
+  retrospective claim of advance definition approval.
+- Documentation :: =docs/config.md= describes new semantics and migration;
+  =docs/work.org= retains and marks superseded test contracts.
+- Evidence :: [[file:validation.org][W048 - Spacing verification]] and
+  [[file:audits.yaml][W048 - Independent review record]].
+- Closure :: Outstanding visual validation and explicit closure remain human decisions.

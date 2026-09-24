@@ -591,6 +591,19 @@ release note is a decision for definition.
   and ship it as the *default monospace font*.
 - Specification :: [[file:../specs/047-bundled-iosevka-publish/spec.org][W047 - Bundle Iosevka Publish as the default monospace font]].
 
+** ACTIVE W048 - Font-relative manuscript line spacing :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-048
+:SOURCE: operator
+:CREATED: 2026-09-24
+:END:
+
+- Specification :: [[file:../specs/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]].
+- Validation :: [[file:../specs/048-font-relative-line-spacing/validation.org][W048 - Spacing verification]].
+- Delivery route :: *Emergency*, authorized with =BYPASS-GATE-7= on 2026-09-24.
+- Outcome :: Body spacing uses *numeric multipliers of the font's normal line
+  interval*; paragraph gaps retain *length units*.
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria
@@ -2804,13 +2817,15 @@ Given manuscript paragraph layout configuration, First Folio applies configurabl
 ***** RT-30.1 - The public manuscript command accepts body =line-spacing: 2em=, compiles a PDF, and generated Typst contains no duplicated unit
 
 - *Type:* Automated regression test
-- *Status:* PASS
+- *Status:* SUPERSEDED
+- *Superseded by:* [[file:../specs/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]], which rejects body lengths. The prior result below remains historical evidence.
 - *Evidence:* Archived ticket #30 - Correct manuscript body and TOC line-spacing rendering records the generated Typst check; current =make test= passed the maintained RT definition.
 
 ***** RT-30.2 - Numeric body =line-spacing: 2= retains double-spacing multiplier behaviour
 
 - *Type:* Automated regression test
-- *Status:* PASS
+- *Status:* SUPERSEDED
+- *Superseded by:* [[file:../specs/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]], which measures font-relative baseline intervals. The prior result below remains historical evidence.
 - *Evidence:* Archived ticket #30 - Correct manuscript body and TOC line-spacing rendering records the numeric spacing check; current =make test= passed the maintained RT definition.
 
 **** Notes

@@ -53,8 +53,6 @@ type templateData struct {
 	FirstChapterPrefix string
 	FirstChapterFull   string
 	IsUS               bool
-	Leading            string
-	Spacing            string
 	PartVertical       string
 	ChapterPosition    string
 	SceneBreakMarker   string
@@ -163,7 +161,6 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 	firstPart, firstChapter := firstHeadingSeeds(doc.Blocks, cfg)
 	safeMeta := escapedMetadata(doc.Metadata)
 	safeMeta.Date = escapeTypst(renderDate(doc.Metadata.Date, cfg.Folio.Manuscript.DateFormat))
-	leading := lineSpacingLeading(cfg.Folio.Manuscript.LineSpacing)
 	pageFooterEnabled := cfg.Folio.Manuscript.PageFooter.Enabled != nil && *cfg.Folio.Manuscript.PageFooter.Enabled
 	data := templateData{
 		Config:                  cfg,
@@ -184,8 +181,6 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 		HasFooterAltFrontmatter: cfg.Folio.Manuscript.PageFooter.AltFrontmatterFormat != nil,
 		Body:                    body,
 		IsUS:                    cfg.Folio.Manuscript.Style == "us",
-		Leading:                 leading,
-		Spacing:                 paragraphSpacing(cfg.Folio.Manuscript.ParagraphSpacing, leading),
 		PartVertical:            typstVerticalAlign(cfg.Folio.Manuscript.Part.VerticalAlign),
 		ChapterPosition:         chapterPosition(cfg.Folio.Manuscript.Chapter.Position),
 		SceneBreakMarker:        escapeTypst(cfg.Folio.Manuscript.SceneBreak.Marker),
@@ -297,29 +292,6 @@ func renderDate(value string, layout string) string {
 		layout = "2 January 2006"
 	}
 	return parsed.Format(layout)
-}
-
-func lineSpacingLeading(lineSpacing string) string {
-	trimmed := strings.TrimSpace(lineSpacing)
-	multiplier, err := strconv.ParseFloat(trimmed, 64)
-	if err != nil {
-		return trimmed
-	}
-	if multiplier < 1 {
-		multiplier = 1
-	}
-	return strconv.FormatFloat(multiplier-1, 'f', -1, 64) + "em"
-}
-
-func paragraphSpacing(spacing string, leading string) string {
-	trimmed := strings.TrimSpace(spacing)
-	if trimmed == "" || trimmed == "0" || trimmed == "0pt" {
-		return leading
-	}
-	if leading == "0em" {
-		return trimmed
-	}
-	return leading + " + " + trimmed
 }
 
 func renderBlocks(blocks []Block, cfg Config) (string, error) {

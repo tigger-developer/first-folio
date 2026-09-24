@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.13"
-last-updated: 2026-09-17
+version: "0.14"
+last-updated: 2026-09-24
 ---
 
 # Configuration
@@ -155,7 +155,11 @@ Common manuscript keys:
 | `paragraph-indent` | string | `10mm` | `12.7mm` |
 | `paragraph-spacing` | string | `0` | `0` |
 
-`folio.manuscript.line-spacing` accepts a baseline multiplier or an explicit Typst length. With a multiplier, `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. A length such as `2em` is passed through without adding another unit. `folio.manuscript.font.letter-spacing` controls body tracking; header and footer tracking use their own font blocks. `folio.manuscript.paragraph-spacing` is additional space between paragraphs; `0` preserves the selected line interval across paragraph boundaries without adding a separate paragraph gap. `folio.manuscript.justify` controls body-text justification.
+`folio.manuscript.line-spacing` accepts only a **positive finite numeric multiplier**: `1.0` is single-spaced, `1.5` is one-and-a-half-spaced, and `2.0` is double-spaced. Quoted numeric values are also accepted. The multiplier applies to the selected body font's normal baseline interval at its configured size, using native Typst text metrics and its normal `0.65em` interline gap. It does not multiply the point size alone. Values below one compress that interval without being silently clamped; they can cause text to overlap.
+
+**Migration:** lengths such as `1em`, `5mm` and `12pt`, zero, negative values and non-finite numbers are rejected before output is written. Replace a body line-spacing length with the intended multiplier, such as `1.0` or `1.5`; removing the unit is not an exact conversion from the former extra-gap behaviour. Existing numeric configurations also gain the font-relative interval, which can change pagination. The British base uses `1.5` and the US overlay uses `2`.
+
+`folio.manuscript.paragraph-spacing` remains an **additional non-negative length** between paragraphs, such as `0.5em` or `5mm`. `0` or `0pt` preserves the selected line interval across paragraph boundaries without an extra gap. Contents and copyright spacing retain their separate settings. `folio.manuscript.font.letter-spacing` controls body tracking; header and footer tracking use their own font blocks. `folio.manuscript.justify` controls body-text justification.
 
 `folio.manuscript.widow-orphan-control` defaults to `true`, preventing a single paragraph line from being stranded at the bottom or top of a page. Set it to `false` to allow paragraphs to split freely at page boundaries. This setting does not keep whole paragraphs together.
 
@@ -615,6 +619,7 @@ The current configuration may contain a partial font block because its remaining
 - 0.13 (2026-09-17): Extended proportional monospace stretch to fenced code blocks, so one `mono.font` configuration renders identically wherever monospace appears, and recorded that `code-block` accepts no font block.
 - 0.12 (2026-09-12): Corrected inline monospace stretch to proportional horizontal scaling, preserving glyph height, paragraph wrapping and neighbouring text.
 - 0.11 (2026-09-12): Recorded the exclusion of heading code and its TOC appearances from the font-rendering repair; paragraph code and ordinary heading typography remain in scope.
+- 0.14 (2026-09-24): Body line spacing now accepts only positive finite multipliers of the selected font's normal interval; paragraph spacing retains additive lengths. This supersedes length acceptance and font-size-based numeric intervals.
 - 0.10 (2026-09-12): Clarified font-width selection and corrected application of configured monospace and manuscript heading fonts, without changing configuration keys or defaults.
 - 0.9 (2026-09-07): Unified every typography role under a six-property font block and replaced split runtime presets with one British base plus limited US and screenplay overlays.
 - 0.8 (2026-08-10): Documented nearest-ancestor and style-sibling discovery, the complete manuscript key inventory, justification, and metric custom-page examples.

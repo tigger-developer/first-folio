@@ -12,31 +12,9 @@ import (
 	"testing"
 )
 
-// RT-30.1: a unit-bearing body spacing value compiles without a duplicated unit.
-func TestRT_30_1_BodyLineSpacingLengthCompiles(t *testing.T) {
-	requirePDFTools(t)
-	dir := spacingProject(t, "2em", "1em", false)
-	typst := filepath.Join(dir, "manuscript.typ")
-	pdf := filepath.Join(dir, "manuscript.pdf")
-
-	runFolio(t, "manuscript", filepath.Join(dir, "manuscript.md"), typst)
-	runFolio(t, "manuscript", filepath.Join(dir, "manuscript.md"), pdf)
-
-	assertNotContains(t, readTestFile(t, typst), "emem")
-	if !strings.HasPrefix(readTestFile(t, pdf), "%PDF-") {
-		t.Fatal("manuscript output is not a PDF")
-	}
-}
-
-// RT-30.2: numeric body spacing retains baseline-multiplier behaviour.
-func TestRT_30_2_NumericBodyLineSpacingRemainsMultiplier(t *testing.T) {
-	dir := spacingProject(t, "2", "1em", false)
-	typst := filepath.Join(dir, "manuscript.typ")
-
-	runFolio(t, "manuscript", filepath.Join(dir, "manuscript.md"), typst)
-
-	assertContains(t, readTestFile(t, typst), "leading: 1em,")
-}
+// RT-30.1 (length acceptance) and RT-30.2 (font-size-based intervals) are retired
+// by W048 - Font-relative line spacing. RT048.1 and RT048.3 now verify native
+// font intervals and rejection of lengths through the executable and PDF output.
 
 // RT-30.3: TOC spacing changes the measured separation of one-line entries.
 func TestRT_30_3_TOCLineSpacingControlsEntrySeparation(t *testing.T) {

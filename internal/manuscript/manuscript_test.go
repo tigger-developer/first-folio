@@ -27,10 +27,7 @@ func TestMarkdownManuscriptCLIProducesTypstContract(t *testing.T) {
 	assertContains(t, typst, `#outline(title: none)`)
 	assertContains(t, typst, `font: "Libertinus Serif"`)
 	assertContains(t, typst, `font: "Libertinus Sans"`)
-	assertContains(t, typst, `top-edge: 0.8em`)
-	assertContains(t, typst, `bottom-edge: -0.2em`)
-	assertContains(t, typst, `leading: 0.5em`)
-	assertContains(t, typst, `spacing: 0.5em`)
+	// W048 measures line and paragraph intervals in PDF instead of asserting implementation strings.
 	assertContains(t, typst, `top: 20mm + 10mm`)
 	assertContains(t, typst, `rest: 20mm`)
 	assertContains(t, typst, `header-ascent: 10mm`)
@@ -100,8 +97,6 @@ func TestUSManuscriptOverridesBritishWithoutChangingPageSize(t *testing.T) {
 	assertContains(t, typst, `size: 9pt`)
 	assertContains(t, typst, `weight: "bold"`)
 	assertContains(t, typst, `first-line-indent: (amount: 12.7mm, all: true)`)
-	assertContains(t, typst, `leading: 1em`)
-	assertContains(t, typst, `spacing: 1em`)
 	assertContains(t, typst, `margin: 25mm`)
 	assertContains(t, typst, `author\@example.invalid`)
 	assertContains(t, typst, `+353 1 000 0000`)
@@ -127,8 +122,7 @@ func TestManuscriptSpacingOverridesAreIndependent(t *testing.T) {
 	runManuscriptDirect(t, filepath.Join(dir, "ch01.md"), output)
 	typst := readFile(t, output)
 
-	assertContains(t, typst, `leading: 0em`)
-	assertContains(t, typst, `spacing: 3mm`)
+	// RT048.2 verifies the rendered additive paragraph gap independently of line spacing.
 	assertContains(t, typst, `top: 20mm + 55mm`)
 	assertContains(t, typst, `header-ascent: 55mm`)
 	assertNotContains(t, typst, "\n#v(55mm)\n")

@@ -397,17 +397,27 @@
 // the reader in the running footer is derived through #folio-display-page() which subtracts
 // the offset recorded at the first body block.
 #set text(
-  top-edge: 0.8em,
-  bottom-edge: -0.2em,
+  top-edge: "cap-height",
+  bottom-edge: "baseline",
   tracking: {{.Config.Folio.Manuscript.Font.LetterSpacing}},
   costs: (widow: {{if .WidowOrphanControl}}100%{{else}}0%{{end}}, orphan: {{if .WidowOrphanControl}}100%{{else}}0%{{end}}),
 )
 #set par(
   first-line-indent: (amount: {{.Config.Folio.Manuscript.ParagraphIndent}}, all: true),
   justify: {{.Config.Folio.Manuscript.Justify}},
-  spacing: {{.Spacing}},
-  leading: {{.Leading}},
 )
+// Scale the native font interval, including Typst's normal interline gap.
+// This wrapper starts after frontmatter so TOC and copyright spacing stay independent.
+#show: body => context {
+  let line-box = measure(text("Hg")).height
+  let normal-interval = line-box + 0.65em
+  let leading = normal-interval * {{.Config.Folio.Manuscript.LineSpacing}} - line-box
+  set par(
+    leading: leading,
+    spacing: leading + {{.Config.Folio.Manuscript.ParagraphSpacing}},
+  )
+  body
+}
 #set page(
   {{if .PageSpec.Custom}}width: {{.PageSpec.Width}}, height: {{.PageSpec.Height}},{{else}}paper: "{{.PageSpec.Named}}",{{end}}
   {{if .Config.Folio.Manuscript.PageHeader.Enabled}}margin: (
