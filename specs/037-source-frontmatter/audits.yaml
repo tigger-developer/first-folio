@@ -11,33 +11,33 @@ audits:
         harness: hermes
         provider: nous
         model: z-ai/glm-5.3
-      external_round: 2
+      external_round: 3
       status: passed
-      updated: "2026-09-25T14:17:17Z"
-      revision: 2d87b6a (baseline 20d9ac6; fourteen explicit British heading defaults under W037 continuation)
+      updated: "2026-09-25T14:26:14Z"
+      revision: 411e2cc (baseline 861cbb7; TOC font-relative line-spacing continuation under W037)
       verdict: PASS
       response: |-
         GATE: delivery-code
-        REVISION: 2d87b6a (baseline 20d9ac6; fourteen explicit British heading defaults under W037 continuation)
+        REVISION: 411e2cc (baseline 861cbb7; TOC font-relative line-spacing continuation under W037)
 
         VERDICT: PASS
 
-        Assessment of the bounded continuation delta:
+        Assessment of the TOC line-spacing delta:
 
-        Scope and conformance
-        - The delta matches the recorded operator-authorized continuation exactly: presets/british.yaml now declares, on both part and chapter, the seven supported heading properties (explicit-numbering: derived, name-case: as-written, number-format: "1", prefix: "", separator: "", show-name: true, show-number: false) — fourteen additions. Every value equals the existing renderer fallback in internal/manuscript/config.go (composeHeadingPartsWithNumber defaults, formatHeadingNumber default arabic, applyNameCase default), so the change is explicitly declarative, not behavioural. No production Go code changed: all previously reviewed source files (config.go, manuscript/config.go, parser.go, render.go, run.go, source_config.go) have unchanged hashes.
-        - No unauthorized additions: code-block side-spacing and alt-format entries remain commented, quote-block-indent spelling is retained (no missing-key alias), and no renderer semantics were touched. The spec's Continuation scope and AC037.4 record the authorization dated 2026-09-25 under the existing emergency item.
+        Scope and design conformance
+        - The delta matches the recorded continuation exactly: toc.line-spacing now uses the same positive-finite-multiplier definition as body line-spacing (W048's established contract), evaluated against the TOC's own font metrics, independent of the body setting. The Go side shares one normalizeLineSpacing(value, field, gapField) operation for both fields — the correct KISS factoring rather than a duplicated validator — with the TOC diagnostic pointing to toc.part-gap-before, which remains a length. No copyright spacing, heading-position, or new gap semantics were touched.
+        - The template adds one shared helper, folio-line-leading(multiplier), used by both the body wrapper and the TOC block; the arithmetic is correct for both covered intervals: wrapped lines use par(leading: native*m − line-box) giving baseline intervals of native*m, and adjacent single-line entries use block below: leading, giving the same native*m baseline interval. Part-gap-before remains an additive block above for level-1 entries only.
+        - presets/british.yaml sets toc.line-spacing: 1.15 (numeric); US inherits. The removed empty-string fallback means an explicit empty TOC value now fails — covered by the rejection matrix.
 
-        Verification
-        - OT037.2 is GREEN with revision, method and evidence: British and US before/after Typst outputs built with the same user preset values on both sides are byte-identical; the isolated full go test ./... -count=1 passes; lint and git diff --check pass; and the pre-edit preset is reproduced exactly by removing only the fourteen additions — a direct, falsifiable preservation check that also confirms no scope creep beyond the fourteen lines.
-        - The no-new-RT decision is justified and recorded per TESTING.md: a YAML catalogue change with byte-identical rendering has no new regression risk, and existing coverage protects the behaviour (the supplied RT-18.x suite, including the unconfigured-defaults case, plus override and source-merge tests, all passing in the full-suite run).
-        - The previous round's three raster-helper failures are superseded by recorded evidence, not silently dropped: the cause (login-shell Bash 3.2 selection) is isolated, the run with Homebrew Bash 5 from the inherited environment passes all three groups, and the historical failing runs remain retained in validation.org. The earlier limitation is resolved, not waived.
-        - User work is preserved: uncommitted British preset edits are excluded from the commit, isolated from the full-suite candidate, and controlled for in the before/after comparison. The rebuilt dist/folio uses the updated working preset as authorized.
+        Tests and evidence
+        - RT037.5/6 RED was observed through the public CLI for the intended reasons: numeric TOC values previously emitted leading: 0.75 raw into Typst ("expected length, found float"), and 1em was accepted producing output. GREEN evidence covers sixteen font/size/multiplier combinations (2 fonts, 2 sizes, .75/1/1.5/2) with every wrapped and inter-entry interval measured against independently compiled native Typst reference PDFs within 0.03pt, plus British/US omitted-default equality with explicit 1.15. The rejection matrix covers eleven invalid values across Typst and PDF with the TOC enabled and disabled, asserting the full field path, offending value, multiplier examples, part-gap-before guidance and no output artefact — matching the code path, since validateConfig runs regardless of toc.enabled.
+        - Affected existing tests were correctly reassessed rather than left stale: RT-30.3 now compares 1x/2x measured entry gaps, RT-31 fixtures migrated to numeric 1.15, and the manuscript contract tests assert the new folio-line-leading helper. Body spacing geometry (RT048) passes after sharing the helper; the isolated full go test ./... -count=1 passes, as do lint/build and git diff --check. User preset edits remain excluded and preserved.
+        - validation.org explicitly bounds the earlier OT037.2 byte-identical evidence to the heading-defaults delta and records that TOC pagination intentionally changes — an honest supersession statement, not a silently dropped limitation.
 
         Documentation
-        - No behavioural change occurred, so docs/config.md, docs/ARCHITECTURE.md, schema/manuscript.md and CLI help remain accurate; the configuration reference already documents these properties with the same defaults. The spec's Preset continuation section records that reasoning. No audit-state duplication found in spec.org or validation.org; OPERATOR_SIGNOFF remains PENDING, correct for the emergency route.
+        - docs/config.md 0.17 documents the shared multiplier definition, TOC font context, wrapped and adjacent-entry application, 1.15 default in both styles, independence from body spacing, and the required migration from length values, with a changelog entry — all matching delivered behaviour in impersonal factual voice. Schema, CLI help and architecture are legitimately unchanged (no new keys or interfaces). No audit-state duplication found; OPERATOR_SIGNOFF remains PENDING as appropriate for the route.
 
-        Non-blocking follow-ups (unchanged from prior round, expected by the emergency route): retrospective definition review in its separate context, and the operator's closure decision on W037.
+        Non-blocking follow-ups (unchanged, expected by the emergency route): retrospective definition review in its separate context, and the operator's closure decision on W037.
       history:
         - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-1620235405.log
           readiness_check: delivery-code
@@ -279,6 +279,133 @@ audits:
 
             Non-blocking follow-ups (unchanged from prior round, expected by the emergency route): retrospective definition review in its separate context, and the operator's closure decision on W037.
           updated: "2026-09-25T14:16:40Z"
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-3087115918.log
+          readiness_check: delivery-code
+          cache_key: sha256:42ddb2e31a8847c684ded3f1af8b2ff1a89a718a5b1f56646b89ebd6afd33443
+          session_id: 20260925_143052_8b881a
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: 5a418643f92d20df8a85bebc58add14605ce266da8326418fe168ba03ebb4b2b
+              bytes: 5883
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: ce3117d9d5c89c102237ffd44eb3012a8e4bb54e97484c920b39196f7967ca4c
+              bytes: 43119
+            - path: /Users/tigger/code/tigoss/first-folio/docs/folio-manuscript-help.md
+              sha256: 6bd47ea0b2fc861d7330a7f16e0c850fedc403827eb3f4fa694875c79e4c7d80
+              bytes: 1875
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config.go
+              sha256: ff9325bb277ace4b71a86a44fae3c7a787cbc3c3266ef024157e489f441ed875
+              bytes: 7757
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 18211df2f7ab8a551aecc63ddb22e0b59d2f797f6446e2829aa2f036617c28b5
+              bytes: 26963
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue18_test.go
+              sha256: 3280ba2117352f4d88f54aec9d217d427aee895ddf3c5b86fd6fee0d004de5d5
+              bytes: 18757
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue30_test.go
+              sha256: 7dbd875a74aab177b19f70a4b1271c0f0f9f6da3581f687d14624a06179badfc
+              bytes: 3298
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue31_test.go
+              sha256: 2f866405be056d941b34f64a5fe89e900fdeba92f347602bbcd8c401af764f04
+              bytes: 3844
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/line_spacing_test.go
+              sha256: b17fa405e28cca55e59134b72821bc831edae1605de85a8374d26149cbf8d127
+              bytes: 5328
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 9db86449b6a9eb115e33a6be0a396a0db0f744f45ac308d0c96a22fc9da9faa1
+              bytes: 31281
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 0cf57e70f53cd6a57c4eaf394cba17989dfb6ab28e6aa53a262f2e8159d5975f
+              bytes: 20303
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/run.go
+              sha256: 93c391879fda3a07e7313ab11e4d98211caef62cb9fdd085a4af6ed3755febd2
+              bytes: 7793
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config.go
+              sha256: 0b677a30c519303ef1103a6727d6763776dd5ac905d14ee08f0a1d7ba9c434a2
+              bytes: 1896
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config_test.go
+              sha256: 3514b95a7c8141802daa8a8ce166aa9f883f7fbd559a723faca6b73c70c5ff22
+              bytes: 8633
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/toc_line_spacing_test.go
+              sha256: 8bef4f3c0dbcfff6ffd07885f786f687702f7de99c844d55a17e497b3aba22c0
+              bytes: 5209
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: a5fe1e44bd1abf824b9e1540b8dca8325dc97fb6fbc7e961590b5dcd85c523d6
+              bytes: 14398
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: fdbe2cea840eb80f77a35675dc65256563c23f2b567f4cbe02dadf9ebfdacdb8
+              bytes: 2143
+            - path: /Users/tigger/code/tigoss/first-folio/schema/manuscript.md
+              sha256: b983f94b3eadc83581699212e0e7b0f339e98784e1777b9abf8cdeeee7c9245a
+              bytes: 5259
+            - path: /Users/tigger/code/tigoss/first-folio/specs/037-source-frontmatter/spec.org
+              sha256: 71a504272dc3da7cf3ea2478677eca64963698edfb04065b68c52ca7528d6b61
+              bytes: 17825
+            - path: /Users/tigger/code/tigoss/first-folio/specs/037-source-frontmatter/validation.org
+              sha256: f801ed2fd3fc511eb9e9dabfc6e0ce751a52e05681a14621720c131a340ef54f
+              bytes: 12418
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: d269be03b45c48a58816b5e76e93aa1421cea8c22d7adf3bcfb9a7e19ad24429
+              bytes: 23091
+          round: 3
+          revision: 411e2cc (baseline 861cbb7; TOC font-relative line-spacing continuation under W037)
+          verdict: PASS
+          response: |-
+            GATE: delivery-code
+            REVISION: 411e2cc (baseline 861cbb7; TOC font-relative line-spacing continuation under W037)
+
+            VERDICT: PASS
+
+            Assessment of the TOC line-spacing delta:
+
+            Scope and design conformance
+            - The delta matches the recorded continuation exactly: toc.line-spacing now uses the same positive-finite-multiplier definition as body line-spacing (W048's established contract), evaluated against the TOC's own font metrics, independent of the body setting. The Go side shares one normalizeLineSpacing(value, field, gapField) operation for both fields — the correct KISS factoring rather than a duplicated validator — with the TOC diagnostic pointing to toc.part-gap-before, which remains a length. No copyright spacing, heading-position, or new gap semantics were touched.
+            - The template adds one shared helper, folio-line-leading(multiplier), used by both the body wrapper and the TOC block; the arithmetic is correct for both covered intervals: wrapped lines use par(leading: native*m − line-box) giving baseline intervals of native*m, and adjacent single-line entries use block below: leading, giving the same native*m baseline interval. Part-gap-before remains an additive block above for level-1 entries only.
+            - presets/british.yaml sets toc.line-spacing: 1.15 (numeric); US inherits. The removed empty-string fallback means an explicit empty TOC value now fails — covered by the rejection matrix.
+
+            Tests and evidence
+            - RT037.5/6 RED was observed through the public CLI for the intended reasons: numeric TOC values previously emitted leading: 0.75 raw into Typst ("expected length, found float"), and 1em was accepted producing output. GREEN evidence covers sixteen font/size/multiplier combinations (2 fonts, 2 sizes, .75/1/1.5/2) with every wrapped and inter-entry interval measured against independently compiled native Typst reference PDFs within 0.03pt, plus British/US omitted-default equality with explicit 1.15. The rejection matrix covers eleven invalid values across Typst and PDF with the TOC enabled and disabled, asserting the full field path, offending value, multiplier examples, part-gap-before guidance and no output artefact — matching the code path, since validateConfig runs regardless of toc.enabled.
+            - Affected existing tests were correctly reassessed rather than left stale: RT-30.3 now compares 1x/2x measured entry gaps, RT-31 fixtures migrated to numeric 1.15, and the manuscript contract tests assert the new folio-line-leading helper. Body spacing geometry (RT048) passes after sharing the helper; the isolated full go test ./... -count=1 passes, as do lint/build and git diff --check. User preset edits remain excluded and preserved.
+            - validation.org explicitly bounds the earlier OT037.2 byte-identical evidence to the heading-defaults delta and records that TOC pagination intentionally changes — an honest supersession statement, not a silently dropped limitation.
+
+            Documentation
+            - docs/config.md 0.17 documents the shared multiplier definition, TOC font context, wrapped and adjacent-entry application, 1.15 default in both styles, independence from body spacing, and the required migration from length values, with a changelog entry — all matching delivered behaviour in impersonal factual voice. Schema, CLI help and architecture are legitimately unchanged (no new keys or interfaces). No audit-state duplication found; OPERATOR_SIGNOFF remains PENDING as appropriate for the route.
+
+            Non-blocking follow-ups (unchanged, expected by the emergency route): retrospective definition review in its separate context, and the operator's closure decision on W037.
+          updated: "2026-09-25T14:25:36Z"
     - work_item: W037
       gate: definition
       session_id: 20260925_143141_95e9ad
@@ -289,31 +416,31 @@ audits:
         harness: hermes
         provider: nous
         model: z-ai/glm-5.3
-      external_round: 2
+      external_round: 3
       status: passed
-      updated: "2026-09-25T14:17:52Z"
-      revision: 7021bed5c4344fb9f8ed24ed5536b14724666b777068eec4bb53e335360d67a6
+      updated: "2026-09-25T14:27:03Z"
+      revision: 71a504272dc3da7cf3ea2478677eca64963698edfb04065b68c52ca7528d6b61
       verdict: PASS
       response: |-
         GATE: definition
-        REVISION: 7021bed5c4344fb9f8ed24ed5536b14724666b777068eec4bb53e335360d67a6
+        REVISION: 71a504272dc3da7cf3ea2478677eca64963698edfb04065b68c52ca7528d6b61
         VERDICT: PASS
 
-        Assessment of the W037 preset-continuation delta (retrospective, Workflow: emergency):
+        Assessment of the TOC line-spacing continuation (retrospective, Workflow: emergency):
 
-        Scope fidelity
-        - AC037.4 adds exactly the fourteen explicit values (seven heading properties on part and chapter) to presets/british.yaml, matching the recorded authorization under the existing emergency work item. No Go changes: internal/config and internal/manuscript sources are unchanged from the previously reviewed baseline. The declared boundaries — commented optional side-spacing and alt-format remain commented, quote-block-indent spelling retained, no new alias — are all confirmed in the preset text. Not over-engineered; no template-inflated mechanisms; this is the materially simplest expression of the requirement.
+        Fidelity to authorized scope
+        - AC037.5 reconciles exactly the recorded request: TOC line spacing adopts the same positive-finite-multiplier, native-font-interval definition as body spacing, with the TOC's own font metrics, an independent 1.15 default, and no new copyright/gap/heading-position semantics. The design is the minimal expression: one shared Go validator (normalizeLineSpacing reused for both fields in config.go) and one shared Typst helper (folio-line-leading in the template) invoked in body and TOC font contexts — no new concepts or parallel mechanisms. Not over-engineered; component reuse rather than duplication.
 
         Traceability and verification
-        - AC037.4 is properly traced to OT037.2, a one-off classification. The no-new-RT justification is sound under TESTING.md: a YAML catalogue change with no behavioural delta; existing heading-presentation, override and source-merge regression tests (issue18_test.go and source_config_test.go retained in evidence) already cover the observable behaviour. Demanding an artificial RT here would violate the "no permanent test code for a test-count rule" standard.
-        - OT037.2 evidence is proportionate and rigorous: byte-identical before/after Typst for both styles with identical user preset values (the correct control for the uncommitted user edits), full-suite GREEN on the isolated candidate, explicit inspection of the fourteen values, lint and diff checks, and a subtractive comparison proving the delta is exactly the fourteen additions. User preset edits correctly preserved and excluded. The superseding shell-environment record isolates the earlier rasterization failures to Bash 3.2 invocation and records the resolved rerun — honest, retains history, and does not overclaim.
-        - The prior session's non-blocking observation (vague revision identification) is resolved: RT evidence now records commit a278377.
+        - RT037.5 measures observable geometry: built-CLI PDFs against independently compiled native-interval reference PDFs across two fonts × two sizes × four multipliers, covering both wrapped lines within an entry and adjacent-entry intervals at 0.03pt tolerance — a behavioural test at the user boundary, not a source grep. Defaults are verified by omitted-vs-explicit-1.15 comparison in both styles. RT037.6 covers the full rejection matrix (lengths, zero, negative, NaN/Inf, empty, non-numeric, Boolean) × enabled/disabled TOC × Typst/PDF, with field-specific migration diagnostics and no-output assertion, matching the spec's criterion including rejection when the TOC is disabled — confirmed in validateConfig, which normalizes the TOC value unconditionally.
+        - RED evidence is concrete and intended (numeric 0.75 emitted as a Typst length produced "expected length, found float"). Body-spacing preservation is covered by rerunning the shared body tests; the earlier entry-separation test was migrated to compare 1x vs 2x native intervals rather than left asserting superseded length semantics. Full-suite GREEN on the isolated candidate with the Bash 5 environment, lint and diff checks recorded.
+        - The explicit limitation of OT037.2's byte-identical-preservation evidence to the heading-default continuation is correct and honestly scoped, since this change intentionally alters TOC spacing semantics.
 
-        Definition hygiene
-        - No annotation records or blocks in spec.org; no duplicated audit findings, status, revisions or session identity; OPERATOR_SIGNOFF correctly remains PENDING. Security impact for the continuation is addressed (no new trust boundary, dependency, schema or access) — mandatory section retained. Documentation outcome is recorded (preset updated directly; config reference already accurate; no behavioural amendment needed elsewhere), which is a valid "not affected, with reason" record for the continuation delta.
+        Definition hygiene and documentation
+        - No annotation records or blocks; no duplicated audit findings, status, revisions or session identity; OPERATOR_SIGNOFF correctly remains PENDING. Security impact retained (strict validation before output; no new trust boundary or access). docs/config.md is updated with the new definition, independent default and migration note (0.17 changelog), satisfying DOCUMENTATION.md accuracy requirements; voice and purpose rules are met.
 
         Non-blocking observation (no action required)
-        - OT037.2's REVISION identifies the candidate as "20d9ac6 plus fourteen explicit British heading defaults" rather than the final commit 2d87b6a supplied in the harness context; the description uniquely identifies the candidate, and the harness context carries the final commit identity. A final-hash stamp would be cleaner for closure records.
+        - RT037.5/6 evidence identifies the candidate as "861cbb7 plus the TOC multiplier continuation" rather than the final commit 411e2cc supplied in harness context; the descriptions uniquely identify the candidate, and the final hash is recorded by the harness. A final-hash stamp would be cleaner for closure records.
 
         Closure remains with the operator per EMERGENCY.md.
       history:
@@ -553,3 +680,129 @@ audits:
 
             Closure remains with the operator per EMERGENCY.md.
           updated: "2026-09-25T14:17:27Z"
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-4272178576.log
+          cache_key: sha256:40279fa42817d788c8dda1703dd09214afcb8d25b01222b50306104642110a20
+          session_id: 20260925_143141_95e9ad
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: 5a418643f92d20df8a85bebc58add14605ce266da8326418fe168ba03ebb4b2b
+              bytes: 5883
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: ce3117d9d5c89c102237ffd44eb3012a8e4bb54e97484c920b39196f7967ca4c
+              bytes: 43119
+            - path: /Users/tigger/code/tigoss/first-folio/docs/folio-manuscript-help.md
+              sha256: 6bd47ea0b2fc861d7330a7f16e0c850fedc403827eb3f4fa694875c79e4c7d80
+              bytes: 1875
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config.go
+              sha256: ff9325bb277ace4b71a86a44fae3c7a787cbc3c3266ef024157e489f441ed875
+              bytes: 7757
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 18211df2f7ab8a551aecc63ddb22e0b59d2f797f6446e2829aa2f036617c28b5
+              bytes: 26963
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue18_test.go
+              sha256: 3280ba2117352f4d88f54aec9d217d427aee895ddf3c5b86fd6fee0d004de5d5
+              bytes: 18757
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue30_test.go
+              sha256: 7dbd875a74aab177b19f70a4b1271c0f0f9f6da3581f687d14624a06179badfc
+              bytes: 3298
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue31_test.go
+              sha256: 2f866405be056d941b34f64a5fe89e900fdeba92f347602bbcd8c401af764f04
+              bytes: 3844
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/line_spacing_test.go
+              sha256: b17fa405e28cca55e59134b72821bc831edae1605de85a8374d26149cbf8d127
+              bytes: 5328
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 9db86449b6a9eb115e33a6be0a396a0db0f744f45ac308d0c96a22fc9da9faa1
+              bytes: 31281
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 0cf57e70f53cd6a57c4eaf394cba17989dfb6ab28e6aa53a262f2e8159d5975f
+              bytes: 20303
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/run.go
+              sha256: 93c391879fda3a07e7313ab11e4d98211caef62cb9fdd085a4af6ed3755febd2
+              bytes: 7793
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config.go
+              sha256: 0b677a30c519303ef1103a6727d6763776dd5ac905d14ee08f0a1d7ba9c434a2
+              bytes: 1896
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config_test.go
+              sha256: 3514b95a7c8141802daa8a8ce166aa9f883f7fbd559a723faca6b73c70c5ff22
+              bytes: 8633
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/toc_line_spacing_test.go
+              sha256: 8bef4f3c0dbcfff6ffd07885f786f687702f7de99c844d55a17e497b3aba22c0
+              bytes: 5209
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: a5fe1e44bd1abf824b9e1540b8dca8325dc97fb6fbc7e961590b5dcd85c523d6
+              bytes: 14398
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: fdbe2cea840eb80f77a35675dc65256563c23f2b567f4cbe02dadf9ebfdacdb8
+              bytes: 2143
+            - path: /Users/tigger/code/tigoss/first-folio/schema/manuscript.md
+              sha256: b983f94b3eadc83581699212e0e7b0f339e98784e1777b9abf8cdeeee7c9245a
+              bytes: 5259
+            - path: /Users/tigger/code/tigoss/first-folio/specs/037-source-frontmatter/spec.org
+              sha256: 71a504272dc3da7cf3ea2478677eca64963698edfb04065b68c52ca7528d6b61
+              bytes: 17825
+            - path: /Users/tigger/code/tigoss/first-folio/specs/037-source-frontmatter/validation.org
+              sha256: f801ed2fd3fc511eb9e9dabfc6e0ce751a52e05681a14621720c131a340ef54f
+              bytes: 12418
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: d269be03b45c48a58816b5e76e93aa1421cea8c22d7adf3bcfb9a7e19ad24429
+              bytes: 23091
+          round: 3
+          revision: 71a504272dc3da7cf3ea2478677eca64963698edfb04065b68c52ca7528d6b61
+          verdict: PASS
+          response: |-
+            GATE: definition
+            REVISION: 71a504272dc3da7cf3ea2478677eca64963698edfb04065b68c52ca7528d6b61
+            VERDICT: PASS
+
+            Assessment of the TOC line-spacing continuation (retrospective, Workflow: emergency):
+
+            Fidelity to authorized scope
+            - AC037.5 reconciles exactly the recorded request: TOC line spacing adopts the same positive-finite-multiplier, native-font-interval definition as body spacing, with the TOC's own font metrics, an independent 1.15 default, and no new copyright/gap/heading-position semantics. The design is the minimal expression: one shared Go validator (normalizeLineSpacing reused for both fields in config.go) and one shared Typst helper (folio-line-leading in the template) invoked in body and TOC font contexts — no new concepts or parallel mechanisms. Not over-engineered; component reuse rather than duplication.
+
+            Traceability and verification
+            - RT037.5 measures observable geometry: built-CLI PDFs against independently compiled native-interval reference PDFs across two fonts × two sizes × four multipliers, covering both wrapped lines within an entry and adjacent-entry intervals at 0.03pt tolerance — a behavioural test at the user boundary, not a source grep. Defaults are verified by omitted-vs-explicit-1.15 comparison in both styles. RT037.6 covers the full rejection matrix (lengths, zero, negative, NaN/Inf, empty, non-numeric, Boolean) × enabled/disabled TOC × Typst/PDF, with field-specific migration diagnostics and no-output assertion, matching the spec's criterion including rejection when the TOC is disabled — confirmed in validateConfig, which normalizes the TOC value unconditionally.
+            - RED evidence is concrete and intended (numeric 0.75 emitted as a Typst length produced "expected length, found float"). Body-spacing preservation is covered by rerunning the shared body tests; the earlier entry-separation test was migrated to compare 1x vs 2x native intervals rather than left asserting superseded length semantics. Full-suite GREEN on the isolated candidate with the Bash 5 environment, lint and diff checks recorded.
+            - The explicit limitation of OT037.2's byte-identical-preservation evidence to the heading-default continuation is correct and honestly scoped, since this change intentionally alters TOC spacing semantics.
+
+            Definition hygiene and documentation
+            - No annotation records or blocks; no duplicated audit findings, status, revisions or session identity; OPERATOR_SIGNOFF correctly remains PENDING. Security impact retained (strict validation before output; no new trust boundary or access). docs/config.md is updated with the new definition, independent default and migration note (0.17 changelog), satisfying DOCUMENTATION.md accuracy requirements; voice and purpose rules are met.
+
+            Non-blocking observation (no action required)
+            - RT037.5/6 evidence identifies the candidate as "861cbb7 plus the TOC multiplier continuation" rather than the final commit 411e2cc supplied in harness context; the descriptions uniquely identify the candidate, and the final hash is recorded by the harness. A final-hash stamp would be cleaner for closure records.
+
+            Closure remains with the operator per EMERGENCY.md.
+          updated: "2026-09-25T14:26:27Z"
