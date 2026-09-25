@@ -508,6 +508,13 @@ folio:
       vertical-align: center
       align: center
       case-transform: as-written
+      explicit-numbering: derived
+      name-case: as-written
+      number-format: "1"
+      prefix: ""
+      separator: ""
+      show-name: true
+      show-number: false
       number-reset: never
 
     chapter:
@@ -519,6 +526,13 @@ folio:
       position: one-third
       align: center
       case-transform: as-written
+      explicit-numbering: derived
+      name-case: as-written
+      number-format: "1"
+      prefix: ""
+      separator: ""
+      show-name: true
+      show-number: false
       space-after: 2em
       number-reset: never
 

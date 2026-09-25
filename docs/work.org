@@ -112,6 +112,8 @@ classification; it is provenance, not current state.
 - Delivery route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-25.
 - Supersession :: Current source-below-local precedence replaces the archived
   ordering; historical definition and migration evidence remain retained.
+- Preset continuation :: Fourteen existing part/chapter defaults are explicit
+  in the British base. Verification is retained in the linked validation record.
 
 ** DONE W038 - Manuscript Block Layout :feature:migration:
 :PROPERTIES:

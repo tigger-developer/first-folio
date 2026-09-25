@@ -112,3 +112,38 @@
 - Final isolated candidate :: After the scene-break compatibility change, the
   full suite again reported exactly the same three external raster-helper
   failures, with manuscript execution 54.292 seconds. No new failure appeared.
+
+* Superseding shell-environment verification, 2026-09-25
+- Cause isolated :: The login-shell invocation selected Bash 3.2.57 from
+  =/bin/bash=. Preserving the supplied shell environment selected Homebrew
+  Bash 5.3.9. The helper uses =#!/usr/bin/env bash=.
+- Result :: The isolated source-configuration candidate passed
+  =go test ./... -count=1= with the supplied environment; manuscript execution
+  took 59.051 seconds. All three previously blocked rasterization groups passed.
+- Correction :: Earlier failures describe the invocation environment, not a
+  missing rendering feature or a required helper change. Historical runs above
+  remain retained. Uncommitted user preset differences remain outside this suite.
+
+* Preset continuation, 2026-09-25
+** GREEN OT037.2 - Preset defaults and rendering preservation :testdef:
+:PROPERTIES:
+:REVISION: 20d9ac6 plus fourteen explicit British heading defaults
+:EVIDENCE: British and US before/after Typst outputs are byte-identical; the isolated full suite passes; only fourteen preset lines are added beyond existing user edits.
+:END:
+- Method :: Built before and after binaries using the same current user preset
+  values. Rendered a synthetic source with two parts and two chapters, including
+  source number prefixes, under an isolated HOME for British and US styles.
+  Both Typst comparisons were byte-for-byte equal.
+- Inspection :: Both headings explicitly declare derived numbering, as-written
+  name case, Arabic number format, empty prefix/separator, visible name and
+  hidden number. Optional side-spacing and alternate-header overrides remain
+  commented, and =quote-block-indent= remains unchanged.
+- Regression :: =go test ./... -count=1= passed on the isolated committed
+  candidate plus these fourteen additions. App 12.491 seconds; config 0.454;
+  letter 0.028; manuscript 64.055; play 0.007; Typst 0.008. Existing heading
+  presentation, override and source-configuration tests are included.
+- Checks :: =make lint RELEASE_VERSION=unused= and =git diff --check= passed.
+  The local =dist/folio= executable was rebuilt with the updated working preset.
+- Preservation :: A direct comparison against the captured pre-edit preset
+  confirms that removing only the fourteen additions reproduces it exactly.
+  Only these additions are staged; existing user edits remain unstaged.

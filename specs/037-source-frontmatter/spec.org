@@ -49,6 +49,9 @@
   source configuration uses the same validation as external files.
 - Scope :: First resolved Markdown input's =folio:= and =render:= mappings,
   shared merge path, validation, style selection, diagnostics and documentation.
+- Continuation scope :: Explicit British preset defaults for the seven supported
+  heading properties on both part and chapter. Approved 2026-09-25 under the
+  existing emergency work item. Existing user preset edits remain separate.
 - Exclusions :: Org/stage-play/letter source configuration, new render switches,
   heading-position redesign, metadata precedence changes and general schema
   hardening. No source or layout file is rewritten.
@@ -86,6 +89,19 @@
   input path* and first-input guidance rather than creating another layer.
 - Proven by :: [[#rt-037-3][RT037.3 - Source validation and no-output boundary]]
   and [[#rt-037-4][RT037.4 - First-input boundary and metadata]].
+
+** AC037.4 - Heading defaults are explicit in the base preset :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-037-4
+:END:
+- Criterion :: Both =part= and =chapter= explicitly define
+  =explicit-numbering: derived=, =name-case: as-written=, =number-format: "1"=,
+  =prefix: ""=, =separator: ""=, =show-name: true= and =show-number: false=.
+  These values preserve existing rendering and remain overridable by higher layers.
+- Boundary :: Optional code-block side spacing and alternate header format stay
+  commented to preserve inheritance. The existing =quote-block-indent= spelling
+  is retained; no =quoted-block-indent= alias is introduced.
+- Proven by :: [[#ot-037-2][OT037.2 - Preset defaults and rendering preservation]].
 
 * Test Definitions
 ** RT037.1 - Edition rendering and recursive font merge :testdef:
@@ -160,6 +176,24 @@
 - Classification :: One-off live configuration probe. Objective layout and
   merging are regression-tested; no subjective typography change requires a UT.
 
+** OT037.2 - Preset defaults and rendering preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-037-2
+:END:
+- Covers :: [[#ac-037-4][AC037.4 - Heading defaults are explicit in the base preset]].
+- Procedure :: Inspect the fourteen added values against the existing renderer
+  defaults. Build before and after with the same user preset edits, then render
+  a synthetic multi-part, multi-chapter Markdown source to Typst in British and
+  US styles. Compare outputs byte-for-byte. Run the existing full regression
+  suite against an isolated candidate containing committed presets plus this delta.
+- Expected :: Identical output for each style, all existing tests pass, and
+  the source diff contains only the fourteen additions beyond the user edits.
+- Classification :: One-off verification of explicit existing defaults; no new
+  RT is justified for a YAML catalogue change. Existing heading, override and
+  source-merge regression tests cover behaviour. No subjective change needs a UT.
+- Bounds :: Local builds and test processes with caches and outputs in OS
+  temporary directories; no external services or manuscript edits.
+
 * Edge Cases
 - Only *present source namespaces* become configuration. Metadata and unrelated
   frontmatter keys are not injected into the shared configuration map.
@@ -192,6 +226,16 @@
   not claim new validation for properties that external YAML does not validate.
 - No network calls, widened access or durable source edits. Private manuscript
   content stays local and outside tracked tests or review evidence.
+
+** Preset continuation
+- The British embedded preset now declares the existing effective heading
+  defaults. Shared configuration merging and renderer fallbacks are unchanged.
+- Preset inspection checks the public configuration catalogue; before/after
+  rendering and existing tests check preservation. No new trust boundary,
+  dependency, schema or access is introduced.
+- Product documentation :: The preset is updated directly. The configuration
+  reference already documents these supported properties and remains accurate;
+  architecture, source schema and CLI help require no behavioural amendment.
 
 * Delivery Handoff
 - Route :: Emergency implementation and retrospective reconciliation.
