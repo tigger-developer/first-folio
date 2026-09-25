@@ -171,3 +171,168 @@ audits:
             - Bounded follow-up, expected by the emergency route: retrospective definition review and operator closure/UT decision (spec classifies OT037.1 as objective, no UT required — reasonable since no subjective typography change was delivered).
             - Later inputs retaining ordinary metadata frontmatter (e.g. title:) that the joined parser treats as body text is pre-existing behaviour, unchanged by this delta; no action required within this scope.
           updated: "2026-09-25T13:30:49Z"
+    - work_item: W037
+      gate: definition
+      session_id: 20260925_143141_95e9ad
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-25T13:32:09Z"
+      revision: 45b4410c64e485552e3fb0f7448141fcd1b6ec155f573e7bf20b541c8fd1640c
+      verdict: PASS
+      response: |-
+        GATE: definition
+        REVISION: 45b4410c64e485552e3fb0f7448141fcd1b6ec155f573e7bf20b541c8fd1640c
+        VERDICT: PASS
+
+        Assessment summary (retrospective, Workflow: emergency):
+
+        Fidelity to authorized scope
+        - The spec implements exactly the settled BYPASS-GATE-7 scope: first resolved Markdown input's folio:/render: mappings, recursive merge at presets < global < source < local < CLI (confirmed in internal/config/config.go: deepMerge order global → Source → local; selectStyle considers Source between global and local), unchanged metadata and other modes, no new strict unknown-key schema. The archived v2 source-above-local/CWD ordering is explicitly superseded with lineage retained in work.org — correctly not treated as current authority.
+        - No scope expansion: no new dependencies, render switches, or renderer paths; reuses deepMerge, the shared frontmatter decoder, and existing effective-value validators. Not over-engineered; no template-inflation mechanisms.
+
+        Traceability and tests
+        - AC037.1–3 each trace to named RT/OT definitions; RT037.1–4 map to concrete retained tests in source_config_test.go with behavioural boundaries (built CLI, real PDFs inspected via Poppler, dry-run output) — no source-text greps. Validation.org records RED→GREEN per RT including the scene-break correction, with REVISION/COMMAND/EVIDENCE properties. OT037.1 is a bounded one-off probe with recorded bounds and privacy handling; the absence of a UT is justified (no subjective typography judgement introduced). Design decisions (merge order, validator placement) have traced behavioural evidence plus a stated structural review check.
+        - Honest verification reporting: the three external rasterization failures are disclosed as identical baseline/candidate and full-suite GREEN is not claimed, satisfying TESTING.md's partial-result rule.
+
+        Definition hygiene
+        - spec.org contains no annotation records or blocks; no audit findings, verdicts, revisions or session identity duplicated (audits.yaml is linked, not copied); OPERATOR_SIGNOFF correctly remains PENDING pending the operator's closure decision. DOCUMENTATION.md voice and document-purpose rules are met; affected documentation (config.md, ARCHITECTURE.md, README, schema/manuscript.md, CLI help) is identified in the handoff and was in fact updated, but was not demanded at this gate.
+
+        Non-blocking observations (no action required for sign-off)
+        - validation.org identifies the candidate as "601da67 plus W037 changes" rather than the final commit hash a278377; the harness context supplies the commit identity, and the evidence descriptions uniquely identify the candidate. A hash-stamped revision would be cleaner for future records.
+        - Closure still requires the operator's UT/closure decision per EMERGENCY.md; that is outside this gate.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-30606364.log
+          cache_key: sha256:dc5cb8945c2ff4d5d83134ecd55cc0c766d471f74f3b177d8e0476ede3204a83
+          session_id: 20260925_143141_95e9ad
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 66982ab8b25b26ea1bfaf40577bf4955bf0c804cfd035ab582c6d9ff658e2581
+              bytes: 16627
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: fbceb4dffd2ab69a3edcd1dd924873bdbe5298cffa4c2e65548e04541fb78f73
+              bytes: 5027
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: 5a418643f92d20df8a85bebc58add14605ce266da8326418fe168ba03ebb4b2b
+              bytes: 5883
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md
+              sha256: adb33e95fb2fb0e328359b73b39dc69c4834096bcea354a0a16d589853c36384
+              bytes: 14931
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 368a03476d18a222fed0aebe713e908ee2e83d6f0dd6516149f5beb1854a2b64
+              bytes: 42336
+            - path: /Users/tigger/code/tigoss/first-folio/docs/folio-manuscript-help.md
+              sha256: 6bd47ea0b2fc861d7330a7f16e0c850fedc403827eb3f4fa694875c79e4c7d80
+              bytes: 1875
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 6fac7dd8f89c08632f3ce29cb3e997ba25b0ce0f2c5f2ccb71a954ad0fb5dfd5
+              bytes: 252649
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/alignment.go
+              sha256: 17a1301beadcde721c3afe0958306dd33715d8068b7a80214d279d052c6ee99e
+              bytes: 2928
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config.go
+              sha256: ff9325bb277ace4b71a86a44fae3c7a787cbc3c3266ef024157e489f441ed875
+              bytes: 7757
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font.go
+              sha256: c1ac7c228c2d21fd7fc096e29e8445ca7506c4da683be4f5dcbf51301a28b482
+              bytes: 9462
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: af61ebef70288d9c56163836a36b341e0a02a6e4a8fa217d84be2fe4ea8a72bc
+              bytes: 26685
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/input.go
+              sha256: 13f57fae047f4ba63b933d7cc2b776c2f870c0615931944bff2174861a00c63c
+              bytes: 2935
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 0cf57e70f53cd6a57c4eaf394cba17989dfb6ab28e6aa53a262f2e8159d5975f
+              bytes: 20303
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/run.go
+              sha256: 93c391879fda3a07e7313ab11e4d98211caef62cb9fdd085a4af6ed3755febd2
+              bytes: 7793
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config.go
+              sha256: 0b677a30c519303ef1103a6727d6763776dd5ac905d14ee08f0a1d7ba9c434a2
+              bytes: 1896
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config_test.go
+              sha256: 3514b95a7c8141802daa8a8ce166aa9f883f7fbd559a723faca6b73c70c5ff22
+              bytes: 8633
+            - path: /Users/tigger/code/tigoss/first-folio/schema/manuscript.md
+              sha256: b983f94b3eadc83581699212e0e7b0f339e98784e1777b9abf8cdeeee7c9245a
+              bytes: 5259
+            - path: /Users/tigger/code/tigoss/first-folio/specs/037-source-frontmatter/spec.org
+              sha256: 45b4410c64e485552e3fb0f7448141fcd1b6ec155f573e7bf20b541c8fd1640c
+              bytes: 11341
+            - path: /Users/tigger/code/tigoss/first-folio/specs/037-source-frontmatter/validation.org
+              sha256: 3918d9abfc5c5f9f98d3de7b9cdc7dd9c937374803885aadf438a30eea81e487
+              bytes: 6947
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 15e6b3546ef45b9da999552dda6e1981aabbbdecfc1a1e41402103c84026b63c
+              bytes: 22937
+          round: 1
+          revision: 45b4410c64e485552e3fb0f7448141fcd1b6ec155f573e7bf20b541c8fd1640c
+          verdict: PASS
+          response: |-
+            GATE: definition
+            REVISION: 45b4410c64e485552e3fb0f7448141fcd1b6ec155f573e7bf20b541c8fd1640c
+            VERDICT: PASS
+
+            Assessment summary (retrospective, Workflow: emergency):
+
+            Fidelity to authorized scope
+            - The spec implements exactly the settled BYPASS-GATE-7 scope: first resolved Markdown input's folio:/render: mappings, recursive merge at presets < global < source < local < CLI (confirmed in internal/config/config.go: deepMerge order global → Source → local; selectStyle considers Source between global and local), unchanged metadata and other modes, no new strict unknown-key schema. The archived v2 source-above-local/CWD ordering is explicitly superseded with lineage retained in work.org — correctly not treated as current authority.
+            - No scope expansion: no new dependencies, render switches, or renderer paths; reuses deepMerge, the shared frontmatter decoder, and existing effective-value validators. Not over-engineered; no template-inflation mechanisms.
+
+            Traceability and tests
+            - AC037.1–3 each trace to named RT/OT definitions; RT037.1–4 map to concrete retained tests in source_config_test.go with behavioural boundaries (built CLI, real PDFs inspected via Poppler, dry-run output) — no source-text greps. Validation.org records RED→GREEN per RT including the scene-break correction, with REVISION/COMMAND/EVIDENCE properties. OT037.1 is a bounded one-off probe with recorded bounds and privacy handling; the absence of a UT is justified (no subjective typography judgement introduced). Design decisions (merge order, validator placement) have traced behavioural evidence plus a stated structural review check.
+            - Honest verification reporting: the three external rasterization failures are disclosed as identical baseline/candidate and full-suite GREEN is not claimed, satisfying TESTING.md's partial-result rule.
+
+            Definition hygiene
+            - spec.org contains no annotation records or blocks; no audit findings, verdicts, revisions or session identity duplicated (audits.yaml is linked, not copied); OPERATOR_SIGNOFF correctly remains PENDING pending the operator's closure decision. DOCUMENTATION.md voice and document-purpose rules are met; affected documentation (config.md, ARCHITECTURE.md, README, schema/manuscript.md, CLI help) is identified in the handoff and was in fact updated, but was not demanded at this gate.
+
+            Non-blocking observations (no action required for sign-off)
+            - validation.org identifies the candidate as "601da67 plus W037 changes" rather than the final commit hash a278377; the harness context supplies the commit identity, and the evidence descriptions uniquely identify the candidate. A hash-stamped revision would be cleaner for future records.
+            - Closure still requires the operator's UT/closure decision per EMERGENCY.md; that is outside this gate.
+          updated: "2026-09-25T13:31:40Z"

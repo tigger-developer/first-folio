@@ -94,7 +94,7 @@ classification; it is provenance, not current state.
   remains provenance only; [[file:../specs/039-unified-font-configuration/spec.org][W039 - Unified Font Configuration]]
   is the fresh SDLC v3 definition.
 
-** ACTIVE W037 - Source Frontmatter Configuration :feature:migration:
+** REVIEW W037 - Source Frontmatter Configuration :feature:migration:
 :PROPERTIES:
 :CUSTOM_ID: w-037
 :LEGACY_ID: 002

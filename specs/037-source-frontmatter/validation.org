@@ -15,7 +15,7 @@
 * Regression results
 ** GREEN RT037.1 - Edition rendering and recursive font merge :testdef:
 :PROPERTIES:
-:REVISION: 601da67 plus W037 source and regression changes
+:REVISION: a278377 - recursive source configuration and layout overrides
 :COMMAND: go test ./internal/manuscript -run TestRT037 -count=1
 :EVIDENCE: Both A4 and 6x9 PDFs match explicit effective-config reference word boxes within 0.03pt and have the expected page dimensions.
 :END:
@@ -28,7 +28,7 @@
 
 ** GREEN RT037.2 - Style and file-layer precedence :testdef:
 :PROPERTIES:
-:REVISION: 601da67 plus W037 source and regression changes
+:REVISION: a278377 - recursive source configuration and layout overrides
 :COMMAND: go test ./internal/manuscript -run TestRT037 -count=1
 :EVIDENCE: Source/local/CLI style cases report US/British/US with margins 22/15/22mm respectively.
 :END:
@@ -40,7 +40,7 @@
 
 ** GREEN RT037.3 - Source validation and no-output boundary :testdef:
 :PROPERTIES:
-:REVISION: 601da67 plus W037 source and regression changes
+:REVISION: a278377 - recursive source configuration and layout overrides
 :COMMAND: go test ./internal/manuscript -run TestRT037 -count=1
 :EVIDENCE: Seven invalid source cases fail for Typst and PDF without creating outputs, with field, namespace or frontmatter diagnostics.
 :END:
@@ -52,7 +52,7 @@
 
 ** GREEN RT037.4 - First-input boundary and metadata :testdef:
 :PROPERTIES:
-:REVISION: 601da67 plus W037 source and regression changes
+:REVISION: a278377 - recursive source configuration and layout overrides
 :COMMAND: go test ./internal/manuscript -run TestRT037 -count=1
 :EVIDENCE: Reversed input arguments still use the first sorted file's 17mm margin, retain title/author and both body markers, omit configuration text, and reject later folio/render configuration with path guidance.
 :END:
