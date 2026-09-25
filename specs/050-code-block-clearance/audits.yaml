@@ -1,0 +1,278 @@
+version: 1
+audits:
+    - readiness_check: delivery-code
+      work_item: W050
+      gate: implementation
+      session_id: 20260925_160823_87c314
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-25T15:09:01Z"
+      revision: 3fced7c
+      verdict: PASS
+      response: |-
+        GATE: delivery-code
+        REVISION: 3fced7c
+        VERDICT: PASS
+
+        Verified within the recorded BYPASS-GATE-7 scope (W050, spec 050-code-block-clearance):
+
+        - Template delta (templates/manuscript.typ): folio-code captures CodeBlockIndent via .to-absolute() before the set-text body-font context, then applies above/below par.spacing + configured side clearance, with the mono font and stretch applied only to content. Matches the recorded design exactly: body-basis em clearances, preserved indentation basis, inline raw rule untouched. Raw block rendering delegates to the shared helper; no parser, config-loader or dependency change. No quote/list/table, indentation-contract, typography or syntax expansion.
+        - config.go shows no production delta relevant to this change; defaults and validation unchanged.
+        - RT050.1 (code_block_clearance_test.go): 72 cases (fenced/standalone × mono 9/12pt × body 1/1.5/2 × six clearance scenarios) measured through the built CLI on real PDF word geometry; increment values match the spec's 8.173pt and 14.173pt expectations within 0.03pt, side overrides and adjacent-block collapse covered, inline preservation and following-paragraph spacing asserted. Boundary-appropriate user testing per TESTING.md.
+        - RT050.2: full-suite GREEN recorded; the later test-only matrix extension is disclosed with production code unchanged after the full run, so earlier evidence remains current. Template-location assertions updated to the shared helper without weakening property checks (blockquote_test.go).
+        - validation.org: RT050.1/RT050.2/OT050.1 all GREEN with required REVISION/COMMAND/EVIDENCE properties; OT honestly bounded as agent visual inspection with no operator acceptance inferred. No UT was defined; none is required at this stage.
+        - Docs: config.md 0.18, format-manuscript-markdown.md 0.5 and format-manuscript-org.md 0.5 accurately state additive clearance, body-font em basis, retained indentation basis and complete-line span promotion; impersonal factual voice, dated, no narration or personal attribution. Architecture doc unaffected (ownership unchanged), consistent with the spec's handoff note.
+        - No duplicated audit state, session IDs or round numbers in spec.org or validation.org; no annotation records in spec.org. No unauthorized scope or unjustified complexity found.
+
+        No blocking findings. Retrospective definition review and durable spec consolidation remain post-gate emergency workflow, not conditions of this verdict.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-2210825307.log
+          readiness_check: delivery-code
+          cache_key: sha256:330b1def55473814ab08bfa41f8ab37ae10ec706b186c4b261f77173005ca7d5
+          session_id: 20260925_160823_87c314
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 128a7875acc1662fbf9d967800d36e63867929dece8b11ebf3a085c411c140f9
+              bytes: 43733
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: dac0d37d6670c8fb020724682ad62a5c6e2111aa8308363c555d34e29d22bf87
+              bytes: 6842
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: a8db17f1a0927223cf5653bd45bb71dac92dc86657fa2e982ddef017d9dcdeec
+              bytes: 5102
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/block_stretch_test.go
+              sha256: a2ff6aeb144a1754a35e0aedb7afe6beed1a3ed91bd294c220307625ce3f5318
+              bytes: 6301
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/blockquote_test.go
+              sha256: 5ecaafa6b5905833de72ee5562ee593da14baa1e4e9ad01693f915e78afd8d8a
+              bytes: 10878
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/code_block_clearance_test.go
+              sha256: 17e306602d354322f0fef929cac0faae1d11084ddc5810ba5f7f0624c17c47d7
+              bytes: 3701
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 18211df2f7ab8a551aecc63ddb22e0b59d2f797f6446e2829aa2f036617c28b5
+              bytes: 26963
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 932ba5fd06da21ecdf0b288c0e369941c894dc1f494a4146924d09acbe65ca1f
+              bytes: 12307
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: bd7bb952f4458784ac47db20311c5393bd85cdcbef7e38700692cb84d0da88fc
+              bytes: 5752
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/line_spacing_test.go
+              sha256: b17fa405e28cca55e59134b72821bc831edae1605de85a8374d26149cbf8d127
+              bytes: 5328
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: c3927883fde9bd9067f9e387741cee893e2bf0fb05e0b435fd20c043c2437fd2
+              bytes: 31289
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/standalone_code_test.go
+              sha256: b79e9bf91da6f325b785d03f0274c648b70f8f8db20be7886b71d56bbd1e1b4d
+              bytes: 3816
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/toc_line_spacing_test.go
+              sha256: 8bef4f3c0dbcfff6ffd07885f786f687702f7de99c844d55a17e497b3aba22c0
+              bytes: 5209
+            - path: /Users/tigger/code/tigoss/first-folio/specs/050-code-block-clearance/spec.org
+              sha256: ac9de7e3df65e1e072ae32b80155bc73fc94a2f755c107191d41d3ca3284e58e
+              bytes: 8164
+            - path: /Users/tigger/code/tigoss/first-folio/specs/050-code-block-clearance/validation.org
+              sha256: 19aea548fffb256ff59688ab2926a0910e8433ee29c41cd5131dc2be74786176
+              bytes: 4166
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 1093e9a080c01d2d5fd6ef3cba2a6c84c9b6838b811e4be41180e820d792417b
+              bytes: 23195
+          round: 1
+          revision: 3fced7c
+          verdict: PASS
+          response: |-
+            GATE: delivery-code
+            REVISION: 3fced7c
+            VERDICT: PASS
+
+            Verified within the recorded BYPASS-GATE-7 scope (W050, spec 050-code-block-clearance):
+
+            - Template delta (templates/manuscript.typ): folio-code captures CodeBlockIndent via .to-absolute() before the set-text body-font context, then applies above/below par.spacing + configured side clearance, with the mono font and stretch applied only to content. Matches the recorded design exactly: body-basis em clearances, preserved indentation basis, inline raw rule untouched. Raw block rendering delegates to the shared helper; no parser, config-loader or dependency change. No quote/list/table, indentation-contract, typography or syntax expansion.
+            - config.go shows no production delta relevant to this change; defaults and validation unchanged.
+            - RT050.1 (code_block_clearance_test.go): 72 cases (fenced/standalone × mono 9/12pt × body 1/1.5/2 × six clearance scenarios) measured through the built CLI on real PDF word geometry; increment values match the spec's 8.173pt and 14.173pt expectations within 0.03pt, side overrides and adjacent-block collapse covered, inline preservation and following-paragraph spacing asserted. Boundary-appropriate user testing per TESTING.md.
+            - RT050.2: full-suite GREEN recorded; the later test-only matrix extension is disclosed with production code unchanged after the full run, so earlier evidence remains current. Template-location assertions updated to the shared helper without weakening property checks (blockquote_test.go).
+            - validation.org: RT050.1/RT050.2/OT050.1 all GREEN with required REVISION/COMMAND/EVIDENCE properties; OT honestly bounded as agent visual inspection with no operator acceptance inferred. No UT was defined; none is required at this stage.
+            - Docs: config.md 0.18, format-manuscript-markdown.md 0.5 and format-manuscript-org.md 0.5 accurately state additive clearance, body-font em basis, retained indentation basis and complete-line span promotion; impersonal factual voice, dated, no narration or personal attribution. Architecture doc unaffected (ownership unchanged), consistent with the spec's handoff note.
+            - No duplicated audit state, session IDs or round numbers in spec.org or validation.org; no annotation records in spec.org. No unauthorized scope or unjustified complexity found.
+
+            No blocking findings. Retrospective definition review and durable spec consolidation remain post-gate emergency workflow, not conditions of this verdict.
+          updated: "2026-09-25T15:08:22Z"
+    - work_item: W050
+      gate: definition
+      session_id: 20260925_160919_d96c5e
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-25T15:09:41Z"
+      revision: 3fced7c
+      verdict: PASS
+      response: |-
+        GATE: definition
+        REVISION: 3fced7c
+        VERDICT: PASS
+
+        Assessment summary (retrospective, Workflow: emergency, Review: retrospective):
+
+        - Annotation records: none in spec.org; no annotation-format blocks or feedback.yaml concerns. No audit-state duplication: spec.org and validation.org record requirements, test states and evidence only; audits.yaml is linked, not copied.
+        - Scope fidelity: the change is confined to the existing folio-code template helper (body-context paragraph separation plus configured clearance, body-basis em units, preserved indentation basis and inline handling). No parser, configuration-schema, quote/list/table or indentation redesign. Matches the recorded BYPASS-GATE-7 request; promotion of complete-line spans preserved, not extended.
+        - Requirements and traceability: AC050.1/AC050.2 each traced to RT050.1/RT050.2 and OT050.1 via CUSTOM_ID links; ORG-SCHEMA tags correct; execution states correctly live only in validation.org.
+        - Test definitions: RT050.1 is behavioural PDF geometry through the built CLI (not source-text grep), with expected point-level outcomes stated in advance, covering both source forms, mono sizes, multipliers, clearance values, side-specific overrides, adjacent-block collapse and additive paragraph gaps. RT050.2 is a legitimately initially-GREEN preservation suite with the no-artificial-RED rationale recorded. OT050.1 is a bounded agent visual inspection explicitly not framed as operator acceptance; absence of a UT is justified by objective geometry coverage. Design decisions carry appropriate verification: traced behavioural tests for observable consequences, plus a stated implementation-review check for structural delegation.
+        - Design and architecture: reuse of the existing shared helper rather than new components; non-obvious decisions (resolving indentation before the font switch; em clearances in body font context) carry rationale backed by the recorded RED diagnosis (9.373pt vs expected 8.173pt exposing the raw font-scaling em basis). No over-engineering or template-inflation mechanisms identified; no materially simpler solution is evident within the authorized scope.
+        - Compatibility: no contract or store changes; existing clearance keys, precedence (space-before/after over code-block-spacing), inline behaviour and pagination semantics unchanged and regression-protected.
+        - Documentation: affected docs (config.md, format-manuscript-markdown.md, format-manuscript-org.md) updated and correctly identified in the handoff; architecture/schema correctly recorded as unaffected. DOCUMENTATION.md voice and purpose rules are met (impersonal, factual, changelog entries present). OT limitations (agent inspection, not operator acceptance) are recorded as required provenance in validation.org.
+
+        No blocking findings. Optional follow-ups: none required at this gate; outstanding operator UT/closure decision is already correctly deferred to the operator per the spec's closure section.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-1548539414.log
+          cache_key: sha256:0aac4b03c146184ebc278ba09306d678ae0fd26a59cdaa1d6fd49238cd7424ff
+          session_id: 20260925_160919_d96c5e
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 128a7875acc1662fbf9d967800d36e63867929dece8b11ebf3a085c411c140f9
+              bytes: 43733
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: dac0d37d6670c8fb020724682ad62a5c6e2111aa8308363c555d34e29d22bf87
+              bytes: 6842
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: a8db17f1a0927223cf5653bd45bb71dac92dc86657fa2e982ddef017d9dcdeec
+              bytes: 5102
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/block_stretch_test.go
+              sha256: a2ff6aeb144a1754a35e0aedb7afe6beed1a3ed91bd294c220307625ce3f5318
+              bytes: 6301
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/blockquote_test.go
+              sha256: 5ecaafa6b5905833de72ee5562ee593da14baa1e4e9ad01693f915e78afd8d8a
+              bytes: 10878
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/code_block_clearance_test.go
+              sha256: 17e306602d354322f0fef929cac0faae1d11084ddc5810ba5f7f0624c17c47d7
+              bytes: 3701
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 18211df2f7ab8a551aecc63ddb22e0b59d2f797f6446e2829aa2f036617c28b5
+              bytes: 26963
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 932ba5fd06da21ecdf0b288c0e369941c894dc1f494a4146924d09acbe65ca1f
+              bytes: 12307
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: bd7bb952f4458784ac47db20311c5393bd85cdcbef7e38700692cb84d0da88fc
+              bytes: 5752
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/line_spacing_test.go
+              sha256: b17fa405e28cca55e59134b72821bc831edae1605de85a8374d26149cbf8d127
+              bytes: 5328
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: c3927883fde9bd9067f9e387741cee893e2bf0fb05e0b435fd20c043c2437fd2
+              bytes: 31289
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/standalone_code_test.go
+              sha256: b79e9bf91da6f325b785d03f0274c648b70f8f8db20be7886b71d56bbd1e1b4d
+              bytes: 3816
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/toc_line_spacing_test.go
+              sha256: 8bef4f3c0dbcfff6ffd07885f786f687702f7de99c844d55a17e497b3aba22c0
+              bytes: 5209
+            - path: /Users/tigger/code/tigoss/first-folio/specs/050-code-block-clearance/spec.org
+              sha256: ac9de7e3df65e1e072ae32b80155bc73fc94a2f755c107191d41d3ca3284e58e
+              bytes: 8164
+            - path: /Users/tigger/code/tigoss/first-folio/specs/050-code-block-clearance/validation.org
+              sha256: 19aea548fffb256ff59688ab2926a0910e8433ee29c41cd5131dc2be74786176
+              bytes: 4166
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 1093e9a080c01d2d5fd6ef3cba2a6c84c9b6838b811e4be41180e820d792417b
+              bytes: 23195
+          round: 1
+          revision: 3fced7c
+          verdict: PASS
+          response: |-
+            GATE: definition
+            REVISION: 3fced7c
+            VERDICT: PASS
+
+            Assessment summary (retrospective, Workflow: emergency, Review: retrospective):
+
+            - Annotation records: none in spec.org; no annotation-format blocks or feedback.yaml concerns. No audit-state duplication: spec.org and validation.org record requirements, test states and evidence only; audits.yaml is linked, not copied.
+            - Scope fidelity: the change is confined to the existing folio-code template helper (body-context paragraph separation plus configured clearance, body-basis em units, preserved indentation basis and inline handling). No parser, configuration-schema, quote/list/table or indentation redesign. Matches the recorded BYPASS-GATE-7 request; promotion of complete-line spans preserved, not extended.
+            - Requirements and traceability: AC050.1/AC050.2 each traced to RT050.1/RT050.2 and OT050.1 via CUSTOM_ID links; ORG-SCHEMA tags correct; execution states correctly live only in validation.org.
+            - Test definitions: RT050.1 is behavioural PDF geometry through the built CLI (not source-text grep), with expected point-level outcomes stated in advance, covering both source forms, mono sizes, multipliers, clearance values, side-specific overrides, adjacent-block collapse and additive paragraph gaps. RT050.2 is a legitimately initially-GREEN preservation suite with the no-artificial-RED rationale recorded. OT050.1 is a bounded agent visual inspection explicitly not framed as operator acceptance; absence of a UT is justified by objective geometry coverage. Design decisions carry appropriate verification: traced behavioural tests for observable consequences, plus a stated implementation-review check for structural delegation.
+            - Design and architecture: reuse of the existing shared helper rather than new components; non-obvious decisions (resolving indentation before the font switch; em clearances in body font context) carry rationale backed by the recorded RED diagnosis (9.373pt vs expected 8.173pt exposing the raw font-scaling em basis). No over-engineering or template-inflation mechanisms identified; no materially simpler solution is evident within the authorized scope.
+            - Compatibility: no contract or store changes; existing clearance keys, precedence (space-before/after over code-block-spacing), inline behaviour and pagination semantics unchanged and regression-protected.
+            - Documentation: affected docs (config.md, format-manuscript-markdown.md, format-manuscript-org.md) updated and correctly identified in the handoff; architecture/schema correctly recorded as unaffected. DOCUMENTATION.md voice and purpose rules are met (impersonal, factual, changelog entries present). OT limitations (agent inspection, not operator acceptance) are recorded as required provenance in validation.org.
+
+            No blocking findings. Optional follow-ups: none required at this gate; outstanding operator UT/closure decision is already correctly deferred to the operator per the spec's closure section.
+          updated: "2026-09-25T15:09:19Z"
