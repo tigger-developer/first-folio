@@ -1,0 +1,173 @@
+version: 1
+audits:
+    - readiness_check: delivery-code
+      work_item: W037
+      gate: implementation
+      session_id: 20260925_143052_8b881a
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-25T13:31:13Z"
+      revision: 601da67 plus W037 source-configuration changes (candidate recorded in specs/037-source-frontmatter/validation.org)
+      verdict: PASS
+      response: |-
+        GATE: delivery-code
+        REVISION: 601da67 plus W037 source-configuration changes (candidate recorded in specs/037-source-frontmatter/validation.org)
+
+        VERDICT: PASS
+
+        Findings and assessment:
+
+        Conformance to authorized scope
+        - Precedence: internal/config/config.go merges base preset, style overlay, global base, global style sibling, opts.Source, local base, local style sibling, CLI — exactly the operator-settled order (presets, global, source, local, CLI). selectStyle evaluates global, source, local, CLI in the same order, so source style selects the built-in overlay and sibling files below local and CLI. Matches AC037.2 and the documented chain in docs/config.md, docs/ARCHITECTURE.md, README and the CLI help.
+        - No scope creep: source_config.go only extracts existing folio/render namespaces from the first resolved Markdown input; no new schema, no metadata-precedence change, no renderer changes, no external-tool work. The shared validators (validateFonts, validateAlignments, manuscript LoadConfig validation) run on the merged effective map, so invalid source values fail at the normal boundary (RT037.3), and a locally overridden invalid source value is accepted because validation sees effective values (TestRT037LocalOverrideRepairsSourceValue) — consistent with the authorized "existing validators apply to effective config".
+
+        Tests
+        - RT037.1–RT037.4 exercise the public CLI through a built binary with real PDFs (Poppler word-box equivalence within 0.03pt against independently configured reference PDFs, page dimensions checked), style/sibling precedence via dry-run, seven invalid-source rejection cases for both .typ and .pdf with no output artefact, and first-input/metadata/later-input boundary including scene-break compatibility. RED and GREEN evidence is recorded per ORG-SCHEMA with commands, revision and dated observations.
+        - The later-input rule is implemented correctly: only a decoded folio/render mapping is rejected with path and first-input guidance; a failed YAML probe on later files falls through to ordinary Markdown parsing (scene-break case), while the first file's malformed frontmatter still fails. This matches the edge-case contract.
+        - Honest limits reporting: the full suite is not GREEN, but the exactly-three external pdf-to-png failures are identical in isolated baseline and candidate runs, with no additional candidate failure. That is a correct partial-verification statement, not a misleading claim.
+
+        Documentation
+        - docs/config.md (precedence table, "Manuscript source configuration" section, changelog 0.16), docs/ARCHITECTURE.md (layer list, 0.5 history), README, schema/manuscript.md (0.4) and the embedded CLI help all describe the delivered behaviour consistently and in impersonal factual voice. No audit-state duplication found in spec.org or validation.org; OPERATOR_SIGNOFF remains PENDING, which is correct for the emergency route.
+
+        Notes (non-blocking)
+        - Bounded follow-up, expected by the emergency route: retrospective definition review and operator closure/UT decision (spec classifies OT037.1 as objective, no UT required — reasonable since no subjective typography change was delivered).
+        - Later inputs retaining ordinary metadata frontmatter (e.g. title:) that the joined parser treats as body text is pre-existing behaviour, unchanged by this delta; no action required within this scope.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-1620235405.log
+          readiness_check: delivery-code
+          cache_key: sha256:f7e855c1338aefebb2c2abd65a242f1502c643a7904f75d1269ed2949b30c21a
+          session_id: 20260925_143052_8b881a
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 66982ab8b25b26ea1bfaf40577bf4955bf0c804cfd035ab582c6d9ff658e2581
+              bytes: 16627
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: fbceb4dffd2ab69a3edcd1dd924873bdbe5298cffa4c2e65548e04541fb78f73
+              bytes: 5027
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: 5a418643f92d20df8a85bebc58add14605ce266da8326418fe168ba03ebb4b2b
+              bytes: 5883
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md
+              sha256: adb33e95fb2fb0e328359b73b39dc69c4834096bcea354a0a16d589853c36384
+              bytes: 14931
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 368a03476d18a222fed0aebe713e908ee2e83d6f0dd6516149f5beb1854a2b64
+              bytes: 42336
+            - path: /Users/tigger/code/tigoss/first-folio/docs/folio-manuscript-help.md
+              sha256: 6bd47ea0b2fc861d7330a7f16e0c850fedc403827eb3f4fa694875c79e4c7d80
+              bytes: 1875
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 6fac7dd8f89c08632f3ce29cb3e997ba25b0ce0f2c5f2ccb71a954ad0fb5dfd5
+              bytes: 252649
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/alignment.go
+              sha256: 17a1301beadcde721c3afe0958306dd33715d8068b7a80214d279d052c6ee99e
+              bytes: 2928
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config.go
+              sha256: ff9325bb277ace4b71a86a44fae3c7a787cbc3c3266ef024157e489f441ed875
+              bytes: 7757
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font.go
+              sha256: c1ac7c228c2d21fd7fc096e29e8445ca7506c4da683be4f5dcbf51301a28b482
+              bytes: 9462
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: af61ebef70288d9c56163836a36b341e0a02a6e4a8fa217d84be2fe4ea8a72bc
+              bytes: 26685
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/input.go
+              sha256: 13f57fae047f4ba63b933d7cc2b776c2f870c0615931944bff2174861a00c63c
+              bytes: 2935
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 0cf57e70f53cd6a57c4eaf394cba17989dfb6ab28e6aa53a262f2e8159d5975f
+              bytes: 20303
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/run.go
+              sha256: 93c391879fda3a07e7313ab11e4d98211caef62cb9fdd085a4af6ed3755febd2
+              bytes: 7793
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config.go
+              sha256: 0b677a30c519303ef1103a6727d6763776dd5ac905d14ee08f0a1d7ba9c434a2
+              bytes: 1896
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config_test.go
+              sha256: 3514b95a7c8141802daa8a8ce166aa9f883f7fbd559a723faca6b73c70c5ff22
+              bytes: 8633
+            - path: /Users/tigger/code/tigoss/first-folio/schema/manuscript.md
+              sha256: b983f94b3eadc83581699212e0e7b0f339e98784e1777b9abf8cdeeee7c9245a
+              bytes: 5259
+            - path: /Users/tigger/code/tigoss/first-folio/specs/037-source-frontmatter/spec.org
+              sha256: 45b4410c64e485552e3fb0f7448141fcd1b6ec155f573e7bf20b541c8fd1640c
+              bytes: 11341
+            - path: /Users/tigger/code/tigoss/first-folio/specs/037-source-frontmatter/validation.org
+              sha256: 3918d9abfc5c5f9f98d3de7b9cdc7dd9c937374803885aadf438a30eea81e487
+              bytes: 6947
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 15e6b3546ef45b9da999552dda6e1981aabbbdecfc1a1e41402103c84026b63c
+              bytes: 22937
+          round: 1
+          revision: 601da67 plus W037 source-configuration changes (candidate recorded in specs/037-source-frontmatter/validation.org)
+          verdict: PASS
+          response: |-
+            GATE: delivery-code
+            REVISION: 601da67 plus W037 source-configuration changes (candidate recorded in specs/037-source-frontmatter/validation.org)
+
+            VERDICT: PASS
+
+            Findings and assessment:
+
+            Conformance to authorized scope
+            - Precedence: internal/config/config.go merges base preset, style overlay, global base, global style sibling, opts.Source, local base, local style sibling, CLI — exactly the operator-settled order (presets, global, source, local, CLI). selectStyle evaluates global, source, local, CLI in the same order, so source style selects the built-in overlay and sibling files below local and CLI. Matches AC037.2 and the documented chain in docs/config.md, docs/ARCHITECTURE.md, README and the CLI help.
+            - No scope creep: source_config.go only extracts existing folio/render namespaces from the first resolved Markdown input; no new schema, no metadata-precedence change, no renderer changes, no external-tool work. The shared validators (validateFonts, validateAlignments, manuscript LoadConfig validation) run on the merged effective map, so invalid source values fail at the normal boundary (RT037.3), and a locally overridden invalid source value is accepted because validation sees effective values (TestRT037LocalOverrideRepairsSourceValue) — consistent with the authorized "existing validators apply to effective config".
+
+            Tests
+            - RT037.1–RT037.4 exercise the public CLI through a built binary with real PDFs (Poppler word-box equivalence within 0.03pt against independently configured reference PDFs, page dimensions checked), style/sibling precedence via dry-run, seven invalid-source rejection cases for both .typ and .pdf with no output artefact, and first-input/metadata/later-input boundary including scene-break compatibility. RED and GREEN evidence is recorded per ORG-SCHEMA with commands, revision and dated observations.
+            - The later-input rule is implemented correctly: only a decoded folio/render mapping is rejected with path and first-input guidance; a failed YAML probe on later files falls through to ordinary Markdown parsing (scene-break case), while the first file's malformed frontmatter still fails. This matches the edge-case contract.
+            - Honest limits reporting: the full suite is not GREEN, but the exactly-three external pdf-to-png failures are identical in isolated baseline and candidate runs, with no additional candidate failure. That is a correct partial-verification statement, not a misleading claim.
+
+            Documentation
+            - docs/config.md (precedence table, "Manuscript source configuration" section, changelog 0.16), docs/ARCHITECTURE.md (layer list, 0.5 history), README, schema/manuscript.md (0.4) and the embedded CLI help all describe the delivered behaviour consistently and in impersonal factual voice. No audit-state duplication found in spec.org or validation.org; OPERATOR_SIGNOFF remains PENDING, which is correct for the emergency route.
+
+            Notes (non-blocking)
+            - Bounded follow-up, expected by the emergency route: retrospective definition review and operator closure/UT decision (spec classifies OT037.1 as objective, no UT required — reasonable since no subjective typography change was delivered).
+            - Later inputs retaining ordinary metadata frontmatter (e.g. title:) that the joined parser treats as body text is pre-existing behaviour, unchanged by this delta; no action required within this scope.
+          updated: "2026-09-25T13:30:49Z"
