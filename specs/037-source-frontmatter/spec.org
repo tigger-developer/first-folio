@@ -15,11 +15,12 @@
 - The parser retained metadata but *discarded folio/render configuration*.
 ** After
 - Source mappings *merge recursively* between global and local configuration.
+- TOC line spacing uses *native font-relative multipliers*, as body text does.
 ** Changes
 - Source values use *existing effective-value validators* and can select style.
 - Later input configuration is *rejected before output*.
 ** Unchanged
-- Metadata handling, source-directory discovery, other input modes and defaults
+- Metadata handling, source-directory discovery, other input modes and body defaults
   *retain their existing behaviour*.
 - Manuscript files and existing user preset edits *remain untouched*.
 ** Edge cases
@@ -52,6 +53,9 @@
 - Continuation scope :: Explicit British preset defaults for the seven supported
   heading properties on both part and chapter. Approved 2026-09-25 under the
   existing emergency work item. Existing user preset edits remain separate.
+- TOC continuation scope :: Approved 2026-09-25: TOC line spacing uses the same
+  numeric multiplier definition as body spacing, with its own font metrics and
+  independent setting. The existing emergency route continues for this change.
 - Exclusions :: Org/stage-play/letter source configuration, new render switches,
   heading-position redesign, metadata precedence changes and general schema
   hardening. No source or layout file is rewritten.
@@ -103,7 +107,45 @@
   is retained; no =quoted-block-indent= alias is introduced.
 - Proven by :: [[#ot-037-2][OT037.2 - Preset defaults and rendering preservation]].
 
+** AC037.5 - Consistent TOC line-spacing multipliers :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-037-5
+:END:
+- Criterion :: TOC line spacing accepts positive finite numeric multipliers
+  with the same native font-interval definition as body spacing. Both wrapped
+  entry lines and adjacent entries follow the TOC font's interval. British and
+  US default to 1.15 independently of body spacing.
+- Criterion :: Lengths, empty strings, zero, negative and non-finite values
+  fail before output with a field-specific migration diagnostic. Separate
+  part-gap-before lengths remain available. Body spacing is preserved.
+- Proven by :: [[#rt-037-5][RT037.5 - TOC native font intervals and defaults]]
+  and [[#rt-037-6][RT037.6 - TOC invalid multiplier rejection]].
+
 * Test Definitions
+** RT037.5 - TOC native font intervals and defaults :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-037-5
+:END:
+- Covers :: [[#ac-037-5][AC037.5 - Consistent TOC line-spacing multipliers]].
+- Boundary :: Built CLI PDFs measured with Poppler against independently
+  compiled native Typst two-line reference PDFs.
+- Cases :: Libertinus Serif and DejaVu Sans Mono at 10pt and 16pt, with
+  multipliers 0.75, 1, 1.5 and 2. A long first TOC entry wraps; two short
+  entries follow. Every line-to-line and entry-to-entry interval must equal
+  native single spacing times the multiplier within 0.03pt.
+- Defaults :: Omitted TOC spacing equals explicit 1.15 in British and US PDFs.
+- Retention :: =TestRT037TOCLineSpacing= and =TestRT037TOCSpacingDefaults=.
+** RT037.6 - TOC invalid multiplier rejection :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-037-6
+:END:
+- Covers :: [[#ac-037-5][AC037.5 - Consistent TOC line-spacing multipliers]].
+- Cases :: Lengths 1em, 5mm and 12pt; zero; negative; NaN and infinities;
+  empty string; nonnumeric and Boolean text. Request Typst and PDF output with
+  the TOC enabled and disabled.
+- Expected :: Nonzero exit, full TOC field path, offending value, numeric
+  examples and part-gap-before guidance; no target is created.
+- Retention :: =TestRT037RejectInvalidTOCLineSpacing=.
 ** RT037.1 - Edition rendering and recursive font merge :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-037-1
@@ -195,6 +237,9 @@
   temporary directories; no external services or manuscript edits.
 
 * Edge Cases
+- TOC multipliers use TOC font metrics, not body font metrics or point size
+  alone. Body and TOC settings remain independent. Length-based TOC values
+  are rejected even if the TOC is disabled; omission inherits 1.15 from presets.
 - Only *present source namespaces* become configuration. Metadata and unrelated
   frontmatter keys are not injected into the shared configuration map.
 - Empty namespace mappings are valid; *null/scalar namespaces are invalid*.
@@ -236,6 +281,24 @@
 - Product documentation :: The preset is updated directly. The configuration
   reference already documents these supported properties and remains accurate;
   architecture, source schema and CLI help require no behavioural amendment.
+
+** TOC spacing continuation
+- Shared Go validation normalizes body and TOC positive finite multipliers
+  before output. The TOC's empty-string fallback is removed so explicit empty
+  values fail. The British base supplies 1.15; US inherits it.
+- One Typst helper computes leading from measured cap-height/baseline line box
+  plus native 0.65em leading, multiplied by the configured value. Body and TOC
+  invoke it in their respective font contexts. TOC entries use that leading
+  between blocks and within wrapped text. Part-gap-before remains a length.
+- Existing length-based TOC fixtures are migrated to numeric values. The
+  existing entry-separation test now asserts a doubled native interval.
+- Compatibility :: Existing TOC length values require explicit migration; this
+  is intentional consistency with the already established body contract.
+  No copyright spacing or heading-position changes are included.
+- Documentation :: The configuration reference records numeric defaults,
+  independent font contexts and migration. Architecture, schema and CLI options
+  are unchanged. No new dependency, trust boundary or access is introduced;
+  strict validation prevents unvalidated spacing interpolation.
 
 * Delivery Handoff
 - Route :: Emergency implementation and retrospective reconciliation.

@@ -35,7 +35,7 @@ func TestMarkdownManuscriptCLIProducesTypstContract(t *testing.T) {
 	assertContains(t, typst, `author\@example.invalid`)
 	assertContains(t, typst, `+353 1 000 0000`)
 	assertContains(t, typst, `6 July 2026`)
-	assertContains(t, typst, `#set par(leading: 1.15em)`)
+	assertContains(t, typst, `#let leading = folio-line-leading(1.15)`)
 	assertContains(t, typst, `above: if it.level == 1 { 0.5em } else { 0pt }`)
 	assertContains(t, typst, `if it.level == 1 and true`)
 	assertContains(t, typst, `footer: none`)
@@ -101,7 +101,7 @@ func TestUSManuscriptOverridesBritishWithoutChangingPageSize(t *testing.T) {
 	assertContains(t, typst, `author\@example.invalid`)
 	assertContains(t, typst, `+353 1 000 0000`)
 	assertContains(t, typst, `#stack(`)
-	assertContains(t, typst, `#set par(leading: 1.15em)`)
+	assertContains(t, typst, `#let leading = folio-line-leading(1.15)`)
 }
 
 func TestManuscriptHeaderPaddingOverride(t *testing.T) {
@@ -157,14 +157,14 @@ func TestTOCPartGapBeforeCanBeConfigured(t *testing.T) {
 func TestTOCLineSpacingCanBeConfigured(t *testing.T) {
 	root := testProjectRoot(t)
 	dir := t.TempDir()
-	writeFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  manuscript:\n    toc:\n      line-spacing: 1.3em\n")
+	writeFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  manuscript:\n    toc:\n      line-spacing: 1.3\n")
 	writeFile(t, filepath.Join(dir, "ch01.md"), markdownChapterOne())
 
 	output := filepath.Join(dir, "out.typ")
 	runManuscript(t, root, filepath.Join(dir, "ch01.md"), output)
 	typst := readFile(t, output)
 
-	assertContains(t, typst, `#set par(leading: 1.3em)`)
+	assertContains(t, typst, `#let leading = folio-line-leading(1.3)`)
 }
 
 func TestTOCPartBoldCanBeDisabled(t *testing.T) {

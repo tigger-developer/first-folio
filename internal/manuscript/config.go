@@ -379,11 +379,12 @@ func loadConfigWithSource(sourceDir string, opts Options, source map[string]any)
 
 func validateConfig(cfg *Config) error {
 	ms := &cfg.Folio.Manuscript
-	multiplier, err := strconv.ParseFloat(strings.TrimSpace(ms.LineSpacing), 64)
-	if err != nil || math.IsNaN(multiplier) || math.IsInf(multiplier, 0) || multiplier <= 0 {
-		return fmt.Errorf("folio.manuscript.line-spacing %q must be a positive finite multiplier such as 1.0 or 1.5; use paragraph-spacing for lengths such as 0.5em or 5mm", ms.LineSpacing)
+	if err := normalizeLineSpacing(&ms.LineSpacing, "folio.manuscript.line-spacing", "paragraph-spacing"); err != nil {
+		return err
 	}
-	ms.LineSpacing = strconv.FormatFloat(multiplier, 'f', -1, 64)
+	if err := normalizeLineSpacing(&ms.TOC.LineSpacing, "folio.manuscript.toc.line-spacing", "toc.part-gap-before"); err != nil {
+		return err
+	}
 	if err := validateTypstLength("folio.manuscript.paragraph-spacing", ms.ParagraphSpacing, true, false); err != nil {
 		return err
 	}
@@ -437,6 +438,15 @@ func validateConfig(cfg *Config) error {
 	if err := validateHeadingNumberFormat("chapter", ms.Chapter.NumberFormat, true); err != nil {
 		return err
 	}
+	return nil
+}
+
+func normalizeLineSpacing(value *string, field, gapField string) error {
+	multiplier, err := strconv.ParseFloat(strings.TrimSpace(*value), 64)
+	if err != nil || math.IsNaN(multiplier) || math.IsInf(multiplier, 0) || multiplier <= 0 {
+		return fmt.Errorf("%s %q must be a positive finite multiplier such as 1.0 or 1.5; use %s for lengths such as 0.5em or 5mm", field, *value, gapField)
+	}
+	*value = strconv.FormatFloat(multiplier, 'f', -1, 64)
 	return nil
 }
 
@@ -614,7 +624,6 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.PageFooter.ContentPaddingAfter, "10mm")
 	fill(&ms.Gutter, "0mm")
 	fill(&ms.TOC.Title, "Contents")
-	fill(&ms.TOC.LineSpacing, "1.15em")
 	fill(&ms.TOC.PartGapBefore, "0.5em")
 	fill(&ms.TOC.ContinuationPad, "15mm")
 	fill(&ms.SceneBreak.Marker, "#")

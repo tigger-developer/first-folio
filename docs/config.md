@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.16"
+version: "0.17"
 last-updated: 2026-09-25
 ---
 
@@ -556,7 +556,9 @@ Empty or null optional metadata such as `publisher` and `isbn`, and empty prefix
 
 `folio.manuscript.toc.enabled` defaults to `true`. Set it to `false` to suppress the generated table of contents.
 
-`folio.manuscript.toc.line-spacing` controls the baseline interval between table-of-contents items, including one-line entries. The British default is `1.15em`; for example, `2em` renders item baselines approximately two font-heights apart.
+`folio.manuscript.toc.line-spacing` uses the same positive finite multiplier definition as body `line-spacing`, calculated from the TOC's own font and size. It applies to wrapped lines within an entry and to adjacent entries: `1.0` is native single spacing, `1.5` is one-and-a-half spacing, and `2.0` is double spacing. Quoted numbers are accepted. British and US use a default of `1.15`; TOC spacing remains independent of the body setting. Values below one compress the interval and can overlap.
+
+**TOC migration:** replace length values such as `1.15em` or `2em` with the intended numeric multiplier. Removing the unit changes the spacing definition and can change pagination. Lengths, empty strings, zero, negative and non-finite values fail before output, even when the TOC is disabled. `toc.part-gap-before` remains a separate length setting for space before part entries.
 
 `folio.manuscript.toc.continuation-padding-before` reserves space above entries on every table-of-contents page. The Contents heading occupies that band on page one, and continuation pages leave it blank, keeping entry lists vertically aligned. The British default is `15mm`, inherited by the US preset.
 
@@ -642,6 +644,8 @@ folio:
 The current configuration may contain a partial font block because its remaining properties come from the same role in the British base. Retired keys are rejected rather than translated silently.
 
 ## Changelog
+
+- 0.17 (2026-09-25): TOC line spacing uses font-relative multipliers consistently with body text; length-valued TOC spacing requires migration.
 
 - 0.16 (2026-09-25): Markdown manuscript configuration frontmatter now merges below local layout files and above global files, using recursive same-property precedence and existing validation.
 

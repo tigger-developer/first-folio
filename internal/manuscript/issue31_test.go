@@ -67,7 +67,7 @@ func renderContinuationTOC(t *testing.T, padding string) (string, string) {
 		"    toc:",
 		"      font:",
 		"        size: 10pt",
-		"      line-spacing: 1.15em",
+		"      line-spacing: 1.15",
 	}
 	if padding != "" {
 		config = append(config, "      continuation-padding-before: "+padding)

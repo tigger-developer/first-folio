@@ -19,8 +19,8 @@ import (
 // RT-30.3: TOC spacing changes the measured separation of one-line entries.
 func TestRT_30_3_TOCLineSpacingControlsEntrySeparation(t *testing.T) {
 	requirePDFTools(t)
-	compactDir := spacingProject(t, "1.5", "1em", true)
-	wideDir := spacingProject(t, "1.5", "2em", true)
+	compactDir := spacingProject(t, "1.5", "1", true)
+	wideDir := spacingProject(t, "1.5", "2", true)
 	compactPDF := filepath.Join(compactDir, "manuscript.pdf")
 	widePDF := filepath.Join(wideDir, "manuscript.pdf")
 
@@ -29,12 +29,9 @@ func TestRT_30_3_TOCLineSpacingControlsEntrySeparation(t *testing.T) {
 
 	compactGap := averageTOCEntryGap(t, compactPDF)
 	wideGap := averageTOCEntryGap(t, widePDF)
-	t.Logf("measured TOC entry gaps: 1em=%.2fpt, 2em=%.2fpt", compactGap, wideGap)
-	if math.Abs(compactGap-10) > 1 {
-		t.Fatalf("TOC 1em entry gap is %.2fpt, want approximately 10pt", compactGap)
-	}
-	if math.Abs(wideGap-20) > 1 {
-		t.Fatalf("TOC 2em entry gap is %.2fpt, want approximately 20pt", wideGap)
+	t.Logf("measured TOC entry gaps: 1x=%.2fpt, 2x=%.2fpt", compactGap, wideGap)
+	if compactGap <= 0 || math.Abs(wideGap-2*compactGap) > 0.03 {
+		t.Fatalf("TOC 2x gap %.3fpt, want twice 1x gap %.3fpt", wideGap, compactGap)
 	}
 }
 

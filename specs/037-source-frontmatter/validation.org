@@ -147,3 +147,49 @@
 - Preservation :: A direct comparison against the captured pre-edit preset
   confirms that removing only the fourteen additions reproduces it exactly.
   Only these additions are staged; existing user edits remain unstaged.
+
+* TOC multiplier continuation, 2026-09-25
+- Baseline :: =861cbb7= - retained preset continuation review evidence.
+- Candidate :: Shared body/TOC multiplier validation and Typst metric helper,
+  numeric TOC preset, migrated fixtures and new rendered TOC tests.
+- Scope of earlier preservation :: OT037.2 proves the heading-default-only
+  continuation. This later TOC change intentionally changes spacing semantics;
+  its evidence supersedes any whole-output preservation claim for TOC pages.
+** GREEN RT037.5 - TOC native font intervals and defaults :testdef:
+:PROPERTIES:
+:REVISION: 861cbb7 plus the TOC multiplier continuation
+:COMMAND: go test ./internal/manuscript -run 'TestRT037.*TOC|TestRT048' -count=1
+:EVIDENCE: Sixteen font/size/multiplier combinations match independent native intervals within 0.03pt for wrapped lines and adjacent entries; British and US omitted defaults match explicit 1.15.
+:END:
+- RED :: The public CLI failed numeric TOC rendering: generated Typst supplied
+  =leading: 0.75= directly, producing =expected length, found float=. Both fonts
+  at both sizes failed; the explicit numeric default case also failed.
+- GREEN :: Focused TOC and existing body-spacing tests passed in 13.387 seconds.
+  Native reference PDFs use unmodified Typst paragraph spacing. Each TOC first
+  entry wraps and is followed by two one-line entries; every interval is checked.
+- Preservation :: Existing body-spacing geometry tests pass after sharing the
+  helper. Existing TOC entry-separation coverage now compares 1x with 2x, and
+  continuation-padding fixtures use numeric values.
+** GREEN RT037.6 - TOC invalid multiplier rejection :testdef:
+:PROPERTIES:
+:REVISION: 861cbb7 plus the TOC multiplier continuation
+:COMMAND: go test ./internal/manuscript -run TestRT037RejectInvalidTOCLineSpacing -count=1
+:EVIDENCE: Eleven invalid values fail for both Typst and PDF, with TOC enabled and disabled, with full field/value diagnostics and no target output.
+:END:
+- RED :: The baseline accepted =1em= and created output. Other invalid inputs
+  either created Typst output or failed later without multiplier diagnostics.
+- GREEN :: Initial enabled-TOC cases passed in the 13.387-second focused run.
+  The final enabled/disabled matrix passed in 0.621 seconds.
+
+** Broader TOC verification
+- Isolation :: Exported candidate uses committed presets plus the TOC delta.
+  User preset changes remain untouched and outside full-suite assertions.
+  Commands preserve the supplied environment selecting Homebrew Bash 5.
+- Full suite :: =go test ./... -count=1= passed: app 10.361 seconds; config
+  0.571; letter 0.027; manuscript 64.332; play 0.007; Typst 0.007. The later
+  enabled/disabled rejection-test extension passed separately; production code
+  did not change after this full run.
+- Checks :: =make build lint RELEASE_VERSION=unused= and =git diff --check=
+  passed. The local executable now embeds numeric TOC spacing.
+- Documentation :: The configuration reference records the 1.15 default,
+  font-relative definition and required migration from length-valued settings.

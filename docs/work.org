@@ -114,6 +114,8 @@ classification; it is provenance, not current state.
   ordering; historical definition and migration evidence remain retained.
 - Preset continuation :: Fourteen existing part/chapter defaults are explicit
   in the British base. Verification is retained in the linked validation record.
+- TOC continuation :: Line spacing uses the same font-relative multiplier
+  definition as body text. Length-valued TOC settings require migration.
 
 ** DONE W038 - Manuscript Block Layout :feature:migration:
 :PROPERTIES:
