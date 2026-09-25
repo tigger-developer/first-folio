@@ -184,15 +184,21 @@
   body
 }
 
-#let folio-code(body) = {
+#let folio-code(body) = context {
+  let indent = ({{.Config.Folio.Manuscript.CodeBlockIndent.Value}}).to-absolute()
+  // Resolve paragraph separation and em clearances in the body font context,
+  // before raw's default font scaling or the configured monospace font applies.
+  set text({{fontArgs .Config.Folio.Manuscript.Font}})
+  context {
   block(
-    above: {{.Config.Folio.Manuscript.CodeBlock.SpaceBefore}},
-    below: {{.Config.Folio.Manuscript.CodeBlock.SpaceAfter}},
+    above: par.spacing + {{.Config.Folio.Manuscript.CodeBlock.SpaceBefore}},
+    below: par.spacing + {{.Config.Folio.Manuscript.CodeBlock.SpaceAfter}},
   )[
-    #text(
+    #pad(left: indent)[#text(
       {{fontArgs .Config.Folio.Manuscript.Mono.Font}}
-    )[#folio-mono-stretch(body)]
+    )[#folio-mono-stretch(body)]]
   ]
+  }
 }
 
 #show list: it => {
@@ -230,12 +236,7 @@
   )[#it]]
 ]
 
-#show raw.where(block: true): it => block(
-  above: {{.Config.Folio.Manuscript.CodeBlock.SpaceBefore}},
-  below: {{.Config.Folio.Manuscript.CodeBlock.SpaceAfter}},
-)[#pad(left: {{.Config.Folio.Manuscript.CodeBlockIndent.Value}})[#text(
-  {{fontArgs .Config.Folio.Manuscript.Mono.Font}}
-)[#folio-mono-stretch(it)]]]
+#show raw.where(block: true): it => folio-code(it)
 
 #show raw.where(block: false): it => text(
   {{fontArgs .Config.Folio.Manuscript.Mono.Font}}

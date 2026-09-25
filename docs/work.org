@@ -635,6 +635,19 @@ release note is a decision for definition.
 :SOURCE_DATE: 2026-07-14
 :END:
 
+** REVIEW W050 - Preserve paragraph separation around manuscript code blocks :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-050
+:PRIORITY: P1
+:CREATED: 2026-09-25
+:END:
+- Route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-25.
+- Scope :: Code-block clearances add to normal body paragraph separation;
+  complete-line spans retain their existing block classification.
+- Specification :: [[file:../specs/050-code-block-clearance/spec.org][W050 - Code block paragraph separation]].
+- Validation :: [[file:../specs/050-code-block-clearance/validation.org][W050 - Rendered clearance verification]].
+- Review :: [[file:../specs/050-code-block-clearance/audits.yaml][Independent review record]].
+
 ** Legacy ledger authority at migration
 
 This file is the sole authoritative record of requirements established under

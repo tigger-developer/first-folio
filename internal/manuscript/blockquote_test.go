@@ -58,12 +58,14 @@ func TestManuscriptBlockSpacingAndQuoteFontCanBeConfigured(t *testing.T) {
 	} {
 		assertContains(t, typst, fragment)
 	}
-	assertContains(t, typst, strings.Join([]string{
-		"#show raw.where(block: true): it => block(",
-		"  above: 1.75em,",
-		"  below: 1.75em,",
-		")[#pad(left: 3em)[#text(",
-	}, "\n"))
+	for _, fragment := range []string{
+		"#show raw.where(block: true): it => folio-code(it)",
+		"above: par.spacing + 1.75em",
+		"below: par.spacing + 1.75em",
+		"let indent = (3em).to-absolute()",
+	} {
+		assertContains(t, typst, fragment)
+	}
 }
 
 func TestInvalidQuotedBlockConfigurationFailsBeforeOutput(t *testing.T) {
@@ -291,9 +293,9 @@ func TestPreciseCodeBlockSpacingOverridesEqualSpacing(t *testing.T) {
 			typst := renderIssue15Manuscript(t, strings.Join(append(lines, ""), "\n"))
 
 			assertContains(t, typst, strings.Join([]string{
-				"#show raw.where(block: true): it => block(",
-				"  above: " + test.wantAbove + ",",
-				"  below: " + test.wantBelow + ",",
+				"  block(",
+				"    above: par.spacing + " + test.wantAbove + ",",
+				"    below: par.spacing + " + test.wantBelow + ",",
 			}, "\n"))
 		})
 	}

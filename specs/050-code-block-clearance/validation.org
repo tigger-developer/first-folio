@@ -1,0 +1,68 @@
+#+TITLE: W050 - Code block clearance verification
+#+STARTUP: overview
+#+TODO: AMBER RED | GREEN
+
+* Environment
+- Date :: 2026-09-25.
+- Baseline :: =40bb603= - TOC spacing review evidence.
+- Candidate :: Shared code-block wrapper with body-context paragraph separation
+  plus side clearances, preserved indentation context, regression tests and docs.
+- Environment :: macOS arm64, Go, Typst and Poppler; inherited PATH selects
+  Homebrew Bash 5. Caches and outputs use OS temporary storage.
+- Preservation :: Existing British preset changes remain unstaged and untouched.
+  Full-suite default assertions use committed presets in an isolated export.
+
+* Results
+** GREEN RT050.1 - Rendered code boundary clearances :testdef:
+:PROPERTIES:
+:REVISION: 40bb603 plus the W050 code-block clearance candidate
+:COMMAND: go test ./internal/manuscript -run TestRT050 -count=1
+:EVIDENCE: All 72 rendered cases pass: two source forms, two mono sizes, three body multipliers and six clearance/override/paragraph-gap scenarios.
+:END:
+- RED :: At 1x/9pt mono, code boundaries measured 10.917, 11.638 and 14.638pt
+  against ordinary 16.917pt paragraph separation. At 1.5x the same boundaries
+  remained compressed against 25.376pt prose separation. Changing 0.5em to 5mm
+  added 9.373pt rather than 8.173pt, exposing raw font scaling of the em basis.
+- GREEN :: The initial geometry matrix passed in 4.330 seconds. Final expanded
+  tests passed in 11.316 seconds, including side-specific overrides, shared
+  adjacent-block collapse and additive 5mm paragraph gaps. Every clearance
+  increment matches its expected point distance within 0.03pt.
+- Inline preservation :: Mixed prose/code remains on one line; its following
+  paragraph retains ordinary body spacing.
+** GREEN RT050.2 - Existing code rendering preservation :testdef:
+:PROPERTIES:
+:REVISION: 40bb603 plus the W050 template and adapted existing tests
+:COMMAND: go test ./... -count=1
+:EVIDENCE: The isolated full suite passes, including standalone source classification, spacing overrides, fonts, stretch, wrapping, pagination, body and TOC spacing.
+:END:
+- Full suite :: App 9.049 seconds; config 0.506; letter 0.033; manuscript
+  67.917; play 0.008; Typst 0.010. The final RT050.1 matrix extension passed
+  separately afterwards; production code did not change after the full run.
+- Earlier live run :: Existing default-value assertions failed against user
+  preset edits, and template-location assertions required adaptation to the
+  shared helper. Those results were not reported as a suite pass.
+- Checks :: =make build lint RELEASE_VERSION=unused= passed. The rebuilt local
+  executable includes the template change and preserves the current user preset.
+** GREEN OT050.1 - Reported excerpt visual probe :testdef:
+:PROPERTIES:
+:REVISION: 40bb603 plus the W050 candidate, rebuilt local executable
+:EVIDENCE: PDF embeds LibertinusSerif-Regular and Iosevka-Publish; raster inspection shows visible separation around standalone code while mixed inline code stays in its prose line.
+:END:
+- Method :: Agent visual inspection of a temporary PDF and 1200px raster.
+  Rendering uses 11.5pt body, 9pt mono, 1.5x spacing, zero paragraph gap and
+  0.5em code clearance. Explicit font search paths preserve installed fonts
+  while HOME is isolated from unrelated configuration.
+- Bounds :: No manuscript/configuration source edits. Private excerpt and
+  screenshots remain outside repository evidence. No operator acceptance inferred.
+
+* Diagnosis
+- Complete-line backtick spans already become code blocks. Existing source
+  promotion and generated Typst confirm that missing triple backticks are not
+  the cause.
+- The block wrapper supplied only configured clearances, replacing normal
+  paragraph separation. Restoring old text edges in a controlled temporary
+  Typst probe increased a 13.917pt code interval to 16.800pt, confirming that
+  the earlier native-edge change affected the observed packing as well.
+- The repaired wrapper adds paragraph spacing in the body font context before
+  applying the monospace content font. Indentation is resolved first to preserve
+  its existing basis; inline rendering remains unchanged.

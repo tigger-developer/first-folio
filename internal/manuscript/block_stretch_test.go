@@ -168,7 +168,7 @@ func TestRT043_3BlockFontPropertiesReachContent(t *testing.T) {
 			dir, path := fontFixture(t, format, false, cfg)
 			writeFile(t, path, blockStretchSource(format))
 			output := renderFontCLI(t, binary, dir, path)
-			rule := fontOutputRule(t, output, "#show raw.where(block: true):")
+			rule := fontOutputRule(t, output, "#let folio-code(body)")
 			for _, arg := range want {
 				assertContains(t, rule, arg)
 			}

@@ -702,7 +702,7 @@ func assertExampleTypstMatches(t *testing.T, root string, style string) {
 		assertContains(t, typst, `#show figure.where(kind: table): it => {`)
 		assertContains(t, typst, `#show strong: it => text(weight: "bold")[#it.body]`)
 		assertContains(t, typst, `#show emph: it => text(style: "italic")[#it.body]`)
-		assertContains(t, typst, `#show raw.where(block: true): it => block(`)
+		assertContains(t, typst, `#show raw.where(block: true): it => folio-code(it)`)
 		assertContains(t, typst, `above: 0.5em`)
 		assertContains(t, typst, `below: 0.5em`)
 		assertContains(t, typst, `- The drawer hummed when touched.`)

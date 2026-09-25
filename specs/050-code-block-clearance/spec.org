@@ -1,0 +1,152 @@
+#+TITLE: W050 - Preserve paragraph separation around manuscript code blocks
+#+SCHEMA: 8
+#+SUBTITLE: Emergency regression repair
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+** Outcome
+- Standalone code *retains normal paragraph separation* plus configured clearance.
+** Before
+- Code clearances *replaced paragraph separation*, compressing surrounding text.
+** After
+- Code blocks add clearance *above and below normal separation*.
+** Changes
+- Vertical =em= clearances use the *body font size*.
+** Unchanged
+- Inline code, code typography, indentation basis and source syntax *remain unchanged*.
+** Edge cases
+- Consecutive blocks and smaller monospace fonts *retain separation*.
+** Decisions
+- Complete-line code spans *keep their existing promotion* to code blocks.
+** Next step
+- Retain verification and review evidence for the *closure decision*.
+
+* Context
+** Authority and scope
+- Authorization :: =BYPASS-GATE-7= on 2026-09-25 for the reported compressed
+  standalone-code spacing regression.
+- Baseline :: =40bb603= - retained TOC spacing review evidence.
+- Authorities :: [[file:../../.sdlc/project.yaml][Project profile]],
+  [[file:../../docs/ARCHITECTURE.md][Rendering architecture]],
+  [[file:../../docs/config.md][Configuration reference]],
+  [[file:../../docs/work.org][Requirements ledger]].
+- Existing contract :: W048 - Font-relative manuscript line spacing defines
+  body paragraph separation. Existing standalone-code tests establish that
+  complete-line single-backtick spans *already become code blocks*. W043 -
+  Code-block monospace stretch protects typography and pagination.
+- Observation :: A synthetic PDF with equal 12pt body/mono fonts, 1.5x body
+  spacing and 0.5em code clearance has *25.376pt prose intervals* but only
+  *13.917pt intervals through code*. With 9pt mono, compression is greater.
+- Scope :: Vertical separation around manuscript code blocks, including promoted
+  spans, fenced blocks and the existing code-rendering helper.
+- Exclusions :: No source rewrites, quote/list/table spacing redesign, typography
+  defaults, syntax changes, or indentation-unit redesign. Existing user preset
+  edits remain outside this change.
+
+* Acceptance Criteria
+** AC050.1 - Code blocks preserve paragraph separation :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-050-1
+:END:
+- Criterion :: Standalone code blocks *retain normal body paragraph separation*
+  plus their configured before/after clearances, including adjacent blocks.
+  Changing a clearance changes the corresponding space by its configured length.
+- Criterion :: Vertical =em= clearances resolve against the *body font size*.
+  Side-specific overrides retain precedence over the shared clearance value.
+- Proven by :: [[#rt-050-1][RT050.1 - Rendered code boundary clearances]].
+- Additional evidence :: [[#ot-050-1][OT050.1 - Reported excerpt visual probe]].
+** AC050.2 - Existing code semantics remain intact :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-050-2
+:END:
+- Criterion :: Complete-line code spans and fenced code keep the *same block
+  layout*. Mixed prose/code stays inline; font attributes, stretch, indentation
+  basis and code pagination retain their existing behaviour.
+- Proven by :: [[#rt-050-1][RT050.1 - Rendered code boundary clearances]] and
+  [[#rt-050-2][RT050.2 - Existing code rendering preservation]].
+
+* Test Definitions
+** RT050.1 - Rendered code boundary clearances :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-050-1
+:END:
+- Covers :: [[#ac-050-1][AC050.1 - Code blocks preserve paragraph separation]]
+  and [[#ac-050-2][AC050.2 - Existing code semantics remain intact]].
+- Boundary :: Built CLI; PDF word geometry measured with Poppler.
+- Cases :: Standalone spans and fenced blocks; 9pt/12pt monospace text against
+  12pt body; 1x/1.5x/2x body spacing; 0.5em and 5mm block clearances.
+- Expected :: Prose-to-code, code-to-code and code-to-prose intervals *do not
+  fall below ordinary paragraph separation*. Changing 0.5em to 5mm adds
+  8.173pt within 0.03pt on each boundary. Mixed inline text remains on one line
+  and its following paragraph retains the ordinary prose interval.
+- Overrides :: Before-only, after-only and both-side 0.5em overrides over a
+  shared 5mm setting affect only their specified boundary, with adjacent blocks
+  retaining margin collapse. Adding a 5mm paragraph gap adds 14.173pt to each
+  code boundary without replacing its clearance.
+- Retention :: =TestRT050CodeBlockClearance= under the existing Go suite.
+** RT050.2 - Existing code rendering preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-050-2
+:END:
+- Covers :: [[#ac-050-1][AC050.1 - Code blocks preserve paragraph separation]]
+  and [[#ac-050-2][AC050.2 - Existing code semantics remain intact]].
+- Procedure :: Run the existing standalone-code, block-spacing override, block
+  and inline font/stretch, wrapping, pagination, body-spacing and TOC tests as
+  part of the full suite. Adapt existing template-location assertions to the
+  shared code helper without weakening their property checks.
+- Expected :: All existing checks pass with committed presets plus this delta.
+  User preset differences are excluded from default-value assertions.
+- Classification :: Existing preservation RTs; no artificial RED is required
+  where the retained behaviour already holds.
+** OT050.1 - Reported excerpt visual probe :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-050-1
+:END:
+- Covers :: [[#ac-050-1][AC050.1 - Code blocks preserve paragraph separation]].
+- Procedure :: Render the reported excerpt in OS temporary storage with
+  11.5pt Libertinus Serif, 9pt Iosevka Publish, 1.5x body spacing, zero paragraph
+  gap and 0.5em code clearance. Check embedded fonts and inspect a raster image.
+- Expected :: Standalone code has visible separation above and below; ordinary
+  inline code remains on its prose line. This is an *agent visual inspection*,
+  not operator acceptance of the final manuscript pagination.
+- Bounds :: Local render and PDF inspection only; no source edits, network
+  calls or private excerpt content retained in repository evidence.
+
+* Edge Cases
+- Smaller monospace text *must not erase surrounding separation*.
+- Adjacent block margins retain Typst's existing collapse behaviour; this change
+  does not sum two clearances at one shared boundary.
+- Code indentation resolves *before changing the vertical-spacing context*,
+  retaining its previous unit basis. No new indentation contract is introduced.
+- No subjective font or layout redesign is involved; objective PDF geometry
+  and existing rendering regressions provide verification without a new UT.
+
+* Solution Design
+** Rendering responsibility
+- The existing =folio-code= helper owns the *shared code-block wrapper*.
+  Raw block rendering delegates to it; inline raw rendering stays unchanged.
+- Capture the existing indentation length before restoring the body font context.
+  In that body context, each block side is *par.spacing plus configured clearance*.
+  The configured monospace font and stretch still apply only to the content.
+- This preserves the body multiplier and additional paragraph gap around code,
+  and prevents raw's default font-size reduction from shrinking vertical =em=
+  clearances. No parser, configuration loader or dependency changes are required.
+- Review checks delegation, preserved indentation and unchanged inline handling;
+  PDF geometry checks observable separation and clearance increments.
+** Security impact
+- Existing escaped content and validated configuration paths *remain unchanged*.
+  No network calls, widened access, external writes or new interpretation of code
+  content. Private manuscript material is excluded from retained tests.
+
+* Delivery Handoff
+- Route :: Emergency implementation, durable reconciliation and independent review.
+- Documentation :: Update configuration and Markdown/Org manuscript references.
+  Architecture and schema remain accurate because ownership and syntax are unchanged.
+- Evidence :: [[file:validation.org][Spacing verification]] and
+  [[file:audits.yaml][Independent review record]].
+- Closure :: The operator determines closure from the current evidence.

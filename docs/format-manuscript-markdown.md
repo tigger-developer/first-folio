@@ -1,7 +1,7 @@
 ---
 title: Markdown Manuscript Format
-version: "0.4"
-last-updated: 2026-09-17
+version: "0.5"
+last-updated: 2026-09-25
 ---
 
 # Markdown Manuscript Format
@@ -43,6 +43,8 @@ Setext headings are not part of the manuscript contract; use ATX headings (`#`, 
 Section breaks default to a centred `#` marker in rendered manuscripts. Override `folio.manuscript.scene-break.marker` in YAML config to use another marker.
 
 Lists, tables, blockquotes, and fenced code blocks render with `0.5em` vertical clearance before and after by default. Set `folio.manuscript.quoted-block-spacing` or `folio.manuscript.code-block-spacing` to change both sides of those blocks equally. The existing `folio.manuscript.code-block.space-before` and `folio.manuscript.code-block.space-after` properties override the equal code-block spacing on their respective sides. Set `folio.manuscript.quote-block-indent` or `folio.manuscript.code-block-indent` to inset every line of the corresponding block from the left; both default to `0em` and are independent of prose first-line indentation. Configure blockquote typography through `folio.manuscript.quoted-block.font`; its `family`, `size`, `weight`, `stretch`, `style`, and `letter-spacing` properties inherit independently from the manuscript font when omitted.
+
+Code-block clearance adds to normal body paragraph separation, including between consecutive blocks. Vertical `em` clearances use the body font size. Complete-line code spans use this same block layout; code embedded within prose remains inline.
 
 Fenced code blocks take their typography from `folio.manuscript.mono.font`, the same role as inline code; `folio.manuscript.code-block` carries layout only. A configured `stretch` scales the block horizontally by that percentage, matching inline code, while the block keeps its glyph height, its column alignment and its page breaks.
 
@@ -89,6 +91,7 @@ described in the table; the example no longer embeds HTML-comment syntax.
 
 ## Revision History
 
+- 0.5, 2026-09-25: Clarified additive code-block clearance and complete-line code spans.
 - 0.4, 2026-09-17: Record that fenced code blocks take their typography from the monospace font role, that configured stretch scales them proportionally, and that `code-block` carries layout only.
 - 0.3, 2026-09-10: Add the manuscript schema declaration, use YAML document-version metadata, and describe private-section syntax without embedding HTML comments.
 - 0.2, 2026-08-10: Previous manuscript-reference revision.
