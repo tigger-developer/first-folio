@@ -1,0 +1,202 @@
+#+TITLE: W037 - Manuscript source configuration with recursive layout overrides
+#+SCHEMA: 8
+#+SUBTITLE: Emergency reconciliation of source frontmatter configuration
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+** Outcome
+- Markdown manuscripts carry *shared rendering configuration* alongside metadata.
+** Before
+- The parser retained metadata but *discarded folio/render configuration*.
+** After
+- Source mappings *merge recursively* between global and local configuration.
+** Changes
+- Source values use *existing effective-value validators* and can select style.
+- Later input configuration is *rejected before output*.
+** Unchanged
+- Metadata handling, source-directory discovery, other input modes and defaults
+  *retain their existing behaviour*.
+- Manuscript files and existing user preset edits *remain untouched*.
+** Edge cases
+- A local font size *preserves the source family*; same-property local values win.
+- Null/scalar source namespaces *fail*. Omitted source properties inherit.
+** Decisions
+- Precedence is *presets, global, source, local, CLI*, lowest first.
+** Next step
+- Retain verification and independent review evidence for the *closure decision*.
+
+* Context
+** Authority and bounded scope
+- Authorization :: =BYPASS-GATE-7= on 2026-09-25 for applying manuscript
+  configuration frontmatter, recursive merging and local layout precedence.
+- Authorities :: [[file:../../.sdlc/project.yaml][Project profile]],
+  [[file:../../docs/ARCHITECTURE.md][Configuration architecture]],
+  [[file:../../docs/config.md][Configuration reference]],
+  [[file:../../schema/manuscript.md][Markdown manuscript schema]],
+  [[file:../../docs/work.org][Project requirements ledger]].
+- Baseline :: =601da67= - alignment review evidence. =RunWithIO= loaded config
+  before parsing input; =applyMarkdownFrontmatter= retained only metadata.
+- Existing requirement :: Reuses W037 - Source Frontmatter Configuration.
+  [[file:../../docs/archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md][The archived definition]]
+  is retained as provenance. This definition *supersedes* its source-above-local
+  precedence and process-working-directory discovery. Actual source-directory
+  discovery is retained. A new strict unknown-key schema is *not introduced*;
+  source configuration uses the same validation as external files.
+- Scope :: First resolved Markdown input's =folio:= and =render:= mappings,
+  shared merge path, validation, style selection, diagnostics and documentation.
+- Exclusions :: Org/stage-play/letter source configuration, new render switches,
+  heading-position redesign, metadata precedence changes and general schema
+  hardening. No source or layout file is rewritten.
+
+* Acceptance Criteria
+** AC037.1 - Source configuration affects rendering :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-037-1
+:END:
+- Criterion :: Configuration in the first resolved Markdown manuscript's
+  frontmatter *affects output* under the same property semantics as external YAML.
+  Metadata remains available and configuration does not appear as body content.
+- Proven by :: [[#rt-037-1][RT037.1 - Edition rendering and recursive font merge]],
+  [[#rt-037-4][RT037.4 - First-input boundary and metadata]] and
+  [[#ot-037-1][OT037.1 - Installed manuscript configuration probe]].
+** AC037.2 - Precedence merges properties recursively :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-037-2
+:END:
+- Criterion :: Source properties *override global files*, and local files
+  *override source properties*. Unspecified nested properties survive from lower
+  layers, including font family, size and weight from distinct layers. Explicit
+  CLI configuration overrides remain highest. Source style selects the normal
+  built-in overlay and sibling files unless overridden by local or CLI style.
+- Proven by :: [[#rt-037-1][RT037.1 - Edition rendering and recursive font merge]]
+  and [[#rt-037-2][RT037.2 - Style and file-layer precedence]].
+** AC037.3 - Source failures stop output :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-037-3
+:END:
+- Criterion :: Malformed YAML, non-mapping =folio/render= namespaces and invalid
+  effective configured values *fail before Typst/PDF output*. Diagnostics identify
+  the malformed namespace, offending configuration field or source syntax.
+- Criterion :: Configuration in later resolved Markdown inputs *fails with the
+  input path* and first-input guidance rather than creating another layer.
+- Proven by :: [[#rt-037-3][RT037.3 - Source validation and no-output boundary]]
+  and [[#rt-037-4][RT037.4 - First-input boundary and metadata]].
+
+* Test Definitions
+** RT037.1 - Edition rendering and recursive font merge :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-037-1
+:END:
+- Covers :: [[#ac-037-1][AC037.1 - Source configuration affects rendering]] and
+  [[#ac-037-2][AC037.2 - Precedence merges properties recursively]].
+- Boundary :: Built CLI and real PDFs inspected with Poppler.
+- Setup :: Global font Serif/9pt/bold and margin 30mm. Source supplies DejaVu Sans
+  Mono/11pt, margin 15mm, 1.25x spacing and 5mm paragraph gap. Local file supplies
+  only font size 18pt and edition page size.
+- Action :: Render A4 and 6x9in editions and independently configured reference
+  PDFs with those effective properties explicitly in external YAML.
+- Expected :: All three probe words' boxes *match within 0.03pt*. PDF dimensions
+  are 595.276 by 841.89pt and 432 by 648pt respectively. The source family,
+  local size and global weight combine without object replacement.
+- Retention :: =TestRT037SourceConfigMergedIntoEditionPDFs= under =make test=.
+** RT037.2 - Style and file-layer precedence :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-037-2
+:END:
+- Covers :: [[#ac-037-2][AC037.2 - Precedence merges properties recursively]].
+- Action :: Use source US style over global British, then local British over
+  source US, then CLI US over local British. Global style files set margin 40mm;
+  source sets 15mm; local US sibling sets 22mm. Inspect CLI dry-run output.
+- Expected :: Effective styles are *US, British, US* and margins *22, 15, 22mm*.
+- Retention :: =TestRT037SourceStylePrecedence= under =make test=.
+** RT037.3 - Source validation and no-output boundary :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-037-3
+:END:
+- Covers :: [[#ac-037-3][AC037.3 - Source failures stop output]].
+- Action :: Supply invalid chapter alignment, body spacing length, font size,
+  scalar/null =folio=, scalar =render= and malformed frontmatter YAML. Request
+  both Typst and PDF through the built CLI.
+- Expected :: *Nonzero exit*, namespace/field/syntax diagnostic and *no output*.
+- Preservation :: A locally corrected invalid source alignment renders successfully;
+  an empty =render= mapping is accepted.
+- Retention :: =TestRT037RejectInvalidSourceConfiguration= and
+  =TestRT037LocalOverrideRepairsSourceValue= under =make test=.
+** RT037.4 - First-input boundary and metadata :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-037-4
+:END:
+- Covers :: [[#ac-037-1][AC037.1 - Source configuration affects rendering]] and
+  [[#ac-037-3][AC037.3 - Source failures stop output]].
+- Action :: Pass two Markdown files in reverse lexical order. First resolved
+  file supplies source title, author, margin 17mm and title-page configuration;
+  second supplies body text only. Then add =folio= and =render= mappings to the
+  second input in turn.
+- Expected :: Valid Typst retains *both bodies and metadata*, applies 17mm and
+  contains no configuration text. Later configuration *fails with its path*
+  and creates no target. Existing input sorting remains unchanged.
+- Preservation :: Later files beginning with single or paired scene-break
+  delimiters remain ordinary Markdown body and render their prose.
+- Retention :: =TestRT037FirstSourceAndMetadata= and
+  =TestRT037LaterSceneBreakIsNotFrontmatter= under =make test=.
+** OT037.1 - Installed manuscript configuration probe :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-037-1
+:END:
+- Covers :: [[#ac-037-1][AC037.1 - Source configuration affects rendering]].
+- Procedure :: Rebuild the repository's =dist/folio= used by the existing CLI
+  symlink. Run the reported manuscript through dry-run and Typst output to an
+  OS temporary directory. Inspect margin, paragraph indent, block spacing and
+  header tracking against source configuration.
+- Expected :: Margin *15mm*, indent *5mm*, block spacing *6mm* and header tracking
+  *0.1em*, replacing the observed ignored-frontmatter behaviour.
+- Bounds :: One local build and two CLI probes; no external service or source
+  writes. No private manuscript content is retained in tracked evidence.
+- Classification :: One-off live configuration probe. Objective layout and
+  merging are regression-tested; no subjective typography change requires a UT.
+
+* Edge Cases
+- Only *present source namespaces* become configuration. Metadata and unrelated
+  frontmatter keys are not injected into the shared configuration map.
+- Empty namespace mappings are valid; *null/scalar namespaces are invalid*.
+- Individual invalid source properties overridden by local properties follow
+  *effective-value validation*, as in external configuration layers.
+- Only the first input has frontmatter semantics. Later files are *body text*;
+  a successfully decoded configuration mapping is rejected, while non-mapping
+  or malformed YAML-like prose remains subject to ordinary Markdown parsing.
+- *Absent source configuration preserves existing behaviour*. Org and other
+  commands continue through their existing configuration and parsing paths.
+
+* Solution Design
+** Responsibilities and flow
+- The manuscript input reader extracts configuration from the *first resolved
+  Markdown input* before loading config, using the existing YAML decoder and
+  delimiter handling shared with metadata parsing. Later configuration fails.
+- =internal/config.Options.Source= supplies the optional map. The existing
+  =deepMerge= inserts it after global style configuration and before local files.
+  The existing style selector considers source between global and local values.
+- Effective font/alignment validation remains in the shared loader; manuscript
+  layout validation remains in =LoadConfig=. Parsing and rendering then use the
+  resulting typed config and normal source metadata.
+- No new dependency, configuration framework or alternate renderer is introduced.
+  Structural review verifies the merge order and absence of direct source-value
+  interpolation into templates outside the existing validated config path.
+** Security impact
+- Source YAML reaches the *existing configuration trust boundary*. Namespaces
+  must be mappings; relevant final-value validators run before output. This does
+  not claim new validation for properties that external YAML does not validate.
+- No network calls, widened access or durable source edits. Private manuscript
+  content stays local and outside tracked tests or review evidence.
+
+* Delivery Handoff
+- Route :: Emergency implementation and retrospective reconciliation.
+- Documentation :: Update configuration reference, architecture, README,
+  manuscript schema and embedded CLI help. Product vision is unchanged.
+- Evidence :: [[file:validation.org][Source configuration verification]] and
+  [[file:audits.yaml][Independent review record]].
+- Closure :: Requires current evidence and the operator's closure decision.

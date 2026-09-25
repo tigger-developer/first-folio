@@ -348,12 +348,17 @@ type HeadingConfig struct {
 }
 
 func LoadConfig(sourceDir string, opts Options) (Config, error) {
+	return loadConfigWithSource(sourceDir, opts, nil)
+}
+
+func loadConfigWithSource(sourceDir string, opts Options, source map[string]any) (Config, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return Config{}, err
 	}
 	merged, err := sharedconfig.Load(sharedconfig.Options{
 		Mode:     sharedconfig.ModeManuscript,
+		Source:   source,
 		Home:     home,
 		LocalDir: sourceDir,
 		CLI:      map[string]any{"style": opts.Style},

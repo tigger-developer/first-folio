@@ -94,7 +94,7 @@ classification; it is provenance, not current state.
   remains provenance only; [[file:../specs/039-unified-font-configuration/spec.org][W039 - Unified Font Configuration]]
   is the fresh SDLC v3 definition.
 
-** REVIEW W037 - Source Frontmatter Configuration :feature:migration:
+** ACTIVE W037 - Source Frontmatter Configuration :feature:migration:
 :PROPERTIES:
 :CUSTOM_ID: w-037
 :LEGACY_ID: 002
@@ -104,8 +104,14 @@ classification; it is provenance, not current state.
 :MIGRATION_DISPOSITION: unresolved
 :END:
 
-- *Specification:* [[file:archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md][Source Frontmatter Configuration]]
+- *Archived specification:* [[file:archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md][Source Frontmatter Configuration]]
 - *Migration evidence:* The specification remains Draft; although an audit PASS is recorded, planning and delivery remain conditional on approval and no explicit operator approval is recorded.
+
+- Current specification :: [[file:../specs/037-source-frontmatter/spec.org][W037 - Manuscript source configuration with recursive layout overrides]].
+- Validation :: [[file:../specs/037-source-frontmatter/validation.org][W037 - Source configuration verification]].
+- Delivery route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-25.
+- Supersession :: Current source-below-local precedence replaces the archived
+  ordering; historical definition and migration evidence remain retained.
 
 ** DONE W038 - Manuscript Block Layout :feature:migration:
 :PROPERTIES:

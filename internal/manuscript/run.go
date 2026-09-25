@@ -46,13 +46,12 @@ func RunWithIO(args []string, stdout io.Writer) error {
 		return err
 	}
 
-	sourceDir := filepath.Dir(inputSet.Paths[0])
-	cfg, err := LoadConfig(sourceDir, opts)
+	text, source, err := readConfiguredInputs(inputSet)
 	if err != nil {
 		return err
 	}
-
-	text, err := ReadJoined(inputSet.Paths)
+	sourceDir := filepath.Dir(inputSet.Paths[0])
+	cfg, err := loadConfigWithSource(sourceDir, opts, source)
 	if err != nil {
 		return err
 	}

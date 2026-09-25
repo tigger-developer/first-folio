@@ -1,3 +1,9 @@
+---
+title: First Folio
+version: "1"
+last-updated: 2026-09-25
+---
+
 # First Folio
 
 A command-line publishing tool for stage plays, submission letters, and prose manuscripts. It converts structured play sources between Org, Markdown, and Fountain, and renders scripts, letters, and manuscripts through Typst.
@@ -83,7 +89,7 @@ folio:
   page: a4
 ```
 
-Configuration is merged by key. Every typography role uses the same six-property `font` block; partial blocks inherit only from the same role in lower layers. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the global style-specific file, global `script.yaml`, the selected built-in style overlay, and the shared British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
+Configuration is merged by key. Every typography role uses the same six-property `font` block; partial blocks inherit only from the same role in lower layers. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the first Markdown manuscript input's `folio:`/`render:` frontmatter, the global style-specific file, global `script.yaml`, the selected built-in style overlay, and the shared British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
 
 See [docs/config.md](docs/config.md) for the configuration reference and [examples/script.yaml.example](examples/script.yaml.example) for an annotated example.
 

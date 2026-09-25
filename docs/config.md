@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.15"
-last-updated: 2026-09-24
+version: "0.16"
+last-updated: 2026-09-25
 ---
 
 # Configuration
@@ -30,14 +30,28 @@ All config sources are read and merged. Each layer overrides individual keys fro
 | 1 (highest) | CLI flags |
 | 2 | Nearest local `script-<style>.yaml` |
 | 3 | Nearest local `script.yaml` |
-| 4 | Global `~/.config/first-folio/script-<style>.yaml` |
-| 5 | Global `~/.config/first-folio/script.yaml` |
-| 6 | Selected built-in style override |
-| 7 (lowest) | British built-in base preset |
+| 4 | First Markdown manuscript input's `folio:` and `render:` frontmatter |
+| 5 | Global `~/.config/first-folio/script-<style>.yaml` |
+| 6 | Global `~/.config/first-folio/script.yaml` |
+| 7 | Selected built-in style override |
+| 8 (lowest) | British built-in base preset |
 
 **Example:** Global config sets `folio.font.family: "EB Garamond"` and `folio.page: a4`. A local config sets only `folio.font.size: 11pt`. The merged root font uses EB Garamond at 11pt and the page remains a4. Font properties merge only at the same role path.
 
+## Manuscript source configuration
+
+The first resolved Markdown manuscript input may contain `folio:` and `render:` mappings alongside its metadata. These mappings merge recursively **after global files and before local files**. A local layout changes only the properties it specifies; it does not replace an entire font or manuscript object.
+
+For example, source frontmatter can set `folio.manuscript.font.family: DejaVu Sans Mono`, while local `script.yaml` sets `folio.manuscript.font.size: 11.5pt`. Both values apply, and other font properties inherit from lower layers at that same role path. If both source and local files set the size, the local value wins. This supports common manuscript settings with separate A4 and 6x9 layout files.
+
+The same merge and effective-value validation rules apply as for external YAML. The `folio` and `render` namespace values themselves must be mappings; null or scalar namespaces are errors. Source values overridden by local properties are validated as part of the final merged configuration. Unknown-key handling is unchanged from external configuration; this is not a new strict-schema validator. `render` retains its existing mode-specific meaning and gains no new manuscript rendering switches.
+
+A source `folio.style` or `folio.manuscript.style` participates in style selection below local configuration and explicit `--style`. The selected style determines the built-in overlay and style-specific files. Source metadata such as title and author retains its existing handling, separate from these configuration mappings.
+
+For multiple input files, resolution sorts paths and uses the first. A later input with a decoded `folio:` or `render:` frontmatter mapping is rejected with its path before output is written. Other later-file content remains ordinary Markdown body; leading scene breaks are not treated as malformed configuration. Configuration in Org manuscripts, stage-play sources and letters is unchanged. Source configuration is not emitted as body content. File discovery still starts from the first input's directory.
+
 ## Schema
+
 
 ### Shared metadata
 
@@ -628,6 +642,9 @@ folio:
 The current configuration may contain a partial font block because its remaining properties come from the same role in the British base. Retired keys are rejected rather than translated silently.
 
 ## Changelog
+
+- 0.16 (2026-09-25): Markdown manuscript configuration frontmatter now merges below local layout files and above global files, using recursive same-property precedence and existing validation.
+
 
 - 0.15 (2026-09-24): Alignment defaults use explicit group placement; resolved invalid alignments fail before output. US title-page date/version omission is explicit and inclusion flags are honoured. Historical empty alignment values require migration.
 

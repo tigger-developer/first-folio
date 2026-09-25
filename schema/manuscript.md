@@ -1,8 +1,9 @@
 ---
 schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md
 title: First Folio Markdown Manuscript Schema
-version: "0.3"
-updated: "2026-09-10"
+version: "0.4"
+updated: "2026-09-25"
+last-updated: 2026-09-25
 ---
 
 # Markdown Manuscript Schema
@@ -49,6 +50,13 @@ Metadata is interpreted as strings. ISO date strings preserve the date's
 meaning; manuscript configuration controls the rendered date format.
 The schema document's own YAML `version` describes this definition, while a
 manuscript's `version` describes its draft.
+
+The first resolved input may also contain `folio:` and `render:` configuration
+mappings. They merge recursively above global configuration and below local
+layout files; partial font objects retain properties from both layers. Local
+values win on conflicts. Later input files cannot supply configuration mappings.
+The namespaces must be mappings and effective values use the normal configuration
+validators. See [source configuration](../docs/config.md#manuscript-source-configuration).
 
 ## Prose structure
 
@@ -119,3 +127,7 @@ Typst and PDF output do not receive a schema declaration.
   metadata and remove literal HTML comments from the schema document.
 - 0.2, 2026-09-10: Record serializer and output boundaries.
 - 0.1, 2026-09-10: Initial definition, superseded by this rewrite.
+
+## Document history
+
+- 0.4 (2026-09-25): Added configuration frontmatter and its merge boundary.

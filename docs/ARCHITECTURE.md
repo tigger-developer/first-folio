@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.4"
-last-updated: 2026-09-24
+version: "0.5"
+last-updated: 2026-09-25
 ---
 
 # Architecture
@@ -54,9 +54,12 @@ Letters have a smaller recipient-oriented model because their sender, recipient,
 2. Selected built-in style override.
 3. Global `~/.config/first-folio/script.yaml`.
 4. Global style-specific YAML.
-5. Selected local `script.yaml`.
-6. Selected local style-specific YAML.
-7. CLI overrides.
+5. First Markdown manuscript input's `folio:` and `render:` mappings.
+6. Selected local `script.yaml`.
+7. Selected local style-specific YAML.
+8. CLI overrides.
+
+Manuscript orchestration reads Markdown source configuration before loading the effective configuration. The parser shares one frontmatter decoder with this extraction path; metadata remains a separate document concern. Later input files cannot supply another configuration layer. Other modes do not pass a source layer to the shared loader.
 
 Local discovery begins at the source directory and walks upwards towards HOME. Only the nearest `script.yaml` is selected; its style-specific sibling is loaded from the same directory. For a multi-file manuscript, the first resolved input determines that starting directory.
 
@@ -85,6 +88,9 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.5 (2026-09-25): Added the Markdown manuscript source layer between global and local configuration.
+
 
 - 0.4 (2026-09-24): Clarified shared-loader ownership of resolved alignment validation.
 - 0.3 (2026-08-10): Previous architecture baseline.

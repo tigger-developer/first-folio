@@ -22,6 +22,12 @@ Config:
   ~/.config/first-folio/script.yaml plus the nearest script.yaml found by
   walking from the first resolved input's directory towards HOME.
 
+Source configuration:
+  The first Markdown input may provide folio: and render: frontmatter mappings.
+  Properties merge recursively: presets < global files < source < local files
+  < explicit CLI options. A local font size preserves the source font family.
+  Later input files cannot supply another configuration layer.
+
 External ISBN barcode SVG:
   Configure the copyright block in the local script.yaml:
 

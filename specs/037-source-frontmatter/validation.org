@@ -1,0 +1,114 @@
+#+TITLE: W037 - Source configuration verification
+#+STARTUP: overview
+#+TODO: AMBER RED | GREEN
+
+* Environment and candidate
+- Date :: 2026-09-25.
+- Baseline :: =601da67= - retained alignment review evidence.
+- Candidate :: Baseline plus source extraction, shared recursive source layer,
+  orchestration, regression tests and associated documentation.
+- Environment :: macOS arm64; Go, Typst, Pandoc and Poppler CLI tools.
+- Isolation :: Test HOME directories, build cache, exported checkouts and output
+  artefacts use OS temporary directories. Existing British preset edits remain
+  separate from the candidate and are not staged.
+
+* Regression results
+** GREEN RT037.1 - Edition rendering and recursive font merge :testdef:
+:PROPERTIES:
+:REVISION: 601da67 plus W037 source and regression changes
+:COMMAND: go test ./internal/manuscript -run TestRT037 -count=1
+:EVIDENCE: Both A4 and 6x9 PDFs match explicit effective-config reference word boxes within 0.03pt and have the expected page dimensions.
+:END:
+- RED :: Baseline ignored source values. On A4, Alpha's left coordinate was
+  99.212600pt instead of 42.519684pt; its width, vertical position and subsequent
+  line/paragraph intervals also differed. Both edition cases failed.
+- GREEN :: Initial focused run passed in 2.178 seconds. Source family and local
+  size combine while the global weight is retained; source margin and spacing
+  match the independent external-config reference.
+
+** GREEN RT037.2 - Style and file-layer precedence :testdef:
+:PROPERTIES:
+:REVISION: 601da67 plus W037 source and regression changes
+:COMMAND: go test ./internal/manuscript -run TestRT037 -count=1
+:EVIDENCE: Source/local/CLI style cases report US/British/US with margins 22/15/22mm respectively.
+:END:
+- RED :: Source US style was ignored, reporting British and margin 20mm;
+  the local-style case also ignored the source margin.
+- GREEN :: Included in the 2.178-second focused run. A subsequent extension
+  gives the global British sibling a conflicting 40mm margin; the isolated
+  candidate suite passes the source-over-global-sibling assertion too.
+
+** GREEN RT037.3 - Source validation and no-output boundary :testdef:
+:PROPERTIES:
+:REVISION: 601da67 plus W037 source and regression changes
+:COMMAND: go test ./internal/manuscript -run TestRT037 -count=1
+:EVIDENCE: Seven invalid source cases fail for Typst and PDF without creating outputs, with field, namespace or frontmatter diagnostics.
+:END:
+- RED :: Baseline accepted invalid source alignment, spacing and font size,
+  creating output. Scalar/null namespace values were also ignored.
+- Preservation :: Malformed YAML already failed and remains rejected.
+- GREEN :: Included in the focused run; effective configuration reaches the same
+  font, alignment and manuscript layout validators as external files.
+
+** GREEN RT037.4 - First-input boundary and metadata :testdef:
+:PROPERTIES:
+:REVISION: 601da67 plus W037 source and regression changes
+:COMMAND: go test ./internal/manuscript -run TestRT037 -count=1
+:EVIDENCE: Reversed input arguments still use the first sorted file's 17mm margin, retain title/author and both body markers, omit configuration text, and reject later folio/render configuration with path guidance.
+:END:
+- RED :: Baseline omitted the 17mm margin and rejected later frontmatter through
+  an unrelated scene-break diagnostic, without the input path or first-input rule.
+- GREEN :: Included in the focused run.
+
+* Final focused verification
+- Candidate :: W037 production changes including later scene-break compatibility,
+  plus extended source-configuration tests and documentation.
+- Command :: =go test ./internal/manuscript ./internal/app -run 'TestRT037|Test.*Schema' -count=1=.
+- Result :: Passed: manuscript 4.668 seconds; app 0.116 seconds. All W037 cases
+  and relevant schema checks passed. Lint passed after these changes.
+- Additional preservation :: A locally corrected source alignment renders a
+  PDF successfully, and an empty =render= mapping is accepted.
+- Scene-break RED :: Initial source extraction mistook a later input beginning
+  with =---= for unclosed frontmatter, and paired scene breaks around ordinary
+  prose for an invalid YAML mapping. Both were observed failures before the
+  extraction rule was corrected.
+- Scene-break GREEN :: Both later-file forms render their body text. Only the
+  first file has frontmatter semantics; later decoded configuration declarations
+  are rejected, while other content stays on the normal Markdown parser path.
+- Installed probe repeated :: Rebuilt the local executable after the compatibility
+  change; actual manuscript dry-run still reports margin 15mm. Earlier Typst
+  evidence remains applicable to the unchanged first-input path.
+
+* One-off result
+** GREEN OT037.1 - Installed manuscript configuration probe :testdef:
+:PROPERTIES:
+:REVISION: 601da67 plus W037 production changes, built in dist/folio
+:EVIDENCE: The existing CLI symlink uses the rebuilt repository executable. Actual manuscript dry-run reports 15mm, and temporary Typst shows 5mm paragraph indent, 6mm block spacing and 0.1em header tracking.
+:END:
+- Method :: Local CLI dry-run and Typst rendering of the reported manuscript,
+  with output directed to an OS temporary directory. No source/layout writes.
+- Before :: The installed CLI dry-run reported 20mm despite source margin 15mm.
+- After :: The generated Typst's page setting, paragraph setting, block clearances
+  and running-header tracking match the source values.
+- Privacy :: No private manuscript content or metadata retained in this record.
+
+* Broader verification and limits
+- =make lint RELEASE_VERSION=unused= :: Passed. The variable is irrelevant to
+  lint/build and avoids evaluation of the unrelated release-version helper.
+- =git diff --check= :: Passed.
+- Live full suite :: Not GREEN. The external rasterization helper fails, and
+  existing uncommitted British preset values differ from some test expectations.
+- Isolation :: Exported baseline and candidate with committed presets. Ran
+  =go test ./...= in both with the same temporary cache.
+- Both runs :: Exactly three top-level failures:
+  =TestScriptSourceFormatsRasterizeInAllStyles=,
+  =TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged= and
+  =TestExamplePDFsRasterize=. Each reports =local: -A: invalid option= from the
+  external =pdf-to-png= helper's shell setup. No additional candidate test failed.
+- Candidate :: Shared config tests passed in 0.858 seconds; manuscript package
+  ran for 55.618 seconds including its external rasterization failure.
+- Bounds :: No external-tool repairs, source-manuscript changes, remote release
+  or synchronization. The existing local CLI target was rebuilt for immediate use.
+- Final isolated candidate :: After the scene-break compatibility change, the
+  full suite again reported exactly the same three external raster-helper
+  failures, with manuscript execution 54.292 seconds. No new failure appeared.

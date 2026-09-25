@@ -636,9 +636,18 @@ func orgHeading(line string) (int, string) {
 }
 
 func parseMarkdownFrontmatter(meta *Metadata, text string) (string, error) {
+	values, remaining, err := markdownFrontmatter(text)
+	if err != nil {
+		return "", err
+	}
+	applyMarkdownFrontmatter(meta, values)
+	return remaining, nil
+}
+
+func markdownFrontmatter(text string) (map[string]any, string, error) {
 	normalized := strings.ReplaceAll(text, "\r\n", "\n")
 	if !strings.HasPrefix(normalized, "---\n") {
-		return text, nil
+		return nil, text, nil
 	}
 	end := strings.Index(normalized[len("---\n"):], "\n---\n")
 	closingLen := len("\n---\n")
@@ -647,16 +656,15 @@ func parseMarkdownFrontmatter(meta *Metadata, text string) (string, error) {
 		closingLen = len("\n---")
 	}
 	if end < 0 {
-		return "", fmt.Errorf("markdown frontmatter starts with --- but has no closing ---")
+		return nil, "", fmt.Errorf("markdown frontmatter starts with --- but has no closing ---")
 	}
 	content := normalized[len("---\n") : len("---\n")+end]
 	remaining := normalized[len("---\n")+end+closingLen:]
 	values := map[string]any{}
 	if err := yaml.Unmarshal([]byte(content), &values); err != nil {
-		return "", fmt.Errorf("parsing markdown frontmatter: %w", err)
+		return nil, "", fmt.Errorf("parsing markdown frontmatter: %w", err)
 	}
-	applyMarkdownFrontmatter(meta, values)
-	return remaining, nil
+	return values, remaining, nil
 }
 
 func applyMarkdownFrontmatter(meta *Metadata, values map[string]any) {

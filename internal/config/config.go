@@ -26,6 +26,8 @@ type Options struct {
 	Home     string
 	LocalDir string
 	CLI      map[string]any
+	// Source is the first Markdown manuscript's configuration, below local files.
+	Source map[string]any
 }
 
 type Config struct {
@@ -56,7 +58,7 @@ func Load(opts Options) (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
-	style := selectStyle(opts.Mode, global, local, opts.CLI)
+	style := selectStyle(opts.Mode, global, opts.Source, local, opts.CLI)
 
 	name := ""
 	switch style {
@@ -79,6 +81,7 @@ func Load(opts Options) (Config, error) {
 	if err := mergeOptional(base, filepath.Join(globalDir, "script-"+styleSuffix(style)+".yaml")); err != nil {
 		return Config{}, err
 	}
+	deepMerge(base, opts.Source)
 	deepMerge(base, local)
 	if localScriptPath != "" {
 		// Style-suffixed sibling override sits next to the base script.yaml wherever the
