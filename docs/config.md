@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.19"
+version: "0.20"
 last-updated: 2026-09-26
 ---
 
@@ -132,7 +132,9 @@ The six properties are:
 | `style` | `regular`, `italic`, or `oblique` |
 | `letter-spacing` | Signed decimal with `pt`, `mm`, `cm`, `in`, or `em`; zero is valid |
 
-`stretch` selects an available width within the chosen font family. If that width is unavailable, Typst selects the nearest available face; it does not geometrically compress or expand the text. `letter-spacing` separately adjusts the space between characters.
+For roles other than manuscript body, quoted blocks and monospace, `stretch` selects an available width within the chosen font family. If that width is unavailable, Typst selects the nearest available face; it does not geometrically compress or expand the text. `letter-spacing` separately adjusts the space between characters.
+
+For **manuscript body and quoted blocks**, `font.stretch` and `quoted-block.font.stretch` scale glyphs horizontally from the normal-width face: 160% means 1.6 times the width, with unchanged glyph height. Bold and italic retain their styles. Each role has its own ratio; code inside prose or a quote still uses `mono.font.stretch`. Word spaces scale too, and justification remains active. At non-100% stretch, words are scaled individually, so line breaking can move a whole word to the next line where native paragraph layout would hyphenate it. At 100%, prose keeps native line breaking. First Folio currently exposes no separate hyphenation setting.
 
 For **manuscript monospace**, `mono.font.stretch` instead specifies proportional horizontal scaling from the normal-width face: 150% is 1.5 times the width, 200% twice, and 50% half. Glyph height stays unchanged. Words and inter-word spacing scale, so paragraphs can still wrap between code words and code blocks keep their column alignment and their page breaks. This corrects the earlier interpretation of monospace stretch as font-face selection only.
 
@@ -648,6 +650,8 @@ folio:
 The current configuration may contain a partial font block because its remaining properties come from the same role in the British base. Retired keys are rejected rather than translated silently.
 
 ## Changelog
+
+- 0.20 (2026-09-26): Body and quoted-block stretch scale glyph widths proportionally; documented independent role ratios and word-level line breaking.
 
 - 0.19 (2026-09-26): Quoted blocks use exact configured indentation and additive paragraph clearance, with body-font em units.
 

@@ -403,6 +403,9 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 			lines = append(lines, "#folio-section["+typstInline(block.Text)+"]")
 		case "paragraph":
 			paragraph := typstInline(block.Text)
+			if cfg.Folio.Manuscript.Font.Stretch != "100%" {
+				paragraph = "#folio-prose-stretch[" + paragraph + "]"
+			}
 			if block.ChapterOpening {
 				paragraph = wrapChapterOpeningParagraph(paragraph)
 			}
@@ -413,6 +416,9 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 			lines = append(lines, "#folio-code["+escapeTypst(block.Text)+"]")
 		case "raw-typst":
 			raw := block.Text
+			if cfg.Folio.Manuscript.Font.Stretch != "100%" {
+				raw = "#folio-prose-stretch[" + raw + "]"
+			}
 			if block.ChapterOpening {
 				raw = wrapChapterOpeningParagraph(raw)
 			}

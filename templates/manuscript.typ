@@ -184,6 +184,27 @@
   body
 }
 
+// Prose and quotations retain independent font roles, including nested inline code.
+#let folio-prose-stretch(body) = context {
+  let ratio = text.stretch
+  // Normalize whitespace too when a family supplies a different-width face.
+  let normal-space = measure(text(stretch: 100%, " ")).width
+  let selected-space = measure(text(" ")).width
+  set text(spacing: if selected-space > 0pt { ratio * (normal-space / selected-space) } else { ratio })
+  show regex("\\S+"): word => context {
+    let ratio = text.stretch
+    if ratio == 100% {
+      word
+    } else {
+      // A nested role normalizes its face before outer rules see its text.
+      set text(stretch: 100%)
+      let descent = measure(text(top-edge: "baseline", word)).height
+      box(baseline: descent, scale(x: ratio, y: 100%, reflow: true, word))
+    }
+  }
+  body
+}
+
 #let folio-code(body) = context {
   let indent = ({{.Config.Folio.Manuscript.CodeBlockIndent.Value}}).to-absolute()
   // Resolve paragraph separation and em clearances in the body font context,
@@ -238,7 +259,7 @@
         {{fontArgs .Config.Folio.Manuscript.QuotedBlock.Font}}
       )[
         #set par(first-line-indent: 0pt)
-        #it.body
+        #folio-prose-stretch(it.body)
       ]]
     ]
   }

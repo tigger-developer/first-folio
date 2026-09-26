@@ -660,6 +660,22 @@ release note is a decision for definition.
 - Validation :: [[file:../specs/051-quote-layout/validation.org][W051 - Rendered quote geometry]].
 - Review :: [[file:../specs/051-quote-layout/audits.yaml][Independent review record]].
 
+** ACTIVE W052 - Proportional manuscript body and quote stretch :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-052
+:SOURCE: operator
+:CREATED: 2026-09-26
+:END:
+
+- Scope :: Body and quoted text use proportional glyph widths; inline and
+  block code retain their independent monospace scaling. Emergency delivery.
+- Definition :: [[file:../specs/052-manuscript-prose-stretch/spec.org][Body and quote stretch specification]].
+- Evidence :: [[file:../specs/052-manuscript-prose-stretch/validation.org][Geometry and layout validation]].
+- Relationship :: A bounded portion of [[#w-046][W046 - Stretch across every
+  font role]]; other roles and modes remain outside this delivery.
+- Pending decision :: Word-level scaling changes line-end hyphenation choices.
+  A rendered comparison is available for review before final delivery.
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria

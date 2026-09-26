@@ -1,0 +1,149 @@
+#+TITLE: W052 - Proportional manuscript body and quote stretch
+#+SCHEMA: 8
+#+SUBTITLE: Emergency stretch repair
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+** Outcome
+- Body, quoted, inline-code and code-block text use *proportional glyph widths*.
+** Before
+- Body and quote stretch *selects a nearby font face* and can have no effect.
+** After
+- Each role scales its *normal-width face* without changing glyph height.
+** Changes
+- Body and quote rendering acquire *geometric stretch*.
+** Unchanged
+- Monospace keeps its existing scaling, spacing and indentation contracts.
+- Headings, frontmatter, running bands, other modes and font defaults are outside scope.
+** Edge cases
+- Mixed font roles retain *independent ratios*; nested code is not scaled twice.
+- Non-100% prose scales words independently; the line-end hyphenation trade-off
+  is *pending acceptance* before final delivery.
+** Decisions
+- Reuse the template-based scaling pattern; introduce no dependency or new setting.
+** Next step
+- Resolve the demonstrated line-breaking trade-off, then retain verification
+  and independent reviews for the closure decision.
+
+* Context
+** Authority and scope
+- Route :: Emergency authorization =BYPASS-GATE-7= on 2026-09-26, extended to
+  body text, quoted blocks, inline code and code blocks. This specification
+  reconciles the temporary request after initial implementation.
+- Baseline :: =af26f7d=, the current committed checkout at intake.
+- Authorities :: [[file:../../.sdlc/project.yaml][Project profile]],
+  [[file:../../docs/ARCHITECTURE.md][Rendering architecture]],
+  [[file:../../docs/config.md][Configuration reference]],
+  [[file:../../docs/work.org::#w-046][W046 - Stretch across every font role]].
+- Relationship :: This delivers only the body/quote portion of the broader
+  W046 - All-role stretch backlog. Other font roles and other modes remain there.
+  [[file:../042-manuscript-monospace-stretch/spec.org][W042 - Inline monospace stretch]]
+  and [[file:../043-code-block-monospace-stretch/spec.org][W043 - Code-block stretch]]
+  define existing monospace geometry that must remain intact.
+- Observed defect :: A 10pt Libertinus Serif sample measured *81.95pt* at both
+  100% and 160%. Native Typst stretch selects available faces rather than
+  scaling drawn glyphs.
+- Scope :: Existing manuscript body, quote and mono font paths for Markdown
+  and Org; independent size, weight, style and spacing continue to apply.
+- Exclusions :: No manuscript source edits, preset changes, hyphenation setting,
+  new font package, CLI changes, remote publication or new font roles.
+** Unresolved decision
+- Word-level scaling can move a whole word to the next line where native
+  paragraph layout would hyphenate it into the remaining space. A synthetic
+  comparison is available; acceptance of that trade-off remains pending.
+
+* Acceptance Criteria
+** AC052.1 - Each text role has proportional width :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-052-1
+:END:
+- Criterion :: Body and quoted glyph widths equal their *normal-width face*
+  multiplied by the configured stretch, with *unchanged glyph height*.
+  Bold and italic preserve their styles. Inline and block code retain the
+  same independent proportional contract through the mono font role.
+- Proven by :: [[#rt-052-1][RT052.1 - Independent role geometry]].
+** AC052.2 - Stretched text retains paragraph flow :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-052-2
+:END:
+- Criterion :: Text *wraps between words* within the configured text area,
+  without overlap. Justified non-final lines reach the right edge. Nested
+  code uses *only its own stretch*. At 100%, prose retains native layout.
+- Proven by :: [[#rt-052-1][RT052.1 - Independent role geometry]],
+  [[#rt-052-2][RT052.2 - Wrapping and justification]] and
+  [[#ut-052-1][UT052.1 - Review stretched prose layout]].
+
+* Test Definitions
+** RT052.1 - Independent role geometry :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-052-1
+:END:
+- Covers :: [[#ac-052-1][AC052.1 - Each text role has proportional width]] and
+  [[#ac-052-2][AC052.2 - Stretched text retains paragraph flow]].
+- Boundary :: Built CLI output, compiled with Typst and measured with Poppler.
+- Cases :: Markdown and Org; each role independently at 50%, 100%, 160%, 200%;
+  a combined case with body 160%, quotes 130%, mono 120%; ordinary, bold,
+  italic, inline code inside prose and quotes, fenced and standalone code.
+- Expected :: Each word width equals its 100% reference times its own ratio
+  within 0.03pt. Glyph height is unchanged within 0.03pt. Other roles retain
+  their own widths; all marker words remain present.
+- Retention :: =TestManuscriptProportionalRoleStretch= in the ordinary Go suite.
+** RT052.2 - Wrapping and justification :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-052-2
+:END:
+- Covers :: [[#ac-052-2][AC052.2 - Stretched text retains paragraph flow]].
+- Cases :: A 100-word paragraph at 100% and 160% on 6x9in pages, 20mm margins,
+  justification enabled and disabled.
+- Expected :: All words remain within 0.05pt of the text bounds, span at least
+  three lines and do not overlap. Non-final justified lines end within 0.2pt
+  of the right text edge.
+- Retention :: =TestManuscriptStretchWrapsAndJustifies= in the ordinary Go suite.
+** UT052.1 - Review stretched prose layout :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-052-1
+:END:
+- Covers :: [[#ac-052-2][AC052.2 - Stretched text retains paragraph flow]].
+- Method :: User validation of a rendered comparison and, after delivery,
+  the configured manuscript.
+- Expected :: Width changes are visible, quotes and code retain their own
+  ratios, and paragraph word spacing and line breaking are acceptable.
+- Record :: Current result and viewing conditions in =validation.org=.
+
+* Edge Cases
+- A single-width family must still widen or narrow; a condensed face must not
+  compound geometric scaling. Whitespace is normalized to the normal face.
+- A 100% prose ratio bypasses word boxing to preserve native line breaking.
+- Extreme positive ratios retain existing validation; no new range is imposed.
+- The non-100% word-breaking trade-off remains an explicit unresolved decision.
+
+* Solution Design
+** Rendering responsibilities
+- The existing Go block renderer wraps body paragraphs and Pandoc body blocks
+  in a prose stretch scope only when body stretch differs from 100%.
+- The quote show rule uses the same helper inside its own font context.
+- The helper reads contextual stretch, normalizes each word to the 100% face,
+  retains measured descent, and scales horizontally with reflow. Outer rules
+  see the normalized stretch, preventing compounded nested scaling.
+- Normalize inter-word spacing by the normal-face to selected-face space-width
+  ratio. Existing mono rendering continues to own its independent scaling.
+- Template ownership, CLI layering and validated font values remain as in
+  [[file:../../docs/ARCHITECTURE.md][Rendering architecture]].
+** Security impact
+- No dependency, data exposure, access, network or trust-boundary change.
+  Existing escaping and font validation remain in force. Fixtures are synthetic.
+
+* Delivery Handoff
+- Route :: Emergency delivery followed by retrospective definition review.
+- Documentation :: Update =docs/config.md= for body and quote stretch semantics
+  and the accepted line-breaking contract. Link the bounded delivery from the
+  all-role stretch backlog without closing unrelated scope.
+- Verification :: [[file:validation.org][Geometry and layout results]].
+- Reviews :: [[file:audits.yaml][Independent review record]].
+- Closure :: Requires current test evidence, reviews, resolution of the
+  layout decision and explicit operator acceptance.

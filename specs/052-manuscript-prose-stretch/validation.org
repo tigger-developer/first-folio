@@ -1,0 +1,63 @@
+#+TITLE: W052 - Manuscript stretch verification
+#+STARTUP: overview
+#+TODO: AMBER RED | GREEN
+
+* Environment
+- Date :: 2026-09-26.
+- Baseline :: =af26f7d=, including the committed British preset configuration.
+- Candidate :: Body block wrappers and contextual quote/prose scaling helper;
+  existing mono helper remains in use. Synthetic CLI fixtures use portable fonts.
+- Tools :: macOS arm64, Go, Typst 0.14.2, Pandoc and Poppler.
+
+* Results
+** GREEN RT052.1 - Independent role geometry :testdef:
+:PROPERTIES:
+:REVISION: af26f7d plus W052 stretch implementation and prose_stretch_test.go
+:COMMAND: go test ./internal/manuscript -run 'TestManuscript(ProportionalRoleStretch|StretchWrapsAndJustifies)|TestRT042_4|TestRT051|TestRT050' -count=1
+:EVIDENCE: Independent role width and height assertions pass in Markdown and Org, including the combined body 160%, quote 130%, mono 120% case.
+:END:
+- RED :: Body Plainword remained 42pt at 160%, instead of 67.2pt.
+  Quoteword remained 46.06pt instead of 73.696pt. Body and quote cases failed
+  at 50%, 160% and 200% in both input formats. Existing mono cases passed.
+- GREEN :: Final focused run passed in 23.752 seconds, including existing
+  inline-mono geometry and quote/code-spacing regressions.
+- Intermediate correction :: Measuring literal spaces exposed a Typst type
+  error in whitespace normalization. Parenthesizing the length ratio corrected
+  it; the final focused run above includes that correction.
+** GREEN RT052.2 - Wrapping and justification :testdef:
+:PROPERTIES:
+:REVISION: af26f7d plus W052 stretch implementation and prose_stretch_test.go
+:COMMAND: go test ./internal/manuscript -run 'TestManuscript(ProportionalRoleStretch|StretchWrapsAndJustifies)|TestRT042_4|TestRT051|TestRT050' -count=1
+:EVIDENCE: All four 6x9in paragraph cases retain every word, wrap within margins without overlap, and align non-final justified lines to the right edge within tolerance.
+:END:
+- Preservation :: This test was initially GREEN and remains GREEN after actual
+  proportional scaling. No artificial failure was introduced.
+- Checks :: =make lint build RELEASE_VERSION=unused= passed after the final
+  whitespace correction. The local build embeds the current working presets.
+** AMBER UT052.1 - Review stretched prose layout :testdef:
+:PROPERTIES:
+:REASON: Visual acceptance and the line-end hyphenation trade-off remain unresolved.
+:END:
+- Method :: User validation; no result is inferred from automated measurements.
+- Comparison :: A synthetic narrow-column PDF compares identical glyph geometry
+  with native paragraph hyphenation against word-level scaling. The native
+  sample splits considerable, conversations, complicated and original; the
+  word-level sample places whole words on the following line.
+- Limits :: This diagnostic demonstrates a mechanism, not the private manuscript.
+
+* Broader regression evidence
+- The current-checkout full suite fails. The unchanged =af26f7d= baseline was
+  separately archived and tested; the same 39 top-level test names fail there.
+  Failures include preset-default expectations for mono size, quote clearance,
+  paragraph indentation and enabled headers. No presets were changed for this work.
+- The matching failure-name inventory alone does not prove every failure is
+  unaffected. A supplemental isolated run uses the prior =868afa8= British
+  preset, with the stretch delta, to distinguish default assumptions from this
+  implementation. The corrected candidate passed that full run: app 8.449s,
+  config 0.425s, letter 0.026s, manuscript 82.217s, play 0.007s and Typst
+  0.006s. This supplemental result does not turn the current-preset suite GREEN.
+
+* Delivery limits
+- No audit or operator acceptance is claimed. The paragraph-layout decision
+  precedes final delivery review.
+- No private manuscript regeneration, source edits, release or remote push.
