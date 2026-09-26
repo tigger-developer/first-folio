@@ -1,0 +1,272 @@
+version: 1
+audits:
+    - readiness_check: delivery-code
+      work_item: W051
+      gate: implementation
+      session_id: 20260926_135649_4b1d06
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-26T12:57:11Z"
+      revision: 3b37c36
+      verdict: PASS
+      response: |-
+        GATE: delivery-code
+        REVISION: 3b37c36
+        VERDICT: PASS
+
+        Findings and assessment:
+
+        - Bounded delta confirmed. The only production change is the blockquote show rule in templates/manuscript.typ: body-font context established before em lengths resolve, block sides set to par.spacing plus quoted-block-spacing, exactly configured left padding, it.body rendered instead of it, and first-line-indent zeroed inside the quote content scope only. No parser, config-schema, code/list/table or CLI changes; matches the recorded operator-authorized scope and the solution design in spec.org.
+        - Test quality and evidence. TestRT051QuoteLayout exercises the public CLI to PDF across md/org, 10pt/14pt quote fonts over a 12pt body, 0mm/6mm/2em insets, and 0.5em/5mm clearance plus a 5mm paragraph-gap case (36 subtests), asserting exact left-edge geometry (2em = 24pt against the 12pt body font), additive boundary increments, and unchanged following-prose separation at 0.03pt tolerance. Behavioral coverage at the user boundary per TESTING.md; no source greps demanded as regression tests.
+        - Record contract. validation.org carries GREEN for RT051.1, RT051.2 and OT051.1 with the required REVISION/COMMAND (RTs) and EVIDENCE properties, plus RED observations for the intended failures. No UTs were defined and the context records that no new user test is required because the geometric outcome is objectively verified; closure remains operator-owned, which is consistent with the emergency route. No duplicated audit verdicts, session IDs or round numbers appear in spec.org, validation.org or any supplied artefact.
+        - Regressions. Existing quote-font/property assertions in blockquote_test.go were updated to the revised show-rule form while retaining font-role assertions; full isolated suite plus lint/build are recorded GREEN for the candidate. Adjacent contracts (code-block clearance, line spacing, TOC) supplied unchanged and passing.
+        - Documentation. docs/config.md 0.19, format-manuscript-markdown.md 0.6 and format-manuscript-org.md 0.6 document exact quote indentation, additive clearance and body-font em resolution; wording is impersonal and factual per DOCUMENTATION.md. Architecture documentation is unaffected by this layout-level change.
+        - Structural review. Rendering responsibility stays in the template with Go owning only data, consistent with docs/ARCHITECTURE.md; no unauthorized complexity or scope expansion introduced.
+
+        No blocking findings.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-4038619263.log
+          readiness_check: delivery-code
+          cache_key: sha256:ce2c8e9784d53f5df209dc46a1593d855a7130f056a5b526a07561460582f9d3
+          session_id: 20260926_135649_4b1d06
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 2e499b96c5aeeccbc4a820716f1fc2b92e9c4874b7c0dff270d3351d1e982ac1
+              bytes: 44254
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: e993444e0f3b1ee394da9a88cea1d568a138a3cf5a10dfca523b9e347b336081
+              bytes: 7236
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: 38e5a03ec324eb92d6ec1db3bd71867951561fb22e11f7eb03e4042a712580d2
+              bytes: 5496
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/blockquote_test.go
+              sha256: b2ca675f850c21226fee2a5f2569b11f78a777593a4be7ffd0497759fc8fc476
+              bytes: 10924
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/code_block_clearance_test.go
+              sha256: 17e306602d354322f0fef929cac0faae1d11084ddc5810ba5f7f0624c17c47d7
+              bytes: 3701
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 18211df2f7ab8a551aecc63ddb22e0b59d2f797f6446e2829aa2f036617c28b5
+              bytes: 26963
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/line_spacing_test.go
+              sha256: b17fa405e28cca55e59134b72821bc831edae1605de85a8374d26149cbf8d127
+              bytes: 5328
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: ce3a3180d24091c8155cfd12b33b38a3780e6f9ea4c9fe4b8c9b0c7d9929aace
+              bytes: 31317
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/quote_layout_test.go
+              sha256: 335495b652b6623b1d68beac38fbd7b2f0fc30dd6be67fd68194ea2db0074761
+              bytes: 3414
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/toc_line_spacing_test.go
+              sha256: 8bef4f3c0dbcfff6ffd07885f786f687702f7de99c844d55a17e497b3aba22c0
+              bytes: 5209
+            - path: /Users/tigger/code/tigoss/first-folio/specs/051-quote-layout/spec.org
+              sha256: e16d1cdaa52e6d78c2c82b503397ec8d5a4034e40b608fd3e24982c88f744852
+              bytes: 7180
+            - path: /Users/tigger/code/tigoss/first-folio/specs/051-quote-layout/validation.org
+              sha256: 373ccc728077b57d5ce89339a35acaec29bc413ba896bbb1c3f0612c947d454c
+              bytes: 3627
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 7c9c4bbee9f47b5ef4c05f42f264985a302ffea7e779963efbb45e20e39fe5d4
+              bytes: 23392
+          round: 1
+          revision: 3b37c36
+          verdict: PASS
+          response: |-
+            GATE: delivery-code
+            REVISION: 3b37c36
+            VERDICT: PASS
+
+            Findings and assessment:
+
+            - Bounded delta confirmed. The only production change is the blockquote show rule in templates/manuscript.typ: body-font context established before em lengths resolve, block sides set to par.spacing plus quoted-block-spacing, exactly configured left padding, it.body rendered instead of it, and first-line-indent zeroed inside the quote content scope only. No parser, config-schema, code/list/table or CLI changes; matches the recorded operator-authorized scope and the solution design in spec.org.
+            - Test quality and evidence. TestRT051QuoteLayout exercises the public CLI to PDF across md/org, 10pt/14pt quote fonts over a 12pt body, 0mm/6mm/2em insets, and 0.5em/5mm clearance plus a 5mm paragraph-gap case (36 subtests), asserting exact left-edge geometry (2em = 24pt against the 12pt body font), additive boundary increments, and unchanged following-prose separation at 0.03pt tolerance. Behavioral coverage at the user boundary per TESTING.md; no source greps demanded as regression tests.
+            - Record contract. validation.org carries GREEN for RT051.1, RT051.2 and OT051.1 with the required REVISION/COMMAND (RTs) and EVIDENCE properties, plus RED observations for the intended failures. No UTs were defined and the context records that no new user test is required because the geometric outcome is objectively verified; closure remains operator-owned, which is consistent with the emergency route. No duplicated audit verdicts, session IDs or round numbers appear in spec.org, validation.org or any supplied artefact.
+            - Regressions. Existing quote-font/property assertions in blockquote_test.go were updated to the revised show-rule form while retaining font-role assertions; full isolated suite plus lint/build are recorded GREEN for the candidate. Adjacent contracts (code-block clearance, line spacing, TOC) supplied unchanged and passing.
+            - Documentation. docs/config.md 0.19, format-manuscript-markdown.md 0.6 and format-manuscript-org.md 0.6 document exact quote indentation, additive clearance and body-font em resolution; wording is impersonal and factual per DOCUMENTATION.md. Architecture documentation is unaffected by this layout-level change.
+            - Structural review. Rendering responsibility stays in the template with Go owning only data, consistent with docs/ARCHITECTURE.md; no unauthorized complexity or scope expansion introduced.
+
+            No blocking findings.
+          updated: "2026-09-26T12:56:46Z"
+    - work_item: W051
+      gate: definition
+      session_id: 20260926_135724_5cfbc8
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-26T12:58:03Z"
+      revision: 3b37c36
+      verdict: PASS
+      response: |-
+        GATE: definition
+        REVISION: 3b37c36
+        VERDICT: PASS
+
+        Assessment notes (retrospective, Workflow: emergency):
+
+        Requirements and traceability
+        - Spec.org contains no semantically identified annotation record or block; no feedback.yaml was supplied, so no disposition check applies.
+        - No duplicated audit state: spec.org links audits.yaml without copying findings, status, revisions or session identity; validation.org carries only execution states, which ORG-SCHEMA assigns to it. The "Independent review record" reference is a permitted link, not duplication.
+        - Schema is sound: AC051.1/AC051.2 with :ac: tags; RT051.1/RT051.2/OT051.1 with :testdef: tags; validation.org declares the TODO line, current GREEN states on all three tests with non-empty REVISION/EVIDENCE and COMMAND on both RTs. RED observations are retained as run history.
+        - Traceability is bidirectional and complete: both ACs name their RT/OT proofs; both RTs and the OT name the ACs they cover. Numeric expectations are internally consistent (5mm = 14.173pt; 0.5em at 12pt body = 6pt; delta 8.173pt; 2em = 24pt; 6mm inset over 20mm margin = 26mm; 5mm prose indent = 25mm), and they match both the test code and the OT evidence values.
+
+        Fidelity and scope
+        - The design matches the recorded operator authorization: exact complete inset per quote paragraph, additive clearance over normal paragraph separation, body-font em resolution, and preserved font/source/prose/code contracts. The production delta is confined to the quote show rule in templates/manuscript.typ (body-font text scope, block above/below par.spacing + quoted-block-spacing, pad of exactly quote-block-indent, it.body instead of it, zero first-line indent inside the quote only). No parser, loader, CLI or preset changes; no new concepts, moving parts, or template-inflation mechanisms. No materially simpler solution is apparent; the change is already minimal.
+
+        Tests
+        - RT051.1/RT051.2 execute the built CLI through PDF word geometry (Poppler), not source-text greps; the matrix (md/org, 10/14pt quote against 12pt body, 0mm/6mm/2em, clearance and paragraph-gap scenarios) makes the required behaviour observable and covers both ACs' independent conditions, including the two-paragraph no-first-line-indent edge case. OT051.1 is a bounded one-off probe with recorded bounds and no metered or private-content exposure. No UT is defined; the spec explicitly records that objective rendered geometry covers this repair and no subjective layout requirement was introduced, so demanding a UT would be artificial.
+
+        Documentation and standards
+        - The handoff identifies affected documentation, and the delivered updates are present and current: config.md 0.19 and both manuscript format references 0.6 record the exact-indent and additive-clearance semantics with changelog entries; architecture docs correctly unchanged. Voice and frontmatter comply with DOCUMENTATION.md; the BYPASS-GATE-7 authorization line is concise approval metadata, not conversation narration. Security impact is stated with a supported no-change rationale; no contract, store or compatibility transition is implicated beyond the documented behavioural correction of the defective inset.
+
+        No blocking findings. No bounded follow-up work is required for this sign-off; closure remains with the operator.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-476904876.log
+          cache_key: sha256:a96380ed8433aca2b7a8d4e1fff25538f74a86373a58d3719a099170d6a5884f
+          session_id: 20260926_135724_5cfbc8
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 2e499b96c5aeeccbc4a820716f1fc2b92e9c4874b7c0dff270d3351d1e982ac1
+              bytes: 44254
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-markdown.md
+              sha256: e993444e0f3b1ee394da9a88cea1d568a138a3cf5a10dfca523b9e347b336081
+              bytes: 7236
+            - path: /Users/tigger/code/tigoss/first-folio/docs/format-manuscript-org.md
+              sha256: 38e5a03ec324eb92d6ec1db3bd71867951561fb22e11f7eb03e4042a712580d2
+              bytes: 5496
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/blockquote_test.go
+              sha256: b2ca675f850c21226fee2a5f2569b11f78a777593a4be7ffd0497759fc8fc476
+              bytes: 10924
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/code_block_clearance_test.go
+              sha256: 17e306602d354322f0fef929cac0faae1d11084ddc5810ba5f7f0624c17c47d7
+              bytes: 3701
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 18211df2f7ab8a551aecc63ddb22e0b59d2f797f6446e2829aa2f036617c28b5
+              bytes: 26963
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/line_spacing_test.go
+              sha256: b17fa405e28cca55e59134b72821bc831edae1605de85a8374d26149cbf8d127
+              bytes: 5328
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: ce3a3180d24091c8155cfd12b33b38a3780e6f9ea4c9fe4b8c9b0c7d9929aace
+              bytes: 31317
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/quote_layout_test.go
+              sha256: 335495b652b6623b1d68beac38fbd7b2f0fc30dd6be67fd68194ea2db0074761
+              bytes: 3414
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 793c998fff43cc150d537de313bbc48423e80f38acd644e497ce729df2f20bcd
+              bytes: 34942
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/toc_line_spacing_test.go
+              sha256: 8bef4f3c0dbcfff6ffd07885f786f687702f7de99c844d55a17e497b3aba22c0
+              bytes: 5209
+            - path: /Users/tigger/code/tigoss/first-folio/specs/051-quote-layout/spec.org
+              sha256: e16d1cdaa52e6d78c2c82b503397ec8d5a4034e40b608fd3e24982c88f744852
+              bytes: 7180
+            - path: /Users/tigger/code/tigoss/first-folio/specs/051-quote-layout/validation.org
+              sha256: 373ccc728077b57d5ce89339a35acaec29bc413ba896bbb1c3f0612c947d454c
+              bytes: 3627
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 7c9c4bbee9f47b5ef4c05f42f264985a302ffea7e779963efbb45e20e39fe5d4
+              bytes: 23392
+          round: 1
+          revision: 3b37c36
+          verdict: PASS
+          response: |-
+            GATE: definition
+            REVISION: 3b37c36
+            VERDICT: PASS
+
+            Assessment notes (retrospective, Workflow: emergency):
+
+            Requirements and traceability
+            - Spec.org contains no semantically identified annotation record or block; no feedback.yaml was supplied, so no disposition check applies.
+            - No duplicated audit state: spec.org links audits.yaml without copying findings, status, revisions or session identity; validation.org carries only execution states, which ORG-SCHEMA assigns to it. The "Independent review record" reference is a permitted link, not duplication.
+            - Schema is sound: AC051.1/AC051.2 with :ac: tags; RT051.1/RT051.2/OT051.1 with :testdef: tags; validation.org declares the TODO line, current GREEN states on all three tests with non-empty REVISION/EVIDENCE and COMMAND on both RTs. RED observations are retained as run history.
+            - Traceability is bidirectional and complete: both ACs name their RT/OT proofs; both RTs and the OT name the ACs they cover. Numeric expectations are internally consistent (5mm = 14.173pt; 0.5em at 12pt body = 6pt; delta 8.173pt; 2em = 24pt; 6mm inset over 20mm margin = 26mm; 5mm prose indent = 25mm), and they match both the test code and the OT evidence values.
+
+            Fidelity and scope
+            - The design matches the recorded operator authorization: exact complete inset per quote paragraph, additive clearance over normal paragraph separation, body-font em resolution, and preserved font/source/prose/code contracts. The production delta is confined to the quote show rule in templates/manuscript.typ (body-font text scope, block above/below par.spacing + quoted-block-spacing, pad of exactly quote-block-indent, it.body instead of it, zero first-line indent inside the quote only). No parser, loader, CLI or preset changes; no new concepts, moving parts, or template-inflation mechanisms. No materially simpler solution is apparent; the change is already minimal.
+
+            Tests
+            - RT051.1/RT051.2 execute the built CLI through PDF word geometry (Poppler), not source-text greps; the matrix (md/org, 10/14pt quote against 12pt body, 0mm/6mm/2em, clearance and paragraph-gap scenarios) makes the required behaviour observable and covers both ACs' independent conditions, including the two-paragraph no-first-line-indent edge case. OT051.1 is a bounded one-off probe with recorded bounds and no metered or private-content exposure. No UT is defined; the spec explicitly records that objective rendered geometry covers this repair and no subjective layout requirement was introduced, so demanding a UT would be artificial.
+
+            Documentation and standards
+            - The handoff identifies affected documentation, and the delivered updates are present and current: config.md 0.19 and both manuscript format references 0.6 record the exact-indent and additive-clearance semantics with changelog entries; architecture docs correctly unchanged. Voice and frontmatter comply with DOCUMENTATION.md; the BYPASS-GATE-7 authorization line is concise approval metadata, not conversation narration. Security impact is stated with a supported no-change rationale; no contract, store or compatibility transition is implicated beyond the documented behavioural correction of the defective inset.
+
+            No blocking findings. No bounded follow-up work is required for this sign-off; closure remains with the operator.
+          updated: "2026-09-26T12:57:23Z"
