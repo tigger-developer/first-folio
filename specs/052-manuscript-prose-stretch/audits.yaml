@@ -1,0 +1,394 @@
+version: 1
+audits:
+    - readiness_check: delivery-code
+      work_item: W052
+      gate: implementation
+      session_id: 20260926_164734_4bd9f7
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-26T15:47:53Z"
+      revision: a6cda52
+      verdict: PASS
+      response: |-
+        GATE: delivery-code
+        REVISION: a6cda52
+        VERDICT: PASS
+
+        Supporting assessment (no blocking findings):
+
+        - RT052.1–RT052.5 and OT052.1 are GREEN with current REVISION, COMMAND and EVIDENCE properties; UT052.1 is AMBER with a recorded reason, which is permitted at this gate. W053 paragraph preservation (RT053.1 regression) is retained and GREEN in the full suite (final-suite.log, all packages passing, no skips).
+        - RED evidence is credible and behaviour-intended: red.log shows the mode matrix failing before implementation; geometry.log shows the shaping-sensitive width failures; unmarked-red.log shows the word-joiner defect reproduced before its fix. Green evidence is current for the same candidate.
+        - Implementation matches the recorded emergency scope: config.go validates folio.manuscript.hyphenation (true/false/auto, quoted forms, full path in errors); render.go builds the dictionary only for stretched prose with hyphenation enabled; the template applies English discretionary breaks, excludes shaping-sensitive points by width comparison, inserts a word joiner before each soft hyphen, and keeps mono explicitly unhyphenated. 100% prose bypasses word boxing, preserving native layout.
+        - The speedata/hyphenation dependency and vendored TeX patterns are within the authorized design, pinned in go.mod/go.sum, with the licence notice retained (NOTICE.txt). govulncheck reports no vulnerabilities on the patched Go 1.26.6 toolchain; the initial advisory exposure and toolchain switch are recorded transparently.
+        - Documentation is current: docs/config.md 0.22 documents hyphenation, stretch semantics, and the inserted-mark/native-width behaviour for the pending UT, in impersonal voice; presets record hyphenation: auto with US inheritance via ordinary merging. No materially stale required documentation.
+        - No audit findings, verdicts, round numbers or session identifiers are duplicated in the supplied specification, validation record, work ledger or other artefacts; audit state is linked to audits.yaml only.
+
+        Bounded follow-up outside this verdict: complete UT052.1 operator validation and operator closure, per the emergency route.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-357962197.log
+          readiness_check: delivery-code
+          cache_key: sha256:9e0cd342f9ddccf1d24cb7dae228de23d4541b12baf1444f22ba234082181803
+          session_id: 20260926_164734_4bd9f7
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: fbceb4dffd2ab69a3edcd1dd924873bdbe5298cffa4c2e65548e04541fb78f73
+              bytes: 5027
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/Makefile
+              sha256: a117866e9b9b3f73759fff79a64f2e6657504d78e8ff368f696ea9c4769702f9
+              bytes: 1378
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: 5a418643f92d20df8a85bebc58add14605ce266da8326418fe168ba03ebb4b2b
+              bytes: 5883
+            - path: /Users/tigger/code/tigoss/first-folio/assets.go
+              sha256: bdc784bb612a648043531d47a95890c61ca78dbc36743dfe7e50c1495da04e77
+              bytes: 368
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 611ecc556876f0034f61970f089694b939769b7502165d9442330d7f2f21e24b
+              bytes: 46620
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 0212afc6fb5512c5aa054847234b8f50c2bfff6d9406c9ead69fc5883bbb4cd3
+              bytes: 256179
+            - path: /Users/tigger/code/tigoss/first-folio/go.mod
+              sha256: abff67189b6d6b305cae6c30b07ed2c0e396238c1b33b624d6444c090e5ebd83
+              bytes: 137
+            - path: /Users/tigger/code/tigoss/first-folio/go.sum
+              sha256: a677612ae6f7e7ec74b67fc87c340d291139264309a8b556f93ad0067a31527b
+              bytes: 541
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config.go
+              sha256: 30cf92f6705d001e29a3eed9fab0876bf401898379ff6781fb0cad3f4194c04b
+              bytes: 8050
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config_test.go
+              sha256: 19ad474584858ed37368dd5c211180246dc6a5fb8f55a81cc32cc680436cfe87
+              bytes: 4732
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 7567633f167e8879f1ecd8722a3441b87b4dcbe8505ec0556702222c9ab8a184
+              bytes: 27055
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 329b680c259dc49b7471e860c95091905213786244928f3d7ff19ef7334a9100
+              bytes: 12356
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/hyphenation.go
+              sha256: 5eb6d3a739c8f85177a45671a07020c4f12999c539e029e4bb3f2dfe73509bee
+              bytes: 2538
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/hyphenation/NOTICE.txt
+              sha256: cc060ba76aef06de684b3a5165bf907e9f7140a5c67212338bcb7e52ec3ac596
+              bytes: 689
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/hyphenation/en-us.hyp.txt
+              sha256: 5e785c27e151f878c312991d937b5582615b77737ab30bac413d5967d6aa21da
+              bytes: 169
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/hyphenation/en-us.pat.txt
+              sha256: 0f57318b878b132547ae92db39a6e1d1cf2a05d9008874955d6ecb910007a463
+              bytes: 31489
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: bd7bb952f4458784ac47db20311c5393bd85cdcbef7e38700692cb84d0da88fc
+              bytes: 5752
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/prose_stretch_test.go
+              sha256: daf280a3f29dbd1b8f7f28ff9c7589e20047f34e6adf219fd212957ea156c5c7
+              bytes: 11301
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 4522bb3933cd32ca7bc4f4d6b577f9839613906baf8f2cdf0fe318835ec562e2
+              bytes: 35695
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 77a40c42c0dc214c9727e7d6a84b1a1c98100734a564356472343ecf2370e061
+              bytes: 14489
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: 88bfae50db026568ac0501f852f7cc48d9b2e44daf4e2b13dcbd3a1d1d1de229
+              bytes: 2181
+            - path: /Users/tigger/code/tigoss/first-folio/specs/052-manuscript-prose-stretch/spec.org
+              sha256: 62c4fbe8fdd8245f83b76b21c1f7f5b26ab9516752de8297f46b100e9e5f72b0
+              bytes: 13211
+            - path: /Users/tigger/code/tigoss/first-folio/specs/052-manuscript-prose-stretch/validation.org
+              sha256: d42a0228d5f4fefc98b8f7509854b900e8f2914b4e89f2a7f332d69c088a588c
+              bytes: 9024
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 3d5551958699c66dc0edb19a800b12a197fee4c049f982976a6e0ca53e4277b8
+              bytes: 25955
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/final-suite.log
+              sha256: 6a62d5bd401bd8f311bf5a4d9186823dfae26c8fa5d8883d8536972f52ec38a6
+              bytes: 611
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/geometry.log
+              sha256: 950bb5ad52b59bad5a2dc9b6ea990420c437c2b3ab765585f906c85d4e76f802
+              bytes: 293
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/red.log
+              sha256: 260947f0aa116cf346a52e982d5751bb4ce706fa56a5621124a5323e240a2564
+              bytes: 3542
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/unmarked-green.log
+              sha256: c1b8c3a3990030236b0e186e6f9f184b46492182463b95ed8e10d02c8ff29071
+              bytes: 72
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/unmarked-red.log
+              sha256: da21176b6e0e7151290ed0e5df7e090dcdae676f232131ac2cfe6461a42203e2
+              bytes: 9779
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/vuln-patched.log
+              sha256: 3016e51e4eac0d421674d2128bbbdefb2924b4646e0c14a1ab034977ad73fae5
+              bytes: 26
+          round: 1
+          revision: a6cda52
+          verdict: PASS
+          response: |-
+            GATE: delivery-code
+            REVISION: a6cda52
+            VERDICT: PASS
+
+            Supporting assessment (no blocking findings):
+
+            - RT052.1–RT052.5 and OT052.1 are GREEN with current REVISION, COMMAND and EVIDENCE properties; UT052.1 is AMBER with a recorded reason, which is permitted at this gate. W053 paragraph preservation (RT053.1 regression) is retained and GREEN in the full suite (final-suite.log, all packages passing, no skips).
+            - RED evidence is credible and behaviour-intended: red.log shows the mode matrix failing before implementation; geometry.log shows the shaping-sensitive width failures; unmarked-red.log shows the word-joiner defect reproduced before its fix. Green evidence is current for the same candidate.
+            - Implementation matches the recorded emergency scope: config.go validates folio.manuscript.hyphenation (true/false/auto, quoted forms, full path in errors); render.go builds the dictionary only for stretched prose with hyphenation enabled; the template applies English discretionary breaks, excludes shaping-sensitive points by width comparison, inserts a word joiner before each soft hyphen, and keeps mono explicitly unhyphenated. 100% prose bypasses word boxing, preserving native layout.
+            - The speedata/hyphenation dependency and vendored TeX patterns are within the authorized design, pinned in go.mod/go.sum, with the licence notice retained (NOTICE.txt). govulncheck reports no vulnerabilities on the patched Go 1.26.6 toolchain; the initial advisory exposure and toolchain switch are recorded transparently.
+            - Documentation is current: docs/config.md 0.22 documents hyphenation, stretch semantics, and the inserted-mark/native-width behaviour for the pending UT, in impersonal voice; presets record hyphenation: auto with US inheritance via ordinary merging. No materially stale required documentation.
+            - No audit findings, verdicts, round numbers or session identifiers are duplicated in the supplied specification, validation record, work ledger or other artefacts; audit state is linked to audits.yaml only.
+
+            Bounded follow-up outside this verdict: complete UT052.1 operator validation and operator closure, per the emergency route.
+          updated: "2026-09-26T15:47:33Z"
+    - work_item: W052
+      gate: definition
+      session_id: "20260926_164810_0236e8"
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-26T15:48:46Z"
+      revision: a6cda52
+      verdict: PASS
+      response: |-
+        GATE: definition
+        REVISION: a6cda52
+        VERDICT: PASS
+
+        Assessment summary (retrospective, Workflow: emergency):
+
+        Fidelity and traceability
+        - All four ACs carry :ac: tags and direct test links; every test has a unique :testdef: heading and ID matching validation.org. AC052.1–052.4 map to RT052.1–052.5, OT052.1 and UT052.1 without gaps; each test states its covered ACs.
+        - The superseded whole-word limitation is preserved as decision history without pretending prior acceptance; #+OPERATOR_SIGNOFF: PENDING and no closure claim. This matches the recorded operator intent (stretch for body/quote/inline/block, then configurable hyphenation under the same ticket).
+        - W053's paragraph-corruption repair is referenced, and TestStretchedChapterPreservesParagraphs is retained under RT052.4, satisfying the required regression coverage.
+
+        Annotation and duplication checks
+        - spec.org contains no annotation records or blocks in the documented format; the "Hyphenation decision history" and "Superseded initial decision" entries are ordinary decision prose, not feedback records.
+        - No audit verdicts, rounds, revisions or session identities are duplicated in spec.org or validation.org; validation.org carries only its designated execution states and links to audits.yaml.
+
+        Design and architecture fit
+        - The design resolves the significant decisions: prose-stretch scope conditional on non-100% ratio, whitespace normalization, nested-role normalization to prevent compound scaling, embedded pinned hyphenation library plus CC0 pattern data with a recorded notice, shaping-sensitive break-point exclusion, word-joiner before soft hyphens, and code explicitly unhyphenated. Template ownership and layering remain per docs/ARCHITECTURE.md.
+        - Scope is proportionate to the authorization: mono keeps its existing W042/W043 contract, no new font roles, presets or CLI surface; the added dependency is justified (native Typst hyphenation cannot act inside the word-boxing mechanism) and pinned.
+        - Security impact is recorded: pinned dependency, no network, bounded substring search, synthetic fixtures; govulncheck passes on Go 1.26.6 (vuln-patched.log).
+
+        Tests, coverage, and limits
+        - Test definitions are behavioural: built CLI + Typst + Poppler geometry measurements, config-load validation at the loader boundary, and a bounded OT on temporary copies respecting private-manuscript privacy. No source-text greps.
+        - Execution evidence is current and consistent: RT052.1–052.5 and OT052.1 GREEN with REVISION/COMMAND/EVIDENCE; UT052.1 AMBER with reason (permitted outstanding user validation). Supplied logs corroborate RED (red.log, geometry.log, unmarked-red.log) and the full current-preset suite pass (final-suite.log).
+        - Documented limits match the implementation and are visible in docs/config.md 0.22 (non-ASCII and >128-letter tokens whole, ligature/kerning-sensitive breaks excluded, native-width discretionary hyphens, code unhyphenated).
+
+        No violated requirement, approved decision, applicable standard, or concrete correctness/security defect found. The specification is fit for sign-off handoff; outstanding UT052.1 execution remains a closure matter, not a definition defect.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-2816974395.log
+          cache_key: sha256:1acdeed14957622f6bbb6a3a5b6079e46ccf39997181db3e7f39e8c743c1bd14
+          session_id: "20260926_164810_0236e8"
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: fbceb4dffd2ab69a3edcd1dd924873bdbe5298cffa4c2e65548e04541fb78f73
+              bytes: 5027
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/Makefile
+              sha256: a117866e9b9b3f73759fff79a64f2e6657504d78e8ff368f696ea9c4769702f9
+              bytes: 1378
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: 5a418643f92d20df8a85bebc58add14605ce266da8326418fe168ba03ebb4b2b
+              bytes: 5883
+            - path: /Users/tigger/code/tigoss/first-folio/assets.go
+              sha256: bdc784bb612a648043531d47a95890c61ca78dbc36743dfe7e50c1495da04e77
+              bytes: 368
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 611ecc556876f0034f61970f089694b939769b7502165d9442330d7f2f21e24b
+              bytes: 46620
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 0212afc6fb5512c5aa054847234b8f50c2bfff6d9406c9ead69fc5883bbb4cd3
+              bytes: 256179
+            - path: /Users/tigger/code/tigoss/first-folio/go.mod
+              sha256: abff67189b6d6b305cae6c30b07ed2c0e396238c1b33b624d6444c090e5ebd83
+              bytes: 137
+            - path: /Users/tigger/code/tigoss/first-folio/go.sum
+              sha256: a677612ae6f7e7ec74b67fc87c340d291139264309a8b556f93ad0067a31527b
+              bytes: 541
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config.go
+              sha256: 30cf92f6705d001e29a3eed9fab0876bf401898379ff6781fb0cad3f4194c04b
+              bytes: 8050
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config_test.go
+              sha256: 19ad474584858ed37368dd5c211180246dc6a5fb8f55a81cc32cc680436cfe87
+              bytes: 4732
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: 7567633f167e8879f1ecd8722a3441b87b4dcbe8505ec0556702222c9ab8a184
+              bytes: 27055
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 329b680c259dc49b7471e860c95091905213786244928f3d7ff19ef7334a9100
+              bytes: 12356
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/hyphenation.go
+              sha256: 5eb6d3a739c8f85177a45671a07020c4f12999c539e029e4bb3f2dfe73509bee
+              bytes: 2538
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/hyphenation/NOTICE.txt
+              sha256: cc060ba76aef06de684b3a5165bf907e9f7140a5c67212338bcb7e52ec3ac596
+              bytes: 689
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/hyphenation/en-us.hyp.txt
+              sha256: 5e785c27e151f878c312991d937b5582615b77737ab30bac413d5967d6aa21da
+              bytes: 169
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/hyphenation/en-us.pat.txt
+              sha256: 0f57318b878b132547ae92db39a6e1d1cf2a05d9008874955d6ecb910007a463
+              bytes: 31489
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: bd7bb952f4458784ac47db20311c5393bd85cdcbef7e38700692cb84d0da88fc
+              bytes: 5752
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/prose_stretch_test.go
+              sha256: daf280a3f29dbd1b8f7f28ff9c7589e20047f34e6adf219fd212957ea156c5c7
+              bytes: 11301
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 4522bb3933cd32ca7bc4f4d6b577f9839613906baf8f2cdf0fe318835ec562e2
+              bytes: 35695
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 77a40c42c0dc214c9727e7d6a84b1a1c98100734a564356472343ecf2370e061
+              bytes: 14489
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: 88bfae50db026568ac0501f852f7cc48d9b2e44daf4e2b13dcbd3a1d1d1de229
+              bytes: 2181
+            - path: /Users/tigger/code/tigoss/first-folio/specs/052-manuscript-prose-stretch/spec.org
+              sha256: 62c4fbe8fdd8245f83b76b21c1f7f5b26ab9516752de8297f46b100e9e5f72b0
+              bytes: 13211
+            - path: /Users/tigger/code/tigoss/first-folio/specs/052-manuscript-prose-stretch/validation.org
+              sha256: d42a0228d5f4fefc98b8f7509854b900e8f2914b4e89f2a7f332d69c088a588c
+              bytes: 9024
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 3d5551958699c66dc0edb19a800b12a197fee4c049f982976a6e0ca53e4277b8
+              bytes: 25955
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/final-suite.log
+              sha256: 6a62d5bd401bd8f311bf5a4d9186823dfae26c8fa5d8883d8536972f52ec38a6
+              bytes: 611
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/geometry.log
+              sha256: 950bb5ad52b59bad5a2dc9b6ea990420c437c2b3ab765585f906c85d4e76f802
+              bytes: 293
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/red.log
+              sha256: 260947f0aa116cf346a52e982d5751bb4ce706fa56a5621124a5323e240a2564
+              bytes: 3542
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/unmarked-green.log
+              sha256: c1b8c3a3990030236b0e186e6f9f184b46492182463b95ed8e10d02c8ff29071
+              bytes: 72
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/unmarked-red.log
+              sha256: da21176b6e0e7151290ed0e5df7e090dcdae676f232131ac2cfe6461a42203e2
+              bytes: 9779
+            - path: /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/tmp.TZLWrPwG44/vuln-patched.log
+              sha256: 3016e51e4eac0d421674d2128bbbdefb2924b4646e0c14a1ab034977ad73fae5
+              bytes: 26
+          round: 1
+          revision: a6cda52
+          verdict: PASS
+          response: |-
+            GATE: definition
+            REVISION: a6cda52
+            VERDICT: PASS
+
+            Assessment summary (retrospective, Workflow: emergency):
+
+            Fidelity and traceability
+            - All four ACs carry :ac: tags and direct test links; every test has a unique :testdef: heading and ID matching validation.org. AC052.1–052.4 map to RT052.1–052.5, OT052.1 and UT052.1 without gaps; each test states its covered ACs.
+            - The superseded whole-word limitation is preserved as decision history without pretending prior acceptance; #+OPERATOR_SIGNOFF: PENDING and no closure claim. This matches the recorded operator intent (stretch for body/quote/inline/block, then configurable hyphenation under the same ticket).
+            - W053's paragraph-corruption repair is referenced, and TestStretchedChapterPreservesParagraphs is retained under RT052.4, satisfying the required regression coverage.
+
+            Annotation and duplication checks
+            - spec.org contains no annotation records or blocks in the documented format; the "Hyphenation decision history" and "Superseded initial decision" entries are ordinary decision prose, not feedback records.
+            - No audit verdicts, rounds, revisions or session identities are duplicated in spec.org or validation.org; validation.org carries only its designated execution states and links to audits.yaml.
+
+            Design and architecture fit
+            - The design resolves the significant decisions: prose-stretch scope conditional on non-100% ratio, whitespace normalization, nested-role normalization to prevent compound scaling, embedded pinned hyphenation library plus CC0 pattern data with a recorded notice, shaping-sensitive break-point exclusion, word-joiner before soft hyphens, and code explicitly unhyphenated. Template ownership and layering remain per docs/ARCHITECTURE.md.
+            - Scope is proportionate to the authorization: mono keeps its existing W042/W043 contract, no new font roles, presets or CLI surface; the added dependency is justified (native Typst hyphenation cannot act inside the word-boxing mechanism) and pinned.
+            - Security impact is recorded: pinned dependency, no network, bounded substring search, synthetic fixtures; govulncheck passes on Go 1.26.6 (vuln-patched.log).
+
+            Tests, coverage, and limits
+            - Test definitions are behavioural: built CLI + Typst + Poppler geometry measurements, config-load validation at the loader boundary, and a bounded OT on temporary copies respecting private-manuscript privacy. No source-text greps.
+            - Execution evidence is current and consistent: RT052.1–052.5 and OT052.1 GREEN with REVISION/COMMAND/EVIDENCE; UT052.1 AMBER with reason (permitted outstanding user validation). Supplied logs corroborate RED (red.log, geometry.log, unmarked-red.log) and the full current-preset suite pass (final-suite.log).
+            - Documented limits match the implementation and are visible in docs/config.md 0.22 (non-ASCII and >128-letter tokens whole, ligature/kerning-sensitive breaks excluded, native-width discretionary hyphens, code unhyphenated).
+
+            No violated requirement, approved decision, applicable standard, or concrete correctness/security defect found. The specification is fit for sign-off handoff; outstanding UT052.1 execution remains a closure matter, not a definition defect.
+          updated: "2026-09-26T15:48:09Z"
