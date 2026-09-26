@@ -3,7 +3,7 @@
 #+SUBTITLE: Emergency reconciliation of source frontmatter configuration
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-09-26
 
 * Synopsis
 :PROPERTIES:

@@ -3,7 +3,7 @@
 #+SUBTITLE: Emergency regression repair
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-09-26
 
 * Synopsis
 :PROPERTIES:
@@ -60,6 +60,7 @@
   Side-specific overrides retain precedence over the shared clearance value.
 - Proven by :: [[#rt-050-1][RT050.1 - Rendered code boundary clearances]].
 - Additional evidence :: [[#ot-050-1][OT050.1 - Reported excerpt visual probe]].
+- User validation :: [[#ut-050-1][UT050.1 - Rendered code spacing acceptance]].
 ** AC050.2 - Existing code semantics remain intact :ac:
 :PROPERTIES:
 :CUSTOM_ID: ac-050-2
@@ -117,14 +118,25 @@
 - Bounds :: Local render and PDF inspection only; no source edits, network
   calls or private excerpt content retained in repository evidence.
 
+** UT050.1 - Rendered code spacing acceptance :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-050-1
+:END:
+- Covers :: [[#ac-050-1][AC050.1 - Code blocks preserve paragraph separation]].
+- Method :: User validation of the delivered code-block spacing repair.
+- Expected :: Explicit acceptance of the rendered spacing around standalone code.
+- Provenance :: Retrospective closure record, accepted 2026-09-26; this does not
+  represent an additional pre-implementation test requirement.
+
 * Edge Cases
 - Smaller monospace text *must not erase surrounding separation*.
 - Adjacent block margins retain Typst's existing collapse behaviour; this change
   does not sum two clearances at one shared boundary.
 - Code indentation resolves *before changing the vertical-spacing context*,
   retaining its previous unit basis. No new indentation contract is introduced.
-- No subjective font or layout redesign is involved; objective PDF geometry
-  and existing rendering regressions provide verification without a new UT.
+- Initial verification used objective PDF geometry and existing rendering
+  regressions without requiring a UT. Explicit user validation is additionally
+  retained in the closure record.
 
 * Solution Design
 ** Rendering responsibility

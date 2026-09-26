@@ -55,6 +55,19 @@
 - Bounds :: No manuscript/configuration source edits. Private excerpt and
   screenshots remain outside repository evidence. No operator acceptance inferred.
 
+** GREEN UT050.1 - Rendered code spacing acceptance :testdef:
+:PROPERTIES:
+:REVISION: 3fced7c - paragraph separation around manuscript code blocks
+:EVIDENCE: Explicit PASS for W050 user validation and approval of ticket closure, 2026-09-26.
+:END:
+- Method :: User validation.
+- Result :: Rendered code spacing accepted. Viewing conditions were not recorded.
+- Relationship :: Additional closure evidence; the earlier agent inspection
+  remains a separate result and is not reclassified as user validation.
+
+* Closure
+- Accepted and closed 2026-09-26, including user-validation PASS.
+
 * Diagnosis
 - Complete-line backtick spans already become code blocks. Existing source
   promotion and generated Typst confirm that missing triple backticks are not

@@ -94,7 +94,7 @@ classification; it is provenance, not current state.
   remains provenance only; [[file:../specs/039-unified-font-configuration/spec.org][W039 - Unified Font Configuration]]
   is the fresh SDLC v3 definition.
 
-** REVIEW W037 - Source Frontmatter Configuration :feature:migration:
+** DONE W037 - Source Frontmatter Configuration :feature:migration:
 :PROPERTIES:
 :CUSTOM_ID: w-037
 :LEGACY_ID: 002
@@ -103,6 +103,8 @@ classification; it is provenance, not current state.
 :CREATED: 2026-09-05
 :MIGRATION_DISPOSITION: unresolved
 :END:
+
+- Closure :: Accepted and closed 2026-09-26.
 
 - *Archived specification:* [[file:archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md][Source Frontmatter Configuration]]
 - *Migration evidence:* The specification remains Draft; although an audit PASS is recorded, planning and delivery remain conditional on approval and no explicit operator approval is recorded.
@@ -615,12 +617,14 @@ release note is a decision for definition.
 - Outcome :: Body spacing uses *numeric multipliers of the font's normal line
   interval*; paragraph gaps retain *length units*.
 
-** REVIEW W049 - Explicit alignment defaults and validation :defect:
+** DONE W049 - Explicit alignment defaults and validation :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-049
 :SOURCE: operator
 :CREATED: 2026-09-24
 :END:
+
+- Closure :: Accepted and closed 2026-09-26.
 
 - Specification :: [[file:../specs/049-explicit-alignment/spec.org][W049 - Explicit alignment defaults and validation]].
 - Validation :: [[file:../specs/049-explicit-alignment/validation.org][W049 - Alignment verification]].
@@ -628,25 +632,27 @@ release note is a decision for definition.
 - Scope :: Explicit title-page group defaults and strict resolved alignment
   validation; optional empty content remains valid.
 
-* Legacy Acceptance Criteria (SDLC v1) :legacy:
-:PROPERTIES:
-:CUSTOM_ID: legacy-acceptance-criteria
-:VISIBILITY: folded
-:SOURCE_DATE: 2026-07-14
-:END:
-
-** REVIEW W050 - Preserve paragraph separation around manuscript code blocks :defect:
+** DONE W050 - Preserve paragraph separation around manuscript code blocks :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-050
 :PRIORITY: P1
 :CREATED: 2026-09-25
 :END:
+
+- Closure :: Accepted and closed 2026-09-26.
 - Route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-25.
 - Scope :: Code-block clearances add to normal body paragraph separation;
   complete-line spans retain their existing block classification.
 - Specification :: [[file:../specs/050-code-block-clearance/spec.org][W050 - Code block paragraph separation]].
 - Validation :: [[file:../specs/050-code-block-clearance/validation.org][W050 - Rendered clearance verification]].
 - Review :: [[file:../specs/050-code-block-clearance/audits.yaml][Independent review record]].
+
+* Legacy Acceptance Criteria (SDLC v1) :legacy:
+:PROPERTIES:
+:CUSTOM_ID: legacy-acceptance-criteria
+:VISIBILITY: folded
+:SOURCE_DATE: 2026-07-14
+:END:
 
 ** Legacy ledger authority at migration
 

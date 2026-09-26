@@ -99,3 +99,6 @@
   manuscript 51.288 seconds including its external rasterization failure.
 - Boundaries :: No external-helper repair, installation, release or remote
   synchronization was performed.
+
+* Closure
+- Accepted and closed 2026-09-26. No user test was pending for this item.
