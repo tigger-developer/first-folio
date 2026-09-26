@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.20"
+version: "0.21"
 last-updated: 2026-09-26
 ---
 
@@ -650,6 +650,8 @@ folio:
 The current configuration may contain a partial font block because its remaining properties come from the same role in the British base. Retired keys are rejected rather than translated silently.
 
 ## Changelog
+
+- 0.21 (2026-09-26): Stretched chapter openings preserve subsequent paragraph breaks, first-line indentation and body stretch.
 
 - 0.20 (2026-09-26): Body and quoted-block stretch scale glyph widths proportionally; documented independent role ratios and word-level line breaking.
 

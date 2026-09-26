@@ -1,0 +1,148 @@
+#+TITLE: W053 - Preserve stretched chapter paragraphs and restore regression coverage
+#+SCHEMA: 8
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+** Outcome
+- Stretched chapters retain *paragraph boundaries, indentation and uniform stretch*.
+- The *full regression suite passes* with the current presets.
+** Before
+- A chapter-opening paragraph closes the stretch scope prematurely, joining
+  later paragraphs and leaving them unstretched.
+- Tests assume superseded defaults and omit stretched chapter openings.
+** After
+- Only the opening paragraph is flush; subsequent paragraphs remain separate
+  and use the configured indent and body stretch.
+** Changes
+- Apply chapter-opening formatting *before* enclosing content in a stretch scope.
+- Make header-test prerequisites explicit and align default assertions with
+  the current British preset. Preserve the equivalent US mono size by inheritance.
+** Unchanged
+- Existing British defaults, source content, code/quote spacing and font roles
+  remain unchanged. The broader stretch/hyphenation work is not accepted here.
+** Edge cases
+- Markdown and Org exercise both 100% and 160% stretch across five paragraphs.
+** Decisions
+- Correct the wrapper order; no new parser, dependency or configuration key.
+** Next step
+- Review the corrective implementation and retained evidence for operator closure.
+
+* Context
+** Authority and starting point
+- Route :: Continuation of the authorized emergency stretch repair, following
+  a demonstrated rendering regression and the requirement for a fully passing suite.
+- Baseline :: =80c85c5= - body/quote stretch implementation with pending layout decision.
+- Project :: [[file:../../.sdlc/project.yaml][Project profile]],
+  [[file:../../docs/ARCHITECTURE.md][Rendering architecture]],
+  [[file:../../docs/config.md][Configuration reference]],
+  [[file:../../docs/work.org][Requirements ledger]].
+- Related :: [[file:../052-manuscript-prose-stretch/spec.org][W052 - Proportional
+  manuscript body and quote stretch]] remains the parent stretch work. Its
+  requested hyphenation control remains outstanding; this bounded corrective
+  change does not approve the word-level hyphenation limitation or close W052.
+- Diagnosis :: =wrapChapterOpeningParagraph= splits at a blank line and adds a
+  bracketed paragraph. Applying it to already wrapped stretch content changes
+  bracket ownership: the first closing bracket ends the stretch scope and the
+  remaining prose stays inside one paragraph.
+- Test baseline :: =af26f7d= changed defaults deliberately. Header behaviour
+  tests must explicitly enable the optional header; default assertions must
+  match the current configured mono size/family, paragraph indent and block gap.
+** Scope and constraints
+- Include :: Correct paragraph/stretcher nesting; rendered regression coverage;
+  repair all currently failing regression fixtures without weakening assertions.
+- Preserve :: British preset values and user manuscript files. No test skipping,
+  test removal, failure suppression or historical-preset substitution.
+- Exclude :: Hyphenation control, all-role stretch redesign, releases and remote writes.
+
+* Acceptance Criteria
+** AC053.1 - Stretched chapters preserve each paragraph :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-053-1
+:END:
+- Criterion :: At non-100% body stretch, every chapter paragraph retains its
+  boundary and configured glyph-width ratio. Only the opening paragraph is flush;
+  following paragraphs use the configured first-line indent.
+- Proven by :: [[#rt-053-1][RT053.1 - Stretched chapter geometry]] and
+  [[#ot-053-1][OT053.1 - Full manuscript rendering inspection]].
+** AC053.2 - Current configuration passes the regression pack :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-053-2
+:END:
+- Criterion :: The complete maintained regression suite passes against the current
+  production presets. Existing assertions remain effective through explicit
+  fixture prerequisites and current-default expectations.
+- Proven by :: [[#rt-053-2][RT053.2 - Complete regression suite]].
+
+* Test Definitions
+** RT053.1 - Stretched chapter geometry :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-053-1
+:END:
+- Covers :: [[#ac-053-1][AC053.1 - Stretched chapters preserve each paragraph]].
+- Boundary :: Built manuscript CLI, real Typst PDF and Poppler word geometry.
+- Cases :: Markdown and Org chapters, five distinct paragraphs including bold
+  content, body stretch 100% and 160%, 20mm margins and 5mm first-line indent.
+- Expected :: Every marker remains separately extractable; successive paragraph
+  markers have increasing vertical coordinates. First x is 20mm, subsequent x
+  values 25mm, within 0.03pt. All marker widths scale by the configured ratio
+  against the 100% reference within 0.03pt.
+- Retention :: =TestStretchedChapterPreservesParagraphs= in the ordinary Go suite.
+** RT053.2 - Complete regression suite :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-053-2
+:END:
+- Covers :: [[#ac-053-2][AC053.2 - Current configuration passes the regression pack]].
+- Procedure :: Run =make test RELEASE_VERSION=unused= from the working checkout
+  with the current presets and required local test tools available.
+- Expected :: All packages pass and the target exits zero. No historical preset
+  replacement or newly skipped test is permitted. Run =make lint= as an additional check.
+- Retention :: Existing full repository suite, including font, header, quote,
+  code-spacing, source-configuration and paragraph regression coverage.
+** OT053.1 - Full manuscript rendering inspection :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-053-1
+:END:
+- Covers :: [[#ac-053-1][AC053.1 - Stretched chapters preserve each paragraph]].
+- Procedure :: Copy the reported manuscript and its 6x9 layout into OS temporary
+  storage, render with a temporary executable, and inspect the reported chapter
+  opening at its actual 130% body stretch. Inspect continued prose on the next page.
+- Expected :: Opening paragraph is flush; later paragraphs remain distinct and
+  indented, with consistent stretch. No joined paragraph-end/start text.
+- Bounds :: Local rendering only. Private source and output stay untracked in
+  temporary storage; no manuscript writes or private audit attachments.
+
+* Edge Cases
+- Ordinary 100% paragraphs remain a preservation case.
+- Quote/code clearances and independent font roles retain their existing tests.
+- Tests for disabled headers still override the explicit enabled fixture layer.
+- US mono size remains 9pt; its duplicate leaf becomes a retained inheritance comment.
+
+* Solution Design
+** Responsibilities and order
+- The Go block renderer first marks the opening paragraph, then encloses the
+  resulting content in the existing Typst stretch helper. Apply this order to
+  both paragraph and raw-Typst block routes.
+- Header-oriented fixture helpers enable the header in a lower configuration
+  layer, so local explicit disablement still wins. Other fixture families set
+  their enabled flag directly. Default assertions track the current preset.
+- The US overlay inherits the identical mono size from the British base, satisfying
+  the existing overlay-only-differences contract without changing rendered values.
+** Verification rationale
+- PDF geometry detects lost paragraph boundaries, indentation and stretch that
+  string-only tests missed. The full suite protects unaffected role behaviour.
+- No additional testing framework or production test interface is introduced.
+** Security impact
+- No new dependency, network, privilege or input trust boundary. Existing escaping
+  and validation remain unchanged. Private manuscript evidence stays local.
+
+* Delivery Handoff
+- Route :: Emergency corrective delivery, implementation review, then retrospective definition review.
+- Product documentation :: Add the paragraph-preservation correction to the configuration changelog.
+- Evidence :: [[file:validation.org][Regression and rendering evidence]] and
+  [[file:audits.yaml][Independent review record]].
+- Closure :: Operator decision for this corrective work only; W052 remains open.

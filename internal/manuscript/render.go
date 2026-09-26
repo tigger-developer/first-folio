@@ -403,11 +403,11 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 			lines = append(lines, "#folio-section["+typstInline(block.Text)+"]")
 		case "paragraph":
 			paragraph := typstInline(block.Text)
-			if cfg.Folio.Manuscript.Font.Stretch != "100%" {
-				paragraph = "#folio-prose-stretch[" + paragraph + "]"
-			}
 			if block.ChapterOpening {
 				paragraph = wrapChapterOpeningParagraph(paragraph)
+			}
+			if cfg.Folio.Manuscript.Font.Stretch != "100%" {
+				paragraph = "#folio-prose-stretch[" + paragraph + "]"
 			}
 			lines = append(lines, paragraph)
 		case "scene-break":
@@ -416,11 +416,13 @@ func renderBlocks(blocks []Block, cfg Config) (string, error) {
 			lines = append(lines, "#folio-code["+escapeTypst(block.Text)+"]")
 		case "raw-typst":
 			raw := block.Text
-			if cfg.Folio.Manuscript.Font.Stretch != "100%" {
-				raw = "#folio-prose-stretch[" + raw + "]"
-			}
+			// Split the source paragraphs before adding an enclosing stretch scope;
+			// otherwise the opening paragraph closes that scope's bracket instead.
 			if block.ChapterOpening {
 				raw = wrapChapterOpeningParagraph(raw)
+			}
+			if cfg.Folio.Manuscript.Font.Stretch != "100%" {
+				raw = "#folio-prose-stretch[" + raw + "]"
 			}
 			lines = append(lines, raw)
 		case "footnote":

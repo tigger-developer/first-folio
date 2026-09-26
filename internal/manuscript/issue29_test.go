@@ -109,6 +109,7 @@ func totalPagesConfig(header string, footer string, blankBefore bool) string {
 		"    toc:",
 		"      enabled: false",
 		"    page-header:",
+		"      enabled: true",
 		"      format: " + strconv.Quote(header),
 		"    page-footer:",
 		"      format: " + strconv.Quote(footer),

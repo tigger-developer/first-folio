@@ -192,6 +192,7 @@ func TestRT039_3ManuscriptFontMergesSameRoleAcrossPublicLayers(t *testing.T) {
 	writeAppFile(t, filepath.Join(home, ".config", "first-folio", "script.yaml"), `folio:
   manuscript:
     page-header:
+      enabled: true
       font:
         family: W039 Layered Header
         weight: 643

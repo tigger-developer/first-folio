@@ -1,0 +1,48 @@
+#+TITLE: W053 - Paragraph regression and full-suite evidence
+#+STARTUP: overview
+#+TODO: AMBER RED | GREEN
+
+* Environment
+- Date :: 2026-09-26; macOS arm64, Go, Typst 0.14.2, Pandoc and Poppler.
+- Candidate :: =80c85c5= plus wrapper-order correction, chapter PDF regression,
+  explicit header fixtures, current-default assertions and equivalent US inheritance.
+
+* Results
+** GREEN RT053.1 - Stretched chapter geometry :testdef:
+:PROPERTIES:
+:REVISION: 80c85c5 plus W053 corrective delta
+:COMMAND: go test ./internal/manuscript -run TestStretchedChapterPreservesParagraphs -count=1
+:EVIDENCE: Both Markdown/Org at 100% and 160% preserve all five paragraphs, first-line positions and configured word widths; focused run passed in 0.964s.
+:END:
+- RED :: Before correction, Bravo began at 266.309pt instead of 70.866pt,
+  shared the preceding paragraph's line, and remained 24.1pt rather than 38.56pt
+  wide. Charlie, Delta and Echo were joined to preceding text in both formats.
+- GREEN :: Only wrapper order changed; all original failing assertions pass.
+** GREEN RT053.2 - Complete regression suite :testdef:
+:PROPERTIES:
+:REVISION: 80c85c5 plus W053 corrective delta
+:COMMAND: make test RELEASE_VERSION=unused
+:EVIDENCE: Target exited zero with every package passing using current presets; manuscript 88.512s, app 8.855s, config 0.456s, letter 0.025s; unchanged utility/play/Typst package results were cached.
+:END:
+- Before :: Current baseline had 39 failing top-level test names, including stale
+  mono-size/family, block-gap and paragraph-indent expectations and inactive headers.
+- After :: Header tests explicitly enable the tested feature; local disablement
+  still overrides it. Default assertions reflect the current British values.
+  The overlay test retains its assertion; US inherits the equivalent 9pt mono size.
+- Additional check :: =make lint RELEASE_VERSION=unused= passed.
+- Preservation :: No tests removed or skipped, no failure suppression, no old preset
+  substituted, and no changes to British defaults.
+** GREEN OT053.1 - Full manuscript rendering inspection :testdef:
+:PROPERTIES:
+:REVISION: 80c85c5 plus W053 wrapper-order correction, temporary executable
+:EVIDENCE: Full copied manuscript rendered successfully at actual 130% body stretch; page 9 shows distinct indented paragraphs and consistent stretch after the flush chapter opening.
+:END:
+- Method :: Agent inspection of a Poppler-rendered page from the complete PDF.
+  Source and layout copies, executable and outputs remain in OS temporary storage.
+- Scope :: Actual 6x9 layout, 10pt body, 130% body/mono/quote stretch, 13mm margin,
+  5mm gutter and 0.95 line-spacing multiplier. Private content is not retained here.
+- User acceptance :: Not inferred from agent inspection.
+
+* Limits
+- This evidence does not implement or accept the outstanding hyphenation control
+  in W052 - Proportional manuscript body and quote stretch.

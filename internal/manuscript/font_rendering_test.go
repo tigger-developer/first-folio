@@ -57,7 +57,7 @@ func TestRT042_1InlineFontPropertiesReachContent(t *testing.T) {
 					assertContains(t, rule, arg)
 				}
 				// Partial overrides inherit the same role's lower layers, including an embedded font family.
-				defaults := map[string]string{"family": `font: "DejaVu Sans Mono"`, "size": "size: 10pt", "weight": `weight: "regular"`, "stretch": "stretch: 100%", "style": `style: "normal"`, "letter-spacing": "tracking: 0em"}
+				defaults := map[string]string{"family": `font: "DejaVu Sans Mono"`, "size": "size: 9pt", "weight": `weight: "regular"`, "stretch": "stretch: 100%", "style": `style: "normal"`, "letter-spacing": "tracking: 0em"}
 				for key, arg := range defaults {
 					if _, changed := tc.overrides[key]; !changed {
 						assertContains(t, rule, arg)
@@ -185,6 +185,7 @@ func fontFixtureConfig() map[string]any {
 	cfg := map[string]any{}
 	for path, value := range map[string]any{
 		"folio.manuscript.title-page.enabled":    false,
+		"folio.manuscript.page-header.enabled":   true,
 		"folio.manuscript.toc.include-sections":  true,
 		"folio.manuscript.toc.part-bold":         false,
 		"folio.manuscript.page-header.format":    "HeaderProbe",

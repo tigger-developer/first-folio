@@ -61,3 +61,11 @@
 - No audit or operator acceptance is claimed. The paragraph-layout decision
   precedes final delivery review.
 - No private manuscript regeneration, source edits, release or remote push.
+
+* Subsequent regression
+- The chapter-opening multi-paragraph case exposed lost paragraph boundaries
+  and inconsistent stretch after the initial tests. The initial GREEN results
+  above did not cover that case and do not establish successful delivery.
+- [[file:../053-stretch-paragraph-regression/spec.org][W053 - Stretched chapter
+  paragraph preservation]] records the corrective change and current full-suite
+  evidence. The requested hyphenation setting remains outstanding.

@@ -676,6 +676,20 @@ release note is a decision for definition.
 - Pending decision :: Word-level scaling changes line-end hyphenation choices.
   A rendered comparison is available for review before final delivery.
 
+** REVIEW W053 - Preserve stretched chapter paragraphs and restore regression coverage :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-053
+:SOURCE: operator
+:CREATED: 2026-09-26
+:END:
+
+- Scope :: Correct the paragraph corruption introduced by W052 - Manuscript
+  body/quote stretch, and restore the full regression suite with current presets.
+- Definition :: [[file:../specs/053-stretch-paragraph-regression/spec.org][Corrective specification]].
+- Evidence :: [[file:../specs/053-stretch-paragraph-regression/validation.org][Paragraph geometry and full-suite results]].
+- Reviews :: [[file:../specs/053-stretch-paragraph-regression/audits.yaml][Independent review record]].
+- Boundary :: W052 remains open for the outstanding hyphenation control.
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria

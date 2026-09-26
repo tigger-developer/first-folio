@@ -142,7 +142,7 @@ func TestQuotedBlockFontPropertiesInheritWhenOmitted(t *testing.T) {
 			typst := renderIssue15Manuscript(t, test.configYAML)
 			for _, fragment := range []string{
 				"#show quote.where(block: true): it => {",
-				"above: par.spacing + 0.5em", "below: par.spacing + 0.5em", "#pad(left: 0em)[#text(",
+				"above: par.spacing + 6mm", "below: par.spacing + 6mm", "#pad(left: 0em)[#text(",
 				`font: "Libertinus Serif"`, "size: 12pt", `weight: "regular"`,
 				"stretch: 100%", test.wantStyle, "tracking: 0em",
 			} {

@@ -28,7 +28,7 @@ folio:
     mono:
       font:
         family: Iosevka Custom
-        size: 9pt
+        # size: 9pt is inherited from the British base.
         weight: bold
     line-spacing: 2
     paragraph-indent: 12.7mm

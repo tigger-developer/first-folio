@@ -13,6 +13,7 @@ import (
 
 func TestMarkdownManuscriptCLIProducesTypstContract(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
+	enableFixtureHeader(t)
 	dir := t.TempDir()
 	writeFile(t, filepath.Join(dir, "part1", "ch02.md"), markdownChapterTwo())
 	writeFile(t, filepath.Join(dir, "part1", "ch01.md"), markdownChapterOne())
@@ -106,6 +107,7 @@ func TestUSManuscriptOverridesBritishWithoutChangingPageSize(t *testing.T) {
 
 func TestManuscriptHeaderPaddingOverride(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
+	enableFixtureHeader(t)
 	dir := t.TempDir()
 	writeFile(t, filepath.Join(dir, "script.yaml"), strings.Join([]string{
 		"folio:",
@@ -412,8 +414,8 @@ func TestMarkdownInlineMarkupAndLiteralDelimitersRenderToTypst(t *testing.T) {
 	assertContains(t, typst, "Dialogue begins --- like this -- then continues with #strong[bold],")
 	assertContains(t, typst, "#emph[italic], and `kevin_murray`.")
 	assertContains(t, typst, `\/\/ JOKES ABOUT HALLOWEEN`)
-	assertContains(t, typst, `font: "Libertinus Mono"`)
-	assertContains(t, typst, `size: 10pt`)
+	assertContains(t, typst, `font: "Iosevka Publish"`)
+	assertContains(t, typst, `size: 9pt`)
 	assertContains(t, typst, `weight: "regular"`)
 	assertContains(t, typst, "```")
 	assertContains(t, typst, `north_wall: 4.20m`)
@@ -703,8 +705,8 @@ func assertExampleTypstMatches(t *testing.T, root string, style string) {
 		assertContains(t, typst, `#show strong: it => text(weight: "bold")[#it.body]`)
 		assertContains(t, typst, `#show emph: it => text(style: "italic")[#it.body]`)
 		assertContains(t, typst, `#show raw.where(block: true): it => folio-code(it)`)
-		assertContains(t, typst, `above: par.spacing + 0.5em`)
-		assertContains(t, typst, `below: par.spacing + 0.5em`)
+		assertContains(t, typst, `above: par.spacing + 6mm`)
+		assertContains(t, typst, `below: par.spacing + 6mm`)
 		assertContains(t, typst, `- The drawer hummed when touched.`)
 		assertContains(t, typst, `+ Copy the date.`)
 		assertContains(t, typst, `#table(`)

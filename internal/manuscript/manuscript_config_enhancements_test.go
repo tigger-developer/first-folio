@@ -4,6 +4,7 @@ package manuscript
 
 import (
 	"bytes"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -822,6 +823,7 @@ func TestRT_15_55_ExplicitFooterDisableOmitsFooter(t *testing.T) {
 func renderIssue15Manuscript(t *testing.T, scriptYAML string) string {
 	t.Helper()
 	t.Setenv("HOME", t.TempDir())
+	enableFixtureHeader(t)
 	dir := t.TempDir()
 	// The manuscript loader reads script.yaml from the source directory of the first input file.
 	// Put the config file alongside the chapters so overrides apply.
@@ -833,6 +835,13 @@ func renderIssue15Manuscript(t *testing.T, scriptYAML string) string {
 	output := filepath.Join(dir, "out.typ")
 	runManuscriptDirect(t, filepath.Join(dir, "part?", "ch??.md"), output)
 	return readFile(t, output)
+}
+
+// Header behaviour fixtures explicitly enable the optional role. Local overrides
+// still win, so disabled-header scenarios continue to exercise the real loader.
+func enableFixtureHeader(t *testing.T) {
+	t.Helper()
+	writeFile(t, filepath.Join(os.Getenv("HOME"), ".config", "first-folio", "script.yaml"), "folio:\n  manuscript:\n    page-header:\n      enabled: true\n")
 }
 
 func assertIssue15ConfigRejected(t *testing.T, scriptYAML string, wantInError string) {

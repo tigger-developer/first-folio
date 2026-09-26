@@ -549,6 +549,7 @@ func TestRT_18_25_AltFormatAcceptsExtendedPlaceholders(t *testing.T) {
 func renderIssue18Manuscript(t *testing.T, scriptYAML string, chapterMD string) string {
 	t.Helper()
 	t.Setenv("HOME", t.TempDir())
+	enableFixtureHeader(t)
 	dir := t.TempDir()
 	if scriptYAML != "" {
 		writeFile(t, filepath.Join(dir, "script.yaml"), scriptYAML)

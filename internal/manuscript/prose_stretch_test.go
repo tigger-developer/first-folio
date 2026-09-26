@@ -138,3 +138,47 @@ func TestManuscriptStretchWrapsAndJustifies(t *testing.T) {
 		}
 	}
 }
+
+// RT053.1: chapter-opening treatment must not consume the stretch wrapper's brackets.
+func TestStretchedChapterPreservesParagraphs(t *testing.T) {
+	binary := buildFontCLI(t)
+	for _, format := range []string{"md", "org"} {
+		var baseline map[string]inlinePDFWord
+		for _, percent := range []int{100, 160} {
+			t.Run(fmt.Sprintf("%s/%d", format, percent), func(t *testing.T) {
+				cfg := proseStretchConfig()
+				setFontTestPath(cfg, "folio.manuscript.font.stretch", fmt.Sprintf("%d%%", percent))
+				setFontTestPath(cfg, "folio.manuscript.paragraph-indent", "5mm")
+				source := "## Chapter\n\nAlpha opening paragraph ends.\n\nBravo second paragraph ends.\n\nCharlie third paragraph ends.\n\nDelta **bold** paragraph ends.\n\nEcho final paragraph ends.\n"
+				words := renderStretchWords(t, binary, format, cfg, source)
+				if percent == 100 {
+					baseline = words
+				}
+				previousY := 0.0
+				for index, marker := range []string{"Alpha", "Bravo", "Charlie", "Delta", "Echo"} {
+					word, ok := words[marker]
+					if !ok {
+						t.Errorf("paragraph marker %s missing or joined to preceding text", marker)
+						continue
+					}
+					wantX := 20 * 72 / 25.4
+					if index > 0 {
+						wantX += 5 * 72 / 25.4
+					}
+					if math.Abs(word.XMin-wantX) > 0.03 {
+						t.Errorf("%s starts at %.3fpt, want %.3fpt", marker, word.XMin, wantX)
+					}
+					if word.YMin <= previousY {
+						t.Errorf("%s lost its paragraph break", marker)
+					}
+					previousY = word.YMin
+					base := baseline[marker]
+					wantWidth := (base.XMax - base.XMin) * float64(percent) / 100
+					if math.Abs(word.XMax-word.XMin-wantWidth) > 0.03 {
+						t.Errorf("%s width %.3fpt, want %.3fpt", marker, word.XMax-word.XMin, wantWidth)
+					}
+				}
+			})
+		}
+	}
+}

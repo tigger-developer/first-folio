@@ -57,7 +57,7 @@ func TestOnlyChapterOpeningParagraphGetsFlushOverride(t *testing.T) {
 	typst := readFile(t, output)
 	normalized := strings.Join(strings.Fields(typst), " ")
 
-	assertContains(t, typst, "first-line-indent: (amount: 10mm, all: true),")
+	assertContains(t, typst, "first-line-indent: (amount: 5mm, all: true),")
 	for _, opening := range []string{
 		"Opening prose is flush left.",
 		"The next chapter also begins flush left.",
