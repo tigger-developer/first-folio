@@ -209,7 +209,7 @@ folio:
         align: left
         font:
           family: Libertinus Serif
-          size: 14pt
+          size: 20pt
           weight: bold
           stretch: 100%
           style: regular
@@ -280,7 +280,7 @@ folio:
 
     font:
       family: Libertinus Serif
-      size: 12pt
+      size: 11.5pt
       weight: regular
       stretch: 100%
       style: regular
@@ -297,8 +297,8 @@ folio:
 
     mono:
       font:
-        family: Libertinus Mono
-        size: 10pt
+        family: Iosevka Publish
+        size: 9pt
         weight: regular
         stretch: 100%
         style: regular
@@ -307,10 +307,10 @@ folio:
     line-spacing: 1.5
     justify: true
     widow-orphan-control: true
-    paragraph-indent: 10mm
+    paragraph-indent: 5mm
     paragraph-spacing: 0pt
-    quoted-block-spacing: 0.5em
-    code-block-spacing: 0.5em
+    quoted-block-spacing: 6mm
+    code-block-spacing: 6mm
     quote-block-indent: 0em
     code-block-indent: 0em
 
@@ -414,7 +414,7 @@ folio:
           letter-spacing: 0em
 
     page-header:
-      enabled: true
+      enabled: false
       font:
         family: Libertinus Sans
         size: 10pt
@@ -533,7 +533,7 @@ folio:
       separator: ""
       show-name: true
       show-number: false
-      space-after: 2em
+      space-after: 4em
       number-reset: never
 
     copyright:
