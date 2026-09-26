@@ -182,3 +182,40 @@ func TestStretchedChapterPreservesParagraphs(t *testing.T) {
 		}
 	}
 }
+
+// RT052.3: the setting must control actual line breaks, including stretched prose.
+func TestManuscriptHyphenation(t *testing.T) {
+	binary := buildFontCLI(t)
+	for _, format := range []string{"md", "org"} {
+		for _, role := range []string{"font", "quoted-block.font"} {
+			for _, percent := range []int{100, 130} {
+				for _, justify := range []bool{false, true} {
+					for _, mode := range []any{false, true, "auto"} {
+						t.Run(fmt.Sprintf("%s/%s/%d/%t/%v", format, role, percent, justify, mode), func(t *testing.T) {
+							cfg := proseStretchConfig()
+							setFontTestPath(cfg, "folio.manuscript.page", "100x100mm")
+							setFontTestPath(cfg, "folio.manuscript.hyphenation", mode)
+							setFontTestPath(cfg, "folio.manuscript.justify", justify)
+							setFontTestPath(cfg, "folio.manuscript."+role+".stretch", fmt.Sprintf("%d%%", percent))
+							source := strings.Repeat("Extraordinary conversations concerning considerable complications continued. ", 8)
+							if role == "quoted-block.font" {
+								source = "> " + source
+							}
+							words := renderStretchWords(t, binary, format, cfg, source)
+							hyphens := 0
+							for word := range words {
+								if strings.HasSuffix(word, "-") || strings.HasSuffix(word, "\u00ad") {
+									hyphens++
+								}
+							}
+							want := mode == true || mode == "auto" && justify
+							if (hyphens > 0) != want {
+								t.Errorf("hyphenated fragments = %d; want automatic hyphenation %t", hyphens, want)
+							}
+						})
+					}
+				}
+			}
+		}
+	}
+}
