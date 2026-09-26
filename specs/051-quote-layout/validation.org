@@ -1,0 +1,60 @@
+#+TITLE: W051 - Quote layout verification
+#+STARTUP: overview
+#+TODO: AMBER RED | GREEN
+
+* Environment
+- Date :: 2026-09-26.
+- Baseline :: =945992b= - accepted source, alignment and code-spacing closure.
+- Candidate :: Quote wrapper uses additive separation, explicit body-font
+  context, quote body content and zero internal first-line indentation.
+- Tools :: macOS arm64, Go, Typst and Poppler. Inherited PATH selects Homebrew
+  Bash 5; caches, isolated checkouts and outputs use OS temporary directories.
+- Preservation :: Existing British preset edits and manuscript sources are
+  untouched. Full-suite default assertions use committed presets plus this delta.
+
+* Results
+** GREEN RT051.1 - Quote left-edge geometry :testdef:
+:PROPERTIES:
+:REVISION: 945992b plus W051 quote layout candidate
+:COMMAND: go test ./internal/manuscript -run TestRT051 -count=1
+:EVIDENCE: All quote paragraph left edges match 0mm, 6mm or body-based 2em insets within 0.03pt across Markdown/Org and 10pt/14pt quote fonts; prose retains its 5mm indent.
+:END:
+- RED :: A zero-inset 10pt quote began at 80.866pt rather than the 56.693pt
+  body edge. Both quote paragraphs inherited extra native and first-line inset.
+- GREEN :: The 36-case combined geometry matrix passed in 5.866 seconds.
+  Both paragraphs use precisely the configured inset, independently of quote size.
+** GREEN RT051.2 - Quote boundary spacing :testdef:
+:PROPERTIES:
+:REVISION: 945992b plus W051 quote layout candidate
+:COMMAND: go test ./internal/manuscript -run TestRT051 -count=1
+:EVIDENCE: Before/after quote gaps retain paragraph separation; changing 0.5em to 5mm adds 8.173pt, and a 5mm paragraph gap adds 14.173pt, within 0.03pt. Following prose is unchanged.
+:END:
+- RED :: The 10pt quote boundaries were 13.117pt and 15.598pt against a
+  25.376pt ordinary interval. An additional 5mm paragraph gap made no change
+  to either boundary instead of adding 14.173pt.
+- GREEN :: Included in the 5.866-second combined geometry run.
+- Full suite :: Isolated =go test ./... -count=1= passed: app 8.677 seconds;
+  config 0.506; letter 0.024; manuscript 75.688; play 0.010; Typst 0.010.
+  Existing quote-font, parser, code-spacing, body and TOC regressions passed.
+- Existing assertions :: Template-expression checks now expect additive quote
+  spacing and the revised show-rule form; font/property assertions are retained.
+** GREEN OT051.1 - Reported configuration probe :testdef:
+:PROPERTIES:
+:REVISION: 945992b plus W051 quote layout candidate, rebuilt local executable
+:EVIDENCE: Quote xMin is 73.70079pt (26mm from page edge), prose xMin 70.86614pt (25mm); embedded fonts are LibertinusSerif-Regular and Iosevka-Publish-Italic.
+:END:
+- Method :: Synthetic PDF under isolated HOME with explicit installed-font
+  search path; no private source content is copied into retained evidence.
+- Before :: At 20mm page margin the quote inset measured 9.528mm rather than
+  6mm. Prose word-top intervals were 20.307pt, while transitions around the
+  quote measured 13.731pt and 12.686pt.
+- After :: Quote inset is exactly 6mm, prose indent remains 5mm. Transitions
+  around the quote measure 26.471pt and 25.426pt; ordinary prose remains
+  20.307pt. Different font metrics make the two transitions slightly unequal.
+- Checks :: =make build lint RELEASE_VERSION=unused= passed; the rebuilt
+  local executable includes the repair with the current user preset intact.
+
+* Limits
+- No operator visual acceptance is inferred from automated or one-off evidence.
+- No manuscript regeneration in the notes directory, source changes, release
+  publication or remote synchronization was performed.

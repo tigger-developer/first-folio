@@ -1,0 +1,140 @@
+#+TITLE: W051 - Exact quote indentation and additive paragraph clearance
+#+SCHEMA: 8
+#+SUBTITLE: Emergency quote layout repair
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+** Outcome
+- Quotes use the *configured inset* and retain *normal paragraph separation*.
+** Before
+- Native quote padding adds *an unwanted inset*; block gaps replace separation.
+** After
+- Every quote paragraph starts at the *same configured left edge*.
+- Quote clearance *adds to body paragraph separation*.
+** Changes
+- Quote spacing and indentation in =em= use the *body font size*.
+** Unchanged
+- Source syntax, quote typography, ordinary prose and code blocks *retain their contracts*.
+** Edge cases
+- Zero indentation means *no inset*. Multiple quote paragraphs add *no first-line indent*.
+** Decisions
+- Render quote *body content* within the existing configured wrapper.
+** Next step
+- Retain verification and review evidence for the *closure decision*.
+
+* Context
+** Authority and scope
+- Authorization :: =BYPASS-GATE-7= on 2026-09-26 for observed quote spacing
+  and excessive indentation in manuscript output.
+- Baseline :: =945992b= - accepted source, alignment and code-spacing closure.
+- Authorities :: [[file:../../.sdlc/project.yaml][Project profile]],
+  [[file:../../docs/ARCHITECTURE.md][Rendering architecture]],
+  [[file:../../docs/config.md][Configuration reference]],
+  [[file:../../docs/work.org][Requirements ledger]].
+- Starting point :: The wrapper pads the configured inset around a native
+  =quote= element. A controlled 10pt quote probe places text at *9.528mm*
+  despite a 6mm setting. Rendering only its body removes the extra 10pt.
+  Multiple quote paragraphs can additionally inherit prose first-line indent.
+- Relationship :: W048 - Body paragraph spacing and W050 - Code-block
+  paragraph separation establish the additive spacing contract. Existing quote
+  configuration documents promise an inset independent of prose indentation.
+- Scope :: Markdown and Org manuscript block quotes, their existing settings,
+  rendered regression coverage and documentation.
+- Exclusions :: No source rewrites, new configuration keys, quote font defaults,
+  inline quote changes, code/list/table changes or general layout redesign.
+  Existing user preset changes remain separate and untouched.
+
+* Acceptance Criteria
+** AC051.1 - Quote inset equals configuration :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-051-1
+:END:
+- Criterion :: Every paragraph of a quote starts at *quote-block-indent from
+  the body text edge*. Neither native quote padding nor prose first-line indent
+  is added. Zero means no inset. Lengths in em use the body font size.
+- Proven by :: [[#rt-051-1][RT051.1 - Quote left-edge geometry]] and
+  [[#ot-051-1][OT051.1 - Reported configuration probe]].
+** AC051.2 - Quote clearance adds to paragraph separation :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-051-2
+:END:
+- Criterion :: Space before and after a quote includes *normal body paragraph
+  separation plus quoted-block-spacing*. Increasing that clearance adds the
+  specified distance. An additional paragraph gap remains additive.
+- Criterion :: Quote clearance in em uses the *body font size*. Quote font
+  settings remain independent; ordinary prose and code spacing remain intact.
+- Proven by :: [[#rt-051-2][RT051.2 - Quote boundary spacing]] and
+  [[#ot-051-1][OT051.1 - Reported configuration probe]].
+
+* Test Definitions
+** RT051.1 - Quote left-edge geometry :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-051-1
+:END:
+- Covers :: [[#ac-051-1][AC051.1 - Quote inset equals configuration]].
+- Boundary :: Built CLI PDF output inspected with Poppler.
+- Cases :: Markdown and Org; 10pt/14pt quote font against 12pt body;
+  0mm, 6mm and 2em insets; a two-paragraph quote between prose paragraphs.
+- Expected :: Both quote paragraphs start at 20mm margin plus the configured
+  inset, within 0.03pt. The 2em inset is 24pt. Prose remains indented 5mm.
+- Retention :: Indentation assertions in =TestRT051QuoteLayout=.
+** RT051.2 - Quote boundary spacing :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-051-2
+:END:
+- Covers :: [[#ac-051-2][AC051.2 - Quote clearance adds to paragraph separation]].
+- Cases :: The same font/format/inset matrix with 0.5em and 5mm clearance,
+  plus a separate 5mm paragraph gap. Body multiplier is 1.5.
+- Expected :: Both quote boundaries retain at least ordinary paragraph
+  separation. Changing 0.5em to 5mm adds 8.173pt; the paragraph-gap case adds
+  14.173pt, each within 0.03pt. Following prose spacing remains unchanged.
+- Retention :: Spacing assertions in =TestRT051QuoteLayout=. Run the existing
+  full suite to preserve typography, parsing, body, TOC and code-block contracts.
+** OT051.1 - Reported configuration probe :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-051-1
+:END:
+- Covers :: [[#ac-051-1][AC051.1 - Quote inset equals configuration]] and
+  [[#ac-051-2][AC051.2 - Quote clearance adds to paragraph separation]].
+- Procedure :: Render a synthetic short quote using 11.5pt Libertinus Serif body,
+  10pt Iosevka Publish italic quote, 1.35x body spacing, 5mm prose indent,
+  zero paragraph gap, 0.5em quote clearance and 6mm quote inset. Measure the
+  quote left edge against the 20mm margin and compare surrounding separation.
+- Expected :: Quote starts at 26mm from the page edge; prose starts at 25mm;
+  quote boundaries retain separation. Confirm embedded fonts.
+- Bounds :: Local PDF and text inspection in OS temporary storage. No private
+  manuscript content retained, external service calls or source-file writes.
+
+* Edge Cases
+- Multiple quote paragraphs use *zero additional first-line indent* internally.
+- Quote font size does not alter the configured body-based em inset or clearance.
+- Existing native adjacent-block margin collapse remains unchanged.
+- Objective rendered geometry covers this repair; no new subjective layout
+  requirement or mandatory user test is introduced.
+
+* Solution Design
+** Quote rendering
+- Keep the existing quote show rule and configured font role. In the body font
+  context, set block sides to *par.spacing plus quoted-block-spacing*.
+- Apply exactly the configured left padding, then the quote font. Render
+  =it.body= rather than =it= to avoid applying native quote inset inside it.
+- Set first-line indentation to zero inside the quote content only. Outer
+  paragraph indentation and spacing remain in force outside that scope.
+- No parser or loader changes are needed. Existing property assertions continue
+  to check font values; PDF tests check actual spacing and complete inset.
+** Security impact
+- Existing escaping, validated configuration and content interpretation remain
+  unchanged. No new dependency, trust boundary, access, network or source writes.
+
+* Delivery Handoff
+- Route :: Emergency repair and retrospective reconciliation.
+- Documentation :: Configuration and Markdown/Org manuscript references updated.
+  Architecture, source schema and CLI keys remain unchanged.
+- Evidence :: [[file:validation.org][Quote geometry verification]] and
+  [[file:audits.yaml][Independent review record]].
+- Closure :: Requires the operator's acceptance of the delivered repair.

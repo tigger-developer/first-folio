@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.18"
-last-updated: 2026-09-25
+version: "0.19"
+last-updated: 2026-09-26
 ---
 
 # Configuration
@@ -206,6 +206,8 @@ The built-in [British base](../presets/british.yaml) is the canonical default an
 | `page-numbering` | `frontmatter-format`, `body-format`, `body-reset` |
 
 `code-block` controls layout only and accepts no font block. Fenced-code typography comes from `folio.manuscript.mono.font`, the same role as inline code. Quoted blocks differ: they carry their own `quoted-block.font`.
+
+Quoted-block clearance also adds to normal body paragraph separation. `quote-block-indent` is the entire left inset from the body text edge: `6mm` means exactly 6mm, with no native quote inset or prose first-line indent added. Every paragraph in the quote uses that same inset. Quote clearance and indentation in `em` resolve against the body font size, independently of `quoted-block.font`.
 
 Code-block clearance is additional to normal body paragraph separation. This applies to fenced blocks and complete-line code spans promoted to blocks, including consecutive blocks. `code-block-spacing` sets both sides; `code-block.space-before` and `.space-after` override their respective sides. These vertical `em` clearances resolve against the body font size. Code indentation retains its existing basis. Inline code within prose remains part of its paragraph.
 
@@ -646,6 +648,8 @@ folio:
 The current configuration may contain a partial font block because its remaining properties come from the same role in the British base. Retired keys are rejected rather than translated silently.
 
 ## Changelog
+
+- 0.19 (2026-09-26): Quoted blocks use exact configured indentation and additive paragraph clearance, with body-font em units.
 
 - 0.18 (2026-09-25): Restored paragraph separation around code blocks; vertical clearances are additional and use the body font size for em units.
 

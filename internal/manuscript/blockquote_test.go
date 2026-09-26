@@ -51,8 +51,8 @@ func TestManuscriptBlockSpacingAndQuoteFontCanBeConfigured(t *testing.T) {
 
 	assertContains(t, typst, `#quote(block: true)[`)
 	for _, fragment := range []string{
-		"#show quote.where(block: true): it => block(",
-		"above: 1.25em", "below: 1.25em", "#pad(left: 2em)[#text(",
+		"#show quote.where(block: true): it => {",
+		"above: par.spacing + 1.25em", "below: par.spacing + 1.25em", "#pad(left: 2em)[#text(",
 		`font: "Libertinus \"Serif\""`, "size: 11pt", `weight: "semibold"`,
 		"stretch: 125%", `style: "italic"`, "tracking: 0.03em",
 	} {
@@ -141,8 +141,8 @@ func TestQuotedBlockFontPropertiesInheritWhenOmitted(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			typst := renderIssue15Manuscript(t, test.configYAML)
 			for _, fragment := range []string{
-				"#show quote.where(block: true): it => block(",
-				"above: 0.5em", "below: 0.5em", "#pad(left: 0em)[#text(",
+				"#show quote.where(block: true): it => {",
+				"above: par.spacing + 0.5em", "below: par.spacing + 0.5em", "#pad(left: 0em)[#text(",
 				`font: "Libertinus Serif"`, "size: 12pt", `weight: "regular"`,
 				"stretch: 100%", test.wantStyle, "tracking: 0em",
 			} {

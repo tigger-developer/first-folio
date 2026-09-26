@@ -1,7 +1,7 @@
 ---
 title: Org-mode Manuscript Format
-version: "0.5"
-last-updated: 2026-09-25
+version: "0.6"
+last-updated: 2026-09-26
 ---
 
 # Org-mode Manuscript Format
@@ -52,6 +52,8 @@ Section breaks default to a centred `#` marker in rendered manuscripts. Override
 
 Lists, tables, and source blocks render with `0.5em` vertical padding before and after by default. Override `folio.manuscript.list.space-before`, `folio.manuscript.list.space-after`, `folio.manuscript.table.space-before`, `folio.manuscript.table.space-after`, `folio.manuscript.code-block.space-before`, and `folio.manuscript.code-block.space-after` to adjust this spacing.
 
+Quoted blocks add `quoted-block-spacing` to normal body paragraph separation. Their `quote-block-indent` is the complete left inset, without additional native quote or prose first-line indentation. Both settings use the body font size for `em` units; quote typography remains controlled by `quoted-block.font`.
+
 Code-block clearance adds to normal body paragraph separation, including between consecutive blocks. Vertical `em` clearances use the body font size. Complete-line code spans use this same block layout; code embedded within prose remains inline.
 
 Source blocks take their typography from `folio.manuscript.mono.font`, the same role as verbatim spans; `folio.manuscript.code-block` carries layout only. A configured `stretch` scales the block horizontally by that percentage, matching inline verbatim text, while the block keeps its glyph height, its column alignment and its page breaks.
@@ -87,6 +89,7 @@ This planning note is excluded.
 
 ## Revision History
 
+- 0.6, 2026-09-26: Document exact quote indentation and additive quote clearance.
 - 0.5, 2026-09-25: Clarified additive code-block clearance and complete-line code spans.
 - 0.4, 2026-09-17: Record that source blocks take their typography from the monospace font role, that configured stretch scales them proportionally, and that `code-block` carries layout only.
 - 0.3, 2026-09-10: Add the Org manuscript schema declaration and use YAML document-version metadata.

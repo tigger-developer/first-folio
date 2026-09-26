@@ -227,14 +227,22 @@
   {{fontArgs .Config.Folio.Manuscript.Heading.Font}}
 )
 
-#show quote.where(block: true): it => block(
-  above: {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
-  below: {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
-)[
-  #pad(left: {{.Config.Folio.Manuscript.QuoteBlockIndent.Value}})[#text(
-    {{fontArgs .Config.Folio.Manuscript.QuotedBlock.Font}}
-  )[#it]]
-]
+#show quote.where(block: true): it => {
+  set text({{fontArgs .Config.Folio.Manuscript.Font}})
+  context {
+    block(
+      above: par.spacing + {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
+      below: par.spacing + {{.Config.Folio.Manuscript.QuotedBlockSpacing.Value}},
+    )[
+      #pad(left: {{.Config.Folio.Manuscript.QuoteBlockIndent.Value}})[#text(
+        {{fontArgs .Config.Folio.Manuscript.QuotedBlock.Font}}
+      )[
+        #set par(first-line-indent: 0pt)
+        #it.body
+      ]]
+    ]
+  }
+}
 
 #show raw.where(block: true): it => folio-code(it)
 

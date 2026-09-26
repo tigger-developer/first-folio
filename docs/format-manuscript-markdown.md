@@ -1,7 +1,7 @@
 ---
 title: Markdown Manuscript Format
-version: "0.5"
-last-updated: 2026-09-25
+version: "0.6"
+last-updated: 2026-09-26
 ---
 
 # Markdown Manuscript Format
@@ -43,6 +43,8 @@ Setext headings are not part of the manuscript contract; use ATX headings (`#`, 
 Section breaks default to a centred `#` marker in rendered manuscripts. Override `folio.manuscript.scene-break.marker` in YAML config to use another marker.
 
 Lists, tables, blockquotes, and fenced code blocks render with `0.5em` vertical clearance before and after by default. Set `folio.manuscript.quoted-block-spacing` or `folio.manuscript.code-block-spacing` to change both sides of those blocks equally. The existing `folio.manuscript.code-block.space-before` and `folio.manuscript.code-block.space-after` properties override the equal code-block spacing on their respective sides. Set `folio.manuscript.quote-block-indent` or `folio.manuscript.code-block-indent` to inset every line of the corresponding block from the left; both default to `0em` and are independent of prose first-line indentation. Configure blockquote typography through `folio.manuscript.quoted-block.font`; its `family`, `size`, `weight`, `stretch`, `style`, and `letter-spacing` properties inherit independently from the manuscript font when omitted.
+
+Quoted blocks add `quoted-block-spacing` to normal body paragraph separation. Their `quote-block-indent` is the complete left inset, without additional native quote or prose first-line indentation. Both settings use the body font size for `em` units; quote typography remains controlled by `quoted-block.font`.
 
 Code-block clearance adds to normal body paragraph separation, including between consecutive blocks. Vertical `em` clearances use the body font size. Complete-line code spans use this same block layout; code embedded within prose remains inline.
 
@@ -91,6 +93,7 @@ described in the table; the example no longer embeds HTML-comment syntax.
 
 ## Revision History
 
+- 0.6, 2026-09-26: Document exact quote indentation and additive quote clearance.
 - 0.5, 2026-09-25: Clarified additive code-block clearance and complete-line code spans.
 - 0.4, 2026-09-17: Record that fenced code blocks take their typography from the monospace font role, that configured stretch scales them proportionally, and that `code-block` carries layout only.
 - 0.3, 2026-09-10: Add the manuscript schema declaration, use YAML document-version metadata, and describe private-section syntax without embedding HTML comments.

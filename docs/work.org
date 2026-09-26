@@ -647,6 +647,19 @@ release note is a decision for definition.
 - Validation :: [[file:../specs/050-code-block-clearance/validation.org][W050 - Rendered clearance verification]].
 - Review :: [[file:../specs/050-code-block-clearance/audits.yaml][Independent review record]].
 
+** REVIEW W051 - Exact quote indentation and additive paragraph clearance :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-051
+:PRIORITY: P1
+:CREATED: 2026-09-26
+:END:
+- Route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-26.
+- Scope :: Quotes use their configured complete inset and add clearance to
+  normal body paragraph separation; quote em units use the body font size.
+- Specification :: [[file:../specs/051-quote-layout/spec.org][W051 - Exact quote indentation and clearance]].
+- Validation :: [[file:../specs/051-quote-layout/validation.org][W051 - Rendered quote geometry]].
+- Review :: [[file:../specs/051-quote-layout/audits.yaml][Independent review record]].
+
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
 :CUSTOM_ID: legacy-acceptance-criteria
