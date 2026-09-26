@@ -1,4 +1,4 @@
-#+TITLE: W052 - Proportional manuscript body and quote stretch
+#+TITLE: W052 - Manuscript stretch and configurable hyphenation
 #+SCHEMA: 8
 #+SUBTITLE: Emergency stretch repair
 #+STARTUP: overview
@@ -22,13 +22,17 @@
 - Headings, frontmatter, running bands, other modes and font defaults are outside scope.
 ** Edge cases
 - Mixed font roles retain *independent ratios*; nested code is not scaled twice.
-- Non-100% prose scales words independently; the line-end hyphenation trade-off
-  is *pending acceptance* before final delivery.
+- Non-100% prose supports discretionary English hyphenation while preserving
+  unbroken word widths, paragraph boundaries and independent code styling.
 ** Decisions
-- Reuse the template-based scaling pattern; introduce no dependency or new setting.
+- Retain geometric scaling and add =folio.manuscript.hyphenation= with
+  =true=, =false= and =auto=; the British base sets =auto= and US inherits it.
+- Superseded initial decision :: The first implementation introduced no setting
+  or dependency. The operator subsequently requested configurable hyphenation,
+  including when text is stretched, under this same emergency ticket.
 ** Next step
-- Resolve the demonstrated line-breaking trade-off, then retain verification
-  and independent reviews for the closure decision.
+- Retain regression and rendered evidence, independent reviews and user validation
+  for the closure decision.
 
 * Context
 ** Authority and scope
@@ -50,12 +54,17 @@
   scaling drawn glyphs.
 - Scope :: Existing manuscript body, quote and mono font paths for Markdown
   and Org; independent size, weight, style and spacing continue to apply.
-- Exclusions :: No manuscript source edits, preset changes, hyphenation setting,
+- Exclusions :: No manuscript source edits, changes to existing preset values,
   new font package, CLI changes, remote publication or new font roles.
-** Unresolved decision
+** Hyphenation decision history
 - Word-level scaling can move a whole word to the next line where native
   paragraph layout would hyphenate it into the remaining space. A synthetic
-  comparison is available; acceptance of that trade-off remains pending.
+  comparison demonstrated this initial limitation; it was not accepted.
+- The operator requested a configuration parameter, then explicitly requested
+  completion of the hyphenation change under the same emergency ticket.
+- =false= disables automatic splitting; =true= permits it regardless of
+  justification; =auto= permits it when =justify: true=. Permission does not
+  require a word to be split if the line breaker finds another suitable layout.
 
 * Acceptance Criteria
 ** AC052.1 - Each text role has proportional width :ac:
@@ -77,6 +86,26 @@
 - Proven by :: [[#rt-052-1][RT052.1 - Independent role geometry]],
   [[#rt-052-2][RT052.2 - Wrapping and justification]] and
   [[#ut-052-1][UT052.1 - Review stretched prose layout]].
+** AC052.3 - Hyphenation is configurable with stretch :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-052-3
+:END:
+- Criterion :: Body and quoted prose respect =true=, =false= and =auto= at
+  normal and non-100% stretch. =auto= follows justification. Inline, standalone
+  and fenced code remain unhyphenated. Invalid values fail with the full path.
+  British and US inherit =auto= from the British base through ordinary merging.
+- Proven by :: [[#rt-052-3][RT052.3 - Hyphenation modes and configuration]].
+** AC052.4 - Hyphenation preserves text and layout :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-052-4
+:END:
+- Criterion :: No word splits without a visible discretionary hyphen. The
+  extracted text reconstructs the source across line and page boundaries.
+  Unbroken words retain proportional width, including ligatures and kerning.
+  Existing chapter paragraph preservation remains in force.
+- Proven by :: [[#rt-052-4][RT052.4 - Text and geometry preservation]],
+  [[#rt-052-5][RT052.5 - Full regression suite]],
+  [[#ot-052-1][OT052.1 - Rendered manuscript inspection]].
 
 * Test Definitions
 ** RT052.1 - Independent role geometry :testdef:
@@ -104,6 +133,50 @@
   three lines and do not overlap. Non-final justified lines end within 0.2pt
   of the right text edge.
 - Retention :: =TestManuscriptStretchWrapsAndJustifies= in the ordinary Go suite.
+** RT052.3 - Hyphenation modes and configuration :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-052-3
+:END:
+- Covers :: [[#ac-052-3][AC052.3 - Hyphenation is configurable with stretch]].
+- Cases :: Markdown and Org; body and quotes; 100% and 130%; justified and
+  ragged text; all three modes. Compiled PDFs must contain automatic hyphens
+  in the enabling cases and none in disabled cases. Code words remain whole.
+- Configuration :: Both presets default to =auto=; booleans and their quoted
+  spellings are accepted. Empty, null, numeric, arbitrary string, list and
+  mapping values fail with =folio.manuscript.hyphenation= in the error.
+- Retention :: =TestManuscriptHyphenation=,
+  =TestManuscriptHyphenationLeavesCodeUnbroken= and
+  =TestManuscriptHyphenationConfiguration=.
+** RT052.4 - Text and geometry preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-052-4
+:END:
+- Covers :: [[#ac-052-4][AC052.4 - Hyphenation preserves text and layout]].
+- Cases :: Native and 130% unbroken plain, bold and italic words, including
+  =office= and =affinity=; width tolerance 0.03pt. Repeated synthetic prose at
+  eight widths from 75mm to 110mm spans lines and pages. After joining only
+  marked hyphenation breaks, extracted words must equal the source.
+- Retention :: =TestHyphenationPreservesUnbrokenStretchGeometry=,
+  =TestHyphenationDoesNotSplitWordsWithoutHyphens=, and the existing
+  =TestStretchedChapterPreservesParagraphs= regression.
+** RT052.5 - Full regression suite :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-052-5
+:END:
+- Covers :: [[#ac-052-4][AC052.4 - Hyphenation preserves text and layout]].
+- Command :: =make test lint RELEASE_VERSION=unused= with the current presets.
+- Expected :: Every package passes without skipped tests, suppressed failures,
+  historical preset substitution or replacement of user defaults.
+** OT052.1 - Rendered manuscript inspection :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-052-1
+:END:
+- Covers :: [[#ac-052-4][AC052.4 - Hyphenation preserves text and layout]].
+- Method :: Render an OS-temporary copy of the authorized manuscript and 6x9
+  configuration with body stretch 130% and hyphenation enabled. Inspect chapter
+  opening and continuation pages for paragraph boundaries, indentation, visible
+  hyphens and consistent text size. Do not edit private manuscript files.
+- Expected :: Readable text without lost hyphens, collapsed paragraphs or overlap.
 ** UT052.1 - Review stretched prose layout :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-052-1
@@ -120,7 +193,11 @@
   compound geometric scaling. Whitespace is normalized to the normal face.
 - A 100% prose ratio bypasses word boxing to preserve native line breaking.
 - Extreme positive ratios retain existing validation; no new range is imposed.
-- The non-100% word-breaking trade-off remains an explicit unresolved decision.
+- At non-100%, explicit breaks use English ASCII patterns, matching the existing
+  English language default. Tokens with non-ASCII letters or over 128 letters
+  stay whole. Break points that would alter ligatures or kerning are excluded.
+  The discretionary hyphen itself uses Typst's native glyph width; source letters
+  retain geometric scaling. These limits require visibility in documentation and UT.
 
 * Solution Design
 ** Rendering responsibilities
@@ -132,11 +209,25 @@
   see the normalized stretch, preventing compounded nested scaling.
 - Normalize inter-word spacing by the normal-face to selected-face space-width
   ratio. Existing mono rendering continues to own its independent scaling.
+- The shared loader validates the new setting after deep merge. The manuscript
+  renderer emits the Typst hyphenation setting in the body scope; mono explicitly
+  disables it. The normal-width path retains native Typst behaviour.
+- For stretched prose, Go embeds English patterns and exceptions and creates a
+  sorted dictionary of document words and candidate offsets. The pinned
+  =github.com/speedata/hyphenation v1.0.2= library applies TeX patterns locally.
+  Generated Typst is self-contained, with no package download or font dependency.
+- The Typst helper excludes shaping-sensitive offsets, scales the remaining
+  pieces, and places a word joiner before each soft hyphen so inline boxes cannot
+  break before the mark. Line and page breaking remain Typst responsibilities.
 - Template ownership, CLI layering and validated font values remain as in
   [[file:../../docs/ARCHITECTURE.md][Rendering architecture]].
 ** Security impact
-- No dependency, data exposure, access, network or trust-boundary change.
-  Existing escaping and font validation remain in force. Fixtures are synthetic.
+- One pinned CC0 Go dependency and vendored redistributable pattern data are
+  added. The data's notice and source revision are retained. No runtime network,
+  data exposure or access change. Dictionary keys are ASCII words and offsets
+  are numeric; existing escaping and font validation remain in force.
+- The library's substring search is bounded to words of at most 128 letters;
+  longer tokens remain intact. Fixtures are synthetic.
 
 * Delivery Handoff
 - Route :: Emergency delivery followed by retrospective definition review.

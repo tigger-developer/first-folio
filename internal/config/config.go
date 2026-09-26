@@ -102,6 +102,14 @@ func Load(opts Options) (Config, error) {
 	if err := validateAlignments(base); err != nil {
 		return Config{}, err
 	}
+	if opts.Mode == ModeManuscript {
+		value, _ := (Config{data: base}).Get("folio.manuscript.hyphenation")
+		switch value {
+		case true, false, "auto", "true", "false":
+		default:
+			return Config{}, fmt.Errorf("folio.manuscript.hyphenation must be true, false, or auto; got %#v", value)
+		}
+	}
 	return Config{data: base}, nil
 }
 

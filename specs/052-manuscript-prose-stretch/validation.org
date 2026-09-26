@@ -8,12 +8,16 @@
 - Candidate :: Body block wrappers and contextual quote/prose scaling helper;
   existing mono helper remains in use. Synthetic CLI fixtures use portable fonts.
 - Tools :: macOS arm64, Go, Typst 0.14.2, Pandoc and Poppler.
+- Current candidate :: =b2c6f81= plus configurable hyphenation, shaping-preserving
+  discretionary breaks, word-joiner correction, tests and documentation.
+- Current toolchain :: Go 1.26.6 selected through =GOTOOLCHAIN= for final
+  tests, lint, vulnerability scan and candidate build; caches are OS-temporary.
 
 * Results
 ** GREEN RT052.1 - Independent role geometry :testdef:
 :PROPERTIES:
-:REVISION: af26f7d plus W052 stretch implementation and prose_stretch_test.go
-:COMMAND: go test ./internal/manuscript -run 'TestManuscript(ProportionalRoleStretch|StretchWrapsAndJustifies)|TestRT042_4|TestRT051|TestRT050' -count=1
+:REVISION: b2c6f81 plus W052 hyphenation continuation
+:COMMAND: GOTOOLCHAIN=go1.26.6 make test lint RELEASE_VERSION=unused
 :EVIDENCE: Independent role width and height assertions pass in Markdown and Org, including the combined body 160%, quote 130%, mono 120% case.
 :END:
 - RED :: Body Plainword remained 42pt at 160%, instead of 67.2pt.
@@ -24,19 +28,71 @@
 - Intermediate correction :: Measuring literal spaces exposed a Typst type
   error in whitespace normalization. Parenthesizing the length ratio corrected
   it; the final focused run above includes that correction.
+- Current run :: Included in the full current-preset suite below; all role
+  geometry cases pass with the hyphenation continuation.
 ** GREEN RT052.2 - Wrapping and justification :testdef:
 :PROPERTIES:
-:REVISION: af26f7d plus W052 stretch implementation and prose_stretch_test.go
-:COMMAND: go test ./internal/manuscript -run 'TestManuscript(ProportionalRoleStretch|StretchWrapsAndJustifies)|TestRT042_4|TestRT051|TestRT050' -count=1
+:REVISION: b2c6f81 plus W052 hyphenation continuation
+:COMMAND: GOTOOLCHAIN=go1.26.6 make test lint RELEASE_VERSION=unused
 :EVIDENCE: All four 6x9in paragraph cases retain every word, wrap within margins without overlap, and align non-final justified lines to the right edge within tolerance.
 :END:
 - Preservation :: This test was initially GREEN and remains GREEN after actual
   proportional scaling. No artificial failure was introduced.
 - Checks :: =make lint build RELEASE_VERSION=unused= passed after the final
   whitespace correction. The local build embeds the current working presets.
+- Current run :: Included in the full current-preset suite below and remains GREEN.
+** GREEN RT052.3 - Hyphenation modes and configuration :testdef:
+:PROPERTIES:
+:REVISION: b2c6f81 plus W052 hyphenation continuation
+:COMMAND: GOTOOLCHAIN=go1.26.6 make test lint RELEASE_VERSION=unused
+:EVIDENCE: All 48 PDF mode/format/role/stretch/justification cases pass, code remains whole, invalid settings fail and British/US defaults resolve to auto.
+:END:
+- RED :: Before implementation, true was ignored for ragged normal-width prose,
+  false was ignored for justified normal-width prose, and stretched enabled cases
+  produced no hyphens. The first test attempt used an invalid custom page spelling;
+  corrected to the documented form before recording behavioural RED.
+- GREEN :: Focused mode matrix passed, followed by the final full suite.
+- Preservation :: Configuration and code cases cover the declared input contract
+  and existing unhyphenated-code behaviour; no artificial failures introduced.
+** GREEN RT052.4 - Text and geometry preservation :testdef:
+:PROPERTIES:
+:REVISION: b2c6f81 plus W052 hyphenation continuation
+:COMMAND: GOTOOLCHAIN=go1.26.6 make test lint RELEASE_VERSION=unused
+:EVIDENCE: Unbroken word widths, chapter paragraph geometry and exact reconstruction across eight page widths all pass.
+:END:
+- Geometry RED :: Naive splitting made office 29.237pt instead of 28.704pt,
+  and Extraordinary 74.698pt instead of 74.594pt at 130%. Excluding shaping-sensitive
+  break points restored the original proportional widths.
+- Text RED :: Visual manuscript inspection exposed a split without a visible
+  hyphen. The added extraction regression failed at several widths before the
+  word-joiner correction. It now reconstructs the complete synthetic source.
+- Page boundary handling :: Poppler emits a form-feed between pages; the test
+  joins that whitespace only when preceded by a real extracted hyphen mark.
+** GREEN RT052.5 - Full regression suite :testdef:
+:PROPERTIES:
+:REVISION: b2c6f81 plus W052 hyphenation continuation
+:COMMAND: GOTOOLCHAIN=go1.26.6 make test lint RELEASE_VERSION=unused
+:EVIDENCE: Both targets exited zero; manuscript 95.882s, app 9.117s, config 0.542s, letter 0.034s, play and Typst 0.009s each, update-homebrew 0.010s.
+:END:
+- Presets :: Current British/US files, including the new auto key; all existing
+  user font, spacing, indentation and header defaults retained.
+- Integrity :: No tests removed or skipped, failures suppressed, or historical
+  presets substituted. The full suite includes the W053 paragraph regressions.
+** GREEN OT052.1 - Rendered manuscript inspection :testdef:
+:PROPERTIES:
+:REVISION: b2c6f81 plus W052 hyphenation continuation, temporary executable
+:EVIDENCE: Full copied 6x9 manuscript rendered; inspected rasterized chapter-opening and continuation pages 9 and 10 show visible discretionary hyphens, distinct paragraphs, indentation and consistent body width.
+:END:
+- Method :: Source and current layout copied into OS-temporary storage. Only the
+  copy sets body stretch 130% and hyphenation true. Current XCharter 10.5pt body,
+  120% mono/quote stretch, 13mm margin, 5mm gutter and 1.0 line spacing retained.
+- Inspection :: Poppler PNGs at 1400px; the earlier missing-hyphen case now draws
+  its mark, and continuation-page dialogue and italic text remain readable.
+- Privacy :: No private manuscript content is included in repository fixtures
+  or review inputs. User source and configuration files were not modified.
 ** AMBER UT052.1 - Review stretched prose layout :testdef:
 :PROPERTIES:
-:REASON: Visual acceptance and the line-end hyphenation trade-off remain unresolved.
+:REASON: User validation of the final hyphenating render and documented limits is pending.
 :END:
 - Method :: User validation; no result is inferred from automated measurements.
 - Comparison :: A synthetic narrow-column PDF compares identical glyph geometry
@@ -44,9 +100,13 @@
   sample splits considerable, conversations, complicated and original; the
   word-level sample places whole words on the following line.
 - Limits :: This diagnostic demonstrates a mechanism, not the private manuscript.
+- Current candidate :: The original whole-word-only limitation is superseded.
+  Review the final rendered copy with explicit English discretionary breaks;
+  shaping-sensitive breaks are omitted and inserted hyphens retain native width.
 
-* Broader regression evidence
-- The current-checkout full suite fails. The unchanged =af26f7d= baseline was
+* Historical broader regression evidence
+- At the initial W052 implementation, the current-checkout full suite failed.
+  The unchanged =af26f7d= baseline was
   separately archived and tested; the same 39 top-level test names fail there.
   Failures include preset-default expectations for mono size, quote clearance,
   paragraph indentation and enabled headers. No presets were changed for this work.
@@ -57,10 +117,17 @@
   config 0.425s, letter 0.026s, manuscript 82.217s, play 0.007s and Typst
   0.006s. This supplemental result does not turn the current-preset suite GREEN.
 
-* Delivery limits
-- No audit or operator acceptance is claimed. The paragraph-layout decision
-  precedes final delivery review.
-- No private manuscript regeneration, source edits, release or remote push.
+* Delivery limits and security verification
+- Initial delivery limit :: The first implementation had no audit or operator
+  acceptance and had not regenerated the private manuscript. The current OT
+  supersedes that rendering limitation using temporary copies only.
+- Reviews :: [[file:audits.yaml][Harness-owned independent review evidence]].
+  User acceptance remains separate. No source edits, release or remote push.
+- Dependency scan :: The first =govulncheck ./...= run reported seven reachable
+  standard-library advisories with Go 1.26.3. Selecting Go 1.26.6 in temporary
+  toolchain storage and rerunning the same scan returned =No vulnerabilities found=.
+  The current build and suite use that patched toolchain; the system installation
+  and project Go minimum are unchanged.
 
 * Subsequent regression
 - The chapter-opening multi-paragraph case exposed lost paragraph boundaries
@@ -68,4 +135,5 @@
   above did not cover that case and do not establish successful delivery.
 - [[file:../053-stretch-paragraph-regression/spec.org][W053 - Stretched chapter
   paragraph preservation]] records the corrective change and current full-suite
-  evidence. The requested hyphenation setting remains outstanding.
+  evidence. The requested hyphenation setting was outstanding at that handoff;
+  the continuation above records its implementation and verification here.

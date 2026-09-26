@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"os/exec"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -82,6 +83,11 @@ func proseStretchConfig() map[string]any {
 
 func renderStretchWords(t *testing.T, binary, format string, cfg map[string]any, source string) map[string]inlinePDFWord {
 	t.Helper()
+	return inlinePDFWords(t, renderStretchPDF(t, binary, format, cfg, source))
+}
+
+func renderStretchPDF(t *testing.T, binary, format string, cfg map[string]any, source string) string {
+	t.Helper()
 	dir, path := fontFixture(t, format, false, cfg)
 	if format == "org" {
 		cmd := exec.Command("pandoc", "--from=markdown", "--to=org")
@@ -90,7 +96,7 @@ func renderStretchWords(t *testing.T, binary, format string, cfg map[string]any,
 	}
 	writeFile(t, path, source)
 	renderFontCLI(t, binary, dir, path)
-	return inlinePDFWords(t, compileFontPDF(t, dir))
+	return compileFontPDF(t, dir)
 }
 
 func TestManuscriptStretchWrapsAndJustifies(t *testing.T) {
@@ -193,7 +199,7 @@ func TestManuscriptHyphenation(t *testing.T) {
 					for _, mode := range []any{false, true, "auto"} {
 						t.Run(fmt.Sprintf("%s/%s/%d/%t/%v", format, role, percent, justify, mode), func(t *testing.T) {
 							cfg := proseStretchConfig()
-							setFontTestPath(cfg, "folio.manuscript.page", "100x100mm")
+							setFontTestPath(cfg, "folio.manuscript.page", "90x100mm")
 							setFontTestPath(cfg, "folio.manuscript.hyphenation", mode)
 							setFontTestPath(cfg, "folio.manuscript.justify", justify)
 							setFontTestPath(cfg, "folio.manuscript."+role+".stretch", fmt.Sprintf("%d%%", percent))
@@ -216,6 +222,65 @@ func TestManuscriptHyphenation(t *testing.T) {
 					}
 				}
 			}
+		}
+	}
+}
+
+func TestHyphenationPreservesUnbrokenStretchGeometry(t *testing.T) {
+	binary := buildFontCLI(t)
+	var baseline map[string]inlinePDFWord
+	for _, percent := range []int{100, 130} {
+		cfg := proseStretchConfig()
+		setFontTestPath(cfg, "folio.manuscript.hyphenation", true)
+		setFontTestPath(cfg, "folio.manuscript.font.stretch", fmt.Sprintf("%d%%", percent))
+		words := renderStretchWords(t, binary, "md", cfg, "Extraordinary affinity office **conversations** *complications*.\n")
+		if percent == 100 {
+			baseline = words
+		}
+		for marker, base := range baseline {
+			got, ok := words[marker]
+			if !ok {
+				t.Errorf("lost unbroken word %q", marker)
+				continue
+			}
+			if math.Abs((got.XMax-got.XMin)-(base.XMax-base.XMin)*float64(percent)/100) > 0.03 {
+				t.Errorf("%s: width %.3f, expected %.3f", marker, got.XMax-got.XMin, (base.XMax-base.XMin)*float64(percent)/100)
+			}
+		}
+	}
+}
+
+func TestManuscriptHyphenationLeavesCodeUnbroken(t *testing.T) {
+	binary := buildFontCLI(t)
+	for _, format := range []string{"md", "org"} {
+		cfg := proseStretchConfig()
+		setFontTestPath(cfg, "folio.manuscript.hyphenation", true)
+		setFontTestPath(cfg, "folio.manuscript.font.stretch", "130%")
+		setFontTestPath(cfg, "folio.manuscript.mono.font.stretch", "130%")
+		setFontTestPath(cfg, "folio.manuscript.page", "90x120mm")
+		words := renderStretchWords(t, binary, format, cfg, "Text `extraordinary` end.\n\n`conversations concerning`\n\n```\nconsiderable complications\n```\n")
+		for _, marker := range []string{"extraordinary", "conversations", "concerning", "considerable", "complications"} {
+			if _, ok := words[marker]; !ok {
+				t.Errorf("%s code word lost or split: %s", format, marker)
+			}
+		}
+	}
+}
+
+func TestHyphenationDoesNotSplitWordsWithoutHyphens(t *testing.T) {
+	binary := buildFontCLI(t)
+	for _, width := range []int{75, 80, 85, 90, 95, 100, 105, 110} {
+		cfg := proseStretchConfig()
+		setFontTestPath(cfg, "folio.manuscript.hyphenation", true)
+		setFontTestPath(cfg, "folio.manuscript.justify", true)
+		setFontTestPath(cfg, "folio.manuscript.font.stretch", "130%")
+		setFontTestPath(cfg, "folio.manuscript.page", fmt.Sprintf("%dx100mm", width))
+		source := strings.Repeat("Extraordinary measurements continued for several metres before the considerable distance became apparent. ", 8)
+		pdf := renderStretchPDF(t, binary, "md", cfg, source)
+		plain := commandOutput(t, exec.Command("pdftotext", "-layout", pdf, "-"))
+		plain = regexp.MustCompile("[-\u00ad][\\t ]*\\n[\\t \\f\\r\\n]*").ReplaceAllString(plain, "")
+		if strings.Join(strings.Fields(plain), " ") != strings.Join(strings.Fields(source), " ") {
+			t.Errorf("width %dmm: extraction lost text or broke a word without a hyphen:\n%s", width, plain)
 		}
 	}
 }

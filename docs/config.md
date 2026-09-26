@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.21"
+version: "0.22"
 last-updated: 2026-09-26
 ---
 
@@ -134,7 +134,7 @@ The six properties are:
 
 For roles other than manuscript body, quoted blocks and monospace, `stretch` selects an available width within the chosen font family. If that width is unavailable, Typst selects the nearest available face; it does not geometrically compress or expand the text. `letter-spacing` separately adjusts the space between characters.
 
-For **manuscript body and quoted blocks**, `font.stretch` and `quoted-block.font.stretch` scale glyphs horizontally from the normal-width face: 160% means 1.6 times the width, with unchanged glyph height. Bold and italic retain their styles. Each role has its own ratio; code inside prose or a quote still uses `mono.font.stretch`. Word spaces scale too, and justification remains active. At non-100% stretch, words are scaled individually, so line breaking can move a whole word to the next line where native paragraph layout would hyphenate it. At 100%, prose keeps native line breaking. First Folio currently exposes no separate hyphenation setting.
+For **manuscript body and quoted blocks**, `font.stretch` and `quoted-block.font.stretch` scale glyphs horizontally from the normal-width face: 160% means 1.6 times the width, with unchanged glyph height. Bold and italic retain their styles. Each role has its own ratio; code inside prose or a quote still uses `mono.font.stretch`. Word spaces scale too, and justification remains active. The `hyphenation` setting controls automatic word splitting at normal and stretched widths. At 100%, prose keeps native Typst line breaking.
 
 For **manuscript monospace**, `mono.font.stretch` instead specifies proportional horizontal scaling from the normal-width face: 150% is 1.5 times the width, 200% twice, and 50% half. Glyph height stays unchanged. Words and inter-word spacing scale, so paragraphs can still wrap between code words and code blocks keep their column alignment and their page breaks. This corrects the earlier interpretation of monospace stretch as font-face selection only.
 
@@ -187,7 +187,7 @@ The built-in [British base](../presets/british.yaml) is the canonical default an
 
 | Group | Accepted keys |
 |---|---|
-| Core | `style`, `page`, `margin`, `gutter`, `line-spacing`, `justify`, `widow-orphan-control`, `paragraph-indent`, `paragraph-spacing` |
+| Core | `style`, `page`, `margin`, `gutter`, `line-spacing`, `justify`, `hyphenation`, `widow-orphan-control`, `paragraph-indent`, `paragraph-spacing` |
 | Body typography | `font` |
 | Heading typography | `heading.font` |
 | Monospace typography | `mono.font` |
@@ -649,7 +649,30 @@ folio:
 
 The current configuration may contain a partial font block because its remaining properties come from the same role in the British base. Retired keys are rejected rather than translated silently.
 
+### Manuscript hyphenation
+
+`folio.manuscript.hyphenation` controls automatic hyphenation in body paragraphs and quoted blocks:
+
+- `false`: keep words whole.
+- `true`: allow hyphenation with either justified or ragged text.
+- `auto`: allow hyphenation when `justify: true`. This is the British default, inherited by US.
+
+Quoted `"true"` and `"false"` are also accepted. Empty, null, numeric and other values produce a configuration error. Source frontmatter and local YAML use the normal deep-merge precedence. Inline code, standalone code paragraphs and fenced code remain unhyphenated.
+
+```yaml
+folio:
+  manuscript:
+    hyphenation: true
+    font:
+      stretch: 130%
+```
+
+At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
+
 ## Changelog
+
+- 0.22 (2026-09-26): Added manuscript hyphenation controls for body and quoted text, including geometric stretch, with code remaining unhyphenated.
+
 
 - 0.21 (2026-09-26): Stretched chapter openings preserve subsequent paragraph breaks, first-line indentation and body stretch.
 

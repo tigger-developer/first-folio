@@ -173,7 +173,7 @@
 // between code words, and code blocks keep both their column alignment and their pagination.
 #let folio-mono-stretch(body) = {
   // Scale the normal-width face so condensed variants do not compound stretch.
-  set text(stretch: 100%, spacing: {{.Config.Folio.Manuscript.Mono.Font.Stretch}})
+  set text(stretch: 100%, spacing: {{.Config.Folio.Manuscript.Mono.Font.Stretch}}, hyphenate: false)
   show regex("\\S+"): word => context {
     // Scaling loses the text baseline; retain the actual depth below it.
     let descent = measure(text(top-edge: "baseline", word)).height
@@ -185,6 +185,7 @@
 }
 
 // Prose and quotations retain independent font roles, including nested inline code.
+#let folio-hyphenation = {{.HyphenationDictionary}}
 #let folio-prose-stretch(body) = context {
   let ratio = text.stretch
   // Normalize whitespace too when a family supplies a different-width face.
@@ -198,8 +199,40 @@
     } else {
       // A nested role normalizes its face before outer rules see its text.
       set text(stretch: 100%)
-      let descent = measure(text(top-edge: "baseline", word)).height
-      box(baseline: descent, scale(x: ratio, y: 100%, reflow: true, word))
+      let enabled = if text.hyphenate == auto { par.justify } else { text.hyphenate }
+      let match = word.text.match(regex("^([^A-Za-z]*)([A-Za-z]+)([^A-Za-z]*)$"))
+      let positions = if enabled and match != none {
+        folio-hyphenation.at(lower(match.captures.at(1)), default: ())
+      } else { () }
+      // Do not split through a ligature or kerned pair: separately shaped
+      // pieces must retain the original word's glyphs and proportional width.
+      if positions.len() > 0 {
+        let width = measure(word).width
+        let before = match.captures.at(0)
+        let letters = match.captures.at(1)
+        let after = match.captures.at(2)
+        positions = positions.filter(position => {
+          let left = measure(text(before + letters.slice(0, position))).width
+          let right = measure(text(letters.slice(position) + after)).width
+          calc.abs(left + right - width) < 0.001pt
+        })
+      }
+      let pieces = if positions.len() == 0 { (word.text,) } else {
+        let before = match.captures.at(0)
+        let letters = match.captures.at(1)
+        let after = match.captures.at(2)
+        let offsets = (0,) + positions + (letters.len(),)
+        offsets.slice(0, -1).enumerate().map(((i, start)) => {
+          ((if i == 0 { before } else { "" }) + letters.slice(start, offsets.at(i + 1)) +
+          (if i == positions.len() { after } else { "" }))
+        })
+      }
+      for (i, piece) in pieces.enumerate() {
+        if i > 0 { text("\u{2060}"); sym.hyph.soft }
+        let item = text(hyphenate: false, piece)
+        let descent = measure(text(top-edge: "baseline", item)).height
+        box(baseline: descent, scale(x: ratio, y: 100%, reflow: true, item))
+      }
     }
   }
   body
@@ -450,6 +483,7 @@
   first-line-indent: (amount: {{.Config.Folio.Manuscript.ParagraphIndent}}, all: true),
   justify: {{.Config.Folio.Manuscript.Justify}},
 )
+#set text(hyphenate: {{.Config.Folio.Manuscript.Hyphenation}})
 // Scale the native font interval; 0.65em is Typst's default par.leading.
 // This wrapper starts after frontmatter so TOC and copyright spacing stay independent.
 #show: body => context {

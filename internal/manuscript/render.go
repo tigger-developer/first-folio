@@ -38,6 +38,7 @@ type templateData struct {
 	HasFooterFrontmatter    bool
 	HasFooterAltFrontmatter bool
 	Body                    string
+	HyphenationDictionary   string
 
 	// #18: seed the first part / first chapter semantic-authoring state at document top so
 	// the FIRST body page's header context (which evaluates at page-top, before the first
@@ -158,6 +159,13 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	hyphenationDictionary := "(:)"
+	if cfg.Folio.Manuscript.Hyphenation != "false" && (cfg.Folio.Manuscript.Font.Stretch != "100%" || cfg.Folio.Manuscript.QuotedBlock.Font.Stretch != "100%") {
+		hyphenationDictionary, err = manuscriptHyphenationDictionary(body)
+		if err != nil {
+			return "", err
+		}
+	}
 	firstPart, firstChapter := firstHeadingSeeds(doc.Blocks, cfg)
 	safeMeta := escapedMetadata(doc.Metadata)
 	safeMeta.Date = escapeTypst(renderDate(doc.Metadata.Date, cfg.Folio.Manuscript.DateFormat))
@@ -180,6 +188,7 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 		HasFooterFrontmatter:    cfg.Folio.Manuscript.PageFooter.FrontmatterFormat != nil,
 		HasFooterAltFrontmatter: cfg.Folio.Manuscript.PageFooter.AltFrontmatterFormat != nil,
 		Body:                    body,
+		HyphenationDictionary:   hyphenationDictionary,
 		IsUS:                    cfg.Folio.Manuscript.Style == "us",
 		PartVertical:            typstVerticalAlign(cfg.Folio.Manuscript.Part.VerticalAlign),
 		ChapterPosition:         chapterPosition(cfg.Folio.Manuscript.Chapter.Position),

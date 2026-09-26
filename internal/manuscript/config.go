@@ -119,6 +119,7 @@ type ManuscriptConfig struct {
 	DateFormat         string              `yaml:"date-format"`
 	LineSpacing        string              `yaml:"line-spacing"`
 	Justify            *bool               `yaml:"justify"`
+	Hyphenation        string              `yaml:"hyphenation"`
 	WidowOrphanControl *bool               `yaml:"widow-orphan-control"`
 	ParagraphIndent    string              `yaml:"paragraph-indent"`
 	ParagraphSpacing   string              `yaml:"paragraph-spacing"`
@@ -595,6 +596,7 @@ func normalizeConfig(cfg *Config) {
 	fill(&ms.Page, folio.Page)
 	fill(&ms.Margin, folio.Margin)
 	fill(&ms.DateFormat, "2 January 2006")
+	fill(&ms.Hyphenation, "auto")
 	if ms.Justify == nil {
 		justify := true
 		ms.Justify = &justify

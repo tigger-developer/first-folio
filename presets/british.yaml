@@ -306,6 +306,7 @@ folio:
 
     line-spacing: 1.5
     justify: true
+    hyphenation: auto                 # true: allow; false: disable; auto: follow justify.
     widow-orphan-control: true
     paragraph-indent: 5mm
     paragraph-spacing: 0pt

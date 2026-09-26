@@ -3,10 +3,37 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
+
+func TestManuscriptHyphenationConfiguration(t *testing.T) {
+	for _, value := range []any{true, false, "auto", "true", "false", "", "yes", "AUTO", nil, 1, []any{true}, map[string]any{"enabled": true}} {
+		t.Run(fmt.Sprintf("%#v", value), func(t *testing.T) {
+			cfg, err := Load(Options{Mode: ModeManuscript, Home: t.TempDir(), LocalDir: t.TempDir(),
+				Source: map[string]any{"folio": map[string]any{"manuscript": map[string]any{"hyphenation": value}}}})
+			valid := value == true || value == false || value == "auto" || value == "true" || value == "false"
+			if valid {
+				if err != nil {
+					t.Fatal(err)
+				}
+				assertValue(t, cfg, "folio.manuscript.hyphenation", value)
+			} else if err == nil || !strings.Contains(err.Error(), "folio.manuscript.hyphenation") {
+				t.Fatalf("invalid value accepted or error lacks configuration path: %v", err)
+			}
+		})
+	}
+	for _, style := range []string{"british", "us"} {
+		cfg, err := Load(Options{Mode: ModeManuscript, Home: t.TempDir(), LocalDir: t.TempDir(), CLI: map[string]any{"style": style}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		assertValue(t, cfg, "folio.manuscript.hyphenation", "auto")
+	}
+}
 
 func TestLoadScriptPrecedence(t *testing.T) {
 	home := t.TempDir()

@@ -1,0 +1,14 @@
+English hyphenation data from hyphenation/tex-hyphen
+Commit: 5684c0f51c0b81133db2efbe60a408b4155a3ff5
+Files: hyph-utf8/tex/generic/hyph-utf8/patterns/txt/hyph-en-us.{pat,hyp}.txt
+Source: https://github.com/hyphenation/tex-hyphen
+Version: 2005-05-30
+
+Copyright (C) 1990, 2004, 2005 Gerard D.C. Kuiken
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+These patterns include the original Plain TeX patterns and hyphenations
+from Donald E. Knuth and the extended patterns by Gerard D.C. Kuiken.
+The data files are copied unchanged. English left/right minima are 2/3.
