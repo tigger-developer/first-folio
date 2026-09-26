@@ -1,0 +1,356 @@
+version: 1
+audits:
+    - readiness_check: delivery-code
+      work_item: W053
+      gate: implementation
+      session_id: 20260926_161855_95db3d
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-26T15:19:21Z"
+      revision: f19d0a1
+      verdict: PASS
+      response: |-
+        GATE: delivery-code
+        REVISION: f19d0a1
+        VERDICT: PASS
+
+        Findings and verification notes:
+
+        Test repairs (reviewed first)
+        - RT053.1 (TestStretchedChapterPreservesParagraphs) is a genuine behavioural regression: it measures PDF word geometry, paragraph separations via increasing Y coordinates, first-line x positions (20mm vs 25mm), and per-paragraph stretch ratios against a per-format 100% baseline within 0.03pt. The recorded RED evidence (joined paragraphs, wrong widths) matches the intended failure mode; GREEN covers Markdown and Org at 100% and 160% with five paragraphs including bold content.
+        - RT053.2 evidence: make test exit zero against current presets, make lint passed. No tests were removed or skipped; no failure suppression or historical-preset substitution is present in the supplied files.
+        - Test-repair quality preserved: enableFixtureHeader uses a lower (HOME global) configuration layer so explicit local disablement still wins (disabled-header tests remain effective). Default assertions track the current British preset (paragraph-indent 5mm, Iosevka Publish 9pt, header disabled by default with 20mm+10mm geometry when enabled). The paragraph_indent_test.go case inventory (code, quote, footnote, raw Typst openers) keeps its negative assertions intact; the added footnote case is a boundary check within the authorized corrective scope, not invented coverage.
+        - The US overlay change (mono size leaf replaced by an inheritance comment) leaves the rendered 9pt value unchanged via the British base and is required by RT039.4's overlay-only-differences contract; the overlay assertion is retained.
+
+        Production delta
+        - render.go applies wrapChapterOpeningParagraph before the #folio-prose-stretch enclosure on both the paragraph and raw-typst routes, with an accurate comment explaining the bracket-ownership diagnosis. This is exactly the approved solution-design decision; no new parser, dependency, configuration key, or scope expansion is present. The 100% bypass on the stretch wrapper (native layout preserved) remains intact. Escaping and template ownership are unchanged; no security-relevant delta.
+
+        Traceability and records
+        - W053 spec/validation records use ORG-SCHEMA-compliant tagged AC/test headings with correct execution-state properties (RED/GREEN with REVISION, COMMAND, EVIDENCE; OT method documented without personal names or private content). No audit verdicts, round numbers, or session state are duplicated in spec.org, validation.org, or work.org (audits.yaml is linked, not copied). OPERATOR_SIGNOFF: PENDING is lifecycle metadata, not audit state.
+        - Emergency-route obligations are met: observed RED before the fix, current RT/OT GREEN, product documentation updated before this verdict. No UTs are defined for W053, so none are outstanding.
+
+        Documentation
+        - docs/config.md 0.21 (2026-09-26) records the delivered behaviour in impersonal, factual voice and matches the implementation ("Stretched chapter openings preserve subsequent paragraph breaks, first-line indentation and body stretch"). docs/ARCHITECTURE.md requires no change for this delta. No conversation narration or personal attribution found in the changed documentation.
+
+        Boundary respected
+        - The outstanding W052 hyphenation configuration is explicitly recorded as unresolved in the W053 spec, validation limits, and work.org; nothing in this delta implements, accepts, or silently closes it. This PASS applies only to the bounded corrective scope.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-4128516919.log
+          readiness_check: delivery-code
+          cache_key: sha256:d7149f7f58f553575dc61729a35fb08a657f880854a15b0f9a314dd1d37d1beb
+          session_id: 20260926_161855_95db3d
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 66982ab8b25b26ea1bfaf40577bf4955bf0c804cfd035ab582c6d9ff658e2581
+              bytes: 16627
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: baffdd38fac0c2dd24d2be5389edb2a0b88ea19e8d67e1bc2f6f65d55601b7b3
+              bytes: 2974
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/Makefile
+              sha256: a117866e9b9b3f73759fff79a64f2e6657504d78e8ff368f696ea9c4769702f9
+              bytes: 1378
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 70e09d52aa712c47edf2e859244f3cfe4303eb2b51d25acbf76f217e403c2d3a
+              bytes: 45255
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 8058fda5f6983e3b29315f6943ddbb507d63d9406f94e35c3890d6a79cefdec3
+              bytes: 256000
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/font_config_test.go
+              sha256: 37d1cc30162fc72f4a1b76ee5d1a0aaa9fd24f936ec7cc98514daf4b5f99f218
+              bytes: 13638
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font_test.go
+              sha256: 985fbe0a2d56b8113ef83a9cd0b2a983212fe2b5ba03cc1f7aff7d9498e5d6f1
+              bytes: 12210
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/blockquote_test.go
+              sha256: c1d62a086b031aa5405043ec463ad7c4f30256840a29747d70678fc725314d2d
+              bytes: 10920
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 329b680c259dc49b7471e860c95091905213786244928f3d7ff19ef7334a9100
+              bytes: 12356
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_test.go
+              sha256: 2239a217ee0f11f8c89007c7ebc74bba52f0c48add4c244d16ddce9563a7047b
+              bytes: 3426
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: bd7bb952f4458784ac47db20311c5393bd85cdcbef7e38700692cb84d0da88fc
+              bytes: 5752
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue18_test.go
+              sha256: d908652e8f4ae3cf005da73f62463aeef2c7c5d988d1cf99537fca8d4f408077
+              bytes: 18781
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue29_test.go
+              sha256: d55619e4935da3511cd1dd1c477f68d52a219b14ce7864ebe42e96fac3810c50
+              bytes: 5155
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_config_enhancements_test.go
+              sha256: 42e7e5e8774bfb23083322172f2c4f838ec5d8f7dacbd5d7d6cac5d6e491b001
+              bytes: 39324
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 26e8490a44435675565782a99a50110de0cacf6732d6e27ab0873d234859daf0
+              bytes: 31360
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/paragraph_indent_test.go
+              sha256: 95564c31273b921a6d2b734df1f98fa68c26017d8afe603338c0feec669a0054
+              bytes: 2870
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 0cf57e70f53cd6a57c4eaf394cba17989dfb6ab28e6aa53a262f2e8159d5975f
+              bytes: 20303
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/prose_stretch_test.go
+              sha256: 3a4c00d542a4f558625397484ce9629f431f91af9e26d24a9aee12e6c26b88c6
+              bytes: 6887
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 62f67c6a9c566b9e527cb402c332a81c86c08fbeb0cce106b1012f208b70239c
+              bytes: 35311
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: a5fe1e44bd1abf824b9e1540b8dca8325dc97fb6fbc7e961590b5dcd85c523d6
+              bytes: 14398
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: 88bfae50db026568ac0501f852f7cc48d9b2e44daf4e2b13dcbd3a1d1d1de229
+              bytes: 2181
+            - path: /Users/tigger/code/tigoss/first-folio/specs/052-manuscript-prose-stretch/spec.org
+              sha256: 50d6b5f0f33a34650ff441f11b0cab8aec36d3505b28025ac046520e682a51b9
+              bytes: 7704
+            - path: /Users/tigger/code/tigoss/first-folio/specs/052-manuscript-prose-stretch/validation.org
+              sha256: 66589c4d184ade46b1f2b205f85d30ac3c35cb6ec1e52398dceb3bfa4a57c132
+              bytes: 4343
+            - path: /Users/tigger/code/tigoss/first-folio/specs/053-stretch-paragraph-regression/spec.org
+              sha256: 396ba8c02c96793e5b3893966c07ce8b93145805411540c39e359a09ac7fff65
+              bytes: 8085
+            - path: /Users/tigger/code/tigoss/first-folio/specs/053-stretch-paragraph-regression/validation.org
+              sha256: 0416955af7168bff1b54609dbb291b2452bbca0abdb3a47f92fa88f8d4657a65
+              bytes: 2909
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 5475f31bae4b4aadbf6244796050137352951bd15decc512411fb1d226eab700
+              bytes: 24244
+          round: 1
+          revision: f19d0a1
+          verdict: PASS
+          response: |-
+            GATE: delivery-code
+            REVISION: f19d0a1
+            VERDICT: PASS
+
+            Findings and verification notes:
+
+            Test repairs (reviewed first)
+            - RT053.1 (TestStretchedChapterPreservesParagraphs) is a genuine behavioural regression: it measures PDF word geometry, paragraph separations via increasing Y coordinates, first-line x positions (20mm vs 25mm), and per-paragraph stretch ratios against a per-format 100% baseline within 0.03pt. The recorded RED evidence (joined paragraphs, wrong widths) matches the intended failure mode; GREEN covers Markdown and Org at 100% and 160% with five paragraphs including bold content.
+            - RT053.2 evidence: make test exit zero against current presets, make lint passed. No tests were removed or skipped; no failure suppression or historical-preset substitution is present in the supplied files.
+            - Test-repair quality preserved: enableFixtureHeader uses a lower (HOME global) configuration layer so explicit local disablement still wins (disabled-header tests remain effective). Default assertions track the current British preset (paragraph-indent 5mm, Iosevka Publish 9pt, header disabled by default with 20mm+10mm geometry when enabled). The paragraph_indent_test.go case inventory (code, quote, footnote, raw Typst openers) keeps its negative assertions intact; the added footnote case is a boundary check within the authorized corrective scope, not invented coverage.
+            - The US overlay change (mono size leaf replaced by an inheritance comment) leaves the rendered 9pt value unchanged via the British base and is required by RT039.4's overlay-only-differences contract; the overlay assertion is retained.
+
+            Production delta
+            - render.go applies wrapChapterOpeningParagraph before the #folio-prose-stretch enclosure on both the paragraph and raw-typst routes, with an accurate comment explaining the bracket-ownership diagnosis. This is exactly the approved solution-design decision; no new parser, dependency, configuration key, or scope expansion is present. The 100% bypass on the stretch wrapper (native layout preserved) remains intact. Escaping and template ownership are unchanged; no security-relevant delta.
+
+            Traceability and records
+            - W053 spec/validation records use ORG-SCHEMA-compliant tagged AC/test headings with correct execution-state properties (RED/GREEN with REVISION, COMMAND, EVIDENCE; OT method documented without personal names or private content). No audit verdicts, round numbers, or session state are duplicated in spec.org, validation.org, or work.org (audits.yaml is linked, not copied). OPERATOR_SIGNOFF: PENDING is lifecycle metadata, not audit state.
+            - Emergency-route obligations are met: observed RED before the fix, current RT/OT GREEN, product documentation updated before this verdict. No UTs are defined for W053, so none are outstanding.
+
+            Documentation
+            - docs/config.md 0.21 (2026-09-26) records the delivered behaviour in impersonal, factual voice and matches the implementation ("Stretched chapter openings preserve subsequent paragraph breaks, first-line indentation and body stretch"). docs/ARCHITECTURE.md requires no change for this delta. No conversation narration or personal attribution found in the changed documentation.
+
+            Boundary respected
+            - The outstanding W052 hyphenation configuration is explicitly recorded as unresolved in the W053 spec, validation limits, and work.org; nothing in this delta implements, accepts, or silently closes it. This PASS applies only to the bounded corrective scope.
+          updated: "2026-09-26T15:18:53Z"
+    - work_item: W053
+      gate: definition
+      session_id: 20260926_161933_424f00
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: hermes
+        provider: nous
+        model: z-ai/glm-5.3
+      external_round: 1
+      status: passed
+      updated: "2026-09-26T15:19:56Z"
+      revision: f19d0a1
+      verdict: PASS
+      response: |-
+        GATE: definition
+        REVISION: f19d0a1
+        VERDICT: PASS
+
+        Assessment notes (non-blocking):
+
+        - Retrospective review per Workflow: emergency, Review: retrospective. Fidelity to the authorized scope is accurate: the W053 spec covers only the paragraph-corruption repair and restored regression suite, explicitly leaves W052 open for hyphenation, and claims no approval of W052's unresolved behaviour.
+        - spec.org contains no annotation records or audit-state duplication; OPERATOR_SIGNOFF is correctly PENDING; test results live only in validation.org.
+        - Traceability is complete: AC053.1 → RT053.1 and OT053.1; AC053.2 → RT053.2. RT053.1 measures PDF word geometry (behavioural, not source grep); RT053.2 is the full make test target; the OT is a bounded local rendering inspection with private source kept out of tracked storage, consistent with the recorded operator context. Evidence in validation.org records RED, GREEN, lint pass, and explicit no-weakening/no-preset-substitution notes for the corrective delta.
+        - Design is proportionate and not over-engineered: the fix is a wrapper-order correction plus explicit fixture prerequisites and current-preset default assertions; no new abstraction, dependency, configuration key, or template-inflation is introduced. US mono-size inheritance preserves the overlay-only-differences contract.
+        - Affected documentation is identified in the handoff (docs/config.md changelog); the delivered 0.21 changelog entry matches the delivered correction, and no further documentation demand applies at this gate.
+        - No security impact beyond the recorded no-change rationale; no contradictions, invented requirements, or unsafe assumptions found.
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-1320304780.log
+          cache_key: sha256:56787c97105fe4b4f8555de47274fa775881179699ae25215fa4b5f7d024b04a
+          session_id: 20260926_161933_424f00
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: bd7a66ffd967010eefb8dc7abe64b059994c7b0f44ed5f5c30ec73e354f5b7f7
+              bytes: 8154
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: a8b064c2fa966566476c8773adc25e90721ae14e520635a8c6c1169505fea2ef
+              bytes: 14215
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: a69a5d3b7ce3604b093703d72ab0de1bb6d607f140baab17292d209054fe902f
+              bytes: 13502
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: d8696dca9f4ed75cc8487e064a8c6756a418bbe623e55bcde0bc58996b011c9c
+              bytes: 7652
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 5539a827b058a41c761593f329bef9ae539f1565d0c75a6e0938a5021014a662
+              bytes: 4831
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 66982ab8b25b26ea1bfaf40577bf4955bf0c804cfd035ab582c6d9ff658e2581
+              bytes: 16627
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 6560e15ae577d79ba0fa565eaba53f1a94c57f00e9b1c3b3278291e19bf22dd8
+              bytes: 11718
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: baffdd38fac0c2dd24d2be5389edb2a0b88ea19e8d67e1bc2f6f65d55601b7b3
+              bytes: 2974
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 1a0d1296b6ec080c7c86b24713c4976a7eb6f9fab7071e2369ce2038baaad4f9
+              bytes: 16346
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: 63a41c24322b2c4144367b69777528b023a30222593c462b0696df98b1967917
+              bytes: 7301
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/Makefile
+              sha256: a117866e9b9b3f73759fff79a64f2e6657504d78e8ff368f696ea9c4769702f9
+              bytes: 1378
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: a1e433e699856bd355b488b239c2918c9ea287e2b549598d3a4643392768352d
+              bytes: 6148
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 70e09d52aa712c47edf2e859244f3cfe4303eb2b51d25acbf76f217e403c2d3a
+              bytes: 45255
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 8058fda5f6983e3b29315f6943ddbb507d63d9406f94e35c3890d6a79cefdec3
+              bytes: 256000
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/font_config_test.go
+              sha256: 37d1cc30162fc72f4a1b76ee5d1a0aaa9fd24f936ec7cc98514daf4b5f99f218
+              bytes: 13638
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/font_test.go
+              sha256: 985fbe0a2d56b8113ef83a9cd0b2a983212fe2b5ba03cc1f7aff7d9498e5d6f1
+              bytes: 12210
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/blockquote_test.go
+              sha256: c1d62a086b031aa5405043ec463ad7c4f30256840a29747d70678fc725314d2d
+              bytes: 10920
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_rendering_test.go
+              sha256: 329b680c259dc49b7471e860c95091905213786244928f3d7ff19ef7334a9100
+              bytes: 12356
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/font_test.go
+              sha256: 2239a217ee0f11f8c89007c7ebc74bba52f0c48add4c244d16ddce9563a7047b
+              bytes: 3426
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/inline_stretch_test.go
+              sha256: bd7bb952f4458784ac47db20311c5393bd85cdcbef7e38700692cb84d0da88fc
+              bytes: 5752
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue18_test.go
+              sha256: d908652e8f4ae3cf005da73f62463aeef2c7c5d988d1cf99537fca8d4f408077
+              bytes: 18781
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/issue29_test.go
+              sha256: d55619e4935da3511cd1dd1c477f68d52a219b14ce7864ebe42e96fac3810c50
+              bytes: 5155
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_config_enhancements_test.go
+              sha256: 42e7e5e8774bfb23083322172f2c4f838ec5d8f7dacbd5d7d6cac5d6e491b001
+              bytes: 39324
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/manuscript_test.go
+              sha256: 26e8490a44435675565782a99a50110de0cacf6732d6e27ab0873d234859daf0
+              bytes: 31360
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/paragraph_indent_test.go
+              sha256: 95564c31273b921a6d2b734df1f98fa68c26017d8afe603338c0feec669a0054
+              bytes: 2870
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 0cf57e70f53cd6a57c4eaf394cba17989dfb6ab28e6aa53a262f2e8159d5975f
+              bytes: 20303
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/prose_stretch_test.go
+              sha256: 3a4c00d542a4f558625397484ce9629f431f91af9e26d24a9aee12e6c26b88c6
+              bytes: 6887
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 62f67c6a9c566b9e527cb402c332a81c86c08fbeb0cce106b1012f208b70239c
+              bytes: 35311
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: a5fe1e44bd1abf824b9e1540b8dca8325dc97fb6fbc7e961590b5dcd85c523d6
+              bytes: 14398
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: 88bfae50db026568ac0501f852f7cc48d9b2e44daf4e2b13dcbd3a1d1d1de229
+              bytes: 2181
+            - path: /Users/tigger/code/tigoss/first-folio/specs/052-manuscript-prose-stretch/spec.org
+              sha256: 50d6b5f0f33a34650ff441f11b0cab8aec36d3505b28025ac046520e682a51b9
+              bytes: 7704
+            - path: /Users/tigger/code/tigoss/first-folio/specs/052-manuscript-prose-stretch/validation.org
+              sha256: 66589c4d184ade46b1f2b205f85d30ac3c35cb6ec1e52398dceb3bfa4a57c132
+              bytes: 4343
+            - path: /Users/tigger/code/tigoss/first-folio/specs/053-stretch-paragraph-regression/spec.org
+              sha256: 396ba8c02c96793e5b3893966c07ce8b93145805411540c39e359a09ac7fff65
+              bytes: 8085
+            - path: /Users/tigger/code/tigoss/first-folio/specs/053-stretch-paragraph-regression/validation.org
+              sha256: 0416955af7168bff1b54609dbb291b2452bbca0abdb3a47f92fa88f8d4657a65
+              bytes: 2909
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 5475f31bae4b4aadbf6244796050137352951bd15decc512411fb1d226eab700
+              bytes: 24244
+          round: 1
+          revision: f19d0a1
+          verdict: PASS
+          response: |-
+            GATE: definition
+            REVISION: f19d0a1
+            VERDICT: PASS
+
+            Assessment notes (non-blocking):
+
+            - Retrospective review per Workflow: emergency, Review: retrospective. Fidelity to the authorized scope is accurate: the W053 spec covers only the paragraph-corruption repair and restored regression suite, explicitly leaves W052 open for hyphenation, and claims no approval of W052's unresolved behaviour.
+            - spec.org contains no annotation records or audit-state duplication; OPERATOR_SIGNOFF is correctly PENDING; test results live only in validation.org.
+            - Traceability is complete: AC053.1 → RT053.1 and OT053.1; AC053.2 → RT053.2. RT053.1 measures PDF word geometry (behavioural, not source grep); RT053.2 is the full make test target; the OT is a bounded local rendering inspection with private source kept out of tracked storage, consistent with the recorded operator context. Evidence in validation.org records RED, GREEN, lint pass, and explicit no-weakening/no-preset-substitution notes for the corrective delta.
+            - Design is proportionate and not over-engineered: the fix is a wrapper-order correction plus explicit fixture prerequisites and current-preset default assertions; no new abstraction, dependency, configuration key, or template-inflation is introduced. US mono-size inheritance preserves the overlay-only-differences contract.
+            - Affected documentation is identified in the handoff (docs/config.md changelog); the delivered 0.21 changelog entry matches the delivered correction, and no further documentation demand applies at this gate.
+            - No security impact beyond the recorded no-change rationale; no contradictions, invented requirements, or unsafe assumptions found.
+          updated: "2026-09-26T15:19:32Z"
