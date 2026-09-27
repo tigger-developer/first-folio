@@ -118,7 +118,7 @@ make lint   # Go static analysis
 
 - [Source schemas](schema/README.md) - script, screenplay, manuscript, and letter definitions with source examples
 - [Vision](docs/vision.md) - project goals, supported formats, and direction of travel
-- [Architecture](ARCHITECTURE.md) - Go runtime, document models, configuration, and rendering boundaries
+- [Architecture](docs/ARCHITECTURE.md) - Go runtime, document models, configuration, and rendering boundaries
 - [Configuration](docs/config.md) - config schema, precedence, shared keys, migration
 - [Formats](docs/formats.md) - format overview, event stream, and fidelity matrix
   - [Org-mode](docs/format-org.md) - org-mode play format schema

@@ -90,18 +90,21 @@
   its mark, and continuation-page dialogue and italic text remain readable.
 - Privacy :: No private manuscript content is included in repository fixtures
   or review inputs. User source and configuration files were not modified.
-** AMBER UT052.1 - Review stretched prose layout :testdef:
+** GREEN UT052.1 - Review stretched prose layout :testdef:
 :PROPERTIES:
-:REASON: User validation of the final hyphenating render and documented limits is pending.
+:REVISION: 5aaaf1b - installed manuscript stretch and hyphenation delivery
+:EVIDENCE: PASS, 2026-09-27, user validation of the delivered render and documented limits; closure approved.
 :END:
-- Method :: User validation; no result is inferred from automated measurements.
+- Method :: User validation. Approved 2026-09-27.
+- Previous state :: AMBER while visual acceptance was pending; automated results
+  were not treated as user acceptance.
 - Comparison :: A synthetic narrow-column PDF compares identical glyph geometry
   with native paragraph hyphenation against word-level scaling. The native
   sample splits considerable, conversations, complicated and original; the
   word-level sample places whole words on the following line.
 - Limits :: This diagnostic demonstrates a mechanism, not the private manuscript.
 - Current candidate :: The original whole-word-only limitation is superseded.
-  Review the final rendered copy with explicit English discretionary breaks;
+  The accepted final rendered copy uses explicit English discretionary breaks;
   shaping-sensitive breaks are omitted and inserted hyphens retain native width.
 
 * Historical broader regression evidence
@@ -137,3 +140,17 @@
   paragraph preservation]] records the corrective change and current full-suite
   evidence. The requested hyphenation setting was outstanding at that handoff;
   the continuation above records its implementation and verification here.
+
+* Documentation reconciliation, 2026-09-27
+- Updated :: Specification approval, user-test result, work ledger and related
+  backlog references; architecture ownership of stretch and hyphenation;
+  manuscript format guides, CLI help and annotated configuration example.
+- Confirmed current :: =docs/config.md= documents all modes, inheritance,
+  validation, code exclusion and stretched-text limits; British and US presets
+  retain the documented default and inheritance.
+- Not affected :: Source schemas, conversion formats, vision and other command
+  help: no source syntax, command flags or other-mode behaviour changed.
+- README :: Configuration reference remains authoritative; corrected its
+  architecture link to the existing documentation file.
+- Verification :: Documentation-only closure; existing runtime test evidence
+  retained. Org readiness, sanitization and diff checks applied to this update.

@@ -3,7 +3,7 @@
 #+SUBTITLE: Emergency stretch repair
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-09-27
 
 * Synopsis
 :PROPERTIES:
@@ -30,9 +30,8 @@
 - Superseded initial decision :: The first implementation introduced no setting
   or dependency. The operator subsequently requested configurable hyphenation,
   including when text is stretched, under this same emergency ticket.
-** Next step
-- Retain regression and rendered evidence, independent reviews and user validation
-  for the closure decision.
+** Acceptance
+- Approved 2026-09-27. User validation is recorded in =validation.org=.
 
 * Context
 ** Authority and scope

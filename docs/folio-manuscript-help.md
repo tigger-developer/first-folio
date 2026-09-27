@@ -28,6 +28,13 @@ Source configuration:
   < explicit CLI options. A local font size preserves the source font family.
   Later input files cannot supply another configuration layer.
 
+Hyphenation:
+  Set folio.manuscript.hyphenation to auto (follow justify), true (allow),
+  or false (disable). Applies to body and quotes, including stretched text;
+  code stays unhyphenated. Stretched prose uses ASCII English break points,
+  preserving ligatures and kerning; inserted hyphens keep native width.
+  See the configuration reference for the full limits.
+
 External ISBN barcode SVG:
   Configure the copyright block in the local script.yaml:
 

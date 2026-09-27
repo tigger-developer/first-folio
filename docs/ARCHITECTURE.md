@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.5"
-last-updated: 2026-09-25
+version: "0.6"
+last-updated: 2026-09-27
 ---
 
 # Architecture
@@ -77,6 +77,15 @@ Substantial Typst layouts live in real `.typ` files. Go code owns:
 
 Templates own page composition. Product Go code does not contain generated-language heredocs or invoke a shell to run Typst.
 
+Manuscript body, quote and monospace stretch use geometric horizontal scaling in
+the template. For stretched prose, `internal/manuscript` embeds English patterns
+and exceptions, applies the pinned Go hyphenation library, and supplies a
+document-specific dictionary of discretionary break points. The template
+preserves shaping-sensitive boundaries and leaves final line and page breaking
+to Typst. Generated Typst remains self-contained with no runtime download.
+The shared loader validates `folio.manuscript.hyphenation`; code disables
+automatic hyphenation. See [hyphenation settings and limits](config.md#manuscript-hyphenation).
+
 ## Build And Tests
 
 `make build` compiles `dist/folio`; `make install` builds first and then links that binary into the configured installation directory. Version values are injected with Go linker flags. Homebrew builds the same command directly.
@@ -88,6 +97,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.6 (2026-09-27): Documented manuscript geometric stretch and offline hyphenation responsibilities.
 
 - 0.5 (2026-09-25): Added the Markdown manuscript source layer between global and local configuration.
 

@@ -1,7 +1,7 @@
 ---
 title: Org-mode Manuscript Format
-version: "0.6"
-last-updated: 2026-09-26
+version: "0.7"
+last-updated: 2026-09-27
 ---
 
 # Org-mode Manuscript Format
@@ -50,7 +50,9 @@ Fountain is not accepted by manuscript mode. Source-document images are not supp
 
 Section breaks default to a centred `#` marker in rendered manuscripts. Override `folio.manuscript.scene-break.marker` in YAML config to use another marker.
 
-Lists, tables, and source blocks render with `0.5em` vertical padding before and after by default. Override `folio.manuscript.list.space-before`, `folio.manuscript.list.space-after`, `folio.manuscript.table.space-before`, `folio.manuscript.table.space-after`, `folio.manuscript.code-block.space-before`, and `folio.manuscript.code-block.space-after` to adjust this spacing.
+Lists and tables default to `0.5em` vertical clearance; quoted and source-code blocks default to `6mm` in the British base, inherited by US. Override `folio.manuscript.list.space-before`, `folio.manuscript.list.space-after`, `folio.manuscript.table.space-before`, `folio.manuscript.table.space-after`, `folio.manuscript.code-block.space-before`, and `folio.manuscript.code-block.space-after` to adjust the respective sides.
+
+Body and quoted text support geometric font stretch and `folio.manuscript.hyphenation: auto|true|false`. Code remains unhyphenated. See [hyphenation modes and stretched-text limits](config.md#manuscript-hyphenation).
 
 Quoted blocks add `quoted-block-spacing` to normal body paragraph separation. Their `quote-block-indent` is the complete left inset, without additional native quote or prose first-line indentation. Both settings use the body font size for `em` units; quote typography remains controlled by `quoted-block.font`.
 
@@ -89,6 +91,7 @@ This planning note is excluded.
 
 ## Revision History
 
+- 0.7, 2026-09-27: Linked stretch and hyphenation controls and reconciled current block-clearance defaults.
 - 0.6, 2026-09-26: Document exact quote indentation and additive quote clearance.
 - 0.5, 2026-09-25: Clarified additive code-block clearance and complete-line code spans.
 - 0.4, 2026-09-17: Record that source blocks take their typography from the monospace font role, that configured stretch scales them proportionally, and that `code-block` carries layout only.

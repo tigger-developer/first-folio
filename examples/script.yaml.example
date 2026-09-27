@@ -159,6 +159,7 @@
   #       size: 10pt
   #   line-spacing: 1.5
   #   justify: true
+  #   hyphenation: auto          # auto follows justify; true allows; false disables
   #   widow-orphan-control: true
   #   paragraph-indent: 10mm
   #   paragraph-spacing: 0

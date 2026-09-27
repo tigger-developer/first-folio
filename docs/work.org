@@ -517,6 +517,11 @@ With a 56.693pt page margin:
 :CREATED: 2026-09-18
 :END:
 
+Current scope update, 2026-09-27: manuscript body and quote stretch, including
+hyphenation, are delivered by [[#w-052][W052 - Manuscript stretch and hyphenation]].
+The measurements and questions below retain the earlier baseline; other font
+roles and modes remain in this backlog.
+
 Skeleton ticket. Requirements, design and tests are defined by =define-change=;
 the notes below record the operator's report and the measured starting state.
 
@@ -660,7 +665,7 @@ release note is a decision for definition.
 - Validation :: [[file:../specs/051-quote-layout/validation.org][W051 - Rendered quote geometry]].
 - Review :: [[file:../specs/051-quote-layout/audits.yaml][Independent review record]].
 
-** ACTIVE W052 - Manuscript stretch and configurable hyphenation :defect:
+** DONE W052 - Manuscript stretch and configurable hyphenation :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-052
 :SOURCE: operator
@@ -677,6 +682,7 @@ release note is a decision for definition.
 - History :: The initial whole-word hyphenation limitation was not accepted.
   The operator requested a configuration setting and its completion here.
 - Reviews :: [[file:../specs/052-manuscript-prose-stretch/audits.yaml][Independent review record]].
+- Closure :: Accepted and closed 2026-09-27; stretched-prose user validation PASS.
 
 ** REVIEW W053 - Preserve stretched chapter paragraphs and restore regression coverage :defect:
 :PROPERTIES:
@@ -690,7 +696,7 @@ release note is a decision for definition.
 - Definition :: [[file:../specs/053-stretch-paragraph-regression/spec.org][Corrective specification]].
 - Evidence :: [[file:../specs/053-stretch-paragraph-regression/validation.org][Paragraph geometry and full-suite results]].
 - Reviews :: [[file:../specs/053-stretch-paragraph-regression/audits.yaml][Independent review record]].
-- Boundary :: W052 remains open for the outstanding hyphenation control.
+- Boundary :: Hyphenation was pending at this corrective handoff; it is now\n  delivered and accepted in [[#w-052][W052 - Manuscript stretch and hyphenation]].
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:
