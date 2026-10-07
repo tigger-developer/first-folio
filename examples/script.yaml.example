@@ -48,6 +48,25 @@
 #   page: a4                     # or us-letter
 #   default-format: pdf
 
+  # --- Running matter: scripts and manuscripts, never letters ---
+  # page-header:
+  #   enabled: true
+  #   format: "[title] • [author]"
+  #   alt-format: "[author] • [title]"
+  #   frontmatter-format: ""
+  #   align: left-right
+  #   distance-from-edge: 20mm
+  #   content-padding-after: 10mm
+  #   font:
+  #     size: 10pt
+  # page-footer:
+  #   enabled: true
+  #   format: "[page]/[total-pages]"
+  #   frontmatter-format: "[page]"
+  #   align: center
+  #   distance-from-edge: 20mm
+  #   content-padding-after: 10mm
+
   # --- Title page ---
   # title-page:
   #   page-number: false
@@ -178,19 +197,7 @@
   #     include-email: true
   #     include-website: true
   #     include-version: true
-  #   page-header:
-  #     enabled: true
-  #     format: "[title] • [chapter] • [author]"
-  #     alt-format: "[author] • [chapter] • [title]"
-  #     frontmatter-format: ""
-  #     align: left-right
-  #     distance-from-edge: 20mm
-  #     content-padding-after: 10mm
-  #   page-footer:
-  #     enabled: true
-  #     format: "[page]/[total-pages]"
-  #     frontmatter-format: "[page]"
-  #     align: center
+
   #   list:
   #     space-before: 0.5em
   #     space-after: 0.5em

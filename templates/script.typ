@@ -101,7 +101,29 @@
   {{end}}
 ]
 #pagebreak()
-#set page(numbering: "1", number-align: center + bottom, footer: auto)
 {{end}}
+
+#set page(
+  numbering: none,
+  margin: (
+    top: {{if .RunningHeader.Enabled}}{{.RunningHeader.DistanceFromEdge}} + {{.RunningHeader.ContentPaddingAfter}}{{else}}{{.Margin}}{{end}},
+    bottom: {{if .RunningFooter.Enabled}}{{.RunningFooter.DistanceFromEdge}} + {{.RunningFooter.ContentPaddingAfter}}{{else}}{{.Margin}}{{end}},
+    rest: {{.Margin}},
+  ),
+  {{if .RunningHeader.Enabled}}header-ascent: {{.RunningHeader.ContentPaddingAfter}},{{end}}
+  {{if .RunningFooter.Enabled}}footer-descent: {{.RunningFooter.ContentPaddingAfter}},{{end}}
+  header: {{if .RunningHeader.Enabled}}context {
+    let pg = counter(page).get().first()
+    let first-body = state("folio-script-body-page", 0).final()
+    let is-body = first-body > 0 and pg >= first-body
+    align({{.RunningHeader.Align}})[#text({{.RunningHeader.Font.Args}})[{{.RunningHeader.Format}}]]
+  }{{else}}none{{end}},
+  footer: {{if .RunningFooter.Enabled}}context {
+    let pg = counter(page).get().first()
+    let first-body = state("folio-script-body-page", 0).final()
+    let is-body = first-body > 0 and pg >= first-body
+    align({{.RunningFooter.Align}})[#text({{.RunningFooter.Font.Args}})[{{.RunningFooter.Format}}]]
+  }{{else}}none{{end}},
+)
 
 {{.Body}}

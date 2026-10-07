@@ -15,6 +15,14 @@ folio:
       align: center
       case-transform: upper
 
+  page-header:
+    font:
+      family: Menlo
+
+  page-footer:
+    font:
+      family: Menlo
+
   manuscript:
     style: us
     margin: 25mm
@@ -68,14 +76,6 @@ folio:
           family: Menlo
 
     date-format: "January 2, 2006"
-
-    page-header:
-      font:
-        family: Menlo
-
-    page-footer:
-      font:
-        family: Menlo
 
     toc:
       font:

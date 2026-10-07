@@ -271,6 +271,40 @@ folio:
     space-after-date: 1em
     space-after-subject: 0.5em
 
+  page-header:
+    enabled: false
+    font:
+      family: Libertinus Sans
+      size: 10pt
+      weight: regular
+      stretch: 100%
+      style: regular
+      letter-spacing: 0em
+    format: "[title] • [chapter] • [author]"
+    # alt-format: ""                 # Inherits page-header.format.
+    # frontmatter-format: ""         # Inherits page-header.format.
+    # alt-frontmatter-format: ""     # Inherits page-header.alt-format.
+    align: left-right
+    distance-from-edge: 20mm
+    content-padding-after: 10mm
+
+  page-footer:
+    enabled: true
+    font:
+      family: Libertinus Sans
+      size: 10pt
+      weight: regular
+      stretch: 100%
+      style: regular
+      letter-spacing: 0em
+    format: "[page]"
+    # alt-format: ""                 # Inherits page-footer.format.
+    # frontmatter-format: ""         # Inherits page-footer.format.
+    # alt-frontmatter-format: ""     # Inherits page-footer.alt-format.
+    align: center
+    distance-from-edge: 20mm
+    content-padding-after: 10mm
+
   manuscript:
     style: british
     page: a4
@@ -413,40 +447,6 @@ folio:
           stretch: 100%
           style: regular
           letter-spacing: 0em
-
-    page-header:
-      enabled: false
-      font:
-        family: Libertinus Sans
-        size: 10pt
-        weight: regular
-        stretch: 100%
-        style: regular
-        letter-spacing: 0em
-      format: "[title] • [chapter] • [author]"
-      # alt-format: ""                 # Inherits page-header.format.
-      # frontmatter-format: ""         # Inherits page-header.format.
-      # alt-frontmatter-format: ""     # Inherits page-header.alt-format.
-      align: left-right
-      distance-from-edge: 20mm
-      content-padding-after: 10mm
-
-    page-footer:
-      enabled: true
-      font:
-        family: Libertinus Sans
-        size: 10pt
-        weight: regular
-        stretch: 100%
-        style: regular
-        letter-spacing: 0em
-      format: "[page]"
-      # alt-format: ""                 # Inherits page-footer.format.
-      # frontmatter-format: ""         # Inherits page-footer.format.
-      # alt-frontmatter-format: ""     # Inherits page-footer.alt-format.
-      align: center
-      distance-from-edge: 20mm
-      content-padding-after: 10mm
 
     toc:
       enabled: true

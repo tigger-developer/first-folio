@@ -15,6 +15,8 @@ import (
 )
 
 var fontRolePaths = []string{
+	"folio.page-header.font",
+	"folio.page-footer.font",
 	"folio.font",
 	"folio.heading.font",
 	"folio.title-page.title.font",
@@ -136,7 +138,7 @@ func TestRT039_1EveryPublicFontPropertyCanBeConfiguredIndependently(t *testing.T
 				}
 				otherRoles := map[string]any{}
 				for _, otherPath := range fontRolePaths {
-					if otherPath == path {
+					if otherPath == path || otherPath == strings.Replace(path, "folio.page-", "folio.manuscript.page-", 1) {
 						continue
 					}
 					otherRoles[otherPath], _ = baseline.Get(otherPath)
@@ -189,7 +191,8 @@ func TestRT039_2BritishBaseIsNormativeSharedRuntimeBase(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if !reflect.DeepEqual(plain.data, installed) || !reflect.DeepEqual(copied.data, installed) {
+		expected := runningMatterLayer(installed, mode)
+		if !reflect.DeepEqual(plain.data, expected) || !reflect.DeepEqual(copied.data, expected) {
 			t.Errorf("Load(%s) does not resolve to the shared British base", mode)
 		}
 	}
@@ -346,5 +349,5 @@ func leafValues(node map[string]any, prefix string) map[string]any {
 
 func ExampleFont() {
 	fmt.Println(len(FontRolePaths) * len(fontPropertyNames))
-	// Output: 198
+	// Output: 210
 }

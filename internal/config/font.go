@@ -22,6 +22,8 @@ type Font struct {
 
 // FontRolePaths lists every public role governed by the uniform font contract.
 var FontRolePaths = []string{
+	"folio.page-header.font",
+	"folio.page-footer.font",
 	"folio.font",
 	"folio.heading.font",
 	"folio.title-page.title.font",
@@ -104,12 +106,15 @@ func (c Config) Font(path string) (Font, error) {
 	}, nil
 }
 
-func validateFonts(data map[string]any) error {
-	if err := rejectRetiredFontKeys(data); err != nil {
+func validateFonts(data map[string]any, mode Mode) error {
+	if err := rejectRetiredFontKeys(data, mode); err != nil {
 		return err
 	}
 	cfg := Config{data: data}
 	for _, path := range FontRolePaths {
+		if mode == ModeLetter && isRunningMatterPath(path) {
+			continue
+		}
 		value, ok := cfg.Get(path)
 		if !ok {
 			return fmt.Errorf("%s is missing", path)
@@ -260,7 +265,7 @@ func numericPart(value string) float64 {
 	return 0
 }
 
-func rejectRetiredFontKeys(data map[string]any) error {
+func rejectRetiredFontKeys(data map[string]any, mode Mode) error {
 	fontParents := make(map[string]bool, len(FontRolePaths))
 	for _, path := range FontRolePaths {
 		fontParents[strings.TrimSuffix(path, ".font")] = true
@@ -271,6 +276,9 @@ func rejectRetiredFontKeys(data map[string]any) error {
 			full := key
 			if path != "" {
 				full = path + "." + key
+			}
+			if mode == ModeLetter && isRunningMatterPath(full) {
+				continue
 			}
 			if fontParents[path] {
 				switch key {

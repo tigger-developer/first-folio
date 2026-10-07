@@ -82,20 +82,22 @@ func (b BlankPageMode) TypstDirective() string {
 }
 
 type Config struct {
-	Title             string `yaml:"title"`
-	Subtitle          string `yaml:"subtitle"`
-	Author            string `yaml:"author"`
-	Attribution       string `yaml:"attribution"`
-	AuthorAttribution string `yaml:"author-attribution"`
-	Date              string `yaml:"date"`
-	Version           string `yaml:"version"`
-	WordCount         string `yaml:"wordcount"`
-	ContactName       string `yaml:"contact-name"`
-	Address           string `yaml:"address"`
-	Phone             string `yaml:"phone"`
-	Email             string `yaml:"email"`
-	Website           string `yaml:"website"`
-	Folio             Folio  `yaml:"folio"`
+	// Warnings contains user configuration migration diagnostics for the caller to emit.
+	Warnings          []string `yaml:"-"`
+	Title             string   `yaml:"title"`
+	Subtitle          string   `yaml:"subtitle"`
+	Author            string   `yaml:"author"`
+	Attribution       string   `yaml:"attribution"`
+	AuthorAttribution string   `yaml:"author-attribution"`
+	Date              string   `yaml:"date"`
+	Version           string   `yaml:"version"`
+	WordCount         string   `yaml:"wordcount"`
+	ContactName       string   `yaml:"contact-name"`
+	Address           string   `yaml:"address"`
+	Phone             string   `yaml:"phone"`
+	Email             string   `yaml:"email"`
+	Website           string   `yaml:"website"`
+	Folio             Folio    `yaml:"folio"`
 }
 
 type Folio struct {
@@ -238,8 +240,8 @@ type PageHeaderConfig struct {
 	ContentPaddingAfter string `yaml:"content-padding-after"`
 }
 
-// PageFooterConfig mirrors PageHeaderConfig. Fields left empty inherit from PageHeaderConfig
-// during normalization; PageHeader values in turn inherit from root folio settings.
+// PageFooterConfig is the manuscript renderer projection of folio.page-footer.
+// Font properties merge only with the same running-matter role across layers.
 // Enabled is a *bool so normalizeConfig can distinguish "unset" (default true) from
 // an explicit `enabled: false`.
 type PageFooterConfig struct {
@@ -371,6 +373,7 @@ func loadConfigWithSource(sourceDir string, opts Options, source map[string]any)
 	if err := merged.Decode(&cfg); err != nil {
 		return Config{}, err
 	}
+	cfg.Warnings = merged.Warnings()
 	normalizeConfig(&cfg)
 	if err := validateConfig(&cfg); err != nil {
 		return Config{}, err

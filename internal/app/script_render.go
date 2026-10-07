@@ -34,7 +34,78 @@ var (
 	mdItalicRE   = regexp.MustCompile(`\*([^*\n]+)\*`)
 )
 
+type scriptRunningMatter struct {
+	Enabled                                      bool
+	Font                                         typstFontData
+	Format                                       string
+	Align, DistanceFromEdge, ContentPaddingAfter string
+}
+
+var scriptRunningTokenRE = regexp.MustCompile(`\[([^\[\]]+)\]`)
+
+func scriptRunningAlign(value string) (string, error) {
+	parts := strings.Split(strings.TrimSpace(value), "-")
+	if len(parts) == 1 && alignRE.MatchString(parts[0]) {
+		return parts[0], nil
+	}
+	if len(parts) == 2 && alignRE.MatchString(parts[0]) && alignRE.MatchString(parts[1]) {
+		return "if calc.odd(pg) { " + parts[1] + " } else { " + parts[0] + " }", nil
+	}
+	return "", fmt.Errorf("invalid running matter alignment %q", value)
+}
+
+func scriptRunningFormats(doc play.Document, cfg config.Config, path, fallback string) string {
+	body := cfg.String(path+".format", fallback)
+	alt := cfg.String(path+".alt-format", "")
+	facing := func(base, alternate string, hasAlternate bool) string {
+		if !hasAlternate {
+			return "[" + scriptRunningFormat(base, doc) + "]"
+		}
+		return "if calc.odd(pg) { [" + scriptRunningFormat(alternate, doc) + "] } else { [" + scriptRunningFormat(base, doc) + "] }"
+	}
+	rendered := facing(body, alt, alt != "")
+	if value, exists := cfg.Get(path + ".frontmatter-format"); exists && value != nil {
+		alternate, hasAlternate := cfg.Get(path + ".alt-frontmatter-format")
+		rendered = "if is-body { " + rendered + " } else { " + facing(cfg.String(path+".frontmatter-format", ""), cfg.String(path+".alt-frontmatter-format", ""), hasAlternate && alternate != nil) + " }"
+	}
+	return "#{ " + rendered + " }"
+}
+
+func scriptBodyStart(events []play.Event) int {
+	for i, event := range events {
+		switch event.Kind {
+		case play.EventActHeader, play.EventSceneHeader, play.EventCharacter, play.EventDialogue, play.EventStageDirection, play.EventPropText, play.EventTransition:
+			return i
+		}
+	}
+	return -1
+}
+
+func scriptRunningFormat(format string, doc play.Document) string {
+	var output strings.Builder
+	previous := 0
+	for _, match := range scriptRunningTokenRE.FindAllStringSubmatchIndex(format, -1) {
+		output.WriteString(escapeTypstContent(format[previous:match[0]]))
+		token := format[match[2]:match[3]]
+		switch token {
+		case "title", "author":
+			output.WriteString(escapeTypstContent(doc.Metadata[token]))
+		case "page":
+			output.WriteString(`#counter(page).display("1")`)
+		case "total-pages":
+			output.WriteString(`#numbering("1", counter(page).final().first())`)
+		case "part", "part-number", "part-prefix", "part-full", "chapter", "chapter-number", "chapter-prefix", "chapter-full":
+		default:
+			output.WriteString(escapeTypstContent(format[match[0]:match[1]]))
+		}
+		previous = match[1]
+	}
+	output.WriteString(escapeTypstContent(format[previous:]))
+	return output.String()
+}
+
 type scriptTemplateData struct {
+	RunningHeader, RunningFooter                       scriptRunningMatter
 	Page, Margin                                       string
 	RootFont, HeadingFont                              typstFontData
 	DialogueSameLine                                   bool
@@ -130,7 +201,9 @@ func newScriptTemplateData(doc play.Document, cfg config.Config) (scriptTemplate
 		}
 	}
 	data := scriptTemplateData{
-		Page: cfg.String("folio.page", "a4"), Margin: cfg.String("folio.margin", "25mm"),
+		RunningHeader: scriptRunningMatter{Enabled: cfg.Bool("folio.page-header.enabled", false), Font: font("folio.page-header.font"), Format: scriptRunningFormats(doc, cfg, "folio.page-header", "[title] • [chapter] • [author]")},
+		RunningFooter: scriptRunningMatter{Enabled: cfg.Bool("folio.page-footer.enabled", true), Font: font("folio.page-footer.font"), Format: scriptRunningFormats(doc, cfg, "folio.page-footer", "[page]")},
+		Page:          cfg.String("folio.page", "a4"), Margin: cfg.String("folio.margin", "25mm"),
 		RootFont:          font("folio.font"),
 		HeadingFont:       font("folio.heading.font"),
 		SpeechSpace:       cfg.String("folio.positioning.speech.space-before", "1.6em"),
@@ -169,6 +242,20 @@ func newScriptTemplateData(doc play.Document, cfg config.Config) (scriptTemplate
 		SubtitleSpace: cfg.String("folio.title-page.subtitle.space-before", "1em"), SubtitleFont: font("folio.title-page.subtitle.font"),
 		AuthorSpace: cfg.String("folio.title-page.author.space-before", "2em"), AuthorFont: font("folio.title-page.author.font"),
 		DateFont: font("folio.title-page.date.font"), VersionFont: font("folio.title-page.version.font"),
+	}
+	for path, matter := range map[string]*scriptRunningMatter{"folio.page-header": &data.RunningHeader, "folio.page-footer": &data.RunningFooter} {
+		align, err := scriptRunningAlign(cfg.String(path+".align", "center"))
+		if err != nil {
+			return scriptTemplateData{}, fmt.Errorf("%s.align: %w", path, err)
+		}
+		matter.Align = align
+		matter.DistanceFromEdge = typstDimension(cfg.String(path+".distance-from-edge", "20mm"))
+		matter.ContentPaddingAfter = typstDimension(cfg.String(path+".content-padding-after", "10mm"))
+		for name, value := range map[string]string{"distance-from-edge": matter.DistanceFromEdge, "content-padding-after": matter.ContentPaddingAfter} {
+			if !dimensionRE.MatchString(value) {
+				return scriptTemplateData{}, fmt.Errorf("invalid %s.%s value %q", path, name, value)
+			}
+		}
 	}
 	if fontErr != nil {
 		return scriptTemplateData{}, fontErr
@@ -218,13 +305,22 @@ func renderPlayBody(doc play.Document, cfg config.Config) string {
 		}
 	}
 	var lines []string
+	bodyStart := scriptBodyStart(doc.Events)
 	for i := 0; i < len(doc.Events); i++ {
 		event := doc.Events[i]
+		if i == bodyStart {
+			if event.Kind == play.EventActHeader && cfg.Bool("folio.positioning.act-header.page-break-before", true) {
+				lines = append(lines, "#pagebreak(weak: true)")
+			}
+			// Read the final boundary page in running contexts: the first body's header
+			// precedes this marker in source order but belongs to the same physical page.
+			lines = append(lines, `#context { state("folio-script-body-page", 0).update(counter(page).get().first()) }`)
+		}
 		switch event.Kind {
 		case play.EventFrontMatter, play.EventFootnote, play.EventCharacterTableEnd:
 		case play.EventActHeader:
-			if cfg.Bool("folio.positioning.act-header.page-break-before", true) {
-				lines = append(lines, "#pagebreak()")
+			if i != bodyStart && cfg.Bool("folio.positioning.act-header.page-break-before", true) {
+				lines = append(lines, "#pagebreak(weak: true)")
 			}
 			lines = append(lines, "#act-header["+inlineTypst(event.Text, footnotes)+"]")
 		case play.EventSceneHeader:

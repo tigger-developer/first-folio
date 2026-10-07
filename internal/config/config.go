@@ -31,7 +31,8 @@ type Options struct {
 }
 
 type Config struct {
-	data map[string]any
+	data     map[string]any
+	warnings []string
 }
 
 func Load(opts Options) (Config, error) {
@@ -77,29 +78,53 @@ func Load(opts Options) (Config, error) {
 		deepMerge(base, override)
 	}
 
-	deepMerge(base, global)
-	if err := mergeOptional(base, filepath.Join(globalDir, "script-"+styleSuffix(style)+".yaml")); err != nil {
+	base = runningMatterLayer(base, opts.Mode)
+	warnings := []string{}
+	warningSeen := map[string]bool{}
+	mergeLayer := func(layer map[string]any) {
+		if opts.Mode == ModeManuscript {
+			for _, warning := range legacyRunningMatterWarnings(layer) {
+				if !warningSeen[warning] {
+					warnings = append(warnings, warning)
+					warningSeen[warning] = true
+				}
+			}
+		}
+		deepMerge(base, runningMatterLayer(layer, opts.Mode))
+	}
+	mergeFile := func(path string) error {
+		layer, err := readOptional(path)
+		if err != nil {
+			return err
+		}
+		mergeLayer(layer)
+		return nil
+	}
+	mergeLayer(global)
+	if err := mergeFile(filepath.Join(globalDir, "script-"+styleSuffix(style)+".yaml")); err != nil {
 		return Config{}, err
 	}
-	deepMerge(base, opts.Source)
-	deepMerge(base, local)
+	mergeLayer(opts.Source)
+	mergeLayer(local)
 	if localScriptPath != "" {
-		// Style-suffixed sibling override sits next to the base script.yaml wherever the
-		// walk found it (not necessarily in opts.LocalDir itself).
-		localDirFound := filepath.Dir(localScriptPath)
-		if err := mergeOptional(base, filepath.Join(localDirFound, "script-"+styleSuffix(style)+".yaml")); err != nil {
+		if err := mergeFile(filepath.Join(filepath.Dir(localScriptPath), "script-"+styleSuffix(style)+".yaml")); err != nil {
 			return Config{}, err
 		}
 	}
-	applyCLI(base, opts.CLI)
+	mergeLayer(cliLayer(base, opts.CLI))
 	setPath(base, "folio.style", style)
 	if opts.Mode == ModeManuscript {
 		setPath(base, "folio.manuscript.style", style)
 	}
-	if err := validateFonts(base); err != nil {
+	if opts.Mode != ModeLetter {
+		if err := validateRunningMatter(base); err != nil {
+			return Config{}, err
+		}
+	}
+	if err := validateFonts(base, opts.Mode); err != nil {
 		return Config{}, err
 	}
-	if err := validateAlignments(base); err != nil {
+	if err := validateAlignments(base, opts.Mode); err != nil {
 		return Config{}, err
 	}
 	if opts.Mode == ModeManuscript {
@@ -110,7 +135,7 @@ func Load(opts Options) (Config, error) {
 			return Config{}, fmt.Errorf("folio.manuscript.hyphenation must be true, false, or auto; got %#v", value)
 		}
 	}
-	return Config{data: base}, nil
+	return Config{data: base, warnings: warnings}, nil
 }
 
 func (c Config) Get(path string) (any, bool) {
@@ -228,15 +253,6 @@ func parseYAML(name string, raw []byte) (map[string]any, error) {
 	return data, nil
 }
 
-func mergeOptional(base map[string]any, path string) error {
-	overlay, err := readOptional(path)
-	if err != nil {
-		return err
-	}
-	deepMerge(base, overlay)
-	return nil
-}
-
 func deepMerge(base map[string]any, overlay map[string]any) {
 	for key, value := range overlay {
 		if child, ok := value.(map[string]any); ok {
@@ -286,23 +302,28 @@ func styleSuffix(style string) string {
 	return style
 }
 
-func applyCLI(base map[string]any, values map[string]any) {
+// cliLayer preserves the existing flag contract while allowing running-matter
+// aliases to be normalized at CLI precedence rather than against merged data.
+func cliLayer(base map[string]any, values map[string]any) map[string]any {
+	layer := map[string]any{}
 	for key, value := range values {
 		if key == "style" || value == nil {
 			continue
 		}
+		path := "folio." + key
 		switch key {
 		case "font":
-			setPath(base, "folio.font.family", value)
-			continue
+			path = "folio.font.family"
 		case "font-size":
-			setPath(base, "folio.font.size", value)
-			continue
+			path = "folio.font.size"
+		default:
+			if _, ok := (Config{data: base}).Get(path); !ok {
+				continue
+			}
 		}
-		if _, ok := (Config{data: base}).Get("folio." + key); ok {
-			setPath(base, "folio."+key, value)
-		}
+		setPath(layer, path, value)
 	}
+	return layer
 }
 
 func setPath(data map[string]any, path string, value any) {

@@ -22,6 +22,11 @@ func Run(args []string) error {
 }
 
 func RunWithIO(args []string, stdout io.Writer) error {
+	return RunWithStreams(args, stdout, os.Stderr)
+}
+
+// RunWithStreams renders a manuscript with output and diagnostics on separate streams.
+func RunWithStreams(args []string, stdout, stderr io.Writer) error {
 	opts, inputs, err := parseArgs(args)
 	if err != nil {
 		return err
@@ -56,6 +61,11 @@ func RunWithIO(args []string, stdout io.Writer) error {
 		return err
 	}
 
+	for _, warning := range cfg.Warnings {
+		if _, err := fmt.Fprintln(stderr, "Warning: "+warning); err != nil {
+			return fmt.Errorf("writing manuscript configuration warning: %w", err)
+		}
+	}
 	doc, err := Parse(inputSet.Format, text)
 	if err != nil {
 		return err

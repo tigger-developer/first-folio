@@ -1,7 +1,7 @@
 ---
 title: First Folio
-version: "1"
-last-updated: 2026-09-25
+version: "1.1"
+last-updated: 2026-10-07
 ---
 
 # First Folio
@@ -93,6 +93,8 @@ Configuration is merged by key. Every typography role uses the same six-property
 
 See [docs/config.md](docs/config.md) for the configuration reference and [examples/script.yaml.example](examples/script.yaml.example) for an annotated example.
 
+Running headers and footers for scripts and manuscripts use `folio.page-header` and `folio.page-footer`, including configurable typography, format strings, edge distance and body clearance. Letters do not inherit running matter. Former manuscript-local header/footer blocks remain supported with deprecation warnings in manuscript mode; see [shared running matter](docs/config.md#shared-running-matter-foliopage-header-and-foliopage-footer).
+
 ## Project Structure
 
 | Path | Purpose |
@@ -126,6 +128,10 @@ make lint   # Go static analysis
   - [Fountain](docs/format-fountain.md) - Fountain format schema and fidelity analysis
   - [Markdown manuscript](docs/format-manuscript-markdown.md) - prose manuscript Markdown contract
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
+
+## Documentation History
+
+- 1.1 (2026-10-07): Documented shared script/manuscript running matter and manuscript-local migration.
 
 ## Licence
 

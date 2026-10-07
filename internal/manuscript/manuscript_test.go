@@ -744,17 +744,18 @@ func runManuscript(t *testing.T, root string, args ...string) {
 
 func runManuscriptDirect(t *testing.T, args ...string) {
 	t.Helper()
-	if err := Run(args); err != nil {
-		t.Fatalf("folio manuscript failed: %v", err)
+	var stdout, stderr bytes.Buffer
+	if err := RunWithStreams(args, &stdout, &stderr); err != nil {
+		t.Fatalf("folio manuscript failed: %v\n%s%s", err, &stdout, &stderr)
 	}
 }
 
 func runManuscriptOutput(t *testing.T, root string, args ...string) string {
 	t.Helper()
 	_ = root
-	var output bytes.Buffer
-	if err := RunWithIO(args, &output); err != nil {
-		t.Fatalf("folio manuscript failed: %v\n%s", err, output.String())
+	var output, diagnostics bytes.Buffer
+	if err := RunWithStreams(args, &output, &diagnostics); err != nil {
+		t.Fatalf("folio manuscript failed: %v\n%s%s", err, &output, &diagnostics)
 	}
 	return output.String()
 }

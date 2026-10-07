@@ -22,6 +22,13 @@ Config:
   ~/.config/first-folio/script.yaml plus the nearest script.yaml found by
   walking from the first resolved input's directory towards HOME.
 
+Running matter:
+  Configure folio.page-header and folio.page-footer for shared script/manuscript
+  headers and footers. Each supports distance-from-edge and content-padding-after.
+  Former folio.manuscript.page-header/footer blocks remain manuscript-only
+  overrides with deprecation warnings; higher-precedence shared settings win.
+  Letters never inherit running matter.
+
 Source configuration:
   The first Markdown input may provide folio: and render: frontmatter mappings.
   Properties merge recursively: presets < global files < source < local files

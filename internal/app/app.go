@@ -48,7 +48,7 @@ func Run(args []string, stdin io.Reader, stdout io.Writer, stderr io.Writer) int
 			}
 			return 0
 		}
-		if err := manuscript.RunWithIO(args[1:], stdout); err != nil {
+		if err := manuscript.RunWithStreams(args[1:], stdout, stderr); err != nil {
 			fmt.Fprintf(stderr, "Error: %v\n", err)
 			return 1
 		}

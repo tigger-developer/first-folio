@@ -22,3 +22,8 @@ PDF options ignored for non-PDF output:
 Config: ~/.config/first-folio/script.yaml plus the nearest script.yaml found by
 walking from the source directory towards HOME. Style-specific sibling files
 (for example script-us.yaml) are applied after their corresponding base file.
+
+Running headers and footers: folio.page-header and folio.page-footer in script.yaml.
+Each supports enabled, font, format, alignment, distance-from-edge and
+content-padding-after. Shared placeholders: [title], [author], [page], [total-pages].
+Script title pages retain their separate layout without running matter.

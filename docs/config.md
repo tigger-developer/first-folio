@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.22"
-last-updated: 2026-09-26
+version: "0.23"
+last-updated: 2026-10-07
 ---
 
 # Configuration
@@ -152,9 +152,45 @@ The exhaustive [British base](../presets/british.yaml) is both the lowest-preced
 
 Letters use one layout rather than British/US variants. Supported keys are `font` using the uniform six-property block, `page`, `margin-top`, `margin-bottom`, `margin-left`, `margin-right`, `space-before-closing`, `space-before-signoff`, `space-after-sender`, `space-after-recipient`, `space-after-date`, and `space-after-subject`.
 
+Letters are supplementary correspondence, not manuscript pages. They never inherit `folio.page-header` or `folio.page-footer`; those settings are ignored without warnings in letter mode.
+
+Running-matter values are not validated in letter mode, so an irrelevant malformed header or footer setting does not prevent letter generation. Letter typography and layout retain their own validation.
+
+### Shared running matter (`folio.page-header:` and `folio.page-footer:`)
+
+Running headers and footers apply to stage-play and screenplay conversion and to prose manuscripts. They are distinct from title-page text and act, scene, part, and chapter headings.
+
+Both blocks accept `enabled`, `font`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, and `content-padding-after`. The British base defines a complete font block for each role; partial overrides merge with that same role, never with body or heading typography.
+
+The header defaults to disabled; the footer defaults to enabled. To display a script heading, set `folio.page-header.enabled: true` and choose a script-friendly format such as `"[title] • [author]"`. The inherited header format retains `[chapter]` for manuscript compatibility; that token contributes no text in scripts, but surrounding separators remain literal.
+
+`distance-from-edge: 20mm` and `content-padding-after: 10mm` retain the manuscript layout geometry: the configured edge distance and body clearance determine the corresponding page margin. Disabled running matter restores the ordinary margin on its side. Lengths may use `pt`, `mm`, `cm`, `in`, or `em`.
+
+Script running matter now uses these shared dimensions rather than the former automatic footer placement. The enabled default footer therefore reserves a 30mm bottom margin; scripts previously used the ordinary page margin on that side. Pagination can change. Script `[page]` retains physical page numbering, including the title page in the count, without the manuscript body-number reset.
+
+The former `folio.manuscript.page-header` and `folio.manuscript.page-footer` blocks remain supported as deprecated manuscript-only overrides. Manuscript invocations report a migration warning on stderr. Within each configuration layer, their specified fields override shared fields, including partial font blocks. Normal layer precedence still applies: a local shared value overrides a global legacy value. Scripts and letters ignore these legacy manuscript blocks. Move them directly under `folio` to migrate.
+
+For example, the following shared configuration enables running headings in both script and manuscript output. It replaces the same blocks formerly nested beneath `folio.manuscript`:
+
+```yaml
+folio:
+  page-header:
+    enabled: true
+    format: "[title] • [author]"
+    distance-from-edge: 20mm
+    content-padding-after: 10mm
+  page-footer:
+    enabled: true
+    format: "[page]/[total-pages]"
+    distance-from-edge: 20mm
+    content-padding-after: 10mm
+```
+
+Remove the old manuscript-local blocks after moving their fields. Leaving them present intentionally retains manuscript-specific overrides and deprecation warnings. A manuscript-only chapter heading can continue to use `[chapter]` in that override; the shared example uses only placeholders supported by both renderers.
+
 ### Manuscript settings (`folio.manuscript:`)
 
-Manuscript settings use the same configuration-file precedence as scripts and letters. Font inheritance is strictly same-path layering. For example, `folio.manuscript.page-header.font.style` may inherit from that exact path in the British base, but never from `folio.manuscript.font` or `folio.manuscript.heading.font`.
+Manuscript settings use the same configuration-file precedence as scripts and letters. Font inheritance is strictly same-path layering. Running matter uses `folio.page-header.font` and `folio.page-footer.font`, not manuscript body or heading fonts.
 
 Common manuscript keys:
 
@@ -179,7 +215,7 @@ Common manuscript keys:
 
 `folio.manuscript.widow-orphan-control` defaults to `true`, preventing a single paragraph line from being stranded at the bottom or top of a page. Set it to `false` to allow paragraphs to split freely at page boundaries. This setting does not keep whole paragraphs together.
 
-`folio.manuscript.page-header.content-padding-after` controls the clearance between the running header and the manuscript body on every running-header page. It does not affect the title page or table of contents.
+`folio.page-header.content-padding-after` controls the clearance between the running header and the body on every running-header page. Manuscript title pages and tables of contents retain their separate layout.
 
 #### Complete manuscript key inventory
 
@@ -195,8 +231,6 @@ The built-in [British base](../presets/british.yaml) is the canonical default an
 
 | Nested block | Accepted child keys |
 |---|---|
-| `page-header` | `enabled`, `font`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
-| `page-footer` | `enabled`, `font`, `format`, `alt-format`, `frontmatter-format`, `alt-frontmatter-format`, `align`, `distance-from-edge`, `content-padding-after` |
 | `toc` | `enabled`, `links`, `title`, `font`, `heading.font`, `include-parts`, `include-chapters`, `include-sections`, `dot-leaders`, `page-numbers`, `page-break-before`, `blank-page-before`, `blank-page-after`, `line-spacing`, `part-gap-before`, `continuation-padding-before`, `part-bold` |
 | `title-page` | `enabled`, `page-number`, `include-title`, `include-subtitle`, `include-author`, `include-date`, `include-wordcount`, `include-contact-name`, `include-address`, `include-phone`, `include-email`, `include-website`, `include-version`, `title-block-align`, `footer-align` |
 | `title-page.<item>` | `align`, `font`, where `<item>` is `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, or `contact` |
@@ -237,10 +271,10 @@ The `copyright` block accepts:
 
 ### Page-header format placeholders
 
-`folio.manuscript.page-header.format` and `folio.manuscript.page-footer.format` accept the following placeholders, substituted at render time:
+`folio.page-header.format` and `folio.page-footer.format` accept the following placeholders, substituted at render time. `[author]`, `[title]`, `[page]`, and `[total-pages]` apply to both scripts and manuscripts. Known part/chapter placeholders resolve to empty text in scripts; they do not select an act or scene.
 
-- `[author]` -- the manuscript author
-- `[title]` -- the manuscript title
+- `[author]` -- the document author
+- `[title]` -- the document title
 - `[page]` -- the current page number
 - `[total-pages]` -- the final physical page count in Arabic numerals, including frontmatter and intentional blank pages
 - `[part]` -- the current part's **semantic name** (issue #18: whatever remains after `Part N:` prefix stripping; e.g. `Unbelieved` for a source heading `# PART ONE: UNBELIEVED`)
@@ -260,9 +294,8 @@ Use both page placeholders to render values such as `4/100`:
 
 ```yaml
 folio:
-  manuscript:
-    page-footer:
-      format: "[page]/[total-pages]"
+  page-footer:
+    format: "[page]/[total-pages]"
 ```
 
 `[total-pages]` always reports the final physical page count. Unlike `[page]`, it is not affected by `page-numbering.body-reset` or frontmatter/body numbering formats.
@@ -273,21 +306,20 @@ folio:
 
 ```yaml
 folio:
-  manuscript:
-    page-header:
-      format:     "[page] • [chapter] • [author]"     # verso (left) -- [page] on outer
-      alt-format: "[author] • [chapter] • [page]"     # recto (right) -- [page] on outer
+  page-header:
+    format:     "[page] • [title] • [author]"     # verso (left) -- [page] on outer
+    alt-format: "[author] • [title] • [page]"     # recto (right) -- [page] on outer
 ```
 
 When `alt-format` is unset, `format` renders on every page (unchanged from AC15.1).
 
 ### Page-footer block
 
-`folio.manuscript.page-footer` mirrors the non-font fields of `folio.manuscript.page-header`. Each has its own complete `font` block in the British base. A partial user block merges only with the lower layer at that exact header or footer path. Default: enabled with a centred `[page]` number, `distance-from-edge` and `content-padding-after` matching `page-header`. Set `page-footer.enabled: false` to omit the running footer.
+`folio.page-footer` mirrors the non-font fields of `folio.page-header`. Each has its own complete `font` block in the British base. A partial user block merges only with the lower layer at that exact header or footer path. Default: enabled with a centred `[page]` number, `distance-from-edge` and `content-padding-after` matching `page-header`. Set `folio.page-footer.enabled: false` to omit the running footer, including automatic script page numbering. Script title-page date/version text remains separate.
 
 ### Frontmatter-format (issue #24)
 
-`page-header` and `page-footer` each accept `frontmatter-format` and `alt-frontmatter-format` that apply on frontmatter pages (title, copyright, TOC, and any page before the first part or chapter). Body pages use the normal `format` / `alt-format` pair.
+`page-header` and `page-footer` each accept `frontmatter-format` and `alt-frontmatter-format` that apply on running-matter frontmatter pages. Manuscripts use their existing frontmatter/body boundary before the first part or chapter, and retain title-page, copyright, contents and heading-page suppression rules. Scripts use introductory material such as synopsis and cast pages as frontmatter; dramatic content begins the body. Script title pages do not display running matter. Body pages use the normal `format` / `alt-format` pair.
 
 - **Unset** (key absent from YAML) -> frontmatter pages use `format` / `alt-format` (backwards-compatible, no change).
 - **Set to non-empty string** -> that string renders on frontmatter pages.
@@ -300,13 +332,12 @@ Example --- suppress the running header on frontmatter but keep body headers:
 
 ```yaml
 folio:
-  manuscript:
-    page-header:
-      format: "[title] • [chapter] • [author]"
-      frontmatter-format: ""       # blank on frontmatter
-    page-footer:
-      format: "[page]"
-      frontmatter-format: "[page]" # keep page numbers on frontmatter too
+  page-header:
+    format: "[title] • [author]"
+    frontmatter-format: ""       # blank on frontmatter
+  page-footer:
+    format: "[page]"
+    frontmatter-format: "[page]" # keep page numbers on frontmatter too
 ```
 
 ### Book-layout page-pair alignment
@@ -670,6 +701,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.23 (2026-10-07): Promoted running headers and footers to shared Folio settings for scripts and manuscripts; retained layered manuscript-local compatibility with deprecation diagnostics and excluded letters.
 
 - 0.22 (2026-09-26): Added manuscript hyphenation controls for body and quoted text, including geometric stretch, with code remaining unhyphenated.
 

@@ -1,4 +1,10 @@
-<!-- Version: 0.2 | Last updated: 2026-08-10 | Status: proposal, not implemented -->
+---
+title: "First Folio - SwiftUI Companion App: UX Proposal"
+version: "0.3"
+last-updated: 2026-10-07
+---
+
+Status: proposal, not implemented.
 
 # First Folio - SwiftUI Companion App: UX Proposal
 
@@ -167,7 +173,8 @@ The pane is a scroll view of collapsible blocks matching the config schema in `d
 - **Title page** (`folio.title-page.*`)
 - **Positioning** (`folio.positioning.*`, itself nested: `speech`, `stage-direction`, `transition`, headers)
 - **Letter** (`folio.letter.*`)
-- **Manuscript** (`folio.manuscript.*`, with sub-blocks for `page-header`, `toc`, and its own overrides)
+- **Running matter** (`folio.page-header.*` and `folio.page-footer.*`, shared by scripts and manuscripts, excluded from letters)
+- **Manuscript** (`folio.manuscript.*`, with sub-blocks for `toc` and its own overrides)
 
 Each block header is a `DisclosureGroup`. All blocks are collapsed by default; the user opens the ones they want. Opening a block reveals its field rows underneath. Nested blocks (e.g. `folio.positioning.speech`) render as nested disclosure groups.
 
@@ -305,3 +312,7 @@ The binary is discovered by, in order: bundled path (if we ship one), `~/.local/
 - Any Swift package layout, module boundaries, or test approach - those belong in an implementation plan, not this UX doc.
 - Specific control types beyond what SwiftUI provides out of the box (`Picker`, `Toggle`, `List`, `DisclosureGroup`, `fileImporter`, `fileExporter`).
 - A colour scheme, iconography, or branding treatment.
+
+## Document History
+
+- 0.3 (2026-10-07): Aligned the preferences hierarchy with shared running matter for scripts and manuscripts, excluding letters.

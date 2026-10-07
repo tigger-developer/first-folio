@@ -22,7 +22,7 @@ var alignmentFamilies = []struct {
 		"folio.manuscript.part.align", "folio.manuscript.chapter.align", "folio.manuscript.copyright.align",
 	}, []string{"left", "center", "right"}},
 	{[]string{"folio.manuscript.part.vertical-align"}, []string{"top", "center", "bottom", "middle", "horizon"}},
-	{[]string{"folio.manuscript.page-header.align", "folio.manuscript.page-footer.align"},
+	{[]string{"folio.page-header.align", "folio.page-footer.align", "folio.manuscript.page-header.align", "folio.manuscript.page-footer.align"},
 		[]string{"left", "center", "right", "left-left", "left-center", "left-right", "center-left", "center-center", "center-right", "right-left", "right-center", "right-right"}},
 	{[]string{"folio.manuscript.title-page.title-block-align", "folio.manuscript.title-page.footer-align", "folio.manuscript.title-page.contact.align"}, titlePlacementValues},
 	{[]string{
@@ -37,10 +37,13 @@ var titlePlacementValues = []string{
 	"center-left", "center-center", "center-right", "bottom-left", "bottom-center", "bottom-right",
 }
 
-func validateAlignments(data map[string]any) error {
+func validateAlignments(data map[string]any, mode Mode) error {
 	cfg := Config{data: data}
 	for _, family := range alignmentFamilies {
 		for _, path := range family.paths {
+			if mode == ModeLetter && isRunningMatterPath(path) {
+				continue
+			}
 			raw, _ := cfg.Get(path)
 			value, isString := raw.(string)
 			value = strings.TrimSpace(value)
