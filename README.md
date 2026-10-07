@@ -1,6 +1,6 @@
 ---
 title: First Folio
-version: "1.1"
+version: "1.2"
 last-updated: 2026-10-07
 ---
 
@@ -95,6 +95,8 @@ See [docs/config.md](docs/config.md) for the configuration reference and [exampl
 
 Running headers and footers for scripts and manuscripts use `folio.page-header` and `folio.page-footer`, including configurable typography, format strings, edge distance and body clearance. Letters do not inherit running matter. Former manuscript-local header/footer blocks remain supported with deprecation warnings in manuscript mode; see [shared running matter](docs/config.md#shared-running-matter-foliopage-header-and-foliopage-footer).
 
+For page-limited script submissions, set `folio.title-page.enabled: false` to place the title-page items above the script on its first content page instead of using a separate title page. `folio.title-page.skip-header` and `skip-footer` default to `true`, hiding running matter on that first page while retaining it on later pages. Set either to `false` to allow its enabled shared role on page 1. Manuscript title-page settings remain independent. See [compact script titles and first-page running matter](docs/config.md#compact-script-title-block).
+
 ## Project Structure
 
 | Path | Purpose |
@@ -130,6 +132,8 @@ make lint   # Go static analysis
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.2 (2026-10-07): Documented compact script first-page title blocks and running-matter suppression for page-limited submissions.
 
 - 1.1 (2026-10-07): Documented shared script/manuscript running matter and manuscript-local migration.
 

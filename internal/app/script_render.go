@@ -131,7 +131,8 @@ type scriptTemplateData struct {
 	FrontmatterSpace, FrontmatterAlign                 string
 	FrontmatterFont                                    typstFontData
 	HasTitle, HasSubtitle, HasAuthor                   bool
-	TitlePageNumber                                    bool
+	TitlePageEnabled, TitlePageNumber                  bool
+	TitleSkipHeader, TitleSkipFooter                   bool
 	Title, Subtitle, Author, AuthorPrefixInline        string
 	AuthorPrefixLines                                  []string
 	TitleAlign, TitleOffset                            string
@@ -236,7 +237,10 @@ func newScriptTemplateData(doc play.Document, cfg config.Config) (scriptTemplate
 		FrontmatterSpace:  cfg.String("folio.positioning.frontmatter.header.space-before", "2em"),
 		FrontmatterAlign:  validAlign(cfg.String("folio.positioning.frontmatter.header.align", "left")),
 		FrontmatterFont:   font("folio.positioning.frontmatter.header.font"),
+		TitlePageEnabled:  cfg.Bool("folio.title-page.enabled", true),
 		TitlePageNumber:   cfg.Bool("folio.title-page.page-number", false),
+		TitleSkipHeader:   cfg.Bool("folio.title-page.skip-header", true),
+		TitleSkipFooter:   cfg.Bool("folio.title-page.skip-footer", true),
 		Title:             escapeTypstContent(doc.Metadata["title"]), Subtitle: escapeTypstContent(doc.Metadata["subtitle"]), Author: escapeTypstContent(doc.Metadata["author"]),
 		TitleAlign: validAlign(cfg.String("folio.title-page.title.align", "center")), TitleFont: font("folio.title-page.title.font"),
 		SubtitleSpace: cfg.String("folio.title-page.subtitle.space-before", "1em"), SubtitleFont: font("folio.title-page.subtitle.font"),
@@ -306,10 +310,11 @@ func renderPlayBody(doc play.Document, cfg config.Config) string {
 	}
 	var lines []string
 	bodyStart := scriptBodyStart(doc.Events)
+	firstAct := true
 	for i := 0; i < len(doc.Events); i++ {
 		event := doc.Events[i]
 		if i == bodyStart {
-			if event.Kind == play.EventActHeader && cfg.Bool("folio.positioning.act-header.page-break-before", true) {
+			if event.Kind == play.EventActHeader && cfg.Bool("folio.title-page.enabled", true) && cfg.Bool("folio.positioning.act-header.page-break-before", true) {
 				lines = append(lines, "#pagebreak(weak: true)")
 			}
 			// Read the final boundary page in running contexts: the first body's header
@@ -319,9 +324,12 @@ func renderPlayBody(doc play.Document, cfg config.Config) string {
 		switch event.Kind {
 		case play.EventFrontMatter, play.EventFootnote, play.EventCharacterTableEnd:
 		case play.EventActHeader:
-			if i != bodyStart && cfg.Bool("folio.positioning.act-header.page-break-before", true) {
+			// Compact titles and introductory content share the first act's page;
+			// only subsequent acts retain their configured explicit break.
+			if i != bodyStart && (!firstAct || cfg.Bool("folio.title-page.enabled", true)) && cfg.Bool("folio.positioning.act-header.page-break-before", true) {
 				lines = append(lines, "#pagebreak(weak: true)")
 			}
+			firstAct = false
 			lines = append(lines, "#act-header["+inlineTypst(event.Text, footnotes)+"]")
 		case play.EventSceneHeader:
 			lines = append(lines, "#scene-header["+inlineTypst(event.Text, footnotes)+"]")

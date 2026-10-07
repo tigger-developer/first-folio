@@ -69,6 +69,9 @@
 
   # --- Title page ---
   # title-page:
+  #   enabled: true               # false puts title items above the script on page 1
+  #   skip-header: true           # suppress running header on title/compact first page
+  #   skip-footer: true           # suppress running footer on title/compact first page
   #   page-number: false
   #   title:
   #     align: center            # left | center | right

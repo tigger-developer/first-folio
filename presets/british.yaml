@@ -56,6 +56,17 @@ folio:
   default-format: pdf
 
   title-page:
+    # Scripts: enabled=true uses a separate title page; false moves title items
+    # above the script on page 1. skip-header/skip-footer hide the corresponding
+    # running matter on that title page, or on page 1 in compact mode. Later
+    # pages are unaffected. Set a skip to false to allow its shared role, which
+    # must also be enabled in folio.page-header/page-footer. Title date/version
+    # metadata remain visible regardless of skip-footer; numbering is not reset.
+    # If enabled=true but no title exists, no title page is created and these
+    # skips do not suppress the untitled script's first-page running matter.
+    enabled: true                    # Scripts: false places title items above the first-page body.
+    skip-header: true                # Scripts: suppress shared running header on physical page one.
+    skip-footer: true                # Scripts: suppress shared running footer, not title metadata.
     page-number: false
 
     title:
@@ -280,6 +291,11 @@ folio:
       stretch: 100%
       style: regular
       letter-spacing: 0em
+    # Format placeholders (also available in alt-format and frontmatter formats):
+    # Scripts and manuscripts: [title], [author], [page], [total-pages].
+    # Manuscripts only: [part], [part-number], [part-prefix], [part-full],
+    #   [chapter], [chapter-number], [chapter-prefix], [chapter-full].
+    # Part/chapter tokens are empty in scripts; unknown tokens remain literal.
     format: "[title] • [chapter] • [author]"
     # alt-format: ""                 # Inherits page-header.format.
     # frontmatter-format: ""         # Inherits page-header.format.
@@ -297,6 +313,11 @@ folio:
       stretch: 100%
       style: regular
       letter-spacing: 0em
+    # Format placeholders (also available in alt-format and frontmatter formats):
+    # Scripts and manuscripts: [title], [author], [page], [total-pages].
+    # Manuscripts only: [part], [part-number], [part-prefix], [part-full],
+    #   [chapter], [chapter-number], [chapter-prefix], [chapter-full].
+    # Part/chapter tokens are empty in scripts; unknown tokens remain literal.
     format: "[page]"
     # alt-format: ""                 # Inherits page-footer.format.
     # frontmatter-format: ""         # Inherits page-footer.format.

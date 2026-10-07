@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.23"
+version: "0.24"
 last-updated: 2026-10-07
 ---
 
@@ -96,6 +96,8 @@ Script layout is configured beneath `folio.title-page` and `folio.positioning`. 
 
 | Path | Purpose |
 |---|---|
+| `folio.title-page.enabled` | Separate script title page (`true`); compact first-page title block (`false`) |
+| `folio.title-page.skip-header`, `folio.title-page.skip-footer` | Suppress corresponding running matter on the title/first page (both default `true`) |
 | `folio.title-page.{title,subtitle,author,date,version}` | Title-page alignment, typography, spacing, and footer position |
 | `folio.positioning.speech.space-before` | Space before a speech block |
 | `folio.positioning.speech.speaker` | Speaker alignment, weight, case, prefix, and suffix |
@@ -106,6 +108,44 @@ Script layout is configured beneath `folio.title-page` and `folio.positioning`. 
 | `folio.positioning.{frontmatter,act-header,scene-header}` | Header typography, spacing, alignment, case, and page breaks |
 
 The effective CLI layout overrides are `--font`, `--font-size`, `--margin`, and `--page`; `--style` selects the preset layer. Other layout changes belong in `script.yaml`. See `folio convert --help` for the public CLI surface.
+
+#### Compact script title block
+
+`folio.title-page.enabled` defaults to `true`, preserving the separate title page when a script has a title. Set it to `false` for page-limited submissions:
+
+```yaml
+folio:
+  title-page:
+    enabled: false
+```
+
+This moves the available title, subtitle, author, date and version to a block at the top of the first content page rather than removing the metadata. Title-role fonts, subtitle/author spacing and author prefixes remain configurable. The dedicated title-page vertical position is not applied. Date/version appear below the title block rather than in the page footer, leaving running matter independent.
+
+The script follows on the same page, without a forced title-page break or a break before the first act. Later acts retain `folio.positioning.act-header.page-break-before`; content may still paginate naturally. Introductory material remains controlled by `render.frontmatter` and `render.character-table`. Script page numbering begins at physical page 1; the first-page running header and footer are hidden by default through the suppression switches below.
+
+This switch applies to `folio convert` script PDF/Typst output, including British, US and screenplay styles. It does not change text-format conversion or letters. Manuscripts retain their independent `folio.manuscript.title-page.enabled` setting; disabling a manuscript title page does not create this compact script block.
+
+#### Script title/first-page running matter
+
+`folio.title-page.skip-header` and `folio.title-page.skip-footer` both default to `true`. They suppress only the corresponding running header or footer on the first physical page:
+
+- With a separate title page enabled, that title page has no running matter by default.
+- With the separate title page disabled, suppression instead applies to page 1 containing the compact title and script.
+- Subsequent pages use the shared `folio.page-header` and `folio.page-footer` settings normally.
+
+If `enabled: true` but the source has no title, no separate title page is generated and these switches do not suppress the untitled script's first-page running matter. With `enabled: false`, they apply to physical page 1 even when title metadata are absent.
+
+Set either switch to `false` to allow that running-matter role on the first page. The shared role must also be enabled; a suppression switch never enables a globally disabled header/footer. Hiding the footer does not reset numbering: a displayed page number on the next page remains 2. Date/version title metadata are not running matter and remain visible.
+
+Skipping a role hides its text, not its reserved running-page margin. A dedicated title page retains its existing title-page margins and vertical position. `folio.title-page.page-number` remains the independent legacy dedicated-title-page numbering setting; `skip-footer` controls the shared running footer, not that setting. `enabled`, `skip-header` and `skip-footer` accept YAML booleans only in script mode; quoted strings, null and other types are rejected before output.
+
+```yaml
+folio:
+  title-page:
+    enabled: false
+    skip-header: true
+    skip-footer: true
+```
 
 #### Uniform font blocks
 
@@ -319,14 +359,14 @@ When `alt-format` is unset, `format` renders on every page (unchanged from AC15.
 
 ### Frontmatter-format (issue #24)
 
-`page-header` and `page-footer` each accept `frontmatter-format` and `alt-frontmatter-format` that apply on running-matter frontmatter pages. Manuscripts use their existing frontmatter/body boundary before the first part or chapter, and retain title-page, copyright, contents and heading-page suppression rules. Scripts use introductory material such as synopsis and cast pages as frontmatter; dramatic content begins the body. Script title pages do not display running matter. Body pages use the normal `format` / `alt-format` pair.
+`page-header` and `page-footer` each accept `frontmatter-format` and `alt-frontmatter-format` that apply on running-matter frontmatter pages. Manuscripts use their existing frontmatter/body boundary before the first part or chapter, and retain title-page, copyright, contents and heading-page suppression rules. Scripts use introductory material such as synopsis and cast pages as frontmatter; dramatic content begins the body. Script title pages skip running matter by default; setting the corresponding `folio.title-page.skip-header` or `skip-footer` to `false` allows the enabled role and its frontmatter format there. Body pages use the normal `format` / `alt-format` pair.
 
 - **Unset** (key absent from YAML) -> frontmatter pages use `format` / `alt-format` (backwards-compatible, no change).
 - **Set to non-empty string** -> that string renders on frontmatter pages.
 - **Set to empty string `""`** -> frontmatter pages render blank (no header or footer text).
 - **`alt-frontmatter-format` set alongside `frontmatter-format`** -> verso frontmatter uses `frontmatter-format`, recto frontmatter uses `alt-frontmatter-format` (same verso/recto pairing as `format` / `alt-format`).
 
-The frontmatter/body boundary is defined as: any page before the first part or chapter block is frontmatter; from the first part or chapter onward is body. Matches standard publishing convention.
+For manuscripts, pages before the first part or chapter block are frontmatter; from that heading onward they are body. For scripts, the first act, scene, speech, stage direction, prop text or transition begins the body. A page containing that first dramatic event uses body running formats, even if introductory material occurs earlier on the same page.
 
 Example --- suppress the running header on frontmatter but keep body headers:
 
@@ -701,6 +741,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.24 (2026-10-07): Added compact script first-page titles for page-limited submissions and default-on title/first-page running-matter suppression; documented untitled scripts, mode isolation, validation and numbering.
 
 - 0.23 (2026-10-07): Promoted running headers and footers to shared Folio settings for scripts and manuscripts; retained layered manuscript-local compatibility with deprecation diagnostics and excluded letters.
 

@@ -116,6 +116,15 @@ func Load(opts Options) (Config, error) {
 	if opts.Mode == ModeManuscript {
 		setPath(base, "folio.manuscript.style", style)
 	}
+	if opts.Mode == ModeScript {
+		for _, field := range []string{"enabled", "skip-header", "skip-footer"} {
+			path := "folio.title-page." + field
+			value, _ := (Config{data: base}).Get(path)
+			if _, ok := value.(bool); !ok {
+				return Config{}, fmt.Errorf("%s must be a boolean; got %#v", path, value)
+			}
+		}
+	}
 	if opts.Mode != ModeLetter {
 		if err := validateRunningMatter(base); err != nil {
 			return Config{}, err

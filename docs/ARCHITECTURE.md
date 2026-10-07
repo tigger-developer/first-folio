@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.7"
+version: "0.8"
 last-updated: 2026-10-07
 ---
 
@@ -79,6 +79,8 @@ Substantial Typst layouts live in real `.typ` files. Go code owns:
 
 Templates own page composition. Product Go code does not contain generated-language heredocs or invoke a shell to run Typst.
 
+Script title composition uses one shared title block for a dedicated title page or a compact heading above first-page content. `folio.title-page.enabled` selects between them; manuscript title-page settings remain independent. Script-only Boolean validation covers this switch and `skip-header`/`skip-footer`. Running-matter suppression uses the physical page counter and applies to the dedicated title page or compact page 1, without resetting numbering or removing title metadata. The renderer suppresses only the first act's explicit break in compact mode; later act breaks and natural pagination remain. See [script title configuration](config.md#compact-script-title-block) for defaults and untitled-script handling.
+
 Manuscript body, quote and monospace stretch use geometric horizontal scaling in
 the template. For stretched prose, `internal/manuscript` embeds English patterns
 and exceptions, applies the pinned Go hyphenation library, and supplies a
@@ -99,6 +101,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.8 (2026-10-07): Documented shared script title composition, compact-mode act-break policy and first-page running-matter suppression.
 
 - 0.7 (2026-10-07): Shared running-matter configuration for scripts and manuscripts, with layered compatibility for manuscript-local keys and exclusion of letters.
 

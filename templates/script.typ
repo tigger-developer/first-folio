@@ -71,16 +71,72 @@
   v(0.6em)
 }
 
-{{if .HasTitle}}
-#set page(numbering: {{if .TitlePageNumber}}"1"{{else}}none{{end}}, footer: grid(
+{{if .RunningHeader.Enabled}}
+#let running-header = context {
+  let pg = counter(page).get().first()
+  let first-body = state("folio-script-body-page", 0).final()
+  let is-body = first-body > 0 and pg >= first-body
+  {{if and .TitleSkipHeader (or (not .TitlePageEnabled) .HasTitle)}}if pg != 1 { {{end}}
+  align({{.RunningHeader.Align}})[#text({{.RunningHeader.Font.Args}})[{{.RunningHeader.Format}}]]
+  {{if and .TitleSkipHeader (or (not .TitlePageEnabled) .HasTitle)}}}{{end}}
+}
+{{end}}
+{{if .RunningFooter.Enabled}}
+#let running-footer = context {
+  let pg = counter(page).get().first()
+  let first-body = state("folio-script-body-page", 0).final()
+  let is-body = first-body > 0 and pg >= first-body
+  {{if and .TitleSkipFooter (or (not .TitlePageEnabled) .HasTitle)}}if pg != 1 { {{end}}
+  align({{.RunningFooter.Align}})[#text({{.RunningFooter.Font.Args}})[{{.RunningFooter.Format}}]]
+  {{if and .TitleSkipFooter (or (not .TitlePageEnabled) .HasTitle)}}}{{end}}
+}
+{{end}}
+
+{{if and .TitlePageEnabled .HasTitle}}
+#set page(numbering: {{if .TitlePageNumber}}"1"{{else}}none{{end}},
+  header: {{if .RunningHeader.Enabled}}running-header{{else}}none{{end}},
+  {{if and .RunningFooter.Enabled (not .TitleSkipFooter)}}footer-descent: 0pt,{{end}}
+  footer: [
+{{if and .RunningFooter.Enabled (not .TitleSkipFooter)}}#running-footer
+#linebreak(){{end}}
+#grid(
   columns: (1fr, 1fr),
   align: (left, right),
   [{{.FooterLeft}}],
   [{{.FooterRight}}],
-))
+)])
+{{template "title-block" .}}
+#pagebreak()
+{{end}}
+
+#set page(
+  numbering: none,
+  margin: (
+    top: {{if .RunningHeader.Enabled}}{{.RunningHeader.DistanceFromEdge}} + {{.RunningHeader.ContentPaddingAfter}}{{else}}{{.Margin}}{{end}},
+    bottom: {{if .RunningFooter.Enabled}}{{.RunningFooter.DistanceFromEdge}} + {{.RunningFooter.ContentPaddingAfter}}{{else}}{{.Margin}}{{end}},
+    rest: {{.Margin}},
+  ),
+  {{if .RunningHeader.Enabled}}header-ascent: {{.RunningHeader.ContentPaddingAfter}},{{end}}
+  {{if .RunningFooter.Enabled}}footer-descent: {{.RunningFooter.ContentPaddingAfter}},{{end}}
+  header: {{if .RunningHeader.Enabled}}running-header{{else}}none{{end}},
+  footer: {{if .RunningFooter.Enabled}}running-footer{{else}}none{{end}},
+)
+
+{{if not .TitlePageEnabled}}
+{{template "title-block" .}}
+{{if or .FooterLeft .FooterRight}}
+#grid(columns: (1fr, 1fr), align: (left, right),
+  [{{.FooterLeft}}], [{{.FooterRight}}],
+)
+{{end}}
+{{end}}
+
+{{.Body}}
+
+{{define "title-block"}}
 #align({{.TitleAlign}})[
-  #v({{.TitleOffset}})
-  #text({{.TitleFont.Args}})[{{.Title}}]
+  {{if .TitlePageEnabled}}#v({{.TitleOffset}}){{end}}
+  {{if .HasTitle}}#text({{.TitleFont.Args}})[{{.Title}}]{{end}}
   {{if .HasSubtitle}}
   #v({{.SubtitleSpace}})
   #text({{.SubtitleFont.Args}})[{{.Subtitle}}]
@@ -100,30 +156,4 @@
   {{end}}
   {{end}}
 ]
-#pagebreak()
 {{end}}
-
-#set page(
-  numbering: none,
-  margin: (
-    top: {{if .RunningHeader.Enabled}}{{.RunningHeader.DistanceFromEdge}} + {{.RunningHeader.ContentPaddingAfter}}{{else}}{{.Margin}}{{end}},
-    bottom: {{if .RunningFooter.Enabled}}{{.RunningFooter.DistanceFromEdge}} + {{.RunningFooter.ContentPaddingAfter}}{{else}}{{.Margin}}{{end}},
-    rest: {{.Margin}},
-  ),
-  {{if .RunningHeader.Enabled}}header-ascent: {{.RunningHeader.ContentPaddingAfter}},{{end}}
-  {{if .RunningFooter.Enabled}}footer-descent: {{.RunningFooter.ContentPaddingAfter}},{{end}}
-  header: {{if .RunningHeader.Enabled}}context {
-    let pg = counter(page).get().first()
-    let first-body = state("folio-script-body-page", 0).final()
-    let is-body = first-body > 0 and pg >= first-body
-    align({{.RunningHeader.Align}})[#text({{.RunningHeader.Font.Args}})[{{.RunningHeader.Format}}]]
-  }{{else}}none{{end}},
-  footer: {{if .RunningFooter.Enabled}}context {
-    let pg = counter(page).get().first()
-    let first-body = state("folio-script-body-page", 0).final()
-    let is-body = first-body > 0 and pg >= first-body
-    align({{.RunningFooter.Align}})[#text({{.RunningFooter.Font.Args}})[{{.RunningFooter.Format}}]]
-  }{{else}}none{{end}},
-)
-
-{{.Body}}

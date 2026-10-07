@@ -26,4 +26,16 @@ walking from the source directory towards HOME. Style-specific sibling files
 Running headers and footers: folio.page-header and folio.page-footer in script.yaml.
 Each supports enabled, font, format, alignment, distance-from-edge and
 content-padding-after. Shared placeholders: [title], [author], [page], [total-pages].
-Script title pages retain their separate layout without running matter.
+Script title pages retain their separate layout; running matter is skipped by default.
+
+Page-limited submissions: set folio.title-page.enabled: false to put title,
+subtitle, author, date and version at the top of the first content page instead
+of a separate title page. The first act follows without a forced page break;
+later act breaks and running headers/footers retain their configured behaviour.
+folio.title-page.skip-header and skip-footer default to true: suppress running
+matter on the separate title page, or page 1 when using a compact title. Set
+either to false to allow its enabled shared header/footer on that first page.
+These switches hide running text, not title date/version metadata or reserved
+running-page margins. Without a source title, enabled: true creates no title
+page and does not suppress first-page running matter. All three switches must
+be YAML booleans. Manuscript title-page settings are independent.
