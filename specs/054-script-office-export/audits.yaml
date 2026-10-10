@@ -1,0 +1,443 @@
+version: 1
+audits:
+    - work_item: W054
+      gate: definition
+      session_id: 20261010_011215_c6c1a8
+      harness: hermes
+      provider: nous
+      model: z-ai/glm-5.3
+      configured:
+        harness: claude
+        model: claude-sonnet-5.5
+      previous_sessions:
+        - session_id: 697b4cd7-7910-4c8d-a04e-b74b48767b60
+          harness: claude
+          model: claude-sonnet-5.5
+          reason: start-failed-fallback
+          updated: "2026-10-10T00:12:15Z"
+      external_round: 2
+      status: passed
+      updated: "2026-10-10T00:14:00Z"
+      revision: specs/054-script-office-export/spec.org sha256 bf8b2c5b043fca826ac8c40d6a0176afe3c9cde04dc05fd63edad0646aafffa1 (uncommitted definition; repo baseline b3135f4 per spec constraints)
+      verdict: PASS
+      response: |-
+        GATE: definition
+        REVISION: specs/054-script-office-export/spec.org sha256 bf8b2c5b043fca826ac8c40d6a0176afe3c9cde04dc05fd63edad0646aafffa1 (uncommitted definition; repo baseline b3135f4 per spec constraints)
+
+        VERDICT: PASS
+
+        Standards applied: ORG-SCHEMA.md and ORGMODE.md (spec.org record schema, IDs, :ac:/:testdef: tags, CUSTOM_IDs, traceability links, no execution states in spec.org); DOCUMENTATION.md (impersonal factual voice, concise approval metadata #+OPERATOR_SIGNOFF: PENDING, contradiction with vision Non-goals reported rather than silently resolved); ARCHITECTURE.md (proportionate responsibilities, reuse of play.Document/config.Config, no PDF/Typst refactor, essential mechanisms resolved, routine details explicitly deferred, security impact present); TESTING.md and ORG-SCHEMA test-definition rules (RT/UT/OT classification, CLI-boundary behavioural evidence, no source-text assertions, justified initially-GREEN preservation route for RT054.4, bounded OT/UT where human evidence is credible); SECURITY.md (local data transformation, bounded subprocess/package handling); technologies/GO.md (stdlib ZIP/XML/JSON, fixed-argument subprocess, no shell). MARKDOWN.md reviewed for the baseline docs evidence; project-listed API/RUST/SHELL standards not applicable by subject matter (no HTTP API, Rust, or shell code in this change). No material access gap: all applicable installed standards were supplied on request.
+
+        Assessment summary:
+        - Requirements/traceability: 7 ACs, 6 test definitions, bidirectional links, every AC proven; IDs follow the established WNNN scheme and W054 matches the ledger's next never-used number and directory scheme.
+        - Scope: design stays inside operator authorization (export-only DOCX/ODT for scripts, three styles, existing intermediary and resolved config); PDF/Typst untouched with RT054.4 and OT054.1 verification; no import/manuscript/letter expansion.
+        - Over-engineering: rejected simpler lossy paths (generic Pandoc defaults, public Markdown emitter) with recorded rationale; the ZIP/XML style-and-layout adapter is justified because custom styles alone cannot convey page geometry, running matter, and fields; bounds (two Pandoc calls, 120s, size caps) are concrete safety mechanisms, not template filler.
+        - Tests: feasible against the design (parse generated packages with standard Go readers), honest native-format ceilings (DOCX numeric weight) recorded as explicit failure rather than approximation, probe evidence correctly limited to style transport. No RT is demanded where OT/UT is the credible evidence; the exact property support table is a stated delivery obligation, consistent with the no-approximation rule.
+        - No annotation records or blocks in spec.org; no feedback.yaml supplied; no audit findings, status, revisions, round numbers, or session IDs duplicated in spec.org or the W054 ledger node (audits.yaml referenced by link only, which is correct).
+        - Affected documentation is identified in the handoff (README, vision, ARCHITECTURE, formats, folio-convert-help, config.md) without demanding delivered updates at this gate; validation.org correctly absent for definition-only.
+
+        Canary: ORG MD DOC ARCH TEST SECURITY GO
+      history:
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-3272465276.log
+          cache_key: sha256:b95b29ecc1b4dfd8efaf397296bc78a69c4ccf8cc8a80cb0e3fec7a6de373458
+          session_id: 697b4cd7-7910-4c8d-a04e-b74b48767b60
+          harness: claude
+          model: claude-sonnet-5.5
+          incident: start-failed
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: 43bf54d9d5cf5930807ea6ba084ccbae5793bae4312b62a743c215e6df6a9e96
+              bytes: 8169
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: f466fcb0ddc4871c1eadb06a4e9bcf68de4ed0553c9364019678a64c96fdc8e1
+              bytes: 16343
+            - path: /Users/tigger/.agents/sdlc/CHANGELOG.md
+              sha256: 2384009fbc28cea6fceab0d3fbb7810d1067a0da28c169b4e9386c0e6745ef56
+              bytes: 4424
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: c4311413740c0a4f7e6b8ffa5bada9d4cd537cab17b94474f286c1151e05fac8
+              bytes: 13793
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: 98e32fea598efeb6f1b5e14b5b4c5e515fd7d80167b3183093117935e5418de5
+              bytes: 7840
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 2c6ad74ef4b63c6b5a21c98e201ec949c1bd99866ebd2852d1dd9da117d4a8f9
+              bytes: 4846
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 978ce055b576d128a2e21eed7cf969773adc84a04962fc0d9a0299457c90e68f
+              bytes: 7822
+            - path: /Users/tigger/.agents/sdlc/HARNESS.md
+              sha256: 2d486a5a83454952391c1a3f34627497864834a5ae0cc8abc27a4f424c9579ff
+              bytes: 22610
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 5d9e863d7fbd9741c7fa1a0987e3417f82d3a4b7c095bb35cfb4c593a51e4cc2
+              bytes: 16642
+            - path: /Users/tigger/.agents/sdlc/LEARNINGS.md
+              sha256: 520513130332f468ab1f3185569b4cba7067f2968a4cb389623b02a228c2e68d
+              bytes: 52377
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: d000786a60948edddf2a8e636e1e57785445cd33e52955c477d5ce131fcca069
+              bytes: 11955
+            - path: /Users/tigger/.agents/sdlc/MARKDOWN.md
+              sha256: 59f3d6416de8226c11914ece1eb42720b70f75a83d40e45cc47355048e5f0fb9
+              bytes: 1357
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 0d2dbee2f0e0db1ff89a7ff315ab19d361e57e944a321905d0f4ed44db7465ab
+              bytes: 2989
+            - path: /Users/tigger/.agents/sdlc/PAIRING.md
+              sha256: 38ee20da8e16aba810c035600e6f5ca948d9a706f33c1179ebbf2fbc9d1ad034
+              bytes: 6050
+            - path: /Users/tigger/.agents/sdlc/README.md
+              sha256: e7aa5b4c951ecea7e7420105fa7c87987bf0e6cc08d10cc099a36ad7fed7b5aa
+              bytes: 12191
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: 149da81b261468fdca44d970ffe6fa321a0f97fb09ef7405364710931d0f1867
+              bytes: 5042
+            - path: /Users/tigger/.agents/sdlc/STANDALONE-AUDIT.md
+              sha256: 4791ab29e7982b0faa75aba2e154d8b3226d7b666a6f2ad2d543f8d1e39cba1c
+              bytes: 2271
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 174b4762e4c826f740799cd5b0c9918bfd7263976b8f01ae1b02f769cbf15928
+              bytes: 16361
+            - path: /Users/tigger/.agents/sdlc/THIRD_PARTY_NOTICES.md
+              sha256: bf9038abaefa7b03b66845fa0c9f125b282438f58f57a51c971c52407bd14b1a
+              bytes: 1812
+            - path: /Users/tigger/.agents/sdlc/docs/ACs.md
+              sha256: 9a59f4feeb496a6604923c7c7210df38f7b307a26e8a0e11e87f6210072611bf
+              bytes: 1557
+            - path: /Users/tigger/.agents/sdlc/prompts/discover-project-authorities.md
+              sha256: 7c6f62a3c8c13636dc37c9156216058c9f31153d1683a4b3b9d37a66bd3e8b6d
+              bytes: 1869
+            - path: /Users/tigger/.agents/sdlc/prompts/discover-project-technologies.md
+              sha256: 7dafb2828f52034d4af6042462f6ec373f5c7fdca8af1633caef675800a62366
+              bytes: 2715
+            - path: /Users/tigger/.agents/sdlc/prompts/normalize-legacy-acs.md
+              sha256: 44489c47c457ed857dba026da6304553f8d3a12f204952a4997c457c974fcd83
+              bytes: 2403
+            - path: /Users/tigger/.agents/sdlc/technologies/API.md
+              sha256: ed09a85c302d19670236a5d94ac79dd8f03cd8b265177a09924f955708a072c0
+              bytes: 10920
+            - path: /Users/tigger/.agents/sdlc/technologies/FISH.md
+              sha256: 0b71b362e3981f3f1ed60a045aad0f5b2b65cdeb2ec0a636a1d6cdb8aaf0c1a1
+              bytes: 13628
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: c71d389d7b8e576756f2a2843f77a5a2626e9300704b05cd6f8aa4fcdcc3f952
+              bytes: 7316
+            - path: /Users/tigger/.agents/sdlc/technologies/HUGO.md
+              sha256: 9f97dce924b1da88fc3c1e66851e96d8b421a0ffcc0bced8067dff0bf23f0e74
+              bytes: 4321
+            - path: /Users/tigger/.agents/sdlc/technologies/JAVASCRIPT.md
+              sha256: 69b7d16d81a059ee3de1e370e9bbeaeae7b7538bc6689f63c04b95e35b11d54b
+              bytes: 7523
+            - path: /Users/tigger/.agents/sdlc/technologies/LUA.md
+              sha256: f64aad076563bced181623daeef3c5ee28b82968fbd6e11ebe67d19045a62e8b
+              bytes: 10783
+            - path: /Users/tigger/.agents/sdlc/technologies/NODE.md
+              sha256: f593fef2fdbdc081afbb51db388e296fb13cbfd3e95432aafcb7674acd5ba31c
+              bytes: 5098
+            - path: /Users/tigger/.agents/sdlc/technologies/PERL.md
+              sha256: 8f3cbdf5e0c5cf0c8eaa3228e36c0e77e94a697798ae613e1b81a523391b48e4
+              bytes: 3098
+            - path: /Users/tigger/.agents/sdlc/technologies/PYTHON.md
+              sha256: 3a0ca19f3ab1a99fd809561c7a1d67d8a31dde8dd5a74cc989355e7daab9f61d
+              bytes: 6272
+            - path: /Users/tigger/.agents/sdlc/technologies/RUST.md
+              sha256: a05725c8cbd6e8306bbc39b4d197f1e1c0dd9230d43cb8e67dcede388f4c34ba
+              bytes: 18482
+            - path: /Users/tigger/.agents/sdlc/technologies/SHELL.md
+              sha256: e7c3ad8d6ceb8b571abd3d6b36ef2e358c71691136e729cbed87cd5abadfd94d
+              bytes: 12345
+            - path: /Users/tigger/.agents/sdlc/technologies/SWIFT.md
+              sha256: 64830d92ac9bd5d3ef51aeb722dde09b758cff6f04dedb23b493cb356a3b3de9
+              bytes: 5212
+            - path: /Users/tigger/.agents/sdlc/technologies/WEB.md
+              sha256: fd6d48f27772f9384719b9bbe59efb62240a8adbd5d7f87b3e0dfb0452485381
+              bytes: 10438
+            - path: /Users/tigger/.agents/sdlc/templates/AGENTS-or-CLAUDE.example.md
+              sha256: d4d5614d8f9d441b7eff45f0e0f2aa1ce5b1a39cda43a55cb7c6e37c956d1087
+              bytes: 4814
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: 96162ad4026d707d64e54b4bc9b060c60f9721ca31481c3dec757b4be79cc507
+              bytes: 7147
+            - path: /Users/tigger/code/tigoss/first-folio/assets.go
+              sha256: bdc784bb612a648043531d47a95890c61ca78dbc36743dfe7e50c1495da04e77
+              bytes: 368
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 89c24e06ff7839188d43bd4c4ffca22e431ba4fc873c0399de77a5dab9004150
+              bytes: 8375
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: ec04137c8ad900bfbcddb50e22bd47769e5084bb9de995ffcd95fdabda60dde6
+              bytes: 54832
+            - path: /Users/tigger/code/tigoss/first-folio/docs/folio-convert-help.md
+              sha256: 37eaa8b0ea66150707ef1e0046edd4659fa9e3c93360074c6223e47b0d7ae1e5
+              bytes: 2599
+            - path: /Users/tigger/code/tigoss/first-folio/docs/formats.md
+              sha256: 042c49698bec1a359a07327ad1e792f88f2f18784f7910afd19e75eaa4ba8d4f
+              bytes: 6431
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: fc0cee12b7a1f5e06e64ae9339a7eaa97d194c63b8dd54cfba8aa3148c9e571b
+              bytes: 257225
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/convert.go
+              sha256: d092b0bfc2f8f0d256afcc59dffa48767e2da1ab70e86fe12ab23be0b69f106d
+              bytes: 5591
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/convert_pdf_test.go
+              sha256: ebd0a070f4f52a4548bce9752a96db4d4cc859e28007a1c3473fbf3168b8cae7
+              bytes: 5923
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/convert_test.go
+              sha256: 0d78cc29d084480d46d30167d738bcc388f503d47aee9c4bb5540663719adcca
+              bytes: 3553
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/parity_test.go
+              sha256: 5de4c88f95c0e45128e0e7257ae3e818e0c5657890d7344a9e1462a29fd098ff
+              bytes: 10555
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_render.go
+              sha256: c8f916b9dfc59fe7ad9e1893d26296c65076a9c93d4ada226784f538e54dfa57
+              bytes: 24782
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_running_test.go
+              sha256: 4c82c4939f55ff7d138c261caeb45e5a2e3cf5c38bc4899f4fa2489963525d92
+              bytes: 16504
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_title_test.go
+              sha256: 6c9510d7cd8e3b24bf52ffb9c986ade08fc530eba5a9d0f9d667ff8c393688c7
+              bytes: 15638
+            - path: /Users/tigger/code/tigoss/first-folio/internal/play/format.go
+              sha256: 68f3091715dd62b0fe2c4e3ca82870af5516c16c09cb1a7346ea826dfb2b5612
+              bytes: 1277
+            - path: /Users/tigger/code/tigoss/first-folio/internal/play/model.go
+              sha256: fe7d3c16156ff049d79399f337e582f4d783c971604be71c0f48bd987c710744
+              bytes: 1193
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 4b1525cee0c078536702abec9f9fb07651ebc3ea0a8f03c0bf172f0ca5911da5
+              bytes: 16530
+            - path: /Users/tigger/code/tigoss/first-folio/presets/screenplay.yaml
+              sha256: a647a042d12507692b2f2acb60ec929e157d1e794f1f827a7114e2f65be0972d
+              bytes: 1437
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: ee98eb047b9ba065868e2f09b0898a0364054c87d930e59315c09b28d1ce45b5
+              bytes: 2169
+            - path: /Users/tigger/code/tigoss/first-folio/specs/054-script-office-export/spec.org
+              sha256: bf8b2c5b043fca826ac8c40d6a0176afe3c9cde04dc05fd63edad0646aafffa1
+              bytes: 29113
+            - path: /Users/tigger/code/tigoss/first-folio/templates/script.typ
+              sha256: 6d70fd4b28f68d7c76d0cee50ec0c5c96650d61b4a5eeef64eed889a07c1aca8
+              bytes: 5424
+          round: 1
+          updated: "2026-10-10T00:12:12Z"
+        - diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-3272465276.log
+          cache_key: sha256:b95b29ecc1b4dfd8efaf397296bc78a69c4ccf8cc8a80cb0e3fec7a6de373458
+          session_id: 20261010_011215_c6c1a8
+          harness: hermes
+          provider: nous
+          model: z-ai/glm-5.3
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: 43bf54d9d5cf5930807ea6ba084ccbae5793bae4312b62a743c215e6df6a9e96
+              bytes: 8169
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: f466fcb0ddc4871c1eadb06a4e9bcf68de4ed0553c9364019678a64c96fdc8e1
+              bytes: 16343
+            - path: /Users/tigger/.agents/sdlc/CHANGELOG.md
+              sha256: 2384009fbc28cea6fceab0d3fbb7810d1067a0da28c169b4e9386c0e6745ef56
+              bytes: 4424
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: c4311413740c0a4f7e6b8ffa5bada9d4cd537cab17b94474f286c1151e05fac8
+              bytes: 13793
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: 98e32fea598efeb6f1b5e14b5b4c5e515fd7d80167b3183093117935e5418de5
+              bytes: 7840
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 2c6ad74ef4b63c6b5a21c98e201ec949c1bd99866ebd2852d1dd9da117d4a8f9
+              bytes: 4846
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 978ce055b576d128a2e21eed7cf969773adc84a04962fc0d9a0299457c90e68f
+              bytes: 7822
+            - path: /Users/tigger/.agents/sdlc/HARNESS.md
+              sha256: 2d486a5a83454952391c1a3f34627497864834a5ae0cc8abc27a4f424c9579ff
+              bytes: 22610
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 5d9e863d7fbd9741c7fa1a0987e3417f82d3a4b7c095bb35cfb4c593a51e4cc2
+              bytes: 16642
+            - path: /Users/tigger/.agents/sdlc/LEARNINGS.md
+              sha256: 520513130332f468ab1f3185569b4cba7067f2968a4cb389623b02a228c2e68d
+              bytes: 52377
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: d000786a60948edddf2a8e636e1e57785445cd33e52955c477d5ce131fcca069
+              bytes: 11955
+            - path: /Users/tigger/.agents/sdlc/MARKDOWN.md
+              sha256: 59f3d6416de8226c11914ece1eb42720b70f75a83d40e45cc47355048e5f0fb9
+              bytes: 1357
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 0d2dbee2f0e0db1ff89a7ff315ab19d361e57e944a321905d0f4ed44db7465ab
+              bytes: 2989
+            - path: /Users/tigger/.agents/sdlc/PAIRING.md
+              sha256: 38ee20da8e16aba810c035600e6f5ca948d9a706f33c1179ebbf2fbc9d1ad034
+              bytes: 6050
+            - path: /Users/tigger/.agents/sdlc/README.md
+              sha256: e7aa5b4c951ecea7e7420105fa7c87987bf0e6cc08d10cc099a36ad7fed7b5aa
+              bytes: 12191
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: 149da81b261468fdca44d970ffe6fa321a0f97fb09ef7405364710931d0f1867
+              bytes: 5042
+            - path: /Users/tigger/.agents/sdlc/STANDALONE-AUDIT.md
+              sha256: 4791ab29e7982b0faa75aba2e154d8b3226d7b666a6f2ad2d543f8d1e39cba1c
+              bytes: 2271
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: 174b4762e4c826f740799cd5b0c9918bfd7263976b8f01ae1b02f769cbf15928
+              bytes: 16361
+            - path: /Users/tigger/.agents/sdlc/THIRD_PARTY_NOTICES.md
+              sha256: bf9038abaefa7b03b66845fa0c9f125b282438f58f57a51c971c52407bd14b1a
+              bytes: 1812
+            - path: /Users/tigger/.agents/sdlc/docs/ACs.md
+              sha256: 9a59f4feeb496a6604923c7c7210df38f7b307a26e8a0e11e87f6210072611bf
+              bytes: 1557
+            - path: /Users/tigger/.agents/sdlc/prompts/discover-project-authorities.md
+              sha256: 7c6f62a3c8c13636dc37c9156216058c9f31153d1683a4b3b9d37a66bd3e8b6d
+              bytes: 1869
+            - path: /Users/tigger/.agents/sdlc/prompts/discover-project-technologies.md
+              sha256: 7dafb2828f52034d4af6042462f6ec373f5c7fdca8af1633caef675800a62366
+              bytes: 2715
+            - path: /Users/tigger/.agents/sdlc/prompts/normalize-legacy-acs.md
+              sha256: 44489c47c457ed857dba026da6304553f8d3a12f204952a4997c457c974fcd83
+              bytes: 2403
+            - path: /Users/tigger/.agents/sdlc/technologies/API.md
+              sha256: ed09a85c302d19670236a5d94ac79dd8f03cd8b265177a09924f955708a072c0
+              bytes: 10920
+            - path: /Users/tigger/.agents/sdlc/technologies/FISH.md
+              sha256: 0b71b362e3981f3f1ed60a045aad0f5b2b65cdeb2ec0a636a1d6cdb8aaf0c1a1
+              bytes: 13628
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: c71d389d7b8e576756f2a2843f77a5a2626e9300704b05cd6f8aa4fcdcc3f952
+              bytes: 7316
+            - path: /Users/tigger/.agents/sdlc/technologies/HUGO.md
+              sha256: 9f97dce924b1da88fc3c1e66851e96d8b421a0ffcc0bced8067dff0bf23f0e74
+              bytes: 4321
+            - path: /Users/tigger/.agents/sdlc/technologies/JAVASCRIPT.md
+              sha256: 69b7d16d81a059ee3de1e370e9bbeaeae7b7538bc6689f63c04b95e35b11d54b
+              bytes: 7523
+            - path: /Users/tigger/.agents/sdlc/technologies/LUA.md
+              sha256: f64aad076563bced181623daeef3c5ee28b82968fbd6e11ebe67d19045a62e8b
+              bytes: 10783
+            - path: /Users/tigger/.agents/sdlc/technologies/NODE.md
+              sha256: f593fef2fdbdc081afbb51db388e296fb13cbfd3e95432aafcb7674acd5ba31c
+              bytes: 5098
+            - path: /Users/tigger/.agents/sdlc/technologies/PERL.md
+              sha256: 8f3cbdf5e0c5cf0c8eaa3228e36c0e77e94a697798ae613e1b81a523391b48e4
+              bytes: 3098
+            - path: /Users/tigger/.agents/sdlc/technologies/PYTHON.md
+              sha256: 3a0ca19f3ab1a99fd809561c7a1d67d8a31dde8dd5a74cc989355e7daab9f61d
+              bytes: 6272
+            - path: /Users/tigger/.agents/sdlc/technologies/RUST.md
+              sha256: a05725c8cbd6e8306bbc39b4d197f1e1c0dd9230d43cb8e67dcede388f4c34ba
+              bytes: 18482
+            - path: /Users/tigger/.agents/sdlc/technologies/SHELL.md
+              sha256: e7c3ad8d6ceb8b571abd3d6b36ef2e358c71691136e729cbed87cd5abadfd94d
+              bytes: 12345
+            - path: /Users/tigger/.agents/sdlc/technologies/SWIFT.md
+              sha256: 64830d92ac9bd5d3ef51aeb722dde09b758cff6f04dedb23b493cb356a3b3de9
+              bytes: 5212
+            - path: /Users/tigger/.agents/sdlc/technologies/WEB.md
+              sha256: fd6d48f27772f9384719b9bbe59efb62240a8adbd5d7f87b3e0dfb0452485381
+              bytes: 10438
+            - path: /Users/tigger/.agents/sdlc/templates/AGENTS-or-CLAUDE.example.md
+              sha256: d4d5614d8f9d441b7eff45f0e0f2aa1ce5b1a39cda43a55cb7c6e37c956d1087
+              bytes: 4814
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: 96162ad4026d707d64e54b4bc9b060c60f9721ca31481c3dec757b4be79cc507
+              bytes: 7147
+            - path: /Users/tigger/code/tigoss/first-folio/assets.go
+              sha256: bdc784bb612a648043531d47a95890c61ca78dbc36743dfe7e50c1495da04e77
+              bytes: 368
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 89c24e06ff7839188d43bd4c4ffca22e431ba4fc873c0399de77a5dab9004150
+              bytes: 8375
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: ec04137c8ad900bfbcddb50e22bd47769e5084bb9de995ffcd95fdabda60dde6
+              bytes: 54832
+            - path: /Users/tigger/code/tigoss/first-folio/docs/folio-convert-help.md
+              sha256: 37eaa8b0ea66150707ef1e0046edd4659fa9e3c93360074c6223e47b0d7ae1e5
+              bytes: 2599
+            - path: /Users/tigger/code/tigoss/first-folio/docs/formats.md
+              sha256: 042c49698bec1a359a07327ad1e792f88f2f18784f7910afd19e75eaa4ba8d4f
+              bytes: 6431
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 26e170395871c9456d73166d9099a4ec6c3458511f225910d259f6a96c7986f3
+              bytes: 5297
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: fc0cee12b7a1f5e06e64ae9339a7eaa97d194c63b8dd54cfba8aa3148c9e571b
+              bytes: 257225
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/convert.go
+              sha256: d092b0bfc2f8f0d256afcc59dffa48767e2da1ab70e86fe12ab23be0b69f106d
+              bytes: 5591
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/convert_pdf_test.go
+              sha256: ebd0a070f4f52a4548bce9752a96db4d4cc859e28007a1c3473fbf3168b8cae7
+              bytes: 5923
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/convert_test.go
+              sha256: 0d78cc29d084480d46d30167d738bcc388f503d47aee9c4bb5540663719adcca
+              bytes: 3553
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/parity_test.go
+              sha256: 5de4c88f95c0e45128e0e7257ae3e818e0c5657890d7344a9e1462a29fd098ff
+              bytes: 10555
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_render.go
+              sha256: c8f916b9dfc59fe7ad9e1893d26296c65076a9c93d4ada226784f538e54dfa57
+              bytes: 24782
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_running_test.go
+              sha256: 4c82c4939f55ff7d138c261caeb45e5a2e3cf5c38bc4899f4fa2489963525d92
+              bytes: 16504
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/script_title_test.go
+              sha256: 6c9510d7cd8e3b24bf52ffb9c986ade08fc530eba5a9d0f9d667ff8c393688c7
+              bytes: 15638
+            - path: /Users/tigger/code/tigoss/first-folio/internal/play/format.go
+              sha256: 68f3091715dd62b0fe2c4e3ca82870af5516c16c09cb1a7346ea826dfb2b5612
+              bytes: 1277
+            - path: /Users/tigger/code/tigoss/first-folio/internal/play/model.go
+              sha256: fe7d3c16156ff049d79399f337e582f4d783c971604be71c0f48bd987c710744
+              bytes: 1193
+            - path: /Users/tigger/code/tigoss/first-folio/presets/british.yaml
+              sha256: 4b1525cee0c078536702abec9f9fb07651ebc3ea0a8f03c0bf172f0ca5911da5
+              bytes: 16530
+            - path: /Users/tigger/code/tigoss/first-folio/presets/screenplay.yaml
+              sha256: a647a042d12507692b2f2acb60ec929e157d1e794f1f827a7114e2f65be0972d
+              bytes: 1437
+            - path: /Users/tigger/code/tigoss/first-folio/presets/us.yaml
+              sha256: ee98eb047b9ba065868e2f09b0898a0364054c87d930e59315c09b28d1ce45b5
+              bytes: 2169
+            - path: /Users/tigger/code/tigoss/first-folio/specs/054-script-office-export/spec.org
+              sha256: bf8b2c5b043fca826ac8c40d6a0176afe3c9cde04dc05fd63edad0646aafffa1
+              bytes: 29113
+            - path: /Users/tigger/code/tigoss/first-folio/templates/script.typ
+              sha256: 6d70fd4b28f68d7c76d0cee50ec0c5c96650d61b4a5eeef64eed889a07c1aca8
+              bytes: 5424
+          round: 2
+          revision: specs/054-script-office-export/spec.org sha256 bf8b2c5b043fca826ac8c40d6a0176afe3c9cde04dc05fd63edad0646aafffa1 (uncommitted definition; repo baseline b3135f4 per spec constraints)
+          verdict: PASS
+          response: |-
+            GATE: definition
+            REVISION: specs/054-script-office-export/spec.org sha256 bf8b2c5b043fca826ac8c40d6a0176afe3c9cde04dc05fd63edad0646aafffa1 (uncommitted definition; repo baseline b3135f4 per spec constraints)
+
+            VERDICT: PASS
+
+            Standards applied: ORG-SCHEMA.md and ORGMODE.md (spec.org record schema, IDs, :ac:/:testdef: tags, CUSTOM_IDs, traceability links, no execution states in spec.org); DOCUMENTATION.md (impersonal factual voice, concise approval metadata #+OPERATOR_SIGNOFF: PENDING, contradiction with vision Non-goals reported rather than silently resolved); ARCHITECTURE.md (proportionate responsibilities, reuse of play.Document/config.Config, no PDF/Typst refactor, essential mechanisms resolved, routine details explicitly deferred, security impact present); TESTING.md and ORG-SCHEMA test-definition rules (RT/UT/OT classification, CLI-boundary behavioural evidence, no source-text assertions, justified initially-GREEN preservation route for RT054.4, bounded OT/UT where human evidence is credible); SECURITY.md (local data transformation, bounded subprocess/package handling); technologies/GO.md (stdlib ZIP/XML/JSON, fixed-argument subprocess, no shell). MARKDOWN.md reviewed for the baseline docs evidence; project-listed API/RUST/SHELL standards not applicable by subject matter (no HTTP API, Rust, or shell code in this change). No material access gap: all applicable installed standards were supplied on request.
+
+            Assessment summary:
+            - Requirements/traceability: 7 ACs, 6 test definitions, bidirectional links, every AC proven; IDs follow the established WNNN scheme and W054 matches the ledger's next never-used number and directory scheme.
+            - Scope: design stays inside operator authorization (export-only DOCX/ODT for scripts, three styles, existing intermediary and resolved config); PDF/Typst untouched with RT054.4 and OT054.1 verification; no import/manuscript/letter expansion.
+            - Over-engineering: rejected simpler lossy paths (generic Pandoc defaults, public Markdown emitter) with recorded rationale; the ZIP/XML style-and-layout adapter is justified because custom styles alone cannot convey page geometry, running matter, and fields; bounds (two Pandoc calls, 120s, size caps) are concrete safety mechanisms, not template filler.
+            - Tests: feasible against the design (parse generated packages with standard Go readers), honest native-format ceilings (DOCX numeric weight) recorded as explicit failure rather than approximation, probe evidence correctly limited to style transport. No RT is demanded where OT/UT is the credible evidence; the exact property support table is a stated delivery obligation, consistent with the no-approximation rule.
+            - No annotation records or blocks in spec.org; no feedback.yaml supplied; no audit findings, status, revisions, round numbers, or session IDs duplicated in spec.org or the W054 ledger node (audits.yaml referenced by link only, which is correct).
+            - Affected documentation is identified in the handoff (README, vision, ARCHITECTURE, formats, folio-convert-help, config.md) without demanding delivered updates at this gate; validation.org correctly absent for definition-only.
+
+            Canary: ORG MD DOC ARCH TEST SECURITY GO
+          updated: "2026-10-10T00:12:15Z"

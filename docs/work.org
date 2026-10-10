@@ -78,6 +78,19 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** REVIEW W054 - Preserve script formatting in DOCX and ODT exports :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-054
+:SOURCE: operator
+:CREATED: 2026-10-10
+:END:
+
+- Specification :: [[file:../specs/054-script-office-export/spec.org][W054 - Formatted script office exports]].
+- Scope :: *Export only* from existing script sources, preserving British,
+  US stage-play and screenplay formatting through the existing event model
+  and resolved configuration. *PDF and Typst rendering remain untouched*.
+- Review record :: [[file:../specs/054-script-office-export/audits.yaml][Independent definition review]].
+
 ** ABANDONED W036 - Unified Font Configuration :feature:migration:
 :PROPERTIES:
 :CUSTOM_ID: w-036

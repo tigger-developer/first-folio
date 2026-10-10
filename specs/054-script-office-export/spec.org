@@ -1,0 +1,490 @@
+#+TITLE: W054 - Preserve script formatting in DOCX and ODT exports
+#+SCHEMA: 8
+#+SUBTITLE: Unified change specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+- Stage plays and screenplays gain *editable DOCX and ODT exports* that
+  *preserve script content and configured formatting*.
+** Before
+- Scripts already have a *typed event intermediary* and resolved configuration;
+  their formatted outputs are Typst and PDF.
+** After
+- Org, Markdown and Fountain scripts export to both office formats using
+  British, US stage-play and screenplay layouts.
+- Exported text, styles, tables, footnotes, explicit breaks and running matter
+  remain editable; office applications own automatic pagination.
+** Changes
+- A *separate office adapter* maps existing events to styled Pandoc documents
+  and applies resolved layout through native office properties.
+- DOCX/ODT become output formats in =folio convert=, including redirected stdout.
+** Unchanged
+- *PDF and Typst rendering remain untouched*: no renderer refactor, new
+  intermediary, or Pandoc dependency on those routes.
+- Existing text conversion, configuration precedence, manuscripts and letters
+  retain their contracts. Office formats remain *export only*.
+** Edge cases
+:PROPERTIES:
+:CUSTOM_ID: synopsis-edge-cases
+:END:
+- Unsupported active formatting *fails explicitly*, rather than producing an
+  apparently successful export with simplified formatting.
+- Missing Pandoc, conversion failure or invalid output leaves *no partial
+  target* and preserves any previous target. Binary terminal output is guarded.
+- Empty scripts and absent title metadata remain valid; hidden elements stay hidden.
+** Decisions
+- Reuse =play.Document= and =config.Config=, not generated Typst or the public
+  Markdown emitter. Pandoc owns content serialization; a bounded Go ZIP/XML
+  adapter owns formatting that custom styles alone cannot convey.
+- Preserve layout rules, *not identical automatic line/page breaks* across
+  Word, LibreOffice and Typst. Do not embed fonts or flatten content into images.
+** Next step
+- Definition review and operator sign-off precede delivery.
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+Script submissions and editing workflows need DOCX/ODT without *recreating the
+existing script formatting in a word processor*. Converting the current public
+Markdown output with generic Pandoc defaults does not carry the resolved layout.
+
+** Outcome
+A single =folio convert= invocation produces an *editable, formatted script*
+in either office format from each existing script source format.
+
+** Scope
+*** In scope
+- DOCX and ODT *export only*, from Org, Markdown and Fountain scripts.
+- British stage-play, US stage-play and screenplay styles; existing effective
+  script layout and metadata, render toggles, inline formatting and Unicode.
+- Native editable content and layout, output lifecycle, diagnostics and packaging.
+*** Out of scope
+- DOCX/ODT import, manuscript/letter exports, GUI work, PDF conversion through
+  Pandoc, font installation/embedding, and user-supplied reference documents.
+- New script configuration semantics or making previously unused keys effective.
+*** Unchanged
+- *No changes to the PDF/Typst renderer*, its template, helper semantics or
+  compilation path. No refactor of shared rendering to accommodate office output.
+- Existing parsing, event model, text emitters and configuration precedence.
+
+** Authority and starting point
+- Profile :: [[file:../../.sdlc/project.yaml][Project profile]].
+- Product :: [[file:../../README.md][Public commands]] and
+  [[file:../../docs/vision.md][Vision]]. This change supersedes the vision's
+  word-processor exclusion *only for script exports* after approval and delivery.
+- Architecture :: [[file:../../docs/ARCHITECTURE.md][Runtime and rendering ownership]]
+  and [[file:../../docs/formats.md][Script event and fidelity contracts]].
+- Requirements :: [[file:../../docs/work.org][Canonical work ledger]], including
+  legacy W001 conversion and W010 Go-runtime parity; neither defines office export.
+- Implementation :: [[file:../../internal/play/model.go][Typed script events]],
+  [[file:../../internal/app/convert.go][Configuration and conversion orchestration]],
+  [[file:../../internal/app/script_render.go][Current script rendering]], and
+  [[file:../../templates/script.typ][Current script layout template]].
+- Baseline tests :: [[file:../../internal/app/convert_test.go][Public conversion tests]],
+  [[file:../../internal/app/parity_test.go][Conversion/layout parity]],
+  [[file:../../internal/app/convert_pdf_test.go][PDF/style matrix]],
+  [[file:../../internal/app/script_title_test.go][Title composition]], and
+  [[file:../../internal/app/script_running_test.go][Running matter]].
+- External contract :: [[https://pandoc.org/MANUAL.html#custom-styles][Pandoc custom styles]]
+  and [[https://pandoc.org/MANUAL.html#option--reference-doc][Reference documents]].
+  A bounded definition probe with Pandoc 3.9.0.2 confirmed named paragraph and
+  character styles in both output packages. This proves style transport,
+  *not full script-format fidelity*.
+- Native formats :: [[https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.bold?view=openxml-3.0.1][WordprocessingML bold property]]
+  and [[https://docs.oasis-open.org/office/OpenDocument/v1.3/OpenDocument-v1.3-part3-schema.html][ODF 1.3 schema]],
+  including text properties, page layouts and master pages.
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+- Pandoc is an explicit dependency *only when office export is selected*.
+  Word and LibreOffice are review applications, not runtime dependencies.
+- Definition baseline is =b3135f4= plus existing uncommitted character-name and
+  formatting changes. Those changes remain outside this definition's edits.
+  Delivery must reconcile the current conversion boundary before editing it;
+  unresolved ownership overlap blocks those edits, not independent test design.
+- Formatting means preserving the *effective current renderer's layout rules*,
+  not adding behaviour for every key present in a preset. See the mapping below.
+
+** Decisions
+- Add a sibling office export route after existing parsing/configuration/filtering.
+- Keep the significant intermediate semantic model *unchanged*.
+- Generated office style definitions are derived from the same merged config;
+  no parallel YAML schema or maintained preset copies.
+- Office layout engines may reflow content. Requested font families remain
+  declared; font substitution by a consuming application is outside export control.
+
+** Unresolved blockers
+- None for definition. Operator sign-off remains pending.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC054.1 - Editable exports preserve script semantics :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-054-1
+:END:
+- Criterion :: All existing source formats export to *valid editable DOCX and
+  ODT* with ordered title metadata, acts, scenes, stage directions, speaker cues,
+  parentheticals, dialogue lines, props, transitions, introductory material,
+  cast tables and referenced footnotes. Inline bold, italic, combined emphasis,
+  underline and literal/code text preserve their current rendered meaning.
+  Source schema declarations are not visible script content.
+- Proven by :: [[#rt-054-1][RT054.1 - Content and source/style matrix]] and
+  [[#ut-054-1][UT054.1 - Editable formatted scripts]].
+
+** AC054.2 - Typography and speech layout retain configured formatting :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-054-2
+:END:
+- Criterion :: Supported active script roles preserve *resolved font properties,
+  alignment, spacing, indentation, speaker casing and delimiters*. British
+  same-line and US/screenplay separate-line speech retain their layout rules
+  defined in [[#layout-mapping][Layout mapping]], including continuation geometry.
+  Partial overrides inherit through the existing configuration layers.
+- Proven by :: [[#rt-054-2][RT054.2 - Native formatting properties]] and
+  [[#ut-054-1][UT054.1 - Editable formatted scripts]].
+
+** AC054.3 - Page composition and running matter preserve layout rules :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-054-3
+:END:
+- Criterion :: Exports preserve *paper size, margins, title composition,
+  explicit act breaks and running matter* as defined in [[#layout-mapping][Layout mapping]].
+  Automatic pagination may differ, but page and total-page fields reflect the
+  office document rather than a previously rendered PDF.
+- Proven by :: [[#rt-054-2][RT054.2 - Native formatting properties]] and
+  [[#ut-054-1][UT054.1 - Editable formatted scripts]].
+
+** AC054.4 - Export selection and binary streams follow the CLI contract :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-054-4
+:END:
+- Criterion :: Target extensions and =--to docx= / =--to odt= select the new
+  formats under existing target precedence. Redirected stdout contains only the
+  completed binary document; terminal stdout *refuses binary output unless
+  --force is supplied*. DOCX/ODT source input is rejected as write-only.
+- Proven by :: [[#rt-054-3][RT054.3 - CLI selection and failure boundaries]].
+
+** AC054.5 - Failures do not publish partial or degraded documents :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-054-5
+:END:
+- Criterion :: Missing/incompatible Pandoc, malformed conversion output,
+  invalid active layout, unsupported active formatting, timeout or write failure
+  produces a *nonzero result and actionable stderr*. Before final publication,
+  failures preserve an existing target, create no partial target, emit no binary
+  stdout and retain no export scratch state. Unsupported formatting identifies
+  the target format, config path and value; no silent approximation is allowed.
+- Proven by :: [[#rt-054-3][RT054.3 - CLI selection and failure boundaries]].
+
+** AC054.6 - Existing routes retain their behaviour and dependency boundaries :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-054-6
+:END:
+- Criterion :: Existing PDF, Typst, Org, Markdown, Fountain, manuscript and
+  letter routes *retain their prior behaviour*. Script PDF/Typst/text routes
+  do not require or invoke Pandoc because of this change.
+- Proven by :: [[#rt-054-4][RT054.4 - Existing conversion preservation]] and
+  [[#ot-054-1][OT054.1 - Delivery structure and documentation review]].
+
+** AC054.7 - Export remains a local data transformation :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-054-7
+:END:
+- Criterion :: Script/config strings remain *data, never executable markup or
+  process arguments*. Export fetches no resources, invokes no user filters,
+  includes no macros, and changes neither source nor configuration. Generated
+  office files contain only selected script content and required package metadata.
+- Proven by :: [[#rt-054-3][RT054.3 - CLI selection and failure boundaries]] and
+  [[#ot-054-1][OT054.1 - Delivery structure and documentation review]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT054.1 - Content and source/style matrix :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-054-1
+:END:
+- Covers :: [[#ac-054-1][AC054.1 - Editable script semantics]].
+- Boundary :: Built =folio convert= executable and its generated packages.
+- Setup :: Synthetic equivalent Org/Markdown/Fountain fixtures with each
+  supported event; additional rich Org/Markdown fixtures for elements Fountain
+  cannot represent. Temporary HOME/config/output; real local Pandoc.
+- Action :: Export each source in all three styles to both formats (18 routes).
+  Also export empty and untitled scripts and independently disabled render toggles.
+- Expected :: Parse ZIP/XML with standard Go readers. Assert ordered text,
+  Unicode, separate dialogue lines, native table rows, resolved footnote references
+  and inline formatting; toggled elements absent, no visible source schema.
+  Source and config bytes remain unchanged. No rendered text is an image.
+- Retention :: Persistent public CLI tests in =make test=; new export tests fail
+  explicitly if required Pandoc is unavailable in the test environment.
+
+** RT054.2 - Native formatting properties :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-054-2
+:END:
+- Covers :: [[#ac-054-2][AC054.2 - Typography and speech layout]] and
+  [[#ac-054-3][AC054.3 - Page composition]].
+- Boundary :: Generated DOCX/ODT package styles, content and section/page properties.
+- Setup :: Synthetic short and multi-page scripts with all active roles;
+  shipped defaults and non-default per-role partial overrides through global,
+  local, style and CLI layers. Fonts need not be installed for XML assertions.
+- Action :: Export both formats; parse effective style inheritance and direct
+  properties, not just style names. Cover each row of [[#layout-mapping][Layout mapping]].
+- Expected :: Numeric lengths agree within the target's smallest representable
+  unit; configured family, weight/style, width and tracking remain declared.
+  Assert British cue/dialogue columns, US/screenplay placement and indents,
+  compact/dedicated/missing title behaviour, first/later act breaks, even/odd and
+  frontmatter/body running variants, explicit empty variants and page fields.
+  Inactive role settings do not change active roles or cause export rejection.
+- Retention :: Persistent Go CLI tests under =make test=; no source-text assertions.
+
+** RT054.3 - CLI selection and failure boundaries :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-054-3
+:END:
+- Covers :: [[#ac-054-4][AC054.4 - CLI and binary streams]],
+  [[#ac-054-5][AC054.5 - Safe export failure]], and
+  [[#ac-054-7][AC054.7 - Local data transformation]].
+- Boundary :: Built executable, stderr/stdout, target files and owned scratch state.
+- Action :: Test extensions, explicit stdout selection, configured default format,
+  target precedence and write-only input errors. Use the established terminal
+  test facility or a real local PTY for the terminal guard and =--force=.
+  Force missing Pandoc, nonzero exit, malformed ZIP/XML, timeout, invalid layout,
+  unsupported active property and unwritable target through controlled process
+  boundaries. Fixtures include XML metacharacters, Unicode and markup-looking strings.
+- Expected :: Success stdout is a valid binary package with no diagnostics;
+  failures identify the operation and leave previous target bytes unchanged or
+  no new target. Before publication, stdout is empty and scratch state is removed.
+  Unsupported active formatting names its property; disabled running roles do
+  not reject irrelevant unsupported settings. No shell or source-supplied
+  filter/resource execution occurs. Stream write errors return nonzero; bytes
+  already accepted by a failing downstream consumer cannot be rolled back.
+- Retention :: Persistent CLI tests; doubles are confined to documented process
+  failure behaviour, not simulations of Pandoc's formatting.
+
+** RT054.4 - Existing conversion preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-054-4
+:END:
+- Covers :: [[#ac-054-6][AC054.6 - Existing routes]].
+- Boundary :: Existing executable conversion and document outputs.
+- Setup :: Record the admitted delivery baseline, including unrelated changes
+  once ownership is resolved. Same tools/fonts/config for baseline and candidate.
+- Action :: Run maintained text/round-trip, title, running-matter, PDF style,
+  letter and manuscript tests. Add a persistent dependency-boundary test with
+  Pandoc unavailable for script PDF/Typst/text conversions.
+- Expected :: Existing assertions still hold; generated Typst/text bytes match
+  baseline, PDF text/page geometry and raster output agree under identical tools.
+  PDF/Typst/text conversions succeed without Pandoc. Do not compare unstable PDF
+  timestamps or manufacture failure in initially GREEN preservation tests.
+- Retention :: Existing suites plus the narrowly justified dependency regression
+  under =make test=. Baseline comparison is recorded in delivery validation.
+
+** UT054.1 - Editable formatted scripts :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-054-1
+:END:
+- Covers :: [[#ac-054-1][AC054.1 - Script semantics]],
+  [[#ac-054-2][AC054.2 - Typography]], and [[#ac-054-3][AC054.3 - Page composition]].
+- Validation method :: User validation.
+- Procedure :: Open DOCX in Microsoft Word and ODT in LibreOffice Writer, with
+  requested fonts installed. Review all three styles using short/long dialogue,
+  cast table, directions, footnotes, running matter and both title modes.
+  Compare against current PDF for layout intent; edit dialogue, save, reopen.
+- Expected :: Recognizable configured script layouts need no manual formatting
+  repair. Content remains editable, cues stay associated with speech, long
+  dialogue flows without clipping, tables/footnotes work, running fields update,
+  and no package-repair prompt appears. Different natural pagination is permitted.
+- Record :: Dated observations, application versions, fonts and candidate in
+  =validation.org=. Agent UI automation is not part of this procedure.
+
+** OT054.1 - Delivery structure and documentation review :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-054-1
+:END:
+- Covers :: [[#ac-054-6][AC054.6 - Existing boundaries]] and
+  [[#ac-054-7][AC054.7 - Local data transformation]].
+- Procedure :: Review delivery diff for untouched PDF renderer/template/helpers,
+  separate office dispatch, no event/config contract change, bounded ZIP/XML
+  processing and direct fixed-argument Pandoc invocation. Check embedded runtime
+  assets and installed-shaped execution from a separate caller directory.
+  Review updated docs for actual formatting support and dependency instructions.
+- Expected :: No PDF refactor or renderer changes; no arbitrary extraction,
+  network/resource lookup, user filter, external writes or font embedding.
+  Installed-shaped export requires no checkout or user Pandoc data files and
+  preserves caller cwd. Documentation does not claim identical pagination.
+- Bounds :: One local review of the delivery candidate; no external service calls.
+- Record :: =validation.org=; not a persistent source-search regression test.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+- *Fountain fidelity* :: Export preserves events actually present after parsing;
+  it cannot restore cast/footnote semantics already lost in Fountain input.
+  [[#rt-054-1][RT054.1 - Content matrix]] uses richer sources for those checks.
+- *Undefined/disabled footnotes* :: Match current rendered literal/reference
+  behaviour; do not invent new validation or drop surrounding dialogue.
+- *Long speech* :: Editable rows/paragraphs must split across pages where needed,
+  without repeating speakers or losing text. Covered by [[#ut-054-1][UT054.1 - Editing review]].
+- *Unsupported values* :: Fail only for properties used by visible output.
+  Never silently reduce font weight, drop running variants or flatten the script.
+  Covered by [[#rt-054-3][RT054.3 - Failure boundaries]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture and flow
+1. Existing conversion reads and parses the script, loads config, applies
+   metadata, character-name policy and render filtering exactly as before.
+2. Only DOCX/ODT dispatch to a new Go office adapter taking =play.Document=,
+   =config.Config= and the selected output format.
+3. Build a *Pandoc JSON AST* of ordinary paragraphs/spans, native tables and
+   notes with stable named styles. Discover the installed Pandoc API version
+   through a bounded empty JSON conversion; do not hard-code a version tuple.
+4. Invoke Pandoc's DOCX/ODT writer directly. Apply formatting to its completed
+   package using Go =archive/zip= and =encoding/xml=, then validate and publish.
+5. Use a per-invocation OS temporary directory, removed on success and failure;
+   file publication uses a same-directory staging file and atomic rename.
+
+- Reuse :: Existing parsers/events/config remain the single source of truth.
+  Do not route through the public Markdown emitter, generated Typst, manuscript
+  block model or a generic replacement rendering framework.
+- Ownership :: Pandoc serializes ordinary document content, tables and notes.
+  The new adapter owns named-style definitions and native page/layout structures.
+  Use the writer's shipped defaults with an isolated data directory; do not load
+  personal defaults, filters or reference documents.
+- Inline content :: Convert the existing supported inline meanings into typed
+  AST inlines; any helper reuse must leave its implementation unchanged. Do not
+  pass source/config strings as RawBlock/RawInline. Escape via JSON/XML serializers.
+- Simplicity :: One event-to-AST operation shared by both writers, with two small
+  format-specific package/layout mappings. No new service, runtime, third-party
+  office library or independently maintained style presets.
+
+** Layout mapping
+:PROPERTIES:
+:CUSTOM_ID: layout-mapping
+:END:
+
+The normative scope is the current *effective script renderer*, not every
+configuration key in the exhaustive shared preset. This table defines the
+office equivalent; reference implementation files establish current defaults.
+
+| Area | Required office representation |
+|------+--------------------------------|
+| Fonts | Native role styles declare family, size, effective weight/style, horizontal stretch and tracking. Regular/bold and regular/italic defaults work in both formats. Values lacking an exact native representation are rejected, never thresholded or approximated. |
+| Lengths | Convert pt/mm/cm/in using standard physical units; em uses the effective role font size. Preserve sign and round once to native precision. Percentages use the same applicable layout extent as the current renderer. |
+| British speech | Borderless two-column native table: cue column equals configured dialogue wrap width, remainder holds parenthetical and dialogue; separate character styles preserve speaker/instruction/dialogue fonts. Preserve line breaks and allow long content to flow. |
+| US/screenplay speech | Separate cue, optional instruction and dialogue paragraphs; dialogue left/right insets match current pad geometry; speaker inset is additional within that area. Apply current speaker/instruction alignment and role fonts. |
+| Directions/transitions | Native paragraphs preserve effective before/after spacing, inset, alignment, font and effective casing. |
+| Act/scene/intro headings | Named paragraph styles preserve current font/alignment/spacing/casing; explicit act breaks follow current dedicated/compact first-act rule. |
+| Props/cast/footnotes | Props retain current centred bold italic layout and fixed spacing; cast uses editable two-column 30%/70% table; footnotes use native note content with preserved inline formatting. |
+| Title | Dedicated title page only when enabled and title exists; compact mode renders title metadata above content, without suppressing natural pagination. Preserve title vertical offset, alignment, role fonts, subtitle/author spacing, multi-line author prefix and date/version slot positioning. |
+| Paper/margins | Resolve paper name to native width/height; preserve side margins. Body top/bottom use enabled running matter edge distance plus clearance as in current renderer; dedicated-title page follows its current margin rule. Unknown paper names fail explicitly. |
+| Running matter | Native first/odd/even header/footer definitions and page fields, preserving effective font, alignment, edge distance, clearance, title suppression and separate intro/body variants. Unknown tokens stay literal; manuscript-specific tokens stay empty. Section/page-style boundaries must not introduce an extra page or reset physical numbering. |
+
+- Native differences :: DOCX uses WordprocessingML styles/sections/fields;
+  ODT uses ODF text/paragraph styles, page layouts, master pages and fields.
+  Generate only the properties needed for the current script contract; preserve
+  unrelated Pandoc package members and valid relationships/manifest entries.
+- Format ceiling :: DOCX cannot natively express every arbitrary numeric font
+  weight as distinct from regular/bold. Such active values fail for DOCX;
+  defaults must export. Apply the same no-approximation rule to ODT properties
+  not representable by its native format. Publish the exact support table during
+  delivery; do not weaken this requirement to obtain a passing test.
+- Pagination :: Explicit breaks and composition rules are preserved. Native
+  application line wrapping/page count, font substitution and field refresh are
+  not required to reproduce Typst's exact pagination.
+
+** Interfaces and failure behaviour
+- Commands :: =folio convert play.org play.docx=,
+  =folio convert play.fountain play.odt --style screenplay=,
+  and redirected =folio convert play.md --to docx=.
+- Selection :: Extend the format registry with two write-only formats; retain
+  existing target-extension precedence and =folio.default-format= behaviour.
+- Publication :: Fully build and validate output before target replacement or
+  binary stdout. Match existing =--force= terminal guard, with format-specific
+  diagnostics; do not alter its PDF branch. Source/target identity is rejected
+  for office export. Destination symlinks are rejected for office export to
+  avoid ambiguous replacement; existing-route semantics do not change.
+- Process :: Fixed arguments and structured stdin, no shell; at most two
+  Pandoc calls per export (API discovery and writer), each with a 120-second
+  deadline, no retries. Bound captured diagnostics to 64 KiB.
+- Resource bounds :: Office-only source input at most 32 MiB; intermediate and
+  final packages at most 128 MiB each; at most 256 package entries and 256 MiB
+  total uncompressed XML/package data. Check limits during reading/generation.
+  Reject overflow with nonzero status; leave existing routes' limits unchanged.
+
+** Design decisions and verification
+- *Keep PDF untouched* :: Implementation review inspects the renderer/template
+  diff; [[#rt-054-4][RT054.4 - Route preservation]] verifies public behaviour.
+- *Styles plus native layout* :: Pandoc style transport was probed locally;
+  [[#rt-054-2][RT054.2 - Native properties]] and
+  [[#ut-054-1][UT054.1 - Application review]] establish complete fidelity.
+- *No lossy fallback* :: [[#rt-054-3][RT054.3 - Failure boundaries]] covers unsupported
+  values and atomic publication. A missing native mapping is a delivery blocker,
+  not authority to simplify required default layouts.
+
+** Routine details left to implementation
+- New adapter filenames, typed AST structs and XML helper decomposition.
+- Native identifiers and relationship IDs, with collision-free deterministic allocation.
+- Test fixture naming and reuse of existing public executable helpers.
+
+** Security impact
+- Threat boundary :: Untrusted source/config becomes structured JSON/XML and a
+  local subprocess input. No new remote access or data-sharing permission.
+- Mitigations :: Fixed arguments, no raw executable markup, isolated Pandoc
+  data directory, no resource/media resolution, bounded process/package data.
+  Read ZIP members in memory without extracting paths; reject duplicates,
+  unsafe names, malformed XML and unexpectedly external relationships.
+- Data :: Scratch files use private permissions; cleanup removes only owned
+  invocation state. Do not log script bodies, read secrets or embed macros.
+- Dependency :: Reuse installed Pandoc; no new application library dependency.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+- Required reading :: Authorities and baseline sources linked under Context;
+  Pandoc custom-style/reference contract; native OOXML/ODF specifications for
+  the properties actually emitted.
+- Entry conditions :: Explicit operator sign-off and current definition evidence
+  in =audits.yaml=; reconcile the dirty conversion/config baseline before edits.
+  Remain within the [[#constraints-and-dependencies][dependency and renderer constraints]].
+- First step :: Write [[#rt-054-1][RT054.1 - Content matrix]],
+  [[#rt-054-2][RT054.2 - Formatting properties]],
+  [[#rt-054-3][RT054.3 - Failure boundaries]] and
+  [[#rt-054-4][RT054.4 - Preservation]], observe intended RED or justified
+  initially GREEN preservation, and obtain test-code review before implementation.
+- Definition evidence :: [[file:audits.yaml][Independent definition review]].
+- Validation evidence :: =validation.org= is created at delivery admission with
+  one tagged result per defined test. No execution results exist at definition.
+- Documentation impact :: Update =README.md=, =docs/vision.md=,
+  =docs/ARCHITECTURE.md=, =docs/formats.md=, =docs/folio-convert-help.md= and
+  =docs/config.md= for export scope, exact formatting support, local dependency,
+  failure/stream contracts and pagination limits. Preserve superseded rationale.
+  Inspect runtime asset embedding and packaging for necessary new assets only.
+  Documentation must not imply DOCX/ODT import or manuscript/letter export.
+- Delivery checks :: Existing =make test= and =make lint=, defined RT/OT evidence,
+  delivery-code audit and operator UTs; definition does not run implementation tests.
