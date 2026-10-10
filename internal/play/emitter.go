@@ -171,7 +171,8 @@ func emitFountain(doc Document) Output {
 			warnings = append(warnings, "warning: character table has no Fountain equivalent, rendering as Action text")
 			appendSeparated(&lines, "> **"+strings.ToUpper(defaultText(event.Text, "Characters"))+"** <")
 		case EventCharacterTableRow:
-			appendSeparated(&lines, event.Name+" - "+event.Text)
+			primary, _ := ParseCastName(event.Name)
+			appendSeparated(&lines, primary+" - "+event.Text)
 		case EventPropText:
 			appendSeparated(&lines, ">"+event.Text+"<")
 		case EventTransition:

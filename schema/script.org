@@ -1,7 +1,7 @@
 #+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
 #+TITLE: First Folio Org Script Schema
-#+VERSION: 0.3
-#+DATE: 2026-09-10
+#+VERSION: 0.4
+#+DATE: 2026-10-08
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
 
@@ -73,6 +73,25 @@ and description; separator rows are ignored.
 | CÁIT | The host  |
 #+end_src
 
+A trailing parenthesis in the name cell declares comma-separated alternatives:
+
+#+begin_example
+| ALISON (NURSE ALISON) | A nurse |
+| THOMAS (TOM) | Main character |
+| MARGARET (MAGS, MARG.) | A visitor |
+#+end_example
+
+Primary names and aliases are equal case-insensitive matches for automatic
+capitalisation in stage directions and screenplay action. Matching uses Unicode
+word boundaries and prefers the longest complete phrase. Dialogue and speaker
+cues are not rewritten by this lookup. Aliases ending in a full stop also match
+without that stop; source punctuation remains unchanged.
+
+PDF and Typst cast lists show only the primary name. Org and Markdown conversion
+retain the alias declaration. =render.character-table: false= hides the cast list
+without disabling name lookup. No separate capitalisation switch is required.
+Fountain input has no structured cast table and therefore supplies no lookup.
+
 ** Introductory material
 
 Major sections before the first act containing a speaker cue are introductory
@@ -119,6 +138,7 @@ itself resolve that defect.
 
 * Revision history
 
+- 0.4, 2026-10-08 :: Define cast-name aliases and automatic stage-direction capitalisation.
 - 0.3, 2026-09-10 :: Rewrite around First Folio's source grammar, with direct
   keyword examples and a separate Org letter contract.
 - 0.2, 2026-09-10 :: Record schema emission and output boundaries.

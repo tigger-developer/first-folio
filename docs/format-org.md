@@ -1,6 +1,7 @@
 ---
-version: "0.5"
-updated: "2026-09-10"
+title: Org-mode Play Format
+version: "0.6"
+last-updated: "2026-10-08"
 ---
 
 # Org-mode Play Format
@@ -108,6 +109,15 @@ A level-1 heading `* CHARACTERS` (or `* CHARACTER`) followed by an org table lis
 ```
 
 Separator rows (`|---+---|`) are ignored. Each data row emits a `character_table_row` event with the name and description.
+
+The name cell accepts comma-separated aliases in a trailing parenthesis, for
+example `ALISON (NURSE ALISON)` or `MARGARET (MAGS, MARG.)`. Primary names and
+aliases are equal matches for automatic capitalisation in stage directions;
+dialogue is untouched. Hidden tables still supply the lookup. PDF/Typst cast
+lists show only primary names; Org and Markdown conversions retain declarations.
+See the [cast-table schema](../schema/script.org) for matching rules.
+
+Document revision 0.6 adds cast-name aliases and automatic capitalisation.
 
 ### Prop Text
 

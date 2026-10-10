@@ -363,7 +363,8 @@ func renderPlayBody(doc play.Document, cfg config.Config) string {
 			for i+1 < len(doc.Events) && doc.Events[i+1].Kind == play.EventCharacterTableRow {
 				i++
 				row := doc.Events[i]
-				rows = append(rows, "["+inlineTypst(row.Name, footnotes)+"], ["+inlineTypst(row.Text, footnotes)+"],")
+				primary, _ := play.ParseCastName(row.Name)
+				rows = append(rows, "["+inlineTypst(primary, footnotes)+"], ["+inlineTypst(row.Text, footnotes)+"],")
 			}
 			lines = append(lines, "#frontmatter-header["+inlineTypst(defaultString(event.Text, "Characters"), footnotes)+"]", "#table(columns: (30%, 1fr), stroke: none,", strings.Join(rows, "\n"), ")")
 		}

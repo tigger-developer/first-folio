@@ -28,7 +28,7 @@
 #   stage-directions: true
 #   frontmatter: true
 #   footnotes: true
-#   character-table: true
+#   character-table: true # Visibility only; declared names/aliases still capitalize directions when false.
 #   transitions: true
 
 # --- First Folio PDF rendering ---

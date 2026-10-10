@@ -1,4 +1,8 @@
-<!-- Version: 0.2 | Last updated: 2026-08-10 -->
+---
+title: Fountain Format
+version: "0.3"
+last-updated: 2026-10-08
+---
 
 # Fountain Format
 
@@ -316,6 +320,11 @@ The event stream supports only a single `direction` at the start of a character'
 **The problem:** Character tables (cast lists with names and descriptions) are a feature of org-mode and Markdown. Fountain has no equivalent.
 
 **On export (events -> Fountain):** Character table events are rendered as an Action block - plain text with the character names and descriptions formatted readably. The structured table format is lost.
+
+Only primary cast names are displayed; parenthetical alias declarations are
+not exported. Names and aliases from an Org or Markdown source table capitalize
+stage directions before Fountain emission, but Fountain input supplies no cast
+lookup. Dialogue remains unchanged. Revision 0.3 records this alias limitation.
 
 **On import (Fountain -> events):** Fountain documents do not contain character tables, so no character table events are emitted. If a First Folio-generated Fountain file includes a cast list as an Action block, the parser cannot recover the table structure - it will be imported as a stage direction.
 

@@ -180,6 +180,7 @@ func convertTarget(opts convertOptions, cfg config.Config) (play.Format, bool, e
 }
 
 func applyScriptConfig(doc *play.Document, cfg config.Config) {
+	play.CapitalizeStageNames(doc)
 	for _, key := range []string{"title", "subtitle", "author", "date", "version"} {
 		if value := cfg.String(key, ""); value != "" {
 			doc.Metadata[key] = value

@@ -23,6 +23,12 @@ Config: ~/.config/first-folio/script.yaml plus the nearest script.yaml found by
 walking from the source directory towards HOME. Style-specific sibling files
 (for example script-us.yaml) are applied after their corresponding base file.
 
+Character names from Org/Markdown cast tables are automatically capitalized in
+stage directions, never dialogue. Name cells accept aliases: ALISON (NURSE ALISON)
+or MARGARET (MAGS, MARG.). Hiding the cast table does not disable lookup.
+PDF/Typst show primary cast names only; Org/Markdown preserve alias declarations.
+Fountain input has no structured cast lookup.
+
 Running headers and footers: folio.page-header and folio.page-footer in script.yaml.
 Each supports enabled, font, format, alignment, distance-from-edge and
 content-padding-after. Shared placeholders: [title], [author], [page], [total-pages].

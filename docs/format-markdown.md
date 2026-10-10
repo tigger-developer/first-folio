@@ -1,6 +1,7 @@
 ---
-version: "0.5"
-updated: "2026-09-10"
+title: Markdown Play Format
+version: "0.6"
+last-updated: "2026-10-08"
 ---
 
 # Markdown Play Format
@@ -97,6 +98,15 @@ A standard Markdown table with "Character" and "Description" headers (or similar
 | JACK      | His friend, also young       |
 | LANE      | Algernon's manservant        |
 ```
+
+Cast name cells accept comma-separated aliases in a trailing parenthesis, for
+example `ALISON (NURSE ALISON)` or `MARGARET (MAGS, MARG.)`. Primary names and
+aliases are equal matches for automatic capitalisation in stage directions;
+dialogue is untouched. Hidden tables still supply the lookup. PDF/Typst cast
+lists show only primary names; Org and Markdown conversions retain declarations.
+See the [alias schema](../schema/script.md#character-name-aliases) for matching rules.
+
+Document revision 0.6 adds cast-name aliases and automatic capitalisation.
 
 ### Prop Text
 

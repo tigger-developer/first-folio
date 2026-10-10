@@ -28,7 +28,7 @@ render:
   stage-directions: true
   frontmatter: true
   footnotes: true
-  character-table: true
+  character-table: true # Cast-list visibility only; names/aliases still identify characters when false.
   transitions: true
 
 folio:
@@ -545,6 +545,10 @@ folio:
       blank-page-after: false
       skip-header: false
       skip-footer: false
+      # Vertical space before the chapter heading: one-third (alias third) = 30%,
+      # center (alias middle) = 50%, top = 0%. Other values are passed to Typst's
+      # v() unchanged; use a length such as 20mm or 4em, or a percentage like 15%.
+      # This is preceding space, not an absolute position measured from the edge.
       position: one-third
       align: center
       case-transform: as-written

@@ -1,8 +1,8 @@
 ---
 schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
 title: First Folio Markdown Script Schema
-version: "0.3"
-updated: "2026-09-10"
+version: "0.4"
+last-updated: "2026-10-08"
 ---
 
 # Markdown Script Schema
@@ -83,6 +83,29 @@ Major sections before the first act containing a speaker cue are introductory
 material, for example Synopsis or Setting. They use `##` headings and plain
 text. Their rendering is controlled by `render.frontmatter`.
 
+### Character-name aliases
+
+The name cell accepts a trailing comma-separated alias list:
+
+```markdown
+| Character | Description |
+|-----------|-------------|
+| ALISON (NURSE ALISON) | A nurse |
+| THOMAS (TOM) | Main character |
+| MARGARET (MAGS, MARG.) | A visitor |
+```
+
+Primary names and aliases are equal case-insensitive matches for automatic
+capitalisation in stage directions and screenplay action. Matching uses Unicode
+word boundaries and prefers the longest complete phrase. Dialogue and speaker
+cues are not rewritten by this lookup. An alias ending in a full stop also
+matches without it; source punctuation remains unchanged.
+
+PDF/Typst cast lists show only primary names. Org and Markdown conversion retain
+alias declarations. `render.character-table: false` hides the cast list without
+disabling name lookup; no separate capitalisation switch is required. Fountain
+input supplies no structured cast lookup.
+
 ## Footnotes
 
 A reference uses `[^note]`; its definition starts a line with `[^note]:`.
@@ -113,6 +136,7 @@ Fountain, Typst, and PDF receive none.
 
 ## Revision history
 
+- 0.4, 2026-10-08: Define cast-name aliases and automatic stage-direction capitalisation.
 - 0.3, 2026-09-10: Define only First Folio's limited script grammar; use YAML
   document-version metadata. General Markdown references and the misplaced
   Org-section discussion have been removed.
