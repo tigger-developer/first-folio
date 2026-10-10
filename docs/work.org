@@ -78,7 +78,7 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** REVIEW W054 - Preserve script formatting in DOCX and ODT exports :feature:
+** ACTIVE W054 - Preserve script formatting in DOCX and ODT exports :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-054
 :SOURCE: operator

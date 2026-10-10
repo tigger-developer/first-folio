@@ -3,7 +3,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-10
 
 * Synopsis
 :PROPERTIES:
@@ -128,7 +128,8 @@ in either office format from each existing script source format.
   declared; font substitution by a consuming application is outside export control.
 
 ** Unresolved blockers
-- None for definition. Operator sign-off remains pending.
+- None for definition. Delivery must resolve the existing dirty-file ownership
+  boundary recorded under Constraints and dependencies before overlapping edits.
 
 * Acceptance Criteria
 :PROPERTIES:
