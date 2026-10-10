@@ -1,0 +1,87 @@
+--- FAIL: TestRT054_3OfficeStreamAndResourceLimits (0.70s)
+    office_export_test.go:38: stream failure lost: status=1 Error: Unrecognised format: docx
+    office_export_test.go:43: source limit not enforced: exit status 1 Error: Unrecognised format: docx
+--- FAIL: TestRT054_1OfficeContentMatrix (0.56s)
+    --- FAIL: TestRT054_1OfficeContentMatrix/docx/british.org (0.23s)
+        office_export_test.go:56: export .org/docx/british: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_1OfficeContentMatrix/docx/british.md (0.01s)
+        office_export_test.go:56: export .md/docx/british: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_1OfficeContentMatrix/docx/british.fountain (0.01s)
+        office_export_test.go:56: export .fountain/docx/british: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_1OfficeContentMatrix/docx/us.org (0.01s)
+        office_export_test.go:56: export .org/docx/us: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_1OfficeContentMatrix/docx/us.md (0.01s)
+        office_export_test.go:56: export .md/docx/us: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_1OfficeContentMatrix/docx/us.fountain (0.01s)
+        office_export_test.go:56: export .fountain/docx/us: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_1OfficeContentMatrix/docx/screenplay.md (0.01s)
+        office_export_test.go:56: export .md/docx/screenplay: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_1OfficeContentMatrix/docx/screenplay.fountain (0.01s)
+        office_export_test.go:56: export .fountain/docx/screenplay: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_1OfficeContentMatrix/docx/screenplay.org (0.01s)
+        office_export_test.go:56: export .org/docx/screenplay: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/british.fountain (0.01s)
+        office_export_test.go:56: export .fountain/odt/british: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/british.org (0.00s)
+        office_export_test.go:56: export .org/odt/british: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/british.md (0.00s)
+        office_export_test.go:56: export .md/odt/british: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/us.org (0.00s)
+        office_export_test.go:56: export .org/odt/us: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/us.md (0.00s)
+        office_export_test.go:56: export .md/odt/us: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/us.fountain (0.00s)
+        office_export_test.go:56: export .fountain/odt/us: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/screenplay.org (0.00s)
+        office_export_test.go:56: export .org/odt/screenplay: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/screenplay.md (0.00s)
+        office_export_test.go:56: export .md/odt/screenplay: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/screenplay.fountain (0.00s)
+        office_export_test.go:56: export .fountain/odt/screenplay: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/rich-and-filtered (0.00s)
+        office_export_test.go:84: exit status 1: Error: Unrecognised file extension: .docx
+    office_export_test.go:159: empty/untitled docx: exit status 1 Error: Unrecognised format: docx
+--- FAIL: TestRT054_2OfficeNativeFormatting (0.44s)
+    --- FAIL: TestRT054_2OfficeNativeFormatting/docx (0.23s)
+        office_export_test.go:178: exit status 1 Error: Unrecognised format: docx
+    --- FAIL: TestRT054_2OfficeNativeFormatting/odt (0.01s)
+        office_export_test.go:178: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeTitlesAndRunningMatter (0.49s)
+    --- FAIL: TestRT054_2OfficeTitlesAndRunningMatter/docx/dedicated (0.24s)
+        office_export_test.go:231: exit status 1 Error: Unrecognised format: docx
+    --- FAIL: TestRT054_2OfficeTitlesAndRunningMatter/docx/compact (0.01s)
+        office_export_test.go:231: exit status 1 Error: Unrecognised format: docx
+    --- FAIL: TestRT054_2OfficeTitlesAndRunningMatter/odt/dedicated (0.01s)
+        office_export_test.go:231: exit status 1 Error: Unrecognised format: odt
+    --- FAIL: TestRT054_2OfficeTitlesAndRunningMatter/odt/compact (0.01s)
+        office_export_test.go:231: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_3OfficeSelectionAndFailure (0.44s)
+    office_export_test.go:288: stdout docx: exit status 1 Error: Unrecognised format: docx
+--- FAIL: TestRT054_3OfficeTerminalGuard (0.46s)
+    office_export_test.go:416: terminal guard absent: ^DError: Unrecognised format: docx
+--- FAIL: TestRT054_2OfficeActiveRoleFonts (0.44s)
+    --- FAIL: TestRT054_2OfficeActiveRoleFonts/docx (0.23s)
+        office_layout_test.go:111: role export: exit status 1 Error: Unrecognised format: docx
+    --- FAIL: TestRT054_2OfficeActiveRoleFonts/odt (0.01s)
+        office_layout_test.go:111: role export: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeSeparateSpeechGeometry (0.50s)
+    --- FAIL: TestRT054_2OfficeSeparateSpeechGeometry/docx/us (0.25s)
+        office_layout_test.go:159: speech geometry: exit status 1 Error: Unrecognised format: docx
+    --- FAIL: TestRT054_2OfficeSeparateSpeechGeometry/docx/screenplay (0.01s)
+        office_layout_test.go:159: speech geometry: exit status 1 Error: Unrecognised format: docx
+    --- FAIL: TestRT054_2OfficeSeparateSpeechGeometry/odt/us (0.01s)
+        office_layout_test.go:159: speech geometry: exit status 1 Error: Unrecognised format: odt
+    --- FAIL: TestRT054_2OfficeSeparateSpeechGeometry/odt/screenplay (0.01s)
+        office_layout_test.go:159: speech geometry: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeActBreaks (0.48s)
+    --- FAIL: TestRT054_2OfficeActBreaks/docx/compact (0.23s)
+        office_layout_test.go:206: act breaks: exit status 1 Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_2OfficeActBreaks/docx/dedicated (0.01s)
+        office_layout_test.go:206: act breaks: exit status 1 Error: Unrecognised file extension: .docx
+    --- FAIL: TestRT054_2OfficeActBreaks/odt/compact (0.01s)
+        office_layout_test.go:206: act breaks: exit status 1 Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_2OfficeActBreaks/odt/dedicated (0.01s)
+        office_layout_test.go:206: act breaks: exit status 1 Error: Unrecognised file extension: .odt
+FAIL
+FAIL	github.com/tigger-developer/first-folio/internal/app	5.554s
+FAIL

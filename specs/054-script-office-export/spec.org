@@ -489,3 +489,31 @@ office equivalent; reference implementation files establish current defaults.
   Documentation must not imply DOCX/ODT import or manuscript/letter export.
 - Delivery checks :: Existing =make test= and =make lint=, defined RT/OT evidence,
   delivery-code audit and operator UTs; definition does not run implementation tests.
+
+* Hands-off mode decision log
+:PROPERTIES:
+:CUSTOM_ID: hands-off-mode-decision-log
+:VISIBILITY: folded
+:END:
+
+** Delivery invocation 2026-10-10T06:11:55Z :hands-off:review:
+:PROPERTIES:
+:CUSTOM_ID: delivery-20261010T061155Z
+:INVOCATION_TIMESTAMP: 2026-10-10T06:11:55Z
+:END:
+
+*** D054.1 - Committed character-name baseline
+- Decision :: Delivery starts from =4a1fb10 - committed cast-name handling=.
+- Evidence :: Git status is clean; the previously uncommitted changes are
+  retained in that commit. The overlapping-edit blocker no longer applies.
+- Effect :: New office output consumes current character-name handling; the
+  PDF renderer and template remain unchanged from this delivery baseline.
+- Reversibility :: W054 changes are separate commits and do not alter the
+  baseline's character-name implementation.
+
+*** D054.2 - Native goal and local verification
+- Decision :: Native Codex goal uses the resolved *2,000,000-token budget*.
+- Evidence :: =goal-config= returned that integer and the native goal readback
+  confirmed activation with the same limit.
+- Bounds :: RTs/OTs use local tools only; no cost-incurring live OT is required.
+  Word/LibreOffice user validation remains deferred to the operator gate.

@@ -1,0 +1,81 @@
+audit-readiness:
+  schema:
+    valid: true
+    errors: []
+  inventory:
+    counts:
+      acceptance-criteria: 7
+      tests: 6
+      rt: 4
+      ot: 1
+      ut: 1
+    acceptance-criteria:
+      - id: AC054.1
+        title: Editable exports preserve script semantics
+        file: specs/054-script-office-export/spec.org
+        line: 139
+      - id: AC054.2
+        title: Typography and speech layout retain configured formatting
+        file: specs/054-script-office-export/spec.org
+        line: 152
+      - id: AC054.3
+        title: Page composition and running matter preserve layout rules
+        file: specs/054-script-office-export/spec.org
+        line: 164
+      - id: AC054.4
+        title: Export selection and binary streams follow the CLI contract
+        file: specs/054-script-office-export/spec.org
+        line: 175
+      - id: AC054.5
+        title: Failures do not publish partial or degraded documents
+        file: specs/054-script-office-export/spec.org
+        line: 185
+      - id: AC054.6
+        title: Existing routes retain their behaviour and dependency boundaries
+        file: specs/054-script-office-export/spec.org
+        line: 197
+      - id: AC054.7
+        title: Export remains a local data transformation
+        file: specs/054-script-office-export/spec.org
+        line: 207
+    tests:
+      - id: RT054.1
+        title: Content and source/style matrix
+        state: RED
+        file: specs/054-script-office-export/spec.org
+        line: 223
+        validation-line: 15
+      - id: RT054.2
+        title: Native formatting properties
+        state: RED
+        file: specs/054-script-office-export/spec.org
+        line: 241
+        validation-line: 26
+      - id: RT054.3
+        title: CLI selection and failure boundaries
+        state: RED
+        file: specs/054-script-office-export/spec.org
+        line: 261
+        validation-line: 35
+      - id: RT054.4
+        title: Existing conversion preservation
+        state: GREEN
+        file: specs/054-script-office-export/spec.org
+        line: 285
+        validation-line: 46
+      - id: UT054.1
+        title: Editable formatted scripts
+        state: AMBER
+        file: specs/054-script-office-export/spec.org
+        line: 303
+        validation-line: 63
+      - id: OT054.1
+        title: Delivery structure and documentation review
+        state: AMBER
+        file: specs/054-script-office-export/spec.org
+        line: 321
+        validation-line: 70
+  test-code:
+    evaluated: true
+    ready: true
+    errors: []

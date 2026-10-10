@@ -1,0 +1,73 @@
+#+TITLE: W054 - Script office export validation
+#+SCHEMA: 2
+#+TODO: AMBER RED | GREEN
+#+STARTUP: overview
+
+* Execution context
+- Date :: 2026-10-10.
+- Candidate :: =4a1fb10= plus the three W054 test-only files and delivery decision log.
+- Environment :: macOS; local Go, Pandoc and Typst; temporary HOME, cache and
+  export directories. No metered service or UI automation.
+- Implementation :: No W054 production changes at this checkpoint.
+
+* Test results
+
+** RED RT054.1 - Content and source/style matrix :testdef:
+:PROPERTIES:
+:REVISION: 4a1fb10 plus internal/app/office_export_test.go, office_layout_test.go and office_test_helpers_test.go
+:COMMAND: go test ./internal/app -run '^TestRT054_' -count=1
+:EVIDENCE: The 18 source/style/output routes reject .docx or .odt as unrecognized extensions. Empty and rich-content cases likewise reject office output. See rt-red.txt.
+:END:
+- Run :: 2026-10-10, exit 1. Tests compile and reach the public executable.
+- Record :: [[file:rt-red.txt][Observed failing assertions]].
+- Interpretation :: Intended absence of the office route; downstream package
+  assertions remain unexecuted until implementation admits the formats.
+
+** RED RT054.2 - Native formatting properties :testdef:
+:PROPERTIES:
+:REVISION: 4a1fb10 plus internal/app/office_export_test.go, office_layout_test.go and office_test_helpers_test.go
+:COMMAND: go test ./internal/app -run '^TestRT054_' -count=1
+:EVIDENCE: Native-property, active-role font, speech geometry, act-break and title-mode cases reject docx/odt as unrecognized output formats. See rt-red.txt.
+:END:
+- Run :: 2026-10-10, exit 1, intended missing export behaviour.
+- Record :: [[file:rt-red.txt][Observed failing assertions]].
+
+** RED RT054.3 - CLI selection and failure boundaries :testdef:
+:PROPERTIES:
+:REVISION: 4a1fb10 plus internal/app/office_export_test.go, office_layout_test.go and office_test_helpers_test.go
+:COMMAND: go test ./internal/app -run '^TestRT054_' -count=1
+:EVIDENCE: Binary stdout selection and terminal guard reject docx as unrecognized. Stream and source-limit assertions also observe the absent office path. See rt-red.txt.
+:END:
+- Run :: 2026-10-10, exit 1. macOS PTY boundary exercised.
+- Record :: [[file:rt-red.txt][Observed failing assertions]].
+- Interpretation :: Later controlled writer failures are test definitions,
+  not observed results at this checkpoint.
+
+** GREEN RT054.4 - Existing conversion preservation :testdef:
+:PROPERTIES:
+:REVISION: 4a1fb10 plus internal/app/office_export_test.go, office_layout_test.go and office_test_helpers_test.go
+:COMMAND: go test ./internal/app -run '^TestRT054_4' -count=1 -v
+:EVIDENCE: Public Org, Markdown, Fountain, Typst and PDF conversions pass with Pandoc absent from the child executable search path. See rt-preservation.txt.
+:END:
+- Run :: 2026-10-10, exit 0.
+- Record :: [[file:rt-preservation.txt][Dependency-boundary result]].
+- Rationale :: Initially GREEN preservation protects working routes. No
+  production code is broken to manufacture a RED result.
+- Baseline suite :: =go test ./... -skip '^TestRT054_[123]' -count=1= passed
+  on 2026-10-10, exit 0. This excludes only the new absent-feature tests and
+  retains existing conversion, title, running-matter, PDF, letter and manuscript
+  assertions. [[file:rt-baseline.txt][Maintained-suite baseline]].
+- Comparison :: Output comparisons against the admitted baseline follow
+  implementation; this record does not claim a delivered candidate comparison.
+
+** AMBER UT054.1 - Editable formatted scripts :testdef:
+:PROPERTIES:
+:REASON: Deferred to operator Word and LibreOffice review after all autonomous delivery work and delivery-code review.
+:END:
+- Required evidence :: Application versions, installed fonts, candidate,
+  editing/save/reopen observations, and absence of repair prompts.
+
+** AMBER OT054.1 - Delivery structure and documentation review :testdef:
+:PROPERTIES:
+:REASON: Delivery candidate and updated documentation do not yet exist; bounded local review follows implementation.
+:END:

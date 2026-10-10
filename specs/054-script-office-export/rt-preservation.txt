@@ -1,0 +1,4 @@
+=== RUN   TestRT054_4ExistingScriptRoutesDoNotRequirePandoc
+--- PASS: TestRT054_4ExistingScriptRoutesDoNotRequirePandoc (0.72s)
+PASS
+ok  	github.com/tigger-developer/first-folio/internal/app	0.954s
