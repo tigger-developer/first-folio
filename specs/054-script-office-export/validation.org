@@ -5,7 +5,10 @@
 
 * Execution context
 - Date :: 2026-10-10.
-- Candidate :: =4a1fb10= plus the three W054 test-only files and delivery decision log.
+- Initial candidate :: =4a1fb10= plus the three initial W054 test-only files and
+  delivery decision log.
+- Current candidate :: =45a25d4= plus the four office test files, including
+  =office_layout_coverage_test.go=. Production code remains at =4a1fb10=.
 - Environment :: macOS; local Go, Pandoc and Typst; temporary HOME, cache and
   export directories. No metered service or UI automation.
 - Implementation :: No W054 production changes at this checkpoint.
@@ -14,34 +17,45 @@
 
 ** RED RT054.1 - Content and source/style matrix :testdef:
 :PROPERTIES:
-:REVISION: 4a1fb10 plus internal/app/office_export_test.go, office_layout_test.go and office_test_helpers_test.go
+:REVISION: 45a25d4 plus the four internal/app/office_*test.go files
 :COMMAND: go test ./internal/app -run '^TestRT054_' -count=1
-:EVIDENCE: The 18 source/style/output routes reject .docx or .odt as unrecognized extensions. Empty and rich-content cases likewise reject office output. See rt-red.txt.
+:EVIDENCE: The 18 source/style/output routes and four rich Org/Markdown routes reject docx/odt. New package assertions remain downstream of the absent office route. See rt-red-expanded.txt.
 :END:
 - Run :: 2026-10-10, exit 1. Tests compile and reach the public executable.
 - Record :: [[file:rt-red.txt][Observed failing assertions]].
 - Interpretation :: Intended absence of the office route; downstream package
   assertions remain unexecuted until implementation admits the formats.
+- Expanded run :: 2026-10-10, exit 1; compiles and exercises all four rich
+  source/output cases. [[file:rt-red-expanded.txt][Expanded behavioural RED]].
+- Initial revision :: =4a1fb10= plus the initial three test files; the original
+  observations remain in =rt-red.txt=.
 
 ** RED RT054.2 - Native formatting properties :testdef:
 :PROPERTIES:
-:REVISION: 4a1fb10 plus internal/app/office_export_test.go, office_layout_test.go and office_test_helpers_test.go
+:REVISION: 45a25d4 plus the four internal/app/office_*test.go files
 :COMMAND: go test ./internal/app -run '^TestRT054_' -count=1
-:EVIDENCE: Native-property, active-role font, speech geometry, act-break and title-mode cases reject docx/odt as unrecognized output formats. See rt-red.txt.
+:EVIDENCE: Native-property, active-role font, body geometry, act-break, title-composition and missing-title cases reject docx/odt as unrecognized formats. See rt-red-expanded.txt.
 :END:
 - Run :: 2026-10-10, exit 1, intended missing export behaviour.
 - Record :: [[file:rt-red.txt][Observed failing assertions]].
+- Expanded run :: 2026-10-10, exit 1. All additional body/title/missing-title
+  cases reach the executable. [[file:rt-red-expanded.txt][Expanded behavioural RED]].
+- Initial revision :: =4a1fb10= plus the initial three test files; the original
+  observations remain in =rt-red.txt=.
 
 ** RED RT054.3 - CLI selection and failure boundaries :testdef:
 :PROPERTIES:
-:REVISION: 4a1fb10 plus internal/app/office_export_test.go, office_layout_test.go and office_test_helpers_test.go
+:REVISION: 45a25d4 plus the four internal/app/office_*test.go files
 :COMMAND: go test ./internal/app -run '^TestRT054_' -count=1
-:EVIDENCE: Binary stdout selection and terminal guard reject docx as unrecognized. Stream and source-limit assertions also observe the absent office path. See rt-red.txt.
+:EVIDENCE: Binary stdout selection and terminal guard reject docx as unrecognized. Stream and source-limit assertions observe the absent office path. See rt-red-expanded.txt.
 :END:
 - Run :: 2026-10-10, exit 1. macOS PTY boundary exercised.
 - Record :: [[file:rt-red.txt][Observed failing assertions]].
 - Interpretation :: Later controlled writer failures are test definitions,
   not observed results at this checkpoint.
+- Expanded run :: 2026-10-10, exit 1. [[file:rt-red-expanded.txt][Current RED]].
+- Initial revision :: =4a1fb10= plus the initial three test files; the original
+  observations remain in =rt-red.txt=.
 
 ** GREEN RT054.4 - Existing conversion preservation :testdef:
 :PROPERTIES:
@@ -59,6 +73,9 @@
   assertions. [[file:rt-baseline.txt][Maintained-suite baseline]].
 - Comparison :: Output comparisons against the admitted baseline follow
   implementation; this record does not claim a delivered candidate comparison.
+- Retained evidence :: Production routes and this dependency test are unchanged
+  by added office layout/content assertions. The expanded package also executes
+  this test without a failure; the focused baseline remains its explicit PASS record.
 
 ** AMBER UT054.1 - Editable formatted scripts :testdef:
 :PROPERTIES:

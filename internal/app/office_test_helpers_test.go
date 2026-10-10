@@ -8,9 +8,11 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -18,7 +20,7 @@ import (
 
 // Only a child invoked as the synthetic Pandoc enters this path.
 func init() {
-	if mode := os.Getenv("FOLIO_TEST_PANDOC_FAILURE"); mode != "" {
+	if mode := os.Getenv("FOLIO_TEST_PANDOC_FAILURE"); mode != "" && filepath.Base(os.Args[0]) == "pandoc" {
 		if strings.Contains(strings.Join(os.Args[1:], " "), "-t json") {
 			fmt.Print(`{"pandoc-api-version":[1,23,1],"meta":{},"blocks":[]}`)
 			os.Exit(0)
@@ -103,7 +105,7 @@ func officePackage(t *testing.T, raw []byte) map[string]*officeXML {
 	}
 	out := map[string]*officeXML{}
 	for _, f := range z.File {
-		if strings.HasSuffix(f.Name, ".xml") {
+		if strings.HasSuffix(f.Name, ".xml") || strings.HasSuffix(f.Name, ".rels") {
 			r, err := f.Open()
 			if err != nil {
 				t.Fatal(err)
@@ -227,6 +229,161 @@ func officeStyle(t *testing.T, pkg map[string]*officeXML, format, name string) *
 	}
 	t.Fatalf("missing %s style %q", format, name)
 	return nil
+}
+
+func officeParagraph(t *testing.T, tree *officeXML, text string) *officeXML {
+	t.Helper()
+	for _, kind := range []string{"p", "h"} {
+		for _, n := range tree.all(kind) {
+			if strings.Contains(n.text(), text) {
+				return n
+			}
+		}
+	}
+	t.Fatalf("no native paragraph containing %q", text)
+	return nil
+}
+
+// Resolve common/automatic style inheritance, then direct paragraph properties.
+func officeEffective(t *testing.T, pkg map[string]*officeXML, format string, n *officeXML) []*officeXML {
+	t.Helper()
+	id := n.attr("style-name")
+	if format == "docx" {
+		for _, ref := range n.all("pStyle") {
+			id = ref.attr("val")
+			break
+		}
+	}
+	var layers []*officeXML
+	seen := map[string]bool{}
+	var resolve func(string)
+	resolve = func(id string) {
+		if id == "" {
+			return
+		}
+		if seen[id] {
+			t.Fatalf("cyclic style inheritance at %s", id)
+		}
+		seen[id] = true
+		for _, file := range []string{"word/styles.xml", "styles.xml", "content.xml"} {
+			if pkg[file] == nil {
+				continue
+			}
+			for _, style := range pkg[file].all("style") {
+				styleID := style.attr("name")
+				if format == "docx" {
+					styleID = style.attr("styleId")
+				}
+				if styleID != id {
+					continue
+				}
+				parent := style.attr("parent-style-name")
+				for _, based := range style.all("basedOn") {
+					parent = based.attr("val")
+				}
+				resolve(parent)
+				layers = append(layers, style)
+				return
+			}
+		}
+		t.Fatalf("unresolved style reference %s", id)
+	}
+	resolve(id)
+	layers = append(layers, n)
+	return layers
+}
+
+func officeEffectiveAttr(layers []*officeXML, element, attribute string) (string, bool) {
+	value, exists := "", false
+	for _, layer := range layers {
+		for _, n := range layer.all(element) {
+			for _, a := range n.Attr {
+				if a.Name.Local == attribute {
+					value, exists = a.Value, true
+				}
+			}
+		}
+	}
+	return value, exists
+}
+
+func officeAssertEffective(t *testing.T, layers []*officeXML, element, attribute, want string) {
+	t.Helper()
+	got, exists := officeEffectiveAttr(layers, element, attribute)
+	if !exists || got != want {
+		t.Errorf("effective %s.%s=%q present=%v; want %q", element, attribute, got, exists, want)
+	}
+}
+
+func officeLengthPoints(t *testing.T, raw string) float64 {
+	t.Helper()
+	for _, unit := range []struct {
+		suffix string
+		points float64
+	}{
+		{"pt", 1}, {"mm", 72 / 25.4}, {"cm", 720 / 25.4}, {"in", 72},
+	} {
+		if strings.HasSuffix(raw, unit.suffix) {
+			n, err := strconv.ParseFloat(strings.TrimSuffix(raw, unit.suffix), 64)
+			if err != nil {
+				t.Fatal(err)
+			}
+			return n * unit.points
+		}
+	}
+	t.Fatalf("unsupported native length %q", raw)
+	return 0
+}
+
+func officeAssertLength(t *testing.T, layers []*officeXML, format, docxElement, docxAttribute, odtElement, odtAttribute string, wantPoints float64) {
+	t.Helper()
+	element, attribute := docxElement, docxAttribute
+	if format == "odt" {
+		element, attribute = odtElement, odtAttribute
+	}
+	raw, exists := officeEffectiveAttr(layers, element, attribute)
+	if !exists {
+		t.Errorf("missing effective length %s.%s", element, attribute)
+		return
+	}
+	got := 0.0
+	if format == "docx" {
+		n, err := strconv.ParseFloat(raw, 64)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got = n / 20
+	} else {
+		got = officeLengthPoints(t, raw)
+	}
+	if math.Abs(got-wantPoints) > 0.026 {
+		t.Errorf("%s.%s is %gpt; want %gpt", element, attribute, got, wantPoints)
+	}
+}
+
+func officeAssertNoteLink(t *testing.T, pkg map[string]*officeXML, format string) {
+	t.Helper()
+	body := officeBody(t, pkg, format)
+	if format == "odt" {
+		for _, note := range body.all("note") {
+			if note.attr("id") != "" && note.attr("note-class") == "footnote" && len(note.all("note-citation")) == 1 && len(note.all("note-body")) == 1 && strings.Contains(note.text(), "Bold note") {
+				return
+			}
+		}
+		t.Fatal("native ODT note anchor/body connection absent")
+	}
+	notes := pkg["word/footnotes.xml"]
+	if notes == nil {
+		t.Fatal("native notes part missing")
+	}
+	for _, ref := range body.all("footnoteReference") {
+		for _, note := range notes.all("footnote") {
+			if ref.attr("id") == note.attr("id") && strings.Contains(note.text(), "Bold note") {
+				return
+			}
+		}
+	}
+	t.Fatal("body footnoteReference is not linked to the emitted note id")
 }
 
 var officeSources = map[string]string{

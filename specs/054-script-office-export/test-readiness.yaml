@@ -44,37 +44,37 @@ audit-readiness:
         state: RED
         file: specs/054-script-office-export/spec.org
         line: 223
-        validation-line: 15
+        validation-line: 18
       - id: RT054.2
         title: Native formatting properties
         state: RED
         file: specs/054-script-office-export/spec.org
         line: 241
-        validation-line: 26
+        validation-line: 33
       - id: RT054.3
         title: CLI selection and failure boundaries
         state: RED
         file: specs/054-script-office-export/spec.org
         line: 261
-        validation-line: 35
+        validation-line: 46
       - id: RT054.4
         title: Existing conversion preservation
         state: GREEN
         file: specs/054-script-office-export/spec.org
         line: 285
-        validation-line: 46
+        validation-line: 60
       - id: UT054.1
         title: Editable formatted scripts
         state: AMBER
         file: specs/054-script-office-export/spec.org
         line: 303
-        validation-line: 63
+        validation-line: 80
       - id: OT054.1
         title: Delivery structure and documentation review
         state: AMBER
         file: specs/054-script-office-export/spec.org
         line: 321
-        validation-line: 70
+        validation-line: 87
   test-code:
     evaluated: true
     ready: true

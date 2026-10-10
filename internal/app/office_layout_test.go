@@ -211,6 +211,10 @@ func TestRT054_2OfficeActBreaks(t *testing.T) {
 				}
 				pkg := officePackage(t, raw)
 				body := officeBody(t, pkg, format)
+				firstBreak := officeBreakBefore(t, pkg, format, "ACT ONE")
+				if firstBreak == compact {
+					t.Errorf("first act explicit break=%v; compact=%v", firstBreak, compact)
+				}
 				// Later acts need an explicit break even in compact mode.
 				found := false
 				for _, p := range body.all("p") {

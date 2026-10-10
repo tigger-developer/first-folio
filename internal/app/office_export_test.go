@@ -72,80 +72,91 @@ func TestRT054_1OfficeContentMatrix(t *testing.T) {
 		}
 	}
 	t.Run("rich-and-filtered", func(t *testing.T) {
-		rich := "#+TITLE: Rich Script\n#+SCHEMA: https://example.invalid/schema\n* CHARACTERS\n| CÁIT | A visitor |\n* Introduction\nOpening summary.\n* ACT ONE\n** SCENE ONE\n*** Night direction.\n**** CÁIT (quietly)\n**Bold text** and *italic text* and ***combined text*** and _underlined text_ and =literal text=.[fn:note]\n***** CUT TO\n[fn:note] Note content.\n"
-		for _, format := range []string{"docx", "odt"} {
-			dir := t.TempDir()
-			src := filepath.Join(dir, "rich.org")
-			writeAppFile(t, src, rich)
-			target := filepath.Join(dir, "rich."+format)
-			env := officeEnv(t, t.TempDir(), nil)
-			_, stderr, err := officeRun(t, binary, dir, env, "convert", src, target)
-			if err != nil {
-				t.Fatalf("%v: %s", err, stderr)
-			}
-			raw, err := os.ReadFile(target)
-			if err != nil {
-				t.Fatal(err)
-			}
-			pkg := officePackage(t, raw)
-			body := officeBody(t, pkg, format)
-			for _, want := range []string{"A visitor", "Opening summary.", "Night direction.", "Bold text", "italic text", "combined text", "underlined text", "literal text", "CUT TO"} {
-				if !strings.Contains(body.text(), want) {
-					t.Errorf("%s missing %q", format, want)
-				}
-			}
-			tables := len(body.all("tbl")) + len(body.all("table"))
-			if tables == 0 {
-				t.Fatal("cast table absent")
-			}
-			note := body
-			if format == "docx" {
-				note = pkg["word/footnotes.xml"]
-			}
-			if note == nil || !strings.Contains(note.text(), "Note content.") {
-				t.Fatal("native footnote missing")
-			}
-			if strings.Contains(body.text(), "example.invalid/schema") {
-				t.Fatal("visible schema")
-			}
-			if format == "docx" {
-				for _, kind := range []string{"b", "i", "u"} {
-					if len(body.all(kind)) == 0 {
-						t.Error("missing inline", kind)
+		fixtures := map[string]string{
+			".org": "#+TITLE: Rich Script\n#+SCHEMA: https://example.invalid/schema\n* CHARACTERS\n| CÁIT | A visitor |\n* Introduction\nOpening summary.\n* ACT ONE\n** SCENE ONE\n*** Night direction.\n**** CÁIT (quietly)\n**Bold text** and *italic text* and ***combined text*** and _underlined text_ and =literal text=.[fn:note]\n*** Prop card :prop:\n***** CUT TO\n[fn:note] Note content. **Bold note** and *italic note*.\n",
+			".md":  "---\nschema: https://example.invalid/schema\n---\n# Rich Script\n\n| Name | Description |\n| --- | --- |\n| CÁIT | A visitor |\n\n## Introduction\nOpening summary.\n\n## ACT ONE\n### SCENE ONE\n*Night direction.*\n**CÁIT:** *(quietly)*\n**Bold text** and *italic text* and ***combined text*** and _underlined text_ and `literal text`.[^note]\n***\"Prop card\"***\n> CUT TO\n[^note]: Note content. **Bold note** and *italic note*.\n",
+		}
+		for extension, rich := range fixtures {
+			for _, format := range []string{"docx", "odt"} {
+				t.Run(extension+"/"+format, func(t *testing.T) {
+					dir := t.TempDir()
+					src := filepath.Join(dir, "rich"+extension)
+					writeAppFile(t, src, rich)
+					target := filepath.Join(dir, "rich."+format)
+					env := officeEnv(t, t.TempDir(), nil)
+					_, stderr, err := officeRun(t, binary, dir, env, "convert", src, target)
+					if err != nil {
+						t.Fatalf("%v: %s", err, stderr)
 					}
-				}
-			} else {
-				if len(body.all("span")) < 4 {
-					t.Error("inline styles missing")
-				}
-			}
-			unchanged, err := os.ReadFile(src)
-			if err != nil || string(unchanged) != rich {
-				t.Fatal("source modified", err)
-			}
-			for toggle, absent := range map[string]string{"stage-directions": "Night direction.", "frontmatter": "Opening summary.", "character-table": "A visitor", "footnotes": "Note content.", "transitions": "CUT TO"} {
-				cfg := "render:\n  " + toggle + ": false\n"
-				writeAppFile(t, filepath.Join(dir, "script.yaml"), cfg)
-				_, stderr, err := officeRun(t, binary, dir, env, "convert", src, target)
-				if err != nil {
-					t.Fatalf("toggle %s: %v %s", toggle, err, stderr)
-				}
-				raw, err = os.ReadFile(target)
-				if err != nil {
-					t.Fatal(err)
-				}
-				pkg = officePackage(t, raw)
-				allText := ""
-				for _, n := range pkg {
-					allText += n.text()
-				}
-				if strings.Contains(allText, absent) {
-					t.Errorf("hidden %s still present", toggle)
-				}
-				got, err := os.ReadFile(filepath.Join(dir, "script.yaml"))
-				if err != nil || string(got) != cfg {
-					t.Fatal("config modified", err)
-				}
+					raw, err := os.ReadFile(target)
+					if err != nil {
+						t.Fatal(err)
+					}
+					pkg := officePackage(t, raw)
+					body := officeBody(t, pkg, format)
+					for _, want := range []string{"A visitor", "Opening summary.", "Night direction.", "Bold text", "italic text", "combined text", "underlined text", "literal text", "Prop card", "CUT TO"} {
+						if !strings.Contains(body.text(), want) {
+							t.Errorf("%s missing %q", format, want)
+						}
+					}
+					tables := len(body.all("tbl")) + len(body.all("table"))
+					if tables == 0 {
+						t.Fatal("cast table absent")
+					}
+					note := body
+					if format == "docx" {
+						note = pkg["word/footnotes.xml"]
+					}
+					if note == nil || !strings.Contains(note.text(), "Note content.") {
+						t.Fatal("native footnote missing")
+					}
+					officeAssertNoteLink(t, pkg, format)
+					officeAssertInlineNoteFormatting(t, pkg, format, note)
+					officeAssertProp(t, pkg, format, body)
+					officeAssertTableRatio(t, pkg, format, body, "A visitor", 0.3)
+					if strings.Contains(body.text(), "example.invalid/schema") {
+						t.Fatal("visible schema")
+					}
+					if format == "docx" {
+						for _, kind := range []string{"b", "i", "u"} {
+							if len(body.all(kind)) == 0 {
+								t.Error("missing inline", kind)
+							}
+						}
+					} else {
+						if len(body.all("span")) < 4 {
+							t.Error("inline styles missing")
+						}
+					}
+					unchanged, err := os.ReadFile(src)
+					if err != nil || string(unchanged) != rich {
+						t.Fatal("source modified", err)
+					}
+					for toggle, absent := range map[string]string{"stage-directions": "Night direction.", "frontmatter": "Opening summary.", "character-table": "A visitor", "footnotes": "Note content.", "transitions": "CUT TO"} {
+						cfg := "render:\n  " + toggle + ": false\n"
+						writeAppFile(t, filepath.Join(dir, "script.yaml"), cfg)
+						_, stderr, err := officeRun(t, binary, dir, env, "convert", src, target)
+						if err != nil {
+							t.Fatalf("toggle %s: %v %s", toggle, err, stderr)
+						}
+						raw, err = os.ReadFile(target)
+						if err != nil {
+							t.Fatal(err)
+						}
+						pkg = officePackage(t, raw)
+						allText := ""
+						for _, n := range pkg {
+							allText += n.text()
+						}
+						if strings.Contains(allText, absent) {
+							t.Errorf("hidden %s still present", toggle)
+						}
+						got, err := os.ReadFile(filepath.Join(dir, "script.yaml"))
+						if err != nil || string(got) != cfg {
+							t.Fatal("config modified", err)
+						}
+					}
+				})
 			}
 		}
 	})
@@ -225,14 +236,15 @@ func TestRT054_2OfficeTitlesAndRunningMatter(t *testing.T) {
 				dir := t.TempDir()
 				src := filepath.Join(dir, "play.org")
 				writeAppFile(t, src, "#+TITLE: Title\n#+SUBTITLE: Subtitle\n#+AUTHOR: Author\n#+DATE: A Date\n#+VERSION: Version\n* Introduction\nSome introduction.\n"+strings.Repeat("Summary text.\n", 30)+"* ACT ONE\n** SCENE ONE\n**** CÁIT\n"+strings.Repeat("Long dialogue line.\n", 80)+"* ACT TWO\n**** CÁIT\nEnd.\n")
-				writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n    enabled: "+map[bool]string{true: "false", false: "true"}[compact]+"\n    skip-header: true\n    skip-footer: false\n  page-header:\n    enabled: true\n    format: 'BODY-EVEN [title] [page]'\n    alt-format: 'BODY-ODD [author] [total-pages]'\n    frontmatter-format: 'INTRO-EVEN'\n    alt-frontmatter-format: ''\n    align: left-right\n  page-footer:\n    format: 'FOOT [page]/[total-pages] [unknown] [chapter]'\n")
+				writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n    enabled: "+map[bool]string{true: "false", false: "true"}[compact]+"\n    skip-header: true\n    skip-footer: false\n  page-header:\n    enabled: true\n    format: 'BODY-EVEN [title] [page]'\n    alt-format: 'BODY-ODD [author] [total-pages]'\n    frontmatter-format: 'INTRO-EVEN'\n    alt-frontmatter-format: ''\n    align: left-right\n  page-footer:\n    format: 'FOOT [page]/[total-pages] [unknown] [chapter]'\n    frontmatter-format: 'INTRO-FOOT-EVEN'\n    alt-frontmatter-format: ''\n")
 				raw, stderr, err := officeRun(t, binary, dir, officeEnv(t, t.TempDir(), nil), "convert", src, "--to", format)
 				if err != nil {
 					t.Fatalf("%v %s", err, stderr)
 				}
 				pkg := officePackage(t, raw)
 				body := officeBody(t, pkg, format)
-				for _, s := range []string{"Title", "Subtitle", "Author", "A Date", "Version", "ACT TWO", "End."} {
+				officeAssertEmptyIntroOdd(t, pkg, format)
+				for _, s := range []string{"Title", "Subtitle", "Author", "ACT TWO", "End."} {
 					if !strings.Contains(body.text(), s) {
 						t.Errorf("missing title/body %s", s)
 					}
@@ -241,7 +253,7 @@ func TestRT054_2OfficeTitlesAndRunningMatter(t *testing.T) {
 				for _, n := range pkg {
 					all += n.text()
 				}
-				for _, s := range []string{"BODY-EVEN", "BODY-ODD", "INTRO-EVEN", "FOOT", "[unknown]"} {
+				for _, s := range []string{"A Date", "Version", "BODY-EVEN", "BODY-ODD", "INTRO-EVEN", "FOOT", "[unknown]"} {
 					if !strings.Contains(all, s) {
 						t.Errorf("missing running variant %s", s)
 					}
