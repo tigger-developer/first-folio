@@ -178,3 +178,40 @@ Open =dist/docx-spike/british.docx= in Word for the remaining visual/editing UT.
 ** Handback
 Return to ATTENDED mode with this branch unmerged. The human determines the
 spike's disposition; this evidence record does not close W054.
+
+* Follow-up: continuous British scene tables, 2026-10-11
+Approved by the operator's explicit request to make stage directions and
+dialogue editable within a single table per scene. This updates the initial
+speech-table design; earlier evidence and coverage figures describe the
+initial implementation, not this revision.
+
+- Same-line (British) speech now shares one continuous table with adjacent
+  stage directions. Each direction occupies its own full-width row with a
+  native two-column grid span. Dialogue retains separate cue and speech cells.
+- Props, transitions and unattached dialogue also occupy full-width rows, so
+  they do not fragment a scene. Act, scene and frontmatter headings remain
+  outside tables and start a new table for subsequent scene content.
+- Speech spacing moves into its row instead of using an outside spacer
+  paragraph. US and screenplay separate-line structures are unchanged.
+- Test-first evidence: the new executable test initially found three tables
+  for a two-scene fixture. It now checks two tables with the expected row and
+  cell counts, three consecutive directions, merged spans, props, transitions
+  and unchanged separate-line formats. A second test checks a table directly
+  after the title without a scene heading: the title break remains outside it.
+- [[file:scene-green.txt][All nine spike tests pass]]. [[file:scene-app.txt][Application preservation tests pass]]
+  with the existing W054 exclusions. Original DOCX native-formatting, font,
+  speech/body-geometry and act-break subtests also pass. =make lint= passes.
+- Bounded OT: copied the two operator-supplied Org files into ignored
+  =dist/docx-spike/= and generated =-editable-tables.docx= outputs, retaining
+  the earlier Quadriplegia DOCX. Personal script text is not committed.
+- Quadriplegia has eight tables including cast, with 122 merged rows;
+  Halloween Dinner has three tables including cast, with 95 merged rows.
+  All Quadriplegia DOCX text runs match its previous export exactly.
+- LibreOffice renders the updated files to 42 and 25 A4 pages respectively.
+  Visually inspected page 6 of Quadriplegia and page 5 of Halloween Dinner:
+  readable cue/dialogue columns and full-width directions, with page numbers.
+- Author self-review checked table boundaries, grid widths, full-width spans,
+  title breaks outside tables, and retention of existing direction styles.
+  No external audit was invoked under the continuing operator exception.
+- Word row insertion, merging and splitting remain a human editing UT.
+  No merge or installation; return to ATTENDED mode for that inspection.

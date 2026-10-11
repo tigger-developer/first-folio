@@ -326,6 +326,71 @@ func TestSpikeDOCXTerminalGuard(t *testing.T) {
 	}
 }
 
+func TestSpikeDOCXContinuousSceneTable(t *testing.T) {
+	binary := spikeDOCXBuild(t)
+	dir := t.TempDir()
+	src := filepath.Join(dir, "scene.org")
+	writeAppFile(t, src, "#+TITLE: Editable scenes\n* ACT ONE\n** SCENE ONE\n*** First direction.\n*** Second direction.\n*** Third direction.\n**** CÁIT (quietly)\nFirst speech.\n*** Between speeches.\n**** LIAM\nSecond speech.\n*** A card :prop:\n***** BLACKOUT\n** SCENE TWO\n*** Next scene direction.\n**** CÁIT\nLast speech.\n")
+	for _, style := range []string{"british", "us", "screenplay"} {
+		t.Run(style, func(t *testing.T) {
+			raw, stderr, err := officeRun(t, binary, dir, officeEnv(t, t.TempDir(), nil), "convert", src, "--to", "docx", "--style", style)
+			if err != nil {
+				t.Fatalf("%v %s", err, stderr)
+			}
+			body := officeBody(t, officePackage(t, raw), "docx")
+			tables := body.all("tbl")
+			if style != "british" {
+				if len(tables) != 0 {
+					t.Fatal("separate-line format gained a scene table")
+				}
+				return
+			}
+			if len(tables) != 2 {
+				t.Fatalf("got %d tables, want one per scene", len(tables))
+			}
+			for i, wants := range [][]int{{1, 1, 1, 2, 1, 2, 1, 1}, {1, 2}} {
+				rows := tables[i].all("tr")
+				if len(rows) != len(wants) {
+					t.Fatalf("scene %d has %d rows, want %d", i, len(rows), len(wants))
+				}
+				for j, want := range wants {
+					cells := rows[j].all("tc")
+					if len(cells) != want {
+						t.Fatalf("scene %d row %d has %d cells, want %d", i, j, len(cells), want)
+					}
+					if want == 1 {
+						officeAssertAttr(t, cells[0], "gridSpan", "val", "2")
+					}
+				}
+			}
+			for _, child := range body.Children {
+				if child.Name.Local == "p" && strings.Contains(child.text(), "direction.") {
+					t.Fatal("stage direction left outside the scene table")
+				}
+			}
+		})
+	}
+}
+
+func TestSpikeDOCXTableImmediatelyAfterTitle(t *testing.T) {
+	binary := spikeDOCXBuild(t)
+	dir := t.TempDir()
+	src := filepath.Join(dir, "no-heading.org")
+	writeAppFile(t, src, "#+TITLE: No scene heading\n**** CÁIT\nHello.\n*** First direction.\n*** Second direction.\n*** Third direction.\n")
+	raw, stderr, err := officeRun(t, binary, dir, officeEnv(t, t.TempDir(), nil), "convert", src, "--to", "docx")
+	if err != nil {
+		t.Fatalf("%v %s", err, stderr)
+	}
+	body := officeBody(t, officePackage(t, raw), "docx")
+	tables := body.all("tbl")
+	if len(tables) != 1 || len(tables[0].all("tr")) != 4 {
+		t.Fatal("headingless scene is not one four-row table")
+	}
+	if len(body.all("pageBreakBefore")) != 1 || len(tables[0].all("pageBreakBefore")) != 0 {
+		t.Fatal("title break must be on a paragraph outside the table")
+	}
+}
+
 func TestSpikeDOCXRelativeRootFont(t *testing.T) {
 	binary := spikeDOCXBuild(t)
 	dir := t.TempDir()

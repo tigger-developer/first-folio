@@ -167,6 +167,15 @@ func (w *docxWriter) body() ([]docxNode, error) {
 	}
 	titleCount := len(out)
 	firstAct := true
+	sceneTable := -1
+	appendScene := func(table docxNode) {
+		if sceneTable < 0 {
+			sceneTable = len(out)
+			out = append(out, table)
+		} else {
+			out[sceneTable].children = append(out[sceneTable].children, table.children[2:]...)
+		}
+	}
 	for i := 0; i < len(w.doc.Events); i++ {
 		event := w.doc.Events[i]
 		if event.Kind == play.EventCharacter {
@@ -179,10 +188,15 @@ func (w *docxWriter) body() ([]docxNode, error) {
 			if e != nil {
 				return nil, e
 			}
-			out = append(out, speech...)
+			if w.sameLine {
+				appendScene(speech[0])
+			} else {
+				out = append(out, speech...)
+			}
 			continue
 		}
 		if event.Kind == play.EventCharacterTableStart {
+			sceneTable = -1
 			heading, e := w.paragraph("Intro", defaultString(event.Text, "Characters"))
 			if e != nil {
 				return nil, e
@@ -240,9 +254,25 @@ func (w *docxWriter) body() ([]docxNode, error) {
 		if e != nil {
 			return nil, e
 		}
-		out = append(out, p)
+		if w.sameLine && (role == "Direction" || role == "Transition" || role == "Prop" || event.Kind == play.EventDialogue) {
+			table, _, e := w.sceneTable()
+			if e != nil {
+				return nil, e
+			}
+			cell := dx("tc", dx("tcPr", dx("tcW").attr("w:w", dxInt(w.width-2*w.margin)).attr("w:type", "dxa"), dxVal("gridSpan", "2")), p)
+			table.children = append(table.children, dx("tr", cell))
+			appendScene(table)
+		} else {
+			sceneTable = -1
+			out = append(out, p)
+		}
 	}
 	if titleCount > 0 && len(out) > titleCount && w.cfg.Bool("folio.title-page.enabled", true) {
+		if out[titleCount].name == "w:tbl" {
+			// Keep section pagination outside table properties when no heading precedes it.
+			separator := dx("p", dx("pPr", dx("spacing").attr("w:line", "1").attr("w:lineRule", "exact")))
+			out = append(out[:titleCount], append([]docxNode{separator}, out[titleCount:]...)...)
+		}
 		// A break on the first body paragraph avoids a trailing empty title page.
 		props := &out[titleCount].children[0]
 		var before, after []docxNode
@@ -292,13 +322,9 @@ func (w *docxWriter) speech(event play.Event, text string) ([]docxNode, error) {
 	if !w.sameLine {
 		return append([]docxNode{speaker}, content...), nil
 	}
-	width := w.width - 2*w.margin
-	cue, err := w.length(path+"dialogue.wrap-indent", "7em", w.baseSize, width)
+	table, cue, err := w.sceneTable()
 	if err != nil {
 		return nil, err
-	}
-	if cue < 1 || cue >= width {
-		return nil, fmt.Errorf("DOCX %sdialogue.wrap-indent leaves no usable speech column", path)
 	}
 	space, err := w.length(path+"space-before", "1.6em", w.baseSize, w.height)
 	if err != nil {
@@ -307,10 +333,24 @@ func (w *docxWriter) speech(event play.Event, text string) ([]docxNode, error) {
 	if space < 0 {
 		return nil, fmt.Errorf("DOCX %sspace-before must not be negative", path)
 	}
-	spacer := dx("p", dx("pPr", dx("keepNext"), dx("spacing").attr("w:before", "0").attr("w:after", "0").attr("w:line", dxInt(max(1, space))).attr("w:lineRule", "exact")))
-	table := w.table(width, cue)
+	// Space belongs inside the row so no outside paragraph splits an editable scene.
+	for _, p := range []*docxNode{&speaker, &content[0]} {
+		p.children[0].children = append(p.children[0].children, dx("spacing").attr("w:before", dxInt(space)))
+	}
 	table.children = append(table.children, w.tableRow(cue, []docxNode{speaker}, content))
-	return []docxNode{spacer, table}, nil
+	return []docxNode{table}, nil
+}
+
+func (w *docxWriter) sceneTable() (docxNode, int, error) {
+	width := w.width - 2*w.margin
+	cue, err := w.length("folio.positioning.speech.dialogue.wrap-indent", "7em", w.baseSize, width)
+	if err != nil {
+		return docxNode{}, 0, err
+	}
+	if cue < 1 || cue >= width {
+		return docxNode{}, 0, fmt.Errorf("DOCX folio.positioning.speech.dialogue.wrap-indent leaves no usable speech column")
+	}
+	return w.table(width, cue), cue, nil
 }
 
 func (w *docxWriter) table(width, left int) docxNode {
