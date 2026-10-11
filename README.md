@@ -1,7 +1,7 @@
 ---
 title: First Folio
-version: "1.2"
-last-updated: 2026-10-07
+version: "1.3"
+last-updated: 2026-10-11
 ---
 
 # First Folio
@@ -16,6 +16,9 @@ folio convert play.org play.md
 
 # Convert to PDF (requires Typst)
 folio convert play.org play.pdf
+
+# Export an editable script (no external writer required)
+folio convert play.org play.docx
 
 # Convert to Fountain
 folio convert play.org play.fountain
@@ -57,6 +60,7 @@ make uninstall  # removes the symlink
 | Markdown | Yes | Yes | [docs/format-markdown.md](docs/format-markdown.md) |
 | Fountain | Yes | Yes | [docs/format-fountain.md](docs/format-fountain.md) |
 | PDF (via Typst) | - | Yes | - |
+| DOCX script | - | Yes | [Support and limitations](docs/format-docx.md) |
 | Manuscript Markdown | Yes | - | [docs/format-manuscript-markdown.md](docs/format-manuscript-markdown.md) |
 | Manuscript org-mode | Yes | - | [docs/format-manuscript-org.md](docs/format-manuscript-org.md) |
 
@@ -65,6 +69,10 @@ Org-mode uses heading levels to encode play structure. Markdown uses headers, bo
 **Intro sections** (Synopsis, Setting, Scene List, etc.) are automatically distinguished from the play proper. Any headers and prose before the first character dialogue are treated as intro material and can be toggled on/off via `render.frontmatter` in config.
 
 ## Canonical Examples
+
+DOCX export supports editable script tables, paragraphs and footnotes with
+documented layout compromises. ODT export is not currently a CLI format.
+See [DOCX export](docs/format-docx.md) before choosing an office format.
 
 Each format has a complete reference example demonstrating all supported features:
 

@@ -1,0 +1,94 @@
+?   	github.com/tigger-developer/first-folio	[no test files]
+?   	github.com/tigger-developer/first-folio/cmd/folio	[no test files]
+ok  	github.com/tigger-developer/first-folio/cmd/update-homebrew	0.405s
+--- FAIL: TestRT054_1OfficeContentMatrix (0.62s)
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/british.org (0.00s)
+        office_export_test.go:56: export .org/odt/british: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/british.md (0.00s)
+        office_export_test.go:56: export .md/odt/british: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/british.fountain (0.00s)
+        office_export_test.go:56: export .fountain/odt/british: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/us.org (0.00s)
+        office_export_test.go:56: export .org/odt/us: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/us.md (0.01s)
+        office_export_test.go:56: export .md/odt/us: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/us.fountain (0.01s)
+        office_export_test.go:56: export .fountain/odt/us: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/screenplay.fountain (0.01s)
+        office_export_test.go:56: export .fountain/odt/screenplay: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/screenplay.org (0.01s)
+        office_export_test.go:56: export .org/odt/screenplay: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/odt/screenplay.md (0.00s)
+        office_export_test.go:56: export .md/odt/screenplay: exit status 1: Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_1OfficeContentMatrix/rich-and-filtered (0.08s)
+        --- FAIL: TestRT054_1OfficeContentMatrix/rich-and-filtered/.org/docx (0.04s)
+            office_export_test.go:115: spacing.before is 9.6pt; want 19.2pt
+            office_export_test.go:115: spacing.after is 3.6pt; want 7.2pt
+        --- FAIL: TestRT054_1OfficeContentMatrix/rich-and-filtered/.org/odt (0.01s)
+            office_export_test.go:89: exit status 1: Error: Unrecognised file extension: .odt
+        --- FAIL: TestRT054_1OfficeContentMatrix/rich-and-filtered/.md/docx (0.04s)
+            office_export_test.go:115: spacing.before is 9.6pt; want 19.2pt
+            office_export_test.go:115: spacing.after is 3.6pt; want 7.2pt
+        --- FAIL: TestRT054_1OfficeContentMatrix/rich-and-filtered/.md/odt (0.01s)
+            office_export_test.go:89: exit status 1: Error: Unrecognised file extension: .odt
+    office_export_test.go:170: empty/untitled odt: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeNativeFormatting (0.46s)
+    --- FAIL: TestRT054_2OfficeNativeFormatting/odt (0.01s)
+        office_export_test.go:189: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeTitlesAndRunningMatter (0.47s)
+    --- FAIL: TestRT054_2OfficeTitlesAndRunningMatter/docx/dedicated (0.22s)
+        office_export_test.go:246: no attached frontmatter section with its even header
+    --- FAIL: TestRT054_2OfficeTitlesAndRunningMatter/docx/compact (0.01s)
+        office_export_test.go:246: no attached frontmatter section with its even header
+    --- FAIL: TestRT054_2OfficeTitlesAndRunningMatter/odt/dedicated (0.01s)
+        office_export_test.go:242: exit status 1 Error: Unrecognised format: odt
+    --- FAIL: TestRT054_2OfficeTitlesAndRunningMatter/odt/compact (0.01s)
+        office_export_test.go:242: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_3OfficeSelectionAndFailure (0.49s)
+    office_export_test.go:300: stdout odt: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_3OfficeTerminalGuard (0.44s)
+    office_export_test.go:428: terminal guard absent: ^DError: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeBodyLayoutLengths (0.47s)
+    --- FAIL: TestRT054_2OfficeBodyLayoutLengths/docx (0.21s)
+        office_layout_coverage_test.go:401: spacing.before is 12pt; want 24pt
+        office_layout_coverage_test.go:402: spacing.after is 3.6pt; want 7.2pt
+        office_layout_coverage_test.go:401: spacing.before is 6pt; want 12pt
+        office_layout_coverage_test.go:405: spacing.before is 9.6pt; want 19.2pt
+        office_layout_coverage_test.go:405: spacing.after is 3.6pt; want 7.2pt
+    --- FAIL: TestRT054_2OfficeBodyLayoutLengths/odt (0.01s)
+        office_layout_coverage_test.go:381: body geometry: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeTitleCompositionAndMissingTitle (0.48s)
+    --- FAIL: TestRT054_2OfficeTitleCompositionAndMissingTitle/docx/third (0.21s)
+        office_layout_coverage_test.go:447: spacing.before is 201.5pt; want 210.0472440944882pt
+        office_layout_coverage_test.go:460: title footer slot "Composition version" is not in a native footer
+    --- FAIL: TestRT054_2OfficeTitleCompositionAndMissingTitle/docx/center (0.01s)
+        office_layout_coverage_test.go:447: spacing.before is 268.7pt; want 280.0629921259843pt
+        office_layout_coverage_test.go:460: title footer slot "Composition version" is not in a native footer
+    --- FAIL: TestRT054_2OfficeTitleCompositionAndMissingTitle/odt/third (0.00s)
+        office_layout_coverage_test.go:434: title composition: exit status 1 Error: Unrecognised format: odt
+    --- FAIL: TestRT054_2OfficeTitleCompositionAndMissingTitle/odt/center (0.01s)
+        office_layout_coverage_test.go:434: title composition: exit status 1 Error: Unrecognised format: odt
+    --- FAIL: TestRT054_2OfficeTitleCompositionAndMissingTitle/odt/missing (0.01s)
+        office_layout_coverage_test.go:434: title composition: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeActiveRoleFonts (0.51s)
+    --- FAIL: TestRT054_2OfficeActiveRoleFonts/odt (0.01s)
+        office_layout_test.go:111: role export: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeSeparateSpeechGeometry (0.45s)
+    --- FAIL: TestRT054_2OfficeSeparateSpeechGeometry/odt/us (0.01s)
+        office_layout_test.go:159: speech geometry: exit status 1 Error: Unrecognised format: odt
+    --- FAIL: TestRT054_2OfficeSeparateSpeechGeometry/odt/screenplay (0.01s)
+        office_layout_test.go:159: speech geometry: exit status 1 Error: Unrecognised format: odt
+--- FAIL: TestRT054_2OfficeActBreaks (0.45s)
+    --- FAIL: TestRT054_2OfficeActBreaks/odt/compact (0.01s)
+        office_layout_test.go:206: act breaks: exit status 1 Error: Unrecognised file extension: .odt
+    --- FAIL: TestRT054_2OfficeActBreaks/odt/dedicated (0.00s)
+        office_layout_test.go:206: act breaks: exit status 1 Error: Unrecognised file extension: .odt
+FAIL
+FAIL	github.com/tigger-developer/first-folio/internal/app	32.136s
+ok  	github.com/tigger-developer/first-folio/internal/config	1.119s
+ok  	github.com/tigger-developer/first-folio/internal/letter	0.834s
+ok  	github.com/tigger-developer/first-folio/internal/manuscript	110.389s
+ok  	github.com/tigger-developer/first-folio/internal/play	1.564s
+ok  	github.com/tigger-developer/first-folio/internal/typst	1.291s
+FAIL
+make: *** [test] Error 1

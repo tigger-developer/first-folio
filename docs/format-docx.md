@@ -1,0 +1,53 @@
+---
+title: DOCX Script Export
+version: "1.0"
+last-updated: 2026-10-11
+---
+
+# DOCX script export
+
+Export Org, Markdown or Fountain scripts to editable DOCX:
+
+```sh
+folio convert play.org play.docx
+```
+
+The destination extension selects DOCX. For redirected output, use
+`folio convert play.org --to docx > play.docx`. Binary terminal output requires
+`--force`. DOCX is write-only; manuscript and letter commands do not export DOCX.
+The writer uses Go's XML and ZIP libraries and needs neither Pandoc nor Typst.
+
+## Formatting and editing
+
+| Area | Support and limits |
+|------|--------------------|
+| British scripts | One continuous table per scene: two-cell dialogue rows and full-width merged direction, prop and transition rows. Headings remain outside the table. |
+| US and screenplay | Separate cue and dialogue paragraphs using resolved style geometry. |
+| Typography | Role fonts, sizes, regular/bold weights, italic, tracking and integer stretch. Oblique uses italic; unsupported weights fail. |
+| British spacing | Single line spacing; speech, direction, prop and transition vertical gaps are half the resolved spacing. Cast entries have no trailing paragraph gap. |
+| Content | Ordered text, inline formatting, cast tables and native footnotes; configured visibility switches apply. |
+| Pages | Configured paper, margins and act breaks. Pagination depends on the reading application. Long rows can split across pages. |
+| Title | Dedicated or compact title. Vertical positioning is approximate; date/version are in-flow rather than bottom-of-page slots. |
+| Running matter | First/odd/even parts and native page fields. A single section uses body running matter for intro pages, with a warning for frontmatter overrides. |
+
+Inline emphasis retains the initial office adapter's rules: `**bold**`,
+`***bold italic***`, `*italic*`, `/italic/`, `_underline_` and literal code spans.
+In particular, single-asterisk Org bold is **not yet source-aware in DOCX**.
+The Org-emphasis correction in PDF/Typst is separate; review this limitation
+before using an Org export for submission.
+
+The writer rejects source/destination identity, destination symlinks and invalid
+XML text. Source size is limited to 32 MiB; generated XML and package sizes are
+bounded at 128 MiB. Validated file output is staged beside its destination and
+published by rename. Existing destination permissions are replaced by mode 0600.
+
+## ODT
+
+ODT is not a First Folio CLI output format. A local Pandoc DOCX-to-ODT experiment
+preserved text and merged table structures in two scripts but lost role typography,
+title composition, page settings and spacing. It is not an equivalent-fidelity
+replacement for DOCX. No ODT reader or direct ODT writer is included.
+
+## History
+
+- 1.0 (2026-10-11): Document native DOCX adoption and its supported subset.

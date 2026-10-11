@@ -7,24 +7,48 @@
 - Date :: 2026-10-11.
 - Route :: Emergency (=BYPASS-GATE-7=); operator-authored change with
   user-test validation and a maintained-suite sweep.
-- Candidate :: Pending; the operator change is not yet in the working tree.
+- Candidate :: =f99567f - Org emphasis rendering fix=, integrated unchanged
+  into =a318483 - DOCX adoption merge=.
+- Earlier context :: Before the fix landed, candidate evidence was pending.
 - Environment :: macOS; local Go and Typst; temporary HOME and output
   directories. No metered service or UI automation.
 
 * Test results
 
-** AMBER UT055.1 - Org emphasis PDF check :testdef:
-:PROPERTIES:
-:REASON: Awaiting the operator-authored change; the operator performs the
-PDF inspection and records the dated outcome.
-:END:
+** GREEN UT055.1 - Org emphasis PDF check :testdef:
+- Date :: 2026-10-11.
+- Method :: User validation.
+- Outcome :: Org bold/italic rendering fix reported passing. Source change is
+  =f99567f - Org emphasis rendering fix=; viewer and executable hash were not
+  supplied. This records human evidence, not an automated PDF inspection.
+- Merge review :: The PDF source-format argument and renderer changes are
+  preserved. DOCX's shared regex reference was adapted without changing the
+  PDF fix or extending its scope.
+- Superseded state :: AMBER, awaiting the change and PDF inspection.
 - Required evidence :: Date, viewer, tested revision, and whether =*this*=
   renders bold and =/this/= renders italic in the candidate PDF.
 
-** AMBER OT055.1 - Regression suite re-run :testdef:
+** RED OT055.1 - Regression suite re-run :testdef:
 :PROPERTIES:
-:REASON: Run after the operator change lands; expected all-GREEN with any
-invalidated expectations corrected and noted here.
+:REASON: Full make test fails W054 office-export expectations; closure's all-GREEN condition is not met.
 :END:
+- Date :: 2026-10-11.
+- Revision :: =a318483 - DOCX adoption merge=.
+- Command :: =make test=; exit 2, with Go test failure in =internal/app=.
+- Evidence :: [[file:../056-docx-first-adoption/merged-suite.txt][Full merged-suite log]].
+- Failures :: W054 only: unsupported ODT, original exact title/frontmatter
+  layout, and pre-compaction spacing. No Org-emphasis or other existing-route
+  assertion failed. All other packages pass. No tests were changed or excluded
+  from this run.
+- Lint :: =make lint= passes on the merged implementation.
+- Documentation review :: =docs/format-org.md= already states Org-aware PDF
+  emphasis; its claim agrees with the source-format-aware implementation.
+- Superseded state :: AMBER, awaiting the change and regression sweep.
 - Required evidence :: Dated =make test= (and =make lint=) result for the
   tested revision, with remediation notes for any corrected assertion.
+
+* Closure disposition
+The passing user test is retained. The ticket remains open because the required
+complete-suite result is RED. No independent audit result is claimed; the
+external harness remains excluded for this session. The unrelated W054 contract
+needs reconciliation before an all-GREEN closure claim can be made.

@@ -1,11 +1,12 @@
 ---
-version: "0.3"
-updated: "2026-09-10"
+title: Format Overview
+version: "0.4"
+last-updated: "2026-10-11"
 ---
 
 # Format Overview
 
-First Folio converts stage plays between three text-based formats (org-mode, Markdown, Fountain) and one output-only format (PDF). All conversions pass through a shared **event stream** - a sequence of typed semantic events representing the structure of a play. Each format has an independent parser (reader) and emitter (writer); no direct format-to-format conversion paths exist.
+First Folio converts stage plays between three text-based formats (org-mode, Markdown, Fountain) and exports PDF and DOCX. All script conversions pass through a shared **event stream** - a sequence of typed semantic events representing the structure of a play. Input parsers and output writers consume this model; no direct format-to-format conversion paths exist.
 
 ## Supported Formats
 
@@ -17,6 +18,7 @@ First Folio converts stage plays between three text-based formats (org-mode, Mar
 | [Markdown manuscript](format-manuscript-markdown.md) | Yes | No | [First Folio manuscript subset](../schema/manuscript.md) |
 | [Org-mode manuscript](format-manuscript-org.md) | Yes | No | [orgmode.org](https://orgmode.org) |
 | PDF (via Typst) | - | Yes | [typst.app](https://typst.app) |
+| DOCX script | - | Yes | [Support and limitations](format-docx.md) |
 
 ## The Event Stream
 
@@ -40,6 +42,9 @@ The event stream is the intermediate representation. Every parser emits these ev
 | `intro_text` | text | Introductory prose before the play proper |
 
 ## Fidelity Matrix
+
+The original text/PDF matrix below is retained. DOCX's native structures and
+layout compromises are listed separately in [DOCX export](format-docx.md).
 
 Not every format can represent every event natively. The matrix below shows which events survive each format. **Lossless** means the element round-trips without degradation. **Degraded** means the content is preserved but structural metadata is lost. **Lost** means the element cannot be represented and is dropped.
 
@@ -91,6 +96,8 @@ Suppression is applied between the parser and emitter - the parser always emits 
 `folio manuscript` is a prose rendering path rather than a stage-play conversion path. It accepts Markdown and org-mode manuscript contracts, rejects Fountain, and renders directly to Typst or PDF through the Go manuscript engine. It does not use the stage-play event stream because prose manuscripts have different structural elements: parts, chapters, sections, paragraphs, scene breaks, code, and manuscript metadata.
 
 ## Revision History
+
+- 0.4, 2026-10-11: Add DOCX export and link its separate fidelity contract.
 
 - 0.3, 2026-09-10: Record destination-schema metadata and link to First Folio's limited Markdown contracts instead of general standards.
 - 0.2, 2026-08-10: Previous format-overview revision.

@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.8"
-last-updated: 2026-10-07
+version: "0.9"
+last-updated: 2026-10-11
 ---
 
 # Architecture
@@ -14,7 +14,7 @@ First Folio is a CLI-first Go application. One `folio` executable owns stage-pla
 
 The subcommands are:
 
-- `folio convert`: parses Org, Markdown, or Fountain stage plays into typed events and emits Org, Markdown, Fountain, Typst, or PDF.
+- `folio convert`: parses Org, Markdown, or Fountain stage plays into typed events and emits Org, Markdown, Fountain, Typst, PDF, or DOCX.
 - `folio letter`: parses Org `:letter:` sections and renders recipient-specific PDFs.
 - `folio manuscript`: parses Markdown or Org prose manuscripts and renders Typst or PDF.
 
@@ -69,6 +69,13 @@ Running matter is configured at `folio.page-header` and `folio.page-footer` for 
 
 ## Rendering
 
+DOCX is a sibling output route after script parsing, configuration and filtering.
+The `docx_*.go` adapter builds native WordprocessingML with `encoding/xml`,
+packages it with `archive/zip`, and publishes through a same-directory staged
+rename. No Pandoc or Typst process runs for DOCX. British scene tables, font
+mapping, resource bounds and approximations are described in [DOCX export](format-docx.md).
+The existing Typst route retains source-aware Org emphasis independently.
+
 Substantial Typst layouts live in real `.typ` files. Go code owns:
 
 - typed template data;
@@ -101,6 +108,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.9 (2026-10-11): Document the native DOCX sibling writer and atomic publication.
 
 - 0.8 (2026-10-07): Documented shared script title composition, compact-mode act-break policy and first-page running-matter suppression.
 

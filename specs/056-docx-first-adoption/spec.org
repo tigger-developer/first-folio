@@ -38,4 +38,7 @@ Org-emphasis work item only if the required verification passes.
   formatting/editability intent; document losses and keep a contrary result.
 
 * Evidence
-Pending merged-suite and ODT results, recorded in validation.org.
+The initial pending evidence entry is superseded by
+[[file:validation.org][merged-suite and ODT results]]. The local merge is recorded;
+the full suite remains RED for W054 office expectations. ODT text and table
+preservation pass, but the default Pandoc layout-fidelity experiment fails.

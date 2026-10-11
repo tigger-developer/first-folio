@@ -87,11 +87,12 @@ classification; it is provenance, not current state.
 
 - Specification :: [[file:../specs/055-org-script-emphasis/spec.org][W055 - Render Org script emphasis with Org semantics in PDF]].
 - Scope :: *Script PDF/Typst rendering from Org sources only*; inline =*bold*=
-  renders bold and =/italic*= renders italic. Markdown, Fountain, manuscript,
+  renders bold and =/italic/= renders italic. Markdown, Fountain, manuscript,
   letter and office routes are *unchanged*.
 - Validation :: Emergency route with *operator user test* and a maintained
   regression-suite sweep; no new automated RT by operator decision.
 - Review record :: [[file:../specs/055-org-script-emphasis/audits.yaml][Independent delivery review]] once the harness records it.
+- Current evidence :: [[file:../specs/055-org-script-emphasis/validation.org][UT passes; merged full-suite result is RED for W054 office requirements]].
 ** ACTIVE W056 - Adopt DOCX-first script export :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-056

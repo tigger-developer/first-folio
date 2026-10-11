@@ -1,4 +1,8 @@
-<!-- Version: 0.2 | Last updated: 2026-08-10 -->
+---
+title: First Folio Vision
+version: "0.3"
+last-updated: 2026-10-11
+---
 
 # First Folio - Vision
 
@@ -36,6 +40,7 @@ Writers work across multiple tools and workflows. A play may be drafted in Emacs
 | Markdown play | Yes | Yes | Convention-based Markdown play contract |
 | Fountain play | Yes | Yes | Documented supported Fountain subset |
 | Typst/PDF play | No | Yes | British, US stage-play, or US screenplay layout |
+| DOCX play | No | Yes | Editable script export with [documented layout limits](format-docx.md) |
 | Org-mode manuscript | Yes | No | Canonicalized through the Markdown manuscript contract |
 | Markdown manuscript | Yes | No | Canonical manuscript input contract |
 | Typst/PDF manuscript | No | Yes | British or US manuscript layout |
@@ -47,18 +52,23 @@ PDF and Typst are final-output formats. Manuscript text-format emission and sour
 
 First Folio is CLI-first, but many playwrights are not comfortable with terminals, markup syntax, or YAML configuration. A lightweight graphical interface could bridge this gap without compromising the power of the underlying tools.
 
-The vision is not a full IDE or editor — org-mode and Emacs already serve that role beautifully. Instead, a simple companion app that:
+The vision is not a full IDE or editor --- org-mode and Emacs already serve that role beautifully. Instead, a simple companion app that:
 
 - Opens an Org, Markdown, or Fountain file and shows a live-rendered preview
 - Provides a "Convert to..." menu (PDF, Markdown, Fountain) with one click
 - Exposes style selection (British / American / Screenplay) as a dropdown
 - Generates cover letters from the embedded `:letter:` section with a recipient picker
-- Wraps the CLI — the app calls `folio convert` and `folio letter` under the hood
+- Wraps the CLI --- the app calls `folio convert` and `folio letter` under the hood
 
-The interface should feel approachable to a writer who has never used a terminal. The underlying format remains plain text — the app is a window onto it, not a replacement for it.
+The interface should feel approachable to a writer who has never used a terminal. The underlying format remains plain text --- the app is a window onto it, not a replacement for it.
 
 ## Non-goals
 
-- **Word processor formats.** DOCX, ODT, and similar formats are out of scope. Use pandoc to convert Markdown output if needed.
-- **Full screenplay tooling.** First Folio supports screenplay formatting via `--style=screenplay` but is optimised for stage plays. Dedicated screenplay software (Final Draft, Highland) serves that market.
+- **Word processor import and ODT export.** These remain outside the current product contract. The original exclusion of all word-processor formats was superseded for DOCX export on 2026-10-11; generic Pandoc conversion is not a layout-preserving substitute.
+- **Full screenplay tooling.** First Folio supports screenplay formatting via `--style=screenplay` but is optimized for stage plays. Dedicated screenplay software (Final Draft, Highland) serves that market.
 - **Content editing.** First Folio converts between formats and renders to PDF. It does not provide editing, linting, or structural validation of play content.
+
+## History
+
+- 0.3 (2026-10-11): Adopt editable DOCX script export within a bounded support contract.
+- 0.2 (2026-08-10): Previous vision baseline, excluding word-processor formats.

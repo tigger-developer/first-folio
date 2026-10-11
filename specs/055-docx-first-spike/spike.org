@@ -2,6 +2,11 @@
 #+STARTUP: overview
 #+OPERATOR_SIGNOFF: Approved 2026-10-11, delegated scope alignment
 
+Adoption note, 2026-10-11: [[file:../056-docx-first-adoption/spec.org][W056 - DOCX-first adoption]]
+records the subsequent approved merge to =master= and supersedes this brief's
+original no-merge boundary. The historical W055 spike allocation collided with
+the parallel Org-emphasis item; its original evidence and paths remain intact.
+
 * Question
 Can a small, isolated DOCX adapter produce useful editable British, US stage-play
 and screenplay documents, accepting documented layout compromises, while

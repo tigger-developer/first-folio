@@ -1,0 +1,60 @@
+#+TITLE: W056 - DOCX adoption and ODT experiment evidence
+#+STARTUP: overview
+
+* Integration
+- Date :: 2026-10-11.
+- Merge :: =a318483 - DOCX adoption merge= on =master= combines
+  =ae9462a - compact British DOCX layout= and
+  =f99567f - Org emphasis rendering fix=.
+- Resolution :: Retain both PDF source-format dispatch and DOCX dispatch;
+  use the renamed =starPairRE= symbol in DOCX without changing its semantics.
+  The work-ledger collision has explicit lineage under W056 - DOCX adoption.
+- Publication :: Local merge only; no push, installation or deployment.
+- Self-review :: Checked shared dispatch, the changed regex reference and
+  work-item lineage. No independent audit is claimed under the recorded exception.
+
+* Regression results
+- [[file:merged-suite.txt][make test]] :: RED, exit 2. Only W054 office tests fail:
+  missing ODT, title/frontmatter fidelity, and original spacing assertions.
+  All other packages pass; all nine DOCX spike tests run without failure.
+- =make lint= :: GREEN on the merged implementation.
+- [[file:preservation.txt][Application preservation run]] :: Excludes only
+  =TestRT054_[123]=. This separate diagnostic is not a substitute for the
+  complete suite and does not make it GREEN.
+- Org-emphasis UT :: Recorded as user-validated GREEN in
+  [[file:../055-org-script-emphasis/validation.org][W055 - Org emphasis validation]].
+  Conditional ticket closure is not applied because the full suite is RED.
+- Documentation :: CLI help, README, format overview, architecture and vision
+  now link the actual DOCX subset and its limitations; the former blanket
+  word-processor exclusion is explicitly superseded for DOCX.
+
+* OT - Pandoc DOCX-to-ODT fidelity
+- Date :: 2026-10-11.
+- Tools :: Pandoc 3.9.0.2; LibreOffice 26.2.3.2; local Poppler and XML inspection.
+- Inputs :: The two =-tighter.docx= British scripts generated from the
+  compact adapter. Personal text and generated documents remain ignored.
+- Commands :: =pandoc -f docx -t odt INPUT.docx -o OUTPUT.odt=;
+  isolated-profile headless LibreOffice renders each output to PDF.
+- Outputs :: =dist/odt-evaluation/quadriplegia-v1.1-pandoc.odt= and
+  =dist/odt-evaluation/halloween-dinner-v2-pandoc.odt=, plus corresponding PDFs.
+
+| Script | DOCX preview | ODT preview | Tables retained | Merged cells retained |
+|--------+--------------+-------------+-----------------+-----------------------|
+| Quadriplegia | 24 pages, A4 | 18 pages, Letter | 8 of 8 | 122 of 122 |
+| Halloween Dinner | 16 pages, A4 | 10 pages, Letter | 3 of 3 | 95 of 95 |
+
+- Content :: Concatenated document text matches for both after whitespace
+  normalization. This checks non-whitespace characters and order, not every
+  space or line break. Native table counts and merged spans match exactly.
+- Visual inspection :: Quadriplegia page 1 and Halloween Dinner page 3 show
+  lost title composition, bold cue roles, italic direction roles and spacing.
+  Title metadata runs directly into frontmatter instead of a dedicated page.
+- Page settings :: Both ODT previews use US Letter instead of input A4.
+  Default page numbers appear, but source running-matter fidelity is not
+  established by that alone.
+- Outcome :: Text/table preservation passes; script layout fidelity fails.
+  Stock Pandoc conversion is not recommended as the formatted ODT route.
+  No ODT product route was added. A reference document/filter or a different
+  converter would need a separate bounded evaluation before adoption.
+- Limits :: Only the default Pandoc DOCX reader and ODT writer were exercised.
+  No claim is made about all Pandoc configurations or other conversion engines.
