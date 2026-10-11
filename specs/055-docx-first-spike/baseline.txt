@@ -1,0 +1,9 @@
+?   	github.com/tigger-developer/first-folio	[no test files]
+?   	github.com/tigger-developer/first-folio/cmd/folio	[no test files]
+ok  	github.com/tigger-developer/first-folio/cmd/update-homebrew	1.319s
+ok  	github.com/tigger-developer/first-folio/internal/app	23.251s
+ok  	github.com/tigger-developer/first-folio/internal/config	2.124s
+ok  	github.com/tigger-developer/first-folio/internal/letter	0.549s
+ok  	github.com/tigger-developer/first-folio/internal/manuscript	105.537s
+ok  	github.com/tigger-developer/first-folio/internal/play	1.807s
+ok  	github.com/tigger-developer/first-folio/internal/typst	2.035s

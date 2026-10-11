@@ -1,0 +1,218 @@
+// ABOUTME: Exercises the bounded DOCX spike through the installed-shaped CLI.
+// ABOUTME: Checks editable structures, layout, local-only output and safe publication.
+package app
+
+import (
+	"bytes"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+)
+
+func TestSpikeDOCXSourceStyleMatrix(t *testing.T) {
+	binary := officeBuild(t)
+	for _, source := range []string{".org", ".md", ".fountain"} {
+		for _, style := range []string{"british", "us", "screenplay"} {
+			t.Run(source+"/"+style, func(t *testing.T) {
+				pkg := officeExport(t, binary, source, "docx", style)
+				body := officeBody(t, pkg, "docx")
+				previous := -1
+				for _, text := range []string{"Matrix Play", "Example Author", "ACT ONE", "SCENE ONE", "Night.", "CÁIT", "softly", "Hello.", "Second line."} {
+					at := strings.Index(body.text(), text)
+					if at <= previous {
+						t.Fatalf("missing or out of order %q in %q", text, body.text())
+					}
+					previous = at
+				}
+				if got := len(body.all("tbl")); (style == "british") != (got > 0) {
+					t.Fatalf("speech tables %d for %s", got, style)
+				}
+				officeAssertAttr(t, body, "pgSz", "w", "11906")
+				officeAssertAttr(t, body, "pgMar", "left", "1417")
+				officeAssertStyleUsed(t, pkg, "docx", "Folio Dialogue")
+			})
+		}
+	}
+}
+
+func TestSpikeDOCXRichContentAndConfig(t *testing.T) {
+	binary := officeBuild(t)
+	dir := t.TempDir()
+	src := filepath.Join(dir, "rich.org")
+	text := "#+TITLE: Rich & <editable>\n#+SCHEMA: https://example.invalid/schema\n* CHARACTERS\n| CÁIT | A visitor |\n* Introduction\nOpening summary.\n* ACT ONE\n** SCENE ONE\n*** Night direction.\n**** CÁIT (quietly)\n**Bold text** and *italic text* and ***combined text*** and _underlined text_ and =literal text=.[fn:note]\n*** Prop card :prop:\n***** CUT TO\n[fn:note] Note content. **Bold note** and *italic note*.\n"
+	writeAppFile(t, src, text)
+	home := t.TempDir()
+	writeAppFile(t, filepath.Join(home, ".config", "first-folio", "script.yaml"), "folio:\n  positioning:\n    speech:\n      dialogue:\n        font:\n          family: Example Family\n          size: 13pt\n          style: italic\n          stretch: 90%\n          letter-spacing: 0.2pt\n")
+	configuration := "folio:\n  page: a5\n  margin: 18mm\n  positioning:\n    speech:\n      dialogue:\n        font:\n          weight: bold\n"
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), configuration)
+	raw, stderr, err := officeRun(t, binary, dir, officeEnv(t, home, nil), "convert", src, "--to", "docx")
+	if err != nil {
+		t.Fatalf("%v: %s", err, stderr)
+	}
+	pkg := officePackage(t, raw)
+	body := officeBody(t, pkg, "docx")
+	for _, want := range []string{"Rich & <editable>", "A visitor", "Opening summary.", "Night direction.", "Bold text", "italic text", "combined text", "underlined text", "literal text", "Prop card", "CUT TO"} {
+		if !strings.Contains(body.text(), want) {
+			t.Errorf("missing %q", want)
+		}
+	}
+	for _, property := range []string{"b", "i", "u"} {
+		if len(body.all(property)) == 0 {
+			t.Errorf("missing inline %s", property)
+		}
+	}
+	officeAssertNoteLink(t, pkg, "docx")
+	officeAssertInlineNoteFormatting(t, pkg, "docx", pkg["word/footnotes.xml"])
+	officeAssertTableRatio(t, pkg, "docx", body, "A visitor", 0.3)
+	dialogue := officeStyle(t, pkg, "docx", "Folio Dialogue")
+	officeAssertAttr(t, dialogue, "rFonts", "ascii", "Example Family")
+	officeAssertAttr(t, dialogue, "sz", "val", "26")
+	officeAssertAttr(t, dialogue, "w", "val", "90")
+	officeAssertAttr(t, dialogue, "spacing", "val", "4")
+	officeAssertAttr(t, body, "pgSz", "w", "8391")
+	if strings.Contains(body.text(), "example.invalid/schema") {
+		t.Fatal("visible schema")
+	}
+	if readAppFile(t, src) != text || readAppFile(t, filepath.Join(dir, "script.yaml")) != configuration {
+		t.Fatal("input changed")
+	}
+	for toggle, absent := range map[string]string{"stage-directions": "Night direction.", "frontmatter": "Opening summary.", "character-table": "A visitor", "footnotes": "Note content.", "transitions": "CUT TO"} {
+		t.Run(toggle, func(t *testing.T) {
+			writeAppFile(t, filepath.Join(dir, "script.yaml"), "render:\n  "+toggle+": false\n")
+			raw, stderr, err := officeRun(t, binary, dir, officeEnv(t, home, nil), "convert", src, "--to", "docx")
+			if err != nil {
+				t.Fatalf("%v: %s", err, stderr)
+			}
+			for name, node := range officePackage(t, raw) {
+				if strings.Contains(node.text(), absent) {
+					t.Errorf("hidden text in %s", name)
+				}
+			}
+		})
+	}
+}
+
+func TestSpikeDOCXSelectionAndFailures(t *testing.T) {
+	binary := officeBuild(t)
+	dir := t.TempDir()
+	src := filepath.Join(dir, "play.org")
+	writeAppFile(t, src, officeSources[".org"])
+	env := officeEnv(t, t.TempDir(), map[string]string{"PATH": t.TempDir()})
+	// No external executable is available: export must remain a local transform.
+	raw, stderr, err := officeRun(t, binary, dir, env, "convert", src, "--to", "docx")
+	if err != nil {
+		t.Fatalf("%v: %s", err, stderr)
+	}
+	officePackage(t, raw)
+	target := filepath.Join(dir, "play.docx")
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  default-format: docx\n")
+	raw, stderr, err = officeRun(t, binary, dir, env, "convert", src)
+	if err != nil {
+		t.Fatalf("default: %v: %s", err, stderr)
+	}
+	officePackage(t, raw)
+	_, stderr, err = officeRun(t, binary, dir, env, "convert", src, target, "--to", "md")
+	if err != nil {
+		t.Fatalf("target precedence: %v: %s", err, stderr)
+	}
+	data, err := os.ReadFile(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	officePackage(t, data)
+	_, stderr, err = officeRun(t, binary, dir, env, "convert", target, "--to", "md")
+	if err == nil || !strings.Contains(stderr, "write-only") {
+		t.Fatalf("DOCX input: %v %s", err, stderr)
+	}
+	for _, content := range []string{"", "* ACT ONE\n**** CÁIT\nHello.\n"} {
+		writeAppFile(t, src, content)
+		raw, stderr, err = officeRun(t, binary, dir, env, "convert", src, "--to", "docx")
+		if err != nil {
+			t.Fatalf("empty/untitled: %v %s", err, stderr)
+		}
+		officePackage(t, raw)
+	}
+	for _, cfg := range []string{"folio:\n  page: impossible\n", "folio:\n  margin: 900mm\n", "folio:\n  positioning:\n    speech:\n      dialogue:\n        font:\n          weight: 650\n"} {
+		writeAppFile(t, src, officeSources[".org"])
+		writeAppFile(t, filepath.Join(dir, "script.yaml"), cfg)
+		writeAppFile(t, target, "OLD TARGET")
+		raw, stderr, err = officeRun(t, binary, dir, env, "convert", src, target)
+		if err == nil || len(raw) != 0 || stderr == "" {
+			t.Fatalf("unsafe config accepted: %v %s", err, stderr)
+		}
+		if readAppFile(t, target) != "OLD TARGET" {
+			t.Fatal("old target changed")
+		}
+	}
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), "{}\n")
+	link := filepath.Join(dir, "link.docx")
+	if err := os.Symlink(target, link); err != nil {
+		t.Fatal(err)
+	}
+	_, stderr, err = officeRun(t, binary, dir, env, "convert", src, link)
+	if err == nil || !strings.Contains(stderr, "symlink") {
+		t.Fatalf("symlink: %v %s", err, stderr)
+	}
+	before := readAppFile(t, src)
+	_, stderr, err = officeRun(t, binary, dir, env, "convert", src, "--to", "docx")
+	if err != nil {
+		t.Fatalf("recovery: %v %s", err, stderr)
+	}
+	if readAppFile(t, src) != before {
+		t.Fatal("source modified")
+	}
+	writeAppFile(t, src, "* ACT ONE\n**** CÁIT\n<tag> & ![remote](https://example.invalid/secret) $(command).\n")
+	raw, stderr, err = officeRun(t, binary, dir, env, "convert", src, "--to", "docx")
+	if err != nil {
+		t.Fatalf("literal content: %v %s", err, stderr)
+	}
+	pkg := officePackage(t, raw)
+	if !strings.Contains(officeBody(t, pkg, "docx").text(), "<tag> & ![remote]") {
+		t.Fatal("text became markup")
+	}
+	for name, node := range pkg {
+		if strings.Contains(name, "vba") || len(node.all("drawing")) > 0 {
+			t.Fatal("unexpected active content")
+		}
+		for _, rel := range node.all("Relationship") {
+			if rel.attr("TargetMode") == "External" {
+				t.Fatal("external relationship")
+			}
+		}
+	}
+	writeAppFile(t, src, "* ACT ONE\n**** CÁIT\ninvalid\x01text\n")
+	raw, stderr, err = officeRun(t, binary, dir, env, "convert", src, "--to", "docx")
+	if err == nil || len(raw) != 0 || !strings.Contains(stderr, "XML") {
+		t.Fatalf("invalid XML input: %v %s", err, stderr)
+	}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range entries {
+		if strings.HasPrefix(entry.Name(), ".folio-docx-") {
+			t.Fatal("staging file leaked")
+		}
+	}
+}
+
+func TestSpikeDOCXBrokenOutputStream(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	dir := t.TempDir()
+	src := filepath.Join(dir, "play.org")
+	writeAppFile(t, src, officeSources[".org"])
+	reader, writer, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := reader.Close(); err != nil {
+		t.Fatal(err)
+	}
+	defer writer.Close()
+	var stderr bytes.Buffer
+	status := Run([]string{"convert", src, "--to", "docx"}, strings.NewReader(""), writer, &stderr)
+	if status == 0 {
+		t.Fatal("broken stdout reported success")
+	}
+}
