@@ -1,0 +1,62 @@
+#+TITLE: W058 - Configured Pandoc ODT script export
+#+AUTHOR: First Folio
+#+DATE: 2026-10-11
+
+* Context and authority
+The operator requests adoption of the W057 experiment for ODT only, retaining
+native DOCX and existing PDF conversions for comparison through project use.
+W057 remains an unmerged experiment on spike/W057-odt-ast at 96ba6d5.
+This delivery follows the operator's explicit exception allowing self-review in
+place of the broken external audit harness. No external audit verdict is claimed.
+
+* Acceptance criteria
+- AC058.1 :: Org, Markdown and Fountain scripts export as write-only ODT through
+  target extension, --to or configured default. Target extension wins. Existing
+  DOCX writer and PDF renderer remain unchanged.
+- AC058.2 :: Resolved role fonts, size, weight, italic, tracking, stretch, paper,
+  margins, speech geometry, compact British spacing and visibility are honoured.
+  British scenes contain continuous tables with merged stage-direction rows;
+  US/screenplay use separate paragraphs. Preserve ordered text, supported inline
+  formatting, cast, props, transitions and native footnotes.
+- AC058.3 :: Dedicated or compact title, act breaks, first/odd/even running matter
+  and live page fields are provided. Existing office title approximation applies:
+  date/version flow below title; frontmatter uses body running matter. Pagination
+  can vary by office application. Document limitations explicitly.
+- AC058.4 :: Pandoc receives generated JSON and a generated local reference only,
+  with fixed arguments, a 120-second total deadline and 64 KiB diagnostic bound.
+  No source text becomes executable markup, a fetched image or an external link.
+  Bound source to 32 MiB, generated data/member to 128 MiB, expanded package to
+  256 MiB and entries to 256. Validate packages before atomic publication.
+  Refuse terminal binary without --force, symlink/nonregular targets and source
+  aliases. Failure preserves existing target and leaves no staging files.
+
+* Design
+ODT projects the existing in-memory office layout into Pandoc JSON blocks and
+styles. The current layout nodes are Word-shaped; this is a deliberate internal
+bridge without generating or re-reading DOCX. Existing DOCX files are untouched.
+A generated ODF reference supplies paragraph/text styles and page masters.
+Pandoc writes the final ODT. There is no user-provided reference or arbitrary
+Pandoc argument interface. A future neutral layout model is outside this change.
+
+* Test definitions
+- RT058.1 :: CLI source/style matrix and selection, write-only input, content order.
+- RT058.2 :: Package checks for configured typography, scene spans, native notes,
+  inline formatting, page geometry, titles, fields and visibility filtering.
+- RT058.3 :: CLI failure/publication tests and bounded runner/package tests.
+- RT058.4 :: Existing DOCX regressions and PDF/text regression suite; preserve and
+  report the original W054 fidelity failures rather than suppressing them.
+- UT058.1 :: Operator compares ODT and DOCX through real project editing over time.
+- OT058.1 :: One-off headless LibreOffice render of the two supplied full scripts
+  and contrasting configured fonts; inspect representative rendered pages.
+
+* Hands-off mode decision log
+** 2026-10-11 :hands-off:review:
+Use isolated feature/W058-odt-export based on master 5435af3. Share layout
+calculations read-only, preserve DOCX serialization and PDF source, and retain
+all historical tests. No merge, install, release or ticket closure is implied.
+
+* Validation
+The initial pending entry is superseded by
+[[file:validation.org][W058 - executable evidence, rendered checks and self-review]].
+ODT/DOCX scoped tests pass. The full suite remains RED for the retained W054
+contract; real-world operator editing remains the next user validation.

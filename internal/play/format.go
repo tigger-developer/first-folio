@@ -16,6 +16,7 @@ const (
 	FormatFountain Format = "fountain"
 	FormatPDF      Format = "pdf"
 	FormatDOCX     Format = "docx"
+	FormatODT      Format = "odt"
 )
 
 func FormatFromPath(path string) (Format, error) {
@@ -32,6 +33,8 @@ func FormatFromPath(path string) (Format, error) {
 		return FormatFountain, nil
 	case ".pdf", ".typ":
 		return FormatPDF, nil
+	case ".odt":
+		return FormatODT, nil
 	case ".docx":
 		return FormatDOCX, nil
 	default:
@@ -49,6 +52,8 @@ func ParseFormat(name string) (Format, error) {
 		return FormatFountain, nil
 	case "pdf":
 		return FormatPDF, nil
+	case "odt":
+		return FormatODT, nil
 	case "docx":
 		return FormatDOCX, nil
 	default:

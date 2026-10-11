@@ -1,12 +1,12 @@
 ---
 title: Format Overview
-version: "0.4"
+version: "0.5"
 last-updated: "2026-10-11"
 ---
 
 # Format Overview
 
-First Folio converts stage plays between three text-based formats (org-mode, Markdown, Fountain) and exports PDF and DOCX. All script conversions pass through a shared **event stream** - a sequence of typed semantic events representing the structure of a play. Input parsers and output writers consume this model; no direct format-to-format conversion paths exist.
+First Folio converts stage plays between three text-based formats (org-mode, Markdown, Fountain) and exports PDF, DOCX and ODT. All script conversions pass through a shared **event stream** - a sequence of typed semantic events representing the structure of a play. Input parsers and output writers consume this model; no direct format-to-format conversion paths exist.
 
 ## Supported Formats
 
@@ -19,6 +19,7 @@ First Folio converts stage plays between three text-based formats (org-mode, Mar
 | [Org-mode manuscript](format-manuscript-org.md) | Yes | No | [orgmode.org](https://orgmode.org) |
 | PDF (via Typst) | - | Yes | [typst.app](https://typst.app) |
 | DOCX script | - | Yes | [Support and limitations](format-docx.md) |
+| ODT script | - | Yes | [Support and limitations](format-odt.md) |
 
 ## The Event Stream
 
@@ -45,6 +46,7 @@ The event stream is the intermediate representation. Every parser emits these ev
 
 The original text/PDF matrix below is retained. DOCX's native structures and
 layout compromises are listed separately in [DOCX export](format-docx.md).
+The configured Pandoc ODT route has its own [ODT support contract](format-odt.md).
 
 Not every format can represent every event natively. The matrix below shows which events survive each format. **Lossless** means the element round-trips without degradation. **Degraded** means the content is preserved but structural metadata is lost. **Lost** means the element cannot be represented and is dropped.
 
@@ -101,3 +103,5 @@ Suppression is applied between the parser and emitter - the parser always emits 
 
 - 0.3, 2026-09-10: Record destination-schema metadata and link to First Folio's limited Markdown contracts instead of general standards.
 - 0.2, 2026-08-10: Previous format-overview revision.
+
+- 0.5, 2026-10-11: Add configured Pandoc ODT export alongside DOCX.

@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.25"
-last-updated: 2026-10-08
+version: "0.26"
+last-updated: 2026-10-11
 ---
 
 # Configuration
@@ -87,7 +87,12 @@ PDF/Typst cast lists show only the primary name; Org and Markdown conversions
 preserve alias declarations. See the [Org cast-table schema](../schema/script.org)
 and [Markdown alias syntax](../schema/script.md#character-name-aliases).
 
-### First Folio PDF settings (`folio:`)
+### First Folio layout settings (`folio:`)
+
+Script DOCX and ODT exports consume resolved role fonts and layout settings too.
+Their [DOCX](format-docx.md) and [ODT](format-odt.md) support tables define the
+applicable limits. ODT generates a Pandoc reference from these settings; it does
+not silently fall back to Pandoc's default fonts and page geometry.
 
 All First Folio-specific settings live under the `folio:` key.
 
@@ -97,7 +102,7 @@ All First Folio-specific settings live under the `folio:` key.
 | `heading.font` | font block | British heading font | Shared heading typography |
 | `margin` | string | `25mm` | Page margins |
 | `page` | string | `a4` | Page size |
-| `default-format` | string | `pdf` | Default output format when no target file or `--to` given |
+| `default-format` | string | `pdf` | Default output format when no target file or `--to` given, including `docx` and `odt` for script export |
 | `style` | string | `british` | Script style: `british`, `us`, or `screenplay` |
 
 Script layout is configured beneath `folio.title-page` and `folio.positioning`. The canonical preset documents every supported child key. Important paths include:
@@ -749,6 +754,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.26 (2026-10-11): Document resolved configuration for DOCX and ODT export.
 
 - 0.25 (2026-10-08): Document automatic cast-name capitalisation, aliases and hidden-table lookup.
 - 0.24 (2026-10-07): Added compact script first-page titles for page-limited submissions and default-on title/first-page running-matter suppression; documented untitled scripts, mode isolation, validation and numbering.
