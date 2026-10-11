@@ -78,6 +78,15 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** ACTIVE W055 - DOCX-first script export spike :spike:
+:PROPERTIES:
+:CUSTOM_ID: w-055
+:CREATED: 2026-10-11
+:END:
+- Brief :: [[file:../specs/055-docx-first-spike/spike.org][W055 - DOCX-first exploration]].
+- Boundary :: Isolated spike branch; no merge or deployment. Full-fidelity
+  office-export requirements remain historical authority for later adoption.
+
 ** ACTIVE W054 - Preserve script formatting in DOCX and ODT exports :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-054

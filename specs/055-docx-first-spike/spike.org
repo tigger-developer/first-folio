@@ -1,0 +1,80 @@
+#+TITLE: W055 - DOCX-first script export spike
+#+STARTUP: overview
+#+OPERATOR_SIGNOFF: Approved 2026-10-11, delegated scope alignment
+
+* Question
+Can a small, isolated DOCX adapter produce useful editable British, US stage-play
+and screenplay documents, accepting documented layout compromises, while
+preserving existing conversions?
+
+* Scope and approach
+- Export Org, Markdown and Fountain through the existing parsed and filtered
+  script model. Preserve text, inline emphasis, cues, directions, headings,
+  cast tables, footnotes, font roles and basic page geometry.
+- Try a native Go ZIP/XML DOCX writer first. A single target permits a small
+  serializer without a Pandoc process, intermediate document or package rewrite.
+  Pandoc remains an independent reader for bounded interoperability checks.
+- Use native editable paragraphs, tables, notes and page fields. Apply resolved
+  configuration. Never convert script text to images.
+- ODT is deferred. Exact title positioning and intro/body/facing-page running
+  matter parity are not required. Record the actual support and approximations.
+- Invalid content or unsafe geometry must fail before publication. Refuse
+  terminal binary output without =--force= and reject source/target identity
+  and destination symlinks. Retain old target bytes on pre-publication failure.
+- No network, macros, embedded fonts or runtime external tools in the adapter.
+  Reject XML-invalid text, bound source and generated XML/package sizes.
+
+* Evaluation criteria
+1. All nine source/style routes produce readable DOCX with ordered text and
+   native editable structures. Empty and untitled sources also work.
+2. Effective styles express configured fonts, spacing and speech geometry;
+   partial configuration overrides and visibility switches remain effective.
+3. CLI selection, redirected stdout, terminal protection and failure boundaries
+   operate through the actual executable. No source/config mutation occurs.
+4. Existing conversion tests retain their baseline results, and representative
+   Org/Markdown/Fountain/Typst/PDF output matches the baseline under the same tools.
+5. Pandoc reads generated DOCX; a bounded headless LibreOffice conversion checks
+   import/render behaviour. Visual acceptance and editing in Word remain a UT.
+6. Self-review records correctness, security, maintainability and evidence gaps.
+
+* Boundaries and budget
+- Branch :: =spike/W055-docx-first=, based on =18ed2f6 - office test evidence=.
+- Worktree :: =.agent/worktrees/docx-first=; the original checkout stays separate.
+- Code :: DOCX-only dispatch, format registration and new Go adapter/test files.
+  Do not change parsers, config semantics, script renderer, Typst templates,
+  manuscript or letter implementations.
+- Prohibited :: No merge, deployment, installation, remote publication or
+  modification of the parallel emergency-fix checkout.
+- Execution :: Hands-off within this session. No native goal was requested;
+  none is active. Local tests only; no metered external probes or audit calls.
+- Stop :: Answer the criteria with recorded limitations, or stop for an unsafe
+  decision, unremediable regression, or exhausted execution capacity. Preserve
+  checkpoint commits and exact continuation evidence on interruption.
+
+* Relationship to W054 - full-fidelity office export
+The original [[file:../054-script-office-export/spec.org][office export specification]]
+and its prospective tests remain unchanged as historical design evidence.
+This brief governs the narrower experiment. It supersedes their dual-format,
+no-approximation and Pandoc-runtime requirements only on this spike branch.
+The full W054 suite is not a success gate for this deliberately smaller scope;
+report its results separately from existing-route preservation and spike tests.
+
+* Review exception
+The external audit harness is excluded for this invocation. An author self-review
+against the coding, Go, testing, architecture and security standards substitutes
+for independent review. Its findings are explicitly self-review evidence, not
+an independent audit PASS or product-delivery approval.
+
+* Hands-off mode decision log
+** Invocation 2026-10-11 :hands-off:review:
+- Scope alignment uses delegated judgement under the approved DOCX-first intent.
+- Direct OOXML serialization is the first experiment because there is only one
+  required writer. Prefer simple explicit XML nodes, not a general document engine.
+- Keep the full W054 tests intact. Add separately named spike boundary tests
+  so the reduced contract does not erase the original fidelity expectations.
+
+* Evidence
+Pending baseline, test-first execution, interoperability and self-review.
+
+* Findings
+Pending experiment results. Word editing and visual acceptance remain unverified.
