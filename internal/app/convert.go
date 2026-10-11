@@ -32,6 +32,9 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 		return err
 	}
 	if !sourceFormat.Readable() {
+		if sourceFormat == play.FormatODT {
+			return fmt.Errorf("cannot read from odt format. ODT is write-only")
+		}
 		if sourceFormat == play.FormatDOCX {
 			return fmt.Errorf("cannot read from docx format. DOCX is write-only")
 		}
@@ -57,7 +60,9 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 		return err
 	}
 	var raw []byte
-	if targetFormat == play.FormatDOCX {
+	if targetFormat == play.FormatODT {
+		raw, err = readODTSource(opts.source)
+	} else if targetFormat == play.FormatDOCX {
 		raw, err = readDOCXSource(opts.source)
 	} else {
 		raw, err = readTextInput(opts.source)
@@ -73,6 +78,9 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 		fmt.Fprintln(stderr, warning)
 	}
 	applyScriptConfig(&doc, cfg)
+	if targetFormat == play.FormatODT {
+		return exportODT(doc, cfg, opts, toStdout, stdout, stderr)
+	}
 	if targetFormat == play.FormatDOCX {
 		return exportDOCX(doc, cfg, opts, toStdout, stdout, stderr)
 	}

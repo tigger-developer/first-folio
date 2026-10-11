@@ -1,0 +1,116 @@
+#+TITLE: W058 - ODT export validation and self-review
+#+DATE: 2026-10-11
+
+* Scope and authorization
+Implemented on =feature/W058-odt-export= in an isolated worktree, based on
+=5435af3 - merged DOCX validation record=. The operator requested the configured
+Pandoc route for ODT only and retained native DOCX for comparison through use.
+The existing operator exception substitutes author self-review for the broken
+external audit harness. This record is not an independent audit verdict.
+No merge, installation, remote publication or ticket closure was performed.
+
+* Automated evidence
+- RT058.1 to RT058.3 :: Seven new Go test functions exercise the CLI source/style
+  matrix, configured role styles, active column-width ratios, merged direction
+  rows, native notes, effective act breaks, live page fields, visibility switches,
+  format selection, write-only input and source preservation. Failure coverage
+  includes missing Pandoc, nonzero exit, malformed output, oversized output,
+  bounded diagnostics, deadline, invalid packages, input bounds, terminal output,
+  broken stdout, symlink destinations and hardlink aliases.
+- RED :: Before implementation, =go test ./internal/app -run '^TestRT058_'
+  -count=1= failed for unrecognized ODT extensions/formats.
+- GREEN :: =go test ./internal/app -run '^TestRT058_|^TestSpikeDOCX' -count=1=
+  passed after implementation. All seven ODT and nine existing DOCX test
+  functions passed, including the final footnote-separator adjustment.
+- GREEN :: =go test -race ./internal/app -run
+  '^TestRT058_3ODTPandocFailures$' -count=1= passed.
+- GREEN :: =go test ./internal/app -skip '^TestRT054_[123]' -count=1= passed
+  the other application regressions. This scoped run is reported separately;
+  the full-suite failures were not hidden or removed.
+- GREEN :: =make lint= (go vet) and =git diff --check= passed.
+- Tooling gap :: Installed golangci-lint cannot decode the Go toolchain's export
+  data: version 5 exceeds its supported version 2. Its resulting type-check
+  diagnostics are not a successful lint run. No toolchain was changed.
+
+* Full regression suite
+=make test= returns exit 2. All failures are in the existing W054 office tests;
+config, letter, manuscript, play, Typst and update-homebrew packages pass.
+The unchanged W054 tests combine superseded expectations and representation
+assumptions with stricter fidelity requirements:
+
+- Content/body layout :: W054 expects the original full vertical gaps. Current
+  British DOCX and ODT deliberately use the operator-approved compact spacing.
+- Titles/running matter :: Separate intro masters/sections and exact title/footer
+  positioning exceed this adoption's documented approximations.
+- DOCX failure probes :: W054 expects Pandoc failures to affect DOCX; the retained
+  native DOCX route does not invoke Pandoc.
+- ODT units/columns :: Some assertions require literal mm values or physical
+  column widths. ODT uses equivalent rounded points and relative column weights;
+  RT058 checks the active configured 30mm cue ratio on a 112mm body width.
+- ODT role/break attachment :: Some assertions require direct base-style use or
+  automatic styles in content.xml. Generated named styles in styles.xml inherit
+  the configured base roles and carry native breaks. RT058 resolves effective
+  act breaks; the rendered three-act fixture has three pages and correct fields.
+- ODT running-area geometry :: W054 compares page margins alone. The generated
+  ODF combines page margins, running text height and running-area clearance.
+
+W054 remains active. W055 - Org emphasis remains unclosed because the earlier
+operator closure condition required a passing full suite. W058 does not change
+that condition or claim the original W054 fidelity contract has been met.
+
+* One-off rendered checks
+OT058.1 used local Pandoc 3.9.0.2 and LibreOffice 26.2.3.2. The operator's two
+previously copied personal scripts remain in ignored =dist/odt-export/= only.
+No personal script content is included in tracked tests or documentation.
+
+| Sample | ODT preview | Prior DOCX preview | Observations |
+|--------+-------------+--------------------+--------------|
+| Quadriplegia | 24 A4 pages | 24 A4 pages | Libertinus fonts; dedicated title; editable scene tables |
+| Halloween Dinner | 16 A4 pages | 16 A4 pages | Libertinus fonts; compact dialogue and full-width directions |
+| Configured mono fixture | 1 A5 page | W057 comparison baseline | DejaVu Sans Mono regular, bold and oblique faces |
+| Rich three-act fixture | 3 A4 pages | Not a comparison sample | Native note, bold/italic/underline/code, suppressed first header, EVEN 2/3 and ODD 3/3 |
+
+Representative full-script title and dialogue page images and both synthetic
+fixture images were inspected. Rendered body text equals the prior tighter DOCX
+previews after whitespace normalization and exclusion of trailing page-number
+fields: 26,629 characters for Quadriplegia and 15,106 for Halloween Dinner.
+Whole-document extracted text differs because page fields occur at different
+positions in the reading stream. Equal page counts do not imply pixel identity.
+
+The render probe isolated one ODF interoperability defect before delivery:
+a generated metadata file was absent from the manifest. Replacing only the
+manifest made LibreOffice open the same package. The reference now includes
+metadata and its manifest entry; the regression checks XML member coverage.
+
+* Author self-review
+- Existing =docx_*.go=, PDF/Typst renderer and template files have no diff.
+  Only the new ODT format dispatch was added to the existing conversion route.
+- ODT uses the existing in-memory office layout, never a generated DOCX package.
+  Word-shaped internal nodes remain a documented coupling, not a claim that a
+  neutral common renderer has been introduced.
+- Source/config values become encoded JSON or XML values. No source-controlled
+  raw markup, image, filter, link or command is emitted to Pandoc. Fixed arguments
+  and a private generated reference keep this separate from generic conversion.
+- Resource/error review caught a promoted bytes.Buffer ReadFrom bypass of Write
+  limits. Non-embedded bounded buffers now govern subprocess pipes. Executable
+  regressions cover both a 220 KiB diagnostic and output above 128 MiB.
+- Errors retain their cause when relabelling shared DOCX diagnostics for ODT.
+  ZIP XML is checked incrementally; output is validated before publication.
+- Declarative AST/style construction retains some functions above the 50-line
+  review tripwire. XML validation, reference packaging and page masters are
+  separate functions/files; further generic abstraction would obscure this
+  intentionally bounded bridge.
+- The shared inline parser retains legacy office limitations: single-asterisk
+  Org bold is interpreted as italic, slash pairs in URLs can be interpreted as
+  emphasis, and ordinary repeated spaces collapse in ODT. These were observed
+  or verified in code and are documented in =docs/format-odt.md=.
+- User editing over time (UT058.1), Word interoperability, exact frontmatter
+  running variants and consolidation with DOCX remain unverified or out of scope.
+
+* Local review artefacts
+- Executable :: =dist/odt-export/folio=
+- Editable scripts :: =dist/odt-export/quadriplegia-v1.1.odt= and
+  =dist/odt-export/halloween-dinner-v2.odt=
+- PDF previews :: The matching .pdf files in that directory.
+- Logs :: =make-test.log=, =make-test-final.log=, =odt-docx-tests.log=,
+  =app-regression.log=, =race-test.log= and =golangci-lint.log= in that directory.

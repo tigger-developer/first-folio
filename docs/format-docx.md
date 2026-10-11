@@ -1,6 +1,6 @@
 ---
 title: DOCX Script Export
-version: "1.0"
+version: "1.1"
 last-updated: 2026-10-11
 ---
 
@@ -43,11 +43,13 @@ published by rename. Existing destination permissions are replaced by mode 0600.
 
 ## ODT
 
-ODT is not a First Folio CLI output format. A local Pandoc DOCX-to-ODT experiment
-preserved text and merged table structures in two scripts but lost role typography,
-title composition, page settings and spacing. It is not an equivalent-fidelity
-replacement for DOCX. No ODT reader or direct ODT writer is included.
+ODT is now a separate [configured Pandoc export](format-odt.md). The earlier
+DOCX-to-ODT experiment preserved text and merged tables but lost role typography,
+title composition, page settings and spacing. That generic conversion is not
+the product ODT route. The native DOCX writer remains unchanged.
 
 ## History
+
+- 1.1 (2026-10-11): Link the separate configured ODT exporter; retain DOCX behaviour.
 
 - 1.0 (2026-10-11): Document native DOCX adoption and its supported subset.

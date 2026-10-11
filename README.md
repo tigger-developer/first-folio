@@ -1,6 +1,6 @@
 ---
 title: First Folio
-version: "1.3"
+version: "1.4"
 last-updated: 2026-10-11
 ---
 
@@ -19,6 +19,9 @@ folio convert play.org play.pdf
 
 # Export an editable script (no external writer required)
 folio convert play.org play.docx
+
+# Export ODT with configured typography (requires Pandoc)
+folio convert play.org play.odt
 
 # Convert to Fountain
 folio convert play.org play.fountain
@@ -50,7 +53,7 @@ make uninstall  # removes the symlink
 
 - **Go 1.26+** (build only; Homebrew installs a compiled binary)
 - **Typst** (required only for PDF output)
-- **Pandoc** (required for rich manuscript Markdown/org parsing and conversion)
+- **Pandoc** (required for ODT export and rich manuscript Markdown/org parsing and conversion)
 
 ## Supported Formats
 
@@ -61,6 +64,7 @@ make uninstall  # removes the symlink
 | Fountain | Yes | Yes | [docs/format-fountain.md](docs/format-fountain.md) |
 | PDF (via Typst) | - | Yes | - |
 | DOCX script | - | Yes | [Support and limitations](docs/format-docx.md) |
+| ODT script | - | Yes | [Support and limitations](docs/format-odt.md) |
 | Manuscript Markdown | Yes | - | [docs/format-manuscript-markdown.md](docs/format-manuscript-markdown.md) |
 | Manuscript org-mode | Yes | - | [docs/format-manuscript-org.md](docs/format-manuscript-org.md) |
 
@@ -70,9 +74,10 @@ Org-mode uses heading levels to encode play structure. Markdown uses headers, bo
 
 ## Canonical Examples
 
-DOCX export supports editable script tables, paragraphs and footnotes with
-documented layout compromises. ODT export is not currently a CLI format.
-See [DOCX export](docs/format-docx.md) before choosing an office format.
+DOCX and ODT export editable script tables, paragraphs and footnotes with
+documented layout compromises. DOCX uses its native writer; ODT uses Pandoc
+with generated styles from the resolved configuration. See
+[DOCX export](docs/format-docx.md) and [ODT export](docs/format-odt.md).
 
 Each format has a complete reference example demonstrating all supported features:
 

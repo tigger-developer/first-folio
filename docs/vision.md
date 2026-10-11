@@ -1,6 +1,6 @@
 ---
 title: First Folio Vision
-version: "0.3"
+version: "0.4"
 last-updated: 2026-10-11
 ---
 
@@ -41,6 +41,7 @@ Writers work across multiple tools and workflows. A play may be drafted in Emacs
 | Fountain play | Yes | Yes | Documented supported Fountain subset |
 | Typst/PDF play | No | Yes | British, US stage-play, or US screenplay layout |
 | DOCX play | No | Yes | Editable script export with [documented layout limits](format-docx.md) |
+| ODT play | No | Yes | Configured Pandoc export with [documented layout limits](format-odt.md) |
 | Org-mode manuscript | Yes | No | Canonicalized through the Markdown manuscript contract |
 | Markdown manuscript | Yes | No | Canonical manuscript input contract |
 | Typst/PDF manuscript | No | Yes | British or US manuscript layout |
@@ -64,7 +65,7 @@ The interface should feel approachable to a writer who has never used a terminal
 
 ## Non-goals
 
-- **Word processor import and ODT export.** These remain outside the current product contract. The original exclusion of all word-processor formats was superseded for DOCX export on 2026-10-11; generic Pandoc conversion is not a layout-preserving substitute.
+- **Word processor import.** Import remains outside the product contract. The original exclusion of all word-processor formats was superseded for DOCX and configured ODT export on 2026-10-11. Generic Pandoc conversion without Folio styles is not a layout-preserving substitute.
 - **Full screenplay tooling.** First Folio supports screenplay formatting via `--style=screenplay` but is optimized for stage plays. Dedicated screenplay software (Final Draft, Highland) serves that market.
 - **Content editing.** First Folio converts between formats and renders to PDF. It does not provide editing, linting, or structural validation of play content.
 
@@ -72,3 +73,5 @@ The interface should feel approachable to a writer who has never used a terminal
 
 - 0.3 (2026-10-11): Adopt editable DOCX script export within a bounded support contract.
 - 0.2 (2026-08-10): Previous vision baseline, excluding word-processor formats.
+
+- 0.4 (2026-10-11): Adopt configured ODT export while retaining native DOCX.

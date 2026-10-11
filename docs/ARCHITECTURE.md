@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.9"
+version: "0.10"
 last-updated: 2026-10-11
 ---
 
@@ -14,7 +14,7 @@ First Folio is a CLI-first Go application. One `folio` executable owns stage-pla
 
 The subcommands are:
 
-- `folio convert`: parses Org, Markdown, or Fountain stage plays into typed events and emits Org, Markdown, Fountain, Typst, PDF, or DOCX.
+- `folio convert`: parses Org, Markdown, or Fountain stage plays into typed events and emits Org, Markdown, Fountain, Typst, PDF, DOCX, or ODT.
 - `folio letter`: parses Org `:letter:` sections and renders recipient-specific PDFs.
 - `folio manuscript`: parses Markdown or Org prose manuscripts and renders Typst or PDF.
 
@@ -76,6 +76,15 @@ rename. No Pandoc or Typst process runs for DOCX. British scene tables, font
 mapping, resource bounds and approximations are described in [DOCX export](format-docx.md).
 The existing Typst route retains source-aware Org emphasis independently.
 
+ODT is a separate sibling output route. `odt_*.go` projects the shared office
+layout nodes into Pandoc JSON and generates an ODF reference containing resolved
+role styles and page masters. The layout nodes currently use Word names; no
+DOCX package is written or parsed in this route. Pandoc runs with fixed arguments,
+a bounded output pipe and a 120-second deadline. The resulting ZIP/XML is
+validated before the existing atomic publication helper runs. DOCX serialization
+is unchanged. See [ODT export](format-odt.md) for compatibility and limits.
+
+
 Substantial Typst layouts live in real `.typ` files. Go code owns:
 
 - typed template data;
@@ -122,3 +131,5 @@ Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/em
 
 - 0.4 (2026-09-24): Clarified shared-loader ownership of resolved alignment validation.
 - 0.3 (2026-08-10): Previous architecture baseline.
+
+- 0.10 (2026-10-11): Add ODT JSON projection and generated ODF reference.

@@ -1,17 +1,17 @@
 Usage: folio convert <source> [target] [options]
 
 Convert a play from one format to another.
-Format is deduced from file extensions (.org, .md, .fountain, .ftn, .typ, .pdf, .docx).
+Format is deduced from file extensions (.org, .md, .fountain, .ftn, .typ, .pdf, .docx, .odt).
 
 When no target file is given, output goes to stdout.
 Use --to to specify the output format for stdout mode.
 
 Options:
-  --to FORMAT              Output format (org, md, fountain, pdf, docx)
+  --to FORMAT              Output format (org, md, fountain, pdf, docx, odt)
   --style STYLE            Layout style: british (default), us, or screenplay
   --force                  Force binary output to terminal
 
-Layout options for PDF/Typst and DOCX output:
+Layout options for PDF/Typst, DOCX and ODT output:
   --font FONT              Body font family
   --font-size SIZE         Body font size
   --margin SIZE            Page margins
@@ -21,8 +21,9 @@ Layout options for PDF/Typst and DOCX output:
 
 DOCX is export-only and needs no external writer. British scenes use continuous
 tables with full-width stage-direction rows. Title positioning and running matter
-are approximate; British vertical spacing is compacted. ODT is not supported.
-DOCX currently treats single-asterisk spans as italic, including Org input;
+are approximate; British vertical spacing is compacted. ODT is export-only and
+uses Pandoc with generated styles from script.yaml. See docs/format-odt.md.
+DOCX and ODT currently treat single-asterisk spans as italic, including Org input;
 the Org-aware bold rule applies to PDF/Typst. See docs/format-docx.md for details.
 
 Config: ~/.config/first-folio/script.yaml plus the nearest script.yaml found by

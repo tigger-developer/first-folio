@@ -93,6 +93,19 @@ classification; it is provenance, not current state.
   regression-suite sweep; no new automated RT by operator decision.
 - Review record :: [[file:../specs/055-org-script-emphasis/audits.yaml][Independent delivery review]] once the harness records it.
 - Current evidence :: [[file:../specs/055-org-script-emphasis/validation.org][UT passes; merged full-suite result is RED for W054 office requirements]].
+** ACTIVE W058 - Configured Pandoc ODT export :feature:
+:PROPERTIES:
+:WORK_ID: W058
+:END:
+- Specification :: [[file:../specs/058-odt-export/spec.org][W058 - ODT export alongside native DOCX]].
+- Authority :: Operator requested ODT adoption following W057 experiment; retain
+  native DOCX and existing PDF paths. Existing self-review exception applies.
+- Predecessor :: W057 - Pandoc AST experiment, retained on unmerged branch
+  spike/W057-odt-ast at 96ba6d5. Its identifier remains reserved.
+- Validation :: [[file:../specs/058-odt-export/validation.org][W058 - tests, rendered comparison and self-review]].
+  ODT/DOCX scoped tests pass; retained W054 expectations keep the full suite RED.
+
+
 ** ACTIVE W056 - Adopt DOCX-first script export :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-056
