@@ -215,3 +215,29 @@ initial implementation, not this revision.
   No external audit was invoked under the continuing operator exception.
 - Word row insertion, merging and splitting remain a human editing UT.
   No merge or installation; return to ATTENDED mode for that inspection.
+
+* Follow-up: tighter British layout, 2026-10-11
+The operator requested tighter spacing after providing six comparative
+screenshots through the ss skill. The PDF and DOCX screenshots contain
+different script revisions, so their total page counts are not parity evidence.
+
+- Cell padding was already zero. British DOCX now uses single line spacing
+  instead of 1.2; speech, direction, transition and prop vertical gaps are
+  halved. This intentionally scales configured spacing for the compact DOCX
+  mapping; it is not exact numeric parity with the original W054 layout contract.
+- Cast entries have a distinct paragraph style without trailing paragraph
+  space in British mode. Separate-line mode retains its earlier spacing.
+- A bounded render comparison exposed excessive pagination from table cue
+  keep-next: the compact Quadriplegia render was 27 pages with it, 24 without.
+  Table cues now omit keep-next; separate-line cues retain it. The executable
+  scene test checks that distinction. Long table rows remain breakable.
+- Final local LibreOffice previews are 24 pages for Quadriplegia and 16 for
+  Halloween Dinner, versus 42 and 25 before these changes. Text-run comparisons
+  confirm no changes to either script's exported text. Inspected the first scene
+  page before and after the pagination correction.
+- New ignored artefacts use =-tighter.docx= and =-tighter.pdf= names, preserving
+  the earlier comparison files. The PDF conversion implementation is unchanged.
+- Application tests excluding the prospective W054 office requirements and
+  =make lint= pass; see [[file:tighter-tests.txt][test evidence]]. Previous full-fidelity geometry
+  evidence does not assert the newly scaled spacing. Author self-review only;
+  editing and page-break acceptance in the user's application remain a UT.

@@ -337,7 +337,12 @@ func TestSpikeDOCXContinuousSceneTable(t *testing.T) {
 			if err != nil {
 				t.Fatalf("%v %s", err, stderr)
 			}
-			body := officeBody(t, officePackage(t, raw), "docx")
+			pkg := officePackage(t, raw)
+			body := officeBody(t, pkg, "docx")
+			speaker := officeStyle(t, pkg, "docx", "Folio Speaker")
+			if got := len(speaker.all("keepNext")); (style == "british" && got != 0) || (style != "british" && got != 1) {
+				t.Fatalf("speaker keep-next joins table rows or separates a paragraph cue: %d", got)
+			}
 			tables := body.all("tbl")
 			if style != "british" {
 				if len(tables) != 0 {

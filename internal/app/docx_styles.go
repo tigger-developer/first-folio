@@ -234,9 +234,12 @@ func (w *docxWriter) paragraphProperties(role, path string, size float64) (docxN
 	}
 	align = w.cfg.String(path+".align", "left")
 	switch role {
-	case "Body", "Footnote":
+	case "Body", "Footnote", "Cast":
 		before = 0
 		after = int(math.Round(size * 12))
+		if role == "Cast" && w.sameLine {
+			after = 0
+		}
 		align = "left"
 	case "Prop":
 		before = int(math.Round(size * 32))
@@ -297,9 +300,17 @@ func (w *docxWriter) paragraphProperties(role, path string, size float64) (docxN
 		return docxNode{}, fmt.Errorf("DOCX %s indentation leaves no usable text width", path)
 	}
 	props := dx("pPr")
-	if role == "Speaker" || role == "Instruction" || role == "Act" || role == "Scene" || role == "Intro" {
+	if role == "Speaker" && !w.sameLine || role == "Instruction" || role == "Act" || role == "Scene" || role == "Intro" {
 		props.children = append(props.children, dx("keepNext"))
 	}
-	props.children = append(props.children, dx("spacing").attr("w:before", dxInt(before)).attr("w:after", dxInt(after)).attr("w:line", "288").attr("w:lineRule", "auto"), dx("ind").attr("w:left", dxInt(left)).attr("w:right", dxInt(right)), dxVal("jc", align))
+	line := "288"
+	if w.sameLine {
+		line = "240"
+		if role == "Direction" || role == "Transition" || role == "Prop" {
+			before /= 2
+			after /= 2
+		}
+	}
+	props.children = append(props.children, dx("spacing").attr("w:before", dxInt(before)).attr("w:after", dxInt(after)).attr("w:line", line).attr("w:lineRule", "auto"), dx("ind").attr("w:left", dxInt(left)).attr("w:right", dxInt(right)), dxVal("jc", align))
 	return props, nil
 }

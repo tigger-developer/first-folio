@@ -207,11 +207,11 @@ func (w *docxWriter) body() ([]docxNode, error) {
 				i++
 				row := w.doc.Events[i]
 				primary, _ := play.ParseCastName(row.Name)
-				left, e := w.paragraph("Body", primary)
+				left, e := w.paragraph("Cast", primary)
 				if e != nil {
 					return nil, e
 				}
-				right, e := w.paragraph("Body", row.Text)
+				right, e := w.paragraph("Cast", row.Text)
 				if e != nil {
 					return nil, e
 				}
@@ -335,7 +335,7 @@ func (w *docxWriter) speech(event play.Event, text string) ([]docxNode, error) {
 	}
 	// Space belongs inside the row so no outside paragraph splits an editable scene.
 	for _, p := range []*docxNode{&speaker, &content[0]} {
-		p.children[0].children = append(p.children[0].children, dx("spacing").attr("w:before", dxInt(space)))
+		p.children[0].children = append(p.children[0].children, dx("spacing").attr("w:before", dxInt(space/2)))
 	}
 	table.children = append(table.children, w.tableRow(cue, []docxNode{speaker}, content))
 	return []docxNode{table}, nil
