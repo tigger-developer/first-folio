@@ -1,0 +1,21 @@
+MATCH british org
+MATCH british md
+warning: character table has no Fountain equivalent, rendering as Action text
+warning: character table has no Fountain equivalent, rendering as Action text
+MATCH british fountain
+MATCH british typ
+MATCH british pdf
+MATCH us org
+MATCH us md
+warning: character table has no Fountain equivalent, rendering as Action text
+warning: character table has no Fountain equivalent, rendering as Action text
+MATCH us fountain
+MATCH us typ
+MATCH us pdf
+MATCH screenplay org
+MATCH screenplay md
+warning: character table has no Fountain equivalent, rendering as Action text
+warning: character table has no Fountain equivalent, rendering as Action text
+MATCH screenplay fountain
+MATCH screenplay typ
+MATCH screenplay pdf

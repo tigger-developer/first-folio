@@ -74,7 +74,107 @@ an independent audit PASS or product-delivery approval.
   so the reduced contract does not erase the original fidelity expectations.
 
 * Evidence
-Pending baseline, test-first execution, interoperability and self-review.
+The initial pending evidence entry is superseded by this 2026-10-11 record.
+Implementation checkpoint: =81d2457=. No merge, installation or deployment.
+
+** Automated checks
+- [[file:baseline.txt][Baseline]] and [[file:preservation.txt][preservation run]]: all packages pass with
+  =go test ./... -skip '^TestRT054_[123]' -count=1=. The exclusions are the
+  prospective W054 office requirements, not existing conversion regressions.
+  The [[file:app-final.txt][final application rerun]] at the implementation checkpoint also passes.
+- [[file:red.txt][Initial RED]]: executable tests failed before DOCX format registration.
+- [[file:spike-green.txt][Spike GREEN]]: all seven =TestSpikeDOCX= functions pass through executable
+  boundaries. The log's 43.8% is parent test-process coverage, not adapter coverage.
+  Instrumented child binaries with =GOFLAGS=-cover= and =GOCOVERDIR= cover
+  539/626 new =docx_*.go= statements (86.1%), extracted using =go tool covdata=.
+- Original DOCX subtests for native formatting, active-role fonts, separate
+  speech geometry, body lengths and act breaks pass. Original tests were not edited.
+- [[file:comparison.txt][Baseline comparison]]: all 15 British/US/screenplay by
+  Org/Markdown/Fountain/Typst/PDF cases match. Text and Typst bytes match;
+  PDF text bounding boxes and every 72-dpi rendered page match byte-for-byte.
+- [[file:full-suite.txt][Full make test]] remains RED for ODT and exact title/frontmatter requirements.
+  These are recorded scope limitations, not a claim of W054 delivery.
+- =make lint= (go vet), gofmt and =git diff --check= pass. =govulncheck ./...=
+  reports no vulnerabilities. Installed golangci-lint 1.64.8 cannot decode Go
+  1.27.2 export data (version 5; reader supports version 2); no lint PASS is
+  claimed for that tool and the global installation was not changed.
+
+** Interoperability and visual inspection
+- Pandoc 3.9.0.2 reads the packages. LibreOffice 26.2.3.2 imports and renders
+  British, US and screenplay samples as four-page PDFs.
+- Inspected rendered title, cast/intro, British dialogue, screenplay dialogue
+  and long-dialogue continuation pages. Text, cue columns, native footnotes
+  and page fields are present and readable in those samples.
+- A 160-line British speech flows over nine pages; all 160 markers survive,
+  with the speaker cue occurring once. No repeated cue is promised on continuation.
+- Secondary Pandoc DOCX-to-ODT conversion preserves sample text but collapses
+  four A4 pages to one Letter page and loses role typography and page geometry.
+  ODT conversion is therefore not an equivalent-fidelity fallback.
+- Samples and the isolated executable are in ignored =dist/docx-spike/=.
+  Their PDFs are LibreOffice previews, not Word acceptance evidence.
+- Word editing, Word no-repair behaviour and full OOXML schema validation were
+  not exercised. No independent audit was performed.
+
+** Author self-review
+- Correctness: review found duplicate =pageBreakBefore= when an act begins the
+  first body page. A failing assertion reproduced it; generation now deduplicates
+  that property and retains its schema order. The assertion passes.
+- Configuration: review found a root =1.5em= font size applied twice. A failing
+  executable test expected 36 half-points; resolution now uses the 12-point root
+  base exactly once and the test passes.
+- Test fixture: macOS =script= propagates the guarded command's exit status.
+  The terminal test now expects exit 1 for refusal and success for =--force=;
+  this was a test expectation correction, not an exporter bypass.
+- Security: XML encoding escapes text; invalid XML characters are rejected.
+  No external relationships, macros or subprocesses are generated. Sources are
+  bounded at 32 MiB, events at 50,000, inline segments at 100,000, expanded text
+  at 32 MiB, and generated XML/package bytes at 128 MiB. These are output/work
+  bounds, not a claim that process memory is limited to 128 MiB.
+- Publication: build before writing, refuse source identity/hardlinks and
+  destination symlinks, stage at mode 0600 beside the destination, then rename.
+  Recheck before rename; this does not promise protection against adversarial
+  concurrent parent-directory changes. No durability/fsync guarantee is made.
+- Maintainability: five adapter files separate XML, styles, content, pages and
+  publication. Some content/style dispatch functions exceed the usual size
+  guideline; explicit format mapping was retained rather than introducing a
+  general document framework. This remains author judgement, not independent review.
+- Shared dispatch now selects configuration/format before reading the source,
+  so error precedence can change when multiple inputs are invalid. Existing
+  successful routes match the baseline; parsers, renderer and templates are unchanged.
 
 * Findings
-Pending experiment results. Word editing and visual acceptance remain unverified.
+The experiment demonstrates useful editable DOCX for the reduced contract.
+It does not establish full-fidelity W054 office export or product approval.
+
+| Area | Implemented support | Limitation |
+|------+---------------------+------------|
+| Sources | Org, Markdown, Fountain; three script styles | Export only; no DOCX reader |
+| Content | Ordered text, emphasis, cues, directions, props, cast, headings, native notes | Existing parser interpretation is retained |
+| Speech | British native table; US/screenplay native paragraphs | Reader pagination may differ; continuation cues are not repeated |
+| Fonts | Role families, size, bold/regular, italic, tracking, stretch | Oblique approximates italic; unsupported weights fail |
+| Geometry | Paper, margins, indents, spacing, column widths, act breaks | Line spacing uses 1.2; negative before/after space clamps to zero with warning |
+| Title | Dedicated/compact title, subtitle, author, date and version | Approximate vertical placement; date/version are in-flow, not bottom footer slots |
+| Running matter | Native first/odd/even parts, PAGE/NUMPAGES, first-page suppression | Single section; body variant also covers intro, with warning; no numbering reset |
+| ODT | One-off Pandoc conversion probed | Substantial layout loss; no CLI ODT route |
+
+Recommendation: retain this native adapter as the candidate for a narrower
+DOCX product change, subject to Word user validation and an agreed support
+contract. The original Pandoc-first serializer and a direct ODT writer were
+not implemented; neither is needed to answer this single-target experiment.
+Product help, release documentation and original W054 ticket reconciliation
+remain outside this spike. Existing W054 specification and tests remain intact.
+
+** Try the isolated executable
+From this worktree, the ignored binary can be used without installing it:
+#+BEGIN_SRC sh
+./dist/docx-spike/folio convert dist/docx-spike/sample.org dist/docx-spike/try.docx
+#+END_SRC
+Open =dist/docx-spike/british.docx= in Word for the remaining visual/editing UT.
+
+** References
+- [[https://learn.microsoft.com/en-us/office/open-xml/word/structure-of-a-wordprocessingml-document][Microsoft WordprocessingML structure]]
+- [[https://learn.microsoft.com/en-us/office/open-xml/word/working-with-wordprocessingml-tables][Microsoft WordprocessingML tables]]
+
+** Handback
+Return to ATTENDED mode with this branch unmerged. The human determines the
+spike's disposition; this evidence record does not close W054.
