@@ -1,0 +1,17 @@
+?   	github.com/tigger-developer/first-folio	[no test files]
+?   	github.com/tigger-developer/first-folio/cmd/folio	[no test files]
+ok  	github.com/tigger-developer/first-folio/cmd/update-homebrew	1.225s
+ok  	github.com/tigger-developer/first-folio/internal/app	(cached)
+ok  	github.com/tigger-developer/first-folio/internal/config	(cached)
+ok  	github.com/tigger-developer/first-folio/internal/letter	(cached)
+ok  	github.com/tigger-developer/first-folio/internal/manuscript	(cached)
+ok  	github.com/tigger-developer/first-folio/internal/play	(cached)
+ok  	github.com/tigger-developer/first-folio/internal/typst	(cached)
+To github.com:tigger-developer/first-folio.git
+   bf777ad..5b1849d  master -> master
+To github.com:tigger-developer/first-folio.git
+ * [new tag]         v0.4.16 -> v0.4.16
+Updated homebrew/Formula/first-folio.rb to 0.4.16 (e50633fbe8979a8f5c438c1caf4f9422cd72ab6cf140a0f45ca7d99e13b6c74e)
+Error: git push: exit status 128: fatal: could not read Username for 'https://github.com': Device not configured
+exit status 1
+make: *** [release] Error 1

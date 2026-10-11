@@ -16,6 +16,10 @@
 * Test results
 
 ** GREEN UT055.1 - Org emphasis PDF check :testdef:
+:PROPERTIES:
+:REVISION: f99567f, renderer unchanged through 5b1849d
+:EVIDENCE: User validation dated 2026-10-11, retained below; no automated visual result inferred.
+:END:
 - Date :: 2026-10-11.
 - Method :: User validation.
 - Outcome :: Org bold/italic rendering fix reported passing. Source change is
@@ -28,10 +32,17 @@
 - Required evidence :: Date, viewer, tested revision, and whether =*this*=
   renders bold and =/this/= renders italic in the candidate PDF.
 
-** RED OT055.1 - Regression suite re-run :testdef:
+** GREEN OT055.1 - Regression suite re-run :testdef:
 :PROPERTIES:
-:REASON: Full make test fails W054 office-export expectations; closure's all-GREEN condition is not met.
+:REVISION: 5b1849d, release v0.4.16
+:EVIDENCE: ../059-homebrew-release/publication.txt and regression.txt; all packages pass; make lint exits 0.
 :END:
+- Current result :: 2026-10-11, complete maintained suite passes after the documented
+  W059 office-contract reconciliation. No Org-emphasis assertion was weakened;
+  the original renderer is byte-identical to f99567f.
+
+*** Earlier RED run
+The previous closure condition was not met because W054 office expectations failed.
 - Date :: 2026-10-11.
 - Revision :: =a318483 - DOCX adoption merge=.
 - Command :: =make test=; exit 2, with Go test failure in =internal/app=.
@@ -47,8 +58,19 @@
 - Required evidence :: Dated =make test= (and =make lint=) result for the
   tested revision, with remediation notes for any corrected assertion.
 
-* Closure disposition
+* Earlier closure disposition, superseded 2026-10-11
 The passing user test is retained. The ticket remains open because the required
 complete-suite result is RED. No independent audit result is claimed; the
 external harness remains excluded for this session. The unrelated W054 contract
 needs reconciliation before an all-GREEN closure claim can be made.
+
+* Closure evidence - 2026-10-11
+The retained user validation and current full-suite GREEN satisfy the explicit
+conditional closure authorization. The ledger records closure. Self-review
+confirmed source-format selection, recursive footnote format propagation and
+unchanged Markdown/Fountain handling in =script_render.go=. The Org format
+document remains accurate; no product documentation change was needed.
+Retrospective specification review agrees with this bounded implementation.
+The authorized external-harness exception remains in effect; no independent
+audit verdict is claimed. Viewer/hash limitations in the original UT remain
+explicit and are not replaced with invented evidence.

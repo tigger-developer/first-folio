@@ -4,8 +4,8 @@
 class FirstFolio < Formula
   desc "Convert stage plays to Org, Markdown, Fountain, PDF, DOCX and ODT"
   homepage "https://github.com/tigger-developer/first-folio"
-  url "https://github.com/tigger-developer/first-folio/archive/refs/tags/v0.4.14.tar.gz"
-  sha256 "23ed2756c86e2a60b02dd30a473c41dae287ab9a7b608aa938765ecd0d9fb6f4"
+  url "https://github.com/tigger-developer/first-folio/archive/refs/tags/v0.4.16.tar.gz"
+  sha256 "e50633fbe8979a8f5c438c1caf4f9422cd72ab6cf140a0f45ca7d99e13b6c74e"
   license "MIT"
   head "https://github.com/tigger-developer/first-folio.git", branch: "master"
 

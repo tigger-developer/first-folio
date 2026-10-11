@@ -3,7 +3,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-11, conditional closure after passing regression suite
 
 * Synopsis
 :PROPERTIES:
@@ -268,3 +268,10 @@
   claims the PDF renderer interprets Org source markers; verify that claim is
   accurate after the fix and record the outcome. No other document is
   expected to change.
+
+* Delivery reconciliation - 2026-10-11
+The earlier implementation handoff is retained as history. The Org-aware renderer
+landed in =f99567f - Org emphasis rendering fix= and remains unchanged in the
+release candidate. Current user and regression evidence is recorded in
+[[file:validation.org][W055 - emphasis validation and closure evidence]].
+Self-review replaces the unavailable external harness under the session exception.

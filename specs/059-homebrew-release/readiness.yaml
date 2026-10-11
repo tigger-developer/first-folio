@@ -1,0 +1,59 @@
+audit-readiness:
+  schema:
+    valid: true
+    errors: []
+  inventory:
+    counts:
+      acceptance-criteria: 3
+      tests: 5
+      rt: 2
+      ot: 2
+      ut: 1
+    acceptance-criteria:
+      - id: AC059.1
+        title: Regression checks run under ordinary cache settings
+        file: specs/059-homebrew-release/spec.org
+        line: 30
+      - id: AC059.2
+        title: Release gates publication and selects the tap
+        file: specs/059-homebrew-release/spec.org
+        line: 39
+      - id: AC059.3
+        title: Homebrew receives the current release
+        file: specs/059-homebrew-release/spec.org
+        line: 49
+    tests:
+      - id: RT059.1
+        title: Office regressions
+        state: GREEN
+        file: specs/059-homebrew-release/spec.org
+        line: 59
+        validation-line: 13
+      - id: RT059.2
+        title: Release boundary
+        state: GREEN
+        file: specs/059-homebrew-release/spec.org
+        line: 69
+        validation-line: 25
+      - id: OT059.1
+        title: Default-cache isolation and full suite
+        state: GREEN
+        file: specs/059-homebrew-release/spec.org
+        line: 77
+        validation-line: 35
+      - id: OT059.2
+        title: Live release and archive build
+        state: GREEN
+        file: specs/059-homebrew-release/spec.org
+        line: 86
+        validation-line: 46
+      - id: UT059.1
+        title: Homebrew installation
+        state: AMBER
+        file: specs/059-homebrew-release/spec.org
+        line: 97
+        validation-line: 70
+  delivery-code:
+    evaluated: true
+    ready: true
+    errors: []

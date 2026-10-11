@@ -1,0 +1,37 @@
+audit-readiness:
+  schema:
+    valid: true
+    errors: []
+  inventory:
+    counts:
+      acceptance-criteria: 2
+      tests: 2
+      rt: 0
+      ot: 1
+      ut: 1
+    acceptance-criteria:
+      - id: AC055.1
+        title: Org emphasis renders with Org semantics
+        file: specs/055-org-script-emphasis/spec.org
+        line: 146
+      - id: AC055.2
+        title: Non-Org sources retain their rendering
+        file: specs/055-org-script-emphasis/spec.org
+        line: 157
+    tests:
+      - id: UT055.1
+        title: Org emphasis PDF check
+        state: GREEN
+        file: specs/055-org-script-emphasis/spec.org
+        line: 171
+        validation-line: 18
+      - id: OT055.1
+        title: Regression suite re-run
+        state: GREEN
+        file: specs/055-org-script-emphasis/spec.org
+        line: 186
+        validation-line: 35
+  delivery-code:
+    evaluated: true
+    ready: true
+    errors: []

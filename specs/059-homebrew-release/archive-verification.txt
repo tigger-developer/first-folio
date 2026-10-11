@@ -1,0 +1,4 @@
+Published archive SHA-256 verified: e50633fbe8979a8f5c438c1caf4f9422cd72ab6cf140a0f45ca7d99e13b6c74e
+Archive CLI docx: PASS (4138 bytes)
+Archive CLI odt: PASS (3372 bytes)
+Archive CLI pdf: PASS (16673 bytes)

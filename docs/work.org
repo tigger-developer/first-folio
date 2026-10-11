@@ -78,7 +78,7 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** ACTIVE W059 - Restore the Homebrew release path :defect:
+** REVIEW W059 - Restore the Homebrew release path :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-059
 :CREATED: 2026-10-11
@@ -86,7 +86,7 @@ classification; it is provenance, not current state.
 - Specification :: [[file:../specs/059-homebrew-release/spec.org][W059 - Emergency release repair and publication]].
 - Evidence :: [[file:../specs/059-homebrew-release/validation.org][Regression, publication and self-review records]].
 
-** ACTIVE W055 - Org script emphasis renders bold as italic in PDF :defect:
+** DONE W055 - Org script emphasis renders bold as italic in PDF :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-055
 :SOURCE: operator
@@ -99,8 +99,8 @@ classification; it is provenance, not current state.
   letter and office routes are *unchanged*.
 - Validation :: Emergency route with *operator user test* and a maintained
   regression-suite sweep; no new automated RT by operator decision.
-- Review record :: [[file:../specs/055-org-script-emphasis/audits.yaml][Independent delivery review]] once the harness records it.
-- Current evidence :: [[file:../specs/055-org-script-emphasis/validation.org][UT passes; merged full-suite result is RED for W054 office requirements]].
+- Review record :: Self-review recorded in validation; external harness excluded under the session exception. No independent audit verdict.
+- Current evidence :: [[file:../specs/055-org-script-emphasis/validation.org][UT and full regression suite pass; conditional closure recorded 2026-10-11]].
 ** ACTIVE W058 - Configured Pandoc ODT export :feature:
 :PROPERTIES:
 :WORK_ID: W058
@@ -111,7 +111,7 @@ classification; it is provenance, not current state.
 - Predecessor :: W057 - Pandoc AST experiment, retained on unmerged branch
   spike/W057-odt-ast at 96ba6d5. Its identifier remains reserved.
 - Validation :: [[file:../specs/058-odt-export/validation.org][W058 - tests, rendered comparison and self-review]].
-  ODT/DOCX scoped tests pass; retained W054 expectations keep the full suite RED.
+  ODT/DOCX scoped tests pass. The earlier full-suite RED is superseded by\n  [[file:../specs/059-homebrew-release/validation.org][W059 - reconciled regression suite and publication evidence]].
 
 
 ** ACTIVE W056 - Adopt DOCX-first script export :feature:

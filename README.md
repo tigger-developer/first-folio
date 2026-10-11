@@ -61,7 +61,9 @@ From a committed checkout, `make release` runs the regression suite, creates the
 next patch tag, pushes the branch and that tag, then updates and pushes the
 Homebrew formula with the archive URL and SHA-256 checksum. Go, Typst and Pandoc
 must be installed for the release checks. The tap checkout must be clean, current
-and configured with a writable upstream.
+and configured with an authenticated, writable upstream. SSH remotes can use
+the same GitHub access as the source repository; an HTTPS clone needs separate
+HTTPS credentials.
 
 `HOMEBREW_TAP_DIR` selects the tap checkout; its default is
 `~/code/tigoss/homebrew-tap`. `RELEASE_VERSION` can select an explicit tag:
@@ -73,7 +75,8 @@ make release RELEASE_VERSION=v0.4.16 HOMEBREW_TAP_DIR=/path/to/homebrew-tap
 Only `SKIP_TESTS=1` skips the release test prerequisite and prints a notice;
 unset or `0` runs it. The updated local `homebrew/Formula/first-folio.rb` remains
 available to review and commit after publication. If publication fails after
-tagging, preserve that tag and retry only the formula step:
+tagging, preserve that tag. If the tap commit already exists, retry its push
+from the tap checkout. Otherwise retry the formula step:
 
 ```bash
 go run ./cmd/update-homebrew --publish-tap /path/to/homebrew-tap 0.4.16

@@ -4,7 +4,7 @@
 
 * Execution context
 - Date :: 2026-10-11.
-- Candidate :: bf777ad plus the W059 release/test reconciliation working tree.
+- Candidate :: =5b1849d - restore tested Homebrew release publication=, tagged v0.4.16. Earlier pre-commit runs used the identical identified working tree.
 - Environment :: macOS arm64; Go 1.27.2, Pandoc 3.9.0.2, local Typst.
 - External audit :: Excluded by the existing session exception; author checks
   below are self-review, not independent audit results.
@@ -43,10 +43,26 @@ afterwards. The full suite used an explicitly isolated module cache to respect
 the filesystem write boundary. These are separate checks; the explicit-cache
 run alone would not prove the default-cache repair. Formula Ruby syntax passes.
 
-** AMBER OT059.2 - Live release and archive build :testdef:
+** GREEN OT059.2 - Live release and archive build :testdef:
 :PROPERTIES:
-:REASON: Publication follows the coherent implementation checkpoint.
+:REVISION: 5b1849d, release v0.4.16; tap commit 5ba632d
+:EVIDENCE: publication.txt, tap-push.txt and archive-verification.txt; remote tag and formula verified.
 :END:
+=make release RELEASE_VERSION=v0.4.16 HOMEBREW_TAP_DIR= with the isolated clone
+ran every regression package, pushed master and the annotated tag, and generated
+the matching formula. Its final HTTPS tap push failed for missing credentials,
+so make exited 2. The isolated clone was switched to the same SSH authentication
+method as the source repository; retrying only its push succeeded. No retag or
+second release invocation occurred.
+
+The fetched remote formula matches the local formula byte-for-byte. The published
+archive checksum is =e50633fbe8979a8f5c438c1caf4f9422cd72ab6cf140a0f45ca7d99e13b6c74e=.
+Building that archive with the formula's Go arguments reports =folio 0.4.16=.
+The archive-built CLI produced DOCX, ODT and PDF from a synthetic Org script in
+an isolated caller directory. No Homebrew installation result is inferred.
+
+*** Earlier publication state
+Publication was pending at the implementation checkpoint. The baseline follows.
 Remote tap HEAD ab38f7a contains v0.4.7, old owner URLs and Perl installation.
 Current source formula uses the current owner and Go installation with Pandoc.
 The isolated tap clone is clean and has no SDLC profile or local AGENTS.md.
@@ -56,7 +72,7 @@ The isolated tap clone is clean and has no SDLC profile or local AGENTS.md.
 :REASON: Global package-manager writes require operator execution outside the agent write boundary.
 :END:
 Pending installation or upgrade through Homebrew, version check and conversion.
-Archive build verification will be recorded separately under the live-release OT.
+Archive build verification is GREEN separately under the live-release OT.
 
 * Author review
 - Scope :: Conversion production files and PDF/Typst templates are unchanged.
@@ -72,3 +88,17 @@ Archive build verification will be recorded separately under the live-release OT
   incompatible with Go 1.27 export data; make lint runs go vet successfully.
 - Documentation :: README covers release variables and recovery. W054/W056/W058
   now link the explicit contract reconciliation; prior evidence is preserved.
+
+* Retrospective self-review - 2026-10-11
+The emergency scope and design match the delivered delta: Make release selection
+and test gating, test isolation, accepted office assertions, formula publication
+and documentation. The live authentication failure was isolated to HTTPS push,
+not attributed to the username change; SSH publication succeeded. No product
+conversion source changed. External review remains excluded by authorization.
+The Homebrew install UT remains outstanding; W059 is presented for review rather
+than claiming installation validation or an independent audit verdict.
+
+* Local executable check
+=make build= rebuilt the root checkout after tagging. The existing user-managed
+=~/.local/bin/folio= symlink resolves to this checkout's =dist/folio= and reports
+=folio 0.4.16=. This is the existing source installation, not a Homebrew install.
