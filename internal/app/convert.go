@@ -27,15 +27,14 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	raw, err := readTextInput(opts.source)
-	if err != nil {
-		return err
-	}
 	sourceFormat, err := play.FormatFromPath(opts.source)
 	if err != nil {
 		return err
 	}
 	if !sourceFormat.Readable() {
+		if sourceFormat == play.FormatDOCX {
+			return fmt.Errorf("cannot read from docx format. DOCX is write-only")
+		}
 		return fmt.Errorf("cannot read from %s format. PDF is write-only", sourceFormat)
 	}
 
@@ -57,6 +56,15 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
+	var raw []byte
+	if targetFormat == play.FormatDOCX {
+		raw, err = readDOCXSource(opts.source)
+	} else {
+		raw, err = readTextInput(opts.source)
+	}
+	if err != nil {
+		return err
+	}
 	doc, parseWarnings, err := play.Parse(sourceFormat, string(raw), opts.source)
 	if err != nil {
 		return err
@@ -65,6 +73,9 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 		fmt.Fprintln(stderr, warning)
 	}
 	applyScriptConfig(&doc, cfg)
+	if targetFormat == play.FormatDOCX {
+		return exportDOCX(doc, cfg, opts, toStdout, stdout, stderr)
+	}
 	if targetFormat == play.FormatPDF {
 		return renderPlayDocument(doc, cfg, sourceFormat, opts.target, toStdout, opts.force, stdout)
 	}

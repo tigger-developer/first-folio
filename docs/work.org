@@ -92,6 +92,18 @@ classification; it is provenance, not current state.
 - Validation :: Emergency route with *operator user test* and a maintained
   regression-suite sweep; no new automated RT by operator decision.
 - Review record :: [[file:../specs/055-org-script-emphasis/audits.yaml][Independent delivery review]] once the harness records it.
+** ACTIVE W056 - Adopt DOCX-first script export :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-056
+:CREATED: 2026-10-11
+:END:
+- Specification :: [[file:../specs/056-docx-first-adoption/spec.org][W056 - DOCX-first adoption and ODT evaluation]].
+- Historical brief :: [[file:../specs/055-docx-first-spike/spike.org][Original W055 - DOCX-first exploration]].
+- Allocation history :: The parallel spike independently allocated W055,
+  colliding with W055 - Org emphasis. W056 is the adoption successor, not a
+  renumbering of historical spike artifacts or test evidence.
+- Original spike boundary :: Isolated branch, no merge or deployment; superseded
+  for local integration by approval dated 2026-10-11. No installation or publication.
 
 ** ACTIVE W054 - Preserve script formatting in DOCX and ODT exports :feature:
 :PROPERTIES:

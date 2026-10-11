@@ -1,0 +1,41 @@
+#+TITLE: W056 - DOCX-first adoption and ODT evaluation
+#+STARTUP: overview
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-11, local merge and bounded ODT experiment
+
+* Scope
+Adopt the implemented [[file:../055-docx-first-spike/spike.org][DOCX-first spike contract]],
+including continuous British scene tables and tighter spacing, on =master=.
+Preserve =f99567f - Org emphasis rendering fix= and record its user validation.
+Run the complete =make test= regression suite after integration; close the
+Org-emphasis work item only if the required verification passes.
+
+* Integration decisions
+- The explicit local merge approval supersedes the original no-merge spike
+  boundary. Installation, remote publication and ODT product implementation
+  are not part of this adoption step.
+- External audit harness remains excluded under the existing approval;
+  author self-review is recorded without claiming independent audit approval.
+- W056 is a new adoption item. The spike's historical W055 allocation collided
+  with the independently committed Org-emphasis item. Historical filenames,
+  branch names and evidence remain intact; W055 in the primary ledger refers
+  to Org emphasis, and this item links the spike lineage explicitly.
+- Preserve Org-aware PDF source-format dispatch. Adapt the DOCX reference to
+  the renamed shared star-pair regex without extending the PDF-only fix to
+  DOCX behaviour during conflict resolution.
+- Existing W054 full-fidelity tests remain unchanged. Record their actual
+  results separately; do not suppress them to produce a successful make target.
+
+* Bounded ODT experiment
+- Input :: The two existing local British DOCX samples from Quadriplegia and
+  Halloween Dinner; their text remains in ignored local output only.
+- Operation :: Local Pandoc DOCX-to-ODT, then local LibreOffice PDF rendering.
+- Evidence :: Compare page size/count, text, table/cell structures, styles,
+  running matter and representative pages against the DOCX previews.
+- Bounds :: Two conversions and two previews, with one diagnostic rerun if
+  needed. No hosted service, network submission or metered API; no persistent
+  regression target and no ODT CLI support added by this experiment.
+- Decision :: Recommend whether stock Pandoc conversion meets the agreed
+  formatting/editability intent; document losses and keep a contrary result.
+
+* Evidence
+Pending merged-suite and ODT results, recorded in validation.org.

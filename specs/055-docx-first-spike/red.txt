@@ -1,0 +1,26 @@
+--- FAIL: TestSpikeDOCXSourceStyleMatrix (0.69s)
+    --- FAIL: TestSpikeDOCXSourceStyleMatrix/.org/british (0.33s)
+        spike_docx_test.go:18: export .org/docx/british: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestSpikeDOCXSourceStyleMatrix/.org/us (0.01s)
+        spike_docx_test.go:18: export .org/docx/us: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestSpikeDOCXSourceStyleMatrix/.org/screenplay (0.01s)
+        spike_docx_test.go:18: export .org/docx/screenplay: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestSpikeDOCXSourceStyleMatrix/.md/british (0.01s)
+        spike_docx_test.go:18: export .md/docx/british: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestSpikeDOCXSourceStyleMatrix/.md/us (0.01s)
+        spike_docx_test.go:18: export .md/docx/us: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestSpikeDOCXSourceStyleMatrix/.md/screenplay (0.01s)
+        spike_docx_test.go:18: export .md/docx/screenplay: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestSpikeDOCXSourceStyleMatrix/.fountain/british (0.01s)
+        spike_docx_test.go:18: export .fountain/docx/british: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestSpikeDOCXSourceStyleMatrix/.fountain/us (0.01s)
+        spike_docx_test.go:18: export .fountain/docx/us: exit status 1: Error: Unrecognised file extension: .docx
+    --- FAIL: TestSpikeDOCXSourceStyleMatrix/.fountain/screenplay (0.01s)
+        spike_docx_test.go:18: export .fountain/docx/screenplay: exit status 1: Error: Unrecognised file extension: .docx
+--- FAIL: TestSpikeDOCXRichContentAndConfig (0.44s)
+    spike_docx_test.go:51: exit status 1: Error: Unrecognised format: docx
+--- FAIL: TestSpikeDOCXSelectionAndFailures (0.47s)
+    spike_docx_test.go:105: exit status 1: Error: Unrecognised format: docx
+FAIL
+FAIL	github.com/tigger-developer/first-folio/internal/app	2.013s
+FAIL

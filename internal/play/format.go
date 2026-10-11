@@ -15,6 +15,7 @@ const (
 	FormatMarkdown Format = "markdown"
 	FormatFountain Format = "fountain"
 	FormatPDF      Format = "pdf"
+	FormatDOCX     Format = "docx"
 )
 
 func FormatFromPath(path string) (Format, error) {
@@ -31,6 +32,8 @@ func FormatFromPath(path string) (Format, error) {
 		return FormatFountain, nil
 	case ".pdf", ".typ":
 		return FormatPDF, nil
+	case ".docx":
+		return FormatDOCX, nil
 	default:
 		return "", fmt.Errorf("Unrecognised file extension: %s", ext)
 	}
@@ -46,6 +49,8 @@ func ParseFormat(name string) (Format, error) {
 		return FormatFountain, nil
 	case "pdf":
 		return FormatPDF, nil
+	case "docx":
+		return FormatDOCX, nil
 	default:
 		return "", fmt.Errorf("Unrecognised format: %s", name)
 	}
