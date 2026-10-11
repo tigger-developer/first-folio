@@ -5,13 +5,15 @@ package app
 import (
 	"bytes"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
 
 func TestSpikeDOCXSourceStyleMatrix(t *testing.T) {
-	binary := officeBuild(t)
+	binary := spikeDOCXBuild(t)
 	for _, source := range []string{".org", ".md", ".fountain"} {
 		for _, style := range []string{"british", "us", "screenplay"} {
 			t.Run(source+"/"+style, func(t *testing.T) {
@@ -37,7 +39,7 @@ func TestSpikeDOCXSourceStyleMatrix(t *testing.T) {
 }
 
 func TestSpikeDOCXRichContentAndConfig(t *testing.T) {
-	binary := officeBuild(t)
+	binary := spikeDOCXBuild(t)
 	dir := t.TempDir()
 	src := filepath.Join(dir, "rich.org")
 	text := "#+TITLE: Rich & <editable>\n#+SCHEMA: https://example.invalid/schema\n* CHARACTERS\n| CÁIT | A visitor |\n* Introduction\nOpening summary.\n* ACT ONE\n** SCENE ONE\n*** Night direction.\n**** CÁIT (quietly)\n**Bold text** and *italic text* and ***combined text*** and _underlined text_ and =literal text=.[fn:note]\n*** Prop card :prop:\n***** CUT TO\n[fn:note] Note content. **Bold note** and *italic note*.\n"
@@ -94,7 +96,7 @@ func TestSpikeDOCXRichContentAndConfig(t *testing.T) {
 }
 
 func TestSpikeDOCXSelectionAndFailures(t *testing.T) {
-	binary := officeBuild(t)
+	binary := spikeDOCXBuild(t)
 	dir := t.TempDir()
 	src := filepath.Join(dir, "play.org")
 	writeAppFile(t, src, officeSources[".org"])
@@ -215,4 +217,135 @@ func TestSpikeDOCXBrokenOutputStream(t *testing.T) {
 	if status == 0 {
 		t.Fatal("broken stdout reported success")
 	}
+	if !strings.Contains(stderr.String(), "broken pipe") {
+		t.Fatalf("expected write failure, got %q", stderr.String())
+	}
+}
+
+func TestSpikeDOCXTitleRunningMatterAndLimits(t *testing.T) {
+	binary := spikeDOCXBuild(t)
+	dir := t.TempDir()
+	src := filepath.Join(dir, "play.org")
+	env := officeEnv(t, t.TempDir(), nil)
+	for _, compact := range []bool{false, true} {
+		content := "#+TITLE: Page test\n* ACT ONE\n**** CÁIT\nHello.\n* ACT TWO\n**** LIAM\nEnd.\n"
+		writeAppFile(t, src, content)
+		enabled := "true"
+		if compact {
+			enabled = "false"
+		}
+		writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n    enabled: "+enabled+"\n  page-header:\n    enabled: true\n    format: 'EVEN [title] [page]'\n    alt-format: 'ODD [author] [total-pages]'\n    align: left-right\n    frontmatter-format: 'INTRO'\n")
+		raw, stderr, err := officeRun(t, binary, dir, env, "convert", src, "--to", "docx")
+		if err != nil {
+			t.Fatalf("%v %s", err, stderr)
+		}
+		if !strings.Contains(stderr, "frontmatter-format") {
+			t.Fatal("missing approximation diagnostic")
+		}
+		pkg := officePackage(t, raw)
+		body := officeBody(t, pkg, "docx")
+		first := officeParagraph(t, body, "ACT ONE")
+		second := officeParagraph(t, body, "ACT TWO")
+		count := len(first.all("pageBreakBefore"))
+		want := 1
+		if compact {
+			want = 0
+		}
+		if count != want {
+			t.Errorf("first act has %d page-break properties, want %d", count, want)
+		}
+		if len(second.all("pageBreakBefore")) != 1 {
+			t.Error("second act break lost")
+		}
+		if strings.Contains(pkg["word/header3.xml"].text(), "ODD") {
+			t.Error("first-page header not suppressed")
+		}
+		if !strings.Contains(pkg["word/header1.xml"].text(), "ODD") || !strings.Contains(pkg["word/header2.xml"].text(), "EVEN") {
+			t.Error("facing headers absent")
+		}
+		for _, part := range []string{"word/header1.xml", "word/header2.xml", "word/footer1.xml"} {
+			if len(pkg[part].all("instrText")) == 0 {
+				t.Errorf("missing live page field in %s", part)
+			}
+		}
+	}
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), "{}\n")
+	writeAppFile(t, src, strings.Repeat("a", (32<<20)+1))
+	raw, stderr, err := officeRun(t, binary, dir, env, "convert", src, "--to", "docx")
+	if err == nil || len(raw) != 0 || !strings.Contains(stderr, "32 MiB") {
+		t.Fatalf("source bound: %v %s", err, stderr)
+	}
+	writeAppFile(t, src, "* ACT ONE\n**** CÁIT\n"+strings.Repeat("**x** ", 100001))
+	raw, stderr, err = officeRun(t, binary, dir, env, "convert", src, "--to", "docx")
+	if err == nil || len(raw) != 0 || !strings.Contains(stderr, "100000") {
+		t.Fatalf("inline bound: %v %s", err, stderr)
+	}
+	writeAppFile(t, src, officeSources[".org"])
+	alias := filepath.Join(dir, "alias.docx")
+	if err := os.Link(src, alias); err != nil {
+		t.Fatal(err)
+	}
+	_, stderr, err = officeRun(t, binary, dir, env, "convert", src, alias)
+	if err == nil || !strings.Contains(stderr, "same file") {
+		t.Fatalf("source alias: %v %s", err, stderr)
+	}
+	if readAppFile(t, src) != officeSources[".org"] {
+		t.Fatal("source damaged through alias")
+	}
+}
+
+func TestSpikeDOCXTerminalGuard(t *testing.T) {
+	if runtime.GOOS != "darwin" {
+		t.Skip("uses macOS PTY command")
+	}
+	binary := spikeDOCXBuild(t)
+	dir := t.TempDir()
+	src := filepath.Join(dir, "play.org")
+	writeAppFile(t, src, officeSources[".org"])
+	for _, force := range []bool{false, true} {
+		args := []string{"-q", "/dev/null", binary, "convert", src, "--to", "docx"}
+		if force {
+			args = append(args, "--force")
+		}
+		command := exec.Command("/usr/bin/script", args...)
+		command.Env = officeEnv(t, t.TempDir(), nil)
+		raw, err := command.CombinedOutput()
+		if err != nil {
+			exit, ok := err.(*exec.ExitError)
+			if force || !ok || exit.ExitCode() != 1 {
+				t.Fatalf("PTY: %v %.200s", err, raw)
+			}
+		}
+		if force {
+			if !bytes.Contains(raw, []byte("PK")) {
+				t.Fatal("forced binary absent")
+			}
+		} else if !bytes.Contains(raw, []byte("Refusing to write to terminal")) {
+			t.Fatalf("terminal guard absent: %.200s", raw)
+		}
+	}
+}
+
+func TestSpikeDOCXRelativeRootFont(t *testing.T) {
+	binary := spikeDOCXBuild(t)
+	dir := t.TempDir()
+	src := filepath.Join(dir, "relative.org")
+	writeAppFile(t, src, "* Introduction\nBody text.\n")
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  font:\n    size: 1.5em\n")
+	raw, stderr, err := officeRun(t, binary, dir, officeEnv(t, t.TempDir(), nil), "convert", src, "--to", "docx")
+	if err != nil {
+		t.Fatalf("%v %s", err, stderr)
+	}
+	style := officeAssertStyleUsed(t, officePackage(t, raw), "docx", "Folio Body")
+	officeAssertAttr(t, style, "sz", "val", "36")
+}
+
+// Keep executable coverage outside Go's per-test temporary directory when requested.
+// GOFLAGS=-cover instruments officeBuild; this hook affects only test subprocesses.
+func spikeDOCXBuild(t *testing.T) string {
+	t.Helper()
+	if dir := os.Getenv("FOLIO_SPIKE_COVERDIR"); dir != "" {
+		t.Setenv("GOCOVERDIR", dir)
+	}
+	return officeBuild(t)
 }
