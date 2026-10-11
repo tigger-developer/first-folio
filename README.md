@@ -1,6 +1,6 @@
 ---
 title: First Folio
-version: "1.4"
+version: "1.5"
 last-updated: 2026-10-11
 ---
 
@@ -47,6 +47,36 @@ folio manuscript examples/dummy-manuscript.org manuscript.typ
 ```bash
 make install    # symlinks folio to ~/.local/bin/
 make uninstall  # removes the symlink
+```
+
+Homebrew installation uses the maintained tap:
+
+```bash
+brew install tigger-developer/tap/first-folio
+```
+
+### Publishing a release
+
+From a committed checkout, `make release` runs the regression suite, creates the
+next patch tag, pushes the branch and that tag, then updates and pushes the
+Homebrew formula with the archive URL and SHA-256 checksum. Go, Typst and Pandoc
+must be installed for the release checks. The tap checkout must be clean, current
+and configured with a writable upstream.
+
+`HOMEBREW_TAP_DIR` selects the tap checkout; its default is
+`~/code/tigoss/homebrew-tap`. `RELEASE_VERSION` can select an explicit tag:
+
+```bash
+make release RELEASE_VERSION=v0.4.16 HOMEBREW_TAP_DIR=/path/to/homebrew-tap
+```
+
+Only `SKIP_TESTS=1` skips the release test prerequisite and prints a notice;
+unset or `0` runs it. The updated local `homebrew/Formula/first-folio.rb` remains
+available to review and commit after publication. If publication fails after
+tagging, preserve that tag and retry only the formula step:
+
+```bash
+go run ./cmd/update-homebrew --publish-tap /path/to/homebrew-tap 0.4.16
 ```
 
 ### Dependencies
@@ -145,6 +175,8 @@ make lint   # Go static analysis
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.5 (2026-10-11): Documented gated Homebrew publication, configurable tap checkout and partial-release recovery.
 
 - 1.2 (2026-10-07): Documented compact script first-page title blocks and running-matter suppression for page-limited submissions.
 

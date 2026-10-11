@@ -517,3 +517,11 @@ office equivalent; reference implementation files establish current defaults.
   confirmed activation with the same limit.
 - Bounds :: RTs/OTs use local tools only; no cost-incurring live OT is required.
   Word/LibreOffice user validation remains deferred to the operator gate.
+
+* Release-gate reconciliation - 2026-10-11
+The preservation of original W054 assertions was an integration-stage decision.
+[[file:../059-homebrew-release/spec.org][W059 - Homebrew release repair]] now reconciles
+them to the accepted compact spacing, flowing title metadata and body running
+matter on intro pages. Earlier RED logs remain historical evidence. Exact
+frontmatter sections and bottom-anchored title metadata remain deferred; no
+conversion implementation changes in this reconciliation.

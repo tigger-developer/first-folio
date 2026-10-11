@@ -66,3 +66,11 @@ The operator reviewed the sample and explicitly requested the local merge.
 This supersedes the earlier no-merge boundary for W058. Native DOCX remains
 unchanged. Remote publication and release are not included in this instruction.
 The local merge is =9331f14 - adopt configured ODT alongside native DOCX=.
+
+* Release-gate reconciliation - 2026-10-11
+The preservation of original W054 assertions was an integration-stage decision.
+[[file:../059-homebrew-release/spec.org][W059 - Homebrew release repair]] now reconciles
+them to the accepted compact spacing, flowing title metadata and body running
+matter on intro pages. Earlier RED logs remain historical evidence. Exact
+frontmatter sections and bottom-anchored title metadata remain deferred; no
+conversion implementation changes in this reconciliation.

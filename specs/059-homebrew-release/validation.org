@@ -1,0 +1,74 @@
+#+TITLE: W059 - Homebrew release evidence
+#+TODO: AMBER RED | GREEN
+#+STARTUP: overview
+
+* Execution context
+- Date :: 2026-10-11.
+- Candidate :: bf777ad plus the W059 release/test reconciliation working tree.
+- Environment :: macOS arm64; Go 1.27.2, Pandoc 3.9.0.2, local Typst.
+- External audit :: Excluded by the existing session exception; author checks
+  below are self-review, not independent audit results.
+
+* Tests
+** GREEN RT059.1 - Office regressions :testdef:
+:PROPERTIES:
+:REVISION: bf777ad plus W059 test reconciliation
+:COMMAND: make test
+:EVIDENCE: regression.txt; every package passes, including internal/app in 157.516s.
+:END:
+Earlier RED results remain in the W056/W058 records. The changed assertions
+are traced to accepted compact spacing, flowing title metadata and shared intro
+running matter. Physical dimensions, relative columns and inherited styles are
+now compared semantically. No exporter source changed and no test was skipped.
+The ODT writer now receives the original real 120-second timeout failure test.
+
+** GREEN RT059.2 - Release boundary :testdef:
+:PROPERTIES:
+:REVISION: bf777ad plus W059 Makefile and release_test.go
+:COMMAND: go test ./cmd/update-homebrew -count=1
+:EVIDENCE: release-green.txt; local Makefile boundary tests pass.
+:END:
+[[file:release-red.txt][Initial RED]] reproduced ignored tap selection and skipped
+tests with SKIP_TESTS=0. Subsequent coverage checks default patch calculation and
+selected-tag push. Fake command boundaries perform no remote publication.
+
+** GREEN OT059.1 - Default-cache isolation and full suite :testdef:
+:PROPERTIES:
+:REVISION: bf777ad plus W059 release/test reconciliation
+:EVIDENCE: isolation-red.txt, isolation-green.txt and regression.txt; make lint exits 0.
+:END:
+The same compiled-test boundary with GOPATH/GOMODCACHE unset and OS-temporary
+outer HOME reproduced permission-denied cleanup before the correction and passed
+afterwards. The full suite used an explicitly isolated module cache to respect
+the filesystem write boundary. These are separate checks; the explicit-cache
+run alone would not prove the default-cache repair. Formula Ruby syntax passes.
+
+** AMBER OT059.2 - Live release and archive build :testdef:
+:PROPERTIES:
+:REASON: Publication follows the coherent implementation checkpoint.
+:END:
+Remote tap HEAD ab38f7a contains v0.4.7, old owner URLs and Perl installation.
+Current source formula uses the current owner and Go installation with Pandoc.
+The isolated tap clone is clean and has no SDLC profile or local AGENTS.md.
+
+** AMBER UT059.1 - Homebrew installation :testdef:
+:PROPERTIES:
+:REASON: Global package-manager writes require operator execution outside the agent write boundary.
+:END:
+Pending installation or upgrade through Homebrew, version check and conversion.
+Archive build verification will be recorded separately under the live-release OT.
+
+* Author review
+- Scope :: Conversion production files and PDF/Typst templates are unchanged.
+- Test integrity :: Existing test functions remain; superseded exact-fidelity
+  assertions are replaced with accepted behaviour rather than skipped. Original
+  requirements and failed results remain in their historical records.
+- Safety :: Failed tests prevent release; the live run does not use SKIP_TESTS.
+  Only the selected tag is pushed. No credentials or source scripts are uploaded.
+- Publication :: Fresh isolated tap checkout avoids another checkout's dirty
+  index. Only Formula/first-folio.rb is published. Existing tags remain intact.
+- Limits :: Tagging and tap publication are not one transaction. README documents
+  the formula-only retry. The installed golangci-lint was previously found
+  incompatible with Go 1.27 export data; make lint runs go vet successfully.
+- Documentation :: README covers release variables and recovery. W054/W056/W058
+  now link the explicit contract reconciliation; prior evidence is preserved.

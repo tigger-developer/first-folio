@@ -20,7 +20,7 @@ func officeAssertStyleUsed(t *testing.T, pkg map[string]*officeXML, format, name
 		t.Fatalf("style %s has no native identifier", name)
 	}
 	for file, tree := range pkg {
-		if strings.Contains(file, "styles.xml") {
+		if format == "docx" && strings.Contains(file, "styles.xml") {
 			continue
 		}
 		for _, n := range tree.all("pStyle") {
@@ -35,6 +35,11 @@ func officeAssertStyleUsed(t *testing.T, pkg map[string]*officeXML, format, name
 		}
 		for _, kind := range []string{"p", "span"} {
 			for _, n := range tree.all(kind) {
+				for _, layer := range officeEffective(t, pkg, format, n) {
+					if layer == style {
+						return style
+					}
+				}
 				if n.attr("style-name") == id {
 					return style
 				}
@@ -224,14 +229,9 @@ func TestRT054_2OfficeActBreaks(t *testing.T) {
 					if format == "docx" {
 						found = len(p.all("pageBreakBefore")) > 0
 					} else {
-						for _, style := range body.all("style") {
-							if style.attr("name") != p.attr("style-name") {
-								continue
-							}
-							for _, prop := range style.all("paragraph-properties") {
-								found = prop.attr("break-before") == "page"
-							}
-						}
+						layers := officeEffective(t, pkg, format, p)
+						value, _ := officeEffectiveAttr(layers, "paragraph-properties", "break-before")
+						found = value == "page"
 					}
 				}
 				if !found {

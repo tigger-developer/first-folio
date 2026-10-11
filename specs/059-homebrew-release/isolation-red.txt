@@ -1,0 +1,3 @@
+--- FAIL: TestRT058_3ODTBrokenOutputAndInputLimits (1.50s)
+    testing.go:1619: TempDir RemoveAll cleanup: unlinkat /var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/TestRT058_3ODTBrokenOutputAndInputLimits114999690/001/go/pkg/mod/gopkg.in/yaml.v3@v3.0.1/decode_test.go: permission denied
+FAIL

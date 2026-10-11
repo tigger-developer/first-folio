@@ -1,0 +1,122 @@
+#+TITLE: W059 - Restore the Homebrew release path
+#+STARTUP: overview
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-11, emergency repair and publication
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+=make release= must *run the regression gate* and publish the current Go formula
+to =tigger-developer/homebrew-tap=. This retrospective emergency specification
+reconciles the temporary =BYPASS-GATE-7= request. Existing conversion code remains
+unchanged. The release uses a fresh tap clone, preserving other checkouts.
+
+* Context and scope
+- Baseline :: =bf777ad - ODT integration evidence=, tagged =v0.4.15=.
+- Failure :: The ODT input-limit test changed HOME before building a helper;
+  Go's default read-only module cache then prevented test-directory cleanup.
+- Contract reconciliation :: W054 office assertions still required superseded
+  exact fidelity. W056 DOCX adoption and W058 ODT export accept compact British
+  rows, flowing title metadata and body running matter on intro pages.
+- Publication :: The remote tap contains the old Perl formula at v0.4.7 and
+  the former GitHub owner. The source checkout already contains the Go formula
+  and current owner. Publication must refresh the whole formula.
+- Exclusions :: No PDF, DOCX, ODT, manuscript or letter conversion implementation
+  changes. No rewrite of existing tags, unrelated tap formulae or global install.
+- Review exception :: Self-review substitutes for the external audit harness
+  under the existing session authorization. No independent audit verdict.
+
+* Acceptance criteria
+** AC059.1 - Regression checks run under ordinary cache settings :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-059-1
+:END:
+The maintained suite *passes without explicit GOPATH or GOMODCACHE*. Office
+assertions protect the accepted export contract while preserving PDF/text checks.
+Verified by [[#rt-059-1][RT059.1 - Office regressions]] and
+[[#ot-059-1][OT059.1 - Default-cache isolation and full suite]].
+
+** AC059.2 - Release gates publication and selects the tap :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-059-2
+:END:
+=make release= *runs tests* with SKIP_TESTS unset or 0; failure prevents tagging
+and publication. Only value 1 skips tests, with a notice. The default release
+increments the patch number, and HOMEBREW_TAP_DIR selects the destination.
+Only the selected tag is pushed. Verified by
+[[#rt-059-2][RT059.2 - Release boundary]].
+
+** AC059.3 - Homebrew receives the current release :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-059-3
+:END:
+The published formula *uses the current owner*, matching tag archive checksum,
+Go build instructions and Pandoc dependency. Verified by
+[[#ot-059-2][OT059.2 - Live release and archive build]] and
+[[#ut-059-1][UT059.1 - Homebrew installation]].
+
+* Test definitions
+** RT059.1 - Office regressions :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-059-1
+:END:
+Covers [[#ac-059-1][AC059.1 - Regression checks]]. Retain all office test functions;
+update physical-unit, inherited-style, ODT master-area and relative-column checks.
+Check accepted compact spacing and title flow, approximation diagnostics, native
+notes and breaks. Run Pandoc failure cases against ODT, preserving the full
+120-second deadline assertion; add DOCX to the no-Pandoc preservation matrix.
+
+** RT059.2 - Release boundary :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-059-2
+:END:
+Covers [[#ac-059-2][AC059.2 - Gated release]]. Execute the actual Makefile against
+local command fixtures. Check test failure prevents tags/publication, default
+patch increment, selected-tag push and a tap path containing spaces. No network.
+
+** OT059.1 - Default-cache isolation and full suite :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-059-1
+:END:
+Covers [[#ac-059-1][AC059.1 - Regression checks]]. Compile the app test executable,
+then execute the input-limit test with GOPATH/GOMODCACHE unset and an OS-temporary
+outer HOME. Observe cleanup RED before moving helper compilation ahead of HOME
+isolation, and GREEN afterwards. Run the complete =make test= and =make lint=.
+
+** OT059.2 - Live release and archive build :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-059-2
+:END:
+Covers [[#ac-059-3][AC059.3 - Published formula]]. Run =make release= once for
+v0.4.16 with the isolated tap checkout. Verify remote tag and formula, download
+the archive, compare SHA-256, build its CLI and check version/help. Bounds: one
+publication to each existing repository, at most two archive retrievals, normal
+Git authentication, no new repository, hosted model or metered service. Preserve
+the existing tag on a partial failure; retry only the failed publication step.
+
+** UT059.1 - Homebrew installation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-059-1
+:END:
+Covers [[#ac-059-3][AC059.3 - Published formula]]. Install or upgrade
+=tigger-developer/tap/first-folio= through Homebrew and check version and a real
+conversion. Global package-manager writes are outside the agent write boundary;
+this remains operator execution, distinct from archive build verification.
+
+* Solution design
+Build the test helper before changing HOME. Keep the existing exporters intact.
+Use Make's version components with POSIX expr instead of awk; parameterize only
+the tap checkout. Retain the existing Go downloader, checksum and formula publisher.
+Its local formula update occurs after tagging and is committed separately.
+
+Security boundaries are unchanged: source checksums remain verified by Homebrew,
+Git uses existing access, and the bounded live operation publishes only the
+release and its formula. Local fixtures never contact GitHub. The isolated tap
+clone avoids staging another checkout's edits. A failed post-tag publication is
+not atomic with tagging and requires the documented formula-only retry.
+
+* Handoff
+See [[file:validation.org][execution evidence and self-review]]. Product usage and
+partial-release recovery are documented in [[file:../../README.md][README]].
+Earlier W054 exact-fidelity requirements remain historical and deferred, not
+implemented by this repair. No new conversion behaviour is inferred from tests.

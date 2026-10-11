@@ -78,6 +78,14 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** ACTIVE W059 - Restore the Homebrew release path :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-059
+:CREATED: 2026-10-11
+:END:
+- Specification :: [[file:../specs/059-homebrew-release/spec.org][W059 - Emergency release repair and publication]].
+- Evidence :: [[file:../specs/059-homebrew-release/validation.org][Regression, publication and self-review records]].
+
 ** ACTIVE W055 - Org script emphasis renders bold as italic in PDF :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-055

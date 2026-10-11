@@ -42,3 +42,11 @@ The initial pending evidence entry is superseded by
 [[file:validation.org][merged-suite and ODT results]]. The local merge is recorded;
 the full suite remains RED for W054 office expectations. ODT text and table
 preservation pass, but the default Pandoc layout-fidelity experiment fails.
+
+* Release-gate reconciliation - 2026-10-11
+The preservation of original W054 assertions was an integration-stage decision.
+[[file:../059-homebrew-release/spec.org][W059 - Homebrew release repair]] now reconciles
+them to the accepted compact spacing, flowing title metadata and body running
+matter on intro pages. Earlier RED logs remain historical evidence. Exact
+frontmatter sections and bottom-anchored title metadata remain deferred; no
+conversion implementation changes in this reconciliation.

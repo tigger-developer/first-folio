@@ -99,6 +99,9 @@ func TestRT058_3ODTPandocFailures(t *testing.T) {
 }
 
 func TestRT058_3ODTBrokenOutputAndInputLimits(t *testing.T) {
+	// Build before isolating application configuration: Go derives its default
+	// module cache from HOME and creates read-only directories there.
+	binary := officeBuild(t)
 	t.Setenv("HOME", t.TempDir())
 	dir := t.TempDir()
 	src := filepath.Join(dir, "play.org")
@@ -115,7 +118,6 @@ func TestRT058_3ODTBrokenOutputAndInputLimits(t *testing.T) {
 	if status := Run([]string{"convert", src, "--to", "odt"}, strings.NewReader(""), writer, &diagnostic); status == 0 || !strings.Contains(diagnostic.String(), "broken pipe") {
 		t.Fatalf("broken output: %s", diagnostic.String())
 	}
-	binary := officeBuild(t)
 	env := officeEnv(t, t.TempDir(), nil)
 	target := filepath.Join(dir, "play.odt")
 	for _, value := range []string{strings.Repeat("x", (32<<20)+1), "* ACT ONE\n**** CÁIT\ninvalid\x01XML", "* ACT ONE\n**** CÁIT\n" + strings.Repeat("**x** ", 100001)} {

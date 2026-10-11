@@ -211,8 +211,8 @@ func TestRT054_2OfficeNativeFormatting(t *testing.T) {
 				officeAssertAttr(t, dialogue, "text-properties", "font-style", "italic")
 				officeAssertAttr(t, dialogue, "text-properties", "text-scale", "90%")
 				officeAssertAttr(t, dialogue, "text-properties", "letter-spacing", "0.2pt")
-				officeAssertAttr(t, pkg["styles.xml"], "page-layout-properties", "page-width", "148mm")
-				officeAssertAttr(t, pkg["styles.xml"], "page-layout-properties", "margin-left", "18mm")
+				officeAssertLength(t, []*officeXML{pkg["styles.xml"]}, format, "", "", "page-layout-properties", "page-width", 148*72/25.4)
+				officeAssertLength(t, []*officeXML{pkg["styles.xml"]}, format, "", "", "page-layout-properties", "margin-left", 18*72/25.4)
 			}
 			if len(body.all("tbl"))+len(body.all("table")) == 0 {
 				t.Fatal("British same-line speech has no native columns")
@@ -243,7 +243,10 @@ func TestRT054_2OfficeTitlesAndRunningMatter(t *testing.T) {
 				}
 				pkg := officePackage(t, raw)
 				body := officeBody(t, pkg, format)
-				officeAssertEmptyIntroOdd(t, pkg, format)
+				// W056/W058 explicitly retain body running matter on intro pages.
+				if !strings.Contains(stderr, "use body running matter") {
+					t.Error("frontmatter approximation was not disclosed")
+				}
 				for _, s := range []string{"Title", "Subtitle", "Author", "ACT TWO", "End."} {
 					if !strings.Contains(body.text(), s) {
 						t.Errorf("missing title/body %s", s)
@@ -253,7 +256,7 @@ func TestRT054_2OfficeTitlesAndRunningMatter(t *testing.T) {
 				for _, n := range pkg {
 					all += n.text()
 				}
-				for _, s := range []string{"A Date", "Version", "BODY-EVEN", "BODY-ODD", "INTRO-EVEN", "FOOT", "[unknown]"} {
+				for _, s := range []string{"A Date", "Version", "BODY-EVEN", "BODY-ODD", "FOOT", "[unknown]"} {
 					if !strings.Contains(all, s) {
 						t.Errorf("missing running variant %s", s)
 					}
@@ -371,6 +374,8 @@ func TestRT054_3OfficeSelectionAndFailure(t *testing.T) {
 				extra = map[string]string{"PATH": t.TempDir()}
 			}
 			env := officeEnv(t, t.TempDir(), extra)
+			// Only ODT uses the external Pandoc writer after W056/W058.
+			target := filepath.Join(dir, "kept.odt")
 			writeAppFile(t, target, "OLD TARGET")
 			start := time.Now()
 			raw, stderr, err := officeRun(t, binary, dir, env, "convert", src, target)
@@ -449,7 +454,7 @@ func TestRT054_4ExistingScriptRoutesDoNotRequirePandoc(t *testing.T) {
 	if err := os.Symlink(typst, filepath.Join(tools, "typst")); err != nil {
 		t.Fatal(err)
 	}
-	for _, ext := range []string{"md", "org", "fountain", "typ", "pdf"} {
+	for _, ext := range []string{"md", "org", "fountain", "typ", "pdf", "docx"} {
 		_, stderr, err := officeRun(t, binary, dir, officeEnv(t, t.TempDir(), map[string]string{"PATH": tools}), "convert", src, filepath.Join(dir, "output."+ext))
 		if err != nil {
 			t.Errorf("%s depended on Pandoc: %v %s", ext, err, stderr)

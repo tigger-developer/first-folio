@@ -1,0 +1,25 @@
+--- FAIL: TestReleaseGateAndTap (0.79s)
+    --- FAIL: TestReleaseGateAndTap/publish (0.46s)
+        release_test.go:54: missing "go <test> <./...>" in calls:
+            git <describe> <--tags> <--abbrev=0>
+            git <tag> <-a> <v0.4.16> <-m> <v0.4.16>
+            git <push>
+            git <push> <--tags>
+            go <run> <./cmd/update-homebrew> <--publish-tap> </Users/tigger/code/tigoss/homebrew-tap> <0.4.16>
+        release_test.go:54: missing "<--publish-tap> </var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/TestReleaseGateAndTappublish567309088/001/tap checkout> <0.4.16>" in calls:
+            git <describe> <--tags> <--abbrev=0>
+            git <tag> <-a> <v0.4.16> <-m> <v0.4.16>
+            git <push>
+            git <push> <--tags>
+            go <run> <./cmd/update-homebrew> <--publish-tap> </Users/tigger/code/tigoss/homebrew-tap> <0.4.16>
+    --- FAIL: TestReleaseGateAndTap/failed-tests (0.34s)
+        release_test.go:45: failed tests allowed publication: <nil>
+            
+            git <describe> <--tags> <--abbrev=0>
+            git <tag> <-a> <v0.4.16> <-m> <v0.4.16>
+            git <push>
+            git <push> <--tags>
+            go <run> <./cmd/update-homebrew> <--publish-tap> </Users/tigger/code/tigoss/homebrew-tap> <0.4.16>
+FAIL
+FAIL	github.com/tigger-developer/first-folio/cmd/update-homebrew	1.148s
+FAIL
