@@ -1,0 +1,160 @@
+#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
+#+TITLE: GRANNY 911
+#+AUTHOR: GP Writers' Room
+#+ORIGINAL_SUBMISSION_BY: David Smyth
+#+DATE: 11 October 2026
+#+VERSION: Workshop draft 1, editorial preparation
+
+* Editorial notes
+*What I like about this script*
+
+I love the idea of *fairy-tale facts meeting emergency-call procedure*. The caller's *composure* gives it a voice of its own: /"Like a dog, but sharper"/ and "preconceived notions of lupine normalcy" make the impossible sound almost reasonable. I particularly like that she can be trapped with a wolf outside and still find time to criticize her granddaughter's baking. The ending offers a further turn: *the apparent rescue becomes another possible threat*. Those are qualities I'd love to preserve as we develop it.
+
+*What changed*
+
+I've kept the *one-sided call and the story's existing sequence*. The caller now tries the closet handle and hesitates before opening it to the unfamiliar rescuer, making her confinement and the final uncertainty playable. These actions *do not yet change the course of events*. No comic passage has been cut; the substantial development choices are set out below.
+
+*Why*
+
+The middle needs *more dramatic movement*. Questions about the name, age, address, wolf and granddaughter produce information more often than consequences. The audience may learn the pattern before the script has finished using it. Listening pauses and physical business help performance, but *do not solve that structural problem*. For a 10-20-minute piece, I'd ask what can happen during the call that changes the situation.
+
+*Further development*
+
+I'd develop a call that changes from *reporting an emergency to participating in it*. Initially the caller explains. Then her granddaughter arrives and she must do something from the closet. An attempted warning creates a new problem. Just when help seems urgently necessary, the woodcutter apparently resolves everything, then becomes the next possible threat. Those distinct movements could earn the longer running time.
+
+- *A reasonable dispatcher*: questions can be sensible and still badly suited to this emergency. An instruction to confirm what she can see or move somewhere safer could force her to act. We hear the instruction through her response and see what following it costs.
+- *The caller contributes to the difficulty*: her digressions, confidence and irritation with her granddaughter delay useful information. Both parties want help to arrive; they keep frustrating each other's attempts. I'd favour this over making the service merely foolish or obstructive.
+- *Composure under pressure*: does it finally crack, or does she remain calmly particular as events become increasingly appalling? *I lean towards keeping her composure*. Let the actions reveal the danger while her descriptions retain their peculiar reasonableness.
+
+*Decisions for the next pass*
+
+- *Keep the dispatcher unheard?* I'd try that first. The performer needs time to listen, and the audience needs to infer each question. An audible second role is an option if a more active conflict requires it; it changes the form of the piece.
+- *Choose an intervention and its consequence.* Can she warn the granddaughter without alerting the wolf? Does trying the door draw attention? Give one attempt a consequence before adding another.
+- *Test the comic detours.* The age and sibling joke establish a broader absurd world, but spend time away from the predicament. The Facebook passage pulls attention towards a separate topical argument. I'd try a version without it while retaining the caller's capacity for confidently getting things wrong.
+- *Let the final turn change the story.* The head resembling her is a visual joke; the unknown axe-man changes the danger. I favour the second as the final turn. Hear whether the last line adds something or merely explains what we have understood. Extending the rescuer into another movement is possible, but risks continuing after the strongest ending.
+- *Keep the action imaginable.* The audience should follow what can be seen through the closet without needing a staged killing or a visible head. Time a read with real listening pauses and record where attention shifts; this draft is not yet a measured 10-20-minute piece.
+
+* CHARACTERS
+| GRANNY | An adult woman trapped in a closet. She gives her age as 32. The sole speaking role. |
+
+* Setting
+A closet in a cottage in the woods. A chair and a door frame or narrow strip of light can suggest the confined space. A gap in the door gives GRANNY a view into the room beyond. She has a mobile phone. The dispatcher and everyone outside the closet remain unseen and unheard in this draft.
+
+Each new speech follows an unheard question or response, unless a direction marks an interruption. Leave enough listening time for the exchange to be understood, varying the pauses with what is happening outside.
+
+* One Act Play
+** SCENE 1
+*** B1. Alternating dark and light stripes illuminate GRANNY in the closet. She tries the handle, then uses her iPhone to call emergency services. She lifts the phone to her ear and waits for an answer.
+
+**** GRANNY
+Hello, can you put me through to the police please? An intruder has entered my home and locked me in a closet.
+
+**** GRANNY
+My name? It's Granny.
+
+**** GRANNY
+No, no that is my full name.
+
+**** GRANNY
+Yes, just Granny.
+
+**** GRANNY
+Hmm hmm, I understand how odd that sounds.
+
+**** GRANNY
+My age? 32.
+
+**** GRANNY
+I agree, *my age* does add a level of /additional confusion/ to the name thing.
+
+**** GRANNY
+No, I'm sure I don't know why my parents would call me that, but they did. I have a twin brother called Foetus. It's possible they were high.
+
+*** B2. She looks through the gap in the door, keeping the phone to her ear.
+
+**** GRANNY
+Location? The cottage, in the woods.
+
+**** GRANNY
+Which cottage in which woods? Oh, I'm not sure to be honest. It's just THE cottage in THE woods.
+
+**** GRANNY
+How will you know where to find me? Well, if you see a gingerbread house, you've gone too far.
+
+**** GRANNY
+Yes, I understand how unhelpful that is.
+
+**** GRANNY
+The nature of my emergency? Well, I was going about my day, using a broom made of sticks to sweep my floors. My granddaughter was due to arrive and she's allergic to cat hair you see. Then, just as I had finished and was preparing for bed at 3 PM for some reason, I heard a knock at the door. I opened it, and my assailant jumped me and locked me in a closet.
+
+*** B3. She shifts to get a better view of the bed.
+
+**** GRANNY
+Describe him? Ohhh… well. I've never been great with descriptions, but if I had to describe him in one word, I would say… wolf. He's most assuredly a wolf.
+
+**** GRANNY
+Hmm, hmmm, yes a wolf. Like a dog, but sharper. Except this one, and I thought nothing of it at the time, but when I look back on it, it does seem odd, this one walked on two legs.
+
+**** GRANNY
+Yes, upright, like a big hairy man. But most definitely a wolf. And as he attacked, and I remember this vividly, he said…
+
+**** GRANNY
+Yes, 'said'. He could talk.
+
+**** GRANNY
+Yes, of course, I can see how him being able to talk might seem strange. But after seeing a bipedal wolf, you sort of abandon any preconceived notions of lupine normalcy. I'm not sure how he locked me in a closet without opposable thumbs either, but here we are.
+
+**** GRANNY
+Where is he now? Well, that's the darndest thing. After locking me in here, he raided my clothes drawer and dressed up as me. Then climbed into my bed.
+
+**** GRANNY
+No, I have no idea why. Maybe he's one of those trans-species people Facebook has been warning me about, you know, the ones that want the communists to brainwash our children?
+
+**** GRANNY
+Well, I read it on Facebook so it must be true. Anyway, I can see him now, talking to my granddaughter. She arrived with a basket of baked goods. I really hope she didn't make them; she's a dreadful baker.
+
+*** B4. She reaches for the handle, then stops to listen to the phone.
+
+**** GRANNY
+Her name? Red Riding Hood.
+
+**** GRANNY
+No, I understand how made up that sounds.
+
+**** GRANNY
+Describe her? Hmmmm, well….Little. Yes, I would describe her as little, Red Riding Hood. And she is, in point of fact, wearing a riding hood that is red.
+
+**** GRANNY
+Yes, I agree that is unusual. But people with surnames like Taylor and Smith do sometimes take up that profession. Perhaps it works the other way. And with apparel.
+
+**** GRANNY
+Is she in fear for her life? No, quite the opposite. She seems to be having a conversation with the wolf-man dressed as me. I can't be sure, because I'm in a closet you understand, but it very much seems to me that she might think the wolf IS me.
+
+**** GRANNY
+No, I don't know how any rational human being could mistake a wolf wearing glasses and a nighty for their grandmother but that seems to be what's happening. The teeth and the eyes alone should be a dead giveaway. She's never been terribly bright, but this seems dumb even for her.
+
+**** GRANNY
+Yes, this all does sound very odd, I'll give you that, but I would appreciate if you could send someone as quickly as possible. The wolf granny is drooling quite a bit now, and I'm completely sure it has nothing to do with my granddaughter's shitty pies.
+
+*** B5. Something outside catches her attention. She draws back from the gap, interrupting the call.
+
+**** GRANNY
+Oh my, how unexpected!
+
+**** GRANNY
+Oh, I'm sorry, it's just that a very large man dressed as a woodcutter has smashed through my front door and chopped the wolf granny's head clean off with an axe. One swing. How brutal. The head just popped off like a bottle cap. Oh look it's rolling this way.
+
+*** Her gaze follows it down to the foot of the door.
+
+**** GRANNY
+You know, now that I see it up close, he did look a bit like me.
+
+*** B6. Her hand goes to the handle. She looks up at the stranger beyond the door and holds still.
+
+**** GRANNY
+No, I don't know who the axe man is. I've never seen him before in my life.
+
+**** GRANNY
+Hmmhmm, yes, I agree it's very possible the situation just got much worse.
+
+*** END :transition:

@@ -1,0 +1,30 @@
+#+TITLE: W055 - Org script emphasis validation
+#+SCHEMA: 2
+#+TODO: AMBER RED | GREEN
+#+STARTUP: overview
+
+* Execution context
+- Date :: 2026-10-11.
+- Route :: Emergency (=BYPASS-GATE-7=); operator-authored change with
+  user-test validation and a maintained-suite sweep.
+- Candidate :: Pending; the operator change is not yet in the working tree.
+- Environment :: macOS; local Go and Typst; temporary HOME and output
+  directories. No metered service or UI automation.
+
+* Test results
+
+** AMBER UT055.1 - Org emphasis PDF check :testdef:
+:PROPERTIES:
+:REASON: Awaiting the operator-authored change; the operator performs the
+PDF inspection and records the dated outcome.
+:END:
+- Required evidence :: Date, viewer, tested revision, and whether =*this*=
+  renders bold and =/this/= renders italic in the candidate PDF.
+
+** AMBER OT055.1 - Regression suite re-run :testdef:
+:PROPERTIES:
+:REASON: Run after the operator change lands; expected all-GREEN with any
+invalidated expectations corrected and noted here.
+:END:
+- Required evidence :: Dated =make test= (and =make lint=) result for the
+  tested revision, with remediation notes for any corrected assertion.

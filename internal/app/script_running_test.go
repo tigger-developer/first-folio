@@ -43,7 +43,7 @@ func runningPDF(t *testing.T, doc play.Document, cfg config.Config) []string {
 	}
 	dir := t.TempDir()
 	target := filepath.Join(dir, "play.pdf")
-	if err := renderPlayDocument(doc, cfg, target, false, false, nil); err != nil {
+	if err := renderPlayDocument(doc, cfg, play.FormatOrg, target, false, false, nil); err != nil {
 		t.Fatal(err)
 	}
 	raw, err := exec.Command("pdftotext", "-layout", target, "-").CombinedOutput()
@@ -140,7 +140,7 @@ type runningBBox struct {
 func runningBounds(t *testing.T, doc play.Document, cfg config.Config) runningBBox {
 	t.Helper()
 	target := filepath.Join(t.TempDir(), "bounds.pdf")
-	if err := renderPlayDocument(doc, cfg, target, false, false, nil); err != nil {
+	if err := renderPlayDocument(doc, cfg, play.FormatOrg, target, false, false, nil); err != nil {
 		t.Fatal(err)
 	}
 	raw, err := exec.Command("pdftotext", "-bbox", target, "-").CombinedOutput()

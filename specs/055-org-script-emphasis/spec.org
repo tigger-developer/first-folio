@@ -1,0 +1,270 @@
+#+TITLE: W055 - Render Org script emphasis with Org semantics in PDF
+#+SCHEMA: 8
+#+SUBTITLE: Unified change specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- *Org-mode scripts* converted to PDF or Typst render *inline emphasis with
+  Org semantics*: =*bold*= is bold, =/italic/= is italic.
+
+** Before
+
+- The script renderer translated every single-asterisk span =*text*= to Typst
+  italic, applying *Markdown* semantics to *Org* sources.
+- Org authors writing =*this*= saw *italic* output where Org defines *bold*.
+
+** After
+
+- For *Org script sources*, =*text*= renders as *bold* and =/text*= renders as
+  *italic* in Typst and PDF output.
+- Markdown and Fountain script sources *retain their existing* inline-emphasis
+  rendering.
+
+** Changes
+
+- The script Typst renderer receives the *source format* and selects the
+  single-asterisk rule from it. See [[#solution-design][Solution Design]].
+
+** Unchanged
+
+- Markdown =*italic*= and =**bold**= rendering, Fountain handling, and every
+  other inline rule (code spans, Org =/italic/=, underline, footnotes).
+- Manuscript and letter rendering already follow Org emphasis semantics
+  through their own parsers.
+
+** Edge cases
+:PROPERTIES:
+:CUSTOM_ID: synopsis-edge-cases
+:END:
+
+- Org =**text**= and =***text***= remain *bold* and *bold italic*: the
+  double/triple-asterisk rules run *before* the single-asterisk rule.
+- Emphasis inside *footnote definitions* follows the same source-format rules
+  as the referencing text.
+- Literal asterisks in Markdown and Fountain dialogue remain *unchanged*.
+
+** Decisions
+
+- No new automated regression test: the operator directs *user-test-only*
+  validation for this bounded emergency fix, with the *maintained regression
+  suite* re-run as the automated safety net. See [[#test-definitions][Test
+  Definitions]].
+
+** Next step
+
+- Operator implements the bounded change and performs
+  [[#ut-055-1][UT055.1 - Org emphasis PDF check]]; then the maintained suite
+  sweep [[#ot-055-1][OT055.1 - Regression suite re-run]], reconciliation,
+  delivery-code audit and retrospective definition review.
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+
+- =folio convert play.org play.pdf= routed Org dialogue through an inline
+  translator that treated =*text*= as Markdown italic, producing *italic*
+  Typst output for Org *bold* text.
+
+** Outcome
+
+- Org script sources render inline emphasis according to *Org-mode markup
+  rules* in Typst and PDF output.
+
+** Scope
+
+*** In scope
+
+- Script (stage play / screenplay) conversion from *Org sources* to Typst and
+  PDF, including footnote definitions and all event text that passes through
+  the inline translator.
+*** Out of scope
+
+- Markdown and Fountain source behaviour; manuscript and letter rendering;
+  text-format emitters; office (DOCX/ODT) export.
+*** Unchanged
+
+- Every inline rule other than the Org single-asterisk case, including Org
+  =/italic/=, =_underline_=, ==code==, backtick code, and =**bold**= /
+  =***bold italic***= handling.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][.sdlc/project.yaml]].
+- Product :: [[file:../../README.md][README]] and
+  [[file:../../docs/format-org.md][Org-mode play format]], which records that
+  Org inline markup is *interpreted by the Org-aware PDF renderer*.
+- Manuscript contract :: [[file:../../docs/format-manuscript-org.md][Org
+  manuscript format]], which already defines =*bold*= as bold and =/italic/=
+  as italic.
+- Implementation :: [[file:../../internal/app/script_render.go][Script Typst
+  renderer]] (=inlineTypst= and its callers) and
+  [[file:../../internal/app/convert.go][Conversion orchestration]].
+- External contract :: [[https://orgmode.org/manual/Emphasis-and-Monospace.html][Org emphasis and monospace]].
+
+** Constraints and dependencies
+
+- Emergency route under =BYPASS-GATE-7=: the bounded operator request is the
+  temporary specification; this durable record is reconciled after the fix.
+- The operator writes the change and validates it; the reconciliation,
+  documentation review, audits and commit follow.
+
+** Decisions
+
+- Carry =play.Format= from the conversion entry point into =inlineTypst= and
+  select the single-asterisk replacement from it, keeping all existing rules
+  and their order.
+- Test selection: *no new automated RT*. Reason: the operator directs UT-only
+  validation for this small, bounded, obvious rendering repair; the maintained
+  regression suite provides the automated safety net through
+  [[#ot-055-1][OT055.1 - Regression suite re-run]]. Urgency alone would not
+  justify this; the recorded justification is the operator's explicit
+  test-strategy decision plus the existing pack's coverage of the surrounding
+  rendering contract.
+
+** Unresolved blockers
+
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC055.1 - Org emphasis renders with Org semantics :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-055-1
+:END:
+
+- Criterion :: Given an Org-mode script source, inline =*text*= renders as
+  *bold* and =/text*= renders as *italic* in Typst and PDF output, with
+  ==text== and =_text_= retaining their existing literal and underline
+  rendering.
+- Proven by :: [[#ut-055-1][UT055.1 - Org emphasis PDF check]].
+
+** AC055.2 - Non-Org sources retain their rendering :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-055-2
+:END:
+
+- Criterion :: Given Markdown or Fountain script sources, inline emphasis
+  renders exactly as before the change.
+- Proven by :: [[#ot-055-1][OT055.1 - Regression suite re-run]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** UT055.1 - Org emphasis PDF check :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-055-1
+:END:
+
+- Covers :: [[#ac-055-1][AC055.1 - Org emphasis renders with Org semantics]].
+- Validation method :: User validation.
+- Procedure :: Build the candidate binary. Convert a short Org script whose
+  dialogue contains =*this*= and =/this/= to PDF, and inspect the rendered
+  pages (for example the Typst intermediate alongside the PDF).
+- Expected :: The =*this*= text appears *bold*; the =/this/= text appears
+  *italic*.
+- Record :: Dated observation, viewer, tested revision and outcome in
+  =validation.org=.
+
+** OT055.1 - Regression suite re-run :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-055-1
+:END:
+
+- Covers :: [[#ac-055-2][AC055.2 - Non-Org sources retain their rendering]].
+- Procedure :: Run =make test= (and =make lint=) on the candidate revision.
+- Expected :: The complete maintained suite passes. Any existing assertion
+  that encodes the previous Org-as-Markdown behaviour is corrected as part of
+  remediation and noted in =validation.org=; no assertion may be weakened to
+  obtain a pass.
+- Bounds :: One local suite run; no external service calls.
+- Record :: Dated result in =validation.org=; not added to the regression
+  suite.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+- *Compound Org spans* :: =**text**= and =***text***= are consumed by the
+  earlier bold and bold-italic rules before the single-asterisk rule runs, so
+  they remain bold and bold italic.
+- *Footnote definitions* :: The footnote translator recurses with the same
+  source format; Org emphasis inside notes follows the same rules.
+- *Event coverage* :: Act, scene, intro, stage-direction, prop, transition and
+  cast-table text share the one inline translator, so all of them gain the
+  Org rule together.
+- Covered by :: [[#ut-055-1][UT055.1 - Org emphasis PDF check]] and
+  [[#ot-055-1][OT055.1 - Regression suite re-run]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+
+- Relevant components :: =internal/app/script_render.go= (inline translator
+  and Typst renderer), =internal/app/convert.go= (format-aware entry point).
+- Existing pattern :: The letter renderer already applies Org semantics to
+  =*bold*= and =/italic/= in its own translator; manuscripts do so through
+  Pandoc. The script renderer gains the same source awareness.
+
+** High-level design
+
+1. Thread =play.Format= from =runConvert= through =renderPlayDocument=,
+   =renderPlayTypst=, =newScriptTemplateData= and =renderPlayBody= into
+   =inlineTypst=.
+2. In =inlineTypst=, keep every existing rule and its order. For the
+   single-asterisk span, select the replacement by source format:
+   - =play.FormatOrg= renders =*text*= as Typst =*text*= (bold).
+   - All other formats keep the existing Typst =_text_= (italic).
+3. Footnote recursion passes the same format through.
+
+- Compatibility :: The renderer function signatures gain one parameter;
+   the three internal test call sites (=script_running_test.go= twice,
+   =script_title_test.go= once) pass =play.FormatOrg=.
+
+** Security impact
+
+- Threat boundary :: Unchanged; source text remains data translated to
+  Typst content with the existing escaping and protect-token mechanism.
+- Conclusion :: No security impact.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: [[file:../../docs/format-org.md][Org-mode play format]]
+  and the inline translator in
+  [[file:../../internal/app/script_render.go][script_render.go]].
+- Entry conditions :: Emergency route (=BYPASS-GATE-7=); this record is
+  reconciled after the bounded fix. No definition gate preceded delivery.
+- First implementation step :: Operator-authored change per
+  [[#solution-design][Solution Design]]; then [[#ut-055-1][UT055.1]] and
+  [[#ot-055-1][OT055.1]].
+- Definition evidence :: Retrospective definition review follows the
+  delivery-code gate; =audits.yaml= is harness-owned.
+- Validation evidence :: [[file:validation.org][validation.org]].
+- Documentation impact :: [[file:../../docs/format-org.md][format-org.md]]
+  claims the PDF renderer interprets Org source markers; verify that claim is
+  accurate after the fix and record the outcome. No other document is
+  expected to change.

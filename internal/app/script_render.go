@@ -31,7 +31,7 @@ var (
 	codeOrgRE    = regexp.MustCompile(`=([^=\n]+)=`)
 	orgItalicRE  = regexp.MustCompile(`/([^/\n]+?)/`)
 	underlineRE  = regexp.MustCompile(`_([^_\n]+)_`)
-	mdItalicRE   = regexp.MustCompile(`\*([^*\n]+)\*`)
+	starPairRE   = regexp.MustCompile(`\*([^*\n]+)\*`)
 )
 
 type scriptRunningMatter struct {
@@ -147,8 +147,8 @@ type typstFontData struct {
 	Family, Size, Weight, Stretch, Style, LetterSpacing string
 }
 
-func renderPlayDocument(doc play.Document, cfg config.Config, target string, toStdout bool, force bool, stdout io.Writer) error {
-	source, err := renderPlayTypst(doc, cfg)
+func renderPlayDocument(doc play.Document, cfg config.Config, format play.Format, target string, toStdout bool, force bool, stdout io.Writer) error {
+	source, err := renderPlayTypst(doc, cfg, format)
 	if err != nil {
 		return err
 	}
@@ -164,8 +164,8 @@ func renderPlayDocument(doc play.Document, cfg config.Config, target string, toS
 	return compilePlayTypst(source, target, toStdout, stdout)
 }
 
-func renderPlayTypst(doc play.Document, cfg config.Config) (string, error) {
-	data, err := newScriptTemplateData(doc, cfg)
+func renderPlayTypst(doc play.Document, cfg config.Config, format play.Format) (string, error) {
+	data, err := newScriptTemplateData(doc, cfg, format)
 	if err != nil {
 		return "", err
 	}
@@ -184,7 +184,7 @@ func renderPlayTypst(doc play.Document, cfg config.Config) (string, error) {
 	return output.String(), nil
 }
 
-func newScriptTemplateData(doc play.Document, cfg config.Config) (scriptTemplateData, error) {
+func newScriptTemplateData(doc play.Document, cfg config.Config, format play.Format) (scriptTemplateData, error) {
 	var fontErr error
 	font := func(path string) typstFontData {
 		if fontErr != nil {
@@ -274,7 +274,7 @@ func newScriptTemplateData(doc play.Document, cfg config.Config) (scriptTemplate
 		data.TitleOffset = "40%"
 	}
 	data.FooterLeft, data.FooterRight = titleFooter(doc, cfg, data.DateFont, data.VersionFont)
-	data.Body = renderPlayBody(doc, cfg)
+	data.Body = renderPlayBody(doc, cfg, format)
 	if err := validateScriptData(data); err != nil {
 		return scriptTemplateData{}, err
 	}
@@ -301,7 +301,7 @@ func typstDimension(value string) string {
 	return value
 }
 
-func renderPlayBody(doc play.Document, cfg config.Config) string {
+func renderPlayBody(doc play.Document, cfg config.Config, format play.Format) string {
 	footnotes := map[string]string{}
 	for _, event := range doc.Events {
 		if event.Kind == play.EventFootnote {
@@ -330,15 +330,15 @@ func renderPlayBody(doc play.Document, cfg config.Config) string {
 				lines = append(lines, "#pagebreak(weak: true)")
 			}
 			firstAct = false
-			lines = append(lines, "#act-header["+inlineTypst(event.Text, footnotes)+"]")
+			lines = append(lines, "#act-header["+inlineTypst(event.Text, footnotes, format)+"]")
 		case play.EventSceneHeader:
-			lines = append(lines, "#scene-header["+inlineTypst(event.Text, footnotes)+"]")
+			lines = append(lines, "#scene-header["+inlineTypst(event.Text, footnotes, format)+"]")
 		case play.EventIntroHeader:
-			lines = append(lines, "#frontmatter-header["+inlineTypst(event.Text, footnotes)+"]")
+			lines = append(lines, "#frontmatter-header["+inlineTypst(event.Text, footnotes, format)+"]")
 		case play.EventIntroText:
-			lines = append(lines, inlineTypst(event.Text, footnotes), "")
+			lines = append(lines, inlineTypst(event.Text, footnotes, format), "")
 		case play.EventStageDirection:
-			lines = append(lines, "#stage-direction["+inlineTypst(event.Text, footnotes)+"]")
+			lines = append(lines, "#stage-direction["+inlineTypst(event.Text, footnotes, format)+"]")
 		case play.EventCharacter:
 			name := escapeTypstString(event.Name)
 			direction := ""
@@ -348,15 +348,15 @@ func renderPlayBody(doc play.Document, cfg config.Config) string {
 			var dialogue []string
 			for i+1 < len(doc.Events) && doc.Events[i+1].Kind == play.EventDialogue {
 				i++
-				dialogue = append(dialogue, inlineTypst(doc.Events[i].Text, footnotes))
+				dialogue = append(dialogue, inlineTypst(doc.Events[i].Text, footnotes, format))
 			}
 			lines = append(lines, "#dialogue(\""+name+"\""+direction+")["+strings.Join(dialogue, " \\\n")+"]")
 		case play.EventDialogue:
-			lines = append(lines, inlineTypst(event.Text, footnotes), "")
+			lines = append(lines, inlineTypst(event.Text, footnotes, format), "")
 		case play.EventPropText:
-			lines = append(lines, "#prop-text["+inlineTypst(event.Text, footnotes)+"]")
+			lines = append(lines, "#prop-text["+inlineTypst(event.Text, footnotes, format)+"]")
 		case play.EventTransition:
-			content := caseExpression(cfg.String("folio.positioning.transition.case-transform", "upper"), inlineTypst(event.Text, footnotes))
+			content := caseExpression(cfg.String("folio.positioning.transition.case-transform", "upper"), inlineTypst(event.Text, footnotes, format))
 			lines = append(lines, "#transition["+content+"]")
 		case play.EventCharacterTableStart:
 			var rows []string
@@ -364,15 +364,15 @@ func renderPlayBody(doc play.Document, cfg config.Config) string {
 				i++
 				row := doc.Events[i]
 				primary, _ := play.ParseCastName(row.Name)
-				rows = append(rows, "["+inlineTypst(primary, footnotes)+"], ["+inlineTypst(row.Text, footnotes)+"],")
+				rows = append(rows, "["+inlineTypst(primary, footnotes, format)+"], ["+inlineTypst(row.Text, footnotes, format)+"],")
 			}
-			lines = append(lines, "#frontmatter-header["+inlineTypst(defaultString(event.Text, "Characters"), footnotes)+"]", "#table(columns: (30%, 1fr), stroke: none,", strings.Join(rows, "\n"), ")")
+			lines = append(lines, "#frontmatter-header["+inlineTypst(defaultString(event.Text, "Characters"), footnotes, format)+"]", "#table(columns: (30%, 1fr), stroke: none,", strings.Join(rows, "\n"), ")")
 		}
 	}
 	return strings.Join(lines, "\n")
 }
 
-func inlineTypst(text string, footnotes map[string]string) string {
+func inlineTypst(text string, footnotes map[string]string, format play.Format) string {
 	tokens := []string{}
 	protect := func(value string) string {
 		tokens = append(tokens, value)
@@ -384,7 +384,7 @@ func inlineTypst(text string, footnotes map[string]string) string {
 	}
 	sort.Strings(keys)
 	for _, key := range keys {
-		note := "#footnote[" + inlineTypst(footnotes[key], nil) + "]"
+		note := "#footnote[" + inlineTypst(footnotes[key], nil, format) + "]"
 		text = strings.ReplaceAll(text, "[fn:"+key+"]", protect(note))
 		text = strings.ReplaceAll(text, "[^"+key+"]", protect(note))
 	}
@@ -394,7 +394,13 @@ func inlineTypst(text string, footnotes map[string]string) string {
 	text = replaceMarkup(text, codeOrgRE, func(s string) string { return `#raw("` + escapeTypstString(s) + `")` }, protect)
 	text = replaceMarkup(text, orgItalicRE, func(s string) string { return "_" + escapeTypstContent(s) + "_" }, protect)
 	text = replaceMarkup(text, underlineRE, func(s string) string { return "#underline[" + escapeTypstContent(s) + "]" }, protect)
-	text = replaceMarkup(text, mdItalicRE, func(s string) string { return "_" + escapeTypstContent(s) + "_" }, protect)
+	// A single-asterisk span means bold in Org sources and italic in Markdown and
+	// Fountain sources, so the Typst replacement depends on the parsed format.
+	if format == play.FormatOrg {
+		text = replaceMarkup(text, starPairRE, func(s string) string { return "*" + escapeTypstContent(s) + "*" }, protect)
+	} else {
+		text = replaceMarkup(text, starPairRE, func(s string) string { return "_" + escapeTypstContent(s) + "_" }, protect)
+	}
 	text = escapeTypstContent(text)
 	for i, token := range tokens {
 		text = strings.ReplaceAll(text, fmt.Sprintf("\x00%d\x00", i), token)

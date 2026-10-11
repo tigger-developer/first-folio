@@ -373,7 +373,7 @@ func TestCompactScriptTitleFirstActBreakAfterBodyStart(t *testing.T) {
 		{Kind: play.EventDialogue, Text: "Opening dialogue."},
 		{Kind: play.EventActHeader, Text: "ACT TWO"},
 	}}
-	source, err := renderPlayTypst(doc, cfg)
+	source, err := renderPlayTypst(doc, cfg, play.FormatOrg)
 	if err != nil {
 		t.Fatal(err)
 	}

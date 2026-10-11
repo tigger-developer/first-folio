@@ -66,7 +66,7 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	}
 	applyScriptConfig(&doc, cfg)
 	if targetFormat == play.FormatPDF {
-		return renderPlayDocument(doc, cfg, opts.target, toStdout, opts.force, stdout)
+		return renderPlayDocument(doc, cfg, sourceFormat, opts.target, toStdout, opts.force, stdout)
 	}
 	result, err := play.Emit(doc, targetFormat)
 	if err != nil {
