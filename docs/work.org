@@ -111,7 +111,8 @@ classification; it is provenance, not current state.
 - Predecessor :: W057 - Pandoc AST experiment, retained on unmerged branch
   spike/W057-odt-ast at 96ba6d5. Its identifier remains reserved.
 - Validation :: [[file:../specs/058-odt-export/validation.org][W058 - tests, rendered comparison and self-review]].
-  ODT/DOCX scoped tests pass. The earlier full-suite RED is superseded by\n  [[file:../specs/059-homebrew-release/validation.org][W059 - reconciled regression suite and publication evidence]].
+  ODT/DOCX scoped tests pass. The earlier full-suite RED is superseded by
+  [[file:../specs/059-homebrew-release/validation.org][W059 - reconciled regression suite and publication evidence]].
 
 
 ** ACTIVE W056 - Adopt DOCX-first script export :feature:
