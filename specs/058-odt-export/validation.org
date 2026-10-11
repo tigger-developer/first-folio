@@ -114,3 +114,28 @@ metadata and its manifest entry; the regression checks XML member coverage.
 - PDF previews :: The matching .pdf files in that directory.
 - Logs :: =make-test.log=, =make-test-final.log=, =odt-docx-tests.log=,
   =app-regression.log=, =race-test.log= and =golangci-lint.log= in that directory.
+
+* Local integration - 2026-10-11
+The operator subsequently approved merging W058. The earlier no-merge statement
+records the feature checkpoint and is superseded for local integration by
+=9331f14 - adopt configured ODT export alongside native DOCX= on master.
+The original artefact paths above are relative to the retained ODT feature
+worktree, not the master checkout.
+
+- Built :: =make build= rebuilt master's =dist/folio=. The operator's existing
+  =~/.local/bin/folio= symlink already targets this file; no external symlink
+  write or separate installation was required.
+- Executable smoke check :: Invoked ordinary =folio= from a newly allocated OS
+  temporary directory, converted the copied Quadriplegia script to
+  =dist/odt-merge/quadriplegia.odt=, and checked every ZIP member with =unzip -t=.
+  Conversion and package checks passed.
+- Scoped tests :: All seven ODT and nine DOCX test functions pass on master;
+  =dist/odt-merge/office-tests.log= records the run.
+- Full suite :: =make test= returns exit 2. Its eight failing top-level W054
+  test groups exactly match the feature-branch baseline. All other packages
+  pass, including manuscript, play and Typst. No historical tests were changed.
+  The merged run is retained in =dist/odt-merge/make-test.log=.
+- Static check :: =make lint= (go vet) passed.
+- Status :: Local merge and executable update are recorded. No remote push,
+  release or ticket closure was performed. Longer-term user editing validation
+  remains open; the W054 and W055 full-suite conditions remain unchanged.

@@ -60,3 +60,9 @@ The initial pending entry is superseded by
 [[file:validation.org][W058 - executable evidence, rendered checks and self-review]].
 ODT/DOCX scoped tests pass. The full suite remains RED for the retained W054
 contract; real-world operator editing remains the next user validation.
+
+* Integration authorization - 2026-10-11
+The operator reviewed the sample and explicitly requested the local merge.
+This supersedes the earlier no-merge boundary for W058. Native DOCX remains
+unchanged. Remote publication and release are not included in this instruction.
+The local merge is =9331f14 - adopt configured ODT alongside native DOCX=.
