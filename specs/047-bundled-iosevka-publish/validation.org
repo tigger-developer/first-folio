@@ -157,3 +157,8 @@ instruction-placement candidate, not to the spacing change still in progress.
 - Self-review confirmed only US YAML controls the additional block spacing and
   that speaker-to-dialogue spacing remains unchanged. Visual acceptance for
   this spacing candidate is still AMBER.
+
+- Final make test passed: app 163.783 s, config 0.994 s, letter 0.823 s,
+  manuscript 105.852 s, with the remaining packages passing from cache.
+  This run includes the instruction placement, comma parsing, US spacing and
+  corrected US office-page expectations.
