@@ -31,6 +31,15 @@ func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
 	if font.Weight != "regular" {
 		t.Errorf("speaker weight = %s, want regular", font.Weight)
 	}
+	for _, role := range []string{"act-header", "scene-header"} {
+		font, err := cfg.Font("folio.positioning." + role + ".font")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if font.Size != "12pt" || font.Weight != "regular" {
+			t.Errorf("%s font = %+v", role, font)
+		}
+	}
 	binary := officeBuild(t)
 	for _, spelling := range []string{"equals", "separate", "override", "british", "manuscript"} {
 		t.Run(spelling, func(t *testing.T) {
@@ -67,7 +76,7 @@ func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
 					t.Errorf("bundled font absent: %s", fonts)
 				}
 				if spelling == "equals" || spelling == "separate" {
-					for _, face := range []string{"Iosevka-Publish ", "Iosevka-Publish-Bold", "Iosevka-Publish-Italic"} {
+					for _, face := range []string{"Iosevka-Publish ", "Iosevka-Publish-Italic"} {
 						if !strings.Contains(string(fonts), face) {
 							t.Errorf("missing %s: %s", face, fonts)
 						}
@@ -99,11 +108,14 @@ func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
 				found := false
 				for _, page := range doc.Pages {
 					previousY := -1.0
+					if spelling != "british" && math.Abs(page.Width-612) > 1 {
+						t.Errorf("US page width = %.2f, want 612", page.Width)
+					}
 					for _, word := range page.Words {
 						firstOnLine := math.Abs(word.Top-previousY) > 1
 						previousY = word.Top
 						if spelling != "british" {
-							const margin = 25 * 72 / 25.4
+							const margin = 72.0
 							if word.Text == "Dialoguestart" || word.Text == "dialogueword" {
 								// Check the first word on every dialogue line, including wrapped lines.
 								if word.Text == "Dialoguestart" || firstOnLine {

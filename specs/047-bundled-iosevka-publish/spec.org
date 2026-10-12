@@ -163,3 +163,11 @@ weight, wrapped dialogue geometry, direction position and enclosing delimiters.
 The direction block also uses width 100% so percentage indents resolve against
 the available text area; a PDF check exposed content-dependent positioning
 without that generic template adjustment. The operator was alerted before it.
+
+* YAML-only manuscript appearance refinement - 2026-10-12
+The operator authorized the configuration-only recommendations next: US Letter
+paper, 1-inch margins for unbound submission, and regular-weight 12-point act
+and scene headings. These override the British base only in presets/us.yaml;
+the scene size already inherits 12pt. Instruction indentation and body-page
+numbering remain pending and are explicitly outside this iteration.
+RT047.1 checks US page width, dialogue margins and the resolved heading fonts.

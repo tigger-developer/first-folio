@@ -9,7 +9,7 @@ harness audits are replaced by self-review under the session exception.
 
 * GREEN RT047.1 - Isolated PDF font and cue checks :testdef:
 :PROPERTIES:
-:REVISION: 6df03ca plus operator-requested US layout refinement
+:REVISION: f4497f9 plus YAML-only US paper and heading refinement
 :COMMAND: go test ./internal/app -run TestRT047_1 -count=1
 :EVIDENCE: All five cases passed: both flag spellings, role override, British preservation and manuscript mono; system fonts disabled, temporary extraction cleaned.
 :END:
@@ -96,3 +96,17 @@ correction before it was made.
   manuscript 109.740 s; remaining packages passed from cache.
 - Current RT047.1 evidence is the refined layout above. Earlier centred-cue
   runs are retained as history. UT047.1 remains AMBER pending operator review.
+
+* YAML-only appearance iteration - 2026-10-12
+- RED: updated regression observed 14pt bold act headings, bold scene headings,
+  A4 page width 595.28 pt and the old 70.87 pt left margin.
+- Changed only production YAML: US Letter, 1in margins, act size 12pt and
+  regular act/scene weights. No renderer or template changes were made.
+- GREEN: focused configuration, layout-parity and RT047.1 PDF tests passed.
+  PDF inspection confirms 612 by 792 pt (Letter), with the new geometry.
+- Rebuilt the preview candidate and opened the updated fixture PDF. Operator
+  visual acceptance remains AMBER. Full-suite evidence above belongs to the
+  preceding candidate; this bounded preset change used the focused checks.
+- Self-review confirmed the overlay contains differences only and retains
+  speaker, dialogue and stage-direction settings from the preceding iteration.
+  Pending instruction indentation and body numbering were not implemented.

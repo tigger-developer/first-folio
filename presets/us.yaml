@@ -2,6 +2,8 @@
 # Every omitted value comes from the shared British base.
 
 folio:
+  page: us-letter
+  margin: 1in
   font:
     family: Iosevka Publish
   heading:
@@ -54,6 +56,8 @@ folio:
     act-header:
       font:
         family: Iosevka Publish
+        size: 12pt
+        weight: regular
     frontmatter:
       header:
         font:
@@ -61,6 +65,7 @@ folio:
     scene-header:
       font:
         family: Iosevka Publish
+        weight: regular
       align: center
       case-transform: upper
 
