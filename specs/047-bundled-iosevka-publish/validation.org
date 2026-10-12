@@ -9,7 +9,7 @@ harness audits are replaced by self-review under the session exception.
 
 * GREEN RT047.1 - Isolated PDF font and cue checks :testdef:
 :PROPERTIES:
-:REVISION: 325dbc1 plus W047 implementation and tests
+:REVISION: 2cbc906
 :COMMAND: go test ./internal/app -run TestRT047_1 -count=1
 :EVIDENCE: All five cases passed: both flag spellings, role override, British preservation and manuscript mono; system fonts disabled, temporary extraction cleaned.
 :END:
@@ -26,7 +26,9 @@ harness audits are replaced by self-review under the session exception.
   Font packaging worked, but cue centre remained 82.87 pt. A temporary template
   probe established the missing full block width as the alignment cause.
 - GREEN after the generic template correction: focused test passed (1.486 s).
-- make lint passed. Full-suite result will be recorded after its current run.
+- make lint passed. The final make test run at 2cbc906 passed every package:
+  app 162.008 s, config 1.746 s, letter 0.464 s, manuscript 114.686 s;
+  play, typst and update-homebrew passed from cache.
 
 * AMBER UT047.1 - Representative US script review :testdef:
 :PROPERTIES:
@@ -57,3 +59,12 @@ also applies to screenplay; the British grid is unchanged. Updated the old Menlo
 running-matter assertion and obsolete manuscript Iosevka Custom assertion to the
 authorized defaults. No external harness verdict is claimed. User acceptance,
 installation and release publication remain separate from these checks.
+
+* Final verification at 2cbc906
+The earlier full run passed app, manuscript and letter checks but rejected the
+old Menlo running-matter expectation. That assertion was updated to the new
+authorized default; its focused check and the final full suite passed.
+An additional isolated CLI render using Iosevka Publish Extended embedded all
+four extended faces, including bold italic, with system fonts disabled.
+Delivery-code schema readiness passed with the visual user test still AMBER.
+The implementation remains unpushed and has not replaced the installed command.
