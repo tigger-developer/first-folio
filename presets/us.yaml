@@ -28,6 +28,7 @@ folio:
 
   positioning:
     speech:
+      space-before: 1.85em
       speaker:
         # Fixed start closer to the dialogue margin; inherit left alignment.
         indent: 35%
@@ -45,12 +46,14 @@ folio:
         placement: new-line
         wrap-indent: 0em
     stage-direction:
+      space-before: 1.85em
       indent: 40%
       prefix: "("
       suffix: ")"
       font:
         family: Iosevka Publish
     transition:
+      space-before: 1.85em
       font:
         family: Iosevka Publish
     act-header:
@@ -59,9 +62,12 @@ folio:
         size: 12pt
     frontmatter:
       header:
+        space-before: 2.3em
         font:
           family: Iosevka Publish
     scene-header:
+      space-before: 2.3em
+      space-after: 0.575em
       font:
         family: Iosevka Publish
       align: center

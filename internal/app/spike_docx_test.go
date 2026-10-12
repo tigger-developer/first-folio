@@ -30,8 +30,12 @@ func TestSpikeDOCXSourceStyleMatrix(t *testing.T) {
 				if got := len(body.all("tbl")); (style == "british") != (got > 0) {
 					t.Fatalf("speech tables %d for %s", got, style)
 				}
-				officeAssertAttr(t, body, "pgSz", "w", "11906")
-				officeAssertAttr(t, body, "pgMar", "left", "1417")
+				pageWidth, margin := "11906", "1417"
+				if style == "us" {
+					pageWidth, margin = "12240", "1440"
+				}
+				officeAssertAttr(t, body, "pgSz", "w", pageWidth)
+				officeAssertAttr(t, body, "pgMar", "left", margin)
 				officeAssertStyleUsed(t, pkg, "docx", "Folio Dialogue")
 			})
 		}

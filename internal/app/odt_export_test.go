@@ -45,7 +45,11 @@ func TestRT058_1ODTSourceStyleMatrix(t *testing.T) {
 				if (len(body.all("table")) > 0) != (style == "british") {
 					t.Fatal("wrong speech structure")
 				}
-				officeAssertAttr(t, pkg["styles.xml"], "page-layout-properties", "page-width", "595.3pt")
+				pageWidth := "595.3pt"
+				if style == "us" {
+					pageWidth = "612pt"
+				}
+				officeAssertAttr(t, pkg["styles.xml"], "page-layout-properties", "page-width", pageWidth)
 			})
 		}
 	}

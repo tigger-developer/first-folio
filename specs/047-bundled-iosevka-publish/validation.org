@@ -9,7 +9,7 @@ harness audits are replaced by self-review under the session exception.
 
 * GREEN RT047.1 - Isolated PDF font and cue checks :testdef:
 :PROPERTIES:
-:REVISION: d7b29fd plus config-selected instruction placement and comma parsing
+:REVISION: 1fe386d plus US block spacing and corrected US office-page assertions
 :COMMAND: go test ./internal/app -run TestRT047_1 -count=1
 :EVIDENCE: All five cases passed: both flag spellings, role override, British preservation and manuscript mono; system fonts disabled, temporary extraction cleaned.
 :END:
@@ -142,3 +142,18 @@ correction before it was made.
 The operator accepted the instruction-placement preview before requesting a
 subsequent YAML spacing adjustment. That acceptance applies to the preceding
 instruction-placement candidate, not to the spacing change still in progress.
+
+* US block spacing refinement - 2026-10-12
+- Focused configuration, layout-parity, instruction-placement and RT047.1
+  checks passed (app 2.737 s) after the YAML-only spacing adjustment.
+- Before/after PDF bounding boxes show the first cue-to-dialogue gap unchanged
+  at 16.02 pt. Dialogue-to-direction and direction-to-next-cue gaps increased
+  from 28.02 to 31.02 pt. The example grew from three to four pages because
+  increased frontmatter spacing moved its body start from page three to four.
+  The operator was informed and the updated PDF opened for review.
+- The full suite for instruction placement found stale office-export assertions
+  expecting A4 and 25mm margins for US. Updated the US cases to Letter and 1in;
+  British and screenplay expectations remain A4. Neither writer was changed.
+- Self-review confirmed only US YAML controls the additional block spacing and
+  that speaker-to-dialogue spacing remains unchanged. Visual acceptance for
+  this spacing candidate is still AMBER.

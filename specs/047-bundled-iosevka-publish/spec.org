@@ -192,3 +192,13 @@ explicitly retains new-line. No renderer condition examines the style name.
 RT047.1 includes TestSpeakerInstructionSeparator and
 TestSpeakerInstructionPlacement: parser variants, multiple-name preservation,
 US/British PDF geometry, comma removal and a local new-line override.
+
+* US block spacing refinement - 2026-10-12
+The operator requested slightly more vertical space, then clarified that the
+speaker and dialogue should remain together. Retain spacing within each speech
+block and increase surrounding gaps by approximately 15% in the US YAML:
+speech, stage-direction and transition space-before 1.6em to 1.85em;
+frontmatter and scene heading space-before 2em to 2.3em; scene space-after
+0.5em to 0.575em. Page geometry, cue indentation and fonts remain unchanged.
+No new line-spacing renderer setting is introduced. This iteration is verified
+by the existing focused PDF tests and a one-off before/after geometry comparison.
