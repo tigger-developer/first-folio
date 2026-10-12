@@ -79,10 +79,10 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	}
 	applyScriptConfig(&doc, cfg)
 	if targetFormat == play.FormatODT {
-		return exportODT(doc, cfg, opts, toStdout, stdout, stderr)
+		return exportODT(doc, cfg, sourceFormat, opts, toStdout, stdout, stderr)
 	}
 	if targetFormat == play.FormatDOCX {
-		return exportDOCX(doc, cfg, opts, toStdout, stdout, stderr)
+		return exportDOCX(doc, cfg, sourceFormat, opts, toStdout, stdout, stderr)
 	}
 	if targetFormat == play.FormatPDF {
 		return renderPlayDocument(doc, cfg, sourceFormat, opts.target, toStdout, opts.force, stdout)

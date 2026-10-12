@@ -1,0 +1,82 @@
+#+TITLE: W062 - Office Org emphasis validation
+#+TODO: AMBER RED | GREEN
+#+STARTUP: overview
+
+* Candidate and authority
+Candidate: 6182506 plus W062 changes. The operator authorized the diagnosed
+DOCX/ODT Org-emphasis correction with BYPASS-GATE-7. Self-review replaces the
+external harness under the existing session instruction. No release or push.
+
+* GREEN RT062.1 - Native source-emphasis matrix :testdef:
+:PROPERTIES:
+:REVISION: 6182506 plus W062 implementation
+:COMMAND: go test ./internal/app -run 'TestOfficeSourceEmphasis|TestRT054_1OfficeContentMatrix' -count=1
+:EVIDENCE: Focused group passed in 5.236 s; all six source/output combinations and the existing content matrix passed.
+:END:
+Observed RED before production changes: Org bold in dialogue, introductions and
+footnotes was italic in both DOCX and ODT. Markdown/Fountain cases passed after
+correcting the initial Markdown fixture to place speech below its character cue;
+that earlier fixture failure was test setup, not a production defect. The clean
+RED run failed exactly six bold assertions in 1.347 s. Assertions check both
+presence and absence of bold/italic on the named native text runs/spans.
+
+Both original rich Org fixtures used Markdown-style italic markers. They now use
+Org single-asterisk bold and slash italic, including footnotes; existing note
+format assertions remain intact.
+
+* GREEN RT062.2 - Conversion regression preservation :testdef:
+:PROPERTIES:
+:REVISION: 6182506 plus W062 implementation
+:COMMAND: make test; make lint
+:EVIDENCE: Final full suite passed: app 174.137 s, config 1.709 s, letter 0.810 s, manuscript 113.972 s; play, typst and update-homebrew cached successes. go vet passed.
+:END:
+
+The first full run failed TestSpikeDOCXRichContentAndConfig because its separate
+Org fixture still used Markdown italic syntax. That fixture now uses Org markup;
+the original formatting assertion is retained. No production change was needed.
+
+* GREEN OT062.1 - Rendered office emphasis :testdef:
+:PROPERTIES:
+:REVISION: 6182506 plus W062 implementation
+:COMMAND: make build; folio convert --style=us; LibreOffice --headless --convert-to pdf; pdftohtml -xml -fontfullname
+:EVIDENCE: Both office renders use Iosevka-Publish-Bold for Boldintro, Boldword and Boldnote; Iosevka-Publish-Italic for Italicintro, Italicword and Italicnote.
+:END:
+Used separate temporary LibreOffice profiles and output directories. Actual
+rendered PDF text spans and font-family references were inspected, independently
+of the native XML tests. The local folio symlink points to dist/folio, rebuilt
+with this change. No source manuscripts or previous user exports were modified.
+
+* AMBER UT062.1 - User script appearance :testdef:
+:PROPERTIES:
+:REASON: User inspection of regenerated scripts in the chosen editor has not yet been reported.
+:END:
+
+* Self-review
+Reviewed the source-format argument from CLI parsing through both exporter entry
+points and their shared writer. Only the last single-asterisk rule changes its
+meaning for Org; preceding rules and all parsing/resource bounds are retained.
+Footnotes reuse the same writer and therefore retain source awareness. ODT
+projects the resulting run properties without reparsing source delimiters.
+PDF/Typst production code is unchanged. No new dependencies or global state.
+
+The new regression checks actual formatted words rather than merely checking
+that some bold/italic element exists in the archive. Negative assertions catch
+bold being emitted as italic or both. The existing content matrix still checks
+filters, native footnotes, cast tables, source preservation and all input styles.
+CLI help, office guides, Org format/schema and architecture now state the same
+source-aware contract. The previous office limitation remains in Git history.
+Documentation was processed with sanitize; unrelated historical spelling changes
+in the Org guide were left untouched.
+
+* Retrospective definition review
+The durable scope matches the reported defect and includes the independently
+reproduced ODT case because both routes share the same parser. Compatibility for
+Markdown/Fountain and existing double/triple-asterisk handling is explicit.
+This is a bounded correction, not a full Org grammar implementation. Automated
+and rendered evidence remain distinct from user acceptance. No independent audit
+PASS or issue closure is claimed; the ledger remains REVIEW.
+
+* Record readiness
+Deterministic delivery-code readiness passed with valid schema, two GREEN RTs,
+one GREEN OT and one AMBER UT. This validates the evidence record, not an
+independent audit. Git whitespace validation passed.

@@ -23,8 +23,8 @@ DOCX is export-only and needs no external writer. British scenes use continuous
 tables with full-width stage-direction rows. Title positioning and running matter
 are approximate; British vertical spacing is compacted. ODT is export-only and
 uses Pandoc with generated styles from script.yaml. See docs/format-odt.md.
-DOCX and ODT currently treat single-asterisk spans as italic, including Org input;
-the Org-aware bold rule applies to PDF/Typst. See docs/format-docx.md for details.
+PDF, DOCX and ODT interpret Org *bold* and /italic/ according to the source format;
+Markdown and Fountain retain **bold** and *italic*. Footnotes use the same rules.
 
 Config: ~/.config/first-folio/script.yaml plus the nearest script.yaml found by
 walking from the source directory towards HOME. Style-specific sibling files

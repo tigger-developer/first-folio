@@ -1,0 +1,91 @@
+#+TITLE: W062 - Source-aware Org emphasis in office exports
+#+STARTUP: overview
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-12, BYPASS-GATE-7 implementation scope
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+Org =*bold*= incorrectly becomes italic in DOCX and ODT. The operator requests
+the same source-aware interpretation already delivered for PDF by W055. This
+retrospective emergency record covers both office formats and native footnotes.
+
+* Context and boundaries
+- Baseline :: =6182506 - Frontmatter paragraph font=; both office routes use
+  the shared inline parser in =docx_content.go= without a source format.
+- Existing authority :: [[file:../055-org-script-emphasis/spec.org][W055 - PDF Org emphasis]]
+  explicitly excluded office formats. This change extends that behaviour to
+  office output, superseding the limitations in the office format guides.
+- Preserve :: Markdown and Fountain rules, PDF/Typst, text conversions,
+  configured role typography, resource limits, font embedding and publication.
+- Compatibility :: Existing double/triple-asterisk bold and bold-italic rules
+  retain their precedence, including in Org. This is not a general Org parser
+  rewrite or a change to literal/code, underline, URL or nested-span handling.
+- Review exception :: Self-review replaces the broken external harness under
+  the operator's session instruction. No independent audit verdict is claimed.
+
+* Acceptance criteria
+** AC062.1 - Org office output follows source emphasis :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-062-1
+:END:
+Org single-asterisk spans are bold, not italic; slash spans remain italic.
+Apply the rule to all text passing through the shared office inline parser,
+including introductions, dialogue and footnote definitions, in DOCX and ODT.
+Verified by [[#rt-062-1][RT062.1]], [[#ot-062-1][OT062.1]] and [[#ut-062-1][UT062.1]].
+
+** AC062.2 - Preserve other source and conversion behaviour :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-062-2
+:END:
+Markdown/Fountain single asterisks remain italic. Double asterisks remain bold
+and triple asterisks bold italic for every supported source. Other conversion
+routes and inline rules remain unchanged. Verified by [[#rt-062-1][RT062.1]] and
+[[#rt-062-2][RT062.2]].
+
+* Test definitions
+** RT062.1 - Native source-emphasis matrix :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-062-1
+:END:
+Covers [[#ac-062-1][AC062.1]] and [[#ac-062-2][AC062.2]]. Execute
+=TestOfficeSourceEmphasis= and =TestRT054_1OfficeContentMatrix=. Inspect native
+run/span properties for Org, Markdown and Fountain in both formats, asserting
+both presence and absence of bold/italic. Include introductions and footnotes;
+correct the previous Org fixture that used Markdown italic markers.
+
+** RT062.2 - Conversion regression preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-062-2
+:END:
+Covers [[#ac-062-2][AC062.2]]. Run =make test= and =make lint=, preserving
+PDF, manuscript, letter, office resource and publication checks.
+
+** OT062.1 - Rendered office emphasis :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-062-1
+:END:
+Covers [[#ac-062-1][AC062.1]]. Use the rebuilt local executable to convert a
+small Org script to both office formats. Render through headless LibreOffice
+with a temporary profile, then extract PDF text/font information. Confirm
+bold and italic sample words use the respective font faces. No source files,
+existing user exports, installed fonts or global configuration are modified.
+
+** UT062.1 - User script appearance :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-062-1
+:END:
+Covers [[#ac-062-1][AC062.1]]. Regenerate a representative Org script and inspect
+its emphasis in the user's chosen office editor. Human acceptance remains
+separate from native XML assertions and LibreOffice rendering.
+
+* Solution design
+Pass the already parsed =play.Format= from =runConvert= into both exporters
+and their shared DOCX-layout writer. The inline parser selects bold for the
+single-asterisk rule only when the source is Org, retaining the existing rule
+order. Footnote recursion uses that same writer. ODT projects the corrected
+inline properties into Pandoc JSON without a separate markup parser.
+
+No new dependencies, processes, configuration keys or security boundaries.
+XML encoding and resource bounds are unchanged; source text remains data.
+See [[file:validation.org][Verification and self-review evidence]].

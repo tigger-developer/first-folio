@@ -78,6 +78,14 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** REVIEW W062 - Source-aware Org emphasis in office exports :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-062
+:CREATED: 2026-10-12
+:END:
+- Specification :: [[file:../specs/062-office-org-emphasis/spec.org][W062 - DOCX/ODT emphasis correction]].
+- Evidence :: [[file:../specs/062-office-org-emphasis/validation.org][Native, rendered and regression checks]].
+
 ** REVIEW W061 - Independent frontmatter paragraph fonts :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-061

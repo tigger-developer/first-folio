@@ -1,7 +1,7 @@
 ---
 title: Org-mode Play Format
-version: "0.6"
-last-updated: "2026-10-08"
+version: "0.7"
+last-updated: "2026-10-12"
 ---
 
 # Org-mode Play Format
@@ -58,7 +58,7 @@ Level-3 headings represent stage directions (also called action text or narrativ
 *** JACK enters through the French windows.
 ```
 
-Org-mode inline markup is retained in event text and interpreted by the Org-aware PDF renderer. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
+Org-mode inline markup is retained in event text and interpreted by the source-aware PDF, DOCX and ODT renderers: `*bold*` becomes bold and `/italic/` becomes italic, including in footnotes. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
 
 ### Characters (H4)
 
@@ -188,6 +188,8 @@ Just boiled.
 ```
 
 ## Revision History
+
+- 0.7 (2026-10-12): Extend source-aware Org emphasis to DOCX and ODT.
 
 - 0.5, 2026-09-10: Document automatic destination-schema emission and use YAML document-version metadata.
 - 0.4, 2026-08-10: Previous format-reference revision.

@@ -1,6 +1,6 @@
 ---
 title: ODT Script Export
-version: "1.2"
+version: "1.3"
 last-updated: 2026-10-12
 ---
 
@@ -44,10 +44,11 @@ not the manuscript or letter commands.
 | Title | Dedicated or compact title. Vertical position is approximate; date/version follow the title rather than occupying bottom-of-page slots. |
 | Running matter | First/odd/even page masters, title/author substitution and live page-number/page-count fields. Frontmatter uses body running matter, with a warning for configured frontmatter overrides. Header/footer clearance smaller than the font height is expanded with a warning. |
 
-ODT currently shares the existing office adapter's inline rules: `**bold**`,
-`***bold italic***`, `*italic*`, `/italic/`, `_underline_` and literal code spans.
-**Single-asterisk Org bold is not yet source-aware in either office exporter.**
-The source-aware Org-emphasis correction remains specific to PDF/Typst.
+Inline emphasis follows the source format: Org `*bold*` is bold and `/italic/`
+is italic; Markdown and Fountain retain `**bold**` and `*italic*`. These rules
+also apply inside footnotes. Existing `**bold**`, `***bold italic***`, underline
+and literal-code handling remain supported.
+
 The shared inline parser can interpret slash pairs inside URLs as italic markers;
 ODT also collapses repeated spaces in ordinary text. Use literal code spans where
 inline delimiters must be retained. Neither office route is a general Org parser.
@@ -72,6 +73,8 @@ staged beside the destination and published by rename with mode 0600. A failed
 conversion leaves an existing destination unchanged.
 
 ## History
+
+- 1.3 (2026-10-12): Correct Org single-asterisk bold in body text and footnotes.
 
 - 1.2 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 

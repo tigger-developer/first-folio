@@ -46,7 +46,7 @@ func TestSpikeDOCXRichContentAndConfig(t *testing.T) {
 	binary := spikeDOCXBuild(t)
 	dir := t.TempDir()
 	src := filepath.Join(dir, "rich.org")
-	text := "#+TITLE: Rich & <editable>\n#+SCHEMA: https://example.invalid/schema\n* CHARACTERS\n| CÁIT | A visitor |\n* Introduction\nOpening summary.\n* ACT ONE\n** SCENE ONE\n*** Night direction.\n**** CÁIT (quietly)\n**Bold text** and *italic text* and ***combined text*** and _underlined text_ and =literal text=.[fn:note]\n*** Prop card :prop:\n***** CUT TO\n[fn:note] Note content. **Bold note** and *italic note*.\n"
+	text := "#+TITLE: Rich & <editable>\n#+SCHEMA: https://example.invalid/schema\n* CHARACTERS\n| CÁIT | A visitor |\n* Introduction\nOpening summary.\n* ACT ONE\n** SCENE ONE\n*** Night direction.\n**** CÁIT (quietly)\n*Bold text* and /italic text/ and ***combined text*** and _underlined text_ and =literal text=.[fn:note]\n*** Prop card :prop:\n***** CUT TO\n[fn:note] Note content. *Bold note* and /italic note/.\n"
 	writeAppFile(t, src, text)
 	home := t.TempDir()
 	writeAppFile(t, filepath.Join(home, ".config", "first-folio", "script.yaml"), "folio:\n  positioning:\n    speech:\n      dialogue:\n        font:\n          family: Example Family\n          size: 13pt\n          style: italic\n          stretch: 90%\n          letter-spacing: 0.2pt\n")

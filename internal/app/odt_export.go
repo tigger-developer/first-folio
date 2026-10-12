@@ -50,7 +50,7 @@ func readODTSource(path string) ([]byte, error) {
 	return raw, odtError(err)
 }
 
-func exportODT(doc play.Document, cfg config.Config, opts convertOptions, toStdout bool, stdout, stderr io.Writer) (err error) {
+func exportODT(doc play.Document, cfg config.Config, sourceFormat play.Format, opts convertOptions, toStdout bool, stdout, stderr io.Writer) (err error) {
 	defer func() { err = odtError(err) }()
 	if toStdout && writerIsTerminal(stdout) && !opts.force {
 		return fmt.Errorf("ODT is binary output. Refusing to write to terminal\nUse a target file, redirect stdout, or pass --force to override")
@@ -60,7 +60,7 @@ func exportODT(doc play.Document, cfg config.Config, opts convertOptions, toStdo
 			return err
 		}
 	}
-	layout, err := newDOCXWriter(doc, cfg)
+	layout, err := newDOCXWriter(doc, cfg, sourceFormat)
 	if err != nil {
 		return err
 	}

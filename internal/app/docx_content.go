@@ -1,5 +1,5 @@
 // ABOUTME: Converts script events into native DOCX paragraphs, tables and footnotes.
-// ABOUTME: Preserves the existing supported inline meanings without executable markup.
+// ABOUTME: Interprets source-aware inline emphasis without executable markup.
 package app
 
 import (
@@ -20,11 +20,15 @@ func (w *docxWriter) inlines(text string, notes bool) ([]docxNode, error) {
 		return nil, fmt.Errorf("DOCX expanded text exceeds 32 MiB")
 	}
 	segments := []docxInline{{text: text}}
+	starKind := "italic"
+	if w.sourceFormat == play.FormatOrg {
+		starKind = "bold"
+	}
 	rules := []struct {
 		re   *regexp.Regexp
 		kind string
 	}{
-		{boldItalicRE, "bolditalic"}, {boldRE, "bold"}, {codeTickRE, "code"}, {codeOrgRE, "code"}, {orgItalicRE, "italic"}, {underlineRE, "underline"}, {starPairRE, "italic"},
+		{boldItalicRE, "bolditalic"}, {boldRE, "bold"}, {codeTickRE, "code"}, {codeOrgRE, "code"}, {orgItalicRE, "italic"}, {underlineRE, "underline"}, {starPairRE, starKind},
 	}
 	if notes {
 		rules = append([]struct {

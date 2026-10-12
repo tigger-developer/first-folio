@@ -73,7 +73,7 @@ func TestRT054_1OfficeContentMatrix(t *testing.T) {
 	}
 	t.Run("rich-and-filtered", func(t *testing.T) {
 		fixtures := map[string]string{
-			".org": "#+TITLE: Rich Script\n#+SCHEMA: https://example.invalid/schema\n* CHARACTERS\n| CÁIT | A visitor |\n* Introduction\nOpening summary.\n* ACT ONE\n** SCENE ONE\n*** Night direction.\n**** CÁIT (quietly)\n**Bold text** and *italic text* and ***combined text*** and _underlined text_ and =literal text=.[fn:note]\n*** Prop card :prop:\n***** CUT TO\n[fn:note] Note content. **Bold note** and *italic note*.\n",
+			".org": "#+TITLE: Rich Script\n#+SCHEMA: https://example.invalid/schema\n* CHARACTERS\n| CÁIT | A visitor |\n* Introduction\nOpening summary.\n* ACT ONE\n** SCENE ONE\n*** Night direction.\n**** CÁIT (quietly)\n*Bold text* and /italic text/ and ***combined text*** and _underlined text_ and =literal text=.[fn:note]\n*** Prop card :prop:\n***** CUT TO\n[fn:note] Note content. *Bold note* and /italic note/.\n",
 			".md":  "---\nschema: https://example.invalid/schema\n---\n# Rich Script\n\n| Name | Description |\n| --- | --- |\n| CÁIT | A visitor |\n\n## Introduction\nOpening summary.\n\n## ACT ONE\n### SCENE ONE\n*Night direction.*\n**CÁIT:** *(quietly)*\n**Bold text** and *italic text* and ***combined text*** and _underlined text_ and `literal text`.[^note]\n***\"Prop card\"***\n> CUT TO\n[^note]: Note content. **Bold note** and *italic note*.\n",
 		}
 		for extension, rich := range fixtures {

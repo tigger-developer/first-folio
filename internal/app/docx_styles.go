@@ -13,6 +13,7 @@ import (
 )
 
 type docxWriter struct {
+	sourceFormat                                                       play.Format
 	cfg                                                                config.Config
 	doc                                                                play.Document
 	width, height, margin, top, bottom, headerDistance, footerDistance int
@@ -26,8 +27,8 @@ type docxWriter struct {
 	textBytes, inlineCount                                             int
 }
 
-func newDOCXWriter(doc play.Document, cfg config.Config) (*docxWriter, error) {
-	w := &docxWriter{cfg: cfg, doc: doc, styleIDs: map[string]bool{}, notes: map[string]string{}}
+func newDOCXWriter(doc play.Document, cfg config.Config, sourceFormat play.Format) (*docxWriter, error) {
+	w := &docxWriter{sourceFormat: sourceFormat, cfg: cfg, doc: doc, styleIDs: map[string]bool{}, notes: map[string]string{}}
 	if len(doc.Events) > 50000 {
 		return nil, fmt.Errorf("DOCX exceeds 50000 script events")
 	}

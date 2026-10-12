@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.13"
+version: "0.14"
 last-updated: 2026-10-12
 ---
 
@@ -90,7 +90,7 @@ The `docx_*.go` adapter builds native WordprocessingML with `encoding/xml`,
 packages it with `archive/zip`, and publishes through a same-directory staged
 rename. No Pandoc or Typst process runs for DOCX. British scene tables, font
 mapping, resource bounds and approximations are described in [DOCX export](format-docx.md).
-The existing Typst route retains source-aware Org emphasis independently.
+The conversion entry point passes the source format into the shared office inline renderer, so Org single-asterisk bold also applies to DOCX and ODT, including footnotes. The existing Typst route retains its independent source-aware renderer.
 
 ODT is a separate sibling output route. `odt_*.go` projects the shared office
 layout nodes into Pandoc JSON and generates an ODF reference containing resolved
@@ -133,6 +133,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.14 (2026-10-12): Carry source format into shared DOCX/ODT emphasis handling.
 
 - 0.13 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 

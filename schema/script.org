@@ -104,9 +104,11 @@ An inline =[fn:note]= refers to a definition of the form
 =[fn:note] Explanation.= on its own line. Definitions are emitted after the
 play body.
 
-Org inline markup is interpreted by the Org-aware PDF renderer. Text conversion
+Org inline markup is interpreted by the source-aware PDF, DOCX and ODT renderers.
+Text conversion
 does not translate every inline marker into the destination syntax; equivalent
 inline appearance across Org, Markdown, and Fountain is not guaranteed.
+
 
 The historical prop form =- *"KEEP OUT"*= is accepted. Org output uses the
 =:prop:= heading form shown above.

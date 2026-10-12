@@ -1,6 +1,6 @@
 ---
 title: DOCX Script Export
-version: "1.3"
+version: "1.4"
 last-updated: 2026-10-12
 ---
 
@@ -34,11 +34,10 @@ bundled Iosevka Publish. Unsupported, missing or restricted fonts produce warnin
 | Title | Dedicated or compact title. Vertical positioning is approximate; date/version are in-flow rather than bottom-of-page slots. |
 | Running matter | First/odd/even parts and native page fields. A single section uses body running matter for intro pages, with a warning for frontmatter overrides. |
 
-Inline emphasis retains the initial office adapter's rules: `**bold**`,
-`***bold italic***`, `*italic*`, `/italic/`, `_underline_` and literal code spans.
-In particular, single-asterisk Org bold is **not yet source-aware in DOCX**.
-The Org-emphasis correction in PDF/Typst is separate; review this limitation
-before using an Org export for submission.
+Inline emphasis follows the source format: Org `*bold*` is bold and `/italic/`
+is italic; Markdown and Fountain retain `**bold**` and `*italic*`. These rules
+also apply inside footnotes. Existing `**bold**`, `***bold italic***`, underline
+and literal-code handling remain supported.
 
 The writer rejects source/destination identity, destination symlinks and invalid
 XML text. Source size is limited to 32 MiB; generated XML and package sizes are
@@ -54,6 +53,8 @@ title composition, page settings and spacing. That generic conversion is not
 the product ODT route. The native DOCX writer remains unchanged.
 
 ## History
+
+- 1.4 (2026-10-12): Correct Org single-asterisk bold in body text and footnotes.
 
 - 1.3 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 

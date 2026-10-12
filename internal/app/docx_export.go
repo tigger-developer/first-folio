@@ -41,7 +41,7 @@ func readDOCXSource(path string) (raw []byte, err error) {
 	return raw, nil
 }
 
-func exportDOCX(doc play.Document, cfg config.Config, opts convertOptions, toStdout bool, stdout, stderr io.Writer) error {
+func exportDOCX(doc play.Document, cfg config.Config, sourceFormat play.Format, opts convertOptions, toStdout bool, stdout, stderr io.Writer) error {
 	if toStdout && writerIsTerminal(stdout) && !opts.force {
 		return fmt.Errorf("DOCX is binary output. Refusing to write to terminal\nUse a target file, redirect stdout, or pass --force to override")
 	}
@@ -50,7 +50,7 @@ func exportDOCX(doc play.Document, cfg config.Config, opts convertOptions, toStd
 			return err
 		}
 	}
-	writer, err := newDOCXWriter(doc, cfg)
+	writer, err := newDOCXWriter(doc, cfg, sourceFormat)
 	if err != nil {
 		return err
 	}
