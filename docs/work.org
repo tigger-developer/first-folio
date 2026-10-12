@@ -78,6 +78,14 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** REVIEW W060 - Embed fonts in DOCX and ODT exports :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-060
+:CREATED: 2026-10-12
+:END:
+- Specification :: [[file:../specs/060-office-font-embedding/spec.org][W060 - Complete editable font embedding]].
+- Evidence :: [[file:../specs/060-office-font-embedding/validation.org][Package, portability and preservation checks]].
+
 ** REVIEW W059 - Restore the Homebrew release path :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-059

@@ -62,6 +62,11 @@ func exportDOCX(doc play.Document, cfg config.Config, opts convertOptions, toStd
 	if err != nil {
 		return err
 	}
+	raw, fontWarnings, err := embedOfficeFonts(raw, "docx")
+	if err != nil {
+		return err
+	}
+	writer.warnings = append(writer.warnings, fontWarnings...)
 	for _, warning := range writer.warnings {
 		if _, err := fmt.Fprintln(stderr, "DOCX limitation:", warning); err != nil {
 			return err

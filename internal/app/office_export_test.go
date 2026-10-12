@@ -299,8 +299,13 @@ func TestRT054_3OfficeSelectionAndFailure(t *testing.T) {
 	writeAppFile(t, src, officeSources[".org"])
 	for _, format := range []string{"docx", "odt"} {
 		raw, stderr, err := officeRun(t, binary, dir, officeEnv(t, t.TempDir(), nil), "convert", src, "--to", format)
-		if err != nil || stderr != "" {
+		if err != nil {
 			t.Fatalf("stdout %s: %v %s", format, err, stderr)
+		}
+		for _, line := range strings.Split(strings.TrimSpace(stderr), "\n") {
+			if line != "" && (!strings.HasPrefix(line, strings.ToUpper(format)+" limitation: font ") || !strings.Contains(line, "not embedded:")) {
+				t.Fatalf("unexpected diagnostic: %s", line)
+			}
 		}
 		officePackage(t, raw)
 		input := filepath.Join(dir, "input."+format)

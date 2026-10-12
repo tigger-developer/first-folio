@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.11"
+version: "0.12"
 last-updated: 2026-10-12
 ---
 
@@ -41,8 +41,12 @@ manuscript and letter PDF compilation. Each invocation extracts the embedded
 faces into a private temporary directory, passes it through Typst's
 `--font-path` alongside existing `TYPST_FONT_PATHS`, and removes it on success
 or failure. It contains no style-specific behaviour. All font selection stays
-in layered YAML. Exported Typst and office documents retain font references,
-so their viewing or compiling host must supply the selected fonts.
+in layered YAML. Exported Typst files require fonts on the compiling host.
+Office exports use a shared bounded SFNT metadata resolver over bundled assets
+and local font paths. A final packaging step adds complete editable font faces
+to DOCX font parts or ODT font-face sources and manifest entries. It runs before
+atomic publication and does not change the PDF route. Missing or restricted
+fonts retain their references with warnings; see [font embedding](font-embedding.md).
 
 The separate-line dialogue template gives its block the available width, so
 configured speaker alignment operates across the dialogue area. British
@@ -129,6 +133,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.12 (2026-10-12): Record shared font discovery and native office font packaging.
 
 - 0.11 (2026-10-12): Record bundled font lifecycle and configured dialogue alignment.
 

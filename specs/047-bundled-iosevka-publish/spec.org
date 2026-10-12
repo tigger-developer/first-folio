@@ -11,6 +11,11 @@
 Copy *Iosevka Publish from the local system into the project* and ship it as
 the *default monospace font*.
 
+Office-font scope update, 2026-10-12: [[file:../060-office-font-embedding/spec.org][W060 - Embed fonts in office exports]]
+supersedes the historical statements below that DOCX and ODT require host-installed
+fonts. Those statements remain evidence of this work item's original boundary.
+Standalone Typst font requirements remain unchanged.
+
 * Scope and constraints
 
 Historical paired scope; superseded where stated by the authorized iteration below.

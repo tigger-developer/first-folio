@@ -1,0 +1,8 @@
+name                                 type              encoding         emb sub uni object ID
+------------------------------------ ----------------- ---------------- --- --- --- ---------
+BAAAAA+Iosevka-Publish-Bold          TrueType          WinAnsi          yes yes yes     28  0
+CAAAAA+Iosevka-Publish               TrueType          WinAnsi          yes yes yes     18  0
+DAAAAA+Fixture-Publish               TrueType          WinAnsi          yes yes yes     43  0
+EAAAAA+Fixture-Publish-Bold          TrueType          WinAnsi          yes yes yes     38  0
+FAAAAA+Fixture-Publish-Italic        TrueType          WinAnsi          yes yes yes     23  0
+GAAAAA+Fixture-Publish-Bold-Italic   TrueType          WinAnsi          yes yes yes     33  0

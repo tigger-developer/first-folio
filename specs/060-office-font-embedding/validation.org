@@ -1,0 +1,117 @@
+#+TITLE: W060 - Office font embedding validation
+#+TODO: AMBER RED | GREEN
+#+STARTUP: overview
+
+* Candidate and authority
+Approved emergency scope, 2026-10-12: embed fonts in DOCX and ODT conversions
+under BYPASS-GATE-7. Candidate is 11ab8ca plus the W060 font resolver, package
+embedding, tests and documentation. Existing unrelated British YAML spacing
+edits were present during verification and remain unstaged.
+
+* GREEN RT060.1 - Font package regressions :testdef:
+:PROPERTIES:
+:REVISION: 11ab8ca plus W060 implementation
+:COMMAND: go test ./internal/app -run '^TestOffice(EmbeddedFonts|FontPermissionsAndBounds|LocalFontOverride|FontDiscoverySkipsFontBodies)$' -count=1
+:EVIDENCE: All four focused test functions passed; complete face bytes, native references, permissions, missing fonts, malformed metadata and discovery limits checked.
+:END:
+
+** Execution history
+- Initial RED: DOCX lacked word/fontTable.xml; ODT lacked every requested font
+  face and the missing-font warning. The intended CLI assertions failed.
+- Initial GREEN: both formats carried complete bundled faces. Permission and
+  local-override cases passed (3.249 seconds for the focused group).
+- Discovery RED: seventeen unrelated sparse 32 MiB files exhausted the initial
+  scan byte budget before the selected font. Metadata-first discovery resolved
+  the regression and allowed the installed Libertinus faces to be included.
+- Interoperability RED: LibreOffice rejected the repackaged ODT. Three isolated
+  package probes varied font references, manifest MIME types and the mimetype
+  local ZIP header. Only the known-size local-header variant opened. The new
+  regression failed before production used a descriptor-free mimetype entry.
+- A test setup attempt shadowed encoding/binary with a CLI path variable;
+  compilation failure was not behavioural RED. The corrected assertion then
+  produced the intended ODT-header RED before implementation.
+- Latest focused GREEN: 2.976 seconds, all four test functions passed.
+
+* GREEN RT060.2 - Regression preservation :testdef:
+:PROPERTIES:
+:REVISION: 11ab8ca plus W060 implementation
+:COMMAND: make test; make lint
+:EVIDENCE: Full suite passed: app 169.856 s, manuscript 109.766 s, config/letter/play/typst/update-homebrew cached successes. go vet passed.
+:END:
+The earlier suite identified a legacy assertion requiring empty stderr when fonts
+are absent from isolated HOME. It now accepts only the new font-embedding warnings;
+other diagnostics still fail. The focused selection/failure group passed in
+124.311 seconds, including the actual Pandoc timeout. The final full suite passed
+on 2026-10-12. The earlier partial and failed runs remain historical evidence,
+superseded by that final successful execution. A temporary diagnostic Go program
+was initially picked up as a no-test package; it was moved outside the project
+and is not part of the product or regression suite.
+
+* GREEN OT060.1 - Uninstalled-font rendering :testdef:
+:PROPERTIES:
+:REVISION: 11ab8ca plus W060 implementation
+:EVIDENCE: LibreOffice 26.2.3.2 rendered DOCX and ODT with all four uninstalled TrueType and OpenType test faces; linked PDF font inventories record the result.
+:END:
+The temporary Fixture Publish family was renamed from the bundled Iosevka TTF
+files; Trialfontx Serif was renamed from installed Libertinus Serif OTF files.
+SFNT table checksums and the whole-font checksum adjustment were recalculated.
+Only the exporter received TYPST_FONT_PATHS. Separate temporary LibreOffice
+profiles rendered the resulting documents without installing either family.
+No bundled or installed font binary was changed.
+
+- [[file:docx-truetype-fonts.txt][DOCX TrueType font inventory]]: regular, bold, italic and bold italic Fixture Publish.
+- [[file:odt-truetype-fonts.txt][ODT TrueType font inventory]]: the same four faces, after native-header correction.
+- [[file:docx-opentype-fonts.txt][DOCX OpenType font inventory]]: all four Trialfontx Serif faces.
+- [[file:odt-opentype-fonts.txt][ODT OpenType font inventory]]: all four Trialfontx Serif faces.
+
+Representative exports of examples/play-example.org are in dist/font-embedding:
+us.docx, us.odt, british.docx and british.odt. The British DOCX font table includes
+three Libertinus Sans faces and four Libertinus Serif faces. No missing-font
+diagnostic occurred in the final representative host conversions.
+
+* AMBER UT060.1 - Editing and save/reopen :testdef:
+:PROPERTIES:
+:REASON: Human editing, save/reopen and Microsoft Word validation have not been reported.
+:END:
+The one-off renders prove font availability in LibreOffice, not Word behaviour
+or preservation after an editor saves the files. No user acceptance is inferred.
+
+* Self-review
+Reviewed the exporter integration, complete resolver and packaging sources,
+regression cases, native-package references, resource bounds and affected docs.
+Font bytes remain complete, with only the required reversible DOCX prefix
+obfuscation. Permission checks occur again on the loaded bytes; discovery reads
+metadata first and ignores symlinks/nonregular entries. All publication still
+passes through the existing atomic writer. Missing/restricted fonts warn rather
+than changing configured families or failing previously valid conversions.
+
+The review caught the whole-file discovery budget and ODT local-header problem;
+both have observed RED/GREEN regressions. ODT uses standard SVG font source
+elements without application-specific extensions. Full-font package tests are
+independent of the obfuscation implementation; the separate reader test uses
+unique uninstalled families for evidence against silent substitution.
+
+README, architecture, office format guides, font documentation and the W047
+scope note are reconciled. PDF and text production paths are unchanged. Existing
+British YAML edits are excluded from the commit. The external harness was skipped
+under the session exception; this is a self-review, not an independent audit.
+
+* Retrospective definition review
+The durable scope matches embedding fonts in both existing office routes. Missing
+and restricted font fallback preserves conversion compatibility and is documented.
+Collection extraction, variable fonts, arbitrary weight instantiation, downloads,
+font installation and release publication are not implied by this delivery.
+Acceptance criteria map to the package, preservation, portability and editing
+checks. Outstanding user validation is explicitly AMBER; no closure is claimed.
+
+* Readiness and local executable
+The deterministic delivery-code readiness check passed: valid schema, two ACs,
+two GREEN RTs, one GREEN OT and one AMBER UT. This checks the record, not an
+independent audit verdict. Documentation was processed with sanitize; Git's
+whitespace check passed.
+
+=make build= rebuilt dist/folio and =make lint= passed after the final source
+review. The existing local folio symlink points to that binary. Conversions
+through that executable produced both office formats; ZIP inspection confirmed
+the four Iosevka faces in DOCX and ODT, with available Courier New faces also
+included for ODT's generated code style. No global installation command ran.

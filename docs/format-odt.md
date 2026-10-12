@@ -1,7 +1,7 @@
 ---
 title: ODT Script Export
-version: "1.0"
-last-updated: 2026-10-11
+version: "1.1"
+last-updated: 2026-10-12
 ---
 
 # ODT script export
@@ -22,6 +22,9 @@ Pandoc 3.9.0.2 and LibreOffice 26.2.3.2. It emits Pandoc JSON API version
 No Typst executable is needed for ODT. No custom template, filter or extra
 Pandoc argument interface is exposed.
 
+Available fonts are [embedded as complete faces](font-embedding.md) after Pandoc
+writes the document. Unsupported, missing or restricted fonts produce warnings.
+
 The destination extension takes precedence over `--to`. With no target, use
 `--to odt` or `folio.default-format: odt` and redirect stdout. Binary terminal
 output requires `--force`. ODT is write-only and available only to `convert`,
@@ -33,7 +36,7 @@ not the manuscript or letter commands.
 |------|--------------------|
 | British scripts | One continuous table per scene, with two-cell dialogue rows and full-width merged direction, prop and transition rows. Headings remain outside the table. |
 | US and screenplay | Separate cue, instruction and dialogue paragraphs with configured indentation. |
-| Typography | Resolved role fonts, sizes, regular/bold weights, italic, small caps, tracking and integer stretch. Oblique uses italic with a warning. Unsupported weights fail. Installed fonts determine the actual face used by the reading application. |
+| Typography | Resolved role fonts, sizes, regular/bold weights, italic, small caps, tracking and integer stretch. Oblique uses italic with a warning. Unsupported weights fail. Available editable font faces are embedded; missing faces depend on the reading host. |
 | British spacing | Single line spacing and the same compact vertical spacing as DOCX. Cast rows have no trailing paragraph gap. |
 | Content | Ordered text, supported inline spans, cast tables and native footnotes. Configured visibility switches apply. Links and images are not fetched; the existing inline delimiter rules still apply to their text. |
 | Pages | Configured A3/A4/A5/A6/Letter/Legal paper, margins and act breaks. Long table rows may split across pages. Pagination depends on the reading application. |
@@ -68,5 +71,7 @@ staged beside the destination and published by rename with mode 0600. A failed
 conversion leaves an existing destination unchanged.
 
 ## History
+
+- 1.1 (2026-10-12): Embed full font files with native ODF references and manifest entries.
 
 - 1.0 (2026-10-11): Add configured Pandoc ODT export alongside native DOCX.

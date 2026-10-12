@@ -1,7 +1,7 @@
 ---
 title: DOCX Script Export
-version: "1.1"
-last-updated: 2026-10-11
+version: "1.2"
+last-updated: 2026-10-12
 ---
 
 # DOCX script export
@@ -16,6 +16,9 @@ The destination extension selects DOCX. For redirected output, use
 `folio convert play.org --to docx > play.docx`. Binary terminal output requires
 `--force`. DOCX is write-only; manuscript and letter commands do not export DOCX.
 The writer uses Go's XML and ZIP libraries and needs neither Pandoc nor Typst.
+
+Available fonts are [embedded as complete faces](font-embedding.md), including
+bundled Iosevka Publish. Unsupported, missing or restricted fonts produce warnings.
 
 ## Formatting and editing
 
@@ -38,7 +41,8 @@ before using an Org export for submission.
 
 The writer rejects source/destination identity, destination symlinks and invalid
 XML text. Source size is limited to 32 MiB; generated XML and package sizes are
-bounded at 128 MiB. Validated file output is staged beside its destination and
+bounded at 128 MiB. Embedded fonts have a separate 64 MiB budget; the final
+expanded package is limited to 256 MiB and 256 entries. Validated file output is staged beside its destination and
 published by rename. Existing destination permissions are replaced by mode 0600.
 
 ## ODT
@@ -49,6 +53,8 @@ title composition, page settings and spacing. That generic conversion is not
 the product ODT route. The native DOCX writer remains unchanged.
 
 ## History
+
+- 1.2 (2026-10-12): Add complete font embedding and permission-aware warnings.
 
 - 1.1 (2026-10-11): Link the separate configured ODT exporter; retain DOCX behaviour.
 

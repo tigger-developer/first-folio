@@ -1,3 +1,9 @@
+---
+title: Bundled Iosevka Publish Fonts
+version: "1.1"
+last-updated: 2026-10-12
+---
+
 # Iosevka Publish
 
 These are the operator's customized Iosevka Publish fonts, copied unchanged
@@ -16,8 +22,9 @@ Typst identifies two families: `Iosevka Publish` and
 `Iosevka Publish Extended`. Each has regular, italic, bold and bold italic
 faces. The extended family's native width is 125%.
 
-All eight faces and this notice are embedded in the executable. Only font
-files are extracted for PDF compilation. No font installation, font download
+All eight faces and this notice are embedded in the executable. Font
+files are extracted temporarily for PDF compilation and included as complete
+faces in DOCX and ODT exports when their family is referenced. No font installation, font download
 or font build occurs during a First Folio build or conversion.
 
 SHA-256 hashes, verified against the installed originals:
@@ -32,3 +39,7 @@ fd4c4fa29167bec0eb64a1337261e0f258c806f2d9277fce9976f3e9483caa85  IosevkaPublish
 1575100d9a331d5fed2a503955b20affe9dc9712f17fc438903ccf5fd436453c  IosevkaPublish-Italic.ttf
 7842429075d127c27a6a39c45cc9c652cd92875e5e6c2cda4d03bb45a0bd9a8a  IosevkaPublish-Regular.ttf
 ```
+
+## History
+
+- 1.1 (2026-10-12): Document inclusion in editable office exports; font binaries unchanged.

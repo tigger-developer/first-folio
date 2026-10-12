@@ -95,6 +95,14 @@ func exportODT(doc play.Document, cfg config.Config, opts convertOptions, toStdo
 	if err = odtValidate(raw); err != nil {
 		return err
 	}
+	raw, fontWarnings, err := embedOfficeFonts(raw, "odt")
+	if err != nil {
+		return err
+	}
+	if err = odtValidate(raw); err != nil {
+		return err
+	}
+	layout.warnings = append(layout.warnings, fontWarnings...)
 	for _, warning := range layout.warnings {
 		if _, err = fmt.Fprintln(stderr, "ODT limitation:", warning); err != nil {
 			return err

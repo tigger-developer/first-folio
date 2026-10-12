@@ -1,6 +1,6 @@
 ---
 title: First Folio
-version: "1.6"
+version: "1.7"
 last-updated: 2026-10-12
 ---
 
@@ -95,9 +95,10 @@ left indent. Manuscript inline and block code also default to this family. No se
 PDF output. Font choices and speaker alignment remain YAML settings; explicit
 role overrides take precedence.
 
-Standalone `.typ`, DOCX and ODT files reference font names. Install the selected
-fonts on the machine that compiles or edits those files; they do not carry the
-bundled font files.
+DOCX and ODT exports [embed complete available font faces](docs/font-embedding.md),
+including bundled Iosevka Publish, where editable embedding is permitted.
+Missing or restricted fonts produce warnings and retain their font-name references.
+Standalone `.typ` files still require fonts on the compiling host.
 
 ## Supported Formats
 
@@ -189,6 +190,8 @@ make lint   # Go static analysis
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.7 (2026-10-12): Document font embedding in editable DOCX and ODT exports.
 
 - 1.6 (2026-10-12): Document bundled Iosevka Publish fonts and US script defaults.
 

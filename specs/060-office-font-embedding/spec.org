@@ -1,0 +1,122 @@
+#+TITLE: W060 - Embed fonts in DOCX and ODT exports
+#+STARTUP: overview
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-12, BYPASS-GATE-7 implementation scope
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+DOCX and ODT conversions carry the fonts selected by their resolved styles,
+including bundled Iosevka Publish. Complete regular, bold, italic and bold italic
+faces preserve editability. This retrospective emergency specification replaces
+the temporary request to embed fonts in both office formats.
+
+* Scope and constraints
+- Baseline :: =11ab8ca=, configured US block spacing and existing office exporters.
+- Fonts :: Reuse the eight bundled customized Iosevka faces unchanged. Discover
+  other configured families locally; no download, font build or installation.
+- Permissions :: Embed installable/editable standalone TrueType and OpenType
+  faces. Retain configured references with warnings when suitable faces cannot
+  be embedded. No permission override, subsetting, collection extraction or
+  variable-font instantiation.
+- Preservation :: Keep the DOCX native writer, ODT Pandoc projection, layered
+  YAML selection, PDF/Typst and text conversion routes. Existing British YAML
+  edits are outside this change.
+- Review exception :: Self-review substitutes for the broken external audit
+  harness under the session authorization; no independent verdict is claimed.
+- Exclusions :: No release, installation, Word automation or page-layout change.
+
+* Acceptance criteria
+** AC060.1 - Office packages contain editable font faces :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-060-1
+:END:
+DOCX font-table relationships and ODT font-face/manifest references resolve to
+complete font files. Bundled families do not require host installation. Explicit
+local configured fonts are also included. Available regular/bold/italic/bold
+italic variants remain usable for newly entered text.
+Verified by [[#rt-060-1][RT060.1 - Font package regressions]],
+[[#ot-060-1][OT060.1 - Uninstalled-font rendering]] and
+[[#ut-060-1][UT060.1 - Editing and save/reopen]].
+
+** AC060.2 - Permissions and existing conversion boundaries are preserved :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-060-2
+:END:
+Restricted, preview-only and bitmap-only faces are omitted with warnings.
+Missing or unsupported fonts retain their names without failing an otherwise
+valid conversion. Font parsing, discovery and packaging remain bounded; output
+publication stays atomic. PDF, text, manuscript and letter routes retain their
+behaviour. Verified by [[#rt-060-1][RT060.1 - Font package regressions]] and
+[[#rt-060-2][RT060.2 - Regression preservation]].
+
+* Test definitions
+** RT060.1 - Font package regressions :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-060-1
+:END:
+Covers [[#ac-060-1][AC060.1 - Embedded faces]] and
+[[#ac-060-2][AC060.2 - Safe conversion boundaries]]. Run the four
+=TestOfficeEmbeddedFonts=, =TestOfficeFontPermissionsAndBounds=,
+=TestOfficeLocalFontOverride= and =TestOfficeFontDiscoverySkipsFontBodies=
+tests. Check both CLI exporters with isolated HOME; all four bundled faces,
+DOCX key decoding and relationship targets, ODT manifest and font references,
+full-font bytes, local override, missing-font diagnostics, embedding permission
+flags, truncated/out-of-bounds metadata and discovery past unrelated large files.
+Check ODT's first stored mimetype has known local-header sizes and no descriptor.
+
+** RT060.2 - Regression preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-060-2
+:END:
+Covers [[#ac-060-2][AC060.2 - Safe conversion boundaries]]. Run =make test= and
+=make lint=. Preserve existing office selection, process failure, source limits,
+atomic publication and PDF/text/manuscript/letter assertions. The stdout office
+test may accept the newly required font warnings, but not unrelated diagnostics.
+
+** OT060.1 - Uninstalled-font rendering :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-060-1
+:END:
+Covers [[#ac-060-1][AC060.1 - Embedded faces]]. Create temporary renamed test
+derivatives from the existing Iosevka TrueType and Libertinus OpenType files,
+recalculate SFNT checksums, and point only the exporter at their temporary font
+directory. Do not install these test fonts. Render both DOCX and ODT through
+LibreOffice with separate temporary profiles, without passing the font path.
+Inspect the resulting PDF font inventory for all four unique test-family faces.
+Generate representative US and British fixture exports and inspect package fonts.
+This is a bounded local test; no network or metered service is used.
+
+** UT060.1 - Editing and save/reopen :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-060-1
+:END:
+Covers [[#ac-060-1][AC060.1 - Embedded faces]]. Open representative exports in
+Word and LibreOffice on a machine without the selected fonts installed. Add new
+text and bold/italic spans, save, reopen and check appearance and continued
+font availability. This is distinct from automated package checks and rendering.
+
+* Solution design
+A shared resolver examines bounded SFNT metadata before reading complete selected
+files. Bundled faces precede explicit =TYPST_FONT_PATHS= and platform user/system
+font directories. Matching uses internal Unicode family names and regular/bold
+weight plus italic metadata. Discovery visits at most 10,000 entries; each font
+is at most 32 MiB, with 64 MiB of embedded font data per conversion.
+
+After their existing writers generate a package, DOCX and ODT invoke the same
+bounded packaging boundary. DOCX adds font-table relationships, deterministic
+GUID keys, first-32-byte obfuscation and full-font save settings. ODT adds native
+font source URIs and manifest entries after Pandoc; the first mimetype ZIP header
+contains its CRC and size directly. XML rewriting retains existing namespace
+prefixes and mixed content. ODT validation runs again before atomic publication.
+Packages remain within 256 entries, 128 MiB compressed and 256 MiB expanded.
+
+No external font resolver process or new dependency is introduced. The existing
+PDF font extraction helper is unchanged. Resource and permission limitations are
+documented in [[file:../../docs/font-embedding.md][Office font embedding]].
+
+* Review and handoff
+See [[file:validation.org][Execution evidence and self-review]]. Product documentation
+includes README, architecture, both office format guides and font provenance.
+W047 - Bundled Iosevka history explicitly marks its former office exclusion as
+superseded. User validation and closure remain separate from deterministic checks.

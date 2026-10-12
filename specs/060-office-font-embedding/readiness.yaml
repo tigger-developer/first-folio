@@ -1,0 +1,49 @@
+audit-readiness:
+  schema:
+    valid: true
+    errors: []
+  inventory:
+    counts:
+      acceptance-criteria: 2
+      tests: 4
+      rt: 2
+      ot: 1
+      ut: 1
+    acceptance-criteria:
+      - id: AC060.1
+        title: Office packages contain editable font faces
+        file: specs/060-office-font-embedding/spec.org
+        line: 30
+      - id: AC060.2
+        title: Permissions and existing conversion boundaries are preserved
+        file: specs/060-office-font-embedding/spec.org
+        line: 42
+    tests:
+      - id: RT060.1
+        title: Font package regressions
+        state: GREEN
+        file: specs/060-office-font-embedding/spec.org
+        line: 54
+        validation-line: 11
+      - id: RT060.2
+        title: Regression preservation
+        state: GREEN
+        file: specs/060-office-font-embedding/spec.org
+        line: 68
+        validation-line: 35
+      - id: OT060.1
+        title: Uninstalled-font rendering
+        state: GREEN
+        file: specs/060-office-font-embedding/spec.org
+        line: 77
+        validation-line: 50
+      - id: UT060.1
+        title: Editing and save/reopen
+        state: AMBER
+        file: specs/060-office-font-embedding/spec.org
+        line: 90
+        validation-line: 72
+  delivery-code:
+    evaluated: true
+    ready: true
+    errors: []
