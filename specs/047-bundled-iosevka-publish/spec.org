@@ -81,7 +81,9 @@ Verify with RT047.1 - isolated PDF font and cue checks.
 :PROPERTIES:
 :CUSTOM_ID: ac-047-2
 :END:
-US scripts use Iosevka Publish with centred character cues; both flag spellings
+US scripts use Iosevka Publish with regular-weight character cues at a fixed
+mid-page indent, flush-left dialogue and parenthesized directions indented
+into the right-hand part of the text area; both flag spellings
 work. Manuscript monospace uses the bundled family. Explicit role overrides win.
 Verify with RT047.1 - isolated PDF font and cue checks and existing config tests.
 
@@ -142,3 +144,22 @@ Other US page geometry and instruction alignment remain as configured.
 The example's comma-bearing speaker source renders BOB,; this was observed
 during visual inspection and is outside the font and cue-alignment correction.
 User review remains outstanding; see validation.org.
+
+* Operator layout refinement - 2026-10-12
+This later request supersedes individually centred and bold character cues.
+Character names start at a fixed 50% indent within the text area, left-aligned
+and regular weight. Dialogue retains the main left margin, without first-line
+or wrapped-line indentation. Standalone directions begin at 40% of the text
+area and wrap within its remaining 60%, enclosed in parentheses. These values
+live in presets/us.yaml and remain available for local style overrides.
+
+The operator explicitly authorized the necessary generic renderer change after
+being alerted that existing direction prefix/suffix YAML fields were ignored.
+The PDF renderer now escapes and passes those two values to the template.
+No style-specific code was added. British empty delimiters remain unchanged.
+RT047.1 now checks unequal-length names sharing a left edge, regular speaker
+weight, wrapped dialogue geometry, direction position and enclosing delimiters.
+
+The direction block also uses width 100% so percentage indents resolve against
+the available text area; a PDF check exposed content-dependent positioning
+without that generic template adjustment. The operator was alerted before it.

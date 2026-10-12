@@ -222,6 +222,8 @@ func newScriptTemplateData(doc play.Document, cfg config.Config, format play.For
 		DirectionAlign:    validAlign(cfg.String("folio.positioning.stage-direction.align", "left")),
 		DirectionIndent:   typstDimension(cfg.String("folio.positioning.stage-direction.indent", "0")),
 		DirectionFont:     font("folio.positioning.stage-direction.font"),
+		DirectionOpen:     escapeTypstContent(cfg.String("folio.positioning.stage-direction.prefix", "")),
+		DirectionClose:    escapeTypstContent(cfg.String("folio.positioning.stage-direction.suffix", "")),
 		TransitionSpace:   cfg.String("folio.positioning.transition.space-before", "1.6em"),
 		TransitionAlign:   validAlign(cfg.String("folio.positioning.transition.align", "right")),
 		TransitionIndent:  typstDimension(cfg.String("folio.positioning.transition.indent", "0")),

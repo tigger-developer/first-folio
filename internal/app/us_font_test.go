@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/tigger-developer/first-folio/internal/config"
 )
 
 func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
@@ -18,13 +20,24 @@ func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
 			t.Skipf("requires %s", tool)
 		}
 	}
+	cfg, err := config.Load(config.Options{Mode: config.ModeScript, Home: t.TempDir(), LocalDir: t.TempDir(), CLI: map[string]any{"style": "us"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	font, err := cfg.Font("folio.positioning.speech.speaker.font")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if font.Weight != "regular" {
+		t.Errorf("speaker weight = %s, want regular", font.Weight)
+	}
 	binary := officeBuild(t)
 	for _, spelling := range []string{"equals", "separate", "override", "british", "manuscript"} {
 		t.Run(spelling, func(t *testing.T) {
 			dir, scratch := t.TempDir(), t.TempDir()
 			env := officeEnv(t, dir, map[string]string{"TYPST_IGNORE_SYSTEM_FONTS": "true", "TYPST_FONT_PATHS": dir, "TMPDIR": scratch})
 			source, pdf := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.pdf")
-			writeAppFile(t, source, "* Act One\n** Scene One\n*** A quiet kitchen.\n**** CAIT\nHello there.\n")
+			writeAppFile(t, source, "* Act One\n** Scene One\n*** Directionstart "+strings.Repeat("directionword ", 35)+"directionend.\n**** CAIT\nDialoguestart "+strings.Repeat("dialogueword ", 35)+"dialogueend.\n**** ALEXANDER\nHello there.\n")
 			args := []string{"convert", source, pdf, "--style=us"}
 			switch spelling {
 			case "separate":
@@ -76,6 +89,7 @@ func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
 							Text  string  `xml:",chardata"`
 							Left  float64 `xml:"xMin,attr"`
 							Right float64 `xml:"xMax,attr"`
+							Top   float64 `xml:"yMin,attr"`
 						} `xml:"word"`
 					} `xml:"body>doc>page"`
 				}
@@ -84,12 +98,39 @@ func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
 				}
 				found := false
 				for _, page := range doc.Pages {
+					previousY := -1.0
 					for _, word := range page.Words {
-						if strings.TrimSuffix(word.Text, ":") == "CAIT" {
+						firstOnLine := math.Abs(word.Top-previousY) > 1
+						previousY = word.Top
+						if spelling != "british" {
+							const margin = 25 * 72 / 25.4
+							if word.Text == "Dialoguestart" || word.Text == "dialogueword" {
+								// Check the first word on every dialogue line, including wrapped lines.
+								if word.Text == "Dialoguestart" || firstOnLine {
+									if math.Abs(word.Left-margin) > 1 {
+										t.Errorf("dialogue left = %.2f", word.Left)
+									}
+								}
+							}
+							if strings.Contains(word.Text, "Directionstart") {
+								if word.Text != "(Directionstart" {
+									t.Errorf("missing opening parenthesis: %s", word.Text)
+								}
+								want := margin + 0.4*(page.Width-2*margin)
+								if math.Abs(word.Left-want) > 1 {
+									t.Errorf("direction left = %.2f, want %.2f", word.Left, want)
+								}
+							}
+							if strings.Contains(word.Text, "directionend.") && word.Text != "directionend.)" {
+								t.Errorf("missing closing parenthesis: %s", word.Text)
+							}
+						}
+
+						if name := strings.TrimSuffix(word.Text, ":"); name == "CAIT" || name == "ALEXANDER" {
 							found = true
-							centred := math.Abs((word.Left+word.Right)/2-page.Width/2) < 1
+							centred := math.Abs(word.Left-page.Width/2) < 1
 							if centred != (spelling != "british") {
-								t.Errorf("cue centre %.2f, page centre %.2f", (word.Left+word.Right)/2, page.Width/2)
+								t.Errorf("cue left %.2f, page centre %.2f", word.Left, page.Width/2)
 							}
 						}
 					}

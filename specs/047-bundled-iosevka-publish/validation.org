@@ -9,7 +9,7 @@ harness audits are replaced by self-review under the session exception.
 
 * GREEN RT047.1 - Isolated PDF font and cue checks :testdef:
 :PROPERTIES:
-:REVISION: 2cbc906
+:REVISION: 6df03ca plus operator-requested US layout refinement
 :COMMAND: go test ./internal/app -run TestRT047_1 -count=1
 :EVIDENCE: All five cases passed: both flag spellings, role override, British preservation and manuscript mono; system fonts disabled, temporary extraction cleaned.
 :END:
@@ -68,3 +68,31 @@ An additional isolated CLI render using Iosevka Publish Extended embedded all
 four extended faces, including bold italic, with system fonts disabled.
 Delivery-code schema readiness passed with the visual user test still AMBER.
 The implementation remains unpushed and has not replaced the installed command.
+
+* Operator-requested layout refinement - 2026-10-12
+This supersedes the earlier centred-cue candidate. Regular speaker names now
+share a 50% left indent; dialogue stays flush with the main left margin and
+standalone stage directions use a 40% left indent with parentheses.
+The operator authorized generic prefix/suffix support after being alerted to
+the renderer omission, and was alerted to the full-width direction block
+correction before it was made.
+
+- RED: the revised regression observed bold speaker weight, unequal cue left
+  edges, missing parentheses and directions at the main margin.
+- After the YAML and delimiter change, RED isolated a content-dependent
+  direction position (242.87 pt instead of 252.28 pt).
+- GREEN: setting the generic direction block width to 100% passed all focused
+  PDF cases (1.592 s), including unequal-length cues, wrapped dialogue and
+  British preservation. make lint passed.
+- A British-style one-off override using prefix [# and suffix ] rendered
+  [#Direction text.] literally, verifying escaping and style-independent use.
+- Reopened the updated three-page fixture in Preview and inspected its script
+  page raster. Visual operator acceptance remains AMBER.
+- Self-review checked the two escaped config lookups, template-only generic
+  changes, YAML-owned layout choices and revised assertions. No US-specific
+  Go branch or office writer change was introduced.
+
+- Final make test passed: app 160.555 s, config 1.134 s, letter 0.959 s,
+  manuscript 109.740 s; remaining packages passed from cache.
+- Current RT047.1 evidence is the refined layout above. Earlier centred-cue
+  runs are retained as history. UT047.1 remains AMBER pending operator review.

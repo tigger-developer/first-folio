@@ -38,8 +38,8 @@
 {{end}}
 
 #let stage-direction(body) = {
-  block(above: {{.DirectionSpace}}, below: 0.6em)[
-    #pad(left: {{.DirectionIndent}})[#align({{.DirectionAlign}})[#text({{.DirectionFont.Args}})[#body]]]
+  block(width: 100%, above: {{.DirectionSpace}}, below: 0.6em)[
+    #pad(left: {{.DirectionIndent}})[#align({{.DirectionAlign}})[#text({{.DirectionFont.Args}})[{{.DirectionOpen}}#body{{.DirectionClose}}]]]
   ]
 }
 

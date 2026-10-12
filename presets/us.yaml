@@ -27,9 +27,11 @@ folio:
   positioning:
     speech:
       speaker:
-        align: center
+        # Fixed start at the middle of the text area; inherit left alignment.
+        indent: 50%
         font:
           family: Iosevka Publish
+          weight: regular
         suffix: ""
       speech-instruction:
         font:
@@ -41,6 +43,9 @@ folio:
         placement: new-line
         wrap-indent: 0em
     stage-direction:
+      indent: 40%
+      prefix: "("
+      suffix: ")"
       font:
         family: Iosevka Publish
     transition:
