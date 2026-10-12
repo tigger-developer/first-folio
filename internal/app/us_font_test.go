@@ -36,7 +36,7 @@ func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if font.Size != "12pt" || font.Weight != "regular" {
+		if font.Size != "12pt" || font.Weight != "bold" {
 			t.Errorf("%s font = %+v", role, font)
 		}
 	}
@@ -140,9 +140,10 @@ func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
 
 						if name := strings.TrimSuffix(word.Text, ":"); name == "CAIT" || name == "ALEXANDER" {
 							found = true
-							centred := math.Abs(word.Left-page.Width/2) < 1
-							if centred != (spelling != "british") {
-								t.Errorf("cue left %.2f, page centre %.2f", word.Left, page.Width/2)
+							cueStart := 72 + 0.35*(page.Width-144)
+							atIndent := math.Abs(word.Left-cueStart) < 1
+							if atIndent != (spelling != "british") {
+								t.Errorf("cue left %.2f, expected indent %.2f", word.Left, cueStart)
 							}
 						}
 					}

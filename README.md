@@ -91,7 +91,7 @@ go run ./cmd/update-homebrew --publish-tap /path/to/homebrew-tap 0.4.16
 Iosevka Publish, a customized Iosevka family, is bundled with the executable
 under the [SIL Open Font Licence](fonts/iosevka-publish/LICENSE.md). US script
 PDFs use it by default, with regular-weight speaker cues starting at a fixed
-mid-page indent. Manuscript inline and block code also default to this family. No separate font installation is needed for
+left indent. Manuscript inline and block code also default to this family. No separate font installation is needed for
 PDF output. Font choices and speaker alignment remain YAML settings; explicit
 role overrides take precedence.
 

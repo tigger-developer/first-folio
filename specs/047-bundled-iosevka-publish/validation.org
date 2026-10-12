@@ -9,7 +9,7 @@ harness audits are replaced by self-review under the session exception.
 
 * GREEN RT047.1 - Isolated PDF font and cue checks :testdef:
 :PROPERTIES:
-:REVISION: f4497f9 plus YAML-only US paper and heading refinement
+:REVISION: 900b471 plus YAML-only bold headings and 35% speaker indent
 :COMMAND: go test ./internal/app -run TestRT047_1 -count=1
 :EVIDENCE: All five cases passed: both flag spellings, role override, British preservation and manuscript mono; system fonts disabled, temporary extraction cleaned.
 :END:
@@ -110,3 +110,13 @@ correction before it was made.
 - Self-review confirmed the overlay contains differences only and retains
   speaker, dialogue and stage-direction settings from the preceding iteration.
   Pending instruction indentation and body numbering were not implemented.
+
+* Bold headings and reduced cue indent - 2026-10-12
+- RED: revised checks observed regular headings and cue starts at 306 pt,
+  rather than the new 235.8 pt position on US Letter with 1in margins.
+- GREEN: RT047.1, configuration overlay and script layout-parity checks passed
+  after YAML changes. Act and scene headings resolve to 12pt bold; unequal-length
+  character names start at the same 35% indent and remain regular weight.
+- Rebuilt and reopened the representative PDF. No renderer code changed.
+  Self-review confirmed YAML-only production changes and inherited bold weights.
+  User visual acceptance remains AMBER; no installation or publication occurred.

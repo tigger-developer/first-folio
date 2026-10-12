@@ -29,8 +29,8 @@ folio:
   positioning:
     speech:
       speaker:
-        # Fixed start at the middle of the text area; inherit left alignment.
-        indent: 50%
+        # Fixed start closer to the dialogue margin; inherit left alignment.
+        indent: 35%
         font:
           family: Iosevka Publish
           weight: regular
@@ -57,7 +57,6 @@ folio:
       font:
         family: Iosevka Publish
         size: 12pt
-        weight: regular
     frontmatter:
       header:
         font:
@@ -65,7 +64,6 @@ folio:
     scene-header:
       font:
         family: Iosevka Publish
-        weight: regular
       align: center
       case-transform: upper
 

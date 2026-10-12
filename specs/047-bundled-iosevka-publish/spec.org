@@ -171,3 +171,10 @@ and scene headings. These override the British base only in presets/us.yaml;
 the scene size already inherits 12pt. Instruction indentation and body-page
 numbering remain pending and are explicitly outside this iteration.
 RT047.1 checks US page width, dialogue margins and the resolved heading fonts.
+
+* Operator appearance adjustment - 2026-10-12
+The latest request restores bold act and scene headings, retaining 12pt size,
+and reduces character-name indentation. Use 35% of the text area rather than
+50%, retaining left alignment and regular speaker weight. This supersedes the
+preceding plain-heading and midpoint recommendations. All production changes
+remain in YAML; heading weight inherits bold from the British base.
