@@ -1,7 +1,7 @@
 ---
 title: First Folio
-version: "1.5"
-last-updated: 2026-10-11
+version: "1.6"
+last-updated: 2026-10-12
 ---
 
 # First Folio
@@ -87,6 +87,17 @@ go run ./cmd/update-homebrew --publish-tap /path/to/homebrew-tap 0.4.16
 - **Go 1.26+** (build only; Homebrew installs a compiled binary)
 - **Typst** (required only for PDF output)
 - **Pandoc** (required for ODT export and rich manuscript Markdown/org parsing and conversion)
+
+Iosevka Publish, a customized Iosevka family, is bundled with the executable
+under the [SIL Open Font Licence](fonts/iosevka-publish/LICENSE.md). US script
+PDFs use it by default, with centred speaker cues. Manuscript inline and block
+code also default to this family. No separate font installation is needed for
+PDF output. Font choices and speaker alignment remain YAML settings; explicit
+role overrides take precedence.
+
+Standalone `.typ`, DOCX and ODT files reference font names. Install the selected
+fonts on the machine that compiles or edits those files; they do not carry the
+bundled font files.
 
 ## Supported Formats
 
@@ -178,6 +189,8 @@ make lint   # Go static analysis
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.6 (2026-10-12): Document bundled Iosevka Publish fonts and US script defaults.
 
 - 1.5 (2026-10-11): Documented gated Homebrew publication, configurable tap checkout and partial-release recovery.
 

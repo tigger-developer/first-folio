@@ -28,7 +28,7 @@ func TestSharedRunningMatterPresetDefaults(t *testing.T) {
 				}
 				wantFamily := "Libertinus Sans"
 				if style == "us" {
-					wantFamily = "Menlo"
+					wantFamily = "Iosevka Publish"
 				}
 				if font.Family != wantFamily || font.Size != "10pt" {
 					t.Fatalf("%s %s font = %+v", style, role, font)

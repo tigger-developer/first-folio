@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
 
 	folio "github.com/tigger-developer/first-folio"
+	typstutil "github.com/tigger-developer/first-folio/internal/typst"
 )
 
 const Version = "0.4.7"
@@ -290,9 +290,8 @@ func compileTypst(source string, output string) error {
 		return fmt.Errorf("closing temporary Typst source: %w", err)
 	}
 
-	cmd := exec.Command("typst", "compile", tmpPath, output)
-	if out, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("typst compile failed: %w: %s", err, strings.TrimSpace(string(out)))
+	if err := typstutil.Compile(tmpPath, output); err != nil {
+		return err
 	}
 	return nil
 }

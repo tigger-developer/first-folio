@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"regexp"
 	"sort"
 	"strconv"
@@ -467,9 +466,8 @@ func compilePlayTypst(source string, target string, toStdout bool, stdout io.Wri
 		pdfFile.Close()
 		defer os.Remove(outputPath)
 	}
-	cmd := exec.Command("typst", "compile", typstPath, outputPath)
-	if output, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("typst compile failed: %w: %s", err, strings.TrimSpace(string(output)))
+	if err := typstutil.Compile(typstPath, outputPath); err != nil {
+		return err
 	}
 	if toStdout {
 		raw, err := os.ReadFile(outputPath)

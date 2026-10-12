@@ -659,17 +659,19 @@ release note is a decision for definition.
   proposes a =code-block.font= role, which would become a further consumer of
   whatever mechanism this change adopts.
 
-** TODO W047 - Bundle Iosevka Publish as the default monospace font :feature:
+** ACTIVE W047 - Bundle Iosevka Publish as the default monospace font :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-047
 :SOURCE: operator
 :CREATED: 2026-09-21
 :END:
 
-- Delivery mode :: *Paired development*.
+- Delivery mode :: Initially paired; BYPASS-GATE-7 emergency iteration authorized 2026-10-12.
 - Objective :: Copy *Iosevka Publish from the local system into the project*
   and ship it as the *default monospace font*.
 - Specification :: [[file:../specs/047-bundled-iosevka-publish/spec.org][W047 - Bundle Iosevka Publish as the default monospace font]].
+
+- Current evidence :: Local customized fonts embedded, US cue alignment corrected through YAML and the generic template. See [[file:../specs/047-bundled-iosevka-publish/validation.org][validation and pending visual review]].
 
 ** DONE W048 - Font-relative manuscript line spacing :defect:
 :PROPERTIES:

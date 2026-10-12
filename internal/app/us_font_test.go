@@ -1,0 +1,110 @@
+// ABOUTME: Verifies bundled monospace fonts and US cue geometry in real PDFs.
+// ABOUTME: Exercises a copied CLI with system fonts disabled and isolated configuration.
+package app
+
+import (
+	"encoding/xml"
+	"math"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"testing"
+)
+
+func TestRT047_1BundledUSFontsAndCueAlignment(t *testing.T) {
+	for _, tool := range []string{"typst", "pdffonts", "pdftotext"} {
+		if _, err := exec.LookPath(tool); err != nil {
+			t.Skipf("requires %s", tool)
+		}
+	}
+	binary := officeBuild(t)
+	for _, spelling := range []string{"equals", "separate", "override", "british", "manuscript"} {
+		t.Run(spelling, func(t *testing.T) {
+			dir, scratch := t.TempDir(), t.TempDir()
+			env := officeEnv(t, dir, map[string]string{"TYPST_IGNORE_SYSTEM_FONTS": "true", "TYPST_FONT_PATHS": dir, "TMPDIR": scratch})
+			source, pdf := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.pdf")
+			writeAppFile(t, source, "* Act One\n** Scene One\n*** A quiet kitchen.\n**** CAIT\nHello there.\n")
+			args := []string{"convert", source, pdf, "--style=us"}
+			switch spelling {
+			case "separate":
+				args = []string{"convert", source, pdf, "--style", "us"}
+			case "override":
+				writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  positioning:\n    speech:\n      dialogue:\n        font:\n          family: Libertinus Serif\n")
+			case "british":
+				args = []string{"convert", source, pdf, "--style=british"}
+			case "manuscript":
+				source = filepath.Join(dir, "chapter.md")
+				writeAppFile(t, source, "# Chapter One\n\nA `monospaced` word.\n\n```\nblock code\n```\n")
+				args = []string{"manuscript", source, pdf}
+			}
+			if _, stderr, err := officeRun(t, binary, dir, env, args...); err != nil {
+				t.Fatalf("render: %v: %s", err, stderr)
+			}
+			fonts, err := exec.Command("pdffonts", pdf).CombinedOutput()
+			if err != nil {
+				t.Fatalf("fonts: %v: %s", err, fonts)
+			}
+			if spelling == "british" {
+				if !strings.Contains(string(fonts), "LibertinusSerif") || strings.Contains(string(fonts), "Iosevka-Publish") {
+					t.Errorf("British fonts changed: %s", fonts)
+				}
+			} else {
+				if !strings.Contains(string(fonts), "Iosevka-Publish") {
+					t.Errorf("bundled font absent: %s", fonts)
+				}
+				if spelling == "equals" || spelling == "separate" {
+					for _, face := range []string{"Iosevka-Publish ", "Iosevka-Publish-Bold", "Iosevka-Publish-Italic"} {
+						if !strings.Contains(string(fonts), face) {
+							t.Errorf("missing %s: %s", face, fonts)
+						}
+					}
+				}
+				if spelling == "override" && !strings.Contains(string(fonts), "LibertinusSerif") {
+					t.Errorf("explicit font override lost: %s", fonts)
+				}
+			}
+			if spelling != "manuscript" {
+				raw, err := exec.Command("pdftotext", "-bbox", pdf, "-").CombinedOutput()
+				if err != nil {
+					t.Fatalf("bbox: %v: %s", err, raw)
+				}
+				var doc struct {
+					Pages []struct {
+						Width float64 `xml:"width,attr"`
+						Words []struct {
+							Text  string  `xml:",chardata"`
+							Left  float64 `xml:"xMin,attr"`
+							Right float64 `xml:"xMax,attr"`
+						} `xml:"word"`
+					} `xml:"body>doc>page"`
+				}
+				if err := xml.Unmarshal(raw, &doc); err != nil {
+					t.Fatal(err)
+				}
+				found := false
+				for _, page := range doc.Pages {
+					for _, word := range page.Words {
+						if strings.TrimSuffix(word.Text, ":") == "CAIT" {
+							found = true
+							centred := math.Abs((word.Left+word.Right)/2-page.Width/2) < 1
+							if centred != (spelling != "british") {
+								t.Errorf("cue centre %.2f, page centre %.2f", (word.Left+word.Right)/2, page.Width/2)
+							}
+						}
+					}
+				}
+				if !found {
+					t.Fatal("no character cue in PDF")
+				}
+			}
+			entries, err := os.ReadDir(scratch)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(entries) != 0 {
+				t.Errorf("temporary compilation files remain: %v", entries)
+			}
+		})
+	}
+}

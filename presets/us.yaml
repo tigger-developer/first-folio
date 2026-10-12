@@ -2,26 +2,70 @@
 # Every omitted value comes from the shared British base.
 
 folio:
+  font:
+    family: Iosevka Publish
+  heading:
+    font:
+      family: Iosevka Publish
+  title-page:
+    title:
+      font:
+        family: Iosevka Publish
+    subtitle:
+      font:
+        family: Iosevka Publish
+    author:
+      font:
+        family: Iosevka Publish
+    date:
+      font:
+        family: Iosevka Publish
+    version:
+      font:
+        family: Iosevka Publish
+
   positioning:
     speech:
       speaker:
+        align: center
+        font:
+          family: Iosevka Publish
         suffix: ""
       speech-instruction:
+        font:
+          family: Iosevka Publish
         placement: new-line
       dialogue:
+        font:
+          family: Iosevka Publish
         placement: new-line
         wrap-indent: 0em
+    stage-direction:
+      font:
+        family: Iosevka Publish
+    transition:
+      font:
+        family: Iosevka Publish
+    act-header:
+      font:
+        family: Iosevka Publish
+    frontmatter:
+      header:
+        font:
+          family: Iosevka Publish
     scene-header:
+      font:
+        family: Iosevka Publish
       align: center
       case-transform: upper
 
   page-header:
     font:
-      family: Menlo
+      family: Iosevka Publish
 
   page-footer:
     font:
-      family: Menlo
+      family: Iosevka Publish
 
   manuscript:
     style: us
@@ -35,7 +79,6 @@ folio:
         size: 10pt
     mono:
       font:
-        family: Iosevka Custom
         # size: 9pt is inherited from the British base.
         weight: bold
     line-spacing: 2

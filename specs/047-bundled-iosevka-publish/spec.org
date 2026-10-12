@@ -1,5 +1,5 @@
 #+TITLE: W047 - Bundle Iosevka Publish as the default monospace font
-#+SUBTITLE: Paired development skeleton
+#+SUBTITLE: Paired skeleton retained with emergency delivery reconciliation
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
 
@@ -13,6 +13,8 @@ the *default monospace font*.
 
 * Scope and constraints
 
+Historical paired scope; superseded where stated by the authorized iteration below.
+
 - Delivery mode :: *Paired development*.
 - Default :: Replace =Libertinus Mono= at =folio.manuscript.mono.font.family=
   with *Iosevka Publish*.
@@ -24,6 +26,9 @@ the *default monospace font*.
   configuration remain outside this change.
 
 * Baseline and evidence
+
+Historical notes retained. On 12 October the British base already named Iosevka
+Publish, while the US manuscript mono override still named Iosevka Custom.
 
 - [[file:../../presets/british.yaml][British base preset]] defines the current
   monospace family as =Libertinus Mono=.
@@ -49,4 +54,91 @@ the *default monospace font*.
 - Validate default rendering, explicit overrides and operation without a
   system-installed copy; retain a visual comparison for paired review.
 
-This is a *skeleton*, with no implementation or validation results recorded.
+At the time of this initial record this was a *skeleton*, with no implementation\nor validation results recorded. The following iteration supersedes that status.
+
+* Authorized iteration - 2026-10-12
+The existing paired scope now includes the US script correction: bundled Iosevka
+Publish is the US script font, with centred speaker names set in presets/us.yaml.
+Use the same family for the configured manuscript monospace default. Preserve
+other layout values and explicit overrides. Style selection remains YAML-only.
+
+Package all eight installed regular/extended, roman/italic and regular/bold faces
+with their OFL notice in the embedded assets. A shared Typst compile helper
+extracts fonts into a private temporary directory, passes --font-path, and cleans
+up after compilation. Script, manuscript and letter compilation use this helper;
+no style branching enters it. Generated standalone Typst and editable office
+files still require the font on the viewing host. No publishing or installation
+is authorized by this iteration.
+
+** AC047.1 - Fonts ship with the executable :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-047-1
+:END:
+A copied executable renders Iosevka Publish without a system font installation.
+Verify with RT047.1 - isolated PDF font and cue checks.
+
+** AC047.2 - US formatting is selected through YAML :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-047-2
+:END:
+US scripts use Iosevka Publish with centred character cues; both flag spellings
+work. Manuscript monospace uses the bundled family. Explicit role overrides win.
+Verify with RT047.1 - isolated PDF font and cue checks and existing config tests.
+
+** RT047.1 - Isolated PDF font and cue checks :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-047-1
+:END:
+Run the CLI with isolated HOME and system fonts disabled; inspect actual PDF
+font names and character-cue bounding boxes for both style flag spellings.
+Check an explicit role-font override, temporary-font cleanup and manuscript mono.
+Covers AC047.1 - embedded availability and AC047.2 - YAML style selection.
+
+** UT047.1 - Representative US script review :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-047-1
+:END:
+Render examples/play-example.org, open the PDF, and review remaining formatting.
+External audits remain replaced by self-review under the session exception.
+
+* Emergency reconciliation - 2026-10-12
+The operator authorized BYPASS-GATE-7 and required the installed customized
+fonts to be copied without download or build. The earlier instruction to use
+self-review instead of the broken external audit harness remains applicable.
+This record is retrospective reconciliation, not an advance definition verdict.
+
+** Actual implementation
+All eight local font binaries and their standard OFL notice are embedded.
+Their hashes match the installed originals; metadata identifies regular and
+extended families at version 34.8.1. The shared compile helper preserves
+caller font paths and cleans its private extraction directory on failure too.
+The US YAML supplies every script font role and centred speaker alignment.
+Removing the obsolete US manuscript mono family lets it inherit Iosevka Publish
+from the British base, retaining its configured bold weight.
+
+A generic template correction was also required: separate-line dialogue blocks
+now have width 100%, allowing configured alignment to use the available width.
+A temporary-source probe moved the cue centre from 82.87 pt to 297.64 pt on an
+A4 page while leaving dialogue at 70.87 pt. No US-specific branch was added.
+The same template serves screenplay; its configured alignments also benefit.
+British same-line dialogue and office writer implementations are unchanged.
+
+** Cause and test gap
+Commit 47aa1d4 (1 May 2026) moved the Courier Prime / centred-cue preset to the
+screenplay style and made the US stage-play preset serif with left cues.
+Later preset migration retained those values. Existing parity tests asserted
+that layout was emitted and styles differed, without requiring the correct
+PDF font or cue coordinates. The new regression inspects both actual outputs.
+Separately, the current separate-line template's automatic block width defeated
+centring even after the YAML was corrected. Git blame dates that block line
+to c4fcc722 (13 July); this observation does not establish when every historical
+Typst version first manifested the behaviour.
+
+** Review boundaries
+No font download or build, release publication, or installed-command replacement
+is part of this iteration. The preview executable is in dist/us-preview.
+Standalone Typst and office documents still require fonts on their viewing host.
+Other US page geometry and instruction alignment remain as configured.
+The example's comma-bearing speaker source renders BOB,; this was observed
+during visual inspection and is outside the font and cue-alignment correction.
+User review remains outstanding; see validation.org.

@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -87,9 +86,8 @@ func CompilePDF(source string, output string) error {
 	if err := tmp.Close(); err != nil {
 		return fmt.Errorf("closing temporary Typst source: %w", err)
 	}
-	cmd := exec.Command("typst", "compile", path, output)
-	if result, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("typst compile failed: %w: %s", err, strings.TrimSpace(string(result)))
+	if err := typstutil.Compile(path, output); err != nil {
+		return err
 	}
 	if keep {
 		fmt.Fprintf(os.Stderr, "Typst source kept at: %s\n", path)

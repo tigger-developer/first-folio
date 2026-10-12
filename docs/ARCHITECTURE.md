@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.10"
-last-updated: 2026-10-11
+version: "0.11"
+last-updated: 2026-10-12
 ---
 
 # Architecture
@@ -34,7 +34,19 @@ Typst and Pandoc remain explicit external tools where their documented features 
 | `presets/` | British base and explicit style override YAML |
 | `cmd/update-homebrew/` | Checked release-formula update and publication tooling |
 
-The root `assets.go` embeds help documents, presets, and Typst templates. The installed binary therefore does not discover a project root, depend on its working directory, or require a root environment variable.
+The root `assets.go` embeds help documents, presets, Typst templates, and licensed font assets. The installed binary therefore does not discover a project root, depend on its working directory, or require a root environment variable.
+
+`internal/typst.Compile` supplies the bundled Iosevka Publish fonts to script,
+manuscript and letter PDF compilation. Each invocation extracts the embedded
+faces into a private temporary directory, passes it through Typst's
+`--font-path` alongside existing `TYPST_FONT_PATHS`, and removes it on success
+or failure. It contains no style-specific behaviour. All font selection stays
+in layered YAML. Exported Typst and office documents retain font references,
+so their viewing or compiling host must supply the selected fonts.
+
+The separate-line dialogue template gives its block the available width, so
+configured speaker alignment operates across the dialogue area. British
+same-line dialogue keeps its existing grid layout.
 
 ## Document Models
 
@@ -117,6 +129,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.11 (2026-10-12): Record bundled font lifecycle and configured dialogue alignment.
 
 - 0.9 (2026-10-11): Document the native DOCX sibling writer and atomic publication.
 

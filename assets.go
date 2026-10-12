@@ -6,5 +6,5 @@ import "embed"
 
 // Assets contains the runtime files shipped inside the folio executable.
 //
-//go:embed docs/*.md presets/*.yaml templates/*.typ
+//go:embed docs/*.md presets/*.yaml templates/*.typ fonts/iosevka-publish/*
 var Assets embed.FS

@@ -24,7 +24,7 @@
 }
 {{else}}
 #let dialogue(name, direction: none, body) = {
-  block(above: {{.SpeechSpace}}, below: 0.2em, breakable: true, spacing: 0em)[
+  block(width: 100%, above: {{.SpeechSpace}}, below: 0.2em, breakable: true, spacing: 0em)[
     #set par(spacing: 0.6em)
     #pad(left: {{.DialogueIndent}}, right: {{.DialogueWrap}})[
       #pad(left: {{.SpeakerIndent}})[#align({{.SpeakerAlign}})[#text({{.SpeakerFont.Args}})[{{.SpeakerContent}}]]]

@@ -94,7 +94,7 @@ func TestUSManuscriptOverridesBritishWithoutChangingPageSize(t *testing.T) {
 	assertNotContains(t, typst, `us-letter`)
 	assertContains(t, typst, `font: "Menlo", size: 10pt, weight: "regular", stretch: 100%, style: "normal", tracking: 0em`)
 	assertContains(t, typst, `size: 10pt`)
-	assertContains(t, typst, `font: "Iosevka Custom"`)
+	assertContains(t, typst, `font: "Iosevka Publish"`)
 	assertContains(t, typst, `size: 9pt`)
 	assertContains(t, typst, `weight: "bold"`)
 	assertContains(t, typst, `first-line-indent: (amount: 12.7mm, all: true)`)

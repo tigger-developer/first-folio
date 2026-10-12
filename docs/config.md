@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.26"
-last-updated: 2026-10-11
+version: "0.27"
+last-updated: 2026-10-12
 ---
 
 # Configuration
@@ -253,7 +253,8 @@ Common manuscript keys:
 | `margin` | string | `20mm` | `25mm` |
 | `font` | font block | Libertinus Serif, 12pt | Menlo, 10pt |
 | `heading.font` | font block | Libertinus Sans, 14pt | Menlo, 10pt |
-| `mono.font` | font block | Libertinus Mono, 10pt | Iosevka Custom, 9pt bold |
+| `mono.font` | font block | Iosevka Publish, 9pt | Iosevka Publish, 9pt bold |
+
 | `line-spacing` | number | `1.5` | `2` |
 | `justify` | bool | `true` | inherited (`true`) |
 | `widow-orphan-control` | bool | `true` | inherited (`true`) |
@@ -754,6 +755,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.27 (2026-10-12): Correct manuscript mono defaults to bundled Iosevka Publish.
 
 - 0.26 (2026-10-11): Document resolved configuration for DOCX and ODT export.
 

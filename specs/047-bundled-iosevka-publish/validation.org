@@ -1,0 +1,59 @@
+#+TITLE: W047 - Bundled Iosevka Publish validation
+#+TODO: AMBER RED | GREEN
+
+* Candidate and authority
+BYPASS-GATE-7 emergency delivery, 12 October 2026. The operator authorized
+copying the local customized font binaries unchanged, US YAML font and speaker
+alignment corrections, and a representative fixture PDF for review. External
+harness audits are replaced by self-review under the session exception.
+
+* GREEN RT047.1 - Isolated PDF font and cue checks :testdef:
+:PROPERTIES:
+:REVISION: 325dbc1 plus W047 implementation and tests
+:COMMAND: go test ./internal/app -run TestRT047_1 -count=1
+:EVIDENCE: All five cases passed: both flag spellings, role override, British preservation and manuscript mono; system fonts disabled, temporary extraction cleaned.
+:END:
+
+** Execution history
+- Initial setup attempts were inconclusive: Typst requires true rather than 1
+  for its environment Boolean and rejects an empty font-path environment value.
+  Corrected the test environment before recording behavioural RED.
+- RED before implementation: US PDFs contained Libertinus Serif and cue centre
+  was 85.88 pt rather than 297.64 pt. Manuscript mono fell back without an
+  installed font. The British preservation case was already GREEN.
+- After packaging, observed the customized PostScript names Iosevka-Publish,
+  Iosevka-Publish-Bold and Iosevka-Publish-Italic and corrected the test names.
+  Font packaging worked, but cue centre remained 82.87 pt. A temporary template
+  probe established the missing full block width as the alignment cause.
+- GREEN after the generic template correction: focused test passed (1.486 s).
+- make lint passed. Full-suite result will be recorded after its current run.
+
+* AMBER UT047.1 - Representative US script review :testdef:
+:PROPERTIES:
+:REASON: Candidate PDF opened; operator visual acceptance has not been reported.
+:END:
+Rendered examples/play-example.org through the candidate CLI with isolated HOME
+and system fonts disabled. Opened dist/us-preview/one-day-us.pdf in Preview.
+The three-page A4 PDF embeds regular, bold, italic and bold italic Iosevka Publish.
+Agent inspected the rasterized script page; BOB, CAIT and MAIREAD cues are centred.
+The comma in the example's BOB, cue and left-aligned parenthetical instructions
+are recorded for operator review; they were not changed by this iteration.
+
+* Additional one-off evidence
+- All eight copied TTF files compare byte-for-byte with the installed originals.
+  SHA-256 provenance is retained in fonts/iosevka-publish/README.md.
+- Typst font inventory with system and embedded fonts disabled finds both the
+  regular and extended families, four faces each.
+- Forced a PDF output-path failure through the candidate CLI; error propagated
+  and the dedicated temporary directory was empty afterwards.
+
+* Self-review
+Reviewed the production diff, font provenance, isolated PDF regression, existing
+preset assertions, and affected documentation. No style-specific Go branch was
+added. Fonts are embedded in the same binary built by the release path; private
+extraction is scoped to each invocation and removed on return. Caller font paths
+and configured role overrides remain available. The separate-line template width
+also applies to screenplay; the British grid is unchanged. Updated the old Menlo
+running-matter assertion and obsolete manuscript Iosevka Custom assertion to the
+authorized defaults. No external harness verdict is claimed. User acceptance,
+installation and release publication remain separate from these checks.
