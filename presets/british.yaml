@@ -229,7 +229,7 @@ folio:
         prefix: ""
         suffix: ""
         page-break-before: false
-        space-before: 2em
+        space-before: 1em
 
     act-header:
       align: center
@@ -244,7 +244,7 @@ folio:
       prefix: ""
       suffix: ""
       page-break-before: true
-      space-before: 0em
+      space-before: 1em
 
     scene-header:
       align: left
@@ -259,7 +259,7 @@ folio:
       prefix: ""
       suffix: ""
       page-break-before: false
-      space-before: 2em
+      space-before: 1.6em
       space-after: 0.5em
 
   letter:
