@@ -27,10 +27,10 @@
   block(width: 100%, above: {{.SpeechSpace}}, below: 0.2em, breakable: true, spacing: 0em)[
     #set par(spacing: 0.6em)
     #pad(left: {{.DialogueIndent}}, right: {{.DialogueWrap}})[
-      #pad(left: {{.SpeakerIndent}})[#align({{.SpeakerAlign}})[#text({{.SpeakerFont.Args}})[{{.SpeakerContent}}]]]
-      #if direction != none [
+      #pad(left: {{.SpeakerIndent}})[#align({{.SpeakerAlign}})[#text({{.SpeakerFont.Args}})[{{.SpeakerContent}}]{{if .InstructionInline}}#if direction != none [ #text({{.InstructionFont.Args}})[{{.InstructionPrefix}}#direction{{.InstructionSuffix}}]]{{end}}]]
+      {{if not .InstructionInline}}#if direction != none [
         #align({{.InstructionAlign}})[#text({{.InstructionFont.Args}})[{{.InstructionPrefix}}#direction{{.InstructionSuffix}}]]
-      ]
+      ]{{end}}
       #text({{.DialogueFont.Args}})[#body]
     ]
   ]

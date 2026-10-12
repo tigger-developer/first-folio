@@ -113,6 +113,7 @@ type scriptTemplateData struct {
 	SpeakerContent, SpeakerAlign                       string
 	SpeakerIndent                                      string
 	InstructionOpen, InstructionClose                  string
+	InstructionInline                                  bool
 	InstructionPrefix, InstructionSuffix               string
 	InstructionAlign                                   string
 	InstructionFont                                    typstFontData
@@ -218,6 +219,7 @@ func newScriptTemplateData(doc play.Document, cfg config.Config, format play.For
 		InstructionPrefix: instructionDelimiter(cfg.String("folio.positioning.speech.speech-instruction.prefix", "(")),
 		InstructionSuffix: instructionDelimiter(cfg.String("folio.positioning.speech.speech-instruction.suffix", ")")),
 		InstructionAlign:  validAlign(cfg.String("folio.positioning.speech.speech-instruction.align", "left")),
+		InstructionInline: cfg.String("folio.positioning.speech.speech-instruction.placement", "same-line") == "same-line",
 		DirectionSpace:    cfg.String("folio.positioning.stage-direction.space-before", "1.6em"),
 		DirectionAlign:    validAlign(cfg.String("folio.positioning.stage-direction.align", "left")),
 		DirectionIndent:   typstDimension(cfg.String("folio.positioning.stage-direction.indent", "0")),

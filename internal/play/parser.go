@@ -459,6 +459,9 @@ func parseCharacterLine(text string) (string, string) {
 	}
 	name := strings.Join(fields[:nameEnd], " ")
 	direction := strings.Trim(strings.Join(fields[nameEnd:], " "), "(),: ")
+	if direction != "" {
+		name = strings.TrimSpace(strings.TrimSuffix(name, ","))
+	}
 	return name, direction
 }
 

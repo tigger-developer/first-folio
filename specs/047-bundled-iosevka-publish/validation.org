@@ -9,7 +9,7 @@ harness audits are replaced by self-review under the session exception.
 
 * GREEN RT047.1 - Isolated PDF font and cue checks :testdef:
 :PROPERTIES:
-:REVISION: 900b471 plus YAML-only bold headings and 35% speaker indent
+:REVISION: d7b29fd plus config-selected instruction placement and comma parsing
 :COMMAND: go test ./internal/app -run TestRT047_1 -count=1
 :EVIDENCE: All five cases passed: both flag spellings, role override, British preservation and manuscript mono; system fonts disabled, temporary extraction cleaned.
 :END:
@@ -120,3 +120,25 @@ correction before it was made.
 - Rebuilt and reopened the representative PDF. No renderer code changed.
   Self-review confirmed YAML-only production changes and inherited bold weights.
   User visual acceptance remains AMBER; no installation or publication occurred.
+
+* Delivery-instruction placement and separator parsing - 2026-10-12
+- RED: parser tests retained Bob, and BOB, ALICE, as names when instructions
+  followed. PDF tests found BOB, in US output and BOB,: in British output.
+- GREEN: TestSpeakerInstructionSeparator, TestSpeakerInstructionPlacement and
+  RT047.1 passed after implementation (app 2.359 s). Cases cover comma,
+  parentheses and bare-space syntax; multiple-name comma preservation;
+  US inline instructions, British dialogue-column instructions and a local
+  US new-line override. make lint passed.
+- The representative PDF was rebuilt and reopened. Text extraction confirms
+  BOB (cheerfully) and CAIT (entering) beside the cue, without separator commas.
+  British placement was measured in the automated PDF test.
+- Self-review checked that comma removal is conditional on a parsed instruction,
+  that internal commas remain, and that placement reads existing config fields.
+  The British template branch is unchanged; screenplay already explicitly
+  selects new-line. No style-name conditions were added to the renderer.
+- Operator visual acceptance remains AMBER. No installed binary was replaced
+  and no release or push was performed.
+
+The operator accepted the instruction-placement preview before requesting a
+subsequent YAML spacing adjustment. That acceptance applies to the preceding
+instruction-placement candidate, not to the spacing change still in progress.

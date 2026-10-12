@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.27"
+version: "0.28"
 last-updated: 2026-10-12
 ---
 
@@ -119,6 +119,12 @@ Script layout is configured beneath `folio.title-page` and `folio.positioning`. 
 | `folio.positioning.stage-direction` | Direction spacing, alignment, emphasis, case, and indentation |
 | `folio.positioning.transition` | Transition spacing, alignment, and case |
 | `folio.positioning.{frontmatter,act-header,scene-header}` | Header typography, spacing, alignment, case, and page breaks |
+
+Delivery instructions use `folio.positioning.speech.speech-instruction.placement`.
+With dialogue on a new line, `same-line` places the instruction beside the
+speaker name, while `new-line` puts it on a separate line before dialogue.
+With same-line dialogue, the British grid keeps the instruction at the dialogue
+column. US scripts inherit `same-line`; screenplay explicitly uses `new-line`.
 
 The effective CLI layout overrides are `--font`, `--font-size`, `--margin`, and `--page`; `--style` selects the preset layer. Other layout changes belong in `script.yaml`. See `folio convert --help` for the public CLI surface.
 
@@ -755,6 +761,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.28 (2026-10-12): Document configuration-driven delivery-instruction placement.
 
 - 0.27 (2026-10-12): Correct manuscript mono defaults to bundled Iosevka Publish.
 

@@ -178,3 +178,17 @@ and reduces character-name indentation. Use 35% of the text area rather than
 50%, retaining left alignment and regular speaker weight. This supersedes the
 preceding plain-heading and midpoint recommendations. All production changes
 remain in YAML; heading weight inherits bold from the British base.
+
+* Configured delivery-instruction placement - 2026-10-12
+The operator authorized US delivery instructions beside the speaker name and
+British instructions at the dialogue margin, with no separator comma in either.
+The shared parser removes a trailing comma from the parsed speaker name when
+an instruction follows, preserving commas within multiple-name cues.
+With separate-line dialogue, instruction placement same-line appends the
+instruction to the speaker; new-line retains a separate instruction row.
+The British same-line dialogue grid retains instructions in its dialogue column.
+The US preset inherits the base same-line instruction setting; screenplay
+explicitly retains new-line. No renderer condition examines the style name.
+RT047.1 includes TestSpeakerInstructionSeparator and
+TestSpeakerInstructionPlacement: parser variants, multiple-name preservation,
+US/British PDF geometry, comma removal and a local new-line override.

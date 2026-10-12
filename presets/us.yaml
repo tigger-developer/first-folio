@@ -38,7 +38,7 @@ folio:
       speech-instruction:
         font:
           family: Iosevka Publish
-        placement: new-line
+        # same-line instruction placement is inherited from the British base.
       dialogue:
         font:
           family: Iosevka Publish
