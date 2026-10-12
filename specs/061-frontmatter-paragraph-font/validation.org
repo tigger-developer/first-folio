@@ -1,0 +1,71 @@
+#+TITLE: W061 - Frontmatter paragraph font validation
+#+TODO: AMBER RED | GREEN
+#+STARTUP: overview
+
+* Candidate and authority
+Candidate: a62c27e plus W061 changes. The operator authorized all six font-class
+parameters under BYPASS-GATE-7 and explicitly requested visibility in both core
+British and US YAML presets. The earlier session exception replaces external
+harness reviews with self-review. No release or push is included.
+
+* GREEN RT061.1 - Font properties, inheritance and native exports :testdef:
+:PROPERTIES:
+:REVISION: a62c27e plus W061 implementation
+:COMMAND: go test ./internal/config ./internal/app -run 'TestFrontmatterParagraph|TestRT039_1Every|TestRT039_2British|ExampleFont' -count=1
+:EVIDENCE: Config passed in 0.686 s; app passed in 1.477 s. All six properties, native XML, layered inheritance and unrelated-role isolation checked.
+:END:
+Initial behavioural RED: the role was missing in all three styles; invalid values
+were accepted; DOCX and ODT introduction paragraphs retained the original body
+font instead of the requested properties. Initial Typst attempts used unsupported
+--to values; those were setup failures, not behavioural RED. The corrected .typ
+output target passed after implementation. Existing exhaustive tests now include
+the additional role and its explicit body-font fallback.
+
+* GREEN RT061.2 - Regression preservation :testdef:
+:PROPERTIES:
+:REVISION: a62c27e plus W061 implementation
+:COMMAND: make test; make lint
+:EVIDENCE: Full suite passed: app 174.852 s, config 1.538 s, letter 0.461 s, manuscript 111.769 s; play, typst and update-homebrew cached successes. go vet passed.
+:END:
+
+* GREEN OT061.1 - PDF size and scope :testdef:
+:PROPERTIES:
+:REVISION: a62c27e plus W061 implementation
+:COMMAND: dist/folio convert --style=us; pdftotext -bbox
+:EVIDENCE: Baseline Introductionword height 15.0 pt; 9pt override 11.25 pt. Dialogueword height remained 15.0 pt in both PDFs.
+:END:
+The two identical Org scripts differ only by the paragraph size override in
+script.yaml. The measured ratio is 0.75. make build produced the tested binary;
+the existing local folio symlink points to dist/folio. No global install ran.
+
+* AMBER UT061.1 - Introduction readability :testdef:
+:PROPERTIES:
+:REASON: Operator review of detailed introductions with their chosen font size has not yet been reported.
+:END:
+Automated size and native-property checks are not a human readability verdict.
+
+* Self-review and retrospective definition review
+Reviewed configuration resolution, template scoping, office event dispatch,
+shared style mapping, native-package assertions, preset comments and docs.
+Root fonts are copied before overlaying paragraph properties, after configuration
+layers merge. Validation applies the existing complete font contract. Only
+EventIntroText receives the new role; headings, speech and cast keep existing
+roles. The new role flows through the existing ODT projection and office font
+packaging, retaining format support limits. PDF wraps inline content without
+altering the source-aware inline parser.
+
+Both requested preset blocks expose all six properties in comments and an empty
+mapping, preserving late inheritance. W039's earlier universal same-path rule
+has an explicit narrow amendment; historical evidence is retained. Updated
+product documentation explains the exception and gives a six-property example.
+Sanitize processed the new and revised documentation; an unrelated historical
+spelling correction in the old config changelog was left untouched.
+
+The retrospective specification matches the authorized paragraph-only behaviour
+and identifies the corrected folio configuration root. No independent audit
+verdict, release, installation or user acceptance is claimed. W061 remains REVIEW.
+
+* Record readiness
+The deterministic delivery-code readiness check passed: valid schema, two GREEN
+RTs, one GREEN OT and one AMBER UT. This is record validation, not an independent
+audit verdict. Git whitespace validation passed.

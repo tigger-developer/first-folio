@@ -30,6 +30,7 @@ var fontRolePaths = []string{
 	"folio.positioning.stage-direction.font",
 	"folio.positioning.transition.font",
 	"folio.positioning.frontmatter.header.font",
+	"folio.positioning.frontmatter.paragraph.font",
 	"folio.positioning.act-header.font",
 	"folio.positioning.scene-header.font",
 	"folio.letter.font",
@@ -138,6 +139,9 @@ func TestRT039_1EveryPublicFontPropertyCanBeConfiguredIndependently(t *testing.T
 				}
 				otherRoles := map[string]any{}
 				for _, otherPath := range fontRolePaths {
+					if path == "folio.font" && otherPath == "folio.positioning.frontmatter.paragraph.font" {
+						continue // This role intentionally inherits the body font.
+					}
 					if otherPath == path || otherPath == strings.Replace(path, "folio.page-", "folio.manuscript.page-", 1) {
 						continue
 					}
@@ -192,6 +196,8 @@ func TestRT039_2BritishBaseIsNormativeSharedRuntimeBase(t *testing.T) {
 			t.Fatal(err)
 		}
 		expected := runningMatterLayer(installed, mode)
+		root, _ := (Config{data: expected}).Get("folio.font")
+		setPath(expected, "folio.positioning.frontmatter.paragraph.font", root)
 		if !reflect.DeepEqual(plain.data, expected) || !reflect.DeepEqual(copied.data, expected) {
 			t.Errorf("Load(%s) does not resolve to the shared British base", mode)
 		}
@@ -349,5 +355,5 @@ func leafValues(node map[string]any, prefix string) map[string]any {
 
 func ExampleFont() {
 	fmt.Println(len(FontRolePaths) * len(fontPropertyNames))
-	// Output: 210
+	// Output: 216
 }

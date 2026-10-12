@@ -1,6 +1,6 @@
 ---
 title: First Folio
-version: "1.7"
+version: "1.8"
 last-updated: 2026-10-12
 ---
 
@@ -147,7 +147,7 @@ folio:
   page: a4
 ```
 
-Configuration is merged by key. Every typography role uses the same six-property `font` block; partial blocks inherit only from the same role in lower layers. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the first Markdown manuscript input's `folio:`/`render:` frontmatter, the global style-specific file, global `script.yaml`, the selected built-in style overlay, and the shared British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
+Configuration is merged by key. Every typography role uses the same six-property `font` block; partial blocks inherit from the same role in lower layers. Script introduction paragraphs also inherit omitted properties from `folio.font`; override them independently with `folio.positioning.frontmatter.paragraph.font`. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the first Markdown manuscript input's `folio:`/`render:` frontmatter, the global style-specific file, global `script.yaml`, the selected built-in style overlay, and the shared British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
 
 See [docs/config.md](docs/config.md) for the configuration reference and [examples/script.yaml.example](examples/script.yaml.example) for an annotated example.
 
@@ -190,6 +190,8 @@ make lint   # Go static analysis
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.8 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 
 - 1.7 (2026-10-12): Document font embedding in editable DOCX and ODT exports.
 

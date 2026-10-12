@@ -1,6 +1,6 @@
 ---
 title: DOCX Script Export
-version: "1.2"
+version: "1.3"
 last-updated: 2026-10-12
 ---
 
@@ -28,6 +28,7 @@ bundled Iosevka Publish. Unsupported, missing or restricted fonts produce warnin
 | US and screenplay | Separate cue and dialogue paragraphs using resolved style geometry. |
 | Typography | Role fonts, sizes, regular/bold weights, italic, tracking and integer stretch. Oblique uses italic; unsupported weights fail. |
 | British spacing | Single line spacing; speech, direction, prop and transition vertical gaps are half the resolved spacing. Cast entries have no trailing paragraph gap. |
+| Introduction paragraphs | All six font properties at `folio.positioning.frontmatter.paragraph.font`; omitted properties inherit `folio.font`. Headings and speech keep their own roles. |
 | Content | Ordered text, inline formatting, cast tables and native footnotes; configured visibility switches apply. |
 | Pages | Configured paper, margins and act breaks. Pagination depends on the reading application. Long rows can split across pages. |
 | Title | Dedicated or compact title. Vertical positioning is approximate; date/version are in-flow rather than bottom-of-page slots. |
@@ -53,6 +54,8 @@ title composition, page settings and spacing. That generic conversion is not
 the product ODT route. The native DOCX writer remains unchanged.
 
 ## History
+
+- 1.3 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 
 - 1.2 (2026-10-12): Add complete font embedding and permission-aware warnings.
 

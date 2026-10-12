@@ -61,6 +61,16 @@ folio:
         family: Iosevka Publish
         size: 12pt
     frontmatter:
+      paragraph:
+        # Omitted properties inherit the final folio.font values.
+        # Replace {} with any of these six properties to override paragraphs only:
+        #   family: Iosevka Publish
+        #   size: 10pt
+        #   weight: regular
+        #   stretch: 100%
+        #   style: regular
+        #   letter-spacing: 0em
+        font: {}
       header:
         space-before: 2.3em
         font:

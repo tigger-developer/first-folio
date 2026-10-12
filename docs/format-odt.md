@@ -1,6 +1,6 @@
 ---
 title: ODT Script Export
-version: "1.1"
+version: "1.2"
 last-updated: 2026-10-12
 ---
 
@@ -38,6 +38,7 @@ not the manuscript or letter commands.
 | US and screenplay | Separate cue, instruction and dialogue paragraphs with configured indentation. |
 | Typography | Resolved role fonts, sizes, regular/bold weights, italic, small caps, tracking and integer stretch. Oblique uses italic with a warning. Unsupported weights fail. Available editable font faces are embedded; missing faces depend on the reading host. |
 | British spacing | Single line spacing and the same compact vertical spacing as DOCX. Cast rows have no trailing paragraph gap. |
+| Introduction paragraphs | All six font properties at `folio.positioning.frontmatter.paragraph.font`; omitted properties inherit `folio.font`. Headings and speech keep their own roles. |
 | Content | Ordered text, supported inline spans, cast tables and native footnotes. Configured visibility switches apply. Links and images are not fetched; the existing inline delimiter rules still apply to their text. |
 | Pages | Configured A3/A4/A5/A6/Letter/Legal paper, margins and act breaks. Long table rows may split across pages. Pagination depends on the reading application. |
 | Title | Dedicated or compact title. Vertical position is approximate; date/version follow the title rather than occupying bottom-of-page slots. |
@@ -71,6 +72,8 @@ staged beside the destination and published by rename with mode 0600. A failed
 conversion leaves an existing destination unchanged.
 
 ## History
+
+- 1.2 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 
 - 1.1 (2026-10-12): Embed full font files with native ODF references and manifest entries.
 

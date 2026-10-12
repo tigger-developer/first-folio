@@ -78,6 +78,14 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** REVIEW W061 - Independent frontmatter paragraph fonts :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-061
+:CREATED: 2026-10-12
+:END:
+- Specification :: [[file:../specs/061-frontmatter-paragraph-font/spec.org][W061 - Six-property introduction font]].
+- Evidence :: [[file:../specs/061-frontmatter-paragraph-font/validation.org][Export, inheritance and preservation checks]].
+
 ** REVIEW W060 - Embed fonts in DOCX and ODT exports :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-060

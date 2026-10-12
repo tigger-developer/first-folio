@@ -1,9 +1,10 @@
 // ABOUTME: Defines and validates the uniform six-property font contract.
-// ABOUTME: Keeps font inheritance confined to ordinary same-path configuration merging.
+// ABOUTME: Validates role fonts, including the frontmatter paragraph body-font fallback.
 package config
 
 import (
 	"fmt"
+	"maps"
 	"math"
 	"regexp"
 	"strconv"
@@ -37,6 +38,7 @@ var FontRolePaths = []string{
 	"folio.positioning.stage-direction.font",
 	"folio.positioning.transition.font",
 	"folio.positioning.frontmatter.header.font",
+	"folio.positioning.frontmatter.paragraph.font",
 	"folio.positioning.act-header.font",
 	"folio.positioning.scene-header.font",
 	"folio.letter.font",
@@ -122,6 +124,15 @@ func validateFonts(data map[string]any, mode Mode) error {
 		block, ok := value.(map[string]any)
 		if !ok {
 			return fmt.Errorf("%s must be a mapping", path)
+		}
+		if path == "folio.positioning.frontmatter.paragraph.font" {
+			// Resolve after every configuration layer. Copying prevents paragraph
+			// overrides from mutating the body font or any other role.
+			parent, _ := cfg.Get("folio.font")
+			inherited := maps.Clone(parent.(map[string]any)) // Validated earlier in the role inventory.
+			deepMerge(inherited, block)
+			block = inherited
+			setPath(data, path, block)
 		}
 		if err := validateFontBlock(path, block); err != nil {
 			return err

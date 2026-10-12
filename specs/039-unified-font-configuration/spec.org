@@ -671,3 +671,9 @@ exhaustive British runtime base* for script, letter, and manuscript publishing.
   =examples/script.yaml.example=, relevant generated CLI help only if its
   described mapping changes, and release or migration notes used by this
   project.
+
+* W061 scope amendment, 2026-10-12
+The new script frontmatter paragraph font alone inherits omitted properties from
+the final body font. This supersedes the cross-role inheritance prohibition only
+for that added role; all existing roles retain this specification's contract.
+See [[file:../061-frontmatter-paragraph-font/spec.org][W061 - Independent frontmatter paragraph fonts]].

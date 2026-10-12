@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.12"
+version: "0.13"
 last-updated: 2026-10-12
 ---
 
@@ -79,7 +79,7 @@ Manuscript orchestration reads Markdown source configuration before loading the 
 
 Local discovery begins at the source directory and walks upwards towards HOME. Only the nearest `script.yaml` is selected; its style-specific sibling is loaded from the same directory. For a multi-file manuscript, the first resolved input determines that starting directory.
 
-The loader deep-merges ordinary keys and partial font blocks, validates every effective font role and every shipped alignment field against its allowlist after layer merging, and provides typed values to each renderer. Alignment validation occurs before typed decode or output; renderer alignment parsers translate accepted values into layout expressions. Font properties inherit only through configuration layers at the same role path. The exhaustive British preset is the shared lowest-precedence base for scripts, letters, and manuscripts; US and screenplay presets contain only their differences.
+The loader deep-merges ordinary keys and partial font blocks, validates every effective font role and every shipped alignment field against its allowlist after layer merging, and provides typed values to each renderer. Alignment validation occurs before typed decode or output; renderer alignment parsers translate accepted values into layout expressions. Font properties inherit through configuration layers at the same role path. Script frontmatter paragraphs additionally fill omitted properties from a copy of the final resolved `folio.font`; this fallback runs after layer merging and cannot mutate the body font. PDF uses a scoped text wrapper, while DOCX and ODT use a dedicated paragraph role. The exhaustive British preset is the shared lowest-precedence base for scripts, letters, and manuscripts; US and screenplay presets contain only their differences.
 
 Running matter is configured at `folio.page-header` and `folio.page-footer` for scripts and manuscripts. Deprecated manuscript-local blocks are normalized within each configuration layer, before merging, so same-layer manuscript overrides do not bypass higher-layer shared settings. Manuscript command diagnostics report their use on stderr. Letter rendering ignores running-matter settings because letters are supplementary correspondence, not manuscript pages.
 
@@ -133,6 +133,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.13 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 
 - 0.12 (2026-10-12): Record shared font discovery and native office font packaging.
 

@@ -30,6 +30,7 @@ var scriptFontRolePaths = []string{
 	"folio.positioning.stage-direction.font",
 	"folio.positioning.transition.font",
 	"folio.positioning.frontmatter.header.font",
+	"folio.positioning.frontmatter.paragraph.font",
 	"folio.positioning.act-header.font",
 	"folio.positioning.scene-header.font",
 }
@@ -74,8 +75,12 @@ func TestRT039_1EveryScriptFontPropertyReachesOnlyItsRole(t *testing.T) {
 					t.Fatal(stderr)
 				}
 				typst := readAppFile(t, target)
-				if count := strings.Count(typst, property.marker); count != 1 {
-					t.Fatalf("%s marker %q occurs %d times, want exactly once in its role", path, property.marker, count)
+				want := 1
+				if path == "folio.font" {
+					want = 2
+				} // Root plus inheriting frontmatter paragraph font.
+				if count := strings.Count(typst, property.marker); count != want {
+					t.Fatalf("%s marker %q occurs %d times, want %d", path, property.marker, count, want)
 				}
 			})
 		}

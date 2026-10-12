@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.28"
+version: "0.29"
 last-updated: 2026-10-12
 ---
 
@@ -36,7 +36,7 @@ All config sources are read and merged. Each layer overrides individual keys fro
 | 7 | Selected built-in style override |
 | 8 (lowest) | British built-in base preset |
 
-**Example:** Global config sets `folio.font.family: "EB Garamond"` and `folio.page: a4`. A local config sets only `folio.font.size: 11pt`. The merged root font uses EB Garamond at 11pt and the page remains a4. Font properties merge only at the same role path.
+**Example:** Global config sets `folio.font.family: "EB Garamond"` and `folio.page: a4`. A local config sets only `folio.font.size: 11pt`. The merged root font uses EB Garamond at 11pt and the page remains a4. Font properties merge at the same role path, with the frontmatter paragraph fallback described below.
 
 ## Manuscript source configuration
 
@@ -203,9 +203,36 @@ Manuscript monospace text uses the complete `folio.manuscript.mono.font` block. 
 
 Code within headings and their table-of-contents entries is outside the manuscript font-rendering repair's acceptance scope. The earlier documentation included those cases; that inclusion was withdrawn on 2026-09-12. This scope change does not disable existing syntax.
 
-Higher-precedence files may set only the properties they change. Omitted properties come from the lower layer at the same role path. A role never inherits font properties from its parent or from another role. The old scalar, prefixed, `bold`, and `italic` font keys are rejected with their full paths.
+Higher-precedence files may set only the properties they change. Omitted properties come from the lower layer at the same role path. The script frontmatter paragraph role is the exception: its omitted properties inherit the final resolved `folio.font`, after all configuration layers merge. Other roles do not inherit from their parents or other roles. The old scalar, prefixed, `bold`, and `italic` font keys are rejected with their full paths.
 
 The exhaustive [British base](../presets/british.yaml) is both the lowest-precedence runtime configuration and the public inventory. [US](../presets/us.yaml) and [screenplay](../presets/screenplay.yaml) contain only differences from it.
+
+#### Script frontmatter paragraph font
+
+`folio.positioning.frontmatter.paragraph.font` controls introduction paragraphs
+in PDF, DOCX and ODT. It does not change introduction headings, cast lists or
+speech. Both `presets/british.yaml` and `presets/us.yaml` expose `font: {}` with
+all six properties documented; an empty block retains the body font.
+
+For smaller introductions, set only `size`. All six properties can be overridden:
+
+```yaml
+folio:
+  positioning:
+    frontmatter:
+      paragraph:
+        font:
+          family: Libertinus Serif
+          size: 10pt
+          weight: regular
+          stretch: 100%
+          style: regular
+          letter-spacing: 0em
+```
+
+Omitted properties inherit the effective `folio.font`. Explicit paragraph values
+from lower configuration layers remain unless overridden at that same paragraph
+path. The existing font validation and office-format support limits apply.
 
 ### Letter settings (`folio.letter:`)
 
@@ -738,7 +765,7 @@ folio:
         style: italic
 ```
 
-The current configuration may contain a partial font block because its remaining properties come from the same role in the British base. Retired keys are rejected rather than translated silently.
+The current configuration may contain a partial font block because its remaining properties come from the same role in the British base, except for the script frontmatter paragraph fallback described above. Retired keys are rejected rather than translated silently.
 
 ### Manuscript hyphenation
 
@@ -761,6 +788,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.29 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 
 - 0.28 (2026-10-12): Document configuration-driven delivery-instruction placement.
 

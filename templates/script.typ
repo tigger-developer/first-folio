@@ -6,6 +6,8 @@
 #show heading: set text({{.HeadingFont.Args}})
 #set par(leading: 0.6em)
 
+#let frontmatter-paragraph(body) = text({{.FrontmatterParagraphFont.Args}}, body)
+
 {{if .DialogueSameLine}}
 #let dialogue(name, direction: none, body) = {
   block(above: {{.SpeechSpace}}, below: 0.2em, breakable: true)[

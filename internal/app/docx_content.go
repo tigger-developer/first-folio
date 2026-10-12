@@ -241,7 +241,9 @@ func (w *docxWriter) body() ([]docxNode, error) {
 			role = "Transition"
 		case play.EventPropText:
 			role = "Prop"
-		case play.EventDialogue, play.EventIntroText:
+		case play.EventIntroText:
+			role = "FrontmatterParagraph"
+		case play.EventDialogue:
 			role = "Body"
 		default:
 			continue

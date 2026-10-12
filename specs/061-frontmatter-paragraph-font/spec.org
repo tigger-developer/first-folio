@@ -1,0 +1,89 @@
+#+TITLE: W061 - Independent frontmatter paragraph fonts
+#+STARTUP: overview
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-12, BYPASS-GATE-7 implementation scope
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+Allow detailed script introductions to use smaller or otherwise distinct fonts
+without changing dialogue or headings. This retrospective emergency specification
+records the operator's six-property request and British/US preset visibility.
+The canonical path is =folio.positioning.frontmatter.paragraph.font=.
+
+* Scope and constraints
+- Baseline :: =a62c27e=.
+- Formats :: Script PDF/Typst, native DOCX and configured Pandoc ODT.
+- Defaults :: Empty paragraph font mappings inherit the final =folio.font=.
+  Existing output stays at its configured body font unless overridden.
+- Boundaries :: No manuscript/letter typography change, release or installation.
+  Existing office font support limits and embedding policy remain applicable.
+- Review exception :: Use self-review instead of the broken external audit
+  harness under the operator's session instruction; no independent PASS claimed.
+
+* Acceptance criteria
+** AC061.1 - Introduction paragraphs have an independent full font class :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-061-1
+:END:
+Support family, size, weight, stretch, style and letter-spacing for script
+introduction paragraphs in PDF, DOCX and ODT. Leave headings, cast and speech
+on their existing roles. Verify with [[#rt-061-1][RT061.1]],
+[[#ot-061-1][OT061.1]] and [[#ut-061-1][UT061.1]].
+
+** AC061.2 - Preserve inheritance, validation and conversion behaviour :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-061-2
+:END:
+Both British and US core presets expose the new font block and document all six
+properties. Omitted properties inherit the final resolved body font. Explicit
+paragraph properties merge across layers at their own path; invalid properties
+fail with that path. Changes cannot mutate the root or unrelated font roles.
+Verify with [[#rt-061-1][RT061.1]] and [[#rt-061-2][RT061.2]].
+
+* Test definitions
+** RT061.1 - Font properties, inheritance and native exports :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-061-1
+:END:
+Covers [[#ac-061-1][AC061.1]] and [[#ac-061-2][AC061.2]]. Run
+=TestFrontmatterParagraphFont= and =TestFrontmatterParagraphExports= plus the
+existing exhaustive font inventory tests. Check British, US and screenplay
+fallback; layered partial overrides; invalid values; isolation; generated Typst
+wrappers; all six native DOCX/ODT properties on two introduction paragraphs;
+and unchanged heading/dialogue families.
+
+** RT061.2 - Regression preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-061-2
+:END:
+Covers [[#ac-061-2][AC061.2]]. Run =make test= and =make lint=, retaining PDF,
+text, manuscript, letter, office resource and atomic-publication coverage.
+
+** OT061.1 - PDF size and scope :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-061-1
+:END:
+Covers [[#ac-061-1][AC061.1]]. Render identical US scripts using default and 9pt
+introduction fonts. Extract word bounding boxes with pdftotext. Introduction
+word height must be 75 percent of baseline; dialogue word height must be unchanged.
+
+** UT061.1 - Introduction readability :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-061-1
+:END:
+Covers [[#ac-061-1][AC061.1]]. The operator reviews a detailed introduction with
+an independent font size in their chosen output and confirms readability and
+that speech and headings retain their intended appearance.
+
+* Solution design
+Add the role to the central font inventory. After configuration layers merge,
+copy the validated root font and overlay the paragraph map, then validate all
+six resolved properties. An empty preset map retains late inheritance even when
+a local file changes the root family. PDF applies a scoped Typst text wrapper
+to EventIntroText; DOCX assigns FrontmatterParagraph and ODT reuses its shared
+style projection. Body-like paragraph spacing remains native to each renderer.
+
+This explicitly supersedes W039's prohibition on cross-role inheritance only for
+the newly added paragraph role. All other roles retain same-path inheritance.
+See [[file:validation.org][Verification and self-review evidence]].

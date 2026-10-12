@@ -216,6 +216,16 @@ folio:
       wrap-indent: 0
 
     frontmatter:
+      paragraph:
+        # Omitted properties inherit the final folio.font values.
+        # Replace {} with any of these six properties to override paragraphs only:
+        #   family: Libertinus Serif
+        #   size: 10pt
+        #   weight: regular
+        #   stretch: 100%
+        #   style: regular
+        #   letter-spacing: 0em
+        font: {}
       header:
         align: left
         font:

@@ -177,6 +177,8 @@ func docxRolePath(role string) string {
 		return "folio.positioning.scene-header"
 	case "Intro":
 		return "folio.positioning.frontmatter.header"
+	case "FrontmatterParagraph":
+		return "folio.positioning.frontmatter.paragraph"
 	case "Header":
 		return "folio.page-header"
 	case "Footer":
@@ -234,7 +236,7 @@ func (w *docxWriter) paragraphProperties(role, path string, size float64) (docxN
 	}
 	align = w.cfg.String(path+".align", "left")
 	switch role {
-	case "Body", "Footnote", "Cast":
+	case "Body", "Footnote", "Cast", "FrontmatterParagraph":
 		before = 0
 		after = int(math.Round(size * 12))
 		if role == "Cast" && w.sameLine {
