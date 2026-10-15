@@ -1,0 +1,575 @@
+#+TITLE: W063 - Editable DOCX and ODT manuscripts and letters
+#+SCHEMA: 8
+#+SUBTITLE: Unified change specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- *Manuscripts and letters export to editable DOCX and ODT* with their existing typography and document features.
+
+** Before
+
+- *Manuscripts produce Typst or PDF*; *letters produce PDF* per recipient.
+- Script conversion already has native DOCX and configured Pandoc ODT writers.
+
+** After
+
+- *Manuscript target extensions select DOCX or ODT*; *letter --format selects pdf, docx or odt*.
+- *Letters retain one file per recipient*, filtering, substitution and naming.
+- *Existing YAML controls every applicable feature*, including manuscript contents, copyright, numbering and running matter.
+- *Fonts use the existing embedding policy*; *pagination may differ* between reading applications and PDF.
+- *Labelled reference fixtures and named user tests demonstrate every supported YAML feature*, with explicit expected values and a key-to-test checklist.
+- *Automated office-to-PDF measurements precede user review*; page PNGs support visual inspection without requiring pixel-identical pagination.
+
+** Changes
+
+- New prose adapters preserve structured content before Typst rendering and generate configured office packages through Pandoc plus native package processing.
+- *Office output is bounded and published atomically per file*; collision preflight prevents two letters from replacing each other.
+
+** Unchanged
+
+- *PDF/Typst and script conversion behaviour remain unchanged*; script DOCX retains its native writer.
+- *Source formats, configuration precedence and font discovery remain unchanged*; no downloads, cloud service or office input support is added.
+
+** Edge cases
+:PROPERTIES:
+:CUSTOM_ID: synopsis-edge-cases
+:END:
+
+- *Invalid input, unavailable Pandoc or malformed output fails* without replacing the affected destination.
+- *Duplicate letter targets fail before publication*. Later publication failure reports the files already written; a letter batch is not a transaction.
+- *Missing or restricted fonts warn* under the existing policy; *other feature loss is not silently accepted*.
+- *Contents and page fields may need updating in the editor*; no fixed PDF page-number cache is substituted.
+
+** Decisions
+
+- *All existing applicable features are required*, not the smaller script-export subset. Unsupported mappings require a scope decision before delivery can claim conformance.
+- The *session review exception substitutes self-review* for the external harness; independent audit evidence is not fabricated.
+
+** Next step
+
+- Review this definition and obtain sign-off before delivery as described in [[#delivery-handoff][Delivery Handoff]].
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem and outcome
+
+Manuscript and letter users need *editable office documents without rebuilding their formatting manually*. Export must preserve the existing mode's content and resolved layout settings. Different pagination is acceptable; replacing configured features with writer defaults is not.
+
+** Scope
+
+- Included :: DOCX and ODT output for existing Markdown/Org manuscripts and Org letters; full applicable configuration, embedded fonts, public CLI/help, output safety and regression protection.
+- Excluded :: Office input, new source syntax, source images, new YAML roles, a universal document model, replacing script writers, changing PDF layout, releases and installation.
+- Preserved :: Existing defaults, metadata precedence, source discovery, private-section handling, recipient semantics and the accepted =verbatim= workaround for literal slashes in letters.
+
+** Authority and starting point
+
+- Project :: [[file:../../.sdlc/project.yaml][Project profile]], [[file:../../README.md][README]] and [[file:../../docs/vision.md][Product vision]].
+- Architecture :: [[file:../../docs/ARCHITECTURE.md][Runtime, document models, configuration and rendering]]. Manuscript, letter and play models remain distinct.
+- Requirements :: [[file:../../docs/work.org][Work ledger]], especially manuscript issues 16 (numbering), 18 (heading presentation), 21 (copyright), 24 (frontmatter running matter), and W037 (source configuration), W048 (line spacing), W050 (code clearance), W051 (quote geometry), W052 (hyphenation) and W053 (chapter paragraph preservation).
+- User contracts :: [[file:../../docs/folio-manuscript-help.md][Manuscript help]], [[file:../../docs/folio-letter-help.md][Letter help]], [[file:../../docs/format-manuscript-markdown.md][Canonical manuscript syntax]], [[file:../../schema/letter.org][Letter schema]], [[file:../../docs/config.md][Configuration reference]] and [[file:../../docs/font-embedding.md][Font embedding policy]].
+- Implementation evidence :: [[file:../../internal/manuscript/run.go][Manuscript orchestration]], [[file:../../internal/manuscript/parser.go][Parser]], [[file:../../internal/manuscript/config.go][Typed manuscript configuration]], [[file:../../internal/app/letter.go][Letter command]], [[file:../../internal/letter/render.go][Letter composition]] and [[file:../../templates/letter.typ][Letter geometry]]. The current manuscript blocks contain Typst fragments; they are not a suitable office interchange format.
+- Regression evidence :: [[file:../../internal/manuscript/issue18_test.go][Heading tests]], [[file:../../internal/manuscript/issue21_test.go][Copyright tests]], [[file:../../internal/manuscript/issue24_test.go][Running-matter tests]], [[file:../../internal/manuscript/source_config_test.go][Layering tests]], [[file:../../internal/letter/letter_test.go][Letter parsing and formatting tests]], and [[file:../../internal/app/office_fonts_test.go][Font embedding tests]]. Existing Typst-string assertions do not establish office behaviour.
+- Relationship :: This change extends output selection. It does not supersede the source or layout contracts. [[file:../../docs/format-docx.md][Script DOCX limits]] and [[file:../../docs/format-odt.md][Script ODT limits]] remain script-specific; their layout compromises are not inherited by manuscripts or letters.
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+
+- Runtime :: *Pandoc is required for both new prose office formats*. Typst and a desktop office application are not runtime dependencies of those routes. Existing script DOCX remains independent of Pandoc.
+- Fidelity :: Preserve *all applicable YAML typography and document features*. Native length rounding and editor-dependent line/page breaks are acceptable. Hyphenation positions can differ while the configured policy remains effective. No other omission or approximation is pre-approved.
+- Fonts :: The existing permission, discovery and supported-font-file policy remains applicable. Referenced unavailable or non-embeddable faces warn and retain their family references. This exception does not permit dropping configured size, style, weight, stretch or tracking.
+- Review route :: External harness invocation is excluded under the existing session exception. Author self-review covers specification, design and test definitions. It does not establish an independent gate verdict. No =audits.yaml= is authored manually.
+- Delivery admission :: Requires explicit sign-off of this document. The acknowledgements establishing scope do not approve an unseen solution design.
+
+** Decisions and unresolved blockers
+
+- *One letter file per selected recipient*; PDF is the default and =--to= remains a recipient filter.
+- Manuscript output remains a required target filename; its extension selects the writer.
+- *No known external prerequisite blocks definition*. Native layout feasibility remains a delivery risk, especially parity, continuous frontmatter/body transitions and multi-page contents formatting. A demonstrated inability to express a required feature blocks conformance and requires an explicit amendment, not a warning-only downgrade.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC063.1 - Manuscript office output selection :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-1
+:END:
+- Criterion :: Given supported manuscript input and a =.docx= or =.odt= target, the command produces *one valid editable document* in that format under the [[#cli][CLI contract]].
+- Proven by :: [[#rt-063-1][RT063.1 - Output selection and dependencies]].
+
+** AC063.2 - Recipient-specific office letters :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-2
+:END:
+- Criterion :: Given =letter --format docx= or =odt=, the command emits *one correctly substituted file per selected recipient*, using the existing recipient filtering and naming rules with the chosen suffix.
+- Proven by :: [[#rt-063-2][RT063.2 - Recipient batches and CLI errors]].
+- User proof :: [[#ut-063-12][UT063.12 - Letter substitutions and literals]].
+
+** AC063.3 - Manuscript semantic content :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-3
+:END:
+- Criterion :: Office manuscripts preserve *ordered visible content and native editable structure* for all accepted source constructs, with the existing metadata, input ordering and private-section rules.
+- Proven by :: [[#rt-063-3][RT063.3 - Structured manuscript content]], [[#ut-063-1][UT063.1 - Editing manuscripts]].
+- Additional proof :: [[#rt-063-11][RT063.11 - Rendered content]], [[#ut-063-3][UT063.3 - Inline specimens]] and [[#ut-063-10][UT063.10 - Metadata precedence]].
+
+** AC063.4 - Resolved typography and block geometry :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-4
+:END:
+- Criterion :: Each office document uses *its mode's fully resolved YAML settings* for fonts, alignment, spacing, indentation and paper geometry, including the role distinctions in the [[#mapping][feature mapping]].
+- Proven by :: [[#rt-063-4][RT063.4 - Configuration and role geometry]], [[#ot-063-1][OT063.1 - Rendered feature comparison]].
+- Additional proof :: [[#rt-063-11][RT063.11 - Rendered geometry]], [[#ut-063-3][UT063.3 - Font roles]], [[#ut-063-4][UT063.4 - Block spacing]], [[#ut-063-5][UT063.5 - Page geometry]], [[#ut-063-6][UT063.6 - Title typography]], [[#ut-063-8][UT063.8 - Contents typography]], [[#ut-063-9][UT063.9 - Copyright typography]], [[#ut-063-10][UT063.10 - Configuration precedence]] and [[#ut-063-11][UT063.11 - Letter geometry]].
+
+** AC063.5 - Manuscript generated matter and numbering :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-5
+:END:
+- Criterion :: Office manuscripts preserve configured *title, copyright, barcode, contents and heading presentation*, including their enable/disable switches, order, numbering and native updateable contents/page references.
+- Proven by :: [[#rt-063-5][RT063.5 - Generated matter and heading controls]], [[#ot-063-1][OT063.1 - Rendered feature comparison]], [[#ut-063-1][UT063.1 - Editing manuscripts]].
+- Additional proof :: [[#rt-063-12][RT063.12 - Rendered contents]], [[#ut-063-6][UT063.6 - Title fields]], [[#ut-063-7][UT063.7 - Heading presentation]], [[#ut-063-8][UT063.8 - Contents references]] and [[#ut-063-9][UT063.9 - Copyright and barcodes]].
+
+** AC063.6 - Manuscript page and running-matter policy :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-6
+:END:
+- Criterion :: Office manuscripts retain configured *breaks, parity, page numbering and running-matter variants*, including frontmatter/body separation and suppression, without unrequested section breaks or numbering resets.
+- Proven by :: [[#rt-063-6][RT063.6 - Sections and page fields]], [[#ot-063-1][OT063.1 - Rendered feature comparison]].
+- Additional proof :: [[#rt-063-12][RT063.12 - Rendered page policy]], [[#ut-063-5][UT063.5 - Running matter]], [[#ut-063-7][UT063.7 - Pagination]], [[#ut-063-8][UT063.8 - Contents pages]] and [[#ut-063-9][UT063.9 - Copyright pages]].
+
+** AC063.7 - Letter composition and inline syntax :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-7
+:END:
+- Criterion :: Office letters preserve *sender, contact, address, date, subject, paragraphs, closing and signoff composition*, Org emphasis, underline and protected literal text. Letters continue to exclude manuscript/script running matter.
+- Proven by :: [[#rt-063-7][RT063.7 - Letter content and geometry]], [[#ut-063-2][UT063.2 - Editing letters]].
+- Additional proof :: [[#rt-063-11][RT063.11 - Rendered letters]], [[#ut-063-11][UT063.11 - Letter layout]] and [[#ut-063-12][UT063.12 - Letter content]].
+
+** AC063.8 - Editable embedded fonts :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-8
+:END:
+- Criterion :: The new formats *embed available permitted full font faces* for referenced roles, including bundled Iosevka Publish, under the existing font policy; missing or restricted faces generate actionable warnings without changing configured family names.
+- Proven by :: [[#rt-063-8][RT063.8 - Font packaging]], [[#ot-063-1][OT063.1 - Rendered feature comparison]], [[#ut-063-1][UT063.1 - Editing manuscripts]], [[#ut-063-2][UT063.2 - Editing letters]].
+- Additional proof :: [[#rt-063-11][RT063.11 - Rendered fonts]], [[#ut-063-3][UT063.3 - Manuscript font roles]] and [[#ut-063-11][UT063.11 - Letter fonts]].
+
+** AC063.9 - Bounded failure and publication :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-9
+:END:
+- Criterion :: Invalid or unsafe office conversion *fails non-zero with bounded diagnostics*, preserves the affected existing destination and releases temporary resources under [[#publication][publication and resource rules]]. Duplicate letter destinations are rejected before any file is published.
+- Proven by :: [[#rt-063-9][RT063.9 - Resource and publication failures]].
+
+** AC063.10 - Existing conversion compatibility :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-063-10
+:END:
+- Criterion :: Existing manuscript PDF/Typst, letter PDF and script conversion retain *their current content, configuration, output-selection and dependency behaviour*. No office export invokes Typst; script DOCX still invokes neither Typst nor Pandoc.
+- Proven by :: [[#rt-063-10][RT063.10 - Existing route preservation]], [[#ot-063-2][OT063.2 - Installed-layout CLI and documentation]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** Shared regression method
+
+- Boundary :: Invoke the public in-process application for the case matrix, plus the built executable outside the checkout for packaging. Use real local Pandoc for successful conversions and Go ZIP/XML decoders for native artefact assertions.
+- Inputs :: Synthetic fixtures in temporary directories with controlled configuration roots, fonts and clock where date defaults matter. Run every new export assertion for *both DOCX and ODT* unless explicitly a dependency-preservation case.
+- Oracles :: Compare ordered text, semantic nodes, resolved native properties, relationships, fields and package assets. Do not use source-code searches, ZIP byte equality or a text-only round-trip as proof of formatting.
+- Failures :: Inject only the process/filesystem boundary for deterministic timeouts, malformed packages, permissions and interrupted writes. Such doubles prove First Folio's failure handling, not Pandoc conformance.
+- Retention :: All RTs run in =make test=. New-behaviour RTs require meaningful RED before implementation. Preservation cases may initially be GREEN. Required dependencies must not silently skip coverage.
+
+** Labelled reference fixtures
+:PROPERTIES:
+:CUSTOM_ID: reference-fixtures
+:END:
+
+- Deliverable :: Retain *three small logical fixtures*: manuscript typography/content, manuscript book layout, and a two-recipient letter. Keep Markdown/Org equivalents for manuscript source parity; reuse the same content across a few named configuration profiles instead of creating a document per setting. These are maintained delivery artefacts used by RTs, OTs and UTs, not throwaway demonstration files.
+- Visible expectations :: Each specimen describes its intended appearance using *concrete font names, sizes and measurements*. For example, a header can read "Header: Iosevka Publish 10pt; 20mm from the top page edge; 5mm clearance to body content." Its profile must explicitly set the matching font and geometry. Specify which edge or baseline is measured; do not conflate page margin, header position and body clearance.
+- Other examples :: Label body/quote/code samples, heading positions, list/table gaps, page-number behaviour and letter blocks similarly. A footnote should state its verified expected family and size and identify whether these are inherited or fixed. Do not invent a footnote font setting or assume the illustrative 8pt value is the existing contract.
+- Independent oracle :: Expected labels and a companion checklist are reviewed against the fixture's YAML and authoritative semantics, *not populated from the exported document or the renderer under test*. A shared rendering bug must not produce both the output and its expected description. Profiles that change values must have matching labels or clearly identified alternate expected results.
+- Configuration location :: Manuscript Markdown fixtures exercise supported YAML frontmatter, including metadata and =folio:= overrides. Org manuscripts and letters use the corresponding local =script.yaml=, because this change does not add YAML frontmatter to those source formats. Each UT names the actual file/profile and source of every setting it proves.
+- Coverage checklist :: Enumerate *every supported leaf YAML key* in the manuscript and letter contracts, including the six properties of each font role. Map each key to fixture, named profile, visible specimen/marker, exact expected value, named UT and relevant RT. Wildcard families below must be expanded in this checklist. Record absent/empty/disabled/inherited cases explicitly; they cannot be proved merely by displaying a label.
+- Profiles :: Reuse labelled content for base, customized and contrasting profiles. Include disabled features, missing optional fields, inheritance and alternate numbering/parity where a single output cannot show both states. Each profile has exact commands to generate PDF, DOCX and ODT side by side. Keep the set small; do not multiply it by the Cartesian product of settings.
+- Fonts and output :: Use bundled or already available redistributable test fonts; no font download/build. Keep generated documents in temporary output, with reproducible commands and durable observations in =validation.org=. Labels are inspection aids, not proof that actual font metrics or spacing match.
+
+** Shared named user-test procedure
+
+- Method :: The named feature tests below are *user validation*, distinct from the automated assertions and one-off rendered inspection. Reuse the labelled fixtures and generate the selected profiles in PDF, DOCX and ODT; compare the actual appearance with labels and the checklist. Use Word for DOCX and LibreOffice for ODT, inspect native formatting properties/rulers where needed, and refresh fields before assessing page references.
+- Evidence :: For every named UT, record fixture/profile, exact YAML/frontmatter paths and values, application versions, tested revision and observed result in =validation.org=. Record each format separately; one format passing does not establish the other. Do not mark a UT passed because the fixture's explanatory text looks correct.
+- Expected :: The labelled feature must have the stated formatting or behaviour. Missing settings, incorrect labels or ambiguous measurement references must be reconciled before the fixture is used as evidence. Existing policy exceptions and editor-dependent pagination remain as defined above.
+
+** RT063.1 - Output selection and dependencies :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-1
+:END:
+- Covers :: [[#ac-063-1][AC063.1 - Manuscript selection]].
+- Action :: Export minimal Markdown and Org manuscripts to each office extension; repeat with uppercase extension, spaces in paths and =--dry-run=. Try missing target and unknown suffix. Exercise missing Pandoc and an incompatible JSON API response.
+- Expected :: Correct package MIME/type and body text; case-insensitive suffix selection; no output or sidecar during dry-run; non-zero actionable errors for invalid invocations/dependencies; no destination replacement. Typst is never called.
+
+** RT063.2 - Recipient batches and CLI errors :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-2
+:END:
+- Covers :: [[#ac-063-2][AC063.2 - Recipient-specific output]].
+- Action :: Export two recipients with =--format docx= and =--format=odt=; filter by mixed-case organization and recipient regex; vary directory/prefix, empty slug and multiple letter sections. Try invalid format, missing value, invalid regex and no matches.
+- Expected :: Exactly the selected files, with their own substituted content and correct suffixes; existing slug fallback order and generated-file messages. Invalid cases fail with no published file. Omitted format and explicit =pdf= select PDF.
+
+** RT063.3 - Structured manuscript content :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-3
+:END:
+- Covers :: [[#ac-063-3][AC063.3 - Semantic content]].
+- Action :: Export matching Markdown/Org fixtures containing parts, chapters, local headings, paragraphs, scene breaks, nested lists, a table, quote, inline and fenced code, emphasis, strikeout, Unicode, links and a footnote. Add private sections, multiple sorted/globbed inputs, repeated paths and conflicting metadata. Include chapter openings after a heading versus after a code block. Exercise mixed-format input and source images/unsupported syntax.
+- Expected :: Visible text appears once in source order with native lists, table cells, note references, link targets and inline formatting. Private text and literal markup delimiters are absent except inside code. Input deduplication/order and metadata match the existing contract. Only a directly adjacent chapter-opening paragraph loses its indent. Unsupported inputs fail rather than silently dropping content.
+
+** RT063.4 - Configuration and role geometry :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-4
+:END:
+- Covers :: [[#ac-063-4][AC063.4 - Typography and geometry]].
+- Action :: Use distinct fonts/sizes and non-default values for every row of [[#mapping][the feature mapping]], including all six font properties. Exercise British/US layers, global/local/style overrides, first-source manuscript configuration and CLI precedence. Test body, heading, quote, inline code and block code independently; use both absolute and font-relative lengths. Exercise hyphenation on/off/auto and widow/orphan switches. Invalid effective alignment/length/font values must fail.
+- Expected :: Native properties resolve to the effective values and correct role basis, within one native serialization unit. Changing one role does not leak into another. Paragraph and additive block clearances retain their arithmetic; hyphenation policy and widow/orphan flags change accordingly. Invalid fields identify their YAML path before publication. All consumed configuration keys have a named matrix case, not only a default smoke test.
+
+** RT063.5 - Generated matter and heading controls :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-5
+:END:
+- Covers :: [[#ac-063-5][AC063.5 - Generated matter]].
+- Action :: Exercise title inclusion/alignment/font switches; all copyright positions and barcode modes; custom credits and publication fields; derived/source and per-part chapter numbering; heading prefix, separator, suffix, case and visibility. Toggle every TOC inclusion, link, leader, page-number and spacing setting. Include no headings and no optional metadata.
+- Expected :: Correct ordered generated content, formatted headings and stable heading anchors. Contents select the configured levels, preserve labels and link/page switches and contain native updateable references. Barcode render embeds the generated image; file modes produce the named SVG sidecar; none produces neither. Invalid ISBN/configuration leaves outputs untouched. Empty optional content does not introduce phantom sections.
+
+** RT063.6 - Sections and page fields :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-6
+:END:
+- Covers :: [[#ac-063-6][AC063.6 - Page policy]].
+- Action :: Export enough text for multiple pages under each blank-page mode, with and without explicit breaks. Vary title/part/chapter/copyright header/footer suppression, mirrored gutter, frontmatter/body number formats and reset/never. Test absent, empty and distinct frontmatter formats plus odd/even variants and all existing running-matter placeholders. Include no part/chapter.
+- Expected :: Native section/master assignments, page fields and suppression express each policy; only configured resets/breaks occur. Empty frontmatter format stays blank, absent inherits, and no body heading keeps frontmatter policy. Package assertions establish intent; rendered parity and continuation are additionally checked by OT063.1 - Rendered feature comparison.
+
+** RT063.7 - Letter content and geometry :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-7
+:END:
+- Covers :: [[#ac-063-7][AC063.7 - Letter composition]].
+- Action :: Export recipient-specific letters with multiline addresses, contacts, explicit/default dates, fallback sender/signoff, unknown placeholders, two body paragraphs and configured spacing/margins. Include =*bold*=, =/italic/=, =_underline_= and a verbatim URL containing multiple slashes; include XML-sensitive text. Enable manuscript running matter in shared YAML.
+- Expected :: Correct per-recipient text, address line breaks, date formatting, right-side sender block with left-aligned contents, bold subject, literal slashes without delimiters, closing punctuation and signoff. Native font/spacing/margin properties match letter settings; manuscript headers/footers never appear. Text remains editable paragraphs and spans.
+
+** RT063.8 - Font packaging :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-8
+:END:
+- Covers :: [[#ac-063-8][AC063.8 - Embedded fonts]].
+- Action :: Export both modes with bundled fonts, a permitted uninstalled synthetic test family, missing family and restricted/unsupported font files, using regular/bold/italic combinations. Exercise per-face and aggregate budgets through shared resolver tests and at least one public-command oversize case.
+- Expected :: Full permitted faces, correct native references/manifest/font table and no duplicate font payloads. Missing/restricted faces retain family references and warn on stderr. Limits fail without destination replacement. No font fetch, installation or generation occurs.
+
+** RT063.9 - Resource and publication failures :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-9
+:END:
+- Covers :: [[#ac-063-9][AC063.9 - Safe failure]].
+- Action :: Exercise each bound at the limit and one beyond at its owning boundary; public commands cover oversized source, invalid UTF-8/XML, source aliases, symlink/nonregular targets, colliding letter slugs and unsafe prefix. Force Pandoc timeout, output overflow, invalid/duplicate/traversing ZIP members, broken references, malformed XML, write/rename failure, and failure on the second recipient. Test barcode-sidecar preflight and publication failure separately.
+- Expected :: Bounded non-zero errors name the failing operation, temporary state is cleaned, and no failed target is truncated. Preflight collision produces no files. A later failure retains earlier successful files and reports them accurately. Successful files are mode 0600. Repeating a successful export atomically replaces the selected files without altering sources or unrelated files.
+
+** RT063.10 - Existing route preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-10
+:END:
+- Covers :: [[#ac-063-10][AC063.10 - Conversion compatibility]].
+- Action :: Run the maintained regression suite, retaining script British/US PDF, DOCX and ODT, manuscript PDF/Typst and default letter PDF cases. Add public-boundary cases wherever extraction of shared helpers could affect an untested path; verify script DOCX without Pandoc/Typst through controlled process dependencies.
+- Expected :: Existing content, styles, file selection and dependencies remain as before. Preservation evidence may initially be GREEN; no artificial RED is required.
+
+** RT063.11 - Rendered font and geometry conformance :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-11
+:END:
+- Covers :: [[#ac-063-3][AC063.3 - Visible content]], [[#ac-063-4][AC063.4 - Geometry]], [[#ac-063-7][AC063.7 - Letter composition]] and [[#ac-063-8][AC063.8 - Fonts]].
+- Boundary :: Actual generated DOCX/ODT rendered by local LibreOffice, then measured from PDF. Retain this deterministic subset in =make test=; it is automated regression evidence, not a human UT.
+- Setup :: The labelled manuscript typography and letter fixtures with one explicit, bundled-font profile each; independent checked-in expectations. Use short markers that remain on one line and reference page regions rather than assuming cross-format page counts.
+- Action :: Export both formats, convert them with =soffice --headless --convert-to pdf:writer_pdf_Export= using separate output directories and private user profiles. Extract text/bounds using =pdftotext -bbox-layout=, and font spans using =pdftohtml -xml -zoom 1 -noroundcoord -fontfullname=. Inspect the font inventory with =pdffonts=. Decode structured output rather than grepping reports. Produce page PNGs with =pdftoppm -png -r 150= for failed cases.
+- Expected :: Every required marker appears once; forbidden/private markers are absent. Span family and point size, body/quote/code insets, header edge distance, header-to-body clearance, letter margins and named gaps match independent fixture expectations. Normalize only PDF subset prefixes and documented font naming aliases; do not accept an arbitrary fallback. Native package properties still prove requested values, while rendered measurements prove visible effect.
+- Tolerances :: Declare each measurement's coordinate reference and unit in the fixture checklist before implementation. Page size tolerance is 0.25pt, font size 0.25pt, measured positions/gaps 1pt. Account explicitly for glyph versus paragraph-box metrics; do not compare a glyph top directly to a layout-box offset. Do not widen tolerances merely to pass. If extraction cannot establish a property, retain its native assertion and explicit visual UT rather than reporting an automated success.
+- Bounds :: Four office conversions/PDF exports per execution, at most eight PNG pages in total on failure, 120 seconds per process, 100 MiB aggregate temporary artefacts, and 64 KiB diagnostics per process. Require the documented local tools; missing dependencies are setup failure, not skipped GREEN. Cleanup is owned by the test framework. No network, API, external model or UI automation.
+
+** RT063.12 - Rendered page policy and contents references :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-063-12
+:END:
+- Covers :: [[#ac-063-5][AC063.5 - Generated matter]] and [[#ac-063-6][AC063.6 - Page policy]].
+- Setup :: The book-layout fixture with a compact deterministic profile exercising frontmatter/body numbering, an intentional parity blank, distinct odd/even running matter and a two-page contents list. Expected marker relationships and fields are independent of renderer output.
+- Action :: Export both formats, render through the same isolated LibreOffice pipeline, and extract page-associated text/bounds. Compare actual heading pages with displayed contents references and page fields; verify content after the final heading to detect truncation. Generate PNGs for failed pages. Also inspect the native document to ensure references remain live fields.
+- Expected :: Heading markers occur on the configured physical side; intentional blank pages have no forbidden running matter; frontmatter/body and odd/even markers switch correctly; numbering resets only at the configured boundary; contents references match the actual rendered heading pages, and continuation entries respect their reserved top band. Assert these relationships within each PDF, not equal page counts between Typst and LibreOffice.
+- Field refresh :: Verify whether the selected LibreOffice conversion refreshes the fixture's fields/indexes. Do not assume =--convert-to= does so. If the generated document or documented conversion mechanism cannot provide current fields, report the assertion failure and retain explicit editor refresh in the UT; do not accept stale cached values or invent a successful refresh step.
+- Bounds :: Two office conversions/PDF exports, at most twelve PNG pages on failure, the same process/log/storage bounds as RT063.11 - Rendered geometry. This test is retained in =make test= and missing renderer support is reported as missing evidence, not a pass.
+
+** OT063.1 - Rendered feature comparison :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-063-1
+:END:
+- Covers :: [[#ac-063-4][AC063.4 - Geometry]], [[#ac-063-5][AC063.5 - Generated matter]], [[#ac-063-6][AC063.6 - Page policy]] and [[#ac-063-8][AC063.8 - Fonts]].
+- Procedure :: Use the maintained [[#reference-fixtures][labelled reference fixtures]] and their key-to-test checklist. Export PDF, DOCX and ODT with the named profiles, including British/US manuscript coverage. Render office files using local LibreOffice with a private temporary profile; update fields before comparison. Inspect page images and extract text, font and bounding-box evidence. Include a contents list long enough to continue onto another page and an embedded family absent from the renderer's host fonts.
+- Expected :: All required features are visible, no clipped/overlapping or missing content, correct configured parity/numbering/suppression and effective typography. Differences in line wraps, page counts and hyphenation positions alone do not fail. Running fields and contents reflect the office layout after update.
+- Bounds :: At most 32 office conversions/renders and 16 PDF baselines per candidate across the named profiles, with a 120-second deadline per process; local only, no metered calls, output under an OS temporary directory and retained evidence under 100 MiB. Record tool versions and remove temporary profiles after inspection.
+- Record :: Dated observations and feature coverage in =validation.org=; no automated imitation of human visual acceptance.
+- Automated preparation :: Reuse the RT rendering/extraction pipeline across the broader named profiles, producing matched source-PDF, DOCX-derived-PDF and ODT-derived-PDF PNG sets at 150 DPI. Create a local comparison index labelled by fixture, profile, format, semantic marker and physical page. Keep measurements and native package checks beside the images. Do not align unrelated pages solely by page number or demand pixel equality across different layout engines.
+- Inspection and ordering :: Run the retained rendered RTs first, then this bounded OT inspection before presenting the named UTs. Automated checks flag missing text, wrong fonts, geometry and page-policy errors; PNG inspection assesses clipping, overlap and visual coherence that extraction cannot reliably prove. LibreOffice rendering does not establish Microsoft Word behaviour, so the Word UT remains necessary.
+
+** OT063.2 - Installed-layout CLI and documentation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-063-2
+:END:
+- Covers :: [[#ac-063-10][AC063.10 - Compatibility]].
+- Procedure :: Run a built binary from a temporary consuming directory outside the checkout using the documented manuscript and letter commands. Review help, config and export documentation against the delivered behaviour and dependency split.
+- Expected :: Embedded assets work without a repository root; documented commands produce the stated formats; script-only limitations are labelled; field refresh and font warnings are explained. No installation or release is performed.
+- Bounds :: Four office conversions and four help invocations, local synthetic files, temporary output; record in =validation.org=.
+
+** UT063.1 - Editing manuscripts :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-1
+:END:
+- Covers :: [[#ac-063-3][AC063.3 - Semantic content]], [[#ac-063-5][AC063.5 - Generated matter]] and [[#ac-063-8][AC063.8 - Fonts]].
+- Fixture and YAML :: Reuse the manuscript fixtures and profiles from UT063.3 - Font roles through UT063.10 - Metadata precedence. This test proves retention of those settings during editing/save/reopen, not another configuration feature.
+- Procedure :: In Word for DOCX and LibreOffice for ODT, open the representative manuscript, add paragraphs and a heading, edit a table and footnote, update contents/page fields, save and reopen.
+- Expected :: Ordinary editable content, retained role typography, usable lists/tables/notes, working links and refreshed contents. No repair prompt or flattened page images. Record application versions and user validation in =validation.org=.
+
+** UT063.2 - Editing letters :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-2
+:END:
+- Covers :: [[#ac-063-7][AC063.7 - Letter composition]] and [[#ac-063-8][AC063.8 - Fonts]].
+- Fixture and YAML :: Reuse the two-recipient letter and =folio.letter= profile from UT063.11 - Letter typography. This test proves retention during editing/save/reopen; UT063.12 - Letter literals separately covers source syntax and ignored running matter.
+- Procedure :: Open both letter formats in their respective editors, verify recipient details and literal URL, insert a paragraph using the embedded font, save and reopen.
+- Expected :: Layout and recipient content remain usable; added text retains the intended font and no slash becomes emphasis markup. Record user validation in =validation.org=.
+
+** UT063.3 - Manuscript font roles and inline specimens :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-3
+:END:
+- Covers :: [[#ac-063-3][AC063.3 - Semantic content]], [[#ac-063-4][AC063.4 - Typography]] and [[#ac-063-8][AC063.8 - Fonts]].
+- Fixture :: Manuscript typography/content; explicit and inherited font profiles.
+- YAML/frontmatter proved :: =folio.manuscript.font=, =heading.font=, =mono.font= and =quoted-block.font=; each role's =family=, =size=, =weight=, =style=, =stretch= and =letter-spacing=.
+- Procedure and expected :: Inspect labelled prose, heading, quote, inline code and fenced code using the shared procedure. Each uses the stated family, size and other five-property distinctions without leakage between roles; the inherited profile resolves exactly as the checklist states. Inspect a labelled native footnote and emphasis specimens too, distinguishing fixed/inherited note styling from configurable roles. Confirm embedded-font use where a permitted face is supplied.
+
+** UT063.4 - Paragraph and block spacing :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-4
+:END:
+- Covers :: [[#ac-063-4][AC063.4 - Geometry]].
+- Fixture :: Manuscript typography/content; customized and contrasting profiles.
+- YAML/frontmatter proved :: Under =folio.manuscript=: =line-spacing=, =paragraph-indent=, =paragraph-spacing=, =justify=, =hyphenation=, =widow-orphan-control=, =quoted-block-spacing=, =code-block-spacing=, =quote-block-indent=, =code-block-indent=, =list.space-before/after=, =table.space-before/after=, =code-block.space-before/after= and =scene-break.marker=.
+- Procedure and expected :: Measure labelled multiline paragraphs and blocks, including adjacent code blocks and a quote with several paragraphs. Verify explicit versus font-relative lengths and additive clearances; direct chapter-opening prose lacks the first indent while later prose retains it. Contrasting profiles demonstrate justification, hyphenation and widow/orphan policy. The scene marker matches YAML; list/table/code spacing matches the stated values rather than native writer defaults.
+
+** UT063.5 - Paper geometry and running matter :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-5
+:END:
+- Covers :: [[#ac-063-4][AC063.4 - Geometry]] and [[#ac-063-6][AC063.6 - Running matter]].
+- Fixture :: Manuscript book layout; facing-page, custom-paper and disabled/empty profiles.
+- YAML/frontmatter proved :: =folio.manuscript.page=, =margin=, =gutter=; =folio.page-header= and =folio.page-footer= children =enabled=, =font= (all six properties), =format=, =alt-format=, =frontmatter-format=, =alt-frontmatter-format=, =align=, =distance-from-edge= and =content-padding-after=.
+- Procedure and expected :: Inspect labelled frontmatter/body and recto/verso pages. Measure the declared page-edge distance and content clearance separately; verify mirrored margins/gutter, role fonts, page-pair alignment and all placeholder values. The contrasting profile proves absent-versus-empty inheritance and disabled running matter. Confirm that displayed page resets do not swap physical recto/verso geometry.
+
+** UT063.6 - Title-page fields and independent placement :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-6
+:END:
+- Covers :: [[#ac-063-4][AC063.4 - Typography]] and [[#ac-063-5][AC063.5 - Generated matter]].
+- Fixture :: Manuscript book layout; grouped, independently positioned and suppressed title profiles.
+- YAML/frontmatter proved :: =folio.manuscript.title-page.enabled=, =page-number=, all =include-*= switches, =title-block-align=, =footer-align= and each =title/subtitle/author/date/wordcount/version/contact.align= and =.font= property.
+- Procedure and expected :: Inspect labelled fields at their specified positions and fonts, including the grouped footer row and independent contact block. Toggle inclusion and title-page enablement; omitted fields really disappear and do not leave unintended gaps/pages. Check first-page numbering separately from the content's explanatory text.
+
+** UT063.7 - Part and chapter presentation and pagination :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-7
+:END:
+- Covers :: [[#ac-063-5][AC063.5 - Heading presentation]] and [[#ac-063-6][AC063.6 - Page policy]].
+- Fixture :: Manuscript book layout; derived/source numbering and parity/reset profiles.
+- YAML/frontmatter proved :: =folio.manuscript.part= and =chapter= children =page-break-before=, =blank-page-before=, =blank-page-after=, =skip-header=, =skip-footer=, =vertical-align=, =position=, =align=, =space-after=, =case-transform=, =name-case=, =prefix=, =number-format=, =separator=, =suffix=, =show-name=, =show-number=, =explicit-numbering= and =number-reset= where applicable; =page-numbering.frontmatter-format=, =body-format= and =body-reset=.
+- Procedure and expected :: Compare labelled expected heading strings, vertical positions, following gaps and physical page sides. Verify per-part and continuous numbering, source-number preservation, number/name visibility, Roman/Arabic page fields, reset/never and suppression on heading/blank pages. Exercise each blank-page mode without unrequested doubling of breaks.
+
+** UT063.8 - Contents layout and live references :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-8
+:END:
+- Covers :: [[#ac-063-4][AC063.4 - Typography]], [[#ac-063-5][AC063.5 - Contents]] and [[#ac-063-6][AC063.6 - Page policy]].
+- Fixture :: Manuscript book layout; a contents list spanning at least two pages, plus contrasting switches.
+- YAML/frontmatter proved :: =folio.manuscript.toc.enabled=, =links=, =title=, =font=, =heading.font=, =include-parts=, =include-chapters=, =include-sections=, =dot-leaders=, =page-numbers=, =page-break-before=, =blank-page-before=, =blank-page-after=, =line-spacing=, =part-gap-before=, =continuation-padding-before= and =part-bold=; both fonts' six properties.
+- Procedure and expected :: Match named entries, fonts, line intervals, part gaps and the labelled continuation-page top band. Compare included/excluded levels and enabled/disabled links, leaders and page numbers. After adding content and updating fields, references point to the resulting office pages and retain their configured appearance.
+
+** UT063.9 - Copyright composition and barcode modes :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-9
+:END:
+- Covers :: [[#ac-063-4][AC063.4 - Typography]], [[#ac-063-5][AC063.5 - Copyright]] and [[#ac-063-6][AC063.6 - Page policy]].
+- Fixture :: Manuscript book layout; copyright positions, optional-content and barcode profiles.
+- YAML/frontmatter proved :: =folio.manuscript.copyright.enabled=, =position=, =skip-header=, =skip-footer=, =blank-page-before=, =blank-page-after=, =align=, =credits=, =body=, =separator=, =separator-space-before=, =separator-space-after=, =publication=, =publisher=, =publisher-preposition=, =isbn=, =isbn-label=, =isbn-barcode=, =font=, =label.font=, =line-spacing= and =block-spacing=; both fonts' six properties.
+- Procedure and expected :: Compare labelled top and bottom groups, typography, clearances, formatted credit/body text and page placement. Check the selected barcode mode against embedded image and sidecar presence, and verify missing optional blocks collapse. Disabling copyright removes the page and generated content.
+
+** UT063.10 - Metadata, style and configuration precedence :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-10
+:END:
+- Covers :: [[#ac-063-3][AC063.3 - Metadata]] and [[#ac-063-4][AC063.4 - Resolved configuration]].
+- Fixture :: Both manuscript fixtures; labelled source, local override and British/US profiles.
+- YAML/frontmatter proved :: =title=, =subtitle=, =author=, =attribution=, =author-attribution=, =date=, =version=, =wordcount=, =contact-name=, =address=, =phone=, =email=, =website=; =folio.style= and =folio.manuscript.style=, =date-format= and applicable attribution overrides. Include shared =folio.font=, =heading.font=, =page= and =margin= fallbacks where the existing normalization contract consumes them.
+- Procedure and expected :: Use deliberately distinct source/local/CLI values with the expected winning values printed in the checklist. Verify formatted dates, unchanged free-text word counts, attribution/contact presentation and style-derived values. Show that only the first resolved Markdown source supplies a YAML configuration layer and that a partial role override retains the other properties from its own lower layer.
+
+** UT063.11 - Letter typography, margins and block spacing :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-11
+:END:
+- Covers :: [[#ac-063-4][AC063.4 - Geometry]], [[#ac-063-7][AC063.7 - Letter composition]] and [[#ac-063-8][AC063.8 - Fonts]].
+- Fixture :: Two-recipient letter; explicit and inherited =script.yaml= profiles.
+- YAML proved :: =folio.letter.font.family/size/weight/style/stretch/letter-spacing=, =page=, =margin-top=, =margin-bottom=, =margin-left=, =margin-right=, =space-after-sender=, =space-after-recipient=, =space-after-date=, =space-after-subject=, =space-before-closing= and =space-before-signoff=.
+- Procedure and expected :: Each letter block names its intended font and adjacent gap. Measure these, the four margins and the right-positioned sender block; check both recipient outputs. The inheritance profile preserves omitted font properties. Explain in the checklist that letters take these settings from YAML files, not source YAML frontmatter.
+
+** UT063.12 - Letter substitutions, literals and excluded running matter :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-063-12
+:END:
+- Covers :: [[#ac-063-2][AC063.2 - Recipients]] and [[#ac-063-7][AC063.7 - Letter content]].
+- Fixture :: Two-recipient letter; shared running matter deliberately enabled in its local =script.yaml=.
+- YAML proved :: =folio.page-header= and =folio.page-footer= are *ignored in letter mode*, including malformed values irrelevant to that mode. No new YAML frontmatter, per-recipient font or literal-span font control is introduced.
+- Source behaviour distinguished :: Labelled Org metadata/placeholders demonstrate recipient substitution, addresses and dates. Bold, italic, underline and verbatim URL examples explicitly identify source syntax rather than pretending it is a YAML setting.
+- Procedure and expected :: Compare both recipient outputs, inspect literal slashes and formatting, and confirm that neither letter inherits the configured manuscript running matter. Mark substituted versus intentionally unresolved placeholders in the checklist.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+** Empty, private and multi-file content
+
+- Preserve the existing mode's empty/invalid-input outcome and metadata-only behaviour. Private text must not leak into contents, bookmarks or package metadata. Later manuscript sources cannot create a second configuration layer. Covered by [[#rt-063-3][RT063.3 - Structured content]] and [[#rt-063-4][RT063.4 - Configuration]].
+
+** Application-dependent fields
+
+- Office fields may require an editor refresh. *Stale cached PDF page numbers are not valid office page numbers*. Page references must remain fields after save/reopen. Covered by [[#rt-063-5][RT063.5 - Generated matter]] and [[#ut-063-1][UT063.1 - Editing manuscripts]].
+
+** Resource pressure and partial batches
+
+- A large manuscript or font package may exceed the explicit bounds. *Failure is preferable to truncation*. Publication is per file, not a transaction spanning recipients or barcode sidecars; all selected paths are preflighted before writing. Covered by [[#rt-063-9][RT063.9 - Resource and publication failures]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** CLI contract
+:PROPERTIES:
+:CUSTOM_ID: cli
+:END:
+
+| Command | Selection and compatibility |
+|---------+-----------------------------|
+| =folio manuscript chapter.org book.docx= | Target extension selects DOCX; =.odt= selects ODT, case-insensitively. Existing =.typ= and =.pdf= remain. |
+| =folio manuscript --dry-run chapter.md book.odt= | Existing input/configuration validation and report, extended with selected output format; no writer, reference, font packaging, sidecar or destination writes. |
+| =folio letter letters.org --format docx= | New option accepts =pdf=, =docx=, =odt= case-insensitively, with separated or equals syntax. Default is =pdf=; no YAML default is introduced. |
+| =folio letter letters.org --format=odt --to Theatre --dir output --prefix submission= | Existing case-insensitive recipient/organization regex and filename algorithm; chosen suffix replaces =.pdf=. |
+
+- Error contract :: Unknown/missing format values fail with accepted values. Existing public exit conventions remain. Diagnostics go to stderr, generated-file reports to stdout; neither command adds binary stdout output.
+- Dependencies :: New office exports invoke Pandoc directly with fixed arguments. No user filters, templates or extra argument pass-through. No fallback from one output format to another.
+
+** Structured prose route
+
+1. *Resolve inputs, metadata and configuration through existing mode-specific code*. For manuscripts, reuse canonicalization, source-layer extraction, private-section removal, standalone-code promotion and heading numbering decisions.
+2. Obtain *Pandoc JSON before conversion to Typst*. Preserve native rich nodes and annotate semantic roles, chapter openings and section boundaries. Do not reverse-parse Typst, use the play event model or round-trip through DOCX to obtain ODT.
+3. Project the existing typed letter model after substitution into equivalent paragraph/inline nodes and mode-specific layout data. Protect literal Org spans before interpreting emphasis. Keep date, address and closing composition shared with the existing letter contract.
+4. Supply a *generated reference document with resolved named styles* to the selected Pandoc writer. The same content adapter feeds both prose formats; DOCX and ODT serializers express their own native layout structures.
+5. Apply native ZIP/XML processing for section/master transitions, page fields, contents, generated frontmatter and properties the writer cannot carry directly. Reuse font embedding and package validation, then publish atomically.
+
+- Ownership :: Add a cohesive =internal/office= package for bounded process execution, native package utilities, font packaging and prose export contracts. It depends on shared config/font value types, not =app=, =manuscript= or =letter=. Mode adapters remain with their semantic owners; the app orchestrates letters and manuscript orchestration calls the lower-level package.
+- Reuse :: Extract only genuinely shared existing office infrastructure into that package and leave thin script call sites. Do not move script layout policy or change its native DOCX serializer to Pandoc. Reuse existing manuscript heading/date/barcode helpers rather than duplicating rules.
+- Rationale :: Pandoc already owns rich manuscript parsing and can write both formats; native processing is needed for the resolved layout contract. This avoids a second rich-text parser or a new universal document framework. There is no new runtime library or desktop office dependency.
+- Verification :: RT063.3 - Structured content proves the semantic route; RT063.10 - Preservation protects existing callers. Implementation review checks dependency direction, absence of duplicated mode rules and confinement of script changes to shared infrastructure extraction.
+
+** Feature mapping and fidelity boundary
+:PROPERTIES:
+:CUSTOM_ID: mapping
+:END:
+
+The following inventory covers *all settings consumed by the current manuscript and letter renderers*, not merely the examples tested during definition. Existing configuration normalization and validation remain authoritative. Delivery must maintain an exhaustive key-to-native-property checklist alongside its validation evidence, including toggles and inherited values.
+
+| Feature/configuration family | Required office representation |
+|------------------------------+--------------------------------|
+| Resolved metadata and manuscript source layers | Same effective metadata and precedence, including attribution and author-attribution; document properties and visible fields use that result. ISO dates follow the resolved manuscript date-format; wordcount remains display text. |
+| All mode font roles: family, size, weight, style, stretch, letter-spacing | Named native paragraph/character styles, with direct spans only for inline differences; relative units resolve against the same role as PDF. Select distinct font faces where a native bold flag cannot express a configured weight. Preserve requested values; no automatic regular/bold-only narrowing. |
+| Manuscript body, heading, mono, quoted-block and generated-matter roles | Independent styles with existing inheritance; mono applies to inline and block code, quote font remains independent. |
+| Line-spacing, paragraph-spacing/indent, justify, widow-orphan-control | Native paragraph line/space/indent/alignment/keep properties; chapter-opening exceptions derive from semantic adjacency. Body and TOC line multipliers resolve independently against their own fonts' normal baseline interval, retaining the existing metrics plus 0.65em gap contract rather than multiplying point size alone. |
+| Hyphenation on/off/auto | Native policy plus the existing offline discretionary-break mechanism where needed; code remains unhyphenated. Exact break positions are reader-dependent. |
+| Quote/code indentation, additive clearance, list/table/code space-before/after | Scoped paragraph/table styles retaining the existing length basis and additive spacing semantics, not a common flattened body style. |
+| Paper, margins and gutter | Native page geometry and mirrored inner/outer margins, using the same normalized paper dimensions. |
+| Part/chapter heading presentation | Existing number derivation, source numbering, reset, prefix/separator/suffix, name/number visibility and case transforms; native heading levels/bookmarks, alignment and vertical placement. |
+| Part/chapter page-break, blank-page modes and running-matter suppression | Native section breaks/page styles for configured parity and explicit blank pages; no header/footer on suppressed pages. |
+| Title-page enabled, field inclusion, fonts, alignment, page-number switch | Editable title and contact blocks with their configured placement and first-page numbering policy; not body paragraphs using default writer styles. |
+| Copyright order, credits, body, separator, publication, publisher, ISBN, fonts, spacing, breaks and suppression | Editable native blocks at the configured position, with the upper group top-aligned and publication/ISBN group bottom-aligned. Preserve existing mini-Markdown formatting semantics for these configuration strings, independently of the input source format. |
+| ISBN barcode none/render/file/render-and-file | Existing generated barcode embedded as an image when requested; existing =<target-base>.barcode.svg= sidecar contract for file modes. This is not source-image support. |
+| TOC enabled/title/fonts/levels/links/leaders/page numbers/spacing/part-bold/continuation padding/breaks | Native updateable contents entries or native reference fields with stable heading anchors and configured presentation, including continuation pages. |
+| Page numbering formats and body reset | Native number-format and restart settings on the semantic boundary; never restart merely because formatting required another section. |
+| Shared header/footer including frontmatter and odd/even variants, font/alignment/edge distance/clearance | Native header/footer parts or page masters with live page/page-count fields, existing metadata/heading placeholders and exact absent-versus-empty inheritance. |
+| Scene-break marker | Editable centred marker using the existing manuscript spacing policy. |
+| Letter page, four margins, font, six named inter-block spacings | Letter-specific page and paragraph styles; sender/contact block at the right, its contents left-aligned; recipient/date/subject/body/closing/signoff in existing order. |
+| Letter inline formatting and literals | Native Org bold/italic/underline spans and protected monospace spans; literal-code font follows the current letter contract. |
+
+- Native composition :: DOCX uses section properties, first/even/default header/footer relationships, bookmarks and fields. ODT uses named paragraph/page styles, master-page chains, native text fields and indexes. Model physical-page parity separately from displayed page numbers; continuous changes must not create an extra page. Use editable anchored blocks only where independent title/copyright placement requires them; keep ordinary body content in the normal text flow. Compute explicit line intervals from resolved font metrics where the reader's default single-spacing metrics would change the configured interval.
+- Measurement :: Required settings must survive serialization within one native unit. Reader line-breaking and font rasterization are not byte/pixel equality requirements.
+- Unsupported mapping :: *Do not copy script title or frontmatter compromises*. An inability to implement a required mapping is a delivery blocker requiring a revised, explicitly approved specification. A runtime unsupported-setting error prevents misleading output but does not satisfy the feature requirement.
+- Verification :: RT063.4 - Role geometry, RT063.5 - Generated matter and RT063.6 - Page fields inspect native structures. OT063.1 - Rendered comparison establishes effects that package inspection alone cannot prove.
+
+** Publication and resource rules
+:PROPERTIES:
+:CUSTOM_ID: publication
+:END:
+
+- Input :: Regular UTF-8/XML-representable source text, maximum *32 MiB aggregate resolved manuscript input* or letter source. Bound canonical intermediate text/JSON to 128 MiB, semantic blocks to 50,000 and inline nodes to 100,000; maximum nesting depth 128. Check before expensive rendering and reject overflow, never truncate.
+- Processes :: Maximum 120 seconds for each Pandoc invocation, 64 KiB captured diagnostics and 128 MiB output. Propagate cancellation and stop the process on overflow. Bound every new reader/canonicalization invocation, not only the final writer. No retry loop or shell invocation.
+- Packages :: Reference/generated XML and individual ZIP members at most 128 MiB, compressed package 128 MiB, expanded package 256 MiB, maximum 256 members. Reuse existing font limits (32 MiB per face, 64 MiB total; bounded discovery). Validate both before and after font packaging; reject duplicate/unsafe member names, invalid XML, missing required parts and broken internal references. External hyperlink relationships may be retained but never fetched.
+- Paths :: Reject source/destination aliases including hard links, destination symlinks and nonregular destinations. Generated letter paths must remain inside the selected output directory; reject separators/traversal in prefix. Preflight all recipient and sidecar paths, including duplicate paths under the destination filesystem's case rules, before publishing any output.
+- Atomicity :: Stage beside each destination with mode 0600, validate, close and rename. Preserve the existing target on any failure before its rename. Clean private references, font extractions and failed staging files on all exits.
+- Batch outcome :: Process recipients in existing source order; announce only published files. On later failure, stop and identify the failed target while retaining earlier outputs. Existing selected regular files may be replaced on a successful repeat. No batch rollback or promise of cross-file atomicity.
+- Sidecar outcome :: Validate both paths before rendering. Publish the manuscript first, then the requested barcode SVG atomically. If sidecar publication fails, return non-zero and explicitly report that the manuscript was published; preserve any prior sidecar. This retains the existing publication order without promising an unavailable multi-file transaction.
+
+** Architecture impact
+
+*** Security impact
+
+- Trust boundary :: Source text, YAML, local font metadata and Pandoc output are untrusted. Validate size, encoding, depth, ZIP/XML structure, relationships and paths before publication.
+- Data :: Manuscripts and correspondence may be private. Use private temporary files and output permissions; no raw source dumps in diagnostics, no credentials, macro content or arbitrary embedded files.
+- Access :: No network requests, downloads, uploads, executable filters, font installation or office automation. Hyperlinks remain inert document data during conversion. Reject raw active content before passing it to a writer.
+- Mitigation :: Fixed subprocess arguments, bounded processes, generated references and structured serializers prevent source/config values becoming executable instructions. Existing font licensing/embedding-permission handling remains mandatory.
+
+*** Maintainability and portability
+
+- Keep *mode semantics separate from package mechanics*. Shared extraction must preserve script behaviour, and successful package tests must be supplemented by actual reader evidence.
+- Document tested Pandoc and reader versions during delivery. Use the reader-produced JSON API version for manuscript ASTs; validate a compatible version for constructed letter ASTs rather than assuming all installations accept one hard-coded version.
+- No speculative plugin interface, service, new shell helper or Rust component is required. File names, private helper signatures and test organization remain routine implementation details within these boundaries.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: Authorities and affected components linked under [[#context][Context]], plus =internal/app/odt_export.go=, =odt_ast.go=, =office_fonts.go=, =office_font_package.go=, =internal/manuscript/render.go= and =templates/manuscript.typ=. Consult the named regression files when preserving their contracts.
+- Entry conditions :: Explicit specification sign-off and the [[#constraints-and-dependencies][review exception and dependencies]]. No code or test implementation is authorized by definition alone.
+- First delivery step :: Write the RT package and observe intended behavioural RED; record preservation GREEN separately. Create schema-conforming =validation.org= at admission. Resolve the high-risk native page/contents mappings early; inability to meet them requires an amendment, not an undisclosed fallback.
+- Review evidence :: The session exception requires author self-review; no independent audit verdict is implied. If external review is later reinstated, only the harness may create/update =audits.yaml=.
+- Validation evidence :: =validation.org= owns one tagged execution record per RT, OT and UT, with dated commands, revision and observations. Definition has no execution results.
+- Documentation impact :: Update =README.md=, =docs/ARCHITECTURE.md=, =docs/folio-manuscript-help.md=, =docs/folio-letter-help.md=, =docs/config.md=, =docs/format-docx.md=, =docs/format-odt.md= and =docs/font-embedding.md=. Reconcile =docs/format-manuscript-markdown.md= and =schema/letter.org= where output descriptions change; source syntax remains unchanged. Cover Pandoc requirements, field refresh, supported features, limits and partial-batch/sidecar failures.
+- Delivery checks :: Focused RTs, =make test=, applicable lint/vulnerability checks, both OTs and the required review. User editing checks remain separate and must not be inferred from structural or rendered evidence. No release, push of implementation, installation or ticket closure is implied by definition sign-off.
+- Fixture handoff :: Deliver the three maintained logical reference fixtures, named configuration profiles, explicit expectation checklist and reproduction commands with the RT package. Run RT063.11 - Rendered geometry and RT063.12 - Rendered page policy, then OT063.1 - Rendered feature comparison before requesting the named feature UTs. Record unfinished cases honestly; automation is intended to reduce avoidable UT failures, not replace user acceptance.
