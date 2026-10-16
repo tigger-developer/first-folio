@@ -28,6 +28,7 @@
 :REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-3][RT063.3 - Structured manuscript content]].
+- Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
 ** AMBER RT063.4 - Configuration and role geometry :testdef:
@@ -36,6 +37,7 @@
 :REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-4][RT063.4 - Configuration and role geometry]].
+- Partial execution, 2026-10-16 :: Source-configuration follow-up: TestRT063_4_OfficeRejectsLaterSourceConfiguration passed for both office target extensions, preserving the existing first-resolved-source restriction and the prior destination.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
 ** AMBER RT063.5 - Generated matter and heading controls :testdef:
@@ -81,6 +83,9 @@
 ** GREEN RT063.10 - Existing route preservation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-10-result
+:REVISION: ec9955e4155c1b7049a2d5374f6aeccadf1ba0a0 plus the W063 test-only working tree
+:COMMAND: go test ./... -skip '^TestRT063_' -count=1
+:EVIDENCE: All existing packages passed before production changes; package durations and cache scope are recorded below.
 :END:
 - Definition :: [[file:spec.org::#rt-063-10][RT063.10 - Existing route preservation]].
 - Initial preservation evidence, 2026-10-16 :: At =ec9955e= with only new test/fixture files in the working tree, =go test ./... -skip '^TestRT063_' -count=1= passed all existing packages. Go build/module caches were scoped to ignored =.agent/cache/=. The application package took 172.702 seconds; manuscript took 112.050 seconds. No production code had changed. This is the pre-change baseline, not post-implementation verification.

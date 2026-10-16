@@ -152,12 +152,35 @@ func TestRT063_4_OfficeLetterTypographyAndGeometry(t *testing.T) {
 				officeAssertEffective(t, layers, "sz", "val", "26")
 				officeAssertEffective(t, layers, "w", "val", "90")
 				officeAssertEffective(t, layers, "spacing", "val", "25")
+				for _, property := range []string{"b", "i"} {
+					active := false
+					for _, layer := range layers {
+						for _, flag := range layer.all(property) {
+							active = flag.attr("val") != "0" && flag.attr("val") != "false"
+						}
+					}
+					if !active {
+						t.Errorf("letter font lost %s", property)
+					}
+				}
 			} else {
 				officeAssertEffective(t, layers, "text-properties", "font-size", "13pt")
 				officeAssertEffective(t, layers, "text-properties", "font-weight", "bold")
 				officeAssertEffective(t, layers, "text-properties", "font-style", "italic")
 				officeAssertEffective(t, layers, "text-properties", "text-scale", "90%")
 				officeAssertEffective(t, layers, "text-properties", "letter-spacing", "1.25pt")
+				name, exists := officeEffectiveAttr(layers, "text-properties", "font-name")
+				matched := false
+				for _, file := range []string{"styles.xml", "content.xml"} {
+					for _, face := range pkg[file].all("font-face") {
+						if face.attr("name") == name && strings.Trim(face.attr("font-family"), "'\"") == "Iosevka Publish" {
+							matched = true
+						}
+					}
+				}
+				if !exists || !matched {
+					t.Errorf("letter font reference %q does not resolve to configured family", name)
+				}
 			}
 			pageLayers := []*officeXML{body}
 			if format == "odt" {
