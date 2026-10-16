@@ -28,28 +28,7 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 	if body == nil {
 		return fmt.Errorf("Word document has no body")
 	}
-	pendingRole := ""
-	root.visit(func(n *docxNode) {
-		if n.name == "w:bookmarkStart" {
-			if role := p.Anchors[n.get("w:name")]; role != "" {
-				pendingRole = role
-			}
-		}
-		if n.name != "w:p" {
-			return
-		}
-		if pendingRole != "" {
-			n.ensure("w:pPr").ensure("w:pStyle").set("w:val", pendingRole)
-			pendingRole = ""
-		}
-		n.visit(func(child *docxNode) {
-			if child.name == "w:bookmarkStart" {
-				if role := p.Anchors[child.get("w:name")]; role != "" {
-					n.ensure("w:pPr").ensure("w:pStyle").set("w:val", role)
-				}
-			}
-		})
-	})
+	p.wordHeadingAnchors(body)
 	relationships, err := parseXML(files["word/_rels/document.xml.rels"])
 	if err != nil {
 		return err
@@ -229,6 +208,28 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 	}
 	files["word/settings.xml"], err = docxEncode(*settings, DataLimit)
 	return err
+}
+
+func (p *Prose) wordHeadingAnchors(body *docxNode) {
+	var out, bookmarks []docxNode
+	for _, node := range body.children {
+		if node.name == "" && strings.TrimSpace(node.text) == "" {
+			continue
+		}
+		if node.name == "w:bookmarkStart" && p.Anchors[node.get("w:name")] != "" {
+			bookmarks = append(bookmarks, node)
+			continue
+		}
+		if node.name == "w:p" {
+			for _, bookmark := range bookmarks {
+				node.ensure("w:pPr").ensure("w:pStyle").set("w:val", p.Anchors[bookmark.get("w:name")])
+				node.children = append(node.children[:1], append([]docxNode{bookmark}, node.children[1:]...)...)
+			}
+			bookmarks = nil
+		}
+		out = append(out, node)
+	}
+	body.children = append(out, bookmarks...)
 }
 func wordBlankPage() docxNode {
 	return dx("p", dx("pPr", dx("spacing").attr("w:line", "1").attr("w:lineRule", "exact")), dx("r", dx("br").attr("w:type", "page")))

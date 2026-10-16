@@ -180,11 +180,14 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 				{"BODY-SAMPLE", "Iosevka-Publish", 30, 12},
 				{"HEADING-SAMPLE", "Iosevka-Publish-Bold-Extended", -1, 16},
 				{"QUOTE-SAMPLE", "Iosevka-Publish-Extended-Italic", 26, 10},
-				{"CODE-SAMPLE: 9pt", "Iosevka-Publish", 28, 9},
+				{"CODE-SAMPLE: 9pt Iosevka Publish.", "Iosevka-Publish", 28, 9},
 			} {
 				found := 0
 				for _, span := range tree.all("text") {
 					if !strings.Contains(span.text(), specimen.marker) {
+						continue
+					}
+					if strings.HasPrefix(specimen.marker, "CODE-SAMPLE:") && strings.TrimSpace(span.text()) != specimen.marker {
 						continue
 					}
 					family := fonts[span.attr("font")]

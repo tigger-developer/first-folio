@@ -78,6 +78,9 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 	if err = add("FolioSender", sender, false, "space-after-sender", "2em"); err != nil {
 		return plan, err
 	}
+	senderStyle := plan.Styles["FolioSender"]
+	senderStyle.Left = max(0, page.Width-page.Left-page.Right-office.TextWidth(sender, senderStyle))
+	plan.Styles["FolioSender"] = senderStyle
 	if err = add("FolioRecipient", strings.ReplaceAll(item.Recipient, " / ", "\n"), false, "space-after-recipient", "1em"); err != nil {
 		return plan, err
 	}
@@ -104,8 +107,6 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 	if err = add("FolioSignoff", item.Signoff, false, "", ""); err != nil {
 		return plan, err
 	}
-	// The sender is a right-positioned block whose internal lines stay left-aligned.
-	// Native postprocessing sizes this block from the resolved font's line advances.
 	return plan, nil
 }
 

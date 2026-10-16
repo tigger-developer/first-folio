@@ -579,6 +579,15 @@ The following inventory covers *all settings consumed by the current manuscript 
 
 * Hands-off mode decision log
 
+** 2026-10-16T16:30:13Z :hands-off:review:
+
+*** Preserve observed metadata precedence and correct specimen matching
+
+- Decision :: Preserve the existing manuscript metadata override order. A public-command Typst probe with conflicting source, local and CLI title/attribution values emitted =LOCAL-TITLE= and =Written by LOCAL-AUTHOR=. Office metadata assertions now require those same values; no PDF/Typst precedence change is included.
+- Test correction :: The fenced-code marker was a suffix of the inline-code marker. Structural checks now distinguish that token boundary; rendered checks identify the complete fenced-code sentence. The XML test reader now represents native line breaks as newlines, so contact fields remain separate tokens. These corrections retain ordered-content, uniqueness and formatting assertions.
+- Native layout :: Pandoc emits Word heading bookmarks before their paragraphs. Move those bookmarks into the corresponding heading paragraph before section assignment, retaining live page-reference targets. Insert explicit blank paragraphs for blank-page policies, with suppressed running bands; generated-page endings are represented independently of heading breaks.
+- Verification state :: Focused native checks for structured content, list/table clearance, barcode modes, heading typography, metadata, title-field inclusion and running placeholders have passed in separate runs. The first rendered run remains failing for font-face selection and vertical geometry. Full regression, rendered conformance, one-off comparison and delivery review remain outstanding; these observations do not establish delivery acceptance.
+
 ** 2026-10-16T07:01:39Z :hands-off:review:
 
 *** ODT number-format boundary exception approved by the operator

@@ -235,6 +235,17 @@ func officePlan(doc office.Document, meta Metadata, cfg Config) (office.Prose, e
 			}
 		case "CodeBlock":
 			role = "FolioCode"
+			c, ok := node.Content.([]any)
+			if !ok || len(c) != 2 {
+				return plan, fmt.Errorf("invalid Pandoc code block")
+			}
+			text, ok := c[1].(string)
+			if !ok {
+				return plan, fmt.Errorf("invalid Pandoc code text")
+			}
+			blocks = append(blocks, office.Paragraph(role, officeTextLines(text)))
+			previousChapter = false
+			continue
 		case "BlockQuote":
 			role = "FolioQuote"
 			blocks = append(blocks, office.N("Div", []any{office.Attr("", nil, []string{"custom-style", role}), node.Content}))

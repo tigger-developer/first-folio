@@ -59,7 +59,7 @@ func (p *Prose) flowBoundaries(blocks []Node) []Node {
 			style.Size, style.Line, style.Before, style.After = 1, 1, 0, 0
 			p.Styles[name] = style
 			p.Boundaries[name] = Boundary{Break: true, Blank: true, SkipHeader: true, SkipFooter: true}
-			out = append(out, Paragraph(name, nil))
+			out = append(out, Paragraph(name, Text("\u00a0")))
 			boundary.Break = true
 			boundary.Before = "false"
 			exists = true

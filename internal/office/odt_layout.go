@@ -3,6 +3,7 @@
 package office
 
 import (
+	"encoding/xml"
 	"fmt"
 	"strings"
 )
@@ -240,6 +241,7 @@ func (p *Prose) odtPlacement(n *docxNode, role string, placement Placement, styl
 	graphic := ox("style:style", ox("style:graphic-properties").attr("style:vertical-pos", vertical).attr("style:vertical-rel", "page-content").attr("style:horizontal-pos", placement.Horizontal).attr("style:horizontal-rel", "page-content").attr("style:wrap", "none")).attr("style:name", name).attr("style:family", "graphic")
 	styles.ensure("office:styles").children = append(styles.ensure("office:styles").children, graphic)
 	inner := *n
+	inner.attrs = append([]xml.Attr(nil), n.attrs...)
 	inner.set("text:style-name", role)
 	frame := ox("draw:frame", ox("draw:text-box", inner)).attr("draw:style-name", name).attr("draw:name", name).attr("text:anchor-type", "page").attr("svg:width", point(p.Page.Width-p.Page.Left-p.Page.Right-p.Page.Gutter)).attr("svg:height", point(p.Styles[role].Line))
 	n.name = "text:p"
