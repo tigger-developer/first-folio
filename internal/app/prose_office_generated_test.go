@@ -3,6 +3,7 @@
 package app
 
 import (
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -191,5 +192,88 @@ func TestRT063_5_OfficeCopyrightBottomGroup(t *testing.T) {
 			proseAssertVerticalAnchor(t, pkg, format, "BOTTOM-PUBLICATION", "bottom")
 			proseAssertVerticalAnchor(t, pkg, format, "BOTTOM-PUBLISHER", "bottom")
 		})
+	}
+}
+
+func TestRT063_5_OfficeCopyrightSpacing(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			src := proseSource(t, dir, "source.md", "## Chapter\n\nBODY-SENTINEL\n")
+			var gap, separatorTop, separatorBottom [2]float64
+			for i, spacing := range []string{"0pt", "6pt"} {
+				before, after := "0pt", "0pt"
+				if i == 1 {
+					before, after = "8pt", "9pt"
+				}
+				cfg := "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    line-spacing: 2\n    copyright:\n      enabled: true\n      font:\n        family: Iosevka Publish\n        size: 12pt\n      line-spacing: 1.4\n      block-spacing: " + spacing + "\n      credits: [CREDIT-SPACING]\n      body: [LEGAL-SPACING]\n      separator: SEPARATOR-SPACING\n      separator-space-before: " + before + "\n      separator-space-after: " + after + "\n"
+				proseSource(t, dir, "script.yaml", cfg)
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				gap[i] = proseParagraphSpace(t, pkg, format, "CREDIT-SPACING", "after") + proseParagraphSpace(t, pkg, format, "LEGAL-SPACING", "before")
+				legal := officeEffective(t, pkg, format, officeParagraph(t, officeBody(t, pkg, format), "LEGAL-SPACING"))
+				// Copyright retains its existing (multiplier-1)em leading,
+				// distinct from body/TOC's multiplier of the normal interval.
+				officeAssertLength(t, legal, format, "spacing", "line", "paragraph-properties", "line-height", 13.62)
+				separatorTop[i] = proseParagraphSpace(t, pkg, format, "LEGAL-SPACING", "after") + proseParagraphSpace(t, pkg, format, "SEPARATOR-SPACING", "before")
+				separatorBottom[i] = proseParagraphSpace(t, pkg, format, "SEPARATOR-SPACING", "after")
+			}
+			if math.Abs(gap[1]-gap[0]-6) > 0.051 {
+				t.Errorf("copyright block gap changed %gpt; want 6pt", gap[1]-gap[0])
+			}
+			if math.Abs(separatorTop[1]-separatorTop[0]-14) > 0.051 {
+				t.Errorf("separator top gap changed %gpt; want additive 6+8pt", separatorTop[1]-separatorTop[0])
+			}
+			if math.Abs(separatorBottom[1]-separatorBottom[0]-9) > 0.051 {
+				t.Errorf("separator bottom gap changed %gpt; want 9pt", separatorBottom[1]-separatorBottom[0])
+			}
+		})
+	}
+}
+
+func TestRT063_4_OfficePartVerticalPlacement(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, vertical := range []string{"center", "bottom"} {
+			t.Run(format+"/"+vertical, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				cfg := "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    part:\n      vertical-align: " + vertical + "\n    chapter:\n      page-break-before: true\n"
+				proseSource(t, dir, "script.yaml", cfg)
+				src := proseSource(t, dir, "source.md", "# VERTICAL-PART\n\n## Chapter\n\nBody.\n")
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				if format == "docx" {
+					section := proseSectionForMarker(t, pkg, "VERTICAL-PART")
+					value, _ := officeEffectiveAttr([]*officeXML{section}, "vAlign", "val")
+					if value == vertical {
+						return
+					}
+				}
+				proseAssertVerticalAnchor(t, pkg, format, "VERTICAL-PART", vertical)
+			})
+		}
+	}
+}
+
+func TestRT063_4_OfficeChapterPosition(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, position := range []struct {
+			value  string
+			points float64
+		}{
+			{"20mm", 20 * 72 / 25.4}, {"2em", 24}, {"30%", 257 * 0.3 * 72 / 25.4}, {"one-third", 257 * 0.3 * 72 / 25.4}, {"center", 257 * 0.5 * 72 / 25.4}, {"top", 0},
+		} {
+			t.Run(format+"/"+position.value, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				cfg := "folio:\n  page-header:\n    enabled: false\n  page-footer:\n    enabled: false\n  manuscript:\n    page: a4\n    margin: 20mm\n    font:\n      size: 12pt\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    chapter:\n      position: " + position.value + "\n"
+				proseSource(t, dir, "script.yaml", cfg)
+				src := proseSource(t, dir, "source.md", "## POSITIONED-CHAPTER\n\nBody.\n")
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				got := proseParagraphSpace(t, pkg, format, "POSITIONED-CHAPTER", "before")
+				if math.Abs(got-position.points) > 0.026 {
+					t.Errorf("chapter preceding space %gpt; want %gpt for %s", got, position.points, position.value)
+				}
+			})
+		}
 	}
 }

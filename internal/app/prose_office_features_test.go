@@ -13,6 +13,47 @@ import (
 	folio "github.com/tigger-developer/first-folio"
 )
 
+func TestRT063_5_OfficeMissingOptionalMatter(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, content := range []string{"", "PLAIN-BODY\n", "---\ntitle: METADATA-ONLY\n---\n"} {
+			t.Run(format+"/"+strings.TrimSpace(content), func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    copyright:\n      enabled: false\n")
+				src := proseSource(t, dir, "source.md", content)
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				body := officeBody(t, pkg, format)
+				want := ""
+				if content == "PLAIN-BODY\n" {
+					want = "PLAIN-BODY"
+				}
+				if strings.TrimSpace(body.text()) != want {
+					t.Errorf("optional matter introduced visible content: %q", body.text())
+				}
+				if proseNativeBreakCount(t, pkg, format) > 1 {
+					t.Error("absent generated matter introduced phantom page transitions")
+				}
+			})
+		}
+	}
+}
+
+func TestRT063_4_OfficeConfiguredSceneMarker(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    scene-break:\n      marker: SCENE-CUSTOM\n")
+			src := proseSource(t, dir, "source.md", "FIRST-SCENE\n\n---\n\nSECOND-SCENE\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			if strings.Count(officeBody(t, pkg, format).text(), "SCENE-CUSTOM") != 1 {
+				t.Error("configured scene marker missing or duplicated")
+			}
+			proseAssertAlignment(t, pkg, format, "SCENE-CUSTOM", "center")
+		})
+	}
+}
+
 func TestRT063_5_OfficeGeneratedTitleAndContents(t *testing.T) {
 	for _, format := range []string{"docx", "odt"} {
 		for _, enabled := range []bool{false, true} {
@@ -263,6 +304,10 @@ func TestRT063_5_OfficeCopyrightBarcodeModes(t *testing.T) {
 						t.Fatal(err)
 					}
 					svg := officeParseXML(t, data)
+					info, err := os.Stat(filepath.Join(dir, "output.barcode.svg"))
+					if err != nil || info.Mode().Perm() != 0600 {
+						t.Errorf("barcode sidecar is not private: %v", err)
+					}
 					if len(svg.all("rect")) < 20 || !strings.Contains(strings.Join(strings.Fields(svg.text()), ""), "9780000000002") {
 						t.Error("sidecar lacks barcode bars or expected ISBN digits")
 					}

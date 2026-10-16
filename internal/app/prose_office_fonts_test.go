@@ -24,6 +24,7 @@ func TestRT063_8_OfficeLocalFontPermissions(t *testing.T) {
 				{"restricted", "Fixture Publish", 2, true, false},
 				{"preview-print-only", "Fixture Publish", 4, true, false},
 				{"bitmap-only", "Fixture Publish", 0x208, true, false},
+				{"unsupported-collection", "Fixture Publish", 8, true, false},
 				{"missing", "Folio Missing Prose Font 063", 0, false, false},
 			} {
 				t.Run(format+"/"+mode+"/"+tc.name, func(t *testing.T) {
@@ -31,6 +32,9 @@ func TestRT063_8_OfficeLocalFontPermissions(t *testing.T) {
 					fonts := t.TempDir()
 					t.Setenv("TYPST_FONT_PATHS", fonts)
 					want := officeTestFont(t, tc.rights)
+					if tc.name == "unsupported-collection" {
+						copy(want[:4], "ttcf")
+					}
 					if tc.present {
 						if err := os.WriteFile(filepath.Join(fonts, "custom.ttf"), want, 0600); err != nil {
 							t.Fatal(err)

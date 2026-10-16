@@ -4,7 +4,9 @@ package app
 
 import (
 	"fmt"
+	"math"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -275,6 +277,62 @@ func TestRT063_4_OfficeRelativeRoleFontLengths(t *testing.T) {
 				officeAssertEffective(t, body, "sz", "val", "24")
 			} else {
 				officeAssertEffective(t, body, "text-properties", "font-size", "12pt")
+			}
+		})
+	}
+}
+
+func TestRT063_4_OfficeMirroredGutter(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  page-header:\n    enabled: false\n  page-footer:\n    enabled: false\n  manuscript:\n    page: a4\n    margin: 20mm\n    gutter: 5mm\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n")
+			src := proseSource(t, dir, "source.md", "GUTTER-BODY\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			var layers []*officeXML
+			if format == "docx" {
+				layers = []*officeXML{proseSectionForMarker(t, pkg, "GUTTER-BODY")}
+				settings := pkg["word/settings.xml"]
+				if settings == nil || len(settings.all("mirrorMargins")) == 0 {
+					t.Fatal("DOCX gutter lacks mirrored margins")
+				}
+				for _, flag := range settings.all("mirrorMargins") {
+					if flag.attr("val") == "false" || flag.attr("val") == "0" {
+						t.Error("mirrored margins disabled")
+					}
+				}
+				points := func(attr string) float64 {
+					raw, exists := officeEffectiveAttr(layers, "pgMar", attr)
+					if !exists {
+						return 0
+					}
+					n, err := strconv.ParseFloat(raw, 64)
+					if err != nil {
+						t.Fatal(err)
+					}
+					return n / 20
+				}
+				if math.Abs(points("left")+points("gutter")-25*72/25.4) > 0.051 {
+					t.Error("inner margin does not include 5mm gutter in addition to 20mm margin")
+				}
+				officeAssertLength(t, layers, format, "pgMar", "right", "", "", 20*72/25.4)
+			} else {
+				master := proseMasterForMarker(t, pkg, "GUTTER-BODY")
+				for _, layout := range pkg["styles.xml"].all("page-layout") {
+					if layout.attr("name") == master.attr("page-layout-name") {
+						layers = []*officeXML{layout}
+					}
+				}
+				if len(layers) == 0 {
+					t.Fatal("missing assigned page layout")
+				}
+				officeAssertEffective(t, layers, "page-layout", "page-usage", "mirrored")
+				officeAssertLength(t, layers, format, "", "", "page-layout-properties", "margin-left", 25*72/25.4)
+				officeAssertLength(t, layers, format, "", "", "page-layout-properties", "margin-right", 20*72/25.4)
+			}
+			for _, side := range []string{"top", "bottom"} {
+				officeAssertLength(t, layers, format, "pgMar", side, "page-layout-properties", "margin-"+side, 20*72/25.4)
 			}
 		})
 	}

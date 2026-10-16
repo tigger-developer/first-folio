@@ -6,6 +6,7 @@ import (
 	"math"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -68,5 +69,104 @@ func TestRT063_4_OfficeAdditiveBlockClearance(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func proseTableClearance(t *testing.T, pkg map[string]*officeXML, format string) (float64, float64) {
+	t.Helper()
+	root := officeBody(t, pkg, format)
+	flows := root.all("body")
+	if format == "odt" {
+		flows = root.all("text")
+	}
+	if len(flows) == 0 {
+		t.Fatal("document has no text flow")
+	}
+	var blocks []*officeXML
+	for _, node := range flows[0].Children {
+		if node.Name.Local == "p" || node.Name.Local == "tbl" || node.Name.Local == "table" {
+			blocks = append(blocks, node)
+		}
+	}
+	before, table, after := -1, -1, -1
+	for i, node := range blocks {
+		if strings.Contains(node.text(), "BEFORE-TABLE") {
+			before = i
+		}
+		if node.Name.Local == "tbl" || node.Name.Local == "table" {
+			table = i
+		}
+		if strings.Contains(node.text(), "AFTER-TABLE") {
+			after = i
+		}
+	}
+	if before < 0 || table <= before || after <= table {
+		t.Fatalf("table is not in ordinary flow between its markers: %d %d %d", before, table, after)
+	}
+	length := func(layers []*officeXML, wordElement, wordAttr, odtElement, odtAttr string) float64 {
+		element, attr := wordElement, wordAttr
+		if format == "odt" {
+			element, attr = odtElement, odtAttr
+		}
+		raw, exists := officeEffectiveAttr(layers, element, attr)
+		if !exists {
+			return 0
+		}
+		if format == "odt" {
+			return officeLengthPoints(t, raw)
+		}
+		value, err := strconv.ParseFloat(raw, 64)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return value / 20
+	}
+	space := func(start, end int, side string) float64 {
+		var total float64
+		for i := start; i <= end; i++ {
+			node := blocks[i]
+			layers := officeEffective(t, pkg, format, node)
+			if i == table {
+				attr := "margin-top"
+				if side == "after" {
+					attr = "margin-bottom"
+				}
+				if format == "odt" {
+					total += length(layers, "", "", "table-properties", attr)
+				}
+				continue
+			}
+			if i != before {
+				total += length(layers, "spacing", "before", "paragraph-properties", "margin-top")
+			}
+			if i != after {
+				total += length(layers, "spacing", "after", "paragraph-properties", "margin-bottom")
+			}
+			if strings.TrimSpace(node.text()) == "" {
+				total += length(layers, "spacing", "line", "paragraph-properties", "line-height")
+			}
+		}
+		return total
+	}
+	return space(before, table, "before"), space(table, after, "after")
+}
+
+func TestRT063_4_OfficeTableClearance(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			src := proseSource(t, dir, "source.md", "BEFORE-TABLE\n\n| Head |\n|------|\n| Cell |\n\nAFTER-TABLE\n")
+			var before, after [2]float64
+			for i, spaces := range []struct{ before, after string }{{"0pt", "0pt"}, {"6pt", "9pt"}} {
+				cfg := "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    table:\n      space-before: " + spaces.before + "\n      space-after: " + spaces.after + "\n"
+				proseSource(t, dir, "script.yaml", cfg)
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				before[i], after[i] = proseTableClearance(t, pkg, format)
+			}
+			if math.Abs(before[1]-before[0]-6) > 0.051 || math.Abs(after[1]-after[0]-9) > 0.051 {
+				t.Errorf("table clearance changes %g/%gpt; want 6/9pt", before[1]-before[0], after[1]-after[0])
+			}
+		})
 	}
 }

@@ -6,37 +6,69 @@
 
 * Automated regression
 
-** AMBER RT063.1 - Output selection and dependencies :testdef:
+** RED RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-1][RT063.1 - Output selection and dependencies]].
 - Coverage follow-up, 2026-10-16 :: Dependency isolation now exercises both prose modes and formats with real Pandoc, missing Pandoc, incompatible API responses and a forbidden-Typst marker. All compiled; exports remain blocked by the absent routes, so dependency guards are not yet reached.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.2 - Recipient batches and CLI errors :testdef:
+** RED RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-2][RT063.2 - Recipient batches and CLI errors]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.3 - Structured manuscript content :testdef:
+** RED RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-3][RT063.3 - Structured manuscript content]].
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.4 - Configuration and role geometry :testdef:
+** RED RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-4][RT063.4 - Configuration and role geometry]].
 - Coverage follow-up, 2026-10-16 :: Added running-band fonts/alignment, metadata precedence, native role lengths, additive paragraph/quote/code/list clearances and heading geometry. The expanded package compiles and executes; native assertions still await the missing export route. Table spacing and remaining page-policy coverage are still being reconciled.
 - Partial execution, 2026-10-16 :: Source-configuration follow-up: TestRT063_4_OfficeRejectsLaterSourceConfiguration passed for both office target extensions, preserving the existing first-resolved-source restriction and the prior destination.
@@ -44,50 +76,90 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.5 - Generated matter and heading controls :testdef:
+** RED RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-5][RT063.5 - Generated matter and heading controls]].
 - Coverage follow-up, 2026-10-16 :: Added TOC part font/spacing, independent anchored title placement and copyright bottom-group tests. The XML test helper now chooses text paragraphs inside anchors rather than the containing paragraph. New cases execute but stop at the absent export route.
 - Expanded execution, 2026-10-16 :: Independent contents selection/presentation, seven title-field alignments, copyright ordering and invalid-ISBN preservation cases compiled and ran. Office success cases stop at the absent route; invalid ISBN preserves both prior files. The group remains incomplete.
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.6 - Sections and page fields :testdef:
+** RED RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-6][RT063.6 - Sections and page fields]].
 - Coverage follow-up, 2026-10-16 :: Added assigned part/chapter parity checks and running-matter placeholders, with opening-band suppression cases under preparation. The base book now explicitly requests a blank after contents, so rendered blank-page verification is not dependent on incidental contents pagination.
 - Expanded execution, 2026-10-16 :: Assigned first-section/master running-band checks now cover absent, empty, distinct and disabled frontmatter formats in both bands/formats, including a document without body headings. Execution stops at the absent route. Parity, suppression and geometry coverage still require expansion.
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.7 - Letter content and geometry :testdef:
+** RED RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-7][RT063.7 - Letter content and geometry]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.8 - Font packaging :testdef:
+** RED RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-8][RT063.8 - Font packaging]].
 - Expanded execution, 2026-10-16 :: Public cases now cover all four bundled faces in both modes/formats, a permitted local metadata fixture, restricted/missing families with retained family references and warnings, duplicate payload rejection, and a selected font one byte above 32 MiB. =go test ./internal/app -run '^TestRT063_8_' -count=1= compiled and failed at the missing office routes. Internal selected-font budget tests separately exercise exact 32/64 MiB thresholds and overflow against a declaration-only placeholder. Full font-policy coverage is not yet established.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.9 - Resource and publication failures :testdef:
+** RED RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-9][RT063.9 - Resource and publication failures]].
 - Boundary execution, 2026-10-16 :: Private =internal/office= declarations contain placeholder bodies only, with no production callers. =go test ./internal/office ./internal/app -run '^TestRT063_' -count=1= compiled and executed both packages (0.280s and 9.646s). Boundary assertions observed acceptance of invalid ZIP/XML/references, omitted source reads, missing size/depth/count enforcement, and absent subprocess output/deadline/error handling. The standalone subprocess fixture was checked directly and emitted its requested three bytes. Public source-limit, prefix and partial-batch tests still stop at the absent office route; their intended guards remain unverified. The full resource/publication group remains incomplete and AMBER.
 - Expanded execution, 2026-10-16 :: Sidecar preflight covers directory, symlink and source-hardlink targets. Internal injected publication tests observe missing ordered calls and missing partial-success diagnostics against the placeholder. Public sidecar cases still stop at the absent office route. Logs: .agent/w063-contents-sidecar-red.log; generated-matter and band logs are retained alongside it.
@@ -105,20 +177,36 @@
 - Coverage follow-up, 2026-10-16 :: After the shared test-helper paragraph-selection change, existing TestOfficeEmbeddedFonts and TestOfficeLocalFontOverride passed together in 2.551s; TestRT054_2OfficeActiveRoleFonts passed in 1.029s. This is focused preservation evidence, not a new full-suite run.
 - Initial preservation evidence, 2026-10-16 :: At =ec9955e= with only new test/fixture files in the working tree, =go test ./... -skip '^TestRT063_' -count=1= passed all existing packages. Go build/module caches were scoped to ignored =.agent/cache/=. The application package took 172.702 seconds; manuscript took 112.050 seconds. No production code had changed. This is the pre-change baseline, not post-implementation verification.
 
-** AMBER RT063.11 - Rendered font and geometry conformance :testdef:
+** RED RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-11][RT063.11 - Rendered font and geometry conformance]].
 - Coverage follow-up, 2026-10-16 :: The temporary TestW063BaselineMeasurements overlay passed against independently generated existing typography and letter PDFs (0.409s, then 0.511s). It validates fractional font-size inference, line/paragraph intervals, header/body reference coordinates, sender placement and all six letter gaps. Office RTs still fail before rendering. The seven-profile checklist now includes concrete measurements and reproduction commands.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.12 - Rendered page policy and contents references :testdef:
+** RED RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
-:REASON: Partial regression package executed; required matrix coverage remains incomplete.
+:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 :END:
+
+*** Preimplementation run 2026-10-16
+
+- Scope :: Written cases cover the signed-off group; earlier incomplete executions below remain historical. The current command log is retained in =.agent/w063-rt-preaudit.log=.
+- Interpretation :: RED establishes missing export behaviour, not correctness of downstream assertions or proof that every fault guard has been reached. Font/geometry/rendered cases cannot reach their native assertions until export exists. Initially passing validation and preservation cases remain legitimate baseline evidence.
+
 - Definition :: [[file:spec.org::#rt-063-12][RT063.12 - Rendered page policy and contents references]].
 - Coverage follow-up, 2026-10-16 :: Expanded rendered assertions check suppressed opening bands, physical odd/even body bands, displayed footers, an explicit clean blank and contents continuation padding. The expanded RT package ran in internal/office and internal/app; the application group failed in 16.698s at absent office routes. This is not rendered conformance evidence.
 - Partial execution, 2026-10-16 :: The expanded package compiled and ran with =go test ./internal/app -run '^TestRT063_' -count=1= in 10.155 seconds. Both rendered-contents cases fail at the missing manuscript office route before the renderer is reached. This is not rendered conformance evidence. The private-profile refresh helper was separately exercised against the native probe through a temporary Go overlay and passed in 5.18 seconds after profile initialization.

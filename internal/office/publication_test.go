@@ -44,6 +44,13 @@ func (f *failingStage) Close() error {
 	return err
 }
 
+func (f *failingStage) Chmod(mode os.FileMode) error {
+	if f.operation == "chmod" {
+		return f.failure
+	}
+	return f.File.Chmod(mode)
+}
+
 func TestRT063_9_AtomicPublicationAndPermissions(t *testing.T) {
 	dir := t.TempDir()
 	path := sourceFile(t, dir, "output.docx", []byte("PRIOR"))
@@ -70,7 +77,7 @@ func TestRT063_9_AtomicPublicationAndPermissions(t *testing.T) {
 }
 
 func TestRT063_9_AtomicPublicationFailures(t *testing.T) {
-	for _, operation := range []string{"create", "write", "short-write", "close", "rename"} {
+	for _, operation := range []string{"create", "write", "short-write", "chmod", "close", "rename"} {
 		t.Run(operation, func(t *testing.T) {
 			dir := t.TempDir()
 			path := sourceFile(t, dir, "output.odt", []byte("PRIOR"))
