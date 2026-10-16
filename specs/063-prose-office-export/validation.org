@@ -73,12 +73,12 @@
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.4 - Configuration and role geometry :testdef:
+** GREEN RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: 6fedfdd - standard font-family verification checkpoint
+:COMMAND: go test ./internal/app ./internal/office -run '^TestRT063_(4_|9_AST|11_)' -count=1
+:EVIDENCE: Focused groups passed in .agent/w063-standard-families.log (application 84.982s; office 0.611s). Ordinary Iosevka Publish family assertions are strict; native percentage stretch is tested independently. Earlier RED evidence remains below.
 :END:
 
 *** Preimplementation run 2026-10-16
@@ -194,12 +194,12 @@
 - Coverage follow-up, 2026-10-16 :: After the shared test-helper paragraph-selection change, existing TestOfficeEmbeddedFonts and TestOfficeLocalFontOverride passed together in 2.551s; TestRT054_2OfficeActiveRoleFonts passed in 1.029s. This is focused preservation evidence, not a new full-suite run.
 - Initial preservation evidence, 2026-10-16 :: At =ec9955e= with only new test/fixture files in the working tree, =go test ./... -skip '^TestRT063_' -count=1= passed all existing packages. Go build/module caches were scoped to ignored =.agent/cache/=. The application package took 172.702 seconds; manuscript took 112.050 seconds. No production code had changed. This is the pre-change baseline, not post-implementation verification.
 
-** RED RT063.11 - Rendered font and geometry conformance :testdef:
+** GREEN RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: 6fedfdd - standard font-family verification checkpoint
+:COMMAND: go test ./internal/app ./internal/office -run '^TestRT063_(4_|9_AST|11_)' -count=1
+:EVIDENCE: Focused groups passed in .agent/w063-standard-families.log (application 84.982s; office 0.611s). Ordinary Iosevka Publish family assertions are strict; native percentage stretch is tested independently. Earlier RED evidence remains below.
 :END:
 
 *** Preimplementation run 2026-10-16
