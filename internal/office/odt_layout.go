@@ -114,10 +114,48 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 			}
 		}
 		auto.children = append(auto.children, layout)
+		if strings.HasPrefix(state.Before, "enforce-") || state.SkipHeader || state.SkipFooter || state.ContinuationPadding > 0 {
+			followingName := name + "Following"
+			followingLayout := layout
+			followingLayout.attrs = append([]xml.Attr(nil), layout.attrs...)
+			followingLayout.set("style:name", layoutName+"Following")
+			usage := "all"
+			if p.Page.Gutter != 0 {
+				usage = "mirrored"
+			}
+			followingLayout.set("style:page-usage", usage)
+			if state.ContinuationPadding > 0 {
+				followingLayout.children = append([]docxNode(nil), layout.children...)
+				props := followingLayout.child("style:page-layout-properties")
+				props.attrs = append([]xml.Attr(nil), props.attrs...)
+				if !p.Page.Header.Enabled {
+					props.set("fo:margin-top", point(p.Page.Top+state.ContinuationPadding))
+				} else {
+					header := followingLayout.child("style:header-style")
+					header.children = append([]docxNode(nil), header.children...)
+					hp := header.child("style:header-footer-properties")
+					hp.attrs = append([]xml.Attr(nil), hp.attrs...)
+					gap, _ := Points(hp.get("fo:margin-bottom"), 0, 0)
+					hp.set("fo:margin-bottom", point(gap+state.ContinuationPadding))
+				}
+			}
+			following := master
+			following.attrs = append([]xml.Attr(nil), master.attrs...)
+			following.children = append([]docxNode(nil), master.children...)
+			following.set("style:name", followingName)
+			following.set("style:page-layout-name", layoutName+"Following")
+			// A continuation is not another section opening. Omitting the
+			// first-page variants lets the reader select the physical parity.
+			following.remove("style:header-first")
+			following.remove("style:footer-first")
+			master.set("style:next-style-name", followingName)
+			auto.children = append(auto.children, followingLayout)
+			masters.children = append(masters.children, master, following)
+			return
+		}
 		masters.children = append(masters.children, master)
 	}
 	makeMaster(masterName, state)
-	previousTitle := false
 	bodyStarted := false
 	assigned := false
 	for i := range flow.children {
@@ -143,14 +181,13 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 			if boundary.Fields == nil {
 				boundary.Fields = state.Fields
 			}
-			change = change || boundary.Break || boundary.Before == "true" || strings.HasPrefix(boundary.Before, "enforce-") || previousTitle || boundary.NumberFormat != state.NumberFormat
+			change = change || boundary.Break || boundary.Before == "true" || strings.HasPrefix(boundary.Before, "enforce-") || boundary.NumberFormat != state.NumberFormat
 			if change {
 				index++
 				masterName = fmt.Sprintf("FolioMaster%d", index)
 				makeMaster(masterName, boundary)
 			}
 			state = boundary
-			previousTitle = boundary.Title
 		}
 		if change {
 			name := fmt.Sprintf("FolioPageParagraph%d", index)
@@ -175,6 +212,7 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 			p.odtPlacement(n, role, placement, styles)
 		}
 	}
+	p.odtPlacementGroups(flow)
 	p.odtBlockSpacing(flow, styles)
 	files["content.xml"], err = docxEncode(*root, DataLimit)
 	if err != nil {
@@ -238,7 +276,7 @@ func (p *Prose) odtPlacement(n *docxNode, role string, placement Placement, styl
 		vertical = "middle"
 	}
 	name := "FolioFrame" + role
-	graphic := ox("style:style", ox("style:graphic-properties").attr("style:vertical-pos", vertical).attr("style:vertical-rel", "page-content").attr("style:horizontal-pos", placement.Horizontal).attr("style:horizontal-rel", "page-content").attr("style:wrap", "none")).attr("style:name", name).attr("style:family", "graphic")
+	graphic := ox("style:style", ox("style:graphic-properties").attr("style:vertical-pos", vertical).attr("style:vertical-rel", "page-content").attr("style:horizontal-pos", placement.Horizontal).attr("style:horizontal-rel", "page-content").attr("style:wrap", "none").attr("draw:auto-grow-height", "true")).attr("style:name", name).attr("style:family", "graphic")
 	styles.ensure("office:styles").children = append(styles.ensure("office:styles").children, graphic)
 	inner := *n
 	inner.attrs = append([]xml.Attr(nil), n.attrs...)
@@ -247,4 +285,32 @@ func (p *Prose) odtPlacement(n *docxNode, role string, placement Placement, styl
 	n.name = "text:p"
 	n.text = ""
 	n.children = []docxNode{frame}
+}
+
+// Consecutive paragraphs in one positioned group share an expanding text box.
+// Separate frames at the same anchor would overlap instead of stacking.
+func (p *Prose) odtPlacementGroups(flow *docxNode) {
+	var output []docxNode
+	var previous Placement
+	groupIndex := -1
+	for _, node := range flow.children {
+		if node.name == "" && strings.TrimSpace(node.text) == "" {
+			continue
+		}
+		frame := node.child("draw:frame")
+		var placement Placement
+		if frame != nil {
+			role := strings.TrimPrefix(frame.get("draw:name"), "FolioFrame")
+			placement = p.Placements[role]
+		}
+		if frame != nil && placement.Group != "" && placement == previous && groupIndex >= 0 {
+			box := output[groupIndex].child("draw:frame").child("draw:text-box")
+			box.children = append(box.children, frame.child("draw:text-box").children...)
+			continue
+		}
+		output = append(output, node)
+		groupIndex = len(output) - 1
+		previous = placement
+	}
+	flow.children = output
 }

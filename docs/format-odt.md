@@ -1,7 +1,7 @@
 ---
 title: ODT Script Export
-version: "1.3"
-last-updated: 2026-10-12
+version: "1.4"
+last-updated: 2026-10-16
 ---
 
 # ODT script export
@@ -27,8 +27,8 @@ writes the document. Unsupported, missing or restricted fonts produce warnings.
 
 The destination extension takes precedence over `--to`. With no target, use
 `--to odt` or `folio.default-format: odt` and redirect stdout. Binary terminal
-output requires `--force`. ODT is write-only and available only to `convert`,
-not the manuscript or letter commands.
+output requires `--force`. ODT is write-only. Manuscript and letter exports use
+the separate prose route below.
 
 ## Formatting and editing
 
@@ -60,6 +60,27 @@ leaving a later decision about a common export engine open.
 
 ## Failure and resource handling
 
+## Manuscripts and letters
+
+Use `folio manuscript manuscript.org manuscript.odt` or
+`folio letter letters.org --format odt`. Both use existing mode-specific YAML
+and require Pandoc without Typst. They write ODT directly from structured prose;
+no DOCX intermediate is created. The script approximations above do not define
+the prose feature contract.
+
+Manuscripts use native paragraphs, lists, tables, footnotes, heading bookmarks,
+editable positioned groups and contents page references. Update fields in the
+editor before printing. An ODT frontmatter/body change of page-number format
+starts a new page; configured displayed numbering and physical page-side rules
+still apply. Letters retain recipient substitutions, Org emphasis and literal
+spans, with their own font/margin/spacing configuration and no running matter.
+
+The same resource and publication limits below apply. A manuscript's optional
+barcode sidecar publishes after its document. Letter targets are preflighted
+as a batch but published individually; later failure reports earlier outputs.
+
+### Shared resource limits
+
 Source input must be regular UTF-8 text representable in XML, at most 32 MiB.
 The shared office layout bounds events to 50,000 and expanded inline segments
 to 100,000. JSON, reference and output data are bounded at 128 MiB. Pandoc has
@@ -73,6 +94,8 @@ staged beside the destination and published by rename with mode 0600. A failed
 conversion leaves an existing destination unchanged.
 
 ## History
+
+- 1.4 (2026-10-16): Document manuscript and letter office output.
 
 - 1.3 (2026-10-12): Correct Org single-asterisk bold in body text and footnotes.
 

@@ -40,11 +40,16 @@ func readSources(paths []string, limit int64) ([][]byte, error) {
 			return nil, fmt.Errorf("office source %s must be a regular file", path)
 		}
 		if info.Size() > limit {
-			return nil, fmt.Errorf("office source exceeds aggregate 32 MiB limit: %s", path)
+			return nil, fmt.Errorf("office input exceeds aggregate 32 MiB limit: %s", path)
 		}
 		f, err := os.Open(path)
 		if err != nil {
 			return nil, fmt.Errorf("reading office source %s: %w", path, err)
+		}
+		opened, statErr := f.Stat()
+		if statErr != nil || !opened.Mode().IsRegular() || !os.SameFile(info, opened) {
+			closeErr := f.Close()
+			return nil, errors.Join(fmt.Errorf("office source %s changed while opening", path), statErr, closeErr)
 		}
 		raw, err := io.ReadAll(io.LimitReader(f, limit+1))
 		err = errors.Join(err, f.Close())
@@ -52,7 +57,7 @@ func readSources(paths []string, limit int64) ([][]byte, error) {
 			return nil, fmt.Errorf("reading office source %s: %w", path, err)
 		}
 		if int64(len(raw)) > limit {
-			return nil, fmt.Errorf("office source exceeds aggregate 32 MiB limit: %s", path)
+			return nil, fmt.Errorf("office input exceeds aggregate 32 MiB limit: %s", path)
 		}
 		if err := validText(string(raw)); err != nil {
 			return nil, fmt.Errorf("office source %s: %w", path, err)

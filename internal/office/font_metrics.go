@@ -62,6 +62,9 @@ func (p *Prose) resolveBaselines() {
 		return style
 	}
 	for key, style := range p.Styles {
+		if strings.HasPrefix(key, "FolioContents") {
+			continue
+		}
 		p.Styles[key] = resolve(style, false)
 	}
 	if p.Page.Header.Enabled {

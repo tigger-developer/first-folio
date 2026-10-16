@@ -119,7 +119,7 @@ func proseAssertVerticalAnchor(t *testing.T, pkg map[string]*officeXML, format, 
 				return true
 			}
 		}
-		if node.Name.Local == "p" && strings.Contains(node.text(), marker) {
+		if (node.Name.Local == "p" || node.Name.Local == "h") && strings.Contains(node.text(), marker) {
 			ancestors = parents
 			return true
 		}
@@ -191,6 +191,18 @@ func TestRT063_5_OfficeCopyrightBottomGroup(t *testing.T) {
 			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
 			proseAssertVerticalAnchor(t, pkg, format, "BOTTOM-PUBLICATION", "bottom")
 			proseAssertVerticalAnchor(t, pkg, format, "BOTTOM-PUBLISHER", "bottom")
+			if format == "odt" {
+				flow := pkg["content.xml"]
+				groups := 0
+				for _, box := range flow.all("text-box") {
+					if strings.Contains(box.text(), "BOTTOM-PUBLICATION") && strings.Contains(box.text(), "BOTTOM-PUBLISHER") {
+						groups++
+					}
+				}
+				if groups != 1 {
+					t.Errorf("copyright publication and publisher occupy %d common text boxes; want one non-overlapping group", groups)
+				}
+			}
 		})
 	}
 }

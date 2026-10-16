@@ -20,11 +20,20 @@ func (s Style) wordFont() docxNode {
 	if stretch == "" {
 		stretch = "100"
 	}
-	n := dx("rPr", dx("rFonts").attr("w:ascii", s.Font.Family).attr("w:hAnsi", s.Font.Family).attr("w:eastAsia", s.Font.Family).attr("w:cs", s.Font.Family), dxVal("sz", strconv.Itoa(int(math.Round(s.Size*2)))), dxVal("szCs", strconv.Itoa(int(math.Round(s.Size*2)))), dxVal("b", boolean(s.Bold)), dxVal("i", boolean(s.Italic)), dxVal("w", stretch), dxVal("spacing", twip(s.Tracking)))
+	n := dx("rPr", dx("rFonts").attr("w:ascii", s.Font.Family).attr("w:hAnsi", s.Font.Family).attr("w:eastAsia", s.Font.Family).attr("w:cs", s.Font.Family), dxVal("b", boolean(s.Bold)), dxVal("i", boolean(s.Italic)), dxVal("spacing", twip(s.Tracking)), dxVal("w", stretch))
 	if s.BaselineShift != 0 {
-		n.children = append(n.children, dxVal("position", strconv.Itoa(int(math.Round(s.BaselineShift*2)))))
+		n.children = append(n.children, dxVal("position", s.wordPosition()))
 	}
+	n.children = append(n.children, dxVal("sz", strconv.Itoa(int(math.Round(s.Size*2)))), dxVal("szCs", strconv.Itoa(int(math.Round(s.Size*2)))))
 	return n
+}
+
+func (s Style) wordPosition() string {
+	shift := s.BaselineShift
+	if s.FontBox > 0 {
+		shift *= s.Size / s.FontBox
+	}
+	return strconv.Itoa(int(math.Round(shift * 2)))
 }
 func (s Style) wordParagraph() docxNode {
 	align := s.Align
@@ -121,6 +130,9 @@ func (p *Prose) configureStyles(files map[string][]byte, format string) error {
 				n.children = append(n.children, s.wordParagraph())
 			}
 			n.children = append(n.children, s.wordFont())
+			if !s.Character {
+				n.child("w:rPr").remove("w:position")
+			}
 		} else {
 			kind := "paragraph"
 			if s.Character {
@@ -151,6 +163,9 @@ func (p *Prose) configureStyles(files map[string][]byte, format string) error {
 	if format == "odt" {
 		faces := root.ensure("office:font-face-decls")
 		seen := map[string]bool{}
+		for _, face := range faces.children {
+			seen[face.get("style:name")] = true
+		}
 		for _, s := range p.Styles {
 			if seen[s.Font.Family] {
 				continue

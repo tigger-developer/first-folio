@@ -47,7 +47,6 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 	sectionIndex := 0
 	bandIDs := map[string]string{}
 	var output []docxNode
-	previousTitle := false
 	bodyStarted := false
 	finish := func(section *docxNode, state Boundary) error {
 		sectionIndex++
@@ -65,7 +64,7 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 		} else if state.Vertical == "bottom" {
 			section.children = append(section.children, dxVal("vAlign", "bottom"))
 		}
-		first := state.SkipHeader || state.SkipFooter || state.Title
+		first := state.SkipHeader || state.SkipFooter || state.Title || state.ContinuationPadding > 0
 		if first {
 			section.children = append(section.children, dx("titlePg"))
 		}
@@ -103,7 +102,11 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 				}
 				id := fmt.Sprintf("folio%s%d%s", item.kind, sectionIndex, variant)
 				name := fmt.Sprintf("%sFolio%d%s.xml", item.kind, sectionIndex, variant)
-				bandRoot := dxRoot(map[string]string{"header": "hdr", "footer": "ftr"}[item.kind], p.wordBand(text, item.band, variant, state))
+				band := item.band
+				if item.kind == "header" && variant != "first" {
+					band.Font.After += state.ContinuationPadding
+				}
+				bandRoot := dxRoot(map[string]string{"header": "hdr", "footer": "ftr"}[item.kind], p.wordBand(text, band, variant, state))
 				raw, e := docxEncode(bandRoot, DataLimit)
 				if e != nil {
 					return e
@@ -154,7 +157,7 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 				last.ensure("w:pPr").children = append(last.ensure("w:pPr").children, current)
 			}
 			kind := "continuous"
-			if boundary.Break || previousTitle {
+			if boundary.Break {
 				kind = "nextPage"
 			}
 			if boundary.Before == "enforce-right" {
@@ -170,7 +173,6 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 			current = p.Page.wordSection()
 			current.children = append(current.children, dxVal("type", kind))
 			state = boundary
-			previousTitle = boundary.Title
 		}
 		for _, entry := range p.Contents {
 			if entry.Style == role {
@@ -187,6 +189,7 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 	}
 	output = append(output, current)
 	body.children = output
+	p.wordRunSizes(body)
 	files["word/document.xml"], err = docxEncode(*root, DataLimit)
 	if err != nil {
 		return err
@@ -208,6 +211,42 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 	}
 	files["word/settings.xml"], err = docxEncode(*settings, DataLimit)
 	return err
+}
+
+// Explicit run sizes prevent readers from applying their automatic superscript
+// size reduction when a paragraph's baseline position is adjusted.
+func (p *Prose) wordRunSizes(root *docxNode) {
+	root.visit(func(paragraph *docxNode) {
+		if paragraph.name != "w:p" {
+			return
+		}
+		style, ok := p.Styles[wordRole(paragraph)]
+		if !ok {
+			return
+		}
+		paragraph.visit(func(run *docxNode) {
+			if run.name != "w:r" || run.child("w:t") == nil {
+				return
+			}
+			pr := run.child("w:rPr")
+			if pr == nil {
+				run.children = append([]docxNode{dx("rPr")}, run.children...)
+				pr = &run.children[0]
+			}
+			font := style
+			if ref := pr.child("w:rStyle"); ref != nil {
+				if s, exists := p.Styles[ref.get("w:val")]; exists {
+					font = s
+				}
+			}
+			if style.BaselineShift != 0 {
+				pr.ensure("w:position").set("w:val", style.wordPosition())
+			}
+			if pr.child("w:sz") == nil {
+				pr.children = append(pr.children, dxVal("sz", strconv.Itoa(int(font.Size*2+0.5))))
+			}
+		})
+	})
 }
 
 func (p *Prose) wordHeadingAnchors(body *docxNode) {

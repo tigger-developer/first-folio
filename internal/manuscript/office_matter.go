@@ -58,12 +58,19 @@ func officeGeneratedMatter(p *office.Prose, meta Metadata, cfg Config) error {
 		if len(title) > 0 {
 			first := title[0].Content.([]any)[0].([]any)[2].([][]string)[0][1]
 			p.Boundaries[first] = office.Boundary{Title: true, TitleNumber: tp.PageNumber, SkipHeader: true, SkipFooter: !tp.PageNumber, NumberFormat: ms.PageNumbering.FrontmatterFormat}
-			p.Ends[officeBlockRole(title[len(title)-1])] = office.Boundary{Break: true}
+			p.Ends[officeBlockRole(title[len(title)-1])] = office.Boundary{Break: ms.TOC.PageBreakBefore}
 		}
 	}
 	if ms.TOC.Enabled {
 		contents = append(contents, office.Paragraph("FolioContentsHeading", office.Text(ms.TOC.Title)))
 		p.Boundaries["FolioContentsHeading"] = office.Boundary{Break: ms.TOC.PageBreakBefore, Before: string(ms.TOC.BlankPageBefore), After: string(ms.TOC.BlankPageAfter), NumberFormat: ms.PageNumbering.FrontmatterFormat}
+		padding, err := office.Points(ms.TOC.ContinuationPad, p.Styles["FolioContents"].Size, 0)
+		if err != nil {
+			return err
+		}
+		boundary := p.Boundaries["FolioContentsHeading"]
+		boundary.ContinuationPadding = padding
+		p.Boundaries["FolioContentsHeading"] = boundary
 		for i, node := range p.Document.Blocks {
 			c, ok := node.Content.([]any)
 			if node.Type != "Div" || !ok || len(c) != 2 {

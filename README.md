@@ -1,7 +1,7 @@
 ---
 title: First Folio
-version: "1.8"
-last-updated: 2026-10-12
+version: "1.9"
+last-updated: 2026-10-16
 ---
 
 # First Folio
@@ -40,6 +40,12 @@ folio letter play.org --to Abbey   # specific recipient
 # Render one or more prose manuscript chapters to PDF
 folio manuscript 'chapters/ch??.md' submission.pdf
 folio manuscript examples/dummy-manuscript.org manuscript.typ
+
+# Editable manuscripts and letters (requires Pandoc)
+folio manuscript manuscript.md manuscript.docx
+folio manuscript manuscript.org manuscript.odt
+folio letter letters.org --format docx
+folio letter letters.org --format odt
 ```
 
 ## Installation
@@ -60,7 +66,7 @@ brew install tigger-developer/tap/first-folio
 From a committed checkout, `make release` runs the regression suite, creates the
 next patch tag, pushes the branch and that tag, then updates and pushes the
 Homebrew formula with the archive URL and SHA-256 checksum. Go, Typst and Pandoc
-must be installed for the release checks. The tap checkout must be clean, current
+and the contributor prerequisites below must be installed for the release checks. The tap checkout must be clean, current
 and configured with an authenticated, writable upstream. SSH remotes can use
 the same GitHub access as the source repository; an HTTPS clone needs separate
 HTTPS credentials.
@@ -86,7 +92,7 @@ go run ./cmd/update-homebrew --publish-tap /path/to/homebrew-tap 0.4.16
 
 - **Go 1.26+** (build only; Homebrew installs a compiled binary)
 - **Typst** (required only for PDF output)
-- **Pandoc** (required for ODT export and rich manuscript Markdown/org parsing and conversion)
+- **Pandoc** (required for ODT export, manuscript/letter DOCX, and rich manuscript Markdown/org parsing and conversion)
 
 Iosevka Publish, a customized Iosevka family, is bundled with the executable
 under the [SIL Open Font Licence](fonts/iosevka-publish/LICENSE.md). US script
@@ -108,8 +114,8 @@ Standalone `.typ` files still require fonts on the compiling host.
 | Markdown | Yes | Yes | [docs/format-markdown.md](docs/format-markdown.md) |
 | Fountain | Yes | Yes | [docs/format-fountain.md](docs/format-fountain.md) |
 | PDF (via Typst) | - | Yes | - |
-| DOCX script | - | Yes | [Support and limitations](docs/format-docx.md) |
-| ODT script | - | Yes | [Support and limitations](docs/format-odt.md) |
+| DOCX script, manuscript or letter | - | Yes | [Support and limitations](docs/format-docx.md) |
+| ODT script, manuscript or letter | - | Yes | [Support and limitations](docs/format-odt.md) |
 | Manuscript Markdown | Yes | - | [docs/format-manuscript-markdown.md](docs/format-manuscript-markdown.md) |
 | Manuscript org-mode | Yes | - | [docs/format-manuscript-org.md](docs/format-manuscript-org.md) |
 
@@ -165,11 +171,26 @@ For page-limited script submissions, set `folio.title-page.enabled: false` to pl
 | `internal/play/` | Stage-play model, parsers, and text emitters |
 | `internal/letter/` | Cover-letter parser and renderer |
 | `internal/manuscript/` | Go manuscript parsing, config, and Typst rendering |
+| `internal/office/` | Bounded prose office interchange, native layout and shared font packaging |
 | `templates/` | File-backed Typst templates |
 | `examples/` | Annotated config example |
 | `docs/` | Format schemas, config reference, vision |
 
 ## Running Tests
+
+### Contributor prerequisites
+
+The regression suite requires Go, Typst, Pandoc, LibreOffice (`soffice`) and
+Poppler's `pdftotext`, `pdftohtml` and `pdftoppm` on `PATH`. `make test` checks
+these dependencies and fails with the missing executable's name. Normal
+`make release` runs this suite too. LibreOffice and Poppler are test tools;
+ordinary DOCX/ODT conversion does not invoke them.
+
+Office regressions refresh native fields in isolated LibreOffice profiles,
+export PDFs and measure font, spacing, numbering and contents evidence. They
+do not replace editing and save/reopen validation in the intended application.
+The labelled fixtures and YAML checklist live in
+[`testdata/prose-office`](testdata/prose-office/EXPECTATIONS.md).
 
 ```bash
 make test   # Go unit, integration, Typst, and PDF regression suite
@@ -190,6 +211,8 @@ make lint   # Go static analysis
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.9 (2026-10-16): Add manuscript/letter office commands and rendered regression prerequisites.
 
 - 1.8 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 

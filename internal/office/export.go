@@ -24,6 +24,9 @@ func (p *Prose) Export(format string) (result []byte, warnings []string, resultE
 	writerDocument := p.Document
 	writerDocument.Meta = map[string]any{}
 	writerDocument.Blocks = p.generatedImages(p.flowBoundaries(writerDocument.Blocks))
+	if writerDocument.Blocks == nil {
+		writerDocument.Blocks = []Node{}
+	}
 	encoded, err := json.Marshal(writerDocument)
 	if err != nil {
 		return nil, nil, err

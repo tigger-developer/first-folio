@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.30"
+version: "0.31"
 last-updated: 2026-10-16
 ---
 
@@ -11,6 +11,14 @@ First Folio reads configuration from YAML files named `script.yaml`. It never cr
 First Folio owns the `folio:` namespace. A project may also contain a top-level `yapper:` block, which belongs exclusively to Yapper and is ignored by First Folio. Only the documented top-level metadata and `render` keys form a shared contract between the applications.
 
 See [examples/script.yaml.example](../examples/script.yaml.example) for an annotated example.
+
+Manuscript DOCX/ODT exports consume the existing `folio.manuscript` settings and
+shared running matter. Letter DOCX/ODT exports consume `folio.letter`, without
+headers or footers. Select these outputs through the manuscript target extension
+or `folio letter --format docx|odt`; no extra YAML output schema is introduced.
+Native office editors control final pagination and field refresh. ODT starts a
+new page when the frontmatter/body page-number format changes, while preserving
+the configured displayed-number reset policy.
 
 ## File locations
 
@@ -800,7 +808,7 @@ At non-100% stretch, First Folio supplies English discretionary break points fro
 
 - 0.26 (2026-10-11): Document resolved configuration for DOCX and ODT export.
 
-- 0.25 (2026-10-08): Document automatic cast-name capitalisation, aliases and hidden-table lookup.
+- 0.25 (2026-10-08): Document automatic cast-name capitalization, aliases and hidden-table lookup.
 - 0.24 (2026-10-07): Added compact script first-page titles for page-limited submissions and default-on title/first-page running-matter suppression; documented untitled scripts, mode isolation, validation and numbering.
 
 - 0.23 (2026-10-07): Promoted running headers and footers to shared Folio settings for scripts and manuscripts; retained layered manuscript-local compatibility with deprecation diagnostics and excluded letters.

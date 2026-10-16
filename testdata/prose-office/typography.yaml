@@ -6,6 +6,7 @@ folio:
   page-header:
     enabled: true
     format: HEADER-SAMPLE
+    alt-format: HEADER-SAMPLE
     font:
       family: Iosevka Publish
       size: 10pt
@@ -67,6 +68,7 @@ folio:
     scene-break:
       marker: "#"
     chapter:
+      skip-header: false
       page-break-before: false
       position: 0mm
       show-number: false

@@ -1,7 +1,7 @@
 ---
 title: DOCX Script Export
-version: "1.4"
-last-updated: 2026-10-12
+version: "1.5"
+last-updated: 2026-10-16
 ---
 
 # DOCX script export
@@ -14,7 +14,8 @@ folio convert play.org play.docx
 
 The destination extension selects DOCX. For redirected output, use
 `folio convert play.org --to docx > play.docx`. Binary terminal output requires
-`--force`. DOCX is write-only; manuscript and letter commands do not export DOCX.
+`--force`. DOCX is write-only. Manuscript and letter commands also export DOCX
+through the separate prose route described below.
 The writer uses Go's XML and ZIP libraries and needs neither Pandoc nor Typst.
 
 Available fonts are [embedded as complete faces](font-embedding.md), including
@@ -45,6 +46,28 @@ bounded at 128 MiB. Embedded fonts have a separate 64 MiB budget; the final
 expanded package is limited to 256 MiB and 256 entries. Validated file output is staged beside its destination and
 published by rename. Existing destination permissions are replaced by mode 0600.
 
+## Manuscripts and letters
+
+Use `folio manuscript chapter.md manuscript.docx` or
+`folio letter letters.org --format docx`. These routes require Pandoc and use
+the existing manuscript or letter configuration, rather than script table
+layout. They do not invoke Typst. Manuscript source syntax and letter recipient
+selection remain unchanged.
+
+Manuscripts retain editable headings, paragraphs, lists, tables, links and
+footnotes, with generated title, contents and copyright matter. Contents use
+live page references: update fields in the editor before printing. Native
+sections separate numbering and running matter. Letters use recipient-specific
+paragraphs and never inherit manuscript running matter. Reader pagination may
+differ from PDF; editing and save/reopen need validation in the intended editor.
+
+Input is limited to 32 MiB across manuscript files; Pandoc JSON and output are
+bounded at 128 MiB. Pandoc calls have a 120-second deadline and 64 KiB diagnostic
+limit. Package and font limits above also apply. Destination aliases, symlinks
+and nonregular files are rejected before publication. A manuscript barcode
+sidecar publishes after the document. Letter files publish individually; later
+failure reports previously published paths rather than rolling them back.
+
 ## ODT
 
 ODT is now a separate [configured Pandoc export](format-odt.md). The earlier
@@ -53,6 +76,8 @@ title composition, page settings and spacing. That generic conversion is not
 the product ODT route. The native DOCX writer remains unchanged.
 
 ## History
+
+- 1.5 (2026-10-16): Document manuscript and letter office output.
 
 - 1.4 (2026-10-12): Correct Org single-asterisk bold in body text and footnotes.
 

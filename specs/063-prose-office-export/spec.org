@@ -579,6 +579,16 @@ The following inventory covers *all settings consumed by the current manuscript 
 
 * Hands-off mode decision log
 
+** 2026-10-16T16:46:07Z :hands-off:review:
+
+*** Isolate fixture headers and retain rendered font failures
+
+- Decision :: Typography and opening-band specimens explicitly set both ordinary and alternate header formats. The inherited British alternate format is independently configurable; these tests must not assume it equals the ordinary format. Typography also explicitly disables chapter opening-header suppression. The fixture checklist records both settings.
+- Native layout :: ODT continuation masters omit first-page variants so physical parity selects the ordinary left/right bands. Consecutive positioned copyright paragraphs share an expanding text box to avoid overlapping independent frames. Existing configurable alignments remain separate when their placement differs.
+- Verification :: The rendered contents/reference and page-policy regressions passed for both formats in =.agent/w063-render-policy-third.log=. The subsequent geometry run passed header, body and letter measurements but failed actual Extended-family selection in both formats. These font failures remain unresolved; embedded bytes alone are not rendered-font proof. Full validation and delivery review remain outstanding.
+- Font probes :: Bounded local LibreOffice probes using family/style and PostScript-name references still selected ordinary-width Iosevka faces. No font bytes were altered and no font was downloaded, built or installed. These observations do not establish the cause or authorize accepting substitution.
+- Documentation :: Add prose office commands, publication ordering and LibreOffice/Poppler regression prerequisites. Normal release continues to use =make test=; conversion itself does not invoke those rendering tools.
+
 ** 2026-10-16T16:30:13Z :hands-off:review:
 
 *** Preserve observed metadata precedence and correct specimen matching

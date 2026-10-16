@@ -145,7 +145,7 @@ func TestRT063_6_OfficeOpeningBandSuppression(t *testing.T) {
 				t.Run(format+"/"+role+"/"+skip, func(t *testing.T) {
 					t.Setenv("HOME", t.TempDir())
 					dir := t.TempDir()
-					cfg := "folio:\n  page-header:\n    enabled: true\n    format: VISIBLE-HEADER\n  page-footer:\n    enabled: true\n    format: VISIBLE-FOOTER\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    " + role + ":\n      skip-header: " + skip + "\n      skip-footer: " + skip + "\n"
+					cfg := "folio:\n  page-header:\n    enabled: true\n    format: VISIBLE-HEADER\n    alt-format: VISIBLE-HEADER\n  page-footer:\n    enabled: true\n    format: VISIBLE-FOOTER\n    alt-format: VISIBLE-FOOTER\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    " + role + ":\n      skip-header: " + skip + "\n      skip-footer: " + skip + "\n"
 					source, marker := "## OPENING-MARKER\n\nBody.\n", "OPENING-MARKER"
 					if role == "part" {
 						source = "# OPENING-MARKER\n\nBody.\n"

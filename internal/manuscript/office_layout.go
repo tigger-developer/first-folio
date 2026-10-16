@@ -34,6 +34,9 @@ func officeLayout(cfg Config) (office.Prose, error) {
 		body.Align = "justify"
 	}
 	p.Styles["FolioBody"] = body
+	for _, name := range []string{"Normal", "BodyText", "FirstParagraph", "Compact", "ListParagraph", "Text_20_body", "Standard", "Table_20_Contents", "Table_20_Heading"} {
+		p.Styles[name] = body
+	}
 	p.ListBefore = length(ms.List.SpaceBefore, base, 0)
 	p.ListAfter = length(ms.List.SpaceAfter, base, 0)
 	p.TableBefore = length(ms.Table.SpaceBefore, base, 0)

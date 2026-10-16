@@ -12,6 +12,9 @@ import (
 var paperDimensions = regexp.MustCompile(`^(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)(mm|in)$`)
 
 func Paper(value string) (float64, float64, error) {
+	if size, ok := nativePaperPoints[value]; ok {
+		return size[0], size[1], nil
+	}
 	if m := paperDimensions.FindStringSubmatch(value); m != nil {
 		w, err := Points(m[1]+m[3], 12, 0)
 		if err != nil {

@@ -43,6 +43,7 @@ type Boundary struct {
 	Title                                      bool
 	TitleNumber                                bool
 	Blank                                      bool
+	ContinuationPadding                        float64
 	Fields                                     map[string]string
 }
 
