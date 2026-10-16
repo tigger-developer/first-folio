@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func proseSource(t *testing.T, dir, name, content string) string {
@@ -20,11 +21,54 @@ func proseSource(t *testing.T, dir, name, content string) string {
 	return path
 }
 
+func TestRT063_7_OfficeLetterFallbacksAndEscaping(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			src := proseSource(t, dir, "letters.org", "#+AUTHOR: Writer & Partner\n* Letters :letter:\n** SUBJECT <A&B> :subject:\nFirst paragraph for [moniker] at [org].\n\nSecond paragraph keeps [unknown] and <literal> & text.\n*** Recipient / Address Line / Cork :to:\n**** Theatre & Company :org:\n**** Friend :moniker:\n")
+			before := time.Now().Format("2 January 2006")
+			status, _, stderr := runApp(t, "letter", src, "--format", format)
+			after := time.Now().Format("2 January 2006")
+			if status != 0 {
+				t.Fatalf("letter export: %s", stderr)
+			}
+			pkg := prosePackage(t, filepath.Join(dir, "letter-theatre-company."+format), format)
+			body := officeBody(t, pkg, format)
+			text := body.text()
+			for _, want := range []string{"SUBJECT <A&B>", "First paragraph for Friend at Theatre & Company.", "Second paragraph keeps [unknown] and <literal> & text.", "Yours sincerely,"} {
+				if strings.Count(text, want) != 1 {
+					t.Errorf("expected one occurrence of %q in letter", want)
+				}
+			}
+			if strings.Count(text, "Writer & Partner") != 2 {
+				t.Error("author must supply both fallback sender and fallback signoff")
+			}
+			if !strings.Contains(text, before) && !strings.Contains(text, after) {
+				t.Error("omitted date must resolve to the current local date")
+			}
+			// The two address separators become native line breaks, not literal slashes.
+			breaks := "br"
+			if format == "odt" {
+				breaks = "line-break"
+			}
+			address := officeParagraph(t, body, "Address Line")
+			if len(address.all(breaks)) != 2 || strings.Contains(address.text(), " / ") {
+				t.Error("recipient address did not retain its three editable lines")
+			}
+		})
+	}
+}
+
 func prosePackage(t *testing.T, path, format string) map[string]*officeXML {
 	t.Helper()
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
+	}
+	info, err := os.Stat(path)
+	if err != nil || info.Mode().Perm() != 0600 {
+		t.Fatalf("office output must have private mode 0600: %v, %v", info, err)
 	}
 	z, err := zip.NewReader(bytes.NewReader(raw), int64(len(raw)))
 	if err != nil {
@@ -161,6 +205,43 @@ func TestRT063_2_OfficeLetterRecipientBatches(t *testing.T) {
 	}
 }
 
+func TestRT063_2_LetterFormatErrors(t *testing.T) {
+	fixture, err := os.ReadFile("../../testdata/prose-office/letters.org")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		name string
+		args []string
+		want []string
+	}{
+		{"unknown-format", []string{"--format", "html"}, []string{"pdf", "docx", "odt"}},
+		{"missing-value", []string{"--format"}, []string{"format", "value"}},
+		{"invalid-regex", []string{"--format", "docx", "--to", "["}, []string{"recipient", "filter"}},
+		{"no-matches", []string{"--format", "odt", "--to", "DOES-NOT-EXIST"}, []string{"no recipients"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir, out := t.TempDir(), t.TempDir()
+			src := proseSource(t, dir, "letters.org", string(fixture))
+			args := append([]string{"letter", src, "--dir", out}, tc.args...)
+			status, _, stderr := runApp(t, args...)
+			if status == 0 {
+				t.Fatal("invalid invocation succeeded")
+			}
+			for _, want := range tc.want {
+				if !strings.Contains(strings.ToLower(stderr), want) {
+					t.Errorf("diagnostic missing %q: %s", want, stderr)
+				}
+			}
+			entries, err := os.ReadDir(out)
+			if err != nil || len(entries) != 0 {
+				t.Fatalf("invalid invocation published files: %v, %v", entries, err)
+			}
+		})
+	}
+}
+
 func TestRT063_7_OfficeLetterLiterals(t *testing.T) {
 	for _, format := range []string{"docx", "odt"} {
 		t.Run(format, func(t *testing.T) {
@@ -187,6 +268,27 @@ func TestRT063_7_OfficeLetterLiterals(t *testing.T) {
 			for _, bad := range []string{"*BOLD-SAMPLE*", "/ITALIC-SAMPLE/", "_UNDERLINE-SAMPLE_", "=https://"} {
 				if strings.Contains(body.text(), bad) {
 					t.Errorf("literal markup leaked: %q", bad)
+				}
+			}
+			for _, emphasis := range []struct{ marker, word, attribute, value string }{
+				{"BOLD-SAMPLE", "b", "font-weight", "bold"},
+				{"ITALIC-SAMPLE", "i", "font-style", "italic"},
+				{"UNDERLINE-SAMPLE", "u", "text-underline-style", "solid"},
+			} {
+				layers := proseInlineLayers(t, pkg, format, emphasis.marker)
+				if format == "odt" {
+					officeAssertEffective(t, layers, "text-properties", emphasis.attribute, emphasis.value)
+				} else {
+					active := false
+					for _, layer := range layers {
+						for _, flag := range layer.all(emphasis.word) {
+							value := flag.attr("val")
+							active = value != "false" && value != "0" && value != "none"
+						}
+					}
+					if !active {
+						t.Errorf("%s lost native emphasis %s", emphasis.marker, emphasis.word)
+					}
 				}
 			}
 			for name, member := range pkg {
@@ -323,6 +425,64 @@ func TestRT063_9_OfficeManuscriptRejectsUnsafeDestinations(t *testing.T) {
 				}
 				if readAppFile(t, src) != original {
 					t.Fatal("source changed during rejected export")
+				}
+			})
+		}
+	}
+}
+
+func TestRT063_9_OfficeAtomicReplacement(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			src := proseSource(t, dir, "source.md", "## Chapter One\n\nFIRST-VERSION\n")
+			target := proseSource(t, dir, "output."+format, "OLD-DESTINATION")
+			proseConvert(t, src, target)
+			if !strings.Contains(readAppFile(t, src), "FIRST-VERSION") {
+				t.Fatal("export changed source")
+			}
+			proseSource(t, dir, "source.md", "## Chapter One\n\nSECOND-VERSION\n")
+			pkg := proseConvert(t, src, target)
+			text := officeBody(t, pkg, format).text()
+			if !strings.Contains(text, "SECOND-VERSION") || strings.Contains(text, "FIRST-VERSION") {
+				t.Error("repeat export did not replace the selected document")
+			}
+			before, err := os.ReadFile(target)
+			if err != nil {
+				t.Fatal(err)
+			}
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    font:\n      size: -5pt\n")
+			status, _, stderr := runApp(t, "manuscript", src, target)
+			if status == 0 || !strings.Contains(stderr, "font.size") {
+				t.Errorf("invalid config was not diagnosed: status=%d stderr=%s", status, stderr)
+			}
+			after, err := os.ReadFile(target)
+			if err != nil || !bytes.Equal(before, after) {
+				t.Fatalf("failed export changed destination: %v", err)
+			}
+			entries, err := os.ReadDir(dir)
+			if err != nil || len(entries) != 3 {
+				t.Fatalf("staging files leaked beside output: %v, %v", entries, err)
+			}
+		})
+	}
+}
+
+func TestRT063_9_OfficeInvalidTextPreservesDestination(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, text := range []struct{ name, input string }{{"utf8", "bad \xff text"}, {"xml-control", "bad \x01 text"}} {
+			t.Run(format+"/"+text.name, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				src := proseSource(t, dir, "source.md", text.input)
+				target := proseSource(t, dir, "output."+format, "KEEP-DESTINATION")
+				status, _, stderr := runApp(t, "manuscript", src, target)
+				if status == 0 || stderr == "" || len(stderr) > 64<<10 {
+					t.Errorf("invalid source must produce a bounded failure: status=%d bytes=%d", status, len(stderr))
+				}
+				if readAppFile(t, target) != "KEEP-DESTINATION" {
+					t.Fatal("invalid source changed destination")
 				}
 			})
 		}

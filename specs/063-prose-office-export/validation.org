@@ -9,7 +9,7 @@
 ** AMBER RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-1][RT063.1 - Output selection and dependencies]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -17,7 +17,7 @@
 ** AMBER RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-2][RT063.2 - Recipient batches and CLI errors]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -25,7 +25,7 @@
 ** AMBER RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-3][RT063.3 - Structured manuscript content]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -33,7 +33,7 @@
 ** AMBER RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-4][RT063.4 - Configuration and role geometry]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -41,7 +41,7 @@
 ** AMBER RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-5][RT063.5 - Generated matter and heading controls]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -49,7 +49,7 @@
 ** AMBER RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-6][RT063.6 - Sections and page fields]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -57,7 +57,7 @@
 ** AMBER RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-7][RT063.7 - Letter content and geometry]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -65,7 +65,7 @@
 ** AMBER RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-8][RT063.8 - Font packaging]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -73,7 +73,7 @@
 ** AMBER RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-9][RT063.9 - Resource and publication failures]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -88,7 +88,7 @@
 ** AMBER RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-11][RT063.11 - Rendered font and geometry conformance]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
@@ -96,9 +96,10 @@
 ** AMBER RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
-:REASON: Regression package not yet written or executed.
+:REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-12][RT063.12 - Rendered page policy and contents references]].
+- Partial execution, 2026-10-16 :: The expanded package compiled and ran with =go test ./internal/app -run '^TestRT063_' -count=1= in 10.155 seconds. Both rendered-contents cases fail at the missing manuscript office route before the renderer is reached. This is not rendered conformance evidence. The private-profile refresh helper was separately exercised against the native probe through a temporary Go overlay and passed in 5.18 seconds after profile initialization.
 
 * One-off checks
 
@@ -118,6 +119,7 @@
 - Conditional paragraphs :: Two conditional header/footer paragraphs reproduce the first mixed page, but the frontmatter header persists on the second body page. This candidate is insufficient; its first-page success is not a conformance result.
 - Variable fields :: Native =text:variable-get= string fields switch from frontmatter header/body footer on the mixed page to body header/body footer on the next page. Native =text:page-variable-set= with adjustment zero plus =text:page-variable-get= displays body 1 then 2 without a physical-page reset. Combining distinct frontmatter/body number formats with this continuous route remains unproved.
 - Parity :: A right-only ODT body master after a frontmatter page creates a blank physical page before the body. LibreOffice's default PDF export omits this blank. Export with =IsSkipEmptyPages=false= retains it: the body is physical page 3 and displays page 1. The retained rendering helper must explicitly preserve automatic blank pages.
+- Displayed-number offset follow-up :: The temporary =custom-number.odt= uses native page-variable adjustment 41. Its PDF retains the intentional blank physical page 2 and displays =BODY-DISPLAY 42= on physical page 3. A separate =left-native-reset.odt= uses a left-only body master, native =style:page-number="1"= and a native page-number field: the body is physical page 2 and displays 1. Both PDF text outputs were checked again with =pdftotext -layout= after the operator approved the bounded ODT number-format transition exception. These establish native mechanisms, not a new arbitrary-start YAML setting or proof of every continuation policy.
 - Contents refresh :: Plain Pandoc =--toc= output followed by headless PDF conversion leaves the DOCX contents empty and the ODT contents unpopulated. With 80 explicit native page-reference entries, ODT refreshes the references during conversion, including a contents continuation page. DOCX retains deliberately stale =999= reference values in the equivalent probe. Explicit field/index refresh is being tested; neither empty output nor stale references count as success.
 - Explicit refresh follow-up :: A temporary LibreOffice Basic helper, invoked headlessly from the private profile, loads the DOCX with document macros disabled, calls =TextFields.refresh()= and =getDocumentIndexes().getByIndex(i).update()=, refreshes layout and exports PDF. The resulting contents spans three pages. All 80 extracted contents references match their actual physical heading pages. This establishes a local test mechanism, not a new exporter runtime dependency. Configured contents typography, continuation padding and body-number offsets remain separate checks.
 - Temporary evidence :: Source packages, extracted XML, PDF outputs and the short PDF baseline are retained in the OS-allocated =folio-w063-layout-20261016-26948-z7f315= directory for the active experiment. A reproducible retained helper and final measurements are still required before this OT can be GREEN.

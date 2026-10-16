@@ -201,3 +201,82 @@ func TestRT063_9_OfficeLetterCollisionPreflight(t *testing.T) {
 		})
 	}
 }
+
+func TestRT063_5_OfficeTitleFieldSwitches(t *testing.T) {
+	metadata := "---\ntitle: TITLE-MARKER\nsubtitle: SUBTITLE-MARKER\nauthor: AUTHOR-MARKER\ndate: DATE-MARKER\nwordcount: WORDCOUNT-MARKER\ncontact-name: CONTACT-MARKER\naddress: ADDRESS-MARKER\nphone: PHONE-MARKER\nemail: EMAIL-MARKER\nwebsite: WEBSITE-MARKER\nversion: VERSION-MARKER\n---\n\nBODY-MARKER\n"
+	for _, format := range []string{"docx", "odt"} {
+		for _, tc := range []struct{ key, marker string }{
+			{"title", "TITLE-MARKER"}, {"subtitle", "SUBTITLE-MARKER"}, {"author", "AUTHOR-MARKER"},
+			{"date", "DATE-MARKER"}, {"wordcount", "WORDCOUNT-MARKER"}, {"contact-name", "CONTACT-MARKER"},
+			{"address", "ADDRESS-MARKER"}, {"phone", "PHONE-MARKER"}, {"email", "EMAIL-MARKER"},
+			{"website", "WEBSITE-MARKER"}, {"version", "VERSION-MARKER"},
+		} {
+			t.Run(format+"/include-"+tc.key, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				src := proseSource(t, dir, "source.md", metadata)
+				for _, value := range []string{"true", "false"} {
+					cfg := "folio:\n  page-header:\n    enabled: false\n  page-footer:\n    enabled: false\n  manuscript:\n    toc:\n      enabled: false\n    title-page:\n      enabled: true\n      include-" + tc.key + ": " + value + "\n"
+					proseSource(t, dir, "script.yaml", cfg)
+					pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+					// Match whole marker tokens: TITLE-MARKER is a suffix of SUBTITLE-MARKER.
+					present := false
+					for _, member := range officeBody(t, pkg, format).all("p") {
+						for _, word := range strings.Fields(member.text()) {
+							if word == tc.marker {
+								present = true
+							}
+						}
+					}
+					if present != (value == "true") {
+						t.Errorf("include-%s=%s: %s present=%v", tc.key, value, tc.marker, present)
+					}
+				}
+			})
+		}
+	}
+}
+
+func TestRT063_5_OfficeCopyrightBarcodeModes(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, mode := range []string{"none", "render", "file", "render-and-file"} {
+			t.Run(format+"/"+mode, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				cfg := "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    copyright:\n      enabled: true\n      credits: ['COPYRIGHT-CREDIT']\n      body: ['COPYRIGHT-BODY with **bold credit** and *italic credit*.']\n      publication: ['PUBLICATION-MARKER']\n      publisher: PUBLISHER-MARKER\n      isbn: '978-0-000000-00-2'\n      isbn-barcode: " + mode + "\n"
+				proseSource(t, dir, "script.yaml", cfg)
+				src := proseSource(t, dir, "source.org", "#+TITLE: Barcode book\n** Chapter One\nBODY-SENTINEL\n")
+				target := filepath.Join(dir, "output."+format)
+				pkg := proseConvert(t, src, target)
+				body := officeBody(t, pkg, format)
+				for _, text := range []string{"COPYRIGHT-CREDIT", "COPYRIGHT-BODY", "PUBLICATION-MARKER", "PUBLISHER-MARKER", "978-0-000000-00-2"} {
+					if !strings.Contains(body.text(), text) {
+						t.Errorf("missing copyright content %q", text)
+					}
+				}
+				if strings.Contains(body.text(), "**bold credit**") || strings.Contains(body.text(), "*italic credit*") {
+					t.Error("configuration mini-Markdown was not interpreted independently of Org source")
+				}
+				image := "drawing"
+				if format == "odt" {
+					image = "image"
+				}
+				if (len(body.all(image)) > 0) != (mode == "render" || mode == "render-and-file") {
+					t.Errorf("embedded barcode does not match mode %s", mode)
+				}
+				data, err := os.ReadFile(filepath.Join(dir, "output.barcode.svg"))
+				if mode == "file" || mode == "render-and-file" {
+					if err != nil {
+						t.Fatal(err)
+					}
+					svg := officeParseXML(t, data)
+					if len(svg.all("rect")) < 20 || !strings.Contains(strings.Join(strings.Fields(svg.text()), ""), "9780000000002") {
+						t.Error("sidecar lacks barcode bars or expected ISBN digits")
+					}
+				} else if !os.IsNotExist(err) {
+					t.Errorf("unexpected barcode sidecar for %s: %v", mode, err)
+				}
+			})
+		}
+	}
+}

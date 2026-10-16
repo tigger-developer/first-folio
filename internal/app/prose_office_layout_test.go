@@ -16,17 +16,40 @@ func TestRT063_4_OfficeManuscriptRoleFonts(t *testing.T) {
 			{"heading.font", "HEADING-FONT-MARKER"},
 			{"quoted-block.font", "QUOTE-FONT-MARKER"},
 			{"mono.font", "CODE-FONT-MARKER"},
+			{"title-page.title.font", "TITLE-FONT-MARKER"},
+			{"title-page.subtitle.font", "SUBTITLE-FONT-MARKER"},
+			{"title-page.author.font", "AUTHOR-FONT-MARKER"},
+			{"title-page.date.font", "DATE-FONT-MARKER"},
+			{"title-page.wordcount.font", "WORDCOUNT-FONT-MARKER"},
+			{"title-page.version.font", "VERSION-FONT-MARKER"},
+			{"title-page.contact.font", "CONTACT-FONT-MARKER"},
+			{"copyright.font", "COPYRIGHT-FONT-MARKER"},
+			{"copyright.label.font", "LABEL-FONT-MARKER"},
+			{"toc.font", "HEADING-FONT-MARKER"},
+			{"toc.heading.font", "CONTENTS-FONT-MARKER"},
 		} {
 			t.Run(format+"/"+role.key, func(t *testing.T) {
 				t.Setenv("HOME", t.TempDir())
 				dir := t.TempDir()
-				src := proseSource(t, dir, "source.md", "## HEADING-FONT-MARKER\n\nBODY-FONT-MARKER\n\n> QUOTE-FONT-MARKER\n\n```\nCODE-FONT-MARKER\n```\n")
+				src := proseSource(t, dir, "source.md", "---\ntitle: TITLE-FONT-MARKER\nsubtitle: SUBTITLE-FONT-MARKER\nauthor: AUTHOR-FONT-MARKER\ndate: DATE-FONT-MARKER\nwordcount: WORDCOUNT-FONT-MARKER\nversion: VERSION-FONT-MARKER\ncontact-name: CONTACT-FONT-MARKER\n---\n\n## HEADING-FONT-MARKER\n\nBODY-FONT-MARKER\n\n> QUOTE-FONT-MARKER\n\n```\nCODE-FONT-MARKER\n```\n")
 				parts := strings.Split(role.key, ".")
-				cfg := "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n"
+				cfg := "folio:\n  manuscript:\n"
+				if !strings.HasPrefix(role.key, "title-page.") {
+					cfg += "    title-page:\n      enabled: false\n"
+				}
+				if !strings.HasPrefix(role.key, "toc.") {
+					cfg += "    toc:\n      enabled: false\n"
+				}
 				indent := "    "
 				for _, key := range parts {
 					cfg += indent + key + ":\n"
 					indent += "  "
+					if key == "copyright" {
+						cfg += indent + "enabled: true\n" + indent + "credits: [COPYRIGHT-FONT-MARKER]\n" + indent + "publisher: LABEL-FONT-MARKER\n"
+					}
+					if key == "toc" {
+						cfg += indent + "title: CONTENTS-FONT-MARKER\n"
+					}
 				}
 				for _, field := range []string{"family: Iosevka Publish", "size: 13pt", "weight: bold", "style: italic", "stretch: 90%", "letter-spacing: 1.25pt"} {
 					cfg += indent + field + "\n"
@@ -35,6 +58,9 @@ func TestRT063_4_OfficeManuscriptRoleFonts(t *testing.T) {
 				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
 				paragraph := officeParagraph(t, officeBody(t, pkg, format), role.marker)
 				layers := officeEffective(t, pkg, format, paragraph)
+				if role.key == "copyright.label.font" {
+					layers = proseInlineLayers(t, pkg, format, role.marker)
+				}
 				if format == "docx" {
 					officeAssertEffective(t, layers, "rFonts", "ascii", "Iosevka Publish")
 					officeAssertEffective(t, layers, "sz", "val", "26")
@@ -104,5 +130,47 @@ func TestRT063_4_OfficeManuscriptParagraphGeometry(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestRT063_4_OfficeLetterTypographyAndGeometry(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			src := proseSource(t, dir, "letters.org", "#+AUTHOR: Author\n* Letters :letter:\n** Subject :subject:\nLETTER-FONT-MARKER\n*** Recipient :to:\n**** Theatre :org:\n")
+			proseSource(t, dir, "script.yaml", "folio:\n  letter:\n    page: a4\n    margin-top: 21mm\n    margin-bottom: 22mm\n    margin-left: 23mm\n    margin-right: 24mm\n    font:\n      family: Iosevka Publish\n      size: 13pt\n      weight: bold\n      style: italic\n      stretch: 90%\n      letter-spacing: 1.25pt\n")
+			status, _, stderr := runApp(t, "letter", src, "--format", format)
+			if status != 0 {
+				t.Fatalf("letter export: %s", stderr)
+			}
+			pkg := prosePackage(t, filepath.Join(dir, "letter-theatre."+format), format)
+			body := officeBody(t, pkg, format)
+			layers := officeEffective(t, pkg, format, officeParagraph(t, body, "LETTER-FONT-MARKER"))
+			if format == "docx" {
+				officeAssertEffective(t, layers, "rFonts", "ascii", "Iosevka Publish")
+				officeAssertEffective(t, layers, "sz", "val", "26")
+				officeAssertEffective(t, layers, "w", "val", "90")
+				officeAssertEffective(t, layers, "spacing", "val", "25")
+			} else {
+				officeAssertEffective(t, layers, "text-properties", "font-size", "13pt")
+				officeAssertEffective(t, layers, "text-properties", "font-weight", "bold")
+				officeAssertEffective(t, layers, "text-properties", "font-style", "italic")
+				officeAssertEffective(t, layers, "text-properties", "text-scale", "90%")
+				officeAssertEffective(t, layers, "text-properties", "letter-spacing", "1.25pt")
+			}
+			pageLayers := []*officeXML{body}
+			if format == "odt" {
+				pageLayers = []*officeXML{pkg["styles.xml"]}
+			}
+			for _, side := range []struct {
+				name string
+				mm   float64
+			}{{"top", 21}, {"bottom", 22}, {"left", 23}, {"right", 24}} {
+				officeAssertLength(t, pageLayers, format, "pgMar", side.name, "page-layout-properties", "margin-"+side.name, side.mm*72/25.4)
+			}
+			officeAssertLength(t, pageLayers, format, "pgSz", "w", "page-layout-properties", "page-width", 210*72/25.4)
+			officeAssertLength(t, pageLayers, format, "pgSz", "h", "page-layout-properties", "page-height", 297*72/25.4)
+		})
 	}
 }

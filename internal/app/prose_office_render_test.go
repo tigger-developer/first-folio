@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/xml"
 	"fmt"
+	"math"
 	"net/url"
 	"os"
 	"os/exec"
@@ -19,18 +20,20 @@ import (
 )
 
 type proseDiagnostic struct {
-	bytes.Buffer
+	buffer bytes.Buffer
 	cancel context.CancelFunc
 }
 
 func (b *proseDiagnostic) Write(p []byte) (int, error) {
-	if b.Len()+len(p) > 64<<10 {
-		n, _ := b.Buffer.Write(p[:(64<<10)-b.Len()])
+	if b.buffer.Len()+len(p) > 64<<10 {
+		n, _ := b.buffer.Write(p[:(64<<10)-b.buffer.Len()])
 		b.cancel()
 		return n, fmt.Errorf("test subprocess exceeded 64 KiB diagnostics")
 	}
-	return b.Buffer.Write(p)
+	return b.buffer.Write(p)
 }
+
+func (b *proseDiagnostic) String() string { return b.buffer.String() }
 
 func proseTool(t *testing.T, name string, args ...string) string {
 	t.Helper()
@@ -98,6 +101,9 @@ func proseRenderPDF(t *testing.T, source string) string {
 	t.Helper()
 	dir := t.TempDir()
 	profile := filepath.Join(dir, "profile")
+	// LibreOffice initializes its Basic library on first use. Complete that
+	// initialization before installing the test-owned refresh helper.
+	proseTool(t, "soffice", "-env:UserInstallation="+proseFileURL(profile), "--headless", "--terminate_after_init")
 	basic := filepath.Join(profile, "user", "basic")
 	if err := os.MkdirAll(filepath.Join(basic, "Standard"), 0700); err != nil {
 		t.Fatal(err)
@@ -251,6 +257,73 @@ func TestRT063_12_OfficeRenderedContentsReferences(t *testing.T) {
 			}
 			if t.Failed() {
 				proseTool(t, "pdftoppm", "-f", "1", "-l", "6", "-png", "-r", "150", pdf, filepath.Join(dir, "failed-book-page"))
+			}
+		})
+	}
+}
+
+func TestRT063_11_OfficeRenderedLetterMargins(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			for _, file := range []struct{ input, output string }{{"letters.org", "letters.org"}, {"letter.yaml", "script.yaml"}} {
+				raw, err := os.ReadFile("../../testdata/prose-office/" + file.input)
+				if err != nil {
+					t.Fatal(err)
+				}
+				proseSource(t, dir, file.output, string(raw))
+			}
+			status, _, stderr := runApp(t, "letter", filepath.Join(dir, "letters.org"), "--format", format, "--to", "First")
+			if status != 0 {
+				t.Fatalf("letter export: %s", stderr)
+			}
+			target := filepath.Join(dir, "letter-first-theatre."+format)
+			prosePackage(t, target, format)
+			pdf := proseRenderPDF(t, target)
+			xmlPath := filepath.Join(dir, "letter-spans.xml")
+			proseTool(t, "pdftohtml", "-xml", "-zoom", "1", "-noroundcoord", "-fontfullname", pdf, xmlPath)
+			raw, err := os.ReadFile(xmlPath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			tree := officeParseXML(t, raw)
+			fonts := map[string]string{}
+			for _, font := range tree.all("fontspec") {
+				fonts[font.attr("id")] = font.attr("family")
+			}
+			found := false
+			for _, text := range tree.all("text") {
+				if !strings.Contains(text.text(), "LETTER-BODY-SAMPLE") {
+					continue
+				}
+				found = true
+				x, err := strconv.ParseFloat(text.attr("left"), 64)
+				if err != nil {
+					t.Fatal(err)
+				}
+				// PDF text origin at the paragraph's unindented left margin.
+				if math.Abs(x-30*72/25.4) > 1 {
+					t.Errorf("letter body starts at %gpt; want 30mm from page edge", x)
+				}
+				family := fonts[text.attr("font")]
+				if at := strings.Index(family, "+"); at == 6 {
+					family = family[7:]
+				}
+				if family != "Iosevka-Publish" {
+					t.Errorf("letter body font substituted: %s", family)
+				}
+			}
+			if !found {
+				t.Error("rendered letter body marker absent")
+			}
+			for _, bad := range []string{"LETTER-MUST-NOT-HAVE-", "Dear Sam"} {
+				if strings.Contains(tree.text(), bad) {
+					t.Errorf("rendered letter includes forbidden text %s", bad)
+				}
+			}
+			if t.Failed() {
+				proseTool(t, "pdftoppm", "-f", "1", "-l", "2", "-png", "-r", "150", pdf, filepath.Join(dir, "failed-letter-page"))
 			}
 		})
 	}
