@@ -525,3 +525,14 @@ func TestRT063_6_OfficeTitlePageNumberSwitch(t *testing.T) {
 		}
 	}
 }
+
+func TestRT063_6_ODTUnsuppressedOpeningUsesParityBands(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	dir := t.TempDir()
+	proseSource(t, dir, "script.yaml", "folio:\n  page-header:\n    enabled: true\n    format: EVEN [page]\n    alt-format: ODD [page]\n  page-footer: {enabled: false}\n  manuscript:\n    title-page: {enabled: false}\n    toc: {enabled: false}\n    chapter: {skip-header: false, skip-footer: false}\n")
+	src := proseSource(t, dir, "source.md", "## First\n\nBody.\n")
+	pkg := proseConvert(t, src, filepath.Join(dir, "output.odt"))
+	if len(pkg["styles.xml"].all("header-first")) != 0 {
+		t.Error("unsuppressed opening overrides the physical odd/even header with a fixed first-page band")
+	}
+}

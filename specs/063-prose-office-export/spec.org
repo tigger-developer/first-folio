@@ -317,7 +317,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Action :: Export both formats, render through the same isolated LibreOffice pipeline, and extract page-associated text/bounds. Also run =TestRT063_12_ODTContinuousRunningTemplates= to prove changing running text on continuation pages without a requested break. Compare actual heading pages with displayed contents references and page fields; verify content after the final heading to detect truncation. Generate PNGs for failed pages. Also inspect the native document to ensure references remain live fields.
 - Expected :: Heading markers occur on the configured physical side; intentional blank pages have no forbidden running matter; frontmatter/body and odd/even markers switch correctly; numbering resets only at the configured boundary; contents references match the actual rendered heading pages, and continuation entries respect their reserved top band. Assert these relationships within each PDF, not equal page counts between Typst and LibreOffice.
 - Field refresh :: Verify whether the selected LibreOffice conversion refreshes the fixture's fields/indexes. Do not assume =--convert-to= does so. If the generated document or documented conversion mechanism cannot provide current fields, report the assertion failure and retain explicit editor refresh in the UT; do not accept stale cached values or invent a successful refresh step.
-- Bounds :: Three office conversions/PDF exports, including a continuous ODT running-template case; at most eighteen PNG pages on failure, the same process/log/storage bounds as RT063.11 - Rendered geometry. This test is retained in =make test= and missing renderer support is reported as missing evidence, not a pass.
+- Bounds :: Four office conversions/PDF exports, including continuous ODT running-template and numbering-reset cases; at most twenty-four PNG pages on failure, the same process/log/storage bounds as RT063.11 - Rendered geometry. This test is retained in =make test= and missing renderer support is reported as missing evidence, not a pass.
 
 ** OT063.1 - Rendered feature comparison :testdef:
 :PROPERTIES:
@@ -589,6 +589,19 @@ Historical failed runs and the earlier accepted-fallback decision below are
 retained as history; strict ordinary-family assertions supersede that fallback.
 
 * Hands-off mode decision log
+
+** 2026-10-16T19:34:17+01:00 :hands-off:review:
+
+*** Rendering regressions and retained boundary failures
+
+- Decision :: Preserve grouped title footer placement and subtitle/author gaps. Word title floats share adjacent native frame paragraphs; the section marker remains outside those frames. Parts followed immediately by continuous content stay in flow, matching the existing PDF result; isolated part pages retain vertical positioning.
+- Numeric fields :: Explicit Word numeric-format switches preserve Roman title-page numbering. Field-presence checks recognize PAGE and NUMPAGES with valid formatting switches rather than requiring bare instruction strings.
+- Parity :: ODT emits a special first-page band only for requested suppression; other openings use native odd/even variants. The rendered contents regression now checks physical parity on contents pages as well as body pages.
+- Required failures :: Retain the continuous ODT reset case as a named regression and retain the DOCX first-page parity assertion. A later scope decision may amend their expectations, but no pending proposal is treated as approval.
+- Bounds :: The broad comparison reached 32 office renders and 16 baseline PDF outputs, retaining 13,421,062 bytes with its comparison index. Subsequent checks use the revised candidate and focused retained regression cases; no additional broad comparison is scheduled without recording its candidate and bounds.
+- State :: The ODT new-page proposals and DOCX first-page parity limitation remain pending product decisions. All other safe delivery work continues; no definition re-audit, installation, release or push is included.
+
+
 
 ** 2026-10-16T19:09:13+01:00 :hands-off:review:
 

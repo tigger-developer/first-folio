@@ -309,6 +309,15 @@ func TestRT063_12_OfficeRenderedContentsReferences(t *testing.T) {
 			blank := false
 			for i, page := range pages {
 				physical := i + 1
+				if contentsPages[physical] {
+					want := "FRONT-ODD"
+					if physical%2 == 0 {
+						want = "FRONT-EVEN"
+					}
+					if !strings.Contains(page, want) {
+						t.Errorf("contents physical page %d has wrong opening/parity header; want %s", physical, want)
+					}
+				}
 				if physical < firstBody && strings.TrimSpace(page) == "" {
 					blank = true
 				}

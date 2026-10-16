@@ -70,6 +70,9 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 				continue
 			}
 			for _, variant := range []string{"", "-left", "-first"} {
+				if variant == "-first" && !item.skip {
+					continue
+				}
 				text := item.band.Odd
 				if variant == "-left" {
 					text = item.band.Even
