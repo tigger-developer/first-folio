@@ -107,10 +107,7 @@ func ResolveStyle(font config.Font, base float64) (Style, error) {
 	if err != nil {
 		return Style{}, err
 	}
-	bold := font.Weight == "bold" || font.Weight == "semibold" || font.Weight == "extrabold" || font.Weight == "black"
-	if n, err := strconv.Atoi(font.Weight); err == nil {
-		bold = n >= 600
-	}
+	bold := fontWeight(font.Weight) >= 600
 	return Style{Font: font, Size: size, Tracking: tracking, Align: "left", Bold: bold, Italic: font.Style != "regular" && font.Style != "normal", Widow: true}, nil
 }
 

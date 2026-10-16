@@ -40,15 +40,29 @@
 - First-page parity :: The contents opening on physical page 2 used FRONT-ODD. The rendered regression now asserts contents-page parity as well as body-page parity. ODT passes after omitting unnecessary fixed first-page bands; DOCX still fails this added assertion in =.agent/w063-first-parity-render.log=. No passing overall page-policy or delivery claim follows from the earlier suite result.
 - CLI consuming-directory check :: Four public office commands and four help invocations passed outside the checkout, producing two manuscript files and four recipient files. =.agent/w063-ot2-final-path= identifies the command logs and outputs. No installation, release or push occurred.
 
+** 2026-10-16 - Page-policy and weight review
+
+- Full suite :: At =df540a5=, =make test= failed only =TestRT063_12_ODTContinuousNumberReset= and the DOCX branch of =TestRT063_12_OfficeRenderedContentsReferences=. All other package results passed. Application 414.857s; manuscript 112.299s; office 1.234s. Evidence: =.agent/w063-current-complete-suite.log=.
+- Weight mapping :: =TestRT063_4_ODTFontWeightValues= reproduced named light/medium weights without numeric translation, semibold/extrabold/numeric weights collapsed to bold, and ineffective explicit unbold overrides. The focused office suite passed after mapping standard names to their native numeric values. Evidence: =.agent/w063-weight-red.log= and =.agent/w063-weight-green.log=.
+- Remaining weight gap :: DOCX still has a regular/bold-only mapping. Intermediate numeric weights in ODT still use the binary fallback because the native property admits only multiples of 100. This does not satisfy the signed-off distinct-face requirement. Operator acceptance of a bounded limitation is pending; no waiver has been applied.
+- Discarded experiment :: A metadata-name resolver selected and packaged an existing Asap semibold face, but LibreOffice PDFs reported Asap-Regular. Regular and semibold advance metrics were identical for the diagnostic string, so the metric probe did not establish the actual weight. The unproved resolver and strict PostScript-name oracle were removed; source font files were not changed. The retained logs are =.agent/w063-static-weight-render.log=, =.agent/w063-static-weight-family.log=, =.agent/w063-static-weight-odt.log= and =.agent/w063-static-weight-metrics.log=. These are inconclusive weight evidence, not a proven substitution or a passing weight-render test.
+- Review boundary :: The three pending product decisions concern continuous ODT page policy, first-page DOCX parity and nonstandard weights. The native fixes do not authorize changing those requirements. External delivery review has not been requested while required checks remain RED. User editing checks remain AMBER.
+
 * Automated regression
 
-** RED RT063.1 - Output selection and dependencies :testdef:
+** GREEN RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 989181c plus the W063 test-only checkpoint submitted for test-code review
+- COMMAND :: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+- EVIDENCE :: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 
 *** Preimplementation run 2026-10-16
 
@@ -59,13 +73,19 @@
 - Coverage follow-up, 2026-10-16 :: Dependency isolation now exercises both prose modes and formats with real Pandoc, missing Pandoc, incompatible API responses and a forbidden-Typst marker. All compiled; exports remain blocked by the absent routes, so dependency guards are not yet reached.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.2 - Recipient batches and CLI errors :testdef:
+** GREEN RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 989181c plus the W063 test-only checkpoint submitted for test-code review
+- COMMAND :: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+- EVIDENCE :: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 
 *** Preimplementation run 2026-10-16
 
@@ -75,13 +95,19 @@
 - Definition :: [[file:spec.org::#rt-063-2][RT063.2 - Recipient batches and CLI errors]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.3 - Structured manuscript content :testdef:
+** GREEN RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 989181c plus the W063 test-only checkpoint submitted for test-code review
+- COMMAND :: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+- EVIDENCE :: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 
 *** Preimplementation run 2026-10-16
 
@@ -92,13 +118,19 @@
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** GREEN RT063.4 - Configuration and role geometry :testdef:
+** RED RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: 6fedfdd - standard font-family verification checkpoint
-:COMMAND: go test ./internal/app ./internal/office -run '^TestRT063_(4_|9_AST|11_)' -count=1
-:EVIDENCE: Focused groups passed in .agent/w063-standard-families.log (application 84.982s; office 0.611s). Ordinary Iosevka Publish family assertions are strict; native percentage stretch is tested independently. Earlier RED evidence remains below.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: Existing suite assertions passed at df540a5, but self-review found the unresolved distinct-weight requirement. Standard ODT weight mapping has a separate RED/GREEN regression; see current observations.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 6fedfdd - standard font-family verification checkpoint
+- COMMAND :: go test ./internal/app ./internal/office -run '^TestRT063_(4_|9_AST|11_)' -count=1
+- EVIDENCE :: Focused groups passed in .agent/w063-standard-families.log (application 84.982s; office 0.611s). Ordinary Iosevka Publish family assertions are strict; native percentage stretch is tested independently. Earlier RED evidence remains below.
 
 *** Preimplementation run 2026-10-16
 
@@ -112,13 +144,19 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.5 - Generated matter and heading controls :testdef:
+** GREEN RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 989181c plus the W063 test-only checkpoint submitted for test-code review
+- COMMAND :: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+- EVIDENCE :: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 
 *** Preimplementation run 2026-10-16
 
@@ -131,13 +169,19 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.6 - Sections and page fields :testdef:
+** GREEN RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 989181c plus the W063 test-only checkpoint submitted for test-code review
+- COMMAND :: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+- EVIDENCE :: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 
 *** Preimplementation run 2026-10-16
 
@@ -150,13 +194,19 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.7 - Letter content and geometry :testdef:
+** GREEN RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 989181c plus the W063 test-only checkpoint submitted for test-code review
+- COMMAND :: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+- EVIDENCE :: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 
 *** Preimplementation run 2026-10-16
 
@@ -166,13 +216,19 @@
 - Definition :: [[file:spec.org::#rt-063-7][RT063.7 - Letter content and geometry]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.8 - Font packaging :testdef:
+** GREEN RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 989181c plus the W063 test-only checkpoint submitted for test-code review
+- COMMAND :: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+- EVIDENCE :: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 
 *** Preimplementation run 2026-10-16
 
@@ -183,13 +239,19 @@
 - Expanded execution, 2026-10-16 :: Public cases now cover all four bundled faces in both modes/formats, a permitted local metadata fixture, restricted/missing families with retained family references and warnings, duplicate payload rejection, and a selected font one byte above 32 MiB. =go test ./internal/app -run '^TestRT063_8_' -count=1= compiled and failed at the missing office routes. Internal selected-font budget tests separately exercise exact 32/64 MiB thresholds and overflow against a declaration-only placeholder. Full font-policy coverage is not yet established.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.9 - Resource and publication failures :testdef:
+** GREEN RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 989181c plus the W063 test-only checkpoint submitted for test-code review
+- COMMAND :: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+- EVIDENCE :: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 
 *** Preimplementation run 2026-10-16
 
@@ -205,10 +267,16 @@
 ** GREEN RT063.10 - Existing route preservation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-10-result
-:REVISION: ec9955e4155c1b7049a2d5374f6aeccadf1ba0a0 plus the W063 test-only working tree
-:COMMAND: go test ./... -skip '^TestRT063_' -count=1
-:EVIDENCE: All existing packages passed before production changes; package durations and cache scope are recorded below.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: ec9955e4155c1b7049a2d5374f6aeccadf1ba0a0 plus the W063 test-only working tree
+- COMMAND :: go test ./... -skip '^TestRT063_' -count=1
+- EVIDENCE :: All existing packages passed before production changes; package durations and cache scope are recorded below.
 - Definition :: [[file:spec.org::#rt-063-10][RT063.10 - Existing route preservation]].
 - Coverage follow-up, 2026-10-16 :: After the shared test-helper paragraph-selection change, existing TestOfficeEmbeddedFonts and TestOfficeLocalFontOverride passed together in 2.551s; TestRT054_2OfficeActiveRoleFonts passed in 1.029s. This is focused preservation evidence, not a new full-suite run.
 - Initial preservation evidence, 2026-10-16 :: At =ec9955e= with only new test/fixture files in the working tree, =go test ./... -skip '^TestRT063_' -count=1= passed all existing packages. Go build/module caches were scoped to ignored =.agent/cache/=. The application package took 172.702 seconds; manuscript took 112.050 seconds. No production code had changed. This is the pre-change baseline, not post-implementation verification.
@@ -216,10 +284,16 @@
 ** GREEN RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REVISION: 6fedfdd - standard font-family verification checkpoint
-:COMMAND: go test ./internal/app ./internal/office -run '^TestRT063_(4_|9_AST|11_)' -count=1
-:EVIDENCE: Focused groups passed in .agent/w063-standard-families.log (application 84.982s; office 0.611s). Ordinary Iosevka Publish family assertions are strict; native percentage stretch is tested independently. Earlier RED evidence remains below.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 6fedfdd - standard font-family verification checkpoint
+- COMMAND :: go test ./internal/app ./internal/office -run '^TestRT063_(4_|9_AST|11_)' -count=1
+- EVIDENCE :: Focused groups passed in .agent/w063-standard-families.log (application 84.982s; office 0.611s). Ordinary Iosevka Publish family assertions are strict; native percentage stretch is tested independently. Earlier RED evidence remains below.
 
 *** Preimplementation run 2026-10-16
 
@@ -233,10 +307,16 @@
 ** RED RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
-:REVISION: 989181c plus the W063 test-only checkpoint submitted for test-code review
-:COMMAND: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
-:EVIDENCE: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
+:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:COMMAND: make test
+:EVIDENCE: Current full-suite failures are continuous ODT number reset and DOCX first contents-page parity. Evidence: .agent/w063-current-complete-suite.log. Other page-policy cases passed.
 :END:
+
+*** Previous record metadata (retained)
+
+- REVISION :: 989181c plus the W063 test-only checkpoint submitted for test-code review
+- COMMAND :: go test ./internal/office ./internal/app -run '^TestRT063_' -count=1
+- EVIDENCE :: The written package compiled and executed. Public success cases fail at absent office export routes; internal boundary assertions fail against declaration-only placeholders. See the dated preimplementation run.
 
 *** Preimplementation run 2026-10-16
 
@@ -249,11 +329,15 @@
 
 * One-off checks
 
-** AMBER OT063.1 - Rendered feature comparison :testdef:
+** RED OT063.1 - Rendered feature comparison :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-1-result
-:REASON: Delivery and bounded verification not yet executed.
+:REVISION: b5c3c7c through df540a5 - recorded comparison checkpoints
+:COMMAND: See dated comparison and consuming-directory command logs
+:EVIDENCE: Rendered comparison executed, but page-policy failures and the nonstandard-weight mapping gap prevent acceptance. See current observations and retained comparison index.
 :END:
+
+- Previous deferred reason :: Delivery and bounded verification not yet executed.
 - Definition :: [[file:spec.org::#ot-063-1][OT063.1 - Rendered feature comparison]].
 
 *** Preliminary native-layout experiments, 2026-10-16
@@ -270,11 +354,15 @@
 - Explicit refresh follow-up :: A temporary LibreOffice Basic helper, invoked headlessly from the private profile, loads the DOCX with document macros disabled, calls =TextFields.refresh()= and =getDocumentIndexes().getByIndex(i).update()=, refreshes layout and exports PDF. The resulting contents spans three pages. All 80 extracted contents references match their actual physical heading pages. This establishes a local test mechanism, not a new exporter runtime dependency. Configured contents typography, continuation padding and body-number offsets remain separate checks.
 - Temporary evidence :: Source packages, extracted XML, PDF outputs and the short PDF baseline are retained in the OS-allocated =folio-w063-layout-20261016-26948-z7f315= directory for the active experiment. A reproducible retained helper and final measurements are still required before this OT can be GREEN.
 
-** AMBER OT063.2 - Installed-layout CLI and documentation :testdef:
+** GREEN OT063.2 - Installed-layout CLI and documentation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-2-result
-:REASON: Delivery and bounded verification not yet executed.
+:REVISION: b5c3c7c through df540a5 - recorded comparison checkpoints
+:COMMAND: See dated comparison and consuming-directory command logs
+:EVIDENCE: Four outside-checkout office commands and four public help commands passed at b5c3c7c. Six output files were produced. Logs and outputs are identified by .agent/w063-ot2-final-path; no installation occurred.
 :END:
+
+- Previous deferred reason :: Delivery and bounded verification not yet executed.
 - Definition :: [[file:spec.org::#ot-063-2][OT063.2 - Installed-layout CLI and documentation]].
 
 * User validation

@@ -39,6 +39,20 @@ may then use an installed font or substitute another. Embedding permission flags
 do not replace the font licence. The bundled customized Iosevka faces retain
 their [SIL Open Font Licence](../fonts/iosevka-publish/LICENSE.md).
 
+## Prose weight fidelity
+
+Family selection and percentage stretch are independent of font weight. Current
+DOCX prose styles express weight through regular/bold flags. ODT prose styles
+retain thin through black as numeric weights in steps of 100; explicit generated
+heading bold overrides take precedence. Intermediate numeric values, such as
+643, still use the regular/bold fallback. These are unresolved delivery limits,
+not evidence that every configured weight is faithfully reproduced.
+
+Embedding still includes supported regular/bold/italic faces only. A numeric
+ODT style therefore does not prove that a distinct light or semibold face was
+embedded or selected by the reader. The ordinary-family rendering checks do
+not establish that separate weight claim.
+
 ## Limits and portability
 
 Each font is limited to 32 MiB, with 64 MiB of font data per document. Discovery

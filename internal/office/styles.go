@@ -54,13 +54,7 @@ func (s Style) wordParagraph() docxNode {
 	return p
 }
 func (s Style) odtFont() docxNode {
-	weight := s.Font.Weight
-	if weight == "regular" {
-		weight = "normal"
-	}
-	if s.Bold {
-		weight = "bold"
-	}
+	weight := s.odtWeight()
 	italic := "normal"
 	if s.Italic {
 		italic = "italic"
