@@ -399,7 +399,7 @@ func TestRT054_2OfficeTitleCompositionAndMissingTitle(t *testing.T) {
 					source = "* ACT ONE\n**** CÁIT\nHello.\n"
 				}
 				writeAppFile(t, src, source)
-				writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  page: us-letter\n  font: {size: 12pt}\n  title-page:\n    enabled: true\n    skip-header: true\n    skip-footer: true\n    title: {position: "+position+", align: right}\n    subtitle: {space-before: 2em, font: {size: 12pt}}\n    author: {space-before: 3em, font: {size: 12pt}}\n    date: {position: bottom-right}\n    version: {position: bottom-left}\n  page-header: {enabled: true, format: 'UNTITLED HEADER', distance-from-edge: 10pt, content-padding-after: 20pt}\n  page-footer: {enabled: true, format: 'UNTITLED FOOTER', distance-from-edge: 10pt, content-padding-after: 20pt}\n")
+				writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  page: us-letter\n  font: {size: 12pt}\n  title-page:\n    enabled: true\n    skip-header: true\n    skip-footer: true\n    title: {position: "+position+", align: right}\n    subtitle: {space-before: 2em, font: {size: 12pt}}\n    author: {space-before: 3em, font: {size: 12pt}}\n    date: {position: bottom-right}\n    version: {position: bottom-left}\n  page-header: {enabled: true, format: 'UNTITLED HEADER', alt-format: '', distance-from-edge: 10pt, content-padding-after: 20pt}\n  page-footer: {enabled: true, format: 'UNTITLED FOOTER', distance-from-edge: 10pt, content-padding-after: 20pt}\n")
 				raw, diagnostic, err := officeRun(t, binary, dir, officeEnv(t, t.TempDir(), nil), "convert", src, "--to", format)
 				if err != nil {
 					t.Fatalf("title composition: %v %s", err, diagnostic)

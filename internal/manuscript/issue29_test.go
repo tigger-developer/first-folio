@@ -111,6 +111,8 @@ func totalPagesConfig(header string, footer string, blankBefore bool) string {
 		"    page-header:",
 		"      enabled: true",
 		"      format: " + strconv.Quote(header),
+		"      font: {letter-spacing: 0em}",
+		"      alt-format: \"\"",
 		"    page-footer:",
 		"      format: " + strconv.Quote(footer),
 		"    chapter:",

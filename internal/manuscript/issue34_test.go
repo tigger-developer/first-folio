@@ -37,13 +37,13 @@ type issue34BBoxWord struct {
 	Text string  `xml:",chardata"`
 }
 
-// RT-34.1: all manuscript letter spacing defaults to zero em.
+// RT-34.1: independent tracking defaults follow the British preset.
 func TestRT_34_1_LetterSpacingDefaultsToZeroEm(t *testing.T) {
 	typst := renderIssue15Manuscript(t, "")
 	body := extractBodyPageBlock(t, typst)
 
 	assertContains(t, body, "tracking: 0em,")
-	assertContains(t, extractHeaderBlock(t, typst), "tracking: 0em,")
+	assertContains(t, extractHeaderBlock(t, typst), "tracking: 0.1em,")
 	assertContains(t, extractFooterBlock(t, typst), "tracking: 0em,")
 }
 
@@ -59,7 +59,7 @@ func TestRT_34_2_HeaderAndFooterInheritManuscriptLetterSpacing(t *testing.T) {
 	body := extractBodyPageBlock(t, typst)
 
 	assertContains(t, body, "tracking: 0.04em,")
-	assertContains(t, extractHeaderBlock(t, typst), "tracking: 0em")
+	assertContains(t, extractHeaderBlock(t, typst), "tracking: 0.1em")
 	assertContains(t, extractFooterBlock(t, typst), "tracking: 0em")
 }
 
@@ -164,6 +164,7 @@ func renderLetterSpacingPDF(t *testing.T, spacing string) string {
 		"    page-header:",
 		"      enabled: true",
 		"      format: HEADERTRACK",
+		"      alt-format: \"\"",
 		"      font:",
 		"        letter-spacing: " + spacing,
 		"    page-footer:",

@@ -184,14 +184,16 @@ func buildFontCLI(t *testing.T) string {
 func fontFixtureConfig() map[string]any {
 	cfg := map[string]any{}
 	for path, value := range map[string]any{
-		"folio.manuscript.title-page.enabled":    false,
-		"folio.manuscript.page-header.enabled":   true,
-		"folio.manuscript.toc.include-sections":  true,
-		"folio.manuscript.toc.part-bold":         false,
-		"folio.manuscript.page-header.format":    "HeaderProbe",
-		"folio.manuscript.page-header.font.size": "9pt",
-		"folio.manuscript.page-footer.format":    "FooterProbe",
-		"folio.manuscript.page-footer.font.size": "8pt",
+		"folio.manuscript.title-page.enabled":              false,
+		"folio.manuscript.page-header.enabled":             true,
+		"folio.manuscript.page-header.alt-format":          "",
+		"folio.manuscript.page-header.font.letter-spacing": "0em",
+		"folio.manuscript.toc.include-sections":            true,
+		"folio.manuscript.toc.part-bold":                   false,
+		"folio.manuscript.page-header.format":              "HeaderProbe",
+		"folio.manuscript.page-header.font.size":           "9pt",
+		"folio.manuscript.page-footer.format":              "FooterProbe",
+		"folio.manuscript.page-footer.font.size":           "8pt",
 	} {
 		setFontTestPath(cfg, path, value)
 	}

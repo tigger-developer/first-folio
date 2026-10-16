@@ -18,6 +18,10 @@ import (
 func runningConfig(t *testing.T, header, footer string) config.Config {
 	t.Helper()
 	dir := t.TempDir()
+	// These fixtures use one header on both sides unless testing an explicit pair.
+	if !strings.Contains(header, "alt-format:") {
+		header += "    alt-format: \"\"\n"
+	}
 	font := `    font:
       family: "Libertinus Serif"
       size: "10pt"

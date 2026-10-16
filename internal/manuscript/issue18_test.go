@@ -491,6 +491,7 @@ func TestRT_18_23_HeaderAltUnsetNoBranch(t *testing.T) {
 		"  manuscript:",
 		"    page-header:",
 		"      format: \"only-format\"",
+		"      alt-format: \"\"",
 	}, "\n"), strings.Join([]string{
 		"---", "title: T", "---", "",
 		"# Alpha", "", "## First", "", "body",

@@ -590,6 +590,15 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 
 * Hands-off mode decision log
 
+** 2026-10-16T19:09:13+01:00 :hands-off:review:
+
+*** Preserve edited presets and reconcile regression fixtures
+
+- Decision :: Keep the committed British preset unchanged. Tests of custom running text explicitly select one format and zero tracking where text extraction is the assertion boundary; tests of preset defaults adopt the current 12pt body, 1.4 spacing, page/title/author running text and 0.1em header tracking.
+- Diagnostics :: Count deprecated-path diagnostics independently of the separately tested YAML-load notice. No production PDF/Typst or script behaviour changes are required for these stale expectations.
+- Continuation :: Hands-off delivery resumed. The matching native goal remains paused and its exposed controls cannot resume it; no replacement goal or budget reset is used.
+
+
 ** 2026-10-16T18:26:14+01:00 :hands-off:review:
 
 *** Operator-approved Extended-face fidelity limitation

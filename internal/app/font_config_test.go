@@ -225,7 +225,7 @@ func TestRT039_3ManuscriptFontMergesSameRoleAcrossPublicLayers(t *testing.T) {
 		t.Fatal(stderr)
 	}
 	typst := readAppFile(t, target)
-	assertAppContains(t, typst, `font: "W039 Layered Header", size: 13.5pt, weight: 643, stretch: 117.5%, style: "normal", tracking: 0em`)
+	assertAppContains(t, typst, `font: "W039 Layered Header", size: 13.5pt, weight: 643, stretch: 117.5%, style: "normal", tracking: 0.1em`)
 	assertAppContains(t, typst, `font: "W039 Body Must Not Leak", size: 10pt`)
 	if strings.Contains(typst, `font: "W039 Body Must Not Leak", size: 13.5pt`) {
 		t.Fatal("manuscript body font leaked into the page-header role")

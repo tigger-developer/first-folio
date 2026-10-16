@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"gopkg.in/yaml.v3"
 )
 
 func scriptTitlePDFPages(t *testing.T, sourceText, extension, settings string) []string {
@@ -25,7 +27,7 @@ func scriptTitlePDFPages(t *testing.T, sourceText, extension, settings string) [
 	source, target := filepath.Join(dir, "source"+extension), filepath.Join(dir, "out.pdf")
 	writeAppFile(t, source, sourceText)
 	if settings != "" {
-		writeAppFile(t, filepath.Join(dir, "script.yaml"), settings)
+		writeAppFile(t, filepath.Join(dir, "script.yaml"), titleFixtureRunningFormat(t, settings))
 	}
 	status, stdout, stderr := runApp(t, "convert", source, target)
 	if status != 0 {
@@ -405,4 +407,33 @@ func TestScriptTitleExplicitTruePreservesDefaultPDF(t *testing.T) {
 	if strings.Join(defaults, "\f") != strings.Join(enabled, "\f") {
 		t.Fatal("explicit enabled=true changed dedicated title output")
 	}
+}
+
+// Title fixtures specify a single running header unless they explicitly test parity.
+func titleFixtureRunningFormat(t *testing.T, settings string) string {
+	t.Helper()
+	var data map[string]any
+	if err := yaml.Unmarshal([]byte(settings), &data); err != nil {
+		t.Fatal(err)
+	}
+	folio, _ := data["folio"].(map[string]any)
+	header, _ := folio["page-header"].(map[string]any)
+	if header != nil {
+		font, ok := header["font"].(map[string]any)
+		if !ok {
+			font = map[string]any{}
+			header["font"] = font
+		}
+		if _, explicit := font["letter-spacing"]; !explicit {
+			font["letter-spacing"] = "0em"
+		}
+		if _, explicit := header["alt-format"]; !explicit {
+			header["alt-format"] = ""
+		}
+	}
+	raw, err := yaml.Marshal(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(raw)
 }

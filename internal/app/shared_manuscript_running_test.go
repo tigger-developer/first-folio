@@ -19,7 +19,7 @@ func TestSharedManuscriptRunningMatterMatchesLegacyPDF(t *testing.T) {
 	dir := t.TempDir()
 	source := filepath.Join(dir, "book.md")
 	writeAppFile(t, source, "---\ntitle: Shared Book\nauthor: Example Author\n---\n\n## Chapter One\n\nBody one.\n\n## Chapter Two\n\nBody two.\n")
-	blocks := "page-header:\n  enabled: true\n  format: 'MANUHEAD [title] [chapter] [unknown]'\n  distance-from-edge: 20mm\n  content-padding-after: 10mm\npage-footer:\n  enabled: true\n  format: 'MANUFOOT [page]/[total-pages]'\n"
+	blocks := "page-header:\n  enabled: true\n  format: 'MANUHEAD [title] [chapter] [unknown]'\n  alt-format: ''\n  font: {letter-spacing: 0em}\n  distance-from-edge: 20mm\n  content-padding-after: 10mm\npage-footer:\n  enabled: true\n  format: 'MANUFOOT [page]/[total-pages]'\n"
 	var baseline string
 	for _, legacy := range []bool{false, true} {
 		indent := "  "

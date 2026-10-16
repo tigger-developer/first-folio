@@ -109,7 +109,7 @@ func lineSpacingFixture(t *testing.T, font string, size int, multiplier, gap str
 // RT048.4: omitted values use the embedded British base and US overlay.
 func TestRT048PresetSpacingDefaults(t *testing.T) {
 	binary := buildFontCLI(t)
-	for _, style := range []struct{ name, multiplier string }{{"british", "1.5"}, {"us", "2"}} {
+	for _, style := range []struct{ name, multiplier string }{{"british", "1.4"}, {"us", "2"}} {
 		t.Run(style.name, func(t *testing.T) {
 			dir := lineSpacingFixture(t, "Libertinus Serif", 12, style.multiplier, "0pt")
 			path := filepath.Join(dir, "script.yaml")

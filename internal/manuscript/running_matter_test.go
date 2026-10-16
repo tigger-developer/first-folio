@@ -43,7 +43,7 @@ func TestManuscriptSharedRunningMatterUsesInjectedWarnings(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(cfg.Warnings) != 2 {
+	if strings.Count(strings.Join(cfg.Warnings, "\n"), " is deprecated") != 2 {
 		t.Fatalf("config warnings = %v", cfg.Warnings)
 	}
 	rendered := readFile(t, output)

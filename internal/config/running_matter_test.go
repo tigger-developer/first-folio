@@ -16,7 +16,7 @@ func TestSharedRunningMatterPresetDefaults(t *testing.T) {
 				t.Fatal(err)
 			}
 			assertValue(t, cfg, "folio.page-header.enabled", false)
-			assertValue(t, cfg, "folio.page-header.format", "[title] • [chapter] • [author]")
+			assertValue(t, cfg, "folio.page-header.format", "[page] · [title] · [author]")
 			assertValue(t, cfg, "folio.page-footer.enabled", true)
 			assertValue(t, cfg, "folio.page-footer.format", "[page]")
 			for _, role := range []string{"page-header", "page-footer"} {

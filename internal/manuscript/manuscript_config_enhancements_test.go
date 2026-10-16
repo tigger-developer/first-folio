@@ -583,7 +583,7 @@ func TestRT_15_43_FooterPairRightCenter(t *testing.T) {
 //
 // which no longer contains calc.odd (the pair conditional).
 func TestRT_15_44_ScalarAlignAppliesUniformly(t *testing.T) {
-	typst := renderIssue15Manuscript(t, "folio:\n  manuscript:\n    page-header:\n      align: right\n")
+	typst := renderIssue15Manuscript(t, "folio:\n  manuscript:\n    page-header:\n      align: right\n      alt-format: \"\"\n")
 	body := extractBodyPageBlock(t, typst)
 	assertContains(t, body, `align(right)[`)
 	assertNotContains(t, body, `calc.odd(`)
@@ -773,18 +773,16 @@ func TestRT_15_51_ExplicitZeroGutterMatchesUnconfigured(t *testing.T) {
 // AC15.8 -- amended default header format/align and default footer
 // -----------------------------------------------------------------------------
 
-// RT-15.52: the default page-header.format is "[title] • [chapter] • [author]".
-// The generated Typst substitutes [title]/[author] literally and [chapter] via state.
+// RT-15.52: the British default header keeps page/title/author on facing pages.
+// The historical test identifier is retained after the preset revision.
 func TestRT_15_52_DefaultHeaderFormatIsTitleChapterAuthor(t *testing.T) {
 	typst := renderIssue15Manuscript(t, "")
 	body := extractBodyPageBlock(t, typst)
-	// The default header uses the smart-join filter-join emission (bullet separator with
-	// three placeholders). Title and author appear as content items in the array, the
-	// bullet is the .join separator, and the chapter placeholder is a state read.
 	assertContains(t, body, `[The Glass Orchard]`)
 	assertContains(t, body, `[Example Author]`)
-	assertContains(t, body, `state("folio-current-chapter-name").get()`)
-	assertContains(t, body, `.join([ • ])`)
+	assertContains(t, body, `folio-display-page()`)
+	assertContains(t, body, `.join([ · ])`)
+	assertNotContains(t, body, `state("folio-current-chapter-name").get()`)
 }
 
 // RT-15.53: the default page-header.align is left-right -- left-page (verso) left, right-page
