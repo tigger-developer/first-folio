@@ -61,6 +61,16 @@ sections separate numbering and running matter. Letters use recipient-specific
 paragraphs and never inherit manuscript running matter. Reader pagination may
 differ from PDF; editing and save/reopen need validation in the intended editor.
 
+### Outstanding prose delivery checks
+
+A rendered contents opening on physical page 2 uses the odd first-page header
+instead of the configured even header. Subsequent contents pages select parity
+correctly. This remains an unresolved requirement of W063, the prose office
+export change; it has not been accepted as a fidelity exception.
+
+Nonstandard weight handling has a separate
+[documented limitation](font-embedding.md#prose-weight-fidelity).
+
 ### Font fidelity limitation
 
 Earlier manuscript specimens rendered by this host's LibreOffice substituted

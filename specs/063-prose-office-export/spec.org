@@ -703,3 +703,7 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Weight regression :: Add =TestRT063_4_ODTFontWeightValues= for native named/numeric weights and explicit bold overrides. Standard ODT weights map to normal, bold or the permitted multiples of 100. DOCX distinct weights and intermediate ODT weights remain an unmet requirement, pending the operator's decision; no scope reduction is inferred.
 - Page regressions :: Preserve the failing continuous-reset and first-page parity assertions until a remedy or explicit approved limitation exists.
 - Audit sequence :: Reconcile dated validation records before delivery review; do not submit a known failing delivery or turn deferred user tests into passes.
+
+*** Uninstalled-family evidence follow-up
+
+- Candidate and bounds :: Verify candidate =c57bbb5= with at most four local office renders, no baseline renders and 50 MiB temporary artefacts per run. Reuse the existing temporary font-metadata fixture; do not install, download or build a font. The corrected PostScript-name assertion comes from the source font's name table, not the rendered output. Both formats pass the follow-up; overall rendered acceptance remains blocked by the separately recorded requirements.

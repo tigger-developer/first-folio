@@ -73,6 +73,18 @@ starts a new page; configured displayed numbering and physical page-side rules
 still apply. Letters retain recipient substitutions, Org emphasis and literal
 spans, with their own font/margin/spacing configuration and no running matter.
 
+### Outstanding prose delivery checks
+
+A continuous frontmatter/body transition with unchanged number format does not
+yet apply a requested body-number reset. Continuous changes that alter the
+header/footer page-field structure are also unresolved. Starting a new page
+for these cases is a pending proposal, not the implemented or approved policy.
+The existing approved number-format-change page break remains separate.
+
+These remain unresolved requirements of W063, the prose office export change.
+Nonstandard weight handling has a separate
+[documented limitation](font-embedding.md#prose-weight-fidelity).
+
 ### Font fidelity limitation
 
 Earlier manuscript specimens rendered by this host's LibreOffice substituted
