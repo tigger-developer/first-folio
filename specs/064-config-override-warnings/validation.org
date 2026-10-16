@@ -1,0 +1,45 @@
+#+TITLE: W064 - Validation Evidence
+#+SCHEMA: 2
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** RED RT064.1 - Loaded YAML files are reported once :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-064-1-result
+:REVISION: 99483f7994536b7ac4ac31f82ad28775c7354428
+:COMMAND: go test ./internal/app -run '^TestRT064_' -count=1
+:EVIDENCE: Intended warning assertion failed: no cascade-load warnings appeared. See the dated run below.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-064-1][AC064.1 - Loaded user YAML files are reported]].
+- Runs :: The intended missing-warning failure was observed on 2026-10-16.
+
+*** Run 2026-10-16
+
+- Environment :: macOS arm64, Go 1.27.2; synthetic temporary home and project.
+- Observed :: The manuscript dry-run exited successfully and retained the winning
+  =23mm= margin, but stderr had zero cascade-load warning lines instead of four.
+  The test stopped at this assertion before the non-manuscript conversion case.
+
+** RED RT064.2 - Diagnostics cover manuscript output routes :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-064-2-result
+:REVISION: 99483f7994536b7ac4ac31f82ad28775c7354428
+:COMMAND: go test ./internal/app -run '^TestRT064_' -count=1
+:EVIDENCE: All four routes generated non-empty outputs but lacked the expected cascade-load warning. See the dated run below.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-064-1][AC064.1 - Loaded user YAML files are reported]] and
+  [[file:spec.org::#ac-064-2][AC064.2 - Diagnostics preserve output and omit setting details]].
+- Runs :: The intended missing-warning failure was observed on 2026-10-16.
+
+*** Run 2026-10-16
+
+- Environment :: macOS arm64, Go 1.27.2; synthetic temporary home and project.
+- Observed :: =.typ=, =.pdf=, =.docx= and =.odt= generation returned success and
+  created non-empty outputs, but none emitted a cascade-load warning. DOCX and
+  ODT also emitted existing font-embedding warnings; the assertions isolate the
+  missing cascade warning from those messages.
