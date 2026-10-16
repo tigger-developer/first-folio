@@ -78,6 +78,15 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** REVIEW W064 - Report configuration overrides during manuscript rendering :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-064
+:CREATED: 2026-10-16
+:END:
+- Specification :: [[file:../specs/064-config-override-warnings/spec.org][W064 - Manuscript configuration override diagnostics]].
+- Scope :: Report differing user-supplied configuration values replaced by
+  higher-precedence layers on stderr, preserving existing precedence and output.
+
 ** ACTIVE W063 - Editable DOCX and ODT manuscripts and letters :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-063

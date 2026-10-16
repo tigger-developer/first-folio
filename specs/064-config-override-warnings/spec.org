@@ -1,0 +1,373 @@
+#+TITLE: W064 - Report configuration overrides during manuscript rendering
+#+SCHEMA: 8
+#+SUBTITLE: Configuration diagnostics
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- Manuscript generation reports *which configured value wins* when one
+  user-supplied layer replaces another.
+
+** Before
+
+- Configuration layers merge by precedence, but diagnostics currently cover
+  *deprecated manuscript settings only*.
+
+** After
+
+- Each differing user-configured value replaced by a higher-precedence
+  user-supplied layer *produces a warning on stderr*.
+- Warnings identify the key and both layers, while *omitting the values*.
+
+** Changes
+
+- Diagnostics apply to manuscript configuration mappings and configured
+  metadata overrides on every manuscript output route.
+
+** Unchanged
+
+- Existing precedence, recursive merge, selected output, and successful exit
+  *remain unchanged*.
+- Built-in preset composition and non-manuscript commands *produce no new
+  override warnings*.
+
+** Edge cases
+
+- Repeating a value already effective *does not warn*; replacing it again at a
+  higher layer produces another warning for that override.
+
+** Decisions
+
+- Diagnostics identify *key and source layers only*; they do not disclose
+  values or full filesystem paths.
+
+** Next step
+
+- Review this definition, then authorize delivery as described in
+  [[#delivery-handoff][Delivery Handoff]].
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+
+Configuration precedence is intentional: later sources can replace earlier
+values. During manuscript generation, that makes source-frontmatter settings
+look ignored when a discovered local =script.yaml= supplies the winning value.
+The current configuration reference documents the precedence, but the
+application does not report ordinary overrides.
+
+** Outcome
+
+The manuscript command makes each effective user-configuration override
+visible on stderr without changing which value is used or exposing configured
+values in diagnostics.
+
+** Scope
+
+*** In scope
+
+- =folio manuscript= across its supported output routes.
+- Differing leaf values replaced across user-supplied configuration layers:
+  global =script.yaml=, global style-specific YAML, source Markdown =folio:= or
+  =render:= mappings, nearest local =script.yaml=, local style-specific YAML,
+  and CLI overrides.
+- Supported top-level manuscript metadata from YAML configuration when it
+  replaces a value from manuscript frontmatter.
+- One warning for each override event, including a key replaced successively by
+  more than one higher-precedence user layer.
+
+*** Out of scope
+
+- Changing configuration precedence, merge semantics, validation, or output.
+- Warnings for built-in base or style preset composition, absent keys, or a
+  higher layer that supplies the already-effective value unchanged.
+- New warning controls, logging frameworks, configuration files, or changes to
+  script, letter, conversion, or other non-manuscript command behaviour.
+- Printing old or new values, full source paths, or unsupported/unknown keys
+  that do not affect an effective setting.
+
+*** Unchanged
+
+- W037 - Manuscript source configuration with recursive layout overrides
+  remains the authority for source-versus-local precedence and validation.
+- W002 - Unified YAML configuration with precedence chain remains the authority
+  for shared metadata and established configuration precedence.
+- Existing deprecation and export warnings remain in place.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]]
+- Product authority :: [[file:../../README.md][Configuration overview]] and
+  [[file:../../docs/config.md][configuration precedence and manuscript source configuration]].
+- Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Configuration ownership and manuscript orchestration]].
+- Historical requirement :: [[file:../../docs/work.org][W002 - YAML precedence and source metadata overrides]] and
+  [[file:../../specs/037-source-frontmatter/spec.org][W037 - Manuscript source configuration with recursive layout overrides]].
+- Current implementation :: [[file:../../internal/config/config.go][Layered configuration merge and warning collection]],
+  [[file:../../internal/config/running_matter.go][Existing migration warnings]],
+  [[file:../../internal/manuscript/run.go][Typst/PDF warning output]], and
+  [[file:../../internal/manuscript/office.go][DOCX/ODT warning output]].
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+
+- Warnings go to stderr, as do current manuscript configuration diagnostics.
+- The project owns configuration loading and warning wording. No external
+  service, dependency, or persistent state is required.
+- Delivery must preserve human changes in the active W063 - Editable DOCX and
+  ODT manuscripts and letters worktree; its in-progress files are not part of
+  this change's implementation scope.
+
+** Decisions
+
+- An override event occurs when a user-supplied layer replaces a value already
+  supplied by a lower-precedence user source with a different value.
+- Supported metadata from manuscript frontmatter is the initial metadata
+  source; any configured metadata layer that replaces it participates in the
+  same warning contract.
+- A diagnostic names the configuration key, the replaced source layer, and the
+  winning source layer. It contains no configured values or absolute paths.
+- A key overridden again at a later layer produces a separate diagnostic for
+  that later event.
+- Built-in preset values establish defaults and are excluded from override
+  warnings, avoiding diagnostics for normal preset composition.
+
+** Unresolved blockers
+
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC064.1 - Differing user-layer overrides are reported :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-064-1
+:END:
+
+- Criterion :: During =folio manuscript=, when a higher-precedence
+  user-supplied layer replaces a differing value from a lower-precedence
+  user-supplied layer, the command emits one stderr warning naming the key and
+  both source layers. Each successive replacement is reported.
+- Proven by :: [[#rt-064-1][RT064.1 - CLI override diagnostics preserve precedence]] and
+  [[#rt-064-2][RT064.2 - Diagnostics cover manuscript output routes]].
+
+** AC064.2 - Diagnostics preserve output and protect configured values :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-064-2
+:END:
+
+- Criterion :: Override warnings do not change the effective value, generated
+  output, or successful exit. They do not appear on stdout and do not disclose
+  old or new values or full source paths.
+- Proven by :: [[#rt-064-1][RT064.1 - CLI override diagnostics preserve precedence]] and
+  [[#rt-064-2][RT064.2 - Diagnostics cover manuscript output routes]].
+
+** AC064.3 - Non-overrides and other commands stay quiet :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-064-3
+:END:
+
+- Criterion :: Equal values, absent lower-layer values, built-in preset
+  composition, and non-manuscript commands do not produce new override
+  warnings. Existing diagnostics remain unchanged.
+- Proven by :: [[#rt-064-1][RT064.1 - CLI override diagnostics preserve precedence]] and
+  [[#rt-064-2][RT064.2 - Diagnostics cover manuscript output routes]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT064.1 - CLI override diagnostics preserve precedence :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-064-1
+:END:
+
+- Covers :: [[#ac-064-1][AC064.1 - Differing user-layer overrides are reported]],
+  [[#ac-064-2][AC064.2 - Diagnostics preserve output and protect configured values]],
+  and [[#ac-064-3][AC064.3 - Non-overrides and other commands stay quiet]].
+- Boundary :: Public =folio manuscript= CLI with temporary manuscript and YAML
+  files; use generated Typst output or =--dry-run= where it exposes the
+  effective setting.
+- Setup :: In a temporary home and project, set synthetic global and local
+  =title= values alongside a source-frontmatter title. Set distinct global,
+  source, local and selected-style values for
+  =folio.manuscript.margin=. Set =folio.style= in source and local YAML, then
+  select =us= with the existing =--style= CLI option. Include separate cases
+  for an equal-value layer and a value set only at the higher layer.
+- Action :: Run =folio manuscript= to a Typst target, then run =folio convert=
+  with the same local YAML file.
+- Expected :: Stderr has one warning for each differing replacement, naming
+  the key plus old and winning source layers. It contains neither configured
+  values nor absolute paths. Stdout contains no warnings; manuscript generation
+  succeeds and uses the existing winning title, margin and style. The
+  equal-value, higher-only, preset-only, unsupported-key, and conversion cases
+  add no override warning.
+- Retention :: Persistent regression suite under =make test=.
+
+** RT064.2 - Diagnostics cover manuscript output routes :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-064-2
+:END:
+
+- Covers :: [[#ac-064-1][AC064.1 - Differing user-layer overrides are reported]] and
+  [[#ac-064-2][AC064.2 - Diagnostics preserve output and protect configured values]].
+- Boundary :: Public =folio manuscript= CLI on each supported output route:
+  Typst, PDF, DOCX, and ODT.
+- Setup :: Supply one differing source-frontmatter and local-YAML value using
+  synthetic content and temporary configuration.
+- Action :: Generate each output format.
+- Expected :: Each successful route reports the same key and source-layer
+  warning on stderr, keeps its existing winning value and produces its requested
+  output. No warning is written to stdout.
+- Retention :: Persistent regression suite under =make test=.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+- A later layer that repeats the current value is not a differing override and
+  *does not warn* ([[#ac-064-3][AC064.3 - Non-overrides and other commands stay quiet]]).
+- A value replaced more than once produces a warning for *each differing layer
+  transition* ([[#ac-064-1][AC064.1 - Differing user-layer overrides are reported]]).
+- Warnings never include configured values, including metadata values that may
+  contain contact details ([[#ac-064-2][AC064.2 - Diagnostics preserve output and protect configured values]]).
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+
+- Relevant components :: =internal/config= loads and deep-merges the ordered
+  YAML layers. =internal/manuscript= applies document metadata and emits the
+  collected configuration warnings on stderr for Typst/PDF and office exports.
+- Existing pattern :: =Config.Warnings()= carries manuscript migration
+  diagnostics to both manuscript command routes; the command owns stream writes.
+- Ownership boundary :: First Folio owns precedence tracking and diagnostics.
+  The invoking environment owns the configuration files.
+
+** High-level design
+
+*** Components and responsibilities
+
+- Extend the existing configuration merge path to retain the origin of each
+  explicitly supplied leaf while applying user layers. Reuse the ordered layer
+  sequence and warning collection; do not add a second configuration loader.
+- Connect manuscript document metadata to the same diagnostic contract so each
+  configured metadata layer replacing source-frontmatter metadata is reported.
+- Keep stderr emission in the existing manuscript command boundaries for all
+  supported output formats.
+
+*** Flow
+
+1. Load built-in base and style values without treating them as user sources.
+2. Apply user-supplied layers in the existing order. For each supported leaf already set
+   by a user source, compare the incoming value; record a warning only when it
+   differs, then associate the effective leaf with the new source.
+3. Resolve manuscript metadata with its existing precedence, tracking the
+   source-frontmatter metadata as the lowest metadata layer. Add a warning for
+   each differing configuration layer that replaces it or an earlier layer.
+4. Validate and render using the unchanged effective configuration; write the
+   collected warnings to stderr through the existing manuscript paths.
+
+*** Essential mechanisms
+
+- Treat nested mappings recursively and report overrides at the replaced leaf
+  path. A scalar or list replaces its value at that path. Do not serialize
+  values into diagnostics.
+- Identify sources by safe layer labels such as =manuscript frontmatter=,
+  =global script.yaml=, =global style-specific YAML=, =local script.yaml=,
+  =local style-specific YAML=, or =command line=; do not include full paths.
+- Preserve an ordered warning list, with one entry per differing layer
+  transition. Built-in base and style values have no user-source provenance and
+  do not create warnings.
+
+*** Failure behaviour
+
+- Existing YAML parsing, validation, precedence, and output failures retain
+  their current exit and diagnostic behaviour.
+- If writing a required warning to stderr fails, manuscript generation returns
+  the existing stream-write error path before publishing output.
+
+*** Simplicity and proportionality
+
+- Provenance is collected during the existing merge and returned through the
+  existing warning channel. No new configuration syntax, runtime option,
+  dependency, or output format is introduced.
+
+** Design decisions and verification
+
+*** Report differing user-layer replacements, not preset composition
+
+- Decision :: Emit diagnostics only when an explicit user layer changes an
+  already supplied value from another user layer.
+- Rationale :: Built-in style composition is expected. Reporting it would add
+  noise without explaining a user-controlled precedence decision.
+- Verification :: RT064.1 covers collisions, repeated replacement, equal
+  values, absent lower-layer values and preset-only settings.
+
+*** Identify keys and sources without values or full paths
+
+- Decision :: Warnings identify the setting and source layers, and omit values
+  and absolute paths.
+- Rationale :: This explains precedence while avoiding disclosure of personal
+  metadata or local filesystem details.
+- Verification :: RT064.1 checks diagnostic content and confirms configured
+  values and absolute paths are absent.
+
+*** Architecture impact
+
+**** Security impact
+
+- Threat boundary :: Existing local configuration inputs and CLI values remain
+  within the current configuration boundary.
+- Data and secrets :: Diagnostics omit values and absolute paths; no new data is
+  persisted or transmitted.
+- Access :: No permissions, file discovery, or external access are added.
+- Conclusion :: No new trust boundary; output minimization is required by
+  AC064.2.
+
+**** Other relevant qualities
+
+- Operability :: Warnings remain visible on stderr in interactive and scripted
+  use without contaminating generated manuscript content or stdout.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: =.sdlc/project.yaml=, [[file:../../docs/config.md][configuration reference]],
+  [[file:../../docs/ARCHITECTURE.md][configuration architecture]],
+  [[file:../../specs/037-source-frontmatter/spec.org][W037 - source configuration contract]],
+  and [[file:../../specs/063-prose-office-export/spec.org][W063 - manuscript office export contract]].
+- Entry conditions :: Explicit operator approval of this definition and current
+  definition-gate evidence in =audits.yaml=.
+- First implementation step :: Add public CLI regression coverage for the
+  warning stream, source labels, precedence preservation, and no-warning cases
+  in [[#rt-064-1][RT064.1 - CLI override diagnostics preserve precedence]].
+- Definition evidence :: [[file:audits.yaml][=audits.yaml=]]
+- Validation evidence :: [[file:validation.org][=validation.org=]]; delivery creates
+  the record headings and records current results for both RTs.
+- Documentation impact :: Update =docs/config.md= and
+  =docs/ARCHITECTURE.md= to describe the diagnostic contract. No README change
+  is required because its summary does not define warning behaviour.
+
