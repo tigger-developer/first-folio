@@ -78,7 +78,7 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** REVIEW W064 - Report YAML files in manuscript configuration cascade :feature:
+** ACTIVE W064 - Report YAML files in manuscript configuration cascade :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-064
 :CREATED: 2026-10-16

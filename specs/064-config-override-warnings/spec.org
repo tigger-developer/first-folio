@@ -3,7 +3,7 @@
 #+SUBTITLE: Configuration diagnostics
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-16
 
 * Synopsis
 :PROPERTIES:
@@ -353,4 +353,31 @@ which values are used.
 - Documentation impact :: Update =docs/config.md= and
   =docs/ARCHITECTURE.md= to describe the diagnostic contract. No README change
   is required because its summary does not define warning behaviour.
+
+* Hands-off mode decision log
+
+** 2026-10-16T16:13:06Z :hands-off:review:
+
+*** Delivery mode and continuation
+
+- The operator invoked =deliver-change= without selecting ATTENDED, so this
+  invocation proceeds in HANDS-OFF mode. Pausing or reopening a decision
+  changes the mode to ATTENDED until the operator invokes =HANDS-OFF= again.
+
+*** Test and OT scope
+
+- The signed-off definition specifies two automated regression tests and no
+  OT or UT. No live external operation or cost-incurring test is required, so
+  no per-ticket OT budget applies.
+
+*** Branch strategy
+
+- The global delivery strategy is =current=; retain the operator-selected
+  =master= branch for this change.
+
+*** Diagnostic path disclosure
+
+- Follow the signed-off requirement to identify each loaded YAML file by its
+  resolved path. The definition records the possible disclosure of local
+  directory names on stderr; do not add setting names or values.
 
