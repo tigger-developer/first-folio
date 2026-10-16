@@ -55,7 +55,9 @@ func (p *Prose) odtBandAssignments(state Boundary) []docxNode {
 				if token.field != "" {
 					continue
 				}
-				fields = append(fields, ox("text:variable-set").attr("text:name", odtBandVariable(item.kind, variant, index)).attr("text:display", "none").attr("office:value-type", "string").attr("office:string-value", token.text))
+				field := ox("text:variable-set").attr("text:name", odtBandVariable(item.kind, variant, index)).attr("text:display", "none").attr("office:value-type", "string").attr("office:string-value", token.text)
+				field.text = token.text
+				fields = append(fields, field)
 			}
 		}
 	}

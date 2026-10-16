@@ -23,6 +23,9 @@
 
 - Full regression rerun, 2026-10-16 :: =make test= exited 2 against the standard-family checkpoint. The application package ran for 393.606s; no W063 regression is listed among failures. Application, configuration and manuscript packages still fail existing running-matter/default-font/default-spacing and warning-count assertions. Office passed in 2.287s; letter, play and Typst packages also passed. Full output: =.agent/w063-make-test-current.log=. The suite remains RED; the passing focused font checks do not override that result.
 
+- Preservation fixture reconciliation :: The previously failing selected script/title and manuscript running-text tests pass after explicitly setting their intended single header and zero tracking. Preset-default assertions now match the committed defaults. Focused application/manuscript follow-up passed in =.agent/w063-preservation-second.log= (4.142s/3.060s); full-suite verification is running against =54aca75=, the fixture reconciliation checkpoint.
+- Continuous ODT rendering :: =TestRT063_12_ODTContinuousRunningTemplates= exposed empty displayed variable values when assignments had attributes but no character data. Supplying both retains frontmatter/body running text for templates with the same native page-field sequence; the rendered case passes in =.agent/w063-continuous-template-same-fields.log= (11.967s). Conditional paragraphs did not solve different field sequences; that experimental implementation was discarded. A broader page-master transition exception remains a pending operator decision, not accepted behaviour.
+
 * Automated regression
 
 ** RED RT063.1 - Output selection and dependencies :testdef:
