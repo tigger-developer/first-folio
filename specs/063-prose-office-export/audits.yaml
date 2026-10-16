@@ -699,3 +699,483 @@ audits:
                - RT063.11 and RT063.12 make LibreOffice a hard prerequisite of `make test`, and therefore of `make release`.
                - The documentation list names the README. During delivery, also record the prerequisite check, with a clear missing-tool failure, in the README or Makefile documentation.
           updated: "2026-10-16T05:37:50Z"
+    - readiness_check: test-code
+      work_item: W063
+      gate: implementation
+      session_id: 20261016_135501_7354b8
+      standards_contract: 1
+      standards_delivered:
+        - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+          sha256: 43bf54d9d5cf5930807ea6ba084ccbae5793bae4312b62a743c215e6df6a9e96
+          bytes: 8169
+        - path: /Users/tigger/.agents/sdlc/AUDITS.md
+          sha256: 521aed142ee9541d060baf6aa869037bbdea338caf7d739aefeb44d54a541294
+          bytes: 19282
+        - path: /Users/tigger/.agents/sdlc/CODING.md
+          sha256: c4311413740c0a4f7e6b8ffa5bada9d4cd537cab17b94474f286c1151e05fac8
+          bytes: 13793
+        - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+          sha256: 98e32fea598efeb6f1b5e14b5b4c5e515fd7d80167b3183093117935e5418de5
+          bytes: 7840
+        - path: /Users/tigger/.agents/sdlc/GIT.md
+          sha256: 978ce055b576d128a2e21eed7cf969773adc84a04962fc0d9a0299457c90e68f
+          bytes: 7822
+        - path: /Users/tigger/.agents/sdlc/MAIN.md
+          sha256: 97e08827ce6ec7713a914e1871b961207f6454f84ac61591cc321aaa57388ad8
+          bytes: 13075
+        - path: /Users/tigger/.agents/sdlc/MARKDOWN.md
+          sha256: 59f3d6416de8226c11914ece1eb42720b70f75a83d40e45cc47355048e5f0fb9
+          bytes: 1357
+        - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+          sha256: 0d2dbee2f0e0db1ff89a7ff315ab19d361e57e944a321905d0f4ed44db7465ab
+          bytes: 2989
+        - path: /Users/tigger/.agents/sdlc/SECURITY.md
+          sha256: 149da81b261468fdca44d970ffe6fa321a0f97fb09ef7405364710931d0f1867
+          bytes: 5042
+        - path: /Users/tigger/.agents/sdlc/TESTING.md
+          sha256: c6a78a4bcfbac35ecfce7c442983f3c2dac8799d3bdb530d8fef99808381b70f
+          bytes: 16769
+        - path: /Users/tigger/.agents/sdlc/technologies/API.md
+          sha256: ed09a85c302d19670236a5d94ac79dd8f03cd8b265177a09924f955708a072c0
+          bytes: 10920
+        - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+          sha256: c71d389d7b8e576756f2a2843f77a5a2626e9300704b05cd6f8aa4fcdcc3f952
+          bytes: 7316
+        - path: /Users/tigger/.agents/sdlc/technologies/RUST.md
+          sha256: a05725c8cbd6e8306bbc39b4d197f1e1c0dd9230d43cb8e67dcede388f4c34ba
+          bytes: 18482
+        - path: /Users/tigger/.agents/sdlc/technologies/SHELL.md
+          sha256: e7c3ad8d6ceb8b571abd3d6b36ef2e358c71691136e729cbed87cd5abadfd94d
+          bytes: 12345
+      harness: hermes
+      provider: kimi-coding
+      model: kimi-for-coding
+      configured:
+        harness: hermes
+        provider: kimi-coding
+        model: kimi-for-coding
+      external_round: 1
+      status: active
+      updated: "2026-10-16T12:59:07Z"
+      revision: 586220f
+      verdict: PASS
+      response: |-
+        GATE: test-code
+        REVISION: 586220f
+        VERDICT: PASS
+
+        Standards applied: MAIN.md, AUDITS.md, ARCHITECTURE.md, TESTING.md, CODING.md, GIT.md, SECURITY.md, DOCUMENTATION.md, MARKDOWN.md, ORGMODE.md, technologies/API.md, GO.md, RUST.md, SHELL.md. No material access gap; no applicable standard unread.
+
+        Basis for verdict:
+
+        1. Coverage. Every signed-off RT definition (RT063.1-12) has a written, named test group in internal/app/prose_office_*_test.go and internal/office/*_test.go, and each maps to the spec's action/expected text: output selection and dependency isolation (incl. forbidden-Typst marker, missing and incompatible Pandoc), recipient batches and CLI errors, structured content for md/org with ordering/dedup/private-section rules, full role-geometry matrix (all six font properties per role, layering, invalid effective config with YAML-path diagnostics and destination preservation), generated matter (title/contents/copyright/barcode switches and ordering), page policy (parity, blank-page modes, suppression, continuous boundary, numbering formats/reset), letter composition and literals, font packaging (permissions, budgets, oversize), and the full resource/publication failure group at the owning internal boundaries plus public command cases. The labelled fixtures and EXPECTATIONS.md give key-to-test traceability with independent expected values; UT definitions are recorded AMBER, which is eligible at this gate. RT063.10 preservation is legitimately recorded GREEN with the full-suite command, revision and durations.
+
+        2. RED evidence. The recorded preimplementation run compiled and executed both packages. Public success cases fail at the absent office command routes (existing commands reject .docx/.odt targets and unknown letter options) — runtime behavioural failure, not compilation or setup. Internal boundary tests fail for the intended reason: the placeholder bodies accept everything, so every over-limit, unsafe-member, malformed-input, deadline, injected-fault and ordering assertion fails while at-limit cases pass. Failure-path public tests that cannot yet reach their guards are honestly recorded as not yet meaningful, matching the operator context.
+
+        3. Scaffolding. internal/office contains declarations and placeholder bodies only (nil returns, no validation, no publication, no reads); they implement no target behaviour and have no production callers. Minimal-declaration scaffolding is permitted by TESTING.md and is included in the evidence.
+
+        4. Oracles, doubles, determinism. Assertions run against generated ZIP/XML artefacts, rendered PDF text spans and public command results — no source greps or byte-equality proofs. Doubles sit at real external boundaries (test binary as child process with restricted PATH; env-gated synthetic Pandoc/Typst confined to the child; failing filesystem wrappers). Tests use t.TempDir, t.Setenv, synthetic fixtures and bounded diagnostics; rendered tests require local tools and fail loudly if absent, per spec.
+
+        5. No reopened scope. The operator-approved ODT frontmatter/body number-format boundary exception is exercised through the recorded page-policy and rendered tests; no new product behaviour was audited beyond the signed-off definition. Execution states in validation.org are evidence, not duplicated audit verdicts. Existing shared helpers not included in the package (runApp/writeAppFile) are pre-existing infrastructure exercised by the recorded passing preservation suite; not a material gap for this candidate.
+
+        Test-code PASS approves the written tests only; production implementation remains unimplemented and the delivery-code gate must review the production delta, changed tests, RT/OT GREEN evidence and documentation before any delivery claim.
+      history:
+        - standards_delivered:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: 43bf54d9d5cf5930807ea6ba084ccbae5793bae4312b62a743c215e6df6a9e96
+              bytes: 8169
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: 521aed142ee9541d060baf6aa869037bbdea338caf7d739aefeb44d54a541294
+              bytes: 19282
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: c4311413740c0a4f7e6b8ffa5bada9d4cd537cab17b94474f286c1151e05fac8
+              bytes: 13793
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: 98e32fea598efeb6f1b5e14b5b4c5e515fd7d80167b3183093117935e5418de5
+              bytes: 7840
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 978ce055b576d128a2e21eed7cf969773adc84a04962fc0d9a0299457c90e68f
+              bytes: 7822
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 97e08827ce6ec7713a914e1871b961207f6454f84ac61591cc321aaa57388ad8
+              bytes: 13075
+            - path: /Users/tigger/.agents/sdlc/MARKDOWN.md
+              sha256: 59f3d6416de8226c11914ece1eb42720b70f75a83d40e45cc47355048e5f0fb9
+              bytes: 1357
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 0d2dbee2f0e0db1ff89a7ff315ab19d361e57e944a321905d0f4ed44db7465ab
+              bytes: 2989
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: 149da81b261468fdca44d970ffe6fa321a0f97fb09ef7405364710931d0f1867
+              bytes: 5042
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: c6a78a4bcfbac35ecfce7c442983f3c2dac8799d3bdb530d8fef99808381b70f
+              bytes: 16769
+            - path: /Users/tigger/.agents/sdlc/technologies/API.md
+              sha256: ed09a85c302d19670236a5d94ac79dd8f03cd8b265177a09924f955708a072c0
+              bytes: 10920
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: c71d389d7b8e576756f2a2843f77a5a2626e9300704b05cd6f8aa4fcdcc3f952
+              bytes: 7316
+            - path: /Users/tigger/.agents/sdlc/technologies/RUST.md
+              sha256: a05725c8cbd6e8306bbc39b4d197f1e1c0dd9230d43cb8e67dcede388f4c34ba
+              bytes: 18482
+            - path: /Users/tigger/.agents/sdlc/technologies/SHELL.md
+              sha256: e7c3ad8d6ceb8b571abd3d6b36ef2e358c71691136e729cbed87cd5abadfd94d
+              bytes: 12345
+          diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-2423138462.log
+          readiness_check: test-code
+          cache_key: sha256:739c4d0bbab84c0d1a4c50a2a979a08afec45a70fb829e5fa6c5d577d2e6de99
+          session_id: 20261016_135501_7354b8
+          harness: hermes
+          provider: kimi-coding
+          model: kimi-for-coding
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: 43bf54d9d5cf5930807ea6ba084ccbae5793bae4312b62a743c215e6df6a9e96
+              bytes: 8169
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: 521aed142ee9541d060baf6aa869037bbdea338caf7d739aefeb44d54a541294
+              bytes: 19282
+            - path: /Users/tigger/.agents/sdlc/CHANGELOG.md
+              sha256: 2384009fbc28cea6fceab0d3fbb7810d1067a0da28c169b4e9386c0e6745ef56
+              bytes: 4424
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: c4311413740c0a4f7e6b8ffa5bada9d4cd537cab17b94474f286c1151e05fac8
+              bytes: 13793
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: 98e32fea598efeb6f1b5e14b5b4c5e515fd7d80167b3183093117935e5418de5
+              bytes: 7840
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 2c6ad74ef4b63c6b5a21c98e201ec949c1bd99866ebd2852d1dd9da117d4a8f9
+              bytes: 4846
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 978ce055b576d128a2e21eed7cf969773adc84a04962fc0d9a0299457c90e68f
+              bytes: 7822
+            - path: /Users/tigger/.agents/sdlc/HARNESS.md
+              sha256: 2277702bcb4c0c4ca81551b3df235d556909062fb1bc036323e243b7b40b61c2
+              bytes: 34821
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 5d9e863d7fbd9741c7fa1a0987e3417f82d3a4b7c095bb35cfb4c593a51e4cc2
+              bytes: 16642
+            - path: /Users/tigger/.agents/sdlc/LEARNINGS.md
+              sha256: 520513130332f468ab1f3185569b4cba7067f2968a4cb389623b02a228c2e68d
+              bytes: 52377
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 97e08827ce6ec7713a914e1871b961207f6454f84ac61591cc321aaa57388ad8
+              bytes: 13075
+            - path: /Users/tigger/.agents/sdlc/MARKDOWN.md
+              sha256: 59f3d6416de8226c11914ece1eb42720b70f75a83d40e45cc47355048e5f0fb9
+              bytes: 1357
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 0d2dbee2f0e0db1ff89a7ff315ab19d361e57e944a321905d0f4ed44db7465ab
+              bytes: 2989
+            - path: /Users/tigger/.agents/sdlc/PAIRING.md
+              sha256: 38ee20da8e16aba810c035600e6f5ca948d9a706f33c1179ebbf2fbc9d1ad034
+              bytes: 6050
+            - path: /Users/tigger/.agents/sdlc/README.md
+              sha256: e7aa5b4c951ecea7e7420105fa7c87987bf0e6cc08d10cc099a36ad7fed7b5aa
+              bytes: 12191
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: 149da81b261468fdca44d970ffe6fa321a0f97fb09ef7405364710931d0f1867
+              bytes: 5042
+            - path: /Users/tigger/.agents/sdlc/SPIKE-AUDIT.md
+              sha256: 73e36e3cb0b27ed469239b67de7efc4d64a0b71845d28e3b5bdee3d72a9baaf5
+              bytes: 1822
+            - path: /Users/tigger/.agents/sdlc/STANDALONE-AUDIT.md
+              sha256: f4c22a6759cd1ebf9211ccd860cc5e5cc3d322c5bd4c72a91b14c43ea19507c0
+              bytes: 2917
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: c6a78a4bcfbac35ecfce7c442983f3c2dac8799d3bdb530d8fef99808381b70f
+              bytes: 16769
+            - path: /Users/tigger/.agents/sdlc/THIRD_PARTY_NOTICES.md
+              sha256: bf9038abaefa7b03b66845fa0c9f125b282438f58f57a51c971c52407bd14b1a
+              bytes: 1812
+            - path: /Users/tigger/.agents/sdlc/docs/ACs.md
+              sha256: 9a59f4feeb496a6604923c7c7210df38f7b307a26e8a0e11e87f6210072611bf
+              bytes: 1557
+            - path: /Users/tigger/.agents/sdlc/prompts/discover-project-authorities.md
+              sha256: 7c6f62a3c8c13636dc37c9156216058c9f31153d1683a4b3b9d37a66bd3e8b6d
+              bytes: 1869
+            - path: /Users/tigger/.agents/sdlc/prompts/discover-project-technologies.md
+              sha256: 7dafb2828f52034d4af6042462f6ec373f5c7fdca8af1633caef675800a62366
+              bytes: 2715
+            - path: /Users/tigger/.agents/sdlc/prompts/normalize-legacy-acs.md
+              sha256: 44489c47c457ed857dba026da6304553f8d3a12f204952a4997c457c974fcd83
+              bytes: 2403
+            - path: /Users/tigger/.agents/sdlc/technologies/API.md
+              sha256: ed09a85c302d19670236a5d94ac79dd8f03cd8b265177a09924f955708a072c0
+              bytes: 10920
+            - path: /Users/tigger/.agents/sdlc/technologies/FISH.md
+              sha256: 0b71b362e3981f3f1ed60a045aad0f5b2b65cdeb2ec0a636a1d6cdb8aaf0c1a1
+              bytes: 13628
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: c71d389d7b8e576756f2a2843f77a5a2626e9300704b05cd6f8aa4fcdcc3f952
+              bytes: 7316
+            - path: /Users/tigger/.agents/sdlc/technologies/HUGO.md
+              sha256: 9f97dce924b1da88fc3c1e66851e96d8b421a0ffcc0bced8067dff0bf23f0e74
+              bytes: 4321
+            - path: /Users/tigger/.agents/sdlc/technologies/JAVASCRIPT.md
+              sha256: 69b7d16d81a059ee3de1e370e9bbeaeae7b7538bc6689f63c04b95e35b11d54b
+              bytes: 7523
+            - path: /Users/tigger/.agents/sdlc/technologies/LUA.md
+              sha256: f64aad076563bced181623daeef3c5ee28b82968fbd6e11ebe67d19045a62e8b
+              bytes: 10783
+            - path: /Users/tigger/.agents/sdlc/technologies/NODE.md
+              sha256: f593fef2fdbdc081afbb51db388e296fb13cbfd3e95432aafcb7674acd5ba31c
+              bytes: 5098
+            - path: /Users/tigger/.agents/sdlc/technologies/PERL.md
+              sha256: 8f3cbdf5e0c5cf0c8eaa3228e36c0e77e94a697798ae613e1b81a523391b48e4
+              bytes: 3098
+            - path: /Users/tigger/.agents/sdlc/technologies/PYTHON.md
+              sha256: 3a0ca19f3ab1a99fd809561c7a1d67d8a31dde8dd5a74cc989355e7daab9f61d
+              bytes: 6272
+            - path: /Users/tigger/.agents/sdlc/technologies/RUST.md
+              sha256: a05725c8cbd6e8306bbc39b4d197f1e1c0dd9230d43cb8e67dcede388f4c34ba
+              bytes: 18482
+            - path: /Users/tigger/.agents/sdlc/technologies/SHELL.md
+              sha256: e7c3ad8d6ceb8b571abd3d6b36ef2e358c71691136e729cbed87cd5abadfd94d
+              bytes: 12345
+            - path: /Users/tigger/.agents/sdlc/technologies/SWIFT.md
+              sha256: 64830d92ac9bd5d3ef51aeb722dde09b758cff6f04dedb23b493cb356a3b3de9
+              bytes: 5212
+            - path: /Users/tigger/.agents/sdlc/technologies/WEB.md
+              sha256: fd6d48f27772f9384719b9bbe59efb62240a8adbd5d7f87b3e0dfb0452485381
+              bytes: 10438
+            - path: /Users/tigger/.agents/sdlc/templates/AGENTS-or-CLAUDE.example.md
+              sha256: d4d5614d8f9d441b7eff45f0e0f2aa1ce5b1a39cda43a55cb7c6e37c956d1087
+              bytes: 4814
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/Makefile
+              sha256: 47982bcf9d09f6929d130a57974c33c6e2d69d27c3ead3895f052b167cd4c570
+              bytes: 1519
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 5bfa56a014636826ebe498ff81968d9b64b6b00bdff842f5ab3ad881a2699a2b
+              bytes: 11450
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 9f504ef03ae39bdbf239602c80d65cda497ad12f25c6ba38bfe3f27892e66346
+              bytes: 57115
+            - path: /Users/tigger/code/tigoss/first-folio/docs/folio-letter-help.md
+              sha256: 54d1ab5f0a18bfcbaf9d4cbf64248ea45f4cd727e6e9b9db88b9ff442aa6f76d
+              bytes: 1199
+            - path: /Users/tigger/code/tigoss/first-folio/docs/folio-manuscript-help.md
+              sha256: 4a836e6ff8494937734c0e789f927d23258e212cbac3514c9aa0ff4824f6cbe1
+              bytes: 2617
+            - path: /Users/tigger/code/tigoss/first-folio/docs/font-embedding.md
+              sha256: c117e29ee7c406510332da52f7a27e07d416fcead5c12bb60c464c374724da84
+              bytes: 2820
+            - path: /Users/tigger/code/tigoss/first-folio/go.mod
+              sha256: abff67189b6d6b305cae6c30b07ed2c0e396238c1b33b624d6444c090e5ebd83
+              bytes: 137
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/app_test.go
+              sha256: 8f52ddf05f304bf90337eb0c3d90af221cb733a957121569ee32766aeaf39758
+              bytes: 2208
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/letter.go
+              sha256: 8d03cd9dc39ba06629ac10a232f019b38ef95e96f54ca44c2a27162ed7ecb468
+              bytes: 2926
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/office_font_package.go
+              sha256: 7199e4bbeb23baf3144da7bb9d7f90b7555865a533ce1f23a20402aee455632b
+              bytes: 9485
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/office_fonts.go
+              sha256: 996a8425fbeedd8eab4f1fd3000e491bd7961d8968d3de90a0d07366445cfee9
+              bytes: 7648
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/office_fonts_test.go
+              sha256: b4b73ac2e919bd0a585495d7141223769f3723c97c7fc98d2ac48e3eeed59317
+              bytes: 8789
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/office_test_helpers_test.go
+              sha256: 49758e81d103f60bf0ca8a8a6c5cb5af855500efaaa8af0b112324154050d4d1
+              bytes: 10588
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_bands_test.go
+              sha256: e166ff149892bbd777b3a67f7d267c6427833a3d02ca5d9c987facc4290517c3
+              bytes: 10928
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_config_test.go
+              sha256: c0f106af019ded9c36e06a331c776d048411e61675326d4b104773317829784d
+              bytes: 8463
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_contents_test.go
+              sha256: 88c4abbc103f1969eae1bf8ad0e58902013dddd5fab473ccddf9686121f0f2b8
+              bytes: 6156
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_dependency_test.go
+              sha256: 70b4e63a31aa54e560ab750b355dcaa1bd3f3f2338bd6d4087ffbc1ed758c205
+              bytes: 4161
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_features_test.go
+              sha256: f9640d72ec5e09e6e12276c1c21005c06ca922d7365dd1d7edecc38d04549fec
+              bytes: 13526
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_fonts_test.go
+              sha256: 14f0d8abe75b2b078cd0521f275e60e0718af63c04134e9ac96a0e59928f4335
+              bytes: 5053
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_generated_test.go
+              sha256: 36225dbcd66e15ef426bda11ce9342ececb11778dbdc38a2331738e053544eb1
+              bytes: 12773
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_input_test.go
+              sha256: 1629a383eabf7298af58e251ee32a0a3a305f2e3c6ff811ae7e3043fc7ad2b7a
+              bytes: 3154
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_layout_test.go
+              sha256: bf643ec54fea6fc90b3febe06833ef9311dd47397865e3e8d0b53417d9fbe300
+              bytes: 15647
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_policy_test.go
+              sha256: 9419931e5d013ef5044ea46a22e4d854e8e5786b9937aced754b713c2febe478
+              bytes: 5103
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_publication_test.go
+              sha256: c2195de4132167eb233c4df83eaa05d74856b864d2e9dfba645b8b6ad2612f6f
+              bytes: 6024
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_render_test.go
+              sha256: 9e227decbd86e7a17956be049d443d83570fd0b383cd489084e3647637028859
+              bytes: 21439
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_sections_test.go
+              sha256: 2aa38298d26625a624d3032694f2e854740f35fcc0be8ec41a8ddd3238ff6d57
+              bytes: 18380
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_spacing_test.go
+              sha256: 3b297538bda147a343f7f22ec1d9aa78377c4446c75c53ff48262d3e2423efe4
+              bytes: 6461
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/prose_office_test.go
+              sha256: 6302bca007ce41e20d876c98c601a9e5871321ea45bfbdb2946b6c55166aea47
+              bytes: 19894
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/font_test.go
+              sha256: 499232b0a3126c42f87709c4c0f003e63e970dae9c536079be41bada62c6e365
+              bytes: 2268
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/letter.go
+              sha256: 4f8fa6d6fb15d5bc3479dbab807b48dbffcccd3bd6c87aebf3d72d41d82715d8
+              bytes: 4342
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/letter_test.go
+              sha256: cccc7c0bfc922332a71356bc62573ec332d4484bbe0e48fa1c2da0da863b08c2
+              bytes: 1992
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/render.go
+              sha256: e82d34edb33cd02fb02db7bf288e96640a92a042870a12eb878c4814ae75b158
+              bytes: 5957
+            - path: /Users/tigger/code/tigoss/first-folio/internal/letter/running_matter_test.go
+              sha256: e6989792620f643f2fb30af8cceaa824483b689045b238f2c6a439efa337563b
+              bytes: 1401
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: c1c65df031461b706e87520c8784c4e7f42c2c2d47e6187bbd0434cbaff60e92
+              bytes: 27223
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/parser.go
+              sha256: 0cf57e70f53cd6a57c4eaf394cba17989dfb6ab28e6aa53a262f2e8159d5975f
+              bytes: 20303
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/render.go
+              sha256: 4522bb3933cd32ca7bc4f4d6b577f9839613906baf8f2cdf0fe318835ec562e2
+              bytes: 35695
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/run.go
+              sha256: cc7b8af28b57ee21997ceab93b69e67a21cd4a08d6f61f06e27bae1c7599f669
+              bytes: 8125
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config.go
+              sha256: 0b677a30c519303ef1103a6727d6763776dd5ac905d14ee08f0a1d7ba9c434a2
+              bytes: 1896
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/ast.go
+              sha256: 0386ee15af9f9ceef0b264029a920bfaa4b8c4ad6d7d9550a2c55d335678c2e8
+              bytes: 325
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/ast_test.go
+              sha256: 09cb5ff5d9c8add941bab4781999b0810c9f45eeb13d06032ae7104960eab6a3
+              bytes: 3577
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/font_budget.go
+              sha256: 43e23255b097fdf13b0f2785fa4289146ffa11017daf4e899ae2383e3dede42b
+              bytes: 247
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/font_budget_test.go
+              sha256: 48d532ed8c3ca27d708d6adb2dc78fd5bf2d7fea58c290344756280b7c683775
+              bytes: 901
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/package.go
+              sha256: ca981bfbf94db8ff1b8adecdae1a684c325e4f649d520c3e28afd8556ad67b1c
+              bytes: 418
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/package_test.go
+              sha256: d2af6c3e61344631639abae1ee75ee2e4289c8e492b4b2c1f4b7c24823e7bcb4
+              bytes: 10493
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/process.go
+              sha256: 8050f68186318adc45705b5d3008ce70a53af0603bdaadcbc78e4ba76c1b66c4
+              bytes: 427
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/process_test.go
+              sha256: 62cc383464c44bb720dda0e41bbe44c7e55524556ce4f2ff79e2c92389078c63
+              bytes: 4272
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/publication.go
+              sha256: 9aa45bf78133e102643bbb41668821c5f6b2e40cbc18a2728e1dbcec638e2399
+              bytes: 723
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/publication_test.go
+              sha256: 1fae602c9bab7897de56b41575b9fdf5a3543434324f6aefe6f904f623cb28e1
+              bytes: 3666
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/sidecar_test.go
+              sha256: 731099ccac731058b2e80439677643c87cca854bd0e5ad85ab288112cc06060a
+              bytes: 1981
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/source.go
+              sha256: d10fcfeaa0d70b846fcd6207494b1ea2f7e8f56c3fd61d5622f30a49ed22b28a
+              bytes: 285
+            - path: /Users/tigger/code/tigoss/first-folio/internal/office/source_test.go
+              sha256: 49bc5f3424ba3ecef635417ade6c3a614801df9b4fe671453363daac8dfacbf6
+              bytes: 2194
+            - path: /Users/tigger/code/tigoss/first-folio/specs/063-prose-office-export/spec.org
+              sha256: 011931a9ddb2400c61cd8f4647a767d396e3e7ab63fa036f92dd96b349f22527
+              bytes: 75499
+            - path: /Users/tigger/code/tigoss/first-folio/specs/063-prose-office-export/validation.org
+              sha256: 71eeaf22897b60883b461b39a483fa07c191083991ada1edf459d20ae5845df7
+              bytes: 32544
+            - path: /Users/tigger/code/tigoss/first-folio/templates/letter.typ
+              sha256: 6efe7e05ec3459a02f06980da7f386daa1cec909587c171ea7643ef63903cec9
+              bytes: 817
+            - path: /Users/tigger/code/tigoss/first-folio/templates/manuscript.typ
+              sha256: 3d5551958699c66dc0edb19a800b12a197fee4c049f982976a6e0ca53e4277b8
+              bytes: 25955
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/EXPECTATIONS.md
+              sha256: 96916afa3805e202002138ce653cee91462e1df1cf63d7c977a98b877bbda5db
+              bytes: 91336
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/book-composed.yaml
+              sha256: b5c5f06cad5f9018b2d8c6393a25641d4e2e9b6fb6e8b21eef412aac17e3823a
+              bytes: 5884
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/book-contrasting.yaml
+              sha256: 465b397201770494de4596f29b57e0c956a8bb52e5fd3eea5a70064413507de8
+              bytes: 1799
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/book.md
+              sha256: cc273317ca949cd70037583dfa818e1defcc305f45f375053fd149a1b552371d
+              bytes: 8638
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/book.org
+              sha256: 6a49ae0e1508751c7767235f2001fb0df3395edd79e5c7448d2361572e4c16e6
+              bytes: 10211
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/book.yaml
+              sha256: bfa7f33665efb394bff77d2f0cd32b4c7afe4a056fe569113e6ad5b053003fbe
+              bytes: 1749
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/letter-contrasting.yaml
+              sha256: 369470bc0fcb91f2ead606be1f00ee0b8246abd3b22ce30a098d830cb1c07fc1
+              bytes: 572
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/letter.yaml
+              sha256: c088bd32157680d5e21f9d2c5d04517ecdf0e72a1cdaa47585d7ba188cc8b3cf
+              bytes: 596
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/letters.org
+              sha256: 49eb2b19c13dfb589ea6bd7788370c464969856a820069ce40039e92e02907ca
+              bytes: 878
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/typography-contrasting.yaml
+              sha256: 866c7e1d63d762ae9acf763cb0f95ed6366907b39cf68d5250e6ce335de5abe3
+              bytes: 649
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/typography.md
+              sha256: b151a7d297c4bdeae6361db0518e9ca219ab458fa8e4a3983a0ad82b8ce70454
+              bytes: 3349
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/typography.org
+              sha256: 5d546a56b8f84fed9cc2c21d96405368c224041bdcd6f6e07f1f7dbfdccee34a
+              bytes: 2018
+            - path: /Users/tigger/code/tigoss/first-folio/testdata/prose-office/typography.yaml
+              sha256: f3dc8f95bc67d120aeba2eda2cfff5d4509cb2f7ee07c588bdaa05222818e0c3
+              bytes: 1534
+          round: 1
+          revision: 586220f
+          verdict: PASS
+          response: |-
+            GATE: test-code
+            REVISION: 586220f
+            VERDICT: PASS
+
+            Standards applied: MAIN.md, AUDITS.md, ARCHITECTURE.md, TESTING.md, CODING.md, GIT.md, SECURITY.md, DOCUMENTATION.md, MARKDOWN.md, ORGMODE.md, technologies/API.md, GO.md, RUST.md, SHELL.md. No material access gap; no applicable standard unread.
+
+            Basis for verdict:
+
+            1. Coverage. Every signed-off RT definition (RT063.1-12) has a written, named test group in internal/app/prose_office_*_test.go and internal/office/*_test.go, and each maps to the spec's action/expected text: output selection and dependency isolation (incl. forbidden-Typst marker, missing and incompatible Pandoc), recipient batches and CLI errors, structured content for md/org with ordering/dedup/private-section rules, full role-geometry matrix (all six font properties per role, layering, invalid effective config with YAML-path diagnostics and destination preservation), generated matter (title/contents/copyright/barcode switches and ordering), page policy (parity, blank-page modes, suppression, continuous boundary, numbering formats/reset), letter composition and literals, font packaging (permissions, budgets, oversize), and the full resource/publication failure group at the owning internal boundaries plus public command cases. The labelled fixtures and EXPECTATIONS.md give key-to-test traceability with independent expected values; UT definitions are recorded AMBER, which is eligible at this gate. RT063.10 preservation is legitimately recorded GREEN with the full-suite command, revision and durations.
+
+            2. RED evidence. The recorded preimplementation run compiled and executed both packages. Public success cases fail at the absent office command routes (existing commands reject .docx/.odt targets and unknown letter options) — runtime behavioural failure, not compilation or setup. Internal boundary tests fail for the intended reason: the placeholder bodies accept everything, so every over-limit, unsafe-member, malformed-input, deadline, injected-fault and ordering assertion fails while at-limit cases pass. Failure-path public tests that cannot yet reach their guards are honestly recorded as not yet meaningful, matching the operator context.
+
+            3. Scaffolding. internal/office contains declarations and placeholder bodies only (nil returns, no validation, no publication, no reads); they implement no target behaviour and have no production callers. Minimal-declaration scaffolding is permitted by TESTING.md and is included in the evidence.
+
+            4. Oracles, doubles, determinism. Assertions run against generated ZIP/XML artefacts, rendered PDF text spans and public command results — no source greps or byte-equality proofs. Doubles sit at real external boundaries (test binary as child process with restricted PATH; env-gated synthetic Pandoc/Typst confined to the child; failing filesystem wrappers). Tests use t.TempDir, t.Setenv, synthetic fixtures and bounded diagnostics; rendered tests require local tools and fail loudly if absent, per spec.
+
+            5. No reopened scope. The operator-approved ODT frontmatter/body number-format boundary exception is exercised through the recorded page-policy and rendered tests; no new product behaviour was audited beyond the signed-off definition. Execution states in validation.org are evidence, not duplicated audit verdicts. Existing shared helpers not included in the package (runApp/writeAppFile) are pre-existing infrastructure exercised by the recorded passing preservation suite; not a material gap for this candidate.
+
+            Test-code PASS approves the written tests only; production implementation remains unimplemented and the delivery-code gate must review the production delta, changed tests, RT/OT GREEN evidence and documentation before any delivery claim.
+          updated: "2026-10-16T12:55:01Z"
