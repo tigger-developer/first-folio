@@ -354,3 +354,56 @@ func TestRT063_4_OfficeChapterPosition(t *testing.T) {
 		}
 	}
 }
+
+func TestRT063_5_OfficeGroupedTitleFooter(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    font: {size: 12pt}\n    toc: {enabled: false}\n")
+			src := proseSource(t, dir, "source.md", "---\ntitle: GROUP-TITLE\nsubtitle: GROUP-SUBTITLE\nauthor: GROUP-AUTHOR\ndate: GROUP-DATE\nversion: GROUP-VERSION\nwordcount: GROUP-WORDCOUNT\n---\n\nBody.\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			for _, item := range []struct{ marker, align string }{{"GROUP-DATE", "right"}, {"GROUP-VERSION", "left"}, {"GROUP-WORDCOUNT", "center"}} {
+				proseAssertVerticalAnchor(t, pkg, format, item.marker, "bottom")
+				proseAssertAlignment(t, pkg, format, item.marker, item.align)
+			}
+			for _, item := range []struct {
+				marker string
+				before float64
+			}{{"GROUP-SUBTITLE", 12}, {"GROUP-AUTHOR", 24}} {
+				layers := officeEffective(t, pkg, format, officeParagraph(t, officeBody(t, pkg, format), item.marker))
+				officeAssertLength(t, layers, format, "spacing", "before", "paragraph-properties", "margin-top", item.before)
+			}
+		})
+	}
+}
+
+func TestRT063_5_OfficeWordTitleFloatsShareVerticalFlow(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	dir := t.TempDir()
+	proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    toc: {enabled: false}\n    title-page:\n      contact: {align: top-left}\n      wordcount: {align: top-right}\n      date: {align: bottom-left}\n      version: {align: bottom-right}\n")
+	source := proseSource(t, dir, "source.md", "---\ntitle: CENTER-TITLE\ncontact-name: TOP-CONTACT\nwordcount: TOP-WORDCOUNT\ndate: BOTTOM-DATE\nversion: BOTTOM-VERSION\n---\n\nBODY-SENTINEL\n")
+	pkg := proseConvert(t, source, filepath.Join(dir, "output.docx"))
+	paragraphs := officeBody(t, pkg, "docx").all("p")
+	for _, pair := range [][2]string{{"TOP-CONTACT", "TOP-WORDCOUNT"}, {"BOTTOM-DATE", "BOTTOM-VERSION"}} {
+		first, second := -1, -1
+		for i, paragraph := range paragraphs {
+			if strings.Contains(paragraph.text(), pair[0]) {
+				first = i
+			}
+			if strings.Contains(paragraph.text(), pair[1]) {
+				second = i
+			}
+		}
+		if first < 0 || second != first+1 {
+			t.Errorf("%s and %s do not share adjacent frame paragraphs: %d, %d", pair[0], pair[1], first, second)
+			continue
+		}
+		for _, attribute := range []string{"xAlign", "yAlign", "w", "hAnchor", "vAnchor", "wrap"} {
+			a, b := paragraphs[first].all("framePr"), paragraphs[second].all("framePr")
+			if len(a) != 1 || len(b) != 1 || a[0].attr(attribute) != b[0].attr(attribute) {
+				t.Errorf("%s and %s cannot form one frame: differing %s", pair[0], pair[1], attribute)
+			}
+		}
+	}
+}

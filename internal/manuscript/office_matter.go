@@ -35,22 +35,18 @@ func officeGeneratedMatter(p *office.Prose, meta Metadata, cfg Config) error {
 				continue
 			}
 			role := "Folio" + item.role
-			align := item.align
-			group := "title"
-			if item.role == "Date" || item.role == "Wordcount" || item.role == "Version" {
-				group = "footer"
-			}
-			if align == "group" {
-				align = tp.TitleBlockAlign
-				if group == "footer" {
-					align = tp.FooterAlign
-				}
-			}
-			placement := officePlacement(align)
-			placement.Group = group
+			placement := officeTitlePlacement(item.role, item.align, tp)
 			p.Placements[role] = placement
 			style := p.Styles[role]
 			style.Align = placement.Horizontal
+			if item.align == "group" {
+				if item.role == "Subtitle" {
+					style.Before = p.Styles["FolioBody"].Size
+				}
+				if item.role == "Author" {
+					style.Before = 2 * p.Styles["FolioBody"].Size
+				}
+			}
 			style.Line = office.CapHeight(style) + 0.65*style.Size
 			p.Styles[role] = style
 			title = append(title, office.Paragraph(role, officeTextLines(item.text)))
@@ -225,4 +221,31 @@ func officeCopyrightLabel(p *office.Prose, nodes *[]office.Node, prefix, label, 
 	inlines = append(inlines, office.Span("FolioCopyrightLabel", office.Text(label)))
 	inlines = append(inlines, office.Text(value)...)
 	*nodes = append(*nodes, office.Paragraph(role, inlines))
+}
+
+// Group footer fields occupy the bottom band: version left, count in the
+// configured middle alignment, date right. Explicit item placements stay independent.
+func officeTitlePlacement(role, align string, title TitlePageConfig) office.Placement {
+	group := "title"
+	if role == "Date" || role == "Wordcount" || role == "Version" {
+		group = "footer"
+	}
+	if align == "group" {
+		align = title.TitleBlockAlign
+		if role == "Contact" {
+			align = "top-left"
+		}
+		if group == "footer" {
+			align = "bottom-" + officePlacement(title.FooterAlign).Horizontal
+			if role == "Date" {
+				align = "bottom-right"
+			}
+			if role == "Version" {
+				align = "bottom-left"
+			}
+		}
+	}
+	placement := officePlacement(align)
+	placement.Group = group
+	return placement
 }

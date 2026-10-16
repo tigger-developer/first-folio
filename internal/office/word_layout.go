@@ -188,7 +188,7 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 		return err
 	}
 	output = append(output, current)
-	body.children = output
+	body.children = p.wordTitleFloats(output)
 	p.wordRunSizes(body)
 	files["word/document.xml"], err = docxEncode(*root, DataLimit)
 	if err != nil {
@@ -372,7 +372,53 @@ func (p *Prose) wordPlacement(n *docxNode, role string, placement Placement) {
 	if vertical == "" {
 		vertical = "center"
 	}
-	frame := dx("framePr").attr("w:hAnchor", "margin").attr("w:vAnchor", "margin").attr("w:yAlign", vertical).attr("w:xAlign", placement.Horizontal).attr("w:wrap", "around").attr("w:w", twip(p.Page.Width-p.Page.Left-p.Page.Right-p.Page.Gutter))
+	horizontal := placement.Horizontal
+	if placement.Group == "title" || placement.Group == "footer" {
+		// These frames span the full content width; paragraph alignment owns
+		// the horizontal position. Identical frame properties join neighbours.
+		horizontal = "left"
+	}
+	frame := dx("framePr").attr("w:hAnchor", "margin").attr("w:vAnchor", "margin").attr("w:yAlign", vertical).attr("w:xAlign", horizontal).attr("w:wrap", "around").attr("w:w", twip(p.Page.Width-p.Page.Left-p.Page.Right-p.Page.Gutter))
 	pr.children = append(pr.children, frame)
+}
+
+// Word joins adjacent paragraphs with identical frame properties. Collect each
+// title band together so independently aligned fields cannot obscure each other.
+func (p *Prose) wordTitleFloats(nodes []docxNode) []docxNode {
+	var output, title []docxNode
+	flush := func() {
+		var section *docxNode
+		for i := range title {
+			pr := title[i].child("w:pPr")
+			if found := pr.child("w:sectPr"); found != nil {
+				copy := *found
+				section = &copy
+				pr.remove("w:sectPr")
+			}
+		}
+		for _, vertical := range []string{"top", "center", "bottom"} {
+			for _, node := range title {
+				if p.Placements[wordRole(&node)].Vertical == vertical {
+					output = append(output, node)
+				}
+			}
+		}
+		if section != nil {
+			last := &output[len(output)-1]
+			last.ensure("w:pPr").children = append(last.ensure("w:pPr").children, *section)
+		}
+		title = nil
+	}
+	for _, node := range nodes {
+		placement := p.Placements[wordRole(&node)]
+		if placement.Group == "title" || placement.Group == "footer" {
+			title = append(title, node)
+			continue
+		}
+		flush()
+		output = append(output, node)
+	}
+	flush()
+	return output
 }
 func fieldID(index int) string { return strconv.Itoa(index + 1) }
