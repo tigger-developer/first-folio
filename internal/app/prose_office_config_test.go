@@ -117,3 +117,73 @@ func TestRT063_5_OfficeChapterNumberReset(t *testing.T) {
 		}
 	}
 }
+
+func TestRT063_4_OfficeResolvedMetadata(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "title: LOCAL-TITLE\nauthor: LOCAL-AUTHOR\nauthor-attribution: Written by\ncontact-name: LOCAL-CONTACT\nfolio:\n  manuscript:\n    date-format: 02/01/2006\n    toc:\n      enabled: false\n    title-page:\n      enabled: true\n")
+			src := proseSource(t, dir, "source.md", "---\ntitle: SOURCE-TITLE\nsubtitle: SOURCE-SUBTITLE\nauthor: SOURCE-AUTHOR\ndate: '2026-10-16'\nwordcount: Approximately 1200 words\nversion: Review copy\ncontact-name: SOURCE-CONTACT\n---\n\nBODY-SENTINEL\n")
+			target := filepath.Join(dir, "output."+format)
+			status, _, stderr := runApp(t, "manuscript", src, target, "--title", "CLI-TITLE", "--author-attribution", "Composed by")
+			if status != 0 {
+				t.Fatalf("metadata export: %s", stderr)
+			}
+			pkg := prosePackage(t, target, format)
+			text := officeBody(t, pkg, format).text()
+			for _, want := range []string{"CLI-TITLE", "SOURCE-SUBTITLE", "LOCAL-AUTHOR", "Composed by", "16/10/2026", "Approximately 1200 words", "Review copy", "LOCAL-CONTACT"} {
+				if !strings.Contains(text, want) {
+					t.Errorf("resolved visible metadata lacks %q", want)
+				}
+			}
+			for _, obsolete := range []string{"SOURCE-TITLE", "LOCAL-TITLE", "SOURCE-AUTHOR", "Written by", "SOURCE-CONTACT"} {
+				if strings.Contains(text, obsolete) {
+					t.Errorf("superseded metadata leaked: %s", obsolete)
+				}
+			}
+			properties := pkg["docProps/core.xml"]
+			if format == "odt" {
+				properties = pkg["meta.xml"]
+			}
+			if properties == nil {
+				t.Fatal("native document metadata absent")
+			}
+			if !strings.Contains(properties.text(), "CLI-TITLE") || !strings.Contains(properties.text(), "LOCAL-AUTHOR") {
+				t.Errorf("native metadata does not match resolved title/author: %s", properties.text())
+			}
+		})
+	}
+}
+
+func TestRT063_1_ManuscriptOutputErrors(t *testing.T) {
+	for _, invalid := range []string{"missing", "html"} {
+		t.Run(invalid, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			src := proseSource(t, dir, "source.md", "BODY\n")
+			args := []string{"manuscript", src}
+			if invalid != "missing" {
+				args = append(args, filepath.Join(dir, "output.html"))
+			}
+			status, _, stderr := runApp(t, args...)
+			if status == 0 {
+				t.Fatal("invalid output selection succeeded")
+			}
+			if invalid == "missing" && !strings.Contains(stderr, "target") {
+				t.Errorf("missing target not explained: %s", stderr)
+			}
+			if invalid == "html" {
+				for _, suffix := range []string{".pdf", ".typ", ".docx", ".odt"} {
+					if !strings.Contains(stderr, suffix) {
+						t.Errorf("output diagnostic omits accepted %s: %s", suffix, stderr)
+					}
+				}
+			}
+			entries, err := os.ReadDir(dir)
+			if err != nil || len(entries) != 1 {
+				t.Errorf("invalid invocation created files: %v %v", entries, err)
+			}
+		})
+	}
+}

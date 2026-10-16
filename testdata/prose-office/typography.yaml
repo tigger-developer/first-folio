@@ -4,7 +4,17 @@ author: Example Author
 date: 2026-10-16
 folio:
   page-header:
-    enabled: false
+    enabled: true
+    format: HEADER-SAMPLE
+    font:
+      family: Iosevka Publish
+      size: 10pt
+      weight: regular
+      style: regular
+      stretch: 100%
+      letter-spacing: 0pt
+    distance-from-edge: 20mm
+    content-padding-after: 5mm
   page-footer:
     enabled: false
   manuscript:

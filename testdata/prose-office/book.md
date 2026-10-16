@@ -58,6 +58,7 @@ folio:
       page-numbers: true
       links: true
       dot-leaders: true
+      blank-page-after: true
       continuation-padding-before: 10mm
     chapter:
       page-break-before: false

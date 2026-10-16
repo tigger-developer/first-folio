@@ -106,3 +106,90 @@ func TestRT063_5_OfficeInvalidISBNPreservesBothTargets(t *testing.T) {
 		})
 	}
 }
+
+func proseAssertVerticalAnchor(t *testing.T, pkg map[string]*officeXML, format, marker, want string) {
+	t.Helper()
+	var ancestors []*officeXML
+	var locate func(*officeXML, []*officeXML) bool
+	locate = func(node *officeXML, parents []*officeXML) bool {
+		parents = append(append([]*officeXML{}, parents...), node)
+		for _, child := range node.Children {
+			if locate(child, parents) {
+				return true
+			}
+		}
+		if node.Name.Local == "p" && strings.Contains(node.text(), marker) {
+			ancestors = parents
+			return true
+		}
+		return false
+	}
+	if !locate(officeBody(t, pkg, format), nil) {
+		t.Fatalf("no anchored paragraph %s", marker)
+	}
+	for _, node := range ancestors {
+		switch node.Name.Local {
+		case "p":
+			for _, frame := range node.all("framePr") {
+				if frame.attr("yAlign") == want && frame.attr("vAnchor") == "margin" {
+					return
+				}
+			}
+		case "anchor":
+			for _, position := range node.all("positionV") {
+				if position.attr("relativeFrom") != "margin" {
+					continue
+				}
+				for _, align := range position.all("align") {
+					if align.text() == want {
+						return
+					}
+				}
+			}
+		case "frame":
+			layers := officeEffective(t, pkg, format, node)
+			value, _ := officeEffectiveAttr(layers, "graphic-properties", "vertical-pos")
+			reference, _ := officeEffectiveAttr(layers, "graphic-properties", "vertical-rel")
+			if value == "middle" {
+				value = "center"
+			}
+			if value == want && reference == "page-content" {
+				return
+			}
+		}
+	}
+	t.Errorf("%s lacks independent %s positioning relative to page content", marker, want)
+}
+
+func TestRT063_5_OfficeIndependentTitlePlacement(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			cfg := "folio:\n  manuscript:\n    toc:\n      enabled: false\n    title-page:\n      enabled: true\n      title:\n        align: top-left\n      author:\n        align: bottom-right\n      contact:\n        align: center-left\n"
+			proseSource(t, dir, "script.yaml", cfg)
+			src := proseSource(t, dir, "source.md", "---\ntitle: INDEPENDENT-TOP\nauthor: INDEPENDENT-BOTTOM\ncontact-name: INDEPENDENT-CENTER\n---\n\nBODY-SENTINEL\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			for _, item := range []struct{ marker, vertical, horizontal string }{
+				{"INDEPENDENT-TOP", "top", "left"}, {"INDEPENDENT-BOTTOM", "bottom", "right"}, {"INDEPENDENT-CENTER", "center", "left"},
+			} {
+				proseAssertVerticalAnchor(t, pkg, format, item.marker, item.vertical)
+				proseAssertAlignment(t, pkg, format, item.marker, item.horizontal)
+			}
+		})
+	}
+}
+
+func TestRT063_5_OfficeCopyrightBottomGroup(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    copyright:\n      enabled: true\n      credits: [TOP-LEGAL-CREDIT]\n      body: [TOP-LEGAL-BODY]\n      publication: [BOTTOM-PUBLICATION]\n      publisher: BOTTOM-PUBLISHER\n      isbn: '978-0-000000-00-2'\n")
+			src := proseSource(t, dir, "source.md", "## Chapter\n\nBODY-SENTINEL\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			proseAssertVerticalAnchor(t, pkg, format, "BOTTOM-PUBLICATION", "bottom")
+			proseAssertVerticalAnchor(t, pkg, format, "BOTTOM-PUBLISHER", "bottom")
+		})
+	}
+}

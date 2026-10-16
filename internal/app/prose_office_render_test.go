@@ -149,8 +149,8 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 	root := proseRenderBudget(t, 50<<20)
 	for _, format := range []string{"docx", "odt"} {
 		t.Run(format, func(t *testing.T) {
-			t.Setenv("HOME", t.TempDir())
 			dir := proseRenderCase(t, root, format)
+			t.Setenv("HOME", dir)
 			raw, err := os.ReadFile("../../testdata/prose-office/typography.md")
 			if err != nil {
 				t.Fatal(err)
@@ -159,6 +159,7 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 			target := filepath.Join(dir, "output."+format)
 			proseConvert(t, source, target)
 			pdf := proseRenderPDF(t, target)
+			proseFailurePages(t, pdf, dir, 2, "failed-page")
 			xmlPath := filepath.Join(dir, "font-spans.xml")
 			proseTool(t, "pdftohtml", "-xml", "-zoom", "1", "-noroundcoord", "-fontfullname", pdf, xmlPath)
 			xmlRaw, err := os.ReadFile(xmlPath)
@@ -173,12 +174,13 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 			for _, specimen := range []struct {
 				marker, family string
 				leftMM         float64
+				fontPoints     float64
 			}{
-				{"OPENING-SAMPLE", "Iosevka-Publish", 20},
-				{"BODY-SAMPLE", "Iosevka-Publish", 30},
-				{"HEADING-SAMPLE", "Iosevka-Publish-Bold-Extended", -1},
-				{"QUOTE-SAMPLE", "Iosevka-Publish-Extended-Italic", 26},
-				{"CODE-SAMPLE: 9pt", "Iosevka-Publish", 28},
+				{"OPENING-SAMPLE", "Iosevka-Publish", 20, 12},
+				{"BODY-SAMPLE", "Iosevka-Publish", 30, 12},
+				{"HEADING-SAMPLE", "Iosevka-Publish-Bold-Extended", -1, 16},
+				{"QUOTE-SAMPLE", "Iosevka-Publish-Extended-Italic", 26, 10},
+				{"CODE-SAMPLE: 9pt", "Iosevka-Publish", 28, 9},
 			} {
 				found := 0
 				for _, span := range tree.all("text") {
@@ -192,6 +194,7 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 					if family != specimen.family {
 						t.Errorf("%s rendered with %q; want %q", specimen.marker, family, specimen.family)
 					}
+					proseAssertRenderedIosevkaSize(t, span, specimen.fontPoints)
 					if specimen.leftMM >= 0 {
 						left, err := strconv.ParseFloat(span.attr("left"), 64)
 						if err != nil {
@@ -207,11 +210,10 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 					t.Errorf("rendered marker %s appears %d times; want once", specimen.marker, found)
 				}
 			}
+			proseAssertOpeningIntervals(t, tree)
+			proseAssertHeaderGeometry(t, tree)
 			if strings.Contains(tree.text(), "PRIVATE-SENTINEL") || !strings.Contains(tree.text(), "FINAL-SENTINEL") {
 				t.Error("rendered content leaked private text or lost final content")
-			}
-			if t.Failed() {
-				proseTool(t, "pdftoppm", "-f", "1", "-l", "2", "-png", "-r", "150", pdf, filepath.Join(dir, "failed-page"))
 			}
 		})
 	}
@@ -223,8 +225,8 @@ func TestRT063_12_OfficeRenderedContentsReferences(t *testing.T) {
 	headingRE := regexp.MustCompile(`^CHAPTER-([0-9]{2})\s*$`)
 	for _, format := range []string{"docx", "odt"} {
 		t.Run(format, func(t *testing.T) {
-			t.Setenv("HOME", t.TempDir())
 			dir := proseRenderCase(t, root, format)
+			t.Setenv("HOME", dir)
 			raw, err := os.ReadFile("../../testdata/prose-office/book.md")
 			if err != nil {
 				t.Fatal(err)
@@ -233,6 +235,7 @@ func TestRT063_12_OfficeRenderedContentsReferences(t *testing.T) {
 			target := filepath.Join(dir, "book."+format)
 			proseConvert(t, src, target)
 			pdf := proseRenderPDF(t, target)
+			proseFailurePages(t, pdf, dir, 6, "failed-book-page")
 			text := proseTool(t, "pdftotext", "-layout", pdf, "-")
 			refs, actual := map[string]int{}, map[string]int{}
 			contentsPages := map[int]bool{}
@@ -265,6 +268,44 @@ func TestRT063_12_OfficeRenderedContentsReferences(t *testing.T) {
 			if firstBody == 0 || firstBody%2 != 1 {
 				t.Errorf("body part must start on a physical right-hand page; got %d", firstBody)
 			}
+			blank := false
+			for i, page := range pages {
+				physical := i + 1
+				if physical < firstBody && strings.TrimSpace(page) == "" {
+					blank = true
+				}
+				if physical == firstBody {
+					for _, forbidden := range []string{"BODY-ODD", "BODY-EVEN", "BODY-FOOT"} {
+						if strings.Contains(page, forbidden) {
+							t.Errorf("part opening page contains suppressed %s", forbidden)
+						}
+					}
+				}
+				if physical <= firstBody || strings.TrimSpace(page) == "" {
+					continue
+				}
+				want, wrong := "BODY-ODD", "BODY-EVEN"
+				if physical%2 == 0 {
+					want, wrong = wrong, want
+				}
+				if !strings.Contains(page, want) || strings.Contains(page, wrong) || strings.Contains(page, "FRONT-") {
+					t.Errorf("physical page %d has wrong front/body or odd/even running band; want %s", physical, want)
+				}
+				footer := fmt.Sprintf("BODY-FOOT %d", physical-firstBody+1)
+				if !strings.Contains(strings.Join(strings.Fields(page), " "), footer) {
+					t.Errorf("physical page %d missing displayed footer %s", physical, footer)
+				}
+			}
+			if !blank {
+				t.Error("configured blank after contents is missing or contains running matter")
+			}
+			xmlPath := filepath.Join(dir, "contents-spans.xml")
+			proseTool(t, "pdftohtml", "-xml", "-zoom", "1", "-noroundcoord", "-fontfullname", pdf, xmlPath)
+			xmlRaw, err := os.ReadFile(xmlPath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			proseAssertContentsContinuation(t, officeParseXML(t, xmlRaw), contentsPages)
 			for id, page := range actual {
 				want := page - firstBody + 1
 				if refs[id] != want {
@@ -274,9 +315,6 @@ func TestRT063_12_OfficeRenderedContentsReferences(t *testing.T) {
 			if !strings.Contains(text, "FINAL-BOOK-SENTINEL") {
 				t.Error("rendered book lost final content")
 			}
-			if t.Failed() {
-				proseTool(t, "pdftoppm", "-f", "1", "-l", "6", "-png", "-r", "150", pdf, filepath.Join(dir, "failed-book-page"))
-			}
 		})
 	}
 }
@@ -285,8 +323,8 @@ func TestRT063_11_OfficeRenderedLetterMargins(t *testing.T) {
 	root := proseRenderBudget(t, 50<<20)
 	for _, format := range []string{"docx", "odt"} {
 		t.Run(format, func(t *testing.T) {
-			t.Setenv("HOME", t.TempDir())
 			dir := proseRenderCase(t, root, format)
+			t.Setenv("HOME", dir)
 			for _, file := range []struct{ input, output string }{{"letters.org", "letters.org"}, {"letter.yaml", "script.yaml"}} {
 				raw, err := os.ReadFile("../../testdata/prose-office/" + file.input)
 				if err != nil {
@@ -301,6 +339,7 @@ func TestRT063_11_OfficeRenderedLetterMargins(t *testing.T) {
 			target := filepath.Join(dir, "letter-first-theatre."+format)
 			prosePackage(t, target, format)
 			pdf := proseRenderPDF(t, target)
+			proseFailurePages(t, pdf, dir, 2, "failed-letter-page")
 			xmlPath := filepath.Join(dir, "letter-spans.xml")
 			proseTool(t, "pdftohtml", "-xml", "-zoom", "1", "-noroundcoord", "-fontfullname", pdf, xmlPath)
 			raw, err := os.ReadFile(xmlPath)
@@ -308,6 +347,7 @@ func TestRT063_11_OfficeRenderedLetterMargins(t *testing.T) {
 				t.Fatal(err)
 			}
 			tree := officeParseXML(t, raw)
+			proseAssertLetterGaps(t, tree)
 			fonts := map[string]string{}
 			for _, font := range tree.all("fontspec") {
 				fonts[font.attr("id")] = font.attr("family")
@@ -333,6 +373,7 @@ func TestRT063_11_OfficeRenderedLetterMargins(t *testing.T) {
 				if family != "Iosevka-Publish" {
 					t.Errorf("letter body font substituted: %s", family)
 				}
+				proseAssertRenderedIosevkaSize(t, text, 11)
 			}
 			if !found {
 				t.Error("rendered letter body marker absent")
@@ -342,10 +383,166 @@ func TestRT063_11_OfficeRenderedLetterMargins(t *testing.T) {
 					t.Errorf("rendered letter includes forbidden text %s", bad)
 				}
 			}
-			if t.Failed() {
-				proseTool(t, "pdftoppm", "-f", "1", "-l", "2", "-png", "-r", "150", pdf, filepath.Join(dir, "failed-letter-page"))
-			}
 		})
+	}
+}
+
+func proseAssertRenderedIosevkaSize(t *testing.T, span *officeXML, want float64) {
+	t.Helper()
+	height, err := strconv.ParseFloat(span.attr("height"), 64)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// The bundled Publish faces expose a 1.25em PDF text box. Independent
+	// Typst PDF measurements give 15/20/12.5/11.25pt at 12/16/10/9pt.
+	// Unlike fontspec.size, text.height retains fractional precision.
+	if math.Abs(height/1.25-want) > 0.25 {
+		t.Errorf("%s has inferred font size %gpt; want %gpt", span.text(), height/1.25, want)
+	}
+}
+
+func proseAssertOpeningIntervals(t *testing.T, tree *officeXML) {
+	t.Helper()
+	for _, page := range tree.all("page") {
+		var opening []*officeXML
+		collect := false
+		for _, span := range page.all("text") {
+			if strings.Contains(span.text(), "OPENING-SAMPLE") {
+				collect = true
+			}
+			if strings.Contains(span.text(), "BODY-SAMPLE") && collect {
+				if len(opening) < 2 {
+					t.Error("opening specimen did not supply two measured lines")
+					return
+				}
+				previous, _ := strconv.ParseFloat(opening[len(opening)-1].attr("top"), 64)
+				current, err := strconv.ParseFloat(span.attr("top"), 64)
+				if err != nil {
+					t.Fatal(err)
+				}
+				want := 24.93 + 3*72/25.4
+				if math.Abs(current-previous-want) > 1 {
+					t.Errorf("paragraph interval %gpt; want %gpt", current-previous, want)
+				}
+				return
+			}
+			if !collect {
+				continue
+			}
+			if len(opening) > 0 {
+				previous, _ := strconv.ParseFloat(opening[len(opening)-1].attr("top"), 64)
+				current, err := strconv.ParseFloat(span.attr("top"), 64)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if math.Abs(current-previous-24.93) > 1 {
+					t.Errorf("opening line interval %gpt; want 24.93pt", current-previous)
+				}
+			}
+			opening = append(opening, span)
+		}
+	}
+	t.Error("opening and following body paragraphs not found together for spacing measurement")
+}
+
+func proseAssertHeaderGeometry(t *testing.T, tree *officeXML) {
+	t.Helper()
+	for _, page := range tree.all("page") {
+		headerCount := 0
+		for _, span := range page.all("text") {
+			top, err := strconv.ParseFloat(span.attr("top"), 64)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if strings.Contains(span.text(), "HEADER-SAMPLE") {
+				headerCount++
+				// In the independent baseline, the 10pt Publish text-box
+				// top is 9.65pt above its baseline at the configured edge.
+				if math.Abs(top+9.65-20*72/25.4) > 1 {
+					t.Errorf("header baseline %gpt; want 20mm from top edge", top+9.65)
+				}
+				proseAssertRenderedIosevkaSize(t, span, 10)
+			}
+			if strings.Contains(span.text(), "HEADING-SAMPLE") {
+				// 16pt Publish Bold Extended's cap-box top is 3.68pt
+				// below the extracted text-box top in the baseline.
+				if math.Abs(top+3.68-25*72/25.4) > 1 {
+					t.Errorf("body cap-box top %gpt; want 25mm (20mm edge plus 5mm clearance)", top+3.68)
+				}
+			}
+		}
+		if headerCount != 1 {
+			t.Errorf("page %s has %d header specimens; want one", page.attr("number"), headerCount)
+		}
+	}
+}
+
+func proseAssertLetterGaps(t *testing.T, tree *officeXML) {
+	t.Helper()
+	spans := tree.all("text")
+	lookup := func(marker string) *officeXML {
+		var found *officeXML
+		for _, span := range spans {
+			if strings.Contains(span.text(), marker) {
+				if found != nil {
+					t.Fatalf("ambiguous letter measurement marker %s", marker)
+				}
+				found = span
+			}
+		}
+		if found == nil {
+			t.Fatalf("letter measurement marker %s absent", marker)
+		}
+		return found
+	}
+	value := func(span *officeXML, attr string) float64 {
+		v, err := strconv.ParseFloat(span.attr(attr), 64)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return v
+	}
+	for _, gap := range []struct {
+		name, from, to string
+		mm             float64
+	}{
+		{"space-after-sender", "CONTACT-SAMPLE", "RECIPIENT-ONE", 8},
+		{"space-after-recipient", "Cork", "16 October 2026", 6},
+		{"space-after-date", "16 October 2026", "SUBJECT-SAMPLE", 5},
+		{"space-after-subject", "SUBJECT-SAMPLE", "Dear Alex", 4},
+		{"space-before-closing", "UNKNOWN-TOKEN-SAMPLE", "CLOSING-SAMPLE", 7},
+		{"space-before-signoff", "CLOSING-SAMPLE", "SIGNOFF-SAMPLE", 9},
+	} {
+		// Both endpoints use 11pt Publish with equal text-box ascent. Their
+		// top difference is consequently also their baseline difference.
+		got := value(lookup(gap.to), "top") - value(lookup(gap.from), "top")
+		want := 21.285 + gap.mm*72/25.4
+		if math.Abs(got-want) > 1 {
+			t.Errorf("%s baseline gap %gpt; want %gpt", gap.name, got, want)
+		}
+	}
+	sender := lookup("SENDER-SAMPLE")
+	senderLeft := value(sender, "left")
+	if math.Abs(value(sender, "top")+2.53-25*72/25.4) > 1 {
+		t.Error("sender cap-box top does not match 25mm margin")
+	}
+	if math.Abs(value(lookup("CONTACT-SAMPLE"), "left")-senderLeft) > 1 {
+		t.Error("sender/contact contents are not left-aligned together")
+	}
+	if senderLeft < 210*72/25.4/2 {
+		t.Error("sender block is not on the right side")
+	}
+	right := 0.0
+	for _, span := range spans {
+		if value(span, "top") >= value(lookup("RECIPIENT-ONE"), "top") {
+			continue
+		}
+		if edge := value(span, "left") + value(span, "width"); edge > right {
+			right = edge
+		}
+	}
+	if math.Abs(right-(210-25)*72/25.4) > 1 {
+		t.Errorf("sender right edge %gpt; want 25mm right margin", right)
 	}
 }
 
@@ -389,4 +586,56 @@ func proseRenderCase(t *testing.T, root, name string) string {
 		t.Fatal(err)
 	}
 	return dir
+}
+
+func proseFailurePages(t *testing.T, pdf, dir string, pages int, name string) {
+	t.Helper()
+	t.Cleanup(func() {
+		if t.Failed() {
+			proseTool(t, "pdftoppm", "-f", "1", "-l", strconv.Itoa(pages), "-png", "-r", "150", pdf, filepath.Join(dir, name))
+		}
+	})
+}
+
+func proseAssertContentsContinuation(t *testing.T, tree *officeXML, contentsPages map[int]bool) {
+	t.Helper()
+	first := 0
+	for page := range contentsPages {
+		if first == 0 || page < first {
+			first = page
+		}
+	}
+	checked := 0
+	for _, page := range tree.all("page") {
+		number, err := strconv.Atoi(page.attr("number"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !contentsPages[number] || number == first {
+			continue
+		}
+		found := false
+		for _, text := range page.all("text") {
+			if !strings.Contains(text.text(), "CHAPTER-") && !strings.Contains(text.text(), "SECTION-") {
+				continue
+			}
+			found = true
+			top, err := strconv.ParseFloat(text.attr("top"), 64)
+			if err != nil {
+				t.Fatal(err)
+			}
+			// Base TOC uses 12pt Publish: cap-box top is 2.76pt below
+			// the PDF text-box top. Reserve 20mm margin plus 10mm pad.
+			if top+2.76 < 30*72/25.4-1 {
+				t.Errorf("contents continuation page %d intrudes into reserved top band at %gpt", number, top+2.76)
+			}
+		}
+		if !found {
+			t.Errorf("no measurable entries on continuation page %d", number)
+		}
+		checked++
+	}
+	if checked == 0 {
+		t.Error("no contents continuation page measured")
+	}
 }

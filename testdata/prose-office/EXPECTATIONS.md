@@ -10,250 +10,273 @@ This checklist is being assembled during W063 delivery. **Pending rows are uncov
 
 | YAML path | Fixture/profile | Expected value | Named user test |
 |---|---|---|---|
-| `folio.letter.font.family` | letter | letter: `"Iosevka Publish"` | UT063.11 - Letter typography |
-| `folio.letter.font.letter-spacing` | letter | letter: `"0pt"` | UT063.11 - Letter typography |
-| `folio.letter.font.size` | letter | letter: `"11pt"` | UT063.11 - Letter typography |
-| `folio.letter.font.stretch` | letter | letter: `"100%"` | UT063.11 - Letter typography |
-| `folio.letter.font.style` | letter | letter: `"regular"` | UT063.11 - Letter typography |
-| `folio.letter.font.weight` | letter | letter: `"regular"` | UT063.11 - Letter typography |
-| `folio.letter.margin-bottom` | letter | letter: `"25mm"` | UT063.11 - Letter typography |
-| `folio.letter.margin-left` | letter | letter: `"30mm"` | UT063.11 - Letter typography |
-| `folio.letter.margin-right` | letter | letter: `"25mm"` | UT063.11 - Letter typography |
-| `folio.letter.margin-top` | letter | letter: `"25mm"` | UT063.11 - Letter typography |
-| `folio.letter.page` | letter | letter: `"a4"` | UT063.11 - Letter typography |
-| `folio.letter.space-after-date` | letter | letter: `"5mm"` | UT063.11 - Letter typography |
-| `folio.letter.space-after-recipient` | letter | letter: `"6mm"` | UT063.11 - Letter typography |
-| `folio.letter.space-after-sender` | letter | letter: `"8mm"` | UT063.11 - Letter typography |
-| `folio.letter.space-after-subject` | letter | letter: `"4mm"` | UT063.11 - Letter typography |
-| `folio.letter.space-before-closing` | letter | letter: `"7mm"` | UT063.11 - Letter typography |
-| `folio.letter.space-before-signoff` | letter | letter: `"9mm"` | UT063.11 - Letter typography |
-| `folio.manuscript.chapter.align` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.blank-page-after` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.blank-page-before` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.case-transform` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.explicit-numbering` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.name-case` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.number-format` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.number-reset` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.page-break-before` | typography, book | typography: `false`; book: `false` | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.position` | typography, book | typography: `"0mm"`; book: `"0mm"` | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.prefix` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.separator` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.show-name` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.show-number` | typography, book | typography: `false`; book: `false` | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.skip-footer` | book | book: `false` | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.skip-header` | book | book: `false` | UT063.7 - Headings and numbering |
-| `folio.manuscript.chapter.space-after` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.code-block` | Pending | Pending contrasting/inherited profile | UT063.4 - Block layout |
-| `folio.manuscript.code-block-indent` | typography | typography: `"8mm"` | UT063.4 - Block layout |
-| `folio.manuscript.code-block-spacing` | typography | typography: `"5mm"` | UT063.4 - Block layout |
-| `folio.manuscript.copyright.align` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.blank-page-after` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.blank-page-before` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.block-spacing` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.body` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.credits` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.enabled` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.font.family` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.font.size` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.font.style` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.font.weight` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.isbn` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.isbn-barcode` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.isbn-label` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.label.font.family` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.label.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.label.font.size` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.label.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.label.font.style` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.label.font.weight` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.line-spacing` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.position` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.publication` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.publisher` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.publisher-preposition` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.separator` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.separator-space-after` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.separator-space-before` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.skip-footer` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.copyright.skip-header` | Pending | Pending contrasting/inherited profile | UT063.9 - Copyright |
-| `folio.manuscript.date-format` | Pending | Pending contrasting/inherited profile | UT063.4 - Block layout |
-| `folio.manuscript.font.family` | typography, book | typography: `"Iosevka Publish"`; book: `"Iosevka Publish"` | UT063.3 - Font roles |
-| `folio.manuscript.font.letter-spacing` | typography, book | typography: `"0pt"`; book: `"0pt"` | UT063.3 - Font roles |
-| `folio.manuscript.font.size` | typography, book | typography: `"12pt"`; book: `"12pt"` | UT063.3 - Font roles |
-| `folio.manuscript.font.stretch` | typography, book | typography: `"100%"`; book: `"100%"` | UT063.3 - Font roles |
-| `folio.manuscript.font.style` | typography, book | typography: `"regular"`; book: `"regular"` | UT063.3 - Font roles |
-| `folio.manuscript.font.weight` | typography, book | typography: `"regular"`; book: `"regular"` | UT063.3 - Font roles |
-| `folio.manuscript.gutter` | book | book: `"5mm"` | UT063.5 - Page geometry |
+| `folio.letter.font.family` | letter, letter-contrasting | letter: `"Iosevka Publish"`; letter-contrasting: `"Iosevka Publish"` | UT063.11 - Letter typography |
+| `folio.letter.font.letter-spacing` | letter, letter-contrasting | letter: `"0pt"`; letter-contrasting: `"0.2pt"` | UT063.11 - Letter typography |
+| `folio.letter.font.size` | letter, letter-contrasting | letter: `"11pt"`; letter-contrasting: `"11pt"` | UT063.11 - Letter typography |
+| `folio.letter.font.stretch` | letter, letter-contrasting | letter: `"100%"`; letter-contrasting: `"95%"` | UT063.11 - Letter typography |
+| `folio.letter.font.style` | letter, letter-contrasting | letter: `"regular"`; letter-contrasting: `"regular"` | UT063.11 - Letter typography |
+| `folio.letter.font.weight` | letter, letter-contrasting | letter: `"regular"`; letter-contrasting: `"regular"` | UT063.11 - Letter typography |
+| `folio.letter.margin-bottom` | letter, letter-contrasting | letter: `"25mm"`; letter-contrasting: `"21mm"` | UT063.11 - Letter typography |
+| `folio.letter.margin-left` | letter, letter-contrasting | letter: `"30mm"`; letter-contrasting: `"22mm"` | UT063.11 - Letter typography |
+| `folio.letter.margin-right` | letter, letter-contrasting | letter: `"25mm"`; letter-contrasting: `"23mm"` | UT063.11 - Letter typography |
+| `folio.letter.margin-top` | letter, letter-contrasting | letter: `"25mm"`; letter-contrasting: `"20mm"` | UT063.11 - Letter typography |
+| `folio.letter.page` | letter, letter-contrasting | letter: `"a4"`; letter-contrasting: `"letter"` | UT063.11 - Letter typography |
+| `folio.letter.space-after-date` | letter, letter-contrasting | letter: `"5mm"`; letter-contrasting: `"2mm"` | UT063.11 - Letter typography |
+| `folio.letter.space-after-recipient` | letter, letter-contrasting | letter: `"6mm"`; letter-contrasting: `"3mm"` | UT063.11 - Letter typography |
+| `folio.letter.space-after-sender` | letter, letter-contrasting | letter: `"8mm"`; letter-contrasting: `"4mm"` | UT063.11 - Letter typography |
+| `folio.letter.space-after-subject` | letter, letter-contrasting | letter: `"4mm"`; letter-contrasting: `"1mm"` | UT063.11 - Letter typography |
+| `folio.letter.space-before-closing` | letter, letter-contrasting | letter: `"7mm"`; letter-contrasting: `"5mm"` | UT063.11 - Letter typography |
+| `folio.letter.space-before-signoff` | letter, letter-contrasting | letter: `"9mm"`; letter-contrasting: `"6mm"` | UT063.11 - Letter typography |
+| `folio.manuscript.chapter.align` | book-composed, book-contrasting | book-composed: `"left"`; book-contrasting: `"right"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.blank-page-after` | book-composed, book-contrasting | book-composed: `false`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.blank-page-before` | book-composed, book-contrasting | book-composed: `false`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.case-transform` | book-composed | book-composed: `"as-written"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.explicit-numbering` | book-composed, book-contrasting | book-composed: `"derived"`; book-contrasting: `"source"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.name-case` | book-composed | book-composed: `"lower"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.number-format` | book-composed, book-contrasting | book-composed: `"I.1"`; book-contrasting: `"i"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.number-reset` | book-composed, book-contrasting | book-composed: `"per-part"`; book-contrasting: `"never"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.page-break-before` | typography, book, book-composed, book-contrasting | typography: `false`; book: `false`; book-composed: `true`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.position` | typography, book, book-composed, book-contrasting | typography: `"0mm"`; book: `"0mm"`; book-composed: `"15mm"`; book-contrasting: `"0mm"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.prefix` | book-composed | book-composed: `"Chapter "` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.separator` | book-composed | book-composed: `": "` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.show-name` | book-composed, book-contrasting | book-composed: `true`; book-contrasting: `true` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.show-number` | typography, book, book-composed, book-contrasting | typography: `false`; book: `false`; book-composed: `true`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.skip-footer` | book, book-composed, book-contrasting | book: `false`; book-composed: `false`; book-contrasting: `true` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.skip-header` | book, book-composed, book-contrasting | book: `false`; book-composed: `true`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.chapter.space-after` | book-composed, book-contrasting | book-composed: `"8mm"`; book-contrasting: `"1em"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.code-block` | typography-contrasting | Mapping container; see space-before/space-after below | UT063.4 - Block layout |
+| `folio.manuscript.code-block-indent` | typography, typography-contrasting | typography: `"8mm"`; typography-contrasting: `"1.5em"` | UT063.4 - Block layout |
+| `folio.manuscript.code-block-spacing` | typography, typography-contrasting | typography: `"5mm"`; typography-contrasting: `"0.5em"` | UT063.4 - Block layout |
+| `folio.manuscript.copyright.align` | book-composed | book-composed: `"left"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.blank-page-after` | book-composed | book-composed: `false` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.blank-page-before` | book-composed, book-contrasting | book-composed: `"enforce-left"`; book-contrasting: `"enforce-right"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.block-spacing` | book-composed | book-composed: `"4mm"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.body` | book-composed, book-contrasting | book-composed: `["LEGAL-SAMPLE: **bold credit** and *italic credit*, independent of source syntax."]`; book-contrasting: `[]` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.credits` | book-composed, book-contrasting | book-composed: `["CREDIT-SAMPLE: 11pt Iosevka Publish; 4mm block spacing"]`; book-contrasting: `["CONTRAST-CREDIT: after contents; no embedded barcode"]` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.enabled` | book-composed, book-contrasting | book-composed: `true`; book-contrasting: `true` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.font.letter-spacing` | book-composed | book-composed: `"0pt"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.font.size` | book-composed | book-composed: `"11pt"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.font.stretch` | book-composed | book-composed: `"100%"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.font.style` | book-composed | book-composed: `"regular"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.font.weight` | book-composed | book-composed: `"regular"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.isbn` | book-composed, book-contrasting | book-composed: `"978-0-000000-00-2"`; book-contrasting: `"978-0-000000-00-2"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.isbn-barcode` | book-composed, book-contrasting | book-composed: `"render-and-file"`; book-contrasting: `"file"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.isbn-label` | book-composed | book-composed: `"BOOK-NUMBER"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.label.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.label.font.letter-spacing` | book-composed | book-composed: `"0.2pt"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.label.font.size` | book-composed | book-composed: `"11pt"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.label.font.stretch` | book-composed | book-composed: `"95%"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.label.font.style` | book-composed | book-composed: `"italic"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.label.font.weight` | book-composed | book-composed: `"bold"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.line-spacing` | book-composed | book-composed: `1.4` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.position` | book-composed, book-contrasting | book-composed: `"after-title"`; book-contrasting: `"after-frontmatter"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.publication` | book-composed, book-contrasting | book-composed: `["PUBLICATION-SAMPLE: bottom group","Second publication line"]`; book-contrasting: `[]` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.publisher` | book-composed, book-contrasting | book-composed: `"PUBLISHER-SAMPLE"`; book-contrasting: `""` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.publisher-preposition` | book-composed | book-composed: `"Published by"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.separator` | book-composed | book-composed: `"COPYRIGHT-SEPARATOR"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.separator-space-after` | book-composed | book-composed: `"7mm"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.separator-space-before` | book-composed | book-composed: `"6mm"` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.skip-footer` | book-composed, book-contrasting | book-composed: `false`; book-contrasting: `true` | UT063.9 - Copyright |
+| `folio.manuscript.copyright.skip-header` | book-composed, book-contrasting | book-composed: `true`; book-contrasting: `false` | UT063.9 - Copyright |
+| `folio.manuscript.date-format` | book-composed | book-composed: `"02/01/2006"` | UT063.4 - Block layout |
+| `folio.manuscript.font.family` | typography, book, book-composed | typography: `"Iosevka Publish"`; book: `"Iosevka Publish"`; book-composed: `"Iosevka Publish"` | UT063.3 - Font roles |
+| `folio.manuscript.font.letter-spacing` | typography, book, book-composed | typography: `"0pt"`; book: `"0pt"`; book-composed: `"0pt"` | UT063.3 - Font roles |
+| `folio.manuscript.font.size` | typography, book, book-composed | typography: `"12pt"`; book: `"12pt"`; book-composed: `"12pt"` | UT063.3 - Font roles |
+| `folio.manuscript.font.stretch` | typography, book, book-composed | typography: `"100%"`; book: `"100%"`; book-composed: `"100%"` | UT063.3 - Font roles |
+| `folio.manuscript.font.style` | typography, book, book-composed | typography: `"regular"`; book: `"regular"`; book-composed: `"regular"` | UT063.3 - Font roles |
+| `folio.manuscript.font.weight` | typography, book, book-composed | typography: `"regular"`; book: `"regular"`; book-composed: `"regular"` | UT063.3 - Font roles |
+| `folio.manuscript.gutter` | book, book-composed, book-contrasting | book: `"5mm"`; book-composed: `"4mm"`; book-contrasting: `"0mm"` | UT063.5 - Page geometry |
 | `folio.manuscript.heading.font.family` | typography | typography: `"Iosevka Publish Extended"` | UT063.3 - Font roles |
 | `folio.manuscript.heading.font.letter-spacing` | typography | typography: `"0pt"` | UT063.3 - Font roles |
 | `folio.manuscript.heading.font.size` | typography | typography: `"16pt"` | UT063.3 - Font roles |
 | `folio.manuscript.heading.font.stretch` | typography | typography: `"100%"` | UT063.3 - Font roles |
 | `folio.manuscript.heading.font.style` | typography | typography: `"regular"` | UT063.3 - Font roles |
 | `folio.manuscript.heading.font.weight` | typography | typography: `"bold"` | UT063.3 - Font roles |
-| `folio.manuscript.hyphenation` | typography | typography: `false` | UT063.4 - Block layout |
-| `folio.manuscript.justify` | typography | typography: `false` | UT063.4 - Block layout |
-| `folio.manuscript.line-spacing` | typography, book | typography: `1.5`; book: `"1"` | UT063.4 - Block layout |
-| `folio.manuscript.list.space-after` | Pending | Pending contrasting/inherited profile | UT063.4 - Block layout |
-| `folio.manuscript.list.space-before` | Pending | Pending contrasting/inherited profile | UT063.4 - Block layout |
-| `folio.manuscript.margin` | typography, book | typography: `"20mm"`; book: `"20mm"` | UT063.5 - Page geometry |
+| `folio.manuscript.hyphenation` | typography, typography-contrasting | typography: `false`; typography-contrasting: `"auto"` | UT063.4 - Block layout |
+| `folio.manuscript.justify` | typography, typography-contrasting | typography: `false`; typography-contrasting: `true` | UT063.4 - Block layout |
+| `folio.manuscript.line-spacing` | typography, book, typography-contrasting | typography: `1.5`; book: `"1"`; typography-contrasting: `1` | UT063.4 - Block layout |
+| `folio.manuscript.list.space-after` | typography-contrasting | typography-contrasting: `"5mm"` | UT063.4 - Block layout |
+| `folio.manuscript.list.space-before` | typography-contrasting | typography-contrasting: `"4mm"` | UT063.4 - Block layout |
+| `folio.manuscript.margin` | typography, book, book-composed, book-contrasting | typography: `"20mm"`; book: `"20mm"`; book-composed: `"18mm"`; book-contrasting: `"20mm"` | UT063.5 - Page geometry |
 | `folio.manuscript.mono.font.family` | typography | typography: `"Iosevka Publish"` | UT063.3 - Font roles |
 | `folio.manuscript.mono.font.letter-spacing` | typography | typography: `"0pt"` | UT063.3 - Font roles |
 | `folio.manuscript.mono.font.size` | typography | typography: `"9pt"` | UT063.3 - Font roles |
 | `folio.manuscript.mono.font.stretch` | typography | typography: `"100%"` | UT063.3 - Font roles |
 | `folio.manuscript.mono.font.style` | typography | typography: `"regular"` | UT063.3 - Font roles |
 | `folio.manuscript.mono.font.weight` | typography | typography: `"regular"` | UT063.3 - Font roles |
-| `folio.manuscript.page` | typography, book | typography: `"a4"`; book: `"a4"` | UT063.5 - Page geometry |
-| `folio.manuscript.page-numbering.body-format` | book | book: `"1"` | UT063.7 - Headings and numbering |
-| `folio.manuscript.page-numbering.body-reset` | book | book: `"first-part-or-chapter"` | UT063.7 - Headings and numbering |
-| `folio.manuscript.page-numbering.frontmatter-format` | book | book: `"i"` | UT063.7 - Headings and numbering |
-| `folio.manuscript.paragraph-indent` | typography | typography: `"10mm"` | UT063.4 - Block layout |
-| `folio.manuscript.paragraph-spacing` | typography | typography: `"3mm"` | UT063.4 - Block layout |
-| `folio.manuscript.part.align` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.blank-page-after` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.blank-page-before` | book | book: `"enforce-right"` | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.case-transform` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.explicit-numbering` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.name-case` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.number-format` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.number-reset` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.page-break-before` | book | book: `true` | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.prefix` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.separator` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.show-name` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.show-number` | book | book: `false` | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.skip-footer` | book | book: `true` | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.skip-header` | book | book: `true` | UT063.7 - Headings and numbering |
-| `folio.manuscript.part.vertical-align` | Pending | Pending contrasting/inherited profile | UT063.7 - Headings and numbering |
-| `folio.manuscript.quote-block-indent` | typography | typography: `"6mm"` | UT063.4 - Block layout |
-| `folio.manuscript.quoted-block-spacing` | typography | typography: `"4mm"` | UT063.4 - Block layout |
+| `folio.manuscript.page` | typography, book, book-composed, book-contrasting | typography: `"a4"`; book: `"a4"`; book-composed: `"6x9in"`; book-contrasting: `"a4"` | UT063.5 - Page geometry |
+| `folio.manuscript.page-numbering.body-format` | book, book-composed, book-contrasting | book: `"1"`; book-composed: `"1"`; book-contrasting: `"i"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.page-numbering.body-reset` | book, book-composed, book-contrasting | book: `"first-part-or-chapter"`; book-composed: `"first-part-or-chapter"`; book-contrasting: `"never"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.page-numbering.frontmatter-format` | book, book-composed, book-contrasting | book: `"i"`; book-composed: `"I"`; book-contrasting: `"1"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.paragraph-indent` | typography, typography-contrasting | typography: `"10mm"`; typography-contrasting: `"2em"` | UT063.4 - Block layout |
+| `folio.manuscript.paragraph-spacing` | typography, typography-contrasting | typography: `"3mm"`; typography-contrasting: `"1mm"` | UT063.4 - Block layout |
+| `folio.manuscript.part.align` | book-composed, book-contrasting | book-composed: `"center"`; book-contrasting: `"right"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.blank-page-after` | book-composed, book-contrasting | book-composed: `true`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.blank-page-before` | book, book-composed, book-contrasting | book: `"enforce-right"`; book-composed: `"enforce-right"`; book-contrasting: `"enforce-left"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.case-transform` | book-composed, book-contrasting | book-composed: `"as-written"`; book-contrasting: `"lower"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.explicit-numbering` | book-composed | book-composed: `"derived"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.name-case` | book-composed | book-composed: `"upper"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.number-format` | book-composed | book-composed: `"I"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.number-reset` | book-composed | book-composed: `"never"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.page-break-before` | book, book-composed, book-contrasting | book: `true`; book-composed: `true`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.prefix` | book-composed | book-composed: `"Part "` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.separator` | book-composed | book-composed: `": "` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.show-name` | book-composed, book-contrasting | book-composed: `true`; book-contrasting: `true` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.show-number` | book, book-composed, book-contrasting | book: `false`; book-composed: `true`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.skip-footer` | book, book-composed, book-contrasting | book: `true`; book-composed: `true`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.skip-header` | book, book-composed, book-contrasting | book: `true`; book-composed: `true`; book-contrasting: `false` | UT063.7 - Headings and numbering |
+| `folio.manuscript.part.vertical-align` | book-composed, book-contrasting | book-composed: `"center"`; book-contrasting: `"top"` | UT063.7 - Headings and numbering |
+| `folio.manuscript.quote-block-indent` | typography, typography-contrasting | typography: `"6mm"`; typography-contrasting: `"1em"` | UT063.4 - Block layout |
+| `folio.manuscript.quoted-block-spacing` | typography, typography-contrasting | typography: `"4mm"`; typography-contrasting: `"0.5em"` | UT063.4 - Block layout |
 | `folio.manuscript.quoted-block.font.family` | typography | typography: `"Iosevka Publish Extended"` | UT063.3 - Font roles |
 | `folio.manuscript.quoted-block.font.letter-spacing` | typography | typography: `"0pt"` | UT063.3 - Font roles |
 | `folio.manuscript.quoted-block.font.size` | typography | typography: `"10pt"` | UT063.3 - Font roles |
 | `folio.manuscript.quoted-block.font.stretch` | typography | typography: `"100%"` | UT063.3 - Font roles |
 | `folio.manuscript.quoted-block.font.style` | typography | typography: `"italic"` | UT063.3 - Font roles |
 | `folio.manuscript.quoted-block.font.weight` | typography | typography: `"regular"` | UT063.3 - Font roles |
-| `folio.manuscript.scene-break.marker` | typography | typography: `"#"` | UT063.4 - Block layout |
-| `folio.manuscript.style` | Pending | Pending contrasting/inherited profile | UT063.4 - Block layout |
-| `folio.manuscript.table.space-after` | Pending | Pending contrasting/inherited profile | UT063.4 - Block layout |
-| `folio.manuscript.table.space-before` | Pending | Pending contrasting/inherited profile | UT063.4 - Block layout |
-| `folio.manuscript.title-page.author.align` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.author.attribution` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.author.font.family` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.author.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.author.font.size` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.author.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.author.font.style` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.author.font.weight` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.contact.align` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.contact.font.family` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.contact.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.contact.font.size` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.contact.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.contact.font.style` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.contact.font.weight` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.date.align` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.date.font.family` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.date.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.date.font.size` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.date.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.date.font.style` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.date.font.weight` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.enabled` | typography, book | typography: `false`; book: `true` | UT063.6 - Title page |
-| `folio.manuscript.title-page.footer-align` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-address` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-author` | book | book: `true` | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-contact-name` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-date` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-email` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-phone` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-subtitle` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-title` | book | book: `true` | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-version` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-website` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.include-wordcount` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.page-number` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.subtitle.align` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.subtitle.font.family` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.subtitle.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.subtitle.font.size` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.subtitle.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.subtitle.font.style` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.subtitle.font.weight` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.title-block-align` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.title.align` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.title.font.family` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.title.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.title.font.size` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.title.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.title.font.style` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.title.font.weight` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.version.align` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.version.font.family` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.version.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.version.font.size` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.version.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.version.font.style` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.version.font.weight` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.wordcount.align` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.wordcount.font.family` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.wordcount.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.wordcount.font.size` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.wordcount.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.wordcount.font.style` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.title-page.wordcount.font.weight` | Pending | Pending contrasting/inherited profile | UT063.6 - Title page |
-| `folio.manuscript.toc.blank-page-after` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.blank-page-before` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.continuation-padding-before` | book | book: `"10mm"` | UT063.8 - Contents |
-| `folio.manuscript.toc.dot-leaders` | book | book: `true` | UT063.8 - Contents |
-| `folio.manuscript.toc.enabled` | typography, book | typography: `false`; book: `true` | UT063.8 - Contents |
-| `folio.manuscript.toc.font.family` | book | book: `"Iosevka Publish"` | UT063.8 - Contents |
-| `folio.manuscript.toc.font.letter-spacing` | book | book: `"0pt"` | UT063.8 - Contents |
-| `folio.manuscript.toc.font.size` | book | book: `"12pt"` | UT063.8 - Contents |
-| `folio.manuscript.toc.font.stretch` | book | book: `"100%"` | UT063.8 - Contents |
-| `folio.manuscript.toc.font.style` | book | book: `"regular"` | UT063.8 - Contents |
-| `folio.manuscript.toc.font.weight` | book | book: `"regular"` | UT063.8 - Contents |
-| `folio.manuscript.toc.heading.font.family` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.heading.font.letter-spacing` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.heading.font.size` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.heading.font.stretch` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.heading.font.style` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.heading.font.weight` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.include-chapters` | book | book: `true` | UT063.8 - Contents |
-| `folio.manuscript.toc.include-parts` | book | book: `true` | UT063.8 - Contents |
-| `folio.manuscript.toc.include-sections` | book | book: `true` | UT063.8 - Contents |
-| `folio.manuscript.toc.line-spacing` | book | book: `"1.5"` | UT063.8 - Contents |
-| `folio.manuscript.toc.links` | book | book: `true` | UT063.8 - Contents |
-| `folio.manuscript.toc.page-break-before` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.page-numbers` | book | book: `true` | UT063.8 - Contents |
-| `folio.manuscript.toc.part-bold` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.part-gap-before` | Pending | Pending contrasting/inherited profile | UT063.8 - Contents |
-| `folio.manuscript.toc.title` | book | book: `"CONTENTS-SAMPLE"` | UT063.8 - Contents |
-| `folio.manuscript.widow-orphan-control` | Pending | Pending contrasting/inherited profile | UT063.4 - Block layout |
-| `folio.page-footer.align` | Pending | Pending contrasting/inherited profile | UT063.5 - Page geometry |
-| `folio.page-footer.content-padding-after` | book | book: `"5mm"` | UT063.5 - Page geometry |
-| `folio.page-footer.distance-from-edge` | book | book: `"20mm"` | UT063.5 - Page geometry |
-| `folio.page-footer.enabled` | typography, book, letter | typography: `false`; book: `true`; letter: `true` | UT063.5 - Page geometry |
-| `folio.page-footer.font.family` | book | book: `"Iosevka Publish"` | UT063.5 - Page geometry |
-| `folio.page-footer.font.letter-spacing` | book | book: `"0pt"` | UT063.5 - Page geometry |
-| `folio.page-footer.font.size` | book | book: `"10pt"` | UT063.5 - Page geometry |
-| `folio.page-footer.font.stretch` | book | book: `"100%"` | UT063.5 - Page geometry |
-| `folio.page-footer.font.style` | book | book: `"regular"` | UT063.5 - Page geometry |
-| `folio.page-footer.font.weight` | book | book: `"regular"` | UT063.5 - Page geometry |
-| `folio.page-footer.format` | book, letter | book: `"BODY-FOOT [page]"`; letter: `"LETTER-MUST-NOT-HAVE-THIS-FOOTER"` | UT063.5 - Page geometry |
-| `folio.page-header.align` | Pending | Pending contrasting/inherited profile | UT063.5 - Page geometry |
-| `folio.page-header.content-padding-after` | book | book: `"5mm"` | UT063.5 - Page geometry |
-| `folio.page-header.distance-from-edge` | book | book: `"20mm"` | UT063.5 - Page geometry |
-| `folio.page-header.enabled` | typography, book, letter | typography: `false`; book: `true`; letter: `true` | UT063.5 - Page geometry |
-| `folio.page-header.font.family` | book | book: `"Iosevka Publish"` | UT063.5 - Page geometry |
-| `folio.page-header.font.letter-spacing` | book | book: `"0pt"` | UT063.5 - Page geometry |
-| `folio.page-header.font.size` | book | book: `"10pt"` | UT063.5 - Page geometry |
-| `folio.page-header.font.stretch` | book | book: `"100%"` | UT063.5 - Page geometry |
-| `folio.page-header.font.style` | book | book: `"regular"` | UT063.5 - Page geometry |
-| `folio.page-header.font.weight` | book | book: `"regular"` | UT063.5 - Page geometry |
-| `folio.page-header.format` | book, letter | book: `"BODY-EVEN [page]"`; letter: `"LETTER-MUST-NOT-HAVE-THIS-HEADER"` | UT063.5 - Page geometry |
+| `folio.manuscript.scene-break.marker` | typography, typography-contrasting | typography: `"#"`; typography-contrasting: `"SCENE-CONTRAST"` | UT063.4 - Block layout |
+| `folio.manuscript.style` | book-composed, book-contrasting | book-composed: `"british"`; book-contrasting: `"us"` | UT063.4 - Block layout |
+| `folio.manuscript.table.space-after` | typography-contrasting | typography-contrasting: `"7mm"` | UT063.4 - Block layout |
+| `folio.manuscript.table.space-before` | typography-contrasting | typography-contrasting: `"6mm"` | UT063.4 - Block layout |
+| `folio.manuscript.title-page.author.align` | book-composed | book-composed: `"group"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.author.attribution` | Historical preset entry | Not consumed by the typed manuscript renderer; use top-level author-attribution | UT063.6 - Title page |
+| `folio.manuscript.title-page.author.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.author.font.letter-spacing` | book-composed | book-composed: `"0pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.author.font.size` | book-composed | book-composed: `"12pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.author.font.stretch` | book-composed | book-composed: `"100%"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.author.font.style` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.author.font.weight` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.contact.align` | book-composed | book-composed: `"top-left"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.contact.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.contact.font.letter-spacing` | book-composed | book-composed: `"0pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.contact.font.size` | book-composed | book-composed: `"10pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.contact.font.stretch` | book-composed | book-composed: `"100%"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.contact.font.style` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.contact.font.weight` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.date.align` | book-composed | book-composed: `"bottom-left"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.date.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.date.font.letter-spacing` | book-composed | book-composed: `"0pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.date.font.size` | book-composed | book-composed: `"10pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.date.font.stretch` | book-composed | book-composed: `"100%"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.date.font.style` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.date.font.weight` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.enabled` | typography, book, book-composed, book-contrasting | typography: `false`; book: `true`; book-composed: `true`; book-contrasting: `false` | UT063.6 - Title page |
+| `folio.manuscript.title-page.footer-align` | book-composed | book-composed: `"bottom-right"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-address` | book-composed | book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-author` | book, book-composed | book: `true`; book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-contact-name` | book-composed | book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-date` | book-composed | book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-email` | book-composed | book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-phone` | book-composed | book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-subtitle` | book-composed | book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-title` | book, book-composed | book: `true`; book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-version` | book-composed | book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-website` | book-composed | book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.include-wordcount` | book-composed | book-composed: `true` | UT063.6 - Title page |
+| `folio.manuscript.title-page.page-number` | book-composed, book-contrasting | book-composed: `true`; book-contrasting: `false` | UT063.6 - Title page |
+| `folio.manuscript.title-page.subtitle.align` | book-composed | book-composed: `"group"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.subtitle.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.subtitle.font.letter-spacing` | book-composed | book-composed: `"0pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.subtitle.font.size` | book-composed | book-composed: `"14pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.subtitle.font.stretch` | book-composed | book-composed: `"100%"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.subtitle.font.style` | book-composed | book-composed: `"italic"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.subtitle.font.weight` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.title-block-align` | book-composed | book-composed: `"center-left"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.title.align` | book-composed | book-composed: `"group"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.title.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.title.font.letter-spacing` | book-composed | book-composed: `"0pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.title.font.size` | book-composed | book-composed: `"20pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.title.font.stretch` | book-composed | book-composed: `"100%"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.title.font.style` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.title.font.weight` | book-composed | book-composed: `"bold"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.version.align` | book-composed | book-composed: `"group"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.version.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.version.font.letter-spacing` | book-composed | book-composed: `"0pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.version.font.size` | book-composed | book-composed: `"10pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.version.font.stretch` | book-composed | book-composed: `"100%"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.version.font.style` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.version.font.weight` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.wordcount.align` | book-composed | book-composed: `"top-right"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.wordcount.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.wordcount.font.letter-spacing` | book-composed | book-composed: `"0pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.wordcount.font.size` | book-composed | book-composed: `"10pt"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.wordcount.font.stretch` | book-composed | book-composed: `"100%"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.wordcount.font.style` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.title-page.wordcount.font.weight` | book-composed | book-composed: `"regular"` | UT063.6 - Title page |
+| `folio.manuscript.toc.blank-page-after` | book, book-composed, book-contrasting | book: `true`; book-composed: `false`; book-contrasting: `"enforce-left"` | UT063.8 - Contents |
+| `folio.manuscript.toc.blank-page-before` | book-composed, book-contrasting | book-composed: `"enforce-right"`; book-contrasting: `false` | UT063.8 - Contents |
+| `folio.manuscript.toc.continuation-padding-before` | book, book-composed, book-contrasting | book: `"10mm"`; book-composed: `"12mm"`; book-contrasting: `"5mm"` | UT063.8 - Contents |
+| `folio.manuscript.toc.dot-leaders` | book, book-composed, book-contrasting | book: `true`; book-composed: `true`; book-contrasting: `false` | UT063.8 - Contents |
+| `folio.manuscript.toc.enabled` | typography, book, book-composed, book-contrasting | typography: `false`; book: `true`; book-composed: `true`; book-contrasting: `true` | UT063.8 - Contents |
+| `folio.manuscript.toc.font.family` | book, book-composed | book: `"Iosevka Publish"`; book-composed: `"Iosevka Publish"` | UT063.8 - Contents |
+| `folio.manuscript.toc.font.letter-spacing` | book, book-composed | book: `"0pt"`; book-composed: `"0pt"` | UT063.8 - Contents |
+| `folio.manuscript.toc.font.size` | book, book-composed | book: `"12pt"`; book-composed: `"11pt"` | UT063.8 - Contents |
+| `folio.manuscript.toc.font.stretch` | book, book-composed | book: `"100%"`; book-composed: `"100%"` | UT063.8 - Contents |
+| `folio.manuscript.toc.font.style` | book, book-composed | book: `"regular"`; book-composed: `"regular"` | UT063.8 - Contents |
+| `folio.manuscript.toc.font.weight` | book, book-composed | book: `"regular"`; book-composed: `"regular"` | UT063.8 - Contents |
+| `folio.manuscript.toc.heading.font.family` | book-composed | book-composed: `"Iosevka Publish"` | UT063.8 - Contents |
+| `folio.manuscript.toc.heading.font.letter-spacing` | book-composed | book-composed: `"0pt"` | UT063.8 - Contents |
+| `folio.manuscript.toc.heading.font.size` | book-composed | book-composed: `"16pt"` | UT063.8 - Contents |
+| `folio.manuscript.toc.heading.font.stretch` | book-composed | book-composed: `"100%"` | UT063.8 - Contents |
+| `folio.manuscript.toc.heading.font.style` | book-composed | book-composed: `"regular"` | UT063.8 - Contents |
+| `folio.manuscript.toc.heading.font.weight` | book-composed | book-composed: `"bold"` | UT063.8 - Contents |
+| `folio.manuscript.toc.include-chapters` | book, book-composed, book-contrasting | book: `true`; book-composed: `true`; book-contrasting: `true` | UT063.8 - Contents |
+| `folio.manuscript.toc.include-parts` | book, book-composed, book-contrasting | book: `true`; book-composed: `true`; book-contrasting: `false` | UT063.8 - Contents |
+| `folio.manuscript.toc.include-sections` | book, book-composed, book-contrasting | book: `true`; book-composed: `true`; book-contrasting: `false` | UT063.8 - Contents |
+| `folio.manuscript.toc.line-spacing` | book, book-composed, book-contrasting | book: `"1.5"`; book-composed: `1.25`; book-contrasting: `1` | UT063.8 - Contents |
+| `folio.manuscript.toc.links` | book, book-composed, book-contrasting | book: `true`; book-composed: `true`; book-contrasting: `false` | UT063.8 - Contents |
+| `folio.manuscript.toc.page-break-before` | book-composed, book-contrasting | book-composed: `true`; book-contrasting: `false` | UT063.8 - Contents |
+| `folio.manuscript.toc.page-numbers` | book, book-composed, book-contrasting | book: `true`; book-composed: `true`; book-contrasting: `false` | UT063.8 - Contents |
+| `folio.manuscript.toc.part-bold` | book-composed, book-contrasting | book-composed: `true`; book-contrasting: `false` | UT063.8 - Contents |
+| `folio.manuscript.toc.part-gap-before` | book-composed | book-composed: `"8mm"` | UT063.8 - Contents |
+| `folio.manuscript.toc.title` | book, book-composed, book-contrasting | book: `"CONTENTS-SAMPLE"`; book-composed: `"CONTENTS-COMPOSED: 16pt bold Iosevka Publish"`; book-contrasting: `"CONTENTS-CONTRAST: chapters only, no links, leaders or page numbers"` | UT063.8 - Contents |
+| `folio.manuscript.widow-orphan-control` | typography-contrasting | typography-contrasting: `false` | UT063.4 - Block layout |
+| `folio.page-footer.align` | book-composed | book-composed: `"right-left"` | UT063.5 - Page geometry |
+| `folio.page-footer.content-padding-after` | book, book-composed | book: `"5mm"`; book-composed: `"6mm"` | UT063.5 - Page geometry |
+| `folio.page-footer.distance-from-edge` | book, book-composed | book: `"20mm"`; book-composed: `"18mm"` | UT063.5 - Page geometry |
+| `folio.page-footer.enabled` | typography, book, letter, book-composed, book-contrasting, letter-contrasting | typography: `false`; book: `true`; letter: `true`; book-composed: `true`; book-contrasting: `false`; letter-contrasting: `true` | UT063.5 - Page geometry |
+| `folio.page-footer.font.family` | book, book-composed | book: `"Iosevka Publish"`; book-composed: `"Iosevka Publish"` | UT063.5 - Page geometry |
+| `folio.page-footer.font.letter-spacing` | book, book-composed | book: `"0pt"`; book-composed: `"0pt"` | UT063.5 - Page geometry |
+| `folio.page-footer.font.size` | book, book-composed | book: `"10pt"`; book-composed: `"9pt"` | UT063.5 - Page geometry |
+| `folio.page-footer.font.stretch` | book, book-composed | book: `"100%"`; book-composed: `"100%"` | UT063.5 - Page geometry |
+| `folio.page-footer.font.style` | book, book-composed | book: `"regular"`; book-composed: `"regular"` | UT063.5 - Page geometry |
+| `folio.page-footer.font.weight` | book, book-composed | book: `"regular"`; book-composed: `"bold"` | UT063.5 - Page geometry |
+| `folio.page-footer.format` | book, letter, book-composed, letter-contrasting | book: `"BODY-FOOT [page]"`; letter: `"LETTER-MUST-NOT-HAVE-THIS-FOOTER"`; book-composed: `"FOOT-EVEN [page]"`; letter-contrasting: `"LETTER-MUST-NOT-HAVE-THIS-FOOTER"` | UT063.5 - Page geometry |
+| `folio.page-header.align` | book-composed, book-contrasting | book-composed: `"left-right"`; book-contrasting: `"center"` | UT063.5 - Page geometry |
+| `folio.page-header.content-padding-after` | typography, book, book-composed | typography: `"5mm"`; book: `"5mm"`; book-composed: `"5mm"` | UT063.5 - Page geometry |
+| `folio.page-header.distance-from-edge` | typography, book, book-composed | typography: `"20mm"`; book: `"20mm"`; book-composed: `"20mm"` | UT063.5 - Page geometry |
+| `folio.page-header.enabled` | typography, book, letter, book-composed, book-contrasting, letter-contrasting | typography: `true`; book: `true`; letter: `true`; book-composed: `true`; book-contrasting: `true`; letter-contrasting: `true` | UT063.5 - Page geometry |
+| `folio.page-header.font.family` | typography, book, book-composed | typography: `"Iosevka Publish"`; book: `"Iosevka Publish"`; book-composed: `"Iosevka Publish"` | UT063.5 - Page geometry |
+| `folio.page-header.font.letter-spacing` | typography, book, book-composed | typography: `"0pt"`; book: `"0pt"`; book-composed: `"0.2pt"` | UT063.5 - Page geometry |
+| `folio.page-header.font.size` | typography, book, book-composed | typography: `"10pt"`; book: `"10pt"`; book-composed: `"10pt"` | UT063.5 - Page geometry |
+| `folio.page-header.font.stretch` | typography, book, book-composed | typography: `"100%"`; book: `"100%"`; book-composed: `"95%"` | UT063.5 - Page geometry |
+| `folio.page-header.font.style` | typography, book, book-composed | typography: `"regular"`; book: `"regular"`; book-composed: `"italic"` | UT063.5 - Page geometry |
+| `folio.page-header.font.weight` | typography, book, book-composed | typography: `"regular"`; book: `"regular"`; book-composed: `"regular"` | UT063.5 - Page geometry |
+| `folio.page-header.format` | typography, book, letter, book-composed, letter-contrasting | typography: `"HEADER-SAMPLE"`; book: `"BODY-EVEN [page]"`; letter: `"LETTER-MUST-NOT-HAVE-THIS-HEADER"`; book-composed: `"EVEN [title] / [part] / [page] of [total-pages]"`; letter-contrasting: `"LETTER-MUST-NOT-HAVE-THIS-HEADER"` | UT063.5 - Page geometry |
+
+| `address` | book-composed | book-composed: `"ADDRESS-SAMPLE: Dublin, Ireland"` | UT063.10 - Metadata and configuration |
+| `author` | typography, book-composed | typography: `"Example Author"`; book-composed: `"AUTHOR-SAMPLE: 12pt Iosevka Publish"` | UT063.10 - Metadata and configuration |
+| `author-attribution` | book-composed | book-composed: `"Written by"` | UT063.10 - Metadata and configuration |
+| `contact-name` | book-composed | book-composed: `"CONTACT-SAMPLE: 10pt Iosevka Publish"` | UT063.10 - Metadata and configuration |
+| `date` | typography, book-composed | typography: `"2026-10-16"`; book-composed: `"2026-10-16"` | UT063.10 - Metadata and configuration |
+| `email` | book-composed | book-composed: `"author@example.invalid"` | UT063.10 - Metadata and configuration |
+| `folio.manuscript.chapter.suffix` | book-composed | book-composed: `" END"` | UT063.7 - Heading and page numbering |
+| `folio.manuscript.code-block.space-after` | typography-contrasting | typography-contrasting: `"3mm"` | UT063.4 - Block layout |
+| `folio.manuscript.code-block.space-before` | typography-contrasting | typography-contrasting: `"2mm"` | UT063.4 - Block layout |
+| `folio.manuscript.part.suffix` | book-composed | book-composed: `" END"` | UT063.7 - Heading and page numbering |
+| `folio.page-footer.alt-format` | book-composed | book-composed: `"FOOT-ODD [page]"` | UT063.5 - Running matter |
+| `folio.page-footer.alt-frontmatter-format` | book-composed | book-composed: `"FRONT-FOOT-ODD [page]"` | UT063.5 - Running matter |
+| `folio.page-footer.frontmatter-format` | book, book-composed | book: `"FRONT-FOOT [page]"`; book-composed: `"FRONT-FOOT [page]"` | UT063.5 - Running matter |
+| `folio.page-header.alt-format` | book, book-composed | book: `"BODY-ODD [page]"`; book-composed: `"ODD [author] / [chapter] / [page] of [total-pages]"` | UT063.5 - Running matter |
+| `folio.page-header.alt-frontmatter-format` | book, book-composed, book-contrasting | book: `"FRONT-ODD [page]"`; book-composed: `"FRONT-ODD [page]"`; book-contrasting: `""` | UT063.5 - Running matter |
+| `folio.page-header.frontmatter-format` | book, book-composed, book-contrasting | book: `"FRONT-EVEN [page]"`; book-composed: `"FRONT-EVEN [page]"`; book-contrasting: `""` | UT063.5 - Running matter |
+| `phone` | book-composed | book-composed: `"PHONE-SAMPLE: 000 0000"` | UT063.10 - Metadata and configuration |
+| `subtitle` | book-composed | book-composed: `"SUBTITLE-SAMPLE: 14pt italic Iosevka Publish"` | UT063.10 - Metadata and configuration |
+| `title` | typography, book-composed | typography: `"Labelled manuscript typography"`; book-composed: `"TITLE-SAMPLE: 20pt bold Iosevka Publish"` | UT063.10 - Metadata and configuration |
+| `version` | book-composed | book-composed: `"VERSION-SAMPLE: review copy"` | UT063.10 - Metadata and configuration |
+| `website` | book-composed | book-composed: `"https://example.invalid/book"` | UT063.10 - Metadata and configuration |
+| `wordcount` | book-composed | book-composed: `"WORDCOUNT-SAMPLE: approximately 1200 words"` | UT063.10 - Metadata and configuration |
 
 ## Measurement rules
 
@@ -265,6 +288,99 @@ This checklist is being assembled during W063 delivery. **Pending rows are uncov
 
 ## Remaining fixture work
 
-- Add contrasting profiles for absent, empty, disabled and inherited settings, copyright/barcodes, title placement and remaining numbering policies.
+- Contrasting profiles now cover copyright/barcodes, title placement, contents switches and numbering. Inheritance and missing optional metadata remain explicit regression cases; their inspection profile coverage still needs reconciliation.
 - Add generation commands, visible markers, named RT mappings and verified measurement references before user handoff.
 - Reconcile metadata and deprecated running-matter aliases with the config types. This initial inventory enumerates current preset leaf keys.
+
+## Named profile preparation
+
+Seven profiles reuse three logical source fixtures. Body labels state the base profile values. For contrasting profiles, the explicit overrides in this checklist take precedence over those labels. Labels are not measurements.
+
+| Profile | Source | Local configuration | Inspection |
+|---|---|---|---|
+| typography | typography.md or typography.org | typography.yaml | UT063.3 font roles; UT063.4 block geometry |
+| typography-contrasting | typography.md or typography.org | typography.yaml plus typography-contrasting.yaml | UT063.4 relative lengths, code clearances and policy |
+| book | book.md or book.org | book.yaml | UT063.5 running matter; UT063.7 parity; UT063.8 contents |
+| book-composed | book.md or book.org | book.yaml plus book-composed.yaml | UT063.6 title; UT063.7 numbering; UT063.9 copyright |
+| book-contrasting | book.md or book.org | book.yaml plus book-contrasting.yaml | UT063.5 empty bands; UT063.8 switches; UT063.9 ordering |
+| letter | letters.org | letter.yaml | UT063.11 geometry; UT063.12 substitutions |
+| letter-contrasting | letters.org | letter.yaml plus letter-contrasting.yaml | UT063.11 margins, stretch, tracking and gaps |
+
+Merge configuration mappings recursively, replacing scalar and sequence leaves. Markdown already embeds its base configuration, so its local `script.yaml` needs only the selected overlay. Org needs base and overlay combined in `script.yaml`. This is fixture preparation, not a new export option.
+
+Use one manuscript source form per profile in the bounded visual comparison; structural RTs separately prove source parity. Five manuscript profiles and two letter profiles with two recipients require 18 office exports/PDF renders and seven PDF baseline invocations, within the agreed bounds.
+
+## Independent rendered measurements
+
+- Typography header: 10pt Iosevka Publish; baseline 20mm from the top page edge. Its extracted text-box top is 9.65pt above that baseline. The 16pt heading's cap-box top is 3.68pt below its extracted text-box top, at 25mm: 20mm edge distance plus 5mm clearance. Header markers repeat once per content page.
+- Typography opening paragraph: baseline intervals are 24.93pt. The following body paragraph adds 3mm, producing 33.43394pt. Equal-font text-box tops have the same differences.
+- Bundled Publish PDF text-box height is 1.25 times point size: independently measured as 15pt at 12pt, 20pt at 16pt, 12.5pt at 10pt and 11.25pt at 9pt. Retained checks use this fractional measurement, not integer-rounded `fontspec.size`.
+- Letter: 11pt Publish line interval is 16.885pt and paragraph baseline interval is 21.285pt. Each named gap adds its configured length to the latter. Measure last contact line to recipient, last recipient line to date, date to subject, subject to salutation, last body paragraph to closing, and closing to signoff. Endpoints have equal font metrics.
+- Letter sender cap-box top is 2.53pt below its extracted text-box top, at the 25mm top margin. The longest sender line ends 25mm from the right edge; sender/contact lines share a left edge in that right-positioned block.
+- Book base explicitly requests a blank after contents, followed by an odd-page part opening. The blank has no running matter. Displayed body numbering starts at one without changing physical parity. Part opening bands are suppressed; subsequent pages use physical odd/even variants.
+
+These geometry assertions passed against independent existing PDF baselines through a temporary Go overlay before office implementation. Office conformance remains unverified until new exports reach the checks.
+
+## Reproduction commands
+
+Run from the checkout using Fish. Select `profile` from the table above and set `fixture` to `book`, `typography` or `letter` accordingly. The example selects the composed book. Keep each profile in a fresh directory so a previous local configuration cannot leak into it.
+
+```fish
+set profile book-composed
+```
+
+```fish
+set fixture book
+```
+
+```fish
+set specimen_dir (mktemp -d)
+```
+
+```fish
+go build -o "$specimen_dir/folio" ./cmd/folio
+```
+
+Merge the base and selected overlay into one local file. The merge replaces scalar/sequence leaves and recursively merges mappings. Using the base profile twice is harmless.
+
+```fish
+ruby -ryaml -e 'merge = ->(a,b) { a.merge(b) { |_k,x,y| x.is_a?(Hash) && y.is_a?(Hash) ? merge.call(x,y) : y } }; puts YAML.dump(merge.call(YAML.load_file(ARGV[0]), YAML.load_file(ARGV[1])))' "testdata/prose-office/$fixture.yaml" "testdata/prose-office/$profile.yaml" > "$specimen_dir/script.yaml"
+```
+
+For manuscripts, copy either source form. Repeat the three exports for the chosen profile. The isolated home prevents personal global configuration from changing the reference values.
+
+```fish
+cp "testdata/prose-office/$fixture.md" "$specimen_dir/source.md"
+```
+
+```fish
+env HOME="$specimen_dir" "$specimen_dir/folio" manuscript "$specimen_dir/source.md" "$specimen_dir/reference.pdf"
+```
+
+```fish
+env HOME="$specimen_dir" "$specimen_dir/folio" manuscript "$specimen_dir/source.md" "$specimen_dir/reference.docx"
+```
+
+```fish
+env HOME="$specimen_dir" "$specimen_dir/folio" manuscript "$specimen_dir/source.md" "$specimen_dir/reference.odt"
+```
+
+For the Org equivalent, copy `$fixture.org` and replace `source.md` with `source.org` in those commands. For letters, use these commands after preparing the selected letter profile:
+
+```fish
+cp testdata/prose-office/letters.org "$specimen_dir/letters.org"
+```
+
+```fish
+env HOME="$specimen_dir" "$specimen_dir/folio" letter "$specimen_dir/letters.org" --format pdf --dir "$specimen_dir"
+```
+
+```fish
+env HOME="$specimen_dir" "$specimen_dir/folio" letter "$specimen_dir/letters.org" --format docx --dir "$specimen_dir"
+```
+
+```fish
+env HOME="$specimen_dir" "$specimen_dir/folio" letter "$specimen_dir/letters.org" --format odt --dir "$specimen_dir"
+```
+
+Office commands remain expected failures until implementation. Do not interpret their presence here as delivered support. The retained rendered RT helper performs explicit field/index refresh in a private LibreOffice profile; plain `--convert-to` does not establish refreshed contents.

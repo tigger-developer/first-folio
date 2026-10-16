@@ -233,12 +233,22 @@ func officeStyle(t *testing.T, pkg map[string]*officeXML, format, name string) *
 
 func officeParagraph(t *testing.T, tree *officeXML, text string) *officeXML {
 	t.Helper()
-	for _, kind := range []string{"p", "h"} {
-		for _, n := range tree.all(kind) {
-			if strings.Contains(n.text(), text) {
-				return n
+	var visit func(*officeXML) *officeXML
+	visit = func(n *officeXML) *officeXML {
+		for _, child := range n.Children {
+			if found := visit(child); found != nil {
+				return found
 			}
 		}
+		if (n.Name.Local == "p" || n.Name.Local == "h") && strings.Contains(n.text(), text) {
+			return n
+		}
+		return nil
+	}
+	// Text boxes contain paragraphs inside an anchoring paragraph. Select
+	// the actual text paragraph, not the outer anchor and unrelated siblings.
+	if found := visit(tree); found != nil {
+		return found
 	}
 	t.Fatalf("no native paragraph containing %q", text)
 	return nil

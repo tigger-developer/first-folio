@@ -117,3 +117,36 @@ func proseContentsHasPageFields(body *officeXML, format string) bool {
 	}
 	return false
 }
+
+func TestRT063_5_OfficeContentsTypographyAndSpacing(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, bold := range []string{"true", "false"} {
+			t.Run(format+"/part-bold-"+bold, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				cfg := "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: true\n      include-parts: true\n      include-chapters: true\n      part-bold: " + bold + "\n      part-gap-before: 8mm\n      line-spacing: 1.5\n      font:\n        family: Iosevka Publish\n        size: 12pt\n        weight: regular\n"
+				proseSource(t, dir, "script.yaml", cfg)
+				src := proseSource(t, dir, "source.md", "# CONTENTS-PART\n\n## CONTENTS-CHAPTER\n\nBODY-SENTINEL\n")
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				entry := officeParagraph(t, officeBody(t, pkg, format), "CONTENTS-PART")
+				layers := officeEffective(t, pkg, format, entry)
+				officeAssertLength(t, layers, format, "spacing", "before", "paragraph-properties", "margin-top", 8*72/25.4)
+				officeAssertLength(t, layers, format, "spacing", "line", "paragraph-properties", "line-height", 24.93)
+				active := false
+				if format == "docx" {
+					for _, layer := range layers {
+						for _, node := range layer.all("b") {
+							active = node.attr("val") != "false" && node.attr("val") != "0"
+						}
+					}
+				} else {
+					weight, _ := officeEffectiveAttr(layers, "text-properties", "font-weight")
+					active = weight == "bold" || weight == "700"
+				}
+				if active != (bold == "true") {
+					t.Errorf("contents part-bold=%s not retained", bold)
+				}
+			})
+		}
+	}
+}

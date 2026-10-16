@@ -19,7 +19,11 @@ func TestRT063_8_OfficeLocalFontPermissions(t *testing.T) {
 				present, embedded bool
 			}{
 				{"editable", "Fixture Publish", 8, true, true},
+				{"installable", "Fixture Publish", 0, true, true},
+				{"no-subsetting", "Fixture Publish", 0x108, true, true},
 				{"restricted", "Fixture Publish", 2, true, false},
+				{"preview-print-only", "Fixture Publish", 4, true, false},
+				{"bitmap-only", "Fixture Publish", 0x208, true, false},
 				{"missing", "Folio Missing Prose Font 063", 0, false, false},
 			} {
 				t.Run(format+"/"+mode+"/"+tc.name, func(t *testing.T) {

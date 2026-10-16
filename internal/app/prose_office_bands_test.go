@@ -89,8 +89,20 @@ func proseFirstBands(t *testing.T, pkg map[string]*officeXML, format, band strin
 		}
 	}
 	var result []*officeXML
-	for _, kind := range []string{band, band + "-left", band + "-first"} {
-		result = append(result, master.all(kind)...)
+	seen := map[string]bool{}
+	for master != nil && !seen[master.attr("name")] {
+		seen[master.attr("name")] = true
+		for _, kind := range []string{band, band + "-left", band + "-first"} {
+			result = append(result, master.all(kind)...)
+		}
+		next := master.attr("next-style-name")
+		master = nil
+		for _, candidate := range masters {
+			if candidate.attr("name") == next {
+				master = candidate
+				break
+			}
+		}
 	}
 	return result
 }
@@ -139,5 +151,147 @@ func TestRT063_6_OfficeFrontmatterBandInheritance(t *testing.T) {
 				})
 			}
 		}
+	}
+}
+
+func TestRT063_4_OfficeRunningBandFontsAndAlignment(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, band := range []string{"header", "footer"} {
+			t.Run(format+"/"+band, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				cfg := "folio:\n  page-" + band + ":\n    enabled: true\n    format: BAND-EVEN\n    alt-format: BAND-ODD\n    align: left-right\n    font:\n      family: Iosevka Publish\n      size: 13pt\n      weight: bold\n      style: italic\n      stretch: 90%\n      letter-spacing: 1.25pt\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    font:\n      size: 12pt\n"
+				proseSource(t, dir, "script.yaml", cfg)
+				src := proseSource(t, dir, "source.md", "BODY-NO-FONT-LEAK\n")
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				seen := map[string]bool{}
+				for _, part := range proseFirstBands(t, pkg, format, band) {
+					for _, paragraph := range part.all("p") {
+						want := ""
+						if strings.Contains(paragraph.text(), "BAND-EVEN") {
+							want = "left"
+							seen["even"] = true
+						}
+						if strings.Contains(paragraph.text(), "BAND-ODD") {
+							want = "right"
+							seen["odd"] = true
+						}
+						if want == "" {
+							continue
+						}
+						layers := officeEffective(t, pkg, format, paragraph)
+						if format == "docx" {
+							officeAssertEffective(t, layers, "jc", "val", want)
+							officeAssertEffective(t, layers, "rFonts", "ascii", "Iosevka Publish")
+							officeAssertEffective(t, layers, "sz", "val", "26")
+							officeAssertEffective(t, layers, "w", "val", "90")
+							officeAssertEffective(t, layers, "spacing", "val", "25")
+							for _, flag := range []string{"b", "i"} {
+								active := false
+								for _, layer := range layers {
+									for _, node := range layer.all(flag) {
+										active = node.attr("val") != "false" && node.attr("val") != "0"
+									}
+								}
+								if !active {
+									t.Errorf("running %s lost %s font property", band, flag)
+								}
+							}
+						} else {
+							got, _ := officeEffectiveAttr(layers, "paragraph-properties", "text-align")
+							if got == "start" {
+								got = "left"
+							}
+							if got == "end" {
+								got = "right"
+							}
+							if got != want {
+								t.Errorf("running band alignment %s; want %s", got, want)
+							}
+							for attr, value := range map[string]string{"font-size": "13pt", "font-weight": "bold", "font-style": "italic", "text-scale": "90%", "letter-spacing": "1.25pt"} {
+								officeAssertEffective(t, layers, "text-properties", attr, value)
+							}
+							name, _ := officeEffectiveAttr(layers, "text-properties", "font-name")
+							family := ""
+							for _, file := range []string{"styles.xml", "content.xml"} {
+								for _, face := range pkg[file].all("font-face") {
+									if face.attr("name") == name {
+										family = strings.Trim(face.attr("font-family"), "'\"")
+									}
+								}
+							}
+							if family != "Iosevka Publish" {
+								t.Errorf("running band family=%q", family)
+							}
+						}
+					}
+				}
+				if !seen["even"] || !seen["odd"] {
+					t.Errorf("assigned odd/even running bands missing: %v", seen)
+				}
+				body := officeEffective(t, pkg, format, officeParagraph(t, officeBody(t, pkg, format), "BODY-NO-FONT-LEAK"))
+				if format == "docx" {
+					officeAssertEffective(t, body, "sz", "val", "24")
+				} else {
+					officeAssertEffective(t, body, "text-properties", "font-size", "12pt")
+				}
+			})
+		}
+	}
+}
+
+func TestRT063_6_OfficeRunningPlaceholders(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			cfg := "folio:\n  page-header:\n    enabled: true\n    format: '[title] | [author] | [part] | [part-number] | [part-prefix] | [part-full] | [chapter] | [chapter-number] | [chapter-prefix] | [chapter-full] | [page] | [total-pages] | [unknown]'\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    part:\n      prefix: 'PART-PREFIX '\n      separator: ': '\n      show-number: true\n      number-format: I\n      skip-header: false\n    chapter:\n      prefix: 'CHAPTER-PREFIX '\n      separator: ': '\n      show-number: true\n      number-format: '1'\n      skip-header: false\n"
+			proseSource(t, dir, "script.yaml", cfg)
+			src := proseSource(t, dir, "source.md", "---\ntitle: HEADER-TITLE\nauthor: HEADER-AUTHOR\n---\n\n# PART-NAME\n\n## CHAPTER-NAME\n\nBODY-SENTINEL\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			var texts []string
+			pageCount := false
+			for name, member := range pkg {
+				var bands []*officeXML
+				if format == "docx" && strings.HasPrefix(name, "word/header") {
+					bands = append(bands, member)
+				}
+				if format == "odt" && name == "styles.xml" {
+					for _, kind := range []string{"header", "header-left", "header-first"} {
+						bands = append(bands, member.all(kind)...)
+					}
+				}
+				for _, band := range bands {
+					texts = append(texts, band.text())
+					if len(band.all("page-count")) > 0 {
+						pageCount = true
+					}
+					for _, field := range band.all("instrText") {
+						if strings.TrimSpace(field.text()) == "NUMPAGES" {
+							pageCount = true
+						}
+					}
+					for _, field := range band.all("fldSimple") {
+						if strings.TrimSpace(field.attr("instr")) == "NUMPAGES" {
+							pageCount = true
+						}
+					}
+				}
+			}
+			text := strings.Join(texts, " ")
+			for _, value := range []string{"HEADER-TITLE", "HEADER-AUTHOR", "PART-NAME", "CHAPTER-NAME", "PART-PREFIX", "CHAPTER-PREFIX", "PART-PREFIX I: PART-NAME", "CHAPTER-PREFIX 1: CHAPTER-NAME", "[unknown]"} {
+				if !strings.Contains(text, value) {
+					t.Errorf("running matter lacks substituted %q", value)
+				}
+			}
+			if !pageCount {
+				t.Error("total-pages is not a native page-count field")
+			}
+			for _, token := range []string{"[title]", "[author]", "[part]", "[chapter]", "[part-number]", "[chapter-number]", "[part-full]", "[chapter-full]", "[page]", "[total-pages]"} {
+				if strings.Contains(text, token) {
+					t.Errorf("unresolved running placeholder %s", token)
+				}
+			}
+		})
 	}
 }

@@ -247,3 +247,35 @@ func TestRT063_3_OfficeFootnoteTypography(t *testing.T) {
 		})
 	}
 }
+
+func TestRT063_4_OfficeRelativeRoleFontLengths(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    font:\n      family: Iosevka Publish\n      size: 12pt\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    heading:\n      font:\n        size: 1.5em\n        letter-spacing: 0.1em\n    quoted-block:\n      font:\n        size: 0.5em\n        letter-spacing: 0.1em\n")
+			src := proseSource(t, dir, "source.md", "## RELATIVE-HEADING\n\nBODY-SIZE-STABLE\n\n> RELATIVE-QUOTE\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			for _, role := range []struct {
+				marker, sizeWord, sizeODT string
+				tracking                  float64
+			}{
+				{"RELATIVE-HEADING", "36", "18pt", 1.8}, {"RELATIVE-QUOTE", "12", "6pt", 0.6},
+			} {
+				layers := officeEffective(t, pkg, format, officeParagraph(t, officeBody(t, pkg, format), role.marker))
+				if format == "docx" {
+					officeAssertEffective(t, layers, "sz", "val", role.sizeWord)
+				} else {
+					officeAssertEffective(t, layers, "text-properties", "font-size", role.sizeODT)
+				}
+				officeAssertLength(t, layers, format, "spacing", "val", "text-properties", "letter-spacing", role.tracking)
+			}
+			body := officeEffective(t, pkg, format, officeParagraph(t, officeBody(t, pkg, format), "BODY-SIZE-STABLE"))
+			if format == "docx" {
+				officeAssertEffective(t, body, "sz", "val", "24")
+			} else {
+				officeAssertEffective(t, body, "text-properties", "font-size", "12pt")
+			}
+		})
+	}
+}

@@ -141,7 +141,7 @@ func TestRT063_1_ManuscriptOfficeDryRun(t *testing.T) {
 		t.Run(format, func(t *testing.T) {
 			t.Setenv("HOME", t.TempDir())
 			dir := t.TempDir()
-			src := proseSource(t, dir, "source.md", "## Chapter One\n\nDRY-RUN-CONTENT.\n")
+			src := proseSource(t, dir, "source.md", "---\nfolio:\n  manuscript:\n    copyright:\n      enabled: true\n      isbn: '978-0-000000-00-2'\n      isbn-barcode: render-and-file\n---\n\n## Chapter One\n\nDRY-RUN-CONTENT.\n")
 			target := filepath.Join(dir, "output."+format)
 			status, stdout, stderr := runApp(t, "manuscript", "--dry-run", src, target)
 			if status != 0 || !strings.Contains(strings.ToLower(stdout), "output format: "+format+"\n") {
@@ -160,16 +160,17 @@ func TestRT063_2_OfficeLetterRecipientBatches(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, format := range []string{"docx", "odt"} {
+	for _, selection := range []string{"docx", "odt", "DOCX", "ODT"} {
+		format := strings.ToLower(selection)
 		for _, filter := range []string{"", "fIrSt tHeAtRe", "RECIPIENT-TWO"} {
-			t.Run(format+"/"+filter, func(t *testing.T) {
+			t.Run(selection+"/"+filter, func(t *testing.T) {
 				t.Setenv("HOME", t.TempDir())
 				dir := t.TempDir()
 				src := proseSource(t, dir, "letters.org", string(fixture))
 				out := t.TempDir()
-				args := []string{"letter", src, "--format", format, "--dir", out, "--prefix", "submission"}
+				args := []string{"letter", src, "--format", selection, "--dir", out, "--prefix", "submission"}
 				if format == "odt" {
-					args = []string{"letter", src, "--format=odt", "--dir", out, "--prefix", "submission"}
+					args = []string{"letter", src, "--format=" + selection, "--dir", out, "--prefix", "submission"}
 				}
 				if filter != "" {
 					args = append(args, "--to", filter)
@@ -270,6 +271,23 @@ func TestRT063_7_OfficeLetterLiterals(t *testing.T) {
 					t.Errorf("literal markup leaked: %q", bad)
 				}
 			}
+			literal := proseInlineLayers(t, pkg, format, "https://example.invalid/submissions/letter")
+			if format == "docx" {
+				officeAssertEffective(t, literal, "rFonts", "ascii", "Libertinus Mono")
+			} else {
+				name, _ := officeEffectiveAttr(literal, "text-properties", "font-name")
+				family := ""
+				for _, file := range []string{"styles.xml", "content.xml"} {
+					for _, face := range pkg[file].all("font-face") {
+						if face.attr("name") == name {
+							family = strings.Trim(face.attr("font-family"), "'\"")
+						}
+					}
+				}
+				if family != "Libertinus Mono" {
+					t.Errorf("letter literal family=%q; want existing fixed Libertinus Mono contract", family)
+				}
+			}
 			for _, emphasis := range []struct{ marker, word, attribute, value string }{
 				{"BOLD-SAMPLE", "b", "font-weight", "bold"},
 				{"ITALIC-SAMPLE", "i", "font-style", "italic"},
@@ -347,6 +365,13 @@ func TestRT063_3_OfficeManuscriptStructuredContent(t *testing.T) {
 				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
 				body := officeBody(t, pkg, format)
 				text := body.text()
+				inlineCode := proseInlineLayers(t, pkg, format, "INLINE-CODE-SAMPLE")
+				if format == "docx" {
+					officeAssertEffective(t, inlineCode, "rFonts", "ascii", "Iosevka Publish")
+					officeAssertEffective(t, inlineCode, "sz", "val", "18")
+				} else {
+					officeAssertEffective(t, inlineCode, "text-properties", "font-size", "9pt")
+				}
 				last := -1
 				for _, marker := range []string{"HEADING-SAMPLE", "OPENING-SAMPLE", "BODY-SAMPLE", "BOLD-SAMPLE", "ITALIC-SAMPLE", "STRIKE-SAMPLE", "INLINE-CODE-SAMPLE", "LINK-SAMPLE", "QUOTE-SAMPLE", "QUOTE-SECOND-PARAGRAPH", "CODE-SAMPLE:", "STANDALONE-CODE-SAMPLE", "LIST-FIRST", "LIST-NESTED", "LIST-LAST", "ORDERED-FIRST", "ORDERED-LAST", "TABLE-HEADER-LEFT", "TABLE-CELL-LEFT", "NOTE-ANCHOR", "FINAL-SENTINEL"} {
 					// CODE-SAMPLE also appears in INLINE-CODE-SAMPLE; use its full sentence.

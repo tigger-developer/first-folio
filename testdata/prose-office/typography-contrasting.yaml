@@ -1,0 +1,25 @@
+# Text labels describe the base profile. This profile contrasts only the
+# geometry/policy below; fonts remain at the labelled base values.
+folio:
+  manuscript:
+    line-spacing: 1
+    paragraph-indent: 2em
+    paragraph-spacing: 1mm
+    quote-block-indent: 1em
+    quoted-block-spacing: 0.5em
+    code-block-indent: 1.5em
+    code-block-spacing: 0.5em
+    code-block:
+      space-before: 2mm
+      space-after: 3mm
+    list:
+      space-before: 4mm
+      space-after: 5mm
+    table:
+      space-before: 6mm
+      space-after: 7mm
+    justify: true
+    hyphenation: auto
+    widow-orphan-control: false
+    scene-break:
+      marker: SCENE-CONTRAST
