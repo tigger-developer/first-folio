@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/xml"
 	"fmt"
+	"io/fs"
 	"math"
 	"net/url"
 	"os"
@@ -99,7 +100,10 @@ End Sub
 
 func proseRenderPDF(t *testing.T, source string) string {
 	t.Helper()
-	dir := t.TempDir()
+	dir, err := os.MkdirTemp(filepath.Dir(source), "render-")
+	if err != nil {
+		t.Fatal(err)
+	}
 	profile := filepath.Join(dir, "profile")
 	// LibreOffice initializes its Basic library on first use. Complete that
 	// initialization before installing the test-owned refresh helper.
@@ -142,10 +146,11 @@ func proseRenderPDF(t *testing.T, source string) string {
 }
 
 func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
+	root := proseRenderBudget(t, 50<<20)
 	for _, format := range []string{"docx", "odt"} {
 		t.Run(format, func(t *testing.T) {
 			t.Setenv("HOME", t.TempDir())
-			dir := t.TempDir()
+			dir := proseRenderCase(t, root, format)
 			raw, err := os.ReadFile("../../testdata/prose-office/typography.md")
 			if err != nil {
 				t.Fatal(err)
@@ -213,12 +218,13 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 }
 
 func TestRT063_12_OfficeRenderedContentsReferences(t *testing.T) {
+	root := proseRenderBudget(t, 100<<20)
 	entryRE := regexp.MustCompile(`CHAPTER-([0-9]{2})[.\s]+([0-9]+)\s*$`)
 	headingRE := regexp.MustCompile(`^CHAPTER-([0-9]{2})\s*$`)
 	for _, format := range []string{"docx", "odt"} {
 		t.Run(format, func(t *testing.T) {
 			t.Setenv("HOME", t.TempDir())
-			dir := t.TempDir()
+			dir := proseRenderCase(t, root, format)
 			raw, err := os.ReadFile("../../testdata/prose-office/book.md")
 			if err != nil {
 				t.Fatal(err)
@@ -276,10 +282,11 @@ func TestRT063_12_OfficeRenderedContentsReferences(t *testing.T) {
 }
 
 func TestRT063_11_OfficeRenderedLetterMargins(t *testing.T) {
+	root := proseRenderBudget(t, 50<<20)
 	for _, format := range []string{"docx", "odt"} {
 		t.Run(format, func(t *testing.T) {
 			t.Setenv("HOME", t.TempDir())
-			dir := t.TempDir()
+			dir := proseRenderCase(t, root, format)
 			for _, file := range []struct{ input, output string }{{"letters.org", "letters.org"}, {"letter.yaml", "script.yaml"}} {
 				raw, err := os.ReadFile("../../testdata/prose-office/" + file.input)
 				if err != nil {
@@ -340,4 +347,46 @@ func TestRT063_11_OfficeRenderedLetterMargins(t *testing.T) {
 			}
 		})
 	}
+}
+
+// RT063.11 splits its 100 MiB aggregate allowance equally between its
+// manuscript and letter cases; RT063.12 has its own 100 MiB allowance.
+// All generated packages, private profiles, PDFs, XML and PNGs live below
+// this root. Check the complete retained tree even when a child test fails.
+func proseRenderBudget(t *testing.T, limit int64) string {
+	t.Helper()
+	root := t.TempDir()
+	t.Cleanup(func() {
+		var size int64
+		err := filepath.WalkDir(root, func(path string, entry fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if entry.IsDir() {
+				return nil
+			}
+			info, err := entry.Info()
+			if err != nil {
+				return err
+			}
+			size += info.Size()
+			return nil
+		})
+		if err != nil {
+			t.Errorf("measuring rendered artefacts: %v", err)
+		}
+		if size > limit {
+			t.Errorf("rendered artefacts total %d bytes; bound is %d", size, limit)
+		}
+	})
+	return root
+}
+
+func proseRenderCase(t *testing.T, root, name string) string {
+	t.Helper()
+	dir := filepath.Join(root, name)
+	if err := os.Mkdir(dir, 0700); err != nil {
+		t.Fatal(err)
+	}
+	return dir
 }

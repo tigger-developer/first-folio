@@ -38,6 +38,8 @@
 :END:
 - Definition :: [[file:spec.org::#rt-063-4][RT063.4 - Configuration and role geometry]].
 - Partial execution, 2026-10-16 :: Source-configuration follow-up: TestRT063_4_OfficeRejectsLaterSourceConfiguration passed for both office target extensions, preserving the existing first-resolved-source restriction and the prior destination.
+- Expanded execution, 2026-10-16 :: Configuration precedence and invalid-value cases compiled and ran. Successful export cases stop at the absent route; invalid effective configuration retained the prior destination and identified the YAML path. Native precedence remains unverified.
+
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
 ** AMBER RT063.5 - Generated matter and heading controls :testdef:
@@ -46,6 +48,8 @@
 :REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-5][RT063.5 - Generated matter and heading controls]].
+- Expanded execution, 2026-10-16 :: Independent contents selection/presentation, seven title-field alignments, copyright ordering and invalid-ISBN preservation cases compiled and ran. Office success cases stop at the absent route; invalid ISBN preserves both prior files. The group remains incomplete.
+
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
 ** AMBER RT063.6 - Sections and page fields :testdef:
@@ -54,6 +58,8 @@
 :REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-6][RT063.6 - Sections and page fields]].
+- Expanded execution, 2026-10-16 :: Assigned first-section/master running-band checks now cover absent, empty, distinct and disabled frontmatter formats in both bands/formats, including a document without body headings. Execution stops at the absent route. Parity, suppression and geometry coverage still require expansion.
+
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
 ** AMBER RT063.7 - Letter content and geometry :testdef:
@@ -80,6 +86,8 @@
 :END:
 - Definition :: [[file:spec.org::#rt-063-9][RT063.9 - Resource and publication failures]].
 - Boundary execution, 2026-10-16 :: Private =internal/office= declarations contain placeholder bodies only, with no production callers. =go test ./internal/office ./internal/app -run '^TestRT063_' -count=1= compiled and executed both packages (0.280s and 9.646s). Boundary assertions observed acceptance of invalid ZIP/XML/references, omitted source reads, missing size/depth/count enforcement, and absent subprocess output/deadline/error handling. The standalone subprocess fixture was checked directly and emitted its requested three bytes. Public source-limit, prefix and partial-batch tests still stop at the absent office route; their intended guards remain unverified. The full resource/publication group remains incomplete and AMBER.
+- Expanded execution, 2026-10-16 :: Sidecar preflight covers directory, symlink and source-hardlink targets. Internal injected publication tests observe missing ordered calls and missing partial-success diagnostics against the placeholder. Public sidecar cases still stop at the absent office route. Logs: .agent/w063-contents-sidecar-red.log; generated-matter and band logs are retained alongside it.
+
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
 ** GREEN RT063.10 - Existing route preservation :testdef:

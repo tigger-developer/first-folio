@@ -36,16 +36,7 @@ func TestRT063_5_OfficeGeneratedTitleAndContents(t *testing.T) {
 						t.Errorf("generated text %q visibility does not match enabled=%v", text, enabled)
 					}
 				}
-				live := false
-				if format == "odt" {
-					live = len(body.all("table-of-content")) > 0
-				} else {
-					for _, field := range body.all("instrText") {
-						if strings.HasPrefix(strings.TrimSpace(field.text()), "TOC ") {
-							live = true
-						}
-					}
-				}
+				live := proseContentsHasPageFields(body, format)
 				if live != enabled {
 					t.Errorf("native updateable contents=%v, want %v", live, enabled)
 				}

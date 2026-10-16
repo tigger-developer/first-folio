@@ -114,3 +114,40 @@ func TestRT063_9_OfficePublicSourceLimit(t *testing.T) {
 		})
 	}
 }
+
+func TestRT063_9_OfficeBarcodeSidecarPreflight(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, kind := range []string{"directory", "symlink", "hardlink-source"} {
+			t.Run(format+"/"+kind, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    copyright:\n      enabled: true\n      isbn: '978-0-000000-00-2'\n      isbn-barcode: file\n")
+				source := proseSource(t, dir, "source.md", "BODY-SENTINEL\n")
+				target := proseSource(t, dir, "output."+format, "PRIOR-DOCUMENT")
+				sidecar := filepath.Join(dir, "output.barcode.svg")
+				var err error
+				switch kind {
+				case "directory":
+					err = os.Mkdir(sidecar, 0700)
+				case "symlink":
+					err = os.Symlink(source, sidecar)
+				case "hardlink-source":
+					err = os.Link(source, sidecar)
+				}
+				if err != nil {
+					t.Fatal(err)
+				}
+				status, stdout, stderr := runApp(t, "manuscript", source, target)
+				if status == 0 || !strings.Contains(stderr, sidecar) || strings.Contains(stdout, "Generated:") {
+					t.Errorf("sidecar preflight must name unsafe target before publication: %d %q %q", status, stdout, stderr)
+				}
+				for path, want := range map[string]string{source: "BODY-SENTINEL\n", target: "PRIOR-DOCUMENT"} {
+					raw, err := os.ReadFile(path)
+					if err != nil || string(raw) != want {
+						t.Errorf("preflight altered %s: %v", path, err)
+					}
+				}
+			})
+		}
+	}
+}

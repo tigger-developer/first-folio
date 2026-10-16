@@ -20,3 +20,7 @@ type publicationFS struct {
 func publishFile(path string, raw []byte, fs publicationFS) error {
 	return nil
 }
+
+func publishManuscript(path string, document []byte, sidecarPath string, sidecar []byte, publish func(string, []byte) error) error {
+	return nil
+}
