@@ -252,6 +252,13 @@ func TestRT063_6_OfficeContinuousBoundaryAndNeverReset(t *testing.T) {
 					if intro.attr("name") != chapter.attr("name") {
 						t.Error("same-format continuous ODT boundary changes master and therefore forces a page")
 					}
+					var assignments []string
+					for _, field := range body.all("variable-set") {
+						assignments = append(assignments, field.attr("string-value"))
+					}
+					if !strings.Contains(strings.Join(assignments, "|"), "BODY ") || len(intro.all("variable-get")) == 0 {
+						t.Error("continuous boundary has no live frontmatter/body running-text transition")
+					}
 					for _, layer := range heading {
 						for _, properties := range layer.all("paragraph-properties") {
 							if properties.attr("break-before") == "page" {

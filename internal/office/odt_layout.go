@@ -87,7 +87,7 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 				if state.Blank {
 					text = ""
 				}
-				band := ox("style:"+item.kind+variant, p.odtBand(text, item.band, variant, state, styles))
+				band := ox("style:"+item.kind+variant, p.odtBand(text, item.band, item.kind, variant, state, styles))
 				if variant == "-first" && item.skip {
 					band.children = nil
 					band = band.attr("style:display", "false")
@@ -211,7 +211,11 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 		if placement, ok := p.Placements[role]; ok {
 			p.odtPlacement(n, role, placement, styles)
 		}
+		if exists || change {
+			n.children = append(p.odtBandAssignments(state), n.children...)
+		}
 	}
+	odtVariableDeclarations(flow)
 	p.odtTitleFloats(flow)
 	p.odtPlacementGroups(flow)
 	p.odtBlockSpacing(flow, styles)
@@ -250,7 +254,7 @@ func (p *Prose) odtTitleFloats(flow *docxNode) {
 	}
 	flow.children = output
 }
-func (p *Prose) odtBand(text string, band Band, variant string, state Boundary, styles *docxNode) docxNode {
+func (p *Prose) odtBand(text string, band Band, kind, variant string, state Boundary, styles *docxNode) docxNode {
 	style := band.Font
 	style.Align = band.Align
 	if pair := strings.Split(band.Align, "-"); len(pair) == 2 {
@@ -262,7 +266,7 @@ func (p *Prose) odtBand(text string, band Band, variant string, state Boundary, 
 	name := fmt.Sprintf("FolioBand%d", len(styles.ensure("office:styles").children))
 	styles.ensure("office:styles").children = append(styles.ensure("office:styles").children, ox("style:style", style.odtParagraph(), style.odtFont()).attr("style:name", name).attr("style:family", "paragraph"))
 	n := ox("text:p").attr("text:style-name", name)
-	for _, token := range fieldTokens(text) {
+	for index, token := range p.odtBandTokens(text, state) {
 		if token.field == "page" || token.field == "total-pages" {
 			kind := "text:page-number"
 			if token.field == "total-pages" {
@@ -273,11 +277,15 @@ func (p *Prose) odtBand(text string, band Band, variant string, state Boundary, 
 			n.children = append(n.children, field)
 			continue
 		}
-		value := token.text
-		if token.field != "" {
-			value = p.runningValue(token.field, state)
+		if state.Blank || state.Title && state.TitleNumber && kind == "footer" {
+			if token.text != "" {
+				n.children = append(n.children, docxNode{text: token.text})
+			}
+			continue
 		}
-		n.children = append(n.children, docxNode{text: value})
+		field := ox("text:variable-get").attr("text:name", odtBandVariable(kind, variant, index)).attr("office:value-type", "string")
+		field.text = token.text
+		n.children = append(n.children, field)
 	}
 	return n
 }
