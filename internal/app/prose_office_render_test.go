@@ -165,13 +165,17 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 			for _, f := range tree.all("fontspec") {
 				fonts[f.attr("id")] = f.attr("family")
 			}
-			for _, specimen := range []struct{ marker, family string }{
-				{"OPENING-SAMPLE", "Iosevka-Publish"},
-				{"HEADING-SAMPLE", "Iosevka-Publish-Bold-Extended"},
-				{"QUOTE-SAMPLE", "Iosevka-Publish-Extended-Italic"},
-				{"CODE-SAMPLE: 9pt", "Iosevka-Publish"},
+			for _, specimen := range []struct {
+				marker, family string
+				leftMM         float64
+			}{
+				{"OPENING-SAMPLE", "Iosevka-Publish", 20},
+				{"BODY-SAMPLE", "Iosevka-Publish", 30},
+				{"HEADING-SAMPLE", "Iosevka-Publish-Bold-Extended", -1},
+				{"QUOTE-SAMPLE", "Iosevka-Publish-Extended-Italic", 26},
+				{"CODE-SAMPLE: 9pt", "Iosevka-Publish", 28},
 			} {
-				found := false
+				found := 0
 				for _, span := range tree.all("text") {
 					if !strings.Contains(span.text(), specimen.marker) {
 						continue
@@ -183,10 +187,19 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 					if family != specimen.family {
 						t.Errorf("%s rendered with %q; want %q", specimen.marker, family, specimen.family)
 					}
-					found = true
+					if specimen.leftMM >= 0 {
+						left, err := strconv.ParseFloat(span.attr("left"), 64)
+						if err != nil {
+							t.Fatal(err)
+						}
+						if math.Abs(left-specimen.leftMM*72/25.4) > 1 {
+							t.Errorf("%s begins at %gpt; want %gmm from the page edge", specimen.marker, left, specimen.leftMM)
+						}
+					}
+					found++
 				}
-				if !found {
-					t.Errorf("missing rendered marker %s", specimen.marker)
+				if found != 1 {
+					t.Errorf("rendered marker %s appears %d times; want once", specimen.marker, found)
 				}
 			}
 			if strings.Contains(tree.text(), "PRIVATE-SENTINEL") || !strings.Contains(tree.text(), "FINAL-SENTINEL") {

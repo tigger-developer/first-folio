@@ -94,10 +94,6 @@ func TestRT063_6_OfficeRunningMatterVariants(t *testing.T) {
 }
 
 func TestRT063_8_OfficeProseEmbedsFullFonts(t *testing.T) {
-	want, err := folio.Assets.ReadFile("fonts/iosevka-publish/IosevkaPublish-Regular.ttf")
-	if err != nil {
-		t.Fatal(err)
-	}
 	for _, format := range []string{"docx", "odt"} {
 		for _, mode := range []string{"manuscript", "letter"} {
 			t.Run(format+"/"+mode, func(t *testing.T) {
@@ -127,52 +123,58 @@ func TestRT063_8_OfficeProseEmbedsFullFonts(t *testing.T) {
 					t.Fatal(err)
 				}
 				members := officeFontMembers(t, raw)
-				found := false
-				if format == "odt" {
-					for _, file := range []string{"styles.xml", "content.xml"} {
-						for _, ref := range pkg[file].all("font-face-uri") {
-							if bytes.Equal(members[ref.attr("href")], want) {
-								found = true
-								manifest := pkg["META-INF/manifest.xml"]
-								if manifest == nil {
-									t.Fatal("missing font manifest")
+				for _, faceSpec := range []struct{ file, tag string }{{"Regular", "embedRegular"}, {"Bold", "embedBold"}, {"Italic", "embedItalic"}, {"BoldItalic", "embedBoldItalic"}} {
+					want, err := folio.Assets.ReadFile("fonts/iosevka-publish/IosevkaPublish-" + faceSpec.file + ".ttf")
+					if err != nil {
+						t.Fatal(err)
+					}
+					found := false
+					if format == "odt" {
+						for _, file := range []string{"styles.xml", "content.xml"} {
+							for _, ref := range pkg[file].all("font-face-uri") {
+								if bytes.Equal(members[ref.attr("href")], want) {
+									found = true
+									manifest := pkg["META-INF/manifest.xml"]
+									if manifest == nil {
+										t.Fatal("missing font manifest")
+									}
+									officeAssertAttr(t, manifest, "file-entry", "full-path", ref.attr("href"))
 								}
-								officeAssertAttr(t, manifest, "file-entry", "full-path", ref.attr("href"))
+							}
+						}
+					} else {
+						fonts, rels := pkg["word/fontTable.xml"], pkg["word/_rels/fontTable.xml.rels"]
+						if fonts == nil || rels == nil {
+							t.Fatal("font table or relationships absent")
+						}
+						for _, font := range fonts.all("font") {
+							if font.attr("name") != "Iosevka Publish" {
+								continue
+							}
+							for _, ref := range font.all(faceSpec.tag) {
+								key, err := hex.DecodeString(strings.NewReplacer("{", "", "}", "", "-", "").Replace(ref.attr("fontKey")))
+								if err != nil || len(key) != 16 {
+									t.Fatal("invalid embedded font key")
+								}
+								for _, rel := range rels.all("Relationship") {
+									if rel.attr("Id") != ref.attr("id") {
+										continue
+									}
+									face := bytes.Clone(members["word/"+rel.attr("Target")])
+									if len(face) < 32 {
+										t.Fatal("missing embedded font payload")
+									}
+									for i := range 32 {
+										face[i] ^= key[15-i%16]
+									}
+									found = bytes.Equal(face, want)
+								}
 							}
 						}
 					}
-				} else {
-					fonts, rels := pkg["word/fontTable.xml"], pkg["word/_rels/fontTable.xml.rels"]
-					if fonts == nil || rels == nil {
-						t.Fatal("font table or relationships absent")
+					if !found {
+						t.Errorf("configured complete %s font face absent or modified", faceSpec.file)
 					}
-					for _, font := range fonts.all("font") {
-						if font.attr("name") != "Iosevka Publish" {
-							continue
-						}
-						for _, ref := range font.all("embedRegular") {
-							key, err := hex.DecodeString(strings.NewReplacer("{", "", "}", "", "-", "").Replace(ref.attr("fontKey")))
-							if err != nil || len(key) != 16 {
-								t.Fatal("invalid embedded font key")
-							}
-							for _, rel := range rels.all("Relationship") {
-								if rel.attr("Id") != ref.attr("id") {
-									continue
-								}
-								face := bytes.Clone(members["word/"+rel.attr("Target")])
-								if len(face) < 32 {
-									t.Fatal("missing embedded font payload")
-								}
-								for i := range 32 {
-									face[i] ^= key[15-i%16]
-								}
-								found = bytes.Equal(face, want)
-							}
-						}
-					}
-				}
-				if !found {
-					t.Error("configured complete regular font face absent or modified")
 				}
 			})
 		}

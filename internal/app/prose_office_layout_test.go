@@ -197,3 +197,53 @@ func TestRT063_4_OfficeLetterTypographyAndGeometry(t *testing.T) {
 		})
 	}
 }
+
+func TestRT063_4_OfficeLineIntervalUsesFontMetrics(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, tc := range []struct {
+			multiplier string
+			points     float64
+		}{{"1", 16.62}, {"1.5", 24.93}, {"2", 33.24}} {
+			t.Run(format+"/"+tc.multiplier, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    font:\n      family: Iosevka Publish\n      size: 12pt\n    line-spacing: "+tc.multiplier+"\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n")
+				src := proseSource(t, dir, "source.md", "LINE-INTERVAL-MARKER: ordinary prose using the bundled regular face.\n")
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				layers := officeEffective(t, pkg, format, officeParagraph(t, officeBody(t, pkg, format), "LINE-INTERVAL-MARKER"))
+				// Independent PDF baseline: 12pt Iosevka Publish has a 16.62pt
+				// single interval under the existing metrics plus 0.65em rule.
+				officeAssertLength(t, layers, format, "spacing", "line", "paragraph-properties", "line-height", tc.points)
+				if format == "docx" {
+					officeAssertEffective(t, layers, "spacing", "lineRule", "exact")
+				}
+			})
+		}
+	}
+}
+
+func TestRT063_3_OfficeFootnoteTypography(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    font:\n      family: Iosevka Publish\n      size: 12pt\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n")
+			src := proseSource(t, dir, "source.md", "NATIVE-NOTE-ANCHOR[^note].\n\n[^note]: NOTE-FONT-MARKER\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			root := officeBody(t, pkg, format)
+			if format == "docx" {
+				root = pkg["word/footnotes.xml"]
+				if root == nil {
+					t.Fatal("native footnote part missing")
+				}
+			}
+			layers := officeEffective(t, pkg, format, officeParagraph(t, root, "NOTE-FONT-MARKER"))
+			if format == "docx" {
+				officeAssertEffective(t, layers, "rFonts", "ascii", "Iosevka Publish")
+				officeAssertEffective(t, layers, "sz", "val", "20")
+			} else {
+				officeAssertEffective(t, layers, "text-properties", "font-size", "10.2pt")
+			}
+		})
+	}
+}

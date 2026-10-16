@@ -1,3 +1,9 @@
+---
+title: Prose office fixture expectations
+version: 1
+last-updated: 2026-10-16
+---
+
 # Prose office fixture expectations
 
 This checklist is being assembled during W063 delivery. **Pending rows are uncovered**, not evidence of support. Values come from authored fixture YAML, independently of office output.
@@ -255,7 +261,7 @@ This checklist is being assembled during W063 delivery. **Pending rows are uncov
 - Typography body edge is 20mm from the left page edge. Ordinary first-line indent adds 10mm, quote inset adds 6mm, and code inset adds 8mm. A chapter-opening paragraph has no first-line indent.
 - Header edge distance and body clearance describe layout boxes. Do not compare a glyph top with a paragraph-box top without the font metrics.
 - Native font-size values must match within one serialization unit. The Poppler font-size attribute is integer-rounded even with `-noroundcoord`; it cannot alone prove a 0.25pt size tolerance. Retain native assertions and use precise glyph metrics or explicit user validation.
-- Footnote family is inherited from the body. The Typst baseline and upstream footnote rule establish an 85% size; this is not a separate YAML role. Native office rounding still needs verification.
+- Footnote family is inherited from the body. The Typst baseline and upstream footnote rule establish an 85% size: 10.2pt for the 12pt body; this is not a separate YAML role. DOCX half-point serialization permits 10pt. In the baseline PDF, the same-family body and footnote span heights were 15pt and 12.75pt respectively, independently confirming the 0.85 ratio. Native office rounding still needs verification.
 
 ## Remaining fixture work
 

@@ -56,5 +56,5 @@ FINAL-SENTINEL: this final paragraph proves that the document was not
 truncated.
 
 [fn:1] NOTE-SAMPLE: native footnote with *bold note text* and /italic
-       note text/. Font measurements are recorded separately in the
-       fixture checklist.
+       note text/. Expected Iosevka Publish at 85% of the 12pt body:
+       10.2pt; DOCX half-point rounding permits 10pt.

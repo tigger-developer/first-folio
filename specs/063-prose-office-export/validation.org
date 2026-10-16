@@ -70,6 +70,7 @@
 :REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-8][RT063.8 - Font packaging]].
+- Expanded execution, 2026-10-16 :: Public cases now cover all four bundled faces in both modes/formats, a permitted local metadata fixture, restricted/missing families with retained family references and warnings, duplicate payload rejection, and a selected font one byte above 32 MiB. =go test ./internal/app -run '^TestRT063_8_' -count=1= compiled and failed at the missing office routes. Internal selected-font budget tests separately exercise exact 32/64 MiB thresholds and overflow against a declaration-only placeholder. Full font-policy coverage is not yet established.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
 ** AMBER RT063.9 - Resource and publication failures :testdef:
@@ -78,6 +79,7 @@
 :REASON: Partial regression package executed; required matrix coverage remains incomplete.
 :END:
 - Definition :: [[file:spec.org::#rt-063-9][RT063.9 - Resource and publication failures]].
+- Boundary execution, 2026-10-16 :: Private =internal/office= declarations contain placeholder bodies only, with no production callers. =go test ./internal/office ./internal/app -run '^TestRT063_' -count=1= compiled and executed both packages (0.280s and 9.646s). Boundary assertions observed acceptance of invalid ZIP/XML/references, omitted source reads, missing size/depth/count enforcement, and absent subprocess output/deadline/error handling. The standalone subprocess fixture was checked directly and emitted its requested three bytes. Public source-limit, prefix and partial-batch tests still stop at the absent office route; their intended guards remain unverified. The full resource/publication group remains incomplete and AMBER.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
 ** GREEN RT063.10 - Existing route preservation :testdef:

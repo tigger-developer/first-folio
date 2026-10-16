@@ -592,3 +592,12 @@ The following inventory covers *all settings consumed by the current manuscript 
 
 - Decision :: Use a test-owned LibreOffice Basic helper in an initialized private temporary profile to refresh native fields and indexes before PDF export. Disable source-document macro execution; never embed the helper in generated office documents. Preserve automatic blank pages in PDF export.
 - Reason :: Plain headless conversion leaves the probe's contents empty or stale. Explicit refresh produced correct references for all 80 headings in the DOCX probe. This is test infrastructure only and does not add a runtime LibreOffice dependency.
+
+** 2026-10-16T11:40:02Z :hands-off:review:
+
+*** Minimal execution scaffolding for resource-boundary tests
+
+- Decision :: Declare private source-read, AST-validation, package-validation and subprocess boundaries in =internal/office= with placeholder bodies only. Production commands do not call them before the test-code gate. These declarations are included in review evidence and must be replaced during implementation.
+- Reason :: Public commands currently reject office targets before the new guards can execute. Isolated boundary tests establish intended failures for malformed packages, text encoding, size/count/depth limits and process failures without implementing export behaviour ahead of review.
+- Test bounds :: Inject smaller byte/count limits at the owning internal boundary to exercise exact limits and one-beyond cases without allocating hundreds of MiB per permutation. Retain a public-command test exceeding the actual 32 MiB aggregate source limit. The test executable supplies deterministic subprocess responses; no shell, service or new runtime dependency is introduced.
+- Continuation :: Hands-off delivery resumed. The native goal reports paused and the available goal controls cannot resume it; this does not authorize marking it active or replacing its budget. Continue authorized work within the current invocation. No new product decision or metered one-off test is required.

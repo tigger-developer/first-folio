@@ -97,7 +97,7 @@ Clearance adds 5mm above and below.
 
 NOTE-ANCHOR: this sentence links to an editable native footnote.[^labelled]
 
-[^labelled]: NOTE-SAMPLE: native footnote with **bold note text** and *italic note text*. Font measurements are recorded separately in the fixture checklist.
+[^labelled]: NOTE-SAMPLE: native footnote with **bold note text** and *italic note text*. Expected Iosevka Publish at 85% of the 12pt body: 10.2pt; DOCX half-point rounding permits 10pt.
 
 <!-- PRIVATE-SENTINEL must never appear in an export. -->
 
