@@ -6,6 +6,12 @@
 
 * Current delivery observations
 
+- Current checkpoint :: =c57bbb5= contains the retained standard ODT weight correction; =f8ea875= records the outstanding prose limits and uninstalled-family evidence. The final full-suite run failed only the two retained page-policy regressions; all other tests passed. Application 435.036s, manuscript 112.968s, office 1.140s; evidence: =.agent/w063-delivery-current-suite.log=.
+- Delivery state :: Typography and rendered page-policy requirements remain unresolved. The rendered comparison cannot be accepted, and delivery-code review has not started. The twelve named user tests remain AMBER.
+- Pending operator decisions :: Whether to permit ODT new pages for reset/running-field structure changes, accept the DOCX first-page parity limitation, and accept the nonstandard-weight limits. No pending decision is treated as approval.
+
+** Earlier observations (retained history)
+
 - Candidate :: =e1b82b9= plus the title-flow, letter-fixture and list-baseline changes under verification on 2026-10-16. Historical preimplementation records below remain preserved; they are not current delivery acceptance.
 - Native regression :: The complete non-rendered W063 application and office groups passed in =.agent/w063-native-current.log= (office 0.926s; application 156.084s) before the subsequent Word list-baseline adjustment. The subsequent native rerun also passed in =.agent/w063-native-marker.log= (office 0.821s; application 152.937s).
 - Rendered regression :: =.agent/w063-list-baseline-red.log= reproduces the DOCX label-size and displacement defect. =.agent/w063-list-baseline-followup.log= passes those new assertions in both formats, but still fails the two Extended-face specimens in each format. The group remains RED.
@@ -57,9 +63,9 @@
 ** GREEN RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -80,9 +86,9 @@
 ** GREEN RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -102,9 +108,9 @@
 ** GREEN RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -125,9 +131,9 @@
 ** RED RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: Existing suite assertions passed at df540a5, but self-review found the unresolved distinct-weight requirement. Standard ODT weight mapping has a separate RED/GREEN regression; see current observations.
+:EVIDENCE: Existing suite assertions, including the new ODT weight mapping test, passed with c57bbb5, but self-review found the unresolved distinct-weight requirement. Standard ODT weight mapping has a separate RED/GREEN regression; see current observations.
 :END:
 
 *** Previous record metadata (retained)
@@ -151,9 +157,9 @@
 ** GREEN RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -176,9 +182,9 @@
 ** GREEN RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -201,9 +207,9 @@
 ** GREEN RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -223,9 +229,9 @@
 ** GREEN RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -246,9 +252,9 @@
 ** GREEN RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -271,9 +277,9 @@
 ** GREEN RT063.10 - Existing route preservation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-10-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -288,9 +294,9 @@
 ** GREEN RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the full suite at df540a5; .agent/w063-current-complete-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
 :END:
 
 *** Previous record metadata (retained)
@@ -311,9 +317,9 @@
 ** RED RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
-:REVISION: df540a5 - ODT opening parity and retained boundary regressions
+:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: Current full-suite failures are continuous ODT number reset and DOCX first contents-page parity. Evidence: .agent/w063-current-complete-suite.log. Other page-policy cases passed.
+:EVIDENCE: Current full-suite failures are continuous ODT number reset and DOCX first contents-page parity. Evidence: .agent/w063-delivery-current-suite.log. Other page-policy cases passed.
 :END:
 
 *** Previous record metadata (retained)
