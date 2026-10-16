@@ -78,14 +78,14 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** REVIEW W063 - Editable DOCX and ODT manuscripts and letters :feature:
+** ACTIVE W063 - Editable DOCX and ODT manuscripts and letters :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-063
 :CREATED: 2026-10-16
 :END:
 - Specification :: [[file:../specs/063-prose-office-export/spec.org][W063 - Prose office export definition]].
 - Scope :: *Full applicable YAML typography and document features*, with editor-dependent pagination; one editable file per selected letter recipient.
-- Review route :: Session exception substitutes author self-review for the external harness; no independent audit verdict is implied. Specification sign-off is pending.
+- Review route :: External definition review reinstated 2026-10-16, superseding the earlier self-review-only exception for this definition. See [[file:../specs/063-prose-office-export/audits.yaml][Independent definition review]]. Definition approved 2026-10-16 with the bounded clarifications; no repeat definition review required.
 
 ** REVIEW W062 - Source-aware Org emphasis in office exports :defect:
 :PROPERTIES:

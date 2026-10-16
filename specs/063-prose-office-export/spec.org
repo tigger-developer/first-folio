@@ -3,7 +3,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-16
 
 * Synopsis
 :PROPERTIES:
@@ -31,7 +31,7 @@
 ** Changes
 
 - New prose adapters preserve structured content before Typst rendering and generate configured office packages through Pandoc plus native package processing.
-- *Office output is bounded and published atomically per file*; collision preflight prevents two letters from replacing each other.
+- *Office output is bounded and published atomically per file*; office-only collision preflight prevents two letters from replacing each other. PDF letter path behaviour is unchanged.
 
 ** Unchanged
 
@@ -51,7 +51,7 @@
 ** Decisions
 
 - *All existing applicable features are required*, not the smaller script-export subset. Unsupported mappings require a scope decision before delivery can claim conformance.
-- The *session review exception substitutes self-review* for the external harness; independent audit evidence is not fabricated.
+- *External definition review is required* before specification sign-off; the earlier self-review-only exception is superseded for this definition.
 
 ** Next step
 
@@ -92,7 +92,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Runtime :: *Pandoc is required for both new prose office formats*. Typst and a desktop office application are not runtime dependencies of those routes. Existing script DOCX remains independent of Pandoc.
 - Fidelity :: Preserve *all applicable YAML typography and document features*. Native length rounding and editor-dependent line/page breaks are acceptable. Hyphenation positions can differ while the configured policy remains effective. No other omission or approximation is pre-approved.
 - Fonts :: The existing permission, discovery and supported-font-file policy remains applicable. Referenced unavailable or non-embeddable faces warn and retain their family references. This exception does not permit dropping configured size, style, weight, stretch or tracking.
-- Review route :: External harness invocation is excluded under the existing session exception. Author self-review covers specification, design and test definitions. It does not establish an independent gate verdict. No =audits.yaml= is authored manually.
+- Review route :: External composite definition review covers specification, design and test definitions. The earlier session exception allowing self-review alone is superseded for this definition on 2026-10-16. Only the harness creates or updates [[file:audits.yaml][Independent review evidence]].
 - Delivery admission :: Requires explicit sign-off of this document. The acknowledgements establishing scope do not approve an unseen solution design.
 
 ** Decisions and unresolved blockers
@@ -512,7 +512,7 @@ The following inventory covers *all settings consumed by the current manuscript 
 | All mode font roles: family, size, weight, style, stretch, letter-spacing | Named native paragraph/character styles, with direct spans only for inline differences; relative units resolve against the same role as PDF. Select distinct font faces where a native bold flag cannot express a configured weight. Preserve requested values; no automatic regular/bold-only narrowing. |
 | Manuscript body, heading, mono, quoted-block and generated-matter roles | Independent styles with existing inheritance; mono applies to inline and block code, quote font remains independent. |
 | Line-spacing, paragraph-spacing/indent, justify, widow-orphan-control | Native paragraph line/space/indent/alignment/keep properties; chapter-opening exceptions derive from semantic adjacency. Body and TOC line multipliers resolve independently against their own fonts' normal baseline interval, retaining the existing metrics plus 0.65em gap contract rather than multiplying point size alone. |
-| Hyphenation on/off/auto | Native policy plus the existing offline discretionary-break mechanism where needed; code remains unhyphenated. Exact break positions are reader-dependent. |
+| Hyphenation on/off/auto | Native office hyphenation policy alone implements the configured switch: false disables, true enables, and auto follows justification. Body/quote policy excludes code. Do not insert new soft hyphens or serialize the Typst-specific dictionary into office text. Exact break positions and dictionary choices are reader-dependent under the accepted pagination boundary. |
 | Quote/code indentation, additive clearance, list/table/code space-before/after | Scoped paragraph/table styles retaining the existing length basis and additive spacing semantics, not a common flattened body style. |
 | Paper, margins and gutter | Native page geometry and mirrored inner/outer margins, using the same normalized paper dimensions. |
 | Part/chapter heading presentation | Existing number derivation, source numbering, reset, prefix/separator/suffix, name/number visibility and case transforms; native heading levels/bookmarks, alignment and vertical placement. |
@@ -541,6 +541,7 @@ The following inventory covers *all settings consumed by the current manuscript 
 - Processes :: Maximum 120 seconds for each Pandoc invocation, 64 KiB captured diagnostics and 128 MiB output. Propagate cancellation and stop the process on overflow. Bound every new reader/canonicalization invocation, not only the final writer. No retry loop or shell invocation.
 - Packages :: Reference/generated XML and individual ZIP members at most 128 MiB, compressed package 128 MiB, expanded package 256 MiB, maximum 256 members. Reuse existing font limits (32 MiB per face, 64 MiB total; bounded discovery). Validate both before and after font packaging; reject duplicate/unsafe member names, invalid XML, missing required parts and broken internal references. External hyperlink relationships may be retained but never fetched.
 - Paths :: Reject source/destination aliases including hard links, destination symlinks and nonregular destinations. Generated letter paths must remain inside the selected output directory; reject separators/traversal in prefix. Preflight all recipient and sidecar paths, including duplicate paths under the destination filesystem's case rules, before publishing any output.
+- Mode boundary :: These new path, collision and containment rules apply only to DOCX/ODT exports; omitted format and explicit =--format pdf= retain existing letter PDF behaviour.
 - Atomicity :: Stage beside each destination with mode 0600, validate, close and rename. Preserve the existing target on any failure before its rename. Clean private references, font extractions and failed staging files on all exits.
 - Batch outcome :: Process recipients in existing source order; announce only published files. On later failure, stop and identify the failed target while retaining earlier outputs. Existing selected regular files may be replaced on a successful repeat. No batch rollback or promise of cross-file atomicity.
 - Sidecar outcome :: Validate both paths before rendering. Publish the manuscript first, then the requested barcode SVG atomically. If sidecar publication fails, return non-zero and explicitly report that the manuscript was published; preserve any prior sidecar. This retains the existing publication order without promising an unavailable multi-file transaction.
@@ -566,10 +567,12 @@ The following inventory covers *all settings consumed by the current manuscript 
 :END:
 
 - Required reading :: Authorities and affected components linked under [[#context][Context]], plus =internal/app/odt_export.go=, =odt_ast.go=, =office_fonts.go=, =office_font_package.go=, =internal/manuscript/render.go= and =templates/manuscript.typ=. Consult the named regression files when preserving their contracts.
-- Entry conditions :: Explicit specification sign-off and the [[#constraints-and-dependencies][review exception and dependencies]]. No code or test implementation is authorized by definition alone.
+- Entry conditions :: Explicit specification sign-off and the [[#constraints-and-dependencies][definition review and dependencies]]. No code or test implementation is authorized by definition alone.
 - First delivery step :: Write the RT package and observe intended behavioural RED; record preservation GREEN separately. Create schema-conforming =validation.org= at admission. Resolve the high-risk native page/contents mappings early; inability to meet them requires an amendment, not an undisclosed fallback.
-- Review evidence :: The session exception requires author self-review; no independent audit verdict is implied. If external review is later reinstated, only the harness may create/update =audits.yaml=.
+- Review evidence :: [[file:audits.yaml][Harness-owned definition review]]; read the current verdict there. Earlier author checks are not independent review evidence.
 - Validation evidence :: =validation.org= owns one tagged execution record per RT, OT and UT, with dated commands, revision and observations. Definition has no execution results.
 - Documentation impact :: Update =README.md=, =docs/ARCHITECTURE.md=, =docs/folio-manuscript-help.md=, =docs/folio-letter-help.md=, =docs/config.md=, =docs/format-docx.md=, =docs/format-odt.md= and =docs/font-embedding.md=. Reconcile =docs/format-manuscript-markdown.md= and =schema/letter.org= where output descriptions change; source syntax remains unchanged. Cover Pandoc requirements, field refresh, supported features, limits and partial-batch/sidecar failures.
 - Delivery checks :: Focused RTs, =make test=, applicable lint/vulnerability checks, both OTs and the required review. User editing checks remain separate and must not be inferred from structural or rendered evidence. No release, push of implementation, installation or ticket closure is implied by definition sign-off.
 - Fixture handoff :: Deliver the three maintained logical reference fixtures, named configuration profiles, explicit expectation checklist and reproduction commands with the RT package. Run RT063.11 - Rendered geometry and RT063.12 - Rendered page policy, then OT063.1 - Rendered feature comparison before requesting the named feature UTs. Record unfinished cases honestly; automation is intended to reduce avoidable UT failures, not replace user acceptance.
+- Early feasibility evidence :: Before bulk production implementation, exercise minimal native DOCX/ODT examples for forced odd/even blank pages, physical versus displayed page numbering, continuous frontmatter/body transitions and multi-page native contents. Record this bounded preliminary subset under OT063.1 - Rendered feature comparison in =validation.org=, retaining its incomplete overall state until all cases run. Use temporary native documents and the existing rendering tools; no production behaviour is implemented before the test-code gate. A failed mapping requires an explicit scope amendment rather than silent degradation.
+- Contributor prerequisites :: Document LibreOffice and the selected Poppler tools as required for the rendered regression suite and consequently normal =make release=. Add an actionable missing-tool prerequisite check for =make test= and document the requirement in =README.md= and the relevant Makefile guidance; absence must fail rather than skip rendered coverage. These are test dependencies, not new office-conversion runtime dependencies.
