@@ -45,7 +45,8 @@ func Load(opts Options) (Config, error) {
 	}
 
 	globalDir := filepath.Join(opts.Home, ".config", "first-folio")
-	global, err := readOptional(filepath.Join(globalDir, "script.yaml"))
+	globalPath := filepath.Join(globalDir, "script.yaml")
+	global, globalLoaded, err := readOptional(globalPath)
 	if err != nil {
 		return Config{}, err
 	}
@@ -55,7 +56,7 @@ func Load(opts Options) (Config, error) {
 	// resolves to `part0/ch00.md`) still discover the project-root script.yaml.
 	// The nearest hit wins -- no merging of multiple walked files.
 	localScriptPath := findScriptYAML(opts.LocalDir, opts.Home)
-	local, err := readOptional(localScriptPath)
+	local, localLoaded, err := readOptional(localScriptPath)
 	if err != nil {
 		return Config{}, err
 	}
@@ -81,6 +82,16 @@ func Load(opts Options) (Config, error) {
 	base = runningMatterLayer(base, opts.Mode)
 	warnings := []string{}
 	warningSeen := map[string]bool{}
+	warnLoadedFile := func(path string, loaded bool) {
+		if opts.Mode != ModeManuscript || !loaded {
+			return
+		}
+		resolved, err := filepath.Abs(path)
+		if err != nil {
+			resolved = path
+		}
+		warnings = append(warnings, fmt.Sprintf("loaded YAML file %q into manuscript configuration cascade.", resolved))
+	}
 	mergeLayer := func(layer map[string]any) {
 		if opts.Mode == ModeManuscript {
 			for _, warning := range legacyRunningMatterWarnings(layer) {
@@ -93,19 +104,22 @@ func Load(opts Options) (Config, error) {
 		deepMerge(base, runningMatterLayer(layer, opts.Mode))
 	}
 	mergeFile := func(path string) error {
-		layer, err := readOptional(path)
+		layer, loaded, err := readOptional(path)
 		if err != nil {
 			return err
 		}
 		mergeLayer(layer)
+		warnLoadedFile(path, loaded)
 		return nil
 	}
 	mergeLayer(global)
+	warnLoadedFile(globalPath, globalLoaded)
 	if err := mergeFile(filepath.Join(globalDir, "script-"+styleSuffix(style)+".yaml")); err != nil {
 		return Config{}, err
 	}
 	mergeLayer(opts.Source)
 	mergeLayer(local)
+	warnLoadedFile(localScriptPath, localLoaded)
 	if localScriptPath != "" {
 		if err := mergeFile(filepath.Join(filepath.Dir(localScriptPath), "script-"+styleSuffix(style)+".yaml")); err != nil {
 			return Config{}, err
@@ -240,18 +254,19 @@ func findScriptYAML(startDir, home string) string {
 	}
 }
 
-func readOptional(path string) (map[string]any, error) {
+func readOptional(path string) (map[string]any, bool, error) {
 	if path == "" {
-		return nil, nil
+		return nil, false, nil
 	}
 	raw, err := os.ReadFile(path)
 	if os.IsNotExist(err) {
-		return nil, nil
+		return nil, false, nil
 	}
 	if err != nil {
-		return nil, fmt.Errorf("reading config %s: %w", path, err)
+		return nil, false, fmt.Errorf("reading config %s: %w", path, err)
 	}
-	return parseYAML(path, raw)
+	layer, err := parseYAML(path, raw)
+	return layer, err == nil, err
 }
 
 func parseYAML(name string, raw []byte) (map[string]any, error) {

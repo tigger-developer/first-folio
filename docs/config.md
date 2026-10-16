@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.29"
-last-updated: 2026-10-12
+version: "0.30"
+last-updated: 2026-10-16
 ---
 
 # Configuration
@@ -37,6 +37,8 @@ All config sources are read and merged. Each layer overrides individual keys fro
 | 8 (lowest) | British built-in base preset |
 
 **Example:** Global config sets `folio.font.family: "EB Garamond"` and `folio.page: a4`. A local config sets only `folio.font.size: 11pt`. The merged root font uses EB Garamond at 11pt and the page remains a4. Font properties merge at the same role path, with the frontmatter paragraph fallback described below.
+
+For `folio manuscript`, each external YAML file loaded into this cascade produces one warning on stderr with its resolved path, in merge order. This includes global and selected local base and style-specific files, even when a file changes no effective setting. Missing and unselected files, built-in presets, source frontmatter, and CLI values produce no load warning. The warning names no settings or values and does not alter precedence or manuscript output.
 
 ## Manuscript source configuration
 
@@ -789,6 +791,7 @@ At non-100% stretch, First Folio supplies English discretionary break points fro
 
 ## Changelog
 
+- 0.30 (2026-10-16): Documented manuscript stderr warnings for each loaded external YAML file.
 - 0.29 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 
 - 0.28 (2026-10-12): Document configuration-driven delivery-instruction placement.

@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.14"
-last-updated: 2026-10-12
+version: "0.15"
+last-updated: 2026-10-16
 ---
 
 # Architecture
@@ -83,6 +83,8 @@ The loader deep-merges ordinary keys and partial font blocks, validates every ef
 
 Running matter is configured at `folio.page-header` and `folio.page-footer` for scripts and manuscripts. Deprecated manuscript-local blocks are normalized within each configuration layer, before merging, so same-layer manuscript overrides do not bypass higher-layer shared settings. Manuscript command diagnostics report their use on stderr. Letter rendering ignores running-matter settings because letters are supplementary correspondence, not manuscript pages.
 
+For manuscript mode, the shared loader records each external YAML file successfully loaded as a layer. The existing warning channel passes one resolved-path diagnostic per file, in cascade order, to both Typst/PDF and office command routes for stderr emission. Built-in presets, source frontmatter, CLI values, and other command modes do not produce load diagnostics. Warning collection does not change the merged configuration.
+
 ## Rendering
 
 DOCX is a sibling output route after script parsing, configuration and filtering.
@@ -134,6 +136,7 @@ Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/em
 
 ## Document History
 
+- 0.15 (2026-10-16): Record manuscript YAML load diagnostics and their stderr ownership.
 - 0.14 (2026-10-12): Carry source format into shared DOCX/ODT emphasis handling.
 
 - 0.13 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.

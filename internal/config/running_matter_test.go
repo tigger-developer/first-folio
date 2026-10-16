@@ -160,8 +160,14 @@ func TestRunningMatterWarningsDeduplicateAcrossLayers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got := cfg.Warnings(); len(got) != 1 {
-		t.Fatalf("warnings = %v", got)
+	legacyWarnings := 0
+	for _, warning := range cfg.Warnings() {
+		if strings.Contains(warning, "folio.manuscript.page-header is deprecated") {
+			legacyWarnings++
+		}
+	}
+	if legacyWarnings != 1 {
+		t.Fatalf("expected one legacy page-header warning, got %v", cfg.Warnings())
 	}
 }
 

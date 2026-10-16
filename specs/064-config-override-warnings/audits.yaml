@@ -552,3 +552,355 @@ audits:
             - Architecture: minimal mechanism — record each file at the existing load path and return through the existing Warnings() channel; no second loader, no new option, dependency, or format; design decisions carry rationale and RT-verification; mandatory security impact present; scope matches the authorized change exactly; no over-engineering or template inflation.
             - W063 worktree material (changed office.go) is untouched by this definition and the spec explicitly constrains delivery to preserve it.
           updated: "2026-10-16T16:07:59Z"
+    - readiness_check: test-code
+      work_item: W064
+      gate: implementation
+      session_id: 20261016_171739_ae1ba8
+      standards_contract: 1
+      standards_delivered:
+        - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+          sha256: 43bf54d9d5cf5930807ea6ba084ccbae5793bae4312b62a743c215e6df6a9e96
+          bytes: 8169
+        - path: /Users/tigger/.agents/sdlc/AUDITS.md
+          sha256: 521aed142ee9541d060baf6aa869037bbdea338caf7d739aefeb44d54a541294
+          bytes: 19282
+        - path: /Users/tigger/.agents/sdlc/CODING.md
+          sha256: c4311413740c0a4f7e6b8ffa5bada9d4cd537cab17b94474f286c1151e05fac8
+          bytes: 13793
+        - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+          sha256: 98e32fea598efeb6f1b5e14b5b4c5e515fd7d80167b3183093117935e5418de5
+          bytes: 7840
+        - path: /Users/tigger/.agents/sdlc/GIT.md
+          sha256: 978ce055b576d128a2e21eed7cf969773adc84a04962fc0d9a0299457c90e68f
+          bytes: 7822
+        - path: /Users/tigger/.agents/sdlc/MAIN.md
+          sha256: 97e08827ce6ec7713a914e1871b961207f6454f84ac61591cc321aaa57388ad8
+          bytes: 13075
+        - path: /Users/tigger/.agents/sdlc/MARKDOWN.md
+          sha256: 59f3d6416de8226c11914ece1eb42720b70f75a83d40e45cc47355048e5f0fb9
+          bytes: 1357
+        - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+          sha256: 0d2dbee2f0e0db1ff89a7ff315ab19d361e57e944a321905d0f4ed44db7465ab
+          bytes: 2989
+        - path: /Users/tigger/.agents/sdlc/SECURITY.md
+          sha256: 149da81b261468fdca44d970ffe6fa321a0f97fb09ef7405364710931d0f1867
+          bytes: 5042
+        - path: /Users/tigger/.agents/sdlc/TESTING.md
+          sha256: c6a78a4bcfbac35ecfce7c442983f3c2dac8799d3bdb530d8fef99808381b70f
+          bytes: 16769
+        - path: /Users/tigger/.agents/sdlc/technologies/API.md
+          sha256: ed09a85c302d19670236a5d94ac79dd8f03cd8b265177a09924f955708a072c0
+          bytes: 10920
+        - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+          sha256: c71d389d7b8e576756f2a2843f77a5a2626e9300704b05cd6f8aa4fcdcc3f952
+          bytes: 7316
+        - path: /Users/tigger/.agents/sdlc/technologies/RUST.md
+          sha256: a05725c8cbd6e8306bbc39b4d197f1e1c0dd9230d43cb8e67dcede388f4c34ba
+          bytes: 18482
+        - path: /Users/tigger/.agents/sdlc/technologies/SHELL.md
+          sha256: e7c3ad8d6ceb8b571abd3d6b36ef2e358c71691136e729cbed87cd5abadfd94d
+          bytes: 12345
+      harness: hermes
+      provider: kimi-coding
+      model: kimi-for-coding
+      configured:
+        harness: hermes
+        provider: kimi-coding
+        model: kimi-for-coding
+      external_round: 1
+      status: active
+      updated: "2026-10-16T16:21:12Z"
+      revision: 99483f7994536b7ac4ac31f82ad28775c7354428
+      verdict: PASS
+      response: |-
+        SDLC AUDIT ARCH TEST CODE GIT SECURITY DOC ORG MD API GO RUST SHELL — I have read the relevant SDLC documents in full. I pledge to uphold their rules, the spirit of these same rules, and that I will not attempt to game these same rules.
+
+        GATE: test-code
+        REVISION: 99483f7994536b7ac4ac31f82ad28775c7354428
+        VERDICT: PASS
+
+        Standards applied: MAIN.md, AUDITS.md, ARCHITECTURE.md, TESTING.md, CODING.md, GIT.md, SECURITY.md, DOCUMENTATION.md, ORGMODE.md, MARKDOWN.md, technologies/API.md, technologies/GO.md, technologies/RUST.md, technologies/SHELL.md. No additional standard required; no material access gap.
+
+        Findings: none.
+
+        Audit notes:
+
+        Coverage of signed-off definitions
+        - RT064.1 (spec.org #rt-064-1) is fully implemented by TestRT064_1ReportsEachLoadedYAMLFileOnceInTheCascade. It exercises the public manuscript CLI boundary with a synthetic temp home/project, loads all four external user YAML layers (global base, global style-specific, local base, local style-specific) plus an unselected screenplay file and source frontmatter, and asserts: exactly one path-identifying warning per loaded file in deterministic cascade order; no setting names or values disclosed on stderr; no warnings on stdout; precedence preserved (winning margin 23mm visible in resolved output); the unselected style file, source frontmatter, CLI values and built-in presets produce no load warning (guarded by the exact-count assertion); and a non-manuscript command emits no cascade diagnostic. AC064.1, AC064.2 and AC064.3 are all covered.
+        - RT064.2 (spec.org #rt-064-2) is fully implemented by TestRT064_2ReportsLoadedYAMLOnEveryManuscriptOutputRoute. It drives folio manuscript through all four supported routes (.typ, .pdf, .docx, .odt), asserting per-route success, non-empty artefacts, exactly one cascade warning naming the loaded file on stderr, and stdout cleanliness. It tolerates unrelated existing office warnings by counting only cascade lines, matching the recorded RED observation.
+
+        RED evidence
+        - validation.org carries one current :testdef: heading per RT, declared #+TODO: AMBER RED | GREEN, both RED at the recorded revision, with the exact go-test command matching the written test names. The recorded failure mode is the intended assertion (zero cascade-load warnings despite successful generation and preserved precedence), not compilation or setup failure. No production code in the supplied evidence implements the target behaviour; the RTs are genuinely RED. No initially-GREEN preservation tests are present.
+
+        Test quality
+        - Assertions are behavioural, at the established project integration boundary (in-process app.Run, the same convention as the existing manuscript/letter tests), with no source greps, no mocks of the function under test, and no scaffolding implementing the target behaviour. Tests use t.TempDir and t.Setenv, are deterministic and order-independent. Typst/Pandoc dependence in RT064.2 matches the documented project dependency contract for those routes (the make test suite already includes Typst/PDF routes). Two-line ABOUTME headers and t.Helper() are present per CODING.md/GO.md.
+        - Traceability is intact: RT064.1/RT064.2 map one-to-one to the signed-off test definitions, identifiers are new, and validation.org records execution evidence only, with no duplicated audit state. W063 worktree material is untouched by this package.
+
+        This PASS approves the written tests only; delivery-code review of the implementation delta remains the subsequent gate.
+      history:
+        - standards_delivered:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: 43bf54d9d5cf5930807ea6ba084ccbae5793bae4312b62a743c215e6df6a9e96
+              bytes: 8169
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: 521aed142ee9541d060baf6aa869037bbdea338caf7d739aefeb44d54a541294
+              bytes: 19282
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: c4311413740c0a4f7e6b8ffa5bada9d4cd537cab17b94474f286c1151e05fac8
+              bytes: 13793
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: 98e32fea598efeb6f1b5e14b5b4c5e515fd7d80167b3183093117935e5418de5
+              bytes: 7840
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 978ce055b576d128a2e21eed7cf969773adc84a04962fc0d9a0299457c90e68f
+              bytes: 7822
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 97e08827ce6ec7713a914e1871b961207f6454f84ac61591cc321aaa57388ad8
+              bytes: 13075
+            - path: /Users/tigger/.agents/sdlc/MARKDOWN.md
+              sha256: 59f3d6416de8226c11914ece1eb42720b70f75a83d40e45cc47355048e5f0fb9
+              bytes: 1357
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 0d2dbee2f0e0db1ff89a7ff315ab19d361e57e944a321905d0f4ed44db7465ab
+              bytes: 2989
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: 149da81b261468fdca44d970ffe6fa321a0f97fb09ef7405364710931d0f1867
+              bytes: 5042
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: c6a78a4bcfbac35ecfce7c442983f3c2dac8799d3bdb530d8fef99808381b70f
+              bytes: 16769
+            - path: /Users/tigger/.agents/sdlc/technologies/API.md
+              sha256: ed09a85c302d19670236a5d94ac79dd8f03cd8b265177a09924f955708a072c0
+              bytes: 10920
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: c71d389d7b8e576756f2a2843f77a5a2626e9300704b05cd6f8aa4fcdcc3f952
+              bytes: 7316
+            - path: /Users/tigger/.agents/sdlc/technologies/RUST.md
+              sha256: a05725c8cbd6e8306bbc39b4d197f1e1c0dd9230d43cb8e67dcede388f4c34ba
+              bytes: 18482
+            - path: /Users/tigger/.agents/sdlc/technologies/SHELL.md
+              sha256: e7c3ad8d6ceb8b571abd3d6b36ef2e358c71691136e729cbed87cd5abadfd94d
+              bytes: 12345
+          diagnostic: /Users/tigger/code/tigoss/first-folio/.sdlc/audit-diagnostics/audit-1672530502.log
+          readiness_check: test-code
+          cache_key: sha256:c8f6dadf416840551aaad4a83e4b94d589c4aaf9c2e632195ff2ddc2ac6d5a87
+          session_id: 20261016_171739_ae1ba8
+          harness: hermes
+          provider: kimi-coding
+          model: kimi-for-coding
+          evidence:
+            - path: /Users/tigger/.agents/sdlc/ARCHITECTURE.md
+              sha256: 43bf54d9d5cf5930807ea6ba084ccbae5793bae4312b62a743c215e6df6a9e96
+              bytes: 8169
+            - path: /Users/tigger/.agents/sdlc/AUDITS.md
+              sha256: 521aed142ee9541d060baf6aa869037bbdea338caf7d739aefeb44d54a541294
+              bytes: 19282
+            - path: /Users/tigger/.agents/sdlc/CHANGELOG.md
+              sha256: 2384009fbc28cea6fceab0d3fbb7810d1067a0da28c169b4e9386c0e6745ef56
+              bytes: 4424
+            - path: /Users/tigger/.agents/sdlc/CODING.md
+              sha256: c4311413740c0a4f7e6b8ffa5bada9d4cd537cab17b94474f286c1151e05fac8
+              bytes: 13793
+            - path: /Users/tigger/.agents/sdlc/DOCUMENTATION.md
+              sha256: 98e32fea598efeb6f1b5e14b5b4c5e515fd7d80167b3183093117935e5418de5
+              bytes: 7840
+            - path: /Users/tigger/.agents/sdlc/EMERGENCY.md
+              sha256: 2c6ad74ef4b63c6b5a21c98e201ec949c1bd99866ebd2852d1dd9da117d4a8f9
+              bytes: 4846
+            - path: /Users/tigger/.agents/sdlc/GIT.md
+              sha256: 978ce055b576d128a2e21eed7cf969773adc84a04962fc0d9a0299457c90e68f
+              bytes: 7822
+            - path: /Users/tigger/.agents/sdlc/HARNESS.md
+              sha256: 2277702bcb4c0c4ca81551b3df235d556909062fb1bc036323e243b7b40b61c2
+              bytes: 34821
+            - path: /Users/tigger/.agents/sdlc/ISSUES.md
+              sha256: 5d9e863d7fbd9741c7fa1a0987e3417f82d3a4b7c095bb35cfb4c593a51e4cc2
+              bytes: 16642
+            - path: /Users/tigger/.agents/sdlc/LEARNINGS.md
+              sha256: 520513130332f468ab1f3185569b4cba7067f2968a4cb389623b02a228c2e68d
+              bytes: 52377
+            - path: /Users/tigger/.agents/sdlc/MAIN.md
+              sha256: 97e08827ce6ec7713a914e1871b961207f6454f84ac61591cc321aaa57388ad8
+              bytes: 13075
+            - path: /Users/tigger/.agents/sdlc/MARKDOWN.md
+              sha256: 59f3d6416de8226c11914ece1eb42720b70f75a83d40e45cc47355048e5f0fb9
+              bytes: 1357
+            - path: /Users/tigger/.agents/sdlc/ORG-SCHEMA.md
+              sha256: 4c93e9ebfd051a1caa3a3a456ef20228c4403f3ca00726ed1ac4c93676ac26cc
+              bytes: 4915
+            - path: /Users/tigger/.agents/sdlc/ORGMODE.md
+              sha256: 0d2dbee2f0e0db1ff89a7ff315ab19d361e57e944a321905d0f4ed44db7465ab
+              bytes: 2989
+            - path: /Users/tigger/.agents/sdlc/PAIRING.md
+              sha256: 38ee20da8e16aba810c035600e6f5ca948d9a706f33c1179ebbf2fbc9d1ad034
+              bytes: 6050
+            - path: /Users/tigger/.agents/sdlc/README.md
+              sha256: e7aa5b4c951ecea7e7420105fa7c87987bf0e6cc08d10cc099a36ad7fed7b5aa
+              bytes: 12191
+            - path: /Users/tigger/.agents/sdlc/SECURITY.md
+              sha256: 149da81b261468fdca44d970ffe6fa321a0f97fb09ef7405364710931d0f1867
+              bytes: 5042
+            - path: /Users/tigger/.agents/sdlc/SPIKE-AUDIT.md
+              sha256: 73e36e3cb0b27ed469239b67de7efc4d64a0b71845d28e3b5bdee3d72a9baaf5
+              bytes: 1822
+            - path: /Users/tigger/.agents/sdlc/STANDALONE-AUDIT.md
+              sha256: f4c22a6759cd1ebf9211ccd860cc5e5cc3d322c5bd4c72a91b14c43ea19507c0
+              bytes: 2917
+            - path: /Users/tigger/.agents/sdlc/TESTING.md
+              sha256: c6a78a4bcfbac35ecfce7c442983f3c2dac8799d3bdb530d8fef99808381b70f
+              bytes: 16769
+            - path: /Users/tigger/.agents/sdlc/THIRD_PARTY_NOTICES.md
+              sha256: bf9038abaefa7b03b66845fa0c9f125b282438f58f57a51c971c52407bd14b1a
+              bytes: 1812
+            - path: /Users/tigger/.agents/sdlc/docs/ACs.md
+              sha256: 9a59f4feeb496a6604923c7c7210df38f7b307a26e8a0e11e87f6210072611bf
+              bytes: 1557
+            - path: /Users/tigger/.agents/sdlc/prompts/discover-project-authorities.md
+              sha256: 7c6f62a3c8c13636dc37c9156216058c9f31153d1683a4b3b9d37a66bd3e8b6d
+              bytes: 1869
+            - path: /Users/tigger/.agents/sdlc/prompts/discover-project-technologies.md
+              sha256: 7dafb2828f52034d4af6042462f6ec373f5c7fdca8af1633caef675800a62366
+              bytes: 2715
+            - path: /Users/tigger/.agents/sdlc/prompts/normalize-legacy-acs.md
+              sha256: 44489c47c457ed857dba026da6304553f8d3a12f204952a4997c457c974fcd83
+              bytes: 2403
+            - path: /Users/tigger/.agents/sdlc/technologies/API.md
+              sha256: ed09a85c302d19670236a5d94ac79dd8f03cd8b265177a09924f955708a072c0
+              bytes: 10920
+            - path: /Users/tigger/.agents/sdlc/technologies/FISH.md
+              sha256: 0b71b362e3981f3f1ed60a045aad0f5b2b65cdeb2ec0a636a1d6cdb8aaf0c1a1
+              bytes: 13628
+            - path: /Users/tigger/.agents/sdlc/technologies/GO.md
+              sha256: c71d389d7b8e576756f2a2843f77a5a2626e9300704b05cd6f8aa4fcdcc3f952
+              bytes: 7316
+            - path: /Users/tigger/.agents/sdlc/technologies/HUGO.md
+              sha256: 9f97dce924b1da88fc3c1e66851e96d8b421a0ffcc0bced8067dff0bf23f0e74
+              bytes: 4321
+            - path: /Users/tigger/.agents/sdlc/technologies/JAVASCRIPT.md
+              sha256: 69b7d16d81a059ee3de1e370e9bbeaeae7b7538bc6689f63c04b95e35b11d54b
+              bytes: 7523
+            - path: /Users/tigger/.agents/sdlc/technologies/LUA.md
+              sha256: f64aad076563bced181623daeef3c5ee28b82968fbd6e11ebe67d19045a62e8b
+              bytes: 10783
+            - path: /Users/tigger/.agents/sdlc/technologies/NODE.md
+              sha256: f593fef2fdbdc081afbb51db388e296fb13cbfd3e95432aafcb7674acd5ba31c
+              bytes: 5098
+            - path: /Users/tigger/.agents/sdlc/technologies/PERL.md
+              sha256: 8f3cbdf5e0c5cf0c8eaa3228e36c0e77e94a697798ae613e1b81a523391b48e4
+              bytes: 3098
+            - path: /Users/tigger/.agents/sdlc/technologies/PYTHON.md
+              sha256: 3a0ca19f3ab1a99fd809561c7a1d67d8a31dde8dd5a74cc989355e7daab9f61d
+              bytes: 6272
+            - path: /Users/tigger/.agents/sdlc/technologies/RUST.md
+              sha256: a05725c8cbd6e8306bbc39b4d197f1e1c0dd9230d43cb8e67dcede388f4c34ba
+              bytes: 18482
+            - path: /Users/tigger/.agents/sdlc/technologies/SHELL.md
+              sha256: e7c3ad8d6ceb8b571abd3d6b36ef2e358c71691136e729cbed87cd5abadfd94d
+              bytes: 12345
+            - path: /Users/tigger/.agents/sdlc/technologies/SWIFT.md
+              sha256: 64830d92ac9bd5d3ef51aeb722dde09b758cff6f04dedb23b493cb356a3b3de9
+              bytes: 5212
+            - path: /Users/tigger/.agents/sdlc/technologies/WEB.md
+              sha256: fd6d48f27772f9384719b9bbe59efb62240a8adbd5d7f87b3e0dfb0452485381
+              bytes: 10438
+            - path: /Users/tigger/.agents/sdlc/templates/AGENTS-or-CLAUDE.example.md
+              sha256: d4d5614d8f9d441b7eff45f0e0f2aa1ce5b1a39cda43a55cb7c6e37c956d1087
+              bytes: 4814
+            - path: /Users/tigger/code/tigoss/first-folio/.sdlc/project.yaml
+              sha256: ad8bb1af63459f25e622e690618065aded0db1235341db212f931da550393458
+              bytes: 498
+            - path: /Users/tigger/code/tigoss/first-folio/README.md
+              sha256: 0422d0f3a15f50215b98c048aa81687a820b7d656dbeff87b8461cf7adaaa387
+              bytes: 10400
+            - path: /Users/tigger/code/tigoss/first-folio/docs/ARCHITECTURE.md
+              sha256: 5bfa56a014636826ebe498ff81968d9b64b6b00bdff842f5ab3ad881a2699a2b
+              bytes: 11450
+            - path: /Users/tigger/code/tigoss/first-folio/docs/config.md
+              sha256: 9f504ef03ae39bdbf239602c80d65cda497ad12f25c6ba38bfe3f27892e66346
+              bytes: 57115
+            - path: /Users/tigger/code/tigoss/first-folio/docs/vision.md
+              sha256: 977d09d171143339fcd984d7c60391d83ac6204b6cce35be16b776b2ead2d1a9
+              bytes: 5928
+            - path: /Users/tigger/code/tigoss/first-folio/docs/work.org
+              sha256: 346de8dafea5e694910584f4e834a31a19bd484ed76057698a8308f82a8db111
+              bytes: 262527
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/app.go
+              sha256: 3b17b44d5810175464b4945ed63cbd27b24aa32baed24921054c04f5fd32fc2a
+              bytes: 2185
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/app_test.go
+              sha256: 8f52ddf05f304bf90337eb0c3d90af221cb733a957121569ee32766aeaf39758
+              bytes: 2208
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/config_cascade_warning_test.go
+              sha256: 91e966cdc1be1b26147b15cf6f69c9407422fdf187d4fa742a75c3c96a60ed4a
+              bytes: 4438
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/convert.go
+              sha256: 27896dc96f22fdfda0aa129fff04e0b85d28518067b781c639fc7f8385eeaa4e
+              bytes: 6258
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/convert_test.go
+              sha256: 0d78cc29d084480d46d30167d738bcc388f503d47aee9c4bb5540663719adcca
+              bytes: 3553
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/manuscript_test.go
+              sha256: 755918080e01a32257581c6027c2325eaa3787cfa7a87fc9ba6c5507d234d5fa
+              bytes: 4734
+            - path: /Users/tigger/code/tigoss/first-folio/internal/app/running_matter_warning_test.go
+              sha256: 6d58901aada5d55bbb6a141441dcc415f36811fc571aa94a2dfdd63e62d2f2cf
+              bytes: 2980
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config.go
+              sha256: 44fb8a9f12de8a299449724590c568acdcc174aec5e318291e9093ced1e0d777
+              bytes: 8939
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/config_test.go
+              sha256: 19ad474584858ed37368dd5c211180246dc6a5fb8f55a81cc32cc680436cfe87
+              bytes: 4732
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/running_matter.go
+              sha256: 9d087aaf5f40234b21d17c3e06611a0d995008af28ef1418c0650ea61fee8979
+              bytes: 4199
+            - path: /Users/tigger/code/tigoss/first-folio/internal/config/running_matter_test.go
+              sha256: 716756a33d7da395d8114d34281a5092eb6783c91d9c23641ea2c60421a955c2
+              bytes: 8736
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/config.go
+              sha256: c1c65df031461b706e87520c8784c4e7f42c2c2d47e6187bbd0434cbaff60e92
+              bytes: 27223
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/office.go
+              sha256: c56a21a3ef840ac49ea31d9b988a9674f210571f2ccb694e3c9099f5d6071c55
+              bytes: 8872
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/run.go
+              sha256: df3c045e520925563bc641fe47910e324c264e9f7dc8c375c2cf32434bf0e0b5
+              bytes: 8299
+            - path: /Users/tigger/code/tigoss/first-folio/internal/manuscript/source_config.go
+              sha256: 31495b7be3e7268d6f0c35fd1e4252b76663a67c950bb5b90690507b1a5054a6
+              bytes: 2058
+            - path: /Users/tigger/code/tigoss/first-folio/specs/064-config-override-warnings/spec.org
+              sha256: 14c9b9a25d4f27411ff71ab17f10647ed7eec26a61a28ed01d31739342a69f5e
+              bytes: 15828
+            - path: /Users/tigger/code/tigoss/first-folio/specs/064-config-override-warnings/validation.org
+              sha256: fa2a0378a5a63c13e1b844c83efc8766add46a9fa303dd21a57b9f61abe00078
+              bytes: 1994
+          round: 1
+          revision: 99483f7994536b7ac4ac31f82ad28775c7354428
+          verdict: PASS
+          response: |-
+            SDLC AUDIT ARCH TEST CODE GIT SECURITY DOC ORG MD API GO RUST SHELL — I have read the relevant SDLC documents in full. I pledge to uphold their rules, the spirit of these same rules, and that I will not attempt to game these same rules.
+
+            GATE: test-code
+            REVISION: 99483f7994536b7ac4ac31f82ad28775c7354428
+            VERDICT: PASS
+
+            Standards applied: MAIN.md, AUDITS.md, ARCHITECTURE.md, TESTING.md, CODING.md, GIT.md, SECURITY.md, DOCUMENTATION.md, ORGMODE.md, MARKDOWN.md, technologies/API.md, technologies/GO.md, technologies/RUST.md, technologies/SHELL.md. No additional standard required; no material access gap.
+
+            Findings: none.
+
+            Audit notes:
+
+            Coverage of signed-off definitions
+            - RT064.1 (spec.org #rt-064-1) is fully implemented by TestRT064_1ReportsEachLoadedYAMLFileOnceInTheCascade. It exercises the public manuscript CLI boundary with a synthetic temp home/project, loads all four external user YAML layers (global base, global style-specific, local base, local style-specific) plus an unselected screenplay file and source frontmatter, and asserts: exactly one path-identifying warning per loaded file in deterministic cascade order; no setting names or values disclosed on stderr; no warnings on stdout; precedence preserved (winning margin 23mm visible in resolved output); the unselected style file, source frontmatter, CLI values and built-in presets produce no load warning (guarded by the exact-count assertion); and a non-manuscript command emits no cascade diagnostic. AC064.1, AC064.2 and AC064.3 are all covered.
+            - RT064.2 (spec.org #rt-064-2) is fully implemented by TestRT064_2ReportsLoadedYAMLOnEveryManuscriptOutputRoute. It drives folio manuscript through all four supported routes (.typ, .pdf, .docx, .odt), asserting per-route success, non-empty artefacts, exactly one cascade warning naming the loaded file on stderr, and stdout cleanliness. It tolerates unrelated existing office warnings by counting only cascade lines, matching the recorded RED observation.
+
+            RED evidence
+            - validation.org carries one current :testdef: heading per RT, declared #+TODO: AMBER RED | GREEN, both RED at the recorded revision, with the exact go-test command matching the written test names. The recorded failure mode is the intended assertion (zero cascade-load warnings despite successful generation and preserved precedence), not compilation or setup failure. No production code in the supplied evidence implements the target behaviour; the RTs are genuinely RED. No initially-GREEN preservation tests are present.
+
+            Test quality
+            - Assertions are behavioural, at the established project integration boundary (in-process app.Run, the same convention as the existing manuscript/letter tests), with no source greps, no mocks of the function under test, and no scaffolding implementing the target behaviour. Tests use t.TempDir and t.Setenv, are deterministic and order-independent. Typst/Pandoc dependence in RT064.2 matches the documented project dependency contract for those routes (the make test suite already includes Typst/PDF routes). Two-line ABOUTME headers and t.Helper() are present per CODING.md/GO.md.
+            - Traceability is intact: RT064.1/RT064.2 map one-to-one to the signed-off test definitions, identifiers are new, and validation.org records execution evidence only, with no duplicated audit state. W063 worktree material is untouched by this package.
+
+            This PASS approves the written tests only; delivery-code review of the implementation delta remains the subsequent gate.
+          updated: "2026-10-16T16:17:39Z"

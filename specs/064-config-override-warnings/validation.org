@@ -6,16 +6,16 @@
 
 * Automated regression
 
-** RED RT064.1 - Loaded YAML files are reported once :testdef:
+** GREEN RT064.1 - Loaded YAML files are reported once :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-064-1-result
 :REVISION: 99483f7994536b7ac4ac31f82ad28775c7354428
 :COMMAND: go test ./internal/app -run '^TestRT064_' -count=1
-:EVIDENCE: Intended warning assertion failed: no cascade-load warnings appeared. See the dated run below.
+:EVIDENCE: Focused CLI regression passed on 2026-10-16; the earlier RED observation is retained below.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-064-1][AC064.1 - Loaded user YAML files are reported]].
-- Runs :: The intended missing-warning failure was observed on 2026-10-16.
+- Runs :: The intended missing-warning failure and subsequent focused GREEN run were observed on 2026-10-16.
 
 *** Run 2026-10-16
 
@@ -24,17 +24,24 @@
   =23mm= margin, but stderr had zero cascade-load warning lines instead of four.
   The test stopped at this assertion before the non-manuscript conversion case.
 
-** RED RT064.2 - Diagnostics cover manuscript output routes :testdef:
+*** GREEN run 2026-10-16
+
+- Command :: =go test ./internal/app -run '^TestRT064_' -count=1=
+- Observed :: Passed. The CLI reported four loaded YAML files once each in
+  cascade order on stderr, retained the winning margin, and produced no load
+  warning for the unselected file or the non-manuscript command.
+
+** GREEN RT064.2 - Diagnostics cover manuscript output routes :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-064-2-result
 :REVISION: 99483f7994536b7ac4ac31f82ad28775c7354428
 :COMMAND: go test ./internal/app -run '^TestRT064_' -count=1
-:EVIDENCE: All four routes generated non-empty outputs but lacked the expected cascade-load warning. See the dated run below.
+:EVIDENCE: Focused CLI regression passed on 2026-10-16; the earlier RED observation is retained below.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-064-1][AC064.1 - Loaded user YAML files are reported]] and
   [[file:spec.org::#ac-064-2][AC064.2 - Diagnostics preserve output and omit setting details]].
-- Runs :: The intended missing-warning failure was observed on 2026-10-16.
+- Runs :: The intended missing-warning failure and subsequent focused GREEN run were observed on 2026-10-16.
 
 *** Run 2026-10-16
 
@@ -43,3 +50,22 @@
   created non-empty outputs, but none emitted a cascade-load warning. DOCX and
   ODT also emitted existing font-embedding warnings; the assertions isolate the
   missing cascade warning from those messages.
+
+*** GREEN run 2026-10-16
+
+- Command :: =go test ./internal/app -run '^TestRT064_' -count=1=
+- Observed :: Passed. Each exercised output route produced a non-empty file and
+  one loaded-YAML warning on stderr, with no load warning on stdout. This
+  synthetic route check does not validate the broader W063 office-export contract.
+
+* Additional verification
+
+- Command :: =go test ./internal/config -count=1=
+- Observed :: Passed after the existing legacy running-matter warning test was
+  updated to count that deprecation warning independently of YAML load warnings.
+- Full regression :: =make test= was interrupted at the operator's direction.
+  The run had exposed the legacy warning assertion above; its other packages
+  were not used as delivery evidence. The operator will run the regression pack
+  with W063 delivery.
+- Delivery-code audit :: Deferred at the operator's direction for a combined
+  W063 and W064 audit. The test-code gate passed before implementation.
