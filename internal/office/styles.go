@@ -20,7 +20,11 @@ func (s Style) wordFont() docxNode {
 	if stretch == "" {
 		stretch = "100"
 	}
-	return dx("rPr", dx("rFonts").attr("w:ascii", s.Font.Family).attr("w:hAnsi", s.Font.Family).attr("w:eastAsia", s.Font.Family).attr("w:cs", s.Font.Family), dxVal("sz", strconv.Itoa(int(math.Round(s.Size*2)))), dxVal("szCs", strconv.Itoa(int(math.Round(s.Size*2)))), dxVal("b", boolean(s.Bold)), dxVal("i", boolean(s.Italic)), dxVal("w", stretch), dxVal("spacing", twip(s.Tracking)))
+	n := dx("rPr", dx("rFonts").attr("w:ascii", s.Font.Family).attr("w:hAnsi", s.Font.Family).attr("w:eastAsia", s.Font.Family).attr("w:cs", s.Font.Family), dxVal("sz", strconv.Itoa(int(math.Round(s.Size*2)))), dxVal("szCs", strconv.Itoa(int(math.Round(s.Size*2)))), dxVal("b", boolean(s.Bold)), dxVal("i", boolean(s.Italic)), dxVal("w", stretch), dxVal("spacing", twip(s.Tracking)))
+	if s.BaselineShift != 0 {
+		n.children = append(n.children, dxVal("position", strconv.Itoa(int(math.Round(s.BaselineShift*2)))))
+	}
+	return n
 }
 func (s Style) wordParagraph() docxNode {
 	align := s.Align
@@ -59,7 +63,11 @@ func (s Style) odtFont() docxNode {
 	if !strings.HasSuffix(stretch, "%") {
 		stretch += "%"
 	}
-	return ox("style:text-properties").attr("style:font-name", s.Font.Family).attr("fo:font-family", s.Font.Family).attr("fo:font-size", point(s.Size)).attr("fo:font-weight", weight).attr("fo:font-style", italic).attr("style:text-scale", stretch).attr("fo:letter-spacing", point(s.Tracking)).attr("fo:hyphenate", boolean(s.Hyphenate))
+	n := ox("style:text-properties").attr("style:font-name", s.Font.Family).attr("fo:font-family", s.Font.Family).attr("fo:font-size", point(s.Size)).attr("fo:font-weight", weight).attr("fo:font-style", italic).attr("style:text-scale", stretch).attr("fo:letter-spacing", point(s.Tracking)).attr("fo:hyphenate", boolean(s.Hyphenate))
+	if s.BaselineShift != 0 && s.FontBox > 0 {
+		n = n.attr("style:text-position", strconv.FormatFloat(s.BaselineShift/s.FontBox*100, 'f', 5, 64)+"% 100%")
+	}
+	return n
 }
 func (s Style) odtParagraph() docxNode {
 	align := s.Align

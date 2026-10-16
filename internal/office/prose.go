@@ -19,6 +19,7 @@ type Style struct {
 	Align                                                   string
 	Bold, Italic, KeepNext, Hyphenate, Widow                bool
 	Character                                               bool
+	BaselineShift, FontBox                                  float64
 }
 
 // Page describes physical paper, mirrored margins and running-band geometry.

@@ -20,6 +20,7 @@ func (p *Prose) Export(format string) (result []byte, warnings []string, resultE
 	if format != "docx" && format != "odt" {
 		return nil, nil, fmt.Errorf("unsupported office format %s", format)
 	}
+	p.resolveBaselines()
 	writerDocument := p.Document
 	writerDocument.Meta = map[string]any{}
 	writerDocument.Blocks = p.generatedImages(p.flowBoundaries(writerDocument.Blocks))
