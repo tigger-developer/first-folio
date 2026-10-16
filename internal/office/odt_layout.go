@@ -281,7 +281,8 @@ func (p *Prose) odtPlacement(n *docxNode, role string, placement Placement, styl
 	inner := *n
 	inner.attrs = append([]xml.Attr(nil), n.attrs...)
 	inner.set("text:style-name", role)
-	frame := ox("draw:frame", ox("draw:text-box", inner)).attr("draw:style-name", name).attr("draw:name", name).attr("text:anchor-type", "page").attr("svg:width", point(p.Page.Width-p.Page.Left-p.Page.Right-p.Page.Gutter)).attr("svg:height", point(p.Styles[role].Line))
+	box := ox("draw:text-box", inner).attr("fo:min-height", point(p.Styles[role].Line))
+	frame := ox("draw:frame", box).attr("draw:style-name", name).attr("draw:name", name).attr("text:anchor-type", "page").attr("svg:width", point(p.Page.Width-p.Page.Left-p.Page.Right-p.Page.Gutter))
 	n.name = "text:p"
 	n.text = ""
 	n.children = []docxNode{frame}

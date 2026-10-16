@@ -169,8 +169,7 @@ func officePlan(doc office.Document, meta Metadata, cfg Config) (office.Prose, e
 				if level == 2 {
 					parts = composeChapterHeadingParts(heading, hc, part)
 				}
-				name = caseTransform(parts.Full, hc.CaseTransform)
-				c[2] = office.Text(name)
+				c[2] = officeHeadingInlines(c[2], heading, parts, hc)
 				kind := "chapter"
 				if level == 1 {
 					kind = "part"

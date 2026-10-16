@@ -24,7 +24,7 @@ func TestReleaseGateAndTap(t *testing.T) {
 			dir := t.TempDir()
 			log := filepath.Join(dir, "calls")
 			// POSIX fixture executables only record argv; no real Git or Go runs.
-			for _, name := range []string{"go", "git", "typst", "pandoc"} {
+			for _, name := range []string{"go", "git", "typst", "pandoc", "soffice", "pdftotext", "pdftohtml", "pdftoppm"} {
 				script := "#!/bin/sh\nset -eu\nprintf '%s' \"${0##*/}\" >> \"$RELEASE_TEST_LOG\"\nprintf ' <%s>' \"$@\" >> \"$RELEASE_TEST_LOG\"\nprintf '\\n' >> \"$RELEASE_TEST_LOG\"\nif [ \"${0##*/}\" = go ] && [ \"${1:-}\" = test ] && [ \"$RELEASE_TEST_FAIL\" = yes ]; then exit 1; fi\n"
 				if err := os.WriteFile(filepath.Join(dir, name), []byte(script), 0700); err != nil {
 					t.Fatal(err)

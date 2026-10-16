@@ -98,6 +98,9 @@ func (p *Prose) Export(format string) (result []byte, warnings []string, resultE
 	if err = p.nativeMetadata(files, format); err != nil {
 		return nil, nil, err
 	}
+	if err = p.alignListMarkers(files, format); err != nil {
+		return nil, nil, err
+	}
 	raw, err = writePackage(files, format)
 	if err != nil {
 		return nil, nil, err

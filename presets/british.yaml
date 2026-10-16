@@ -300,14 +300,14 @@ folio:
       weight: regular
       stretch: 100%
       style: regular
-      letter-spacing: 0em
+      letter-spacing: 0.1em
     # Format placeholders (also available in alt-format and frontmatter formats):
     # Scripts and manuscripts: [title], [author], [page], [total-pages].
     # Manuscripts only: [part], [part-number], [part-prefix], [part-full],
     #   [chapter], [chapter-number], [chapter-prefix], [chapter-full].
     # Part/chapter tokens are empty in scripts; unknown tokens remain literal.
-    format: "[title] • [chapter] • [author]"
-    # alt-format: ""                 # Inherits page-header.format.
+    format: "[page] · [title] · [author]"
+    alt-format: "[title] · [author] · [page]"                 # Inherits page-header.format if unset
     # frontmatter-format: ""         # Inherits page-header.format.
     # alt-frontmatter-format: ""     # Inherits page-header.alt-format.
     align: left-right

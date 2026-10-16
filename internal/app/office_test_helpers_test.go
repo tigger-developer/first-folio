@@ -64,6 +64,16 @@ func (n *officeXML) all(name string) []*officeXML {
 	return out
 }
 func (n *officeXML) text() string {
+	if n.Name.Local == "s" {
+		count := 1
+		if value, err := strconv.Atoi(n.attr("c")); err == nil && value > 0 && value <= 100000 {
+			count = value
+		}
+		return strings.Repeat(" ", count)
+	}
+	if n.Name.Local == "tab" {
+		return "\t"
+	}
 	if n.Name.Local == "br" || n.Name.Local == "line-break" {
 		return "\n"
 	}

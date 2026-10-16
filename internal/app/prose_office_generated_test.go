@@ -60,6 +60,48 @@ func TestRT063_5_OfficeIndependentTitleAlignment(t *testing.T) {
 	}
 }
 
+func TestRT063_5_OfficeHeadingRichText(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n    heading:\n      font:\n        weight: regular\n    chapter:\n      show-number: false\n      name-case: upper\n")
+			src := proseSource(t, dir, "source.md", "## Chapter 7: *Italic-heading* and **Bold-heading** [brackets]\n\nBody.\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			body := officeBody(t, pkg, format)
+			if !strings.Contains(body.text(), "ITALIC-HEADING AND BOLD-HEADING [BRACKETS]") || strings.Contains(body.text(), `\[`) {
+				t.Errorf("composed heading escaped or lost literal text: %s", body.text())
+			}
+			for _, marker := range []string{"ITALIC-HEADING", "BOLD-HEADING"} {
+				layers := proseInlineLayers(t, pkg, format, marker)
+				element, attr, want := "i", "val", "true"
+				if marker == "BOLD-HEADING" {
+					element = "b"
+				}
+				if format == "odt" {
+					element, attr, want = "text-properties", "font-style", "italic"
+					if marker == "BOLD-HEADING" {
+						attr, want = "font-weight", "bold"
+					}
+				}
+				got, exists := officeEffectiveAttr(layers, element, attr)
+				if format == "docx" {
+					for _, layer := range layers {
+						for _, property := range layer.all(element) {
+							if property.attr("val") == "" {
+								got, exists = "true", true
+							}
+						}
+					}
+				}
+				if !exists || got != want && !(format == "docx" && got == "") {
+					t.Errorf("%s emphasis=%q present=%v; want %s", marker, got, exists, want)
+				}
+			}
+		})
+	}
+}
+
 func TestRT063_5_OfficeCopyrightOrder(t *testing.T) {
 	for _, format := range []string{"docx", "odt"} {
 		for _, position := range []string{"after-title", "after-toc", "after-frontmatter"} {
