@@ -1,0 +1,216 @@
+#+TITLE: W063 - Prose office export validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** AMBER RT063.1 - Output selection and dependencies :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-1-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-1][RT063.1 - Output selection and dependencies]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** AMBER RT063.2 - Recipient batches and CLI errors :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-2-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-2][RT063.2 - Recipient batches and CLI errors]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** AMBER RT063.3 - Structured manuscript content :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-3-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-3][RT063.3 - Structured manuscript content]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** AMBER RT063.4 - Configuration and role geometry :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-4-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-4][RT063.4 - Configuration and role geometry]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** AMBER RT063.5 - Generated matter and heading controls :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-5-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-5][RT063.5 - Generated matter and heading controls]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** AMBER RT063.6 - Sections and page fields :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-6-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-6][RT063.6 - Sections and page fields]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** AMBER RT063.7 - Letter content and geometry :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-7-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-7][RT063.7 - Letter content and geometry]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** AMBER RT063.8 - Font packaging :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-8-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-8][RT063.8 - Font packaging]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** AMBER RT063.9 - Resource and publication failures :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-9-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-9][RT063.9 - Resource and publication failures]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** GREEN RT063.10 - Existing route preservation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-10-result
+:END:
+- Definition :: [[file:spec.org::#rt-063-10][RT063.10 - Existing route preservation]].
+- Initial preservation evidence, 2026-10-16 :: At =ec9955e= with only new test/fixture files in the working tree, =go test ./... -skip '^TestRT063_' -count=1= passed all existing packages. Go build/module caches were scoped to ignored =.agent/cache/=. The application package took 172.702 seconds; manuscript took 112.050 seconds. No production code had changed. This is the pre-change baseline, not post-implementation verification.
+
+** AMBER RT063.11 - Rendered font and geometry conformance :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-11-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-11][RT063.11 - Rendered font and geometry conformance]].
+- Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
+
+** AMBER RT063.12 - Rendered page policy and contents references :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-12-result
+:REASON: Regression package not yet written or executed.
+:END:
+- Definition :: [[file:spec.org::#rt-063-12][RT063.12 - Rendered page policy and contents references]].
+
+* One-off checks
+
+** AMBER OT063.1 - Rendered feature comparison :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot063-1-result
+:REASON: Delivery and bounded verification not yet executed.
+:END:
+- Definition :: [[file:spec.org::#ot-063-1][OT063.1 - Rendered feature comparison]].
+
+*** Preliminary native-layout experiments, 2026-10-16
+
+- Scope :: Temporary native packages only, before production implementation. Overall OT remains AMBER: the full feature comparison and inspection have not run.
+- Versions :: Pandoc 3.9.0.2, Typst 0.14.2, LibreOffice 26.2.3.2. First Folio baseline =ec9955e=.
+- Baseline :: A short frontmatter paragraph followed by the first chapter, with no requested break, produces one PDF page. The header is =FRONT-HEADER i= and the footer =BODY-FOOTER 1=. This confirms the existing renderer observes state at different positions for the two running bands; the mixed page must not simply be assigned one body variant everywhere.
+- Master-page transition :: Assigning a different ODT master page to the body paragraph creates a second page despite =fo:break-before="auto"=. This candidate does not implement the continuous case.
+- Conditional paragraphs :: Two conditional header/footer paragraphs reproduce the first mixed page, but the frontmatter header persists on the second body page. This candidate is insufficient; its first-page success is not a conformance result.
+- Variable fields :: Native =text:variable-get= string fields switch from frontmatter header/body footer on the mixed page to body header/body footer on the next page. Native =text:page-variable-set= with adjustment zero plus =text:page-variable-get= displays body 1 then 2 without a physical-page reset. Combining distinct frontmatter/body number formats with this continuous route remains unproved.
+- Parity :: A right-only ODT body master after a frontmatter page creates a blank physical page before the body. LibreOffice's default PDF export omits this blank. Export with =IsSkipEmptyPages=false= retains it: the body is physical page 3 and displays page 1. The retained rendering helper must explicitly preserve automatic blank pages.
+- Contents refresh :: Plain Pandoc =--toc= output followed by headless PDF conversion leaves the DOCX contents empty and the ODT contents unpopulated. With 80 explicit native page-reference entries, ODT refreshes the references during conversion, including a contents continuation page. DOCX retains deliberately stale =999= reference values in the equivalent probe. Explicit field/index refresh is being tested; neither empty output nor stale references count as success.
+- Explicit refresh follow-up :: A temporary LibreOffice Basic helper, invoked headlessly from the private profile, loads the DOCX with document macros disabled, calls =TextFields.refresh()= and =getDocumentIndexes().getByIndex(i).update()=, refreshes layout and exports PDF. The resulting contents spans three pages. All 80 extracted contents references match their actual physical heading pages. This establishes a local test mechanism, not a new exporter runtime dependency. Configured contents typography, continuation padding and body-number offsets remain separate checks.
+- Temporary evidence :: Source packages, extracted XML, PDF outputs and the short PDF baseline are retained in the OS-allocated =folio-w063-layout-20261016-26948-z7f315= directory for the active experiment. A reproducible retained helper and final measurements are still required before this OT can be GREEN.
+
+** AMBER OT063.2 - Installed-layout CLI and documentation :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot063-2-result
+:REASON: Delivery and bounded verification not yet executed.
+:END:
+- Definition :: [[file:spec.org::#ot-063-2][OT063.2 - Installed-layout CLI and documentation]].
+
+* User validation
+
+** AMBER UT063.1 - Editing manuscripts :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-1-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-1][UT063.1 - Editing manuscripts]].
+
+** AMBER UT063.2 - Editing letters :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-2-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-2][UT063.2 - Editing letters]].
+
+** AMBER UT063.3 - Manuscript font roles and inline specimens :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-3-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-3][UT063.3 - Manuscript font roles and inline specimens]].
+
+** AMBER UT063.4 - Paragraph and block spacing :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-4-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-4][UT063.4 - Paragraph and block spacing]].
+
+** AMBER UT063.5 - Paper geometry and running matter :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-5-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-5][UT063.5 - Paper geometry and running matter]].
+
+** AMBER UT063.6 - Title-page fields and independent placement :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-6-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-6][UT063.6 - Title-page fields and independent placement]].
+
+** AMBER UT063.7 - Part and chapter presentation and pagination :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-7-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-7][UT063.7 - Part and chapter presentation and pagination]].
+
+** AMBER UT063.8 - Contents layout and live references :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-8-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-8][UT063.8 - Contents layout and live references]].
+
+** AMBER UT063.9 - Copyright composition and barcode modes :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-9-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-9][UT063.9 - Copyright composition and barcode modes]].
+
+** AMBER UT063.10 - Metadata, style and configuration precedence :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-10-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-10][UT063.10 - Metadata, style and configuration precedence]].
+
+** AMBER UT063.11 - Letter typography, margins and block spacing :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-11-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-11][UT063.11 - Letter typography, margins and block spacing]].
+
+** AMBER UT063.12 - Letter substitutions, literals and excluded running matter :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut063-12-result
+:REASON: Awaiting delivered fixtures and user validation.
+:END:
+- Definition :: [[file:spec.org::#ut-063-12][UT063.12 - Letter substitutions, literals and excluded running matter]].

@@ -1,0 +1,529 @@
+#+TITLE: BOOK-TITLE-SAMPLE
+#+AUTHOR: Example Author
+#+DATE: 2026-10-16
+
+* PART-SAMPLE
+:PROPERTIES:
+:CUSTOM_ID: part-sample
+:END:
+** CHAPTER-01
+:PROPERTIES:
+:CUSTOM_ID: chapter-01
+:END:
+Chapter 1: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-01
+:PROPERTIES:
+:CUSTOM_ID: section-01
+:END:
+Section 1: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-02
+:PROPERTIES:
+:CUSTOM_ID: chapter-02
+:END:
+Chapter 2: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-02
+:PROPERTIES:
+:CUSTOM_ID: section-02
+:END:
+Section 2: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-03
+:PROPERTIES:
+:CUSTOM_ID: chapter-03
+:END:
+Chapter 3: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-03
+:PROPERTIES:
+:CUSTOM_ID: section-03
+:END:
+Section 3: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-04
+:PROPERTIES:
+:CUSTOM_ID: chapter-04
+:END:
+Chapter 4: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-04
+:PROPERTIES:
+:CUSTOM_ID: section-04
+:END:
+Section 4: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-05
+:PROPERTIES:
+:CUSTOM_ID: chapter-05
+:END:
+Chapter 5: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-05
+:PROPERTIES:
+:CUSTOM_ID: section-05
+:END:
+Section 5: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-06
+:PROPERTIES:
+:CUSTOM_ID: chapter-06
+:END:
+Chapter 6: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-06
+:PROPERTIES:
+:CUSTOM_ID: section-06
+:END:
+Section 6: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-07
+:PROPERTIES:
+:CUSTOM_ID: chapter-07
+:END:
+Chapter 7: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-07
+:PROPERTIES:
+:CUSTOM_ID: section-07
+:END:
+Section 7: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-08
+:PROPERTIES:
+:CUSTOM_ID: chapter-08
+:END:
+Chapter 8: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-08
+:PROPERTIES:
+:CUSTOM_ID: section-08
+:END:
+Section 8: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-09
+:PROPERTIES:
+:CUSTOM_ID: chapter-09
+:END:
+Chapter 9: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-09
+:PROPERTIES:
+:CUSTOM_ID: section-09
+:END:
+Section 9: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-10
+:PROPERTIES:
+:CUSTOM_ID: chapter-10
+:END:
+Chapter 10: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-10
+:PROPERTIES:
+:CUSTOM_ID: section-10
+:END:
+Section 10: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-11
+:PROPERTIES:
+:CUSTOM_ID: chapter-11
+:END:
+Chapter 11: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-11
+:PROPERTIES:
+:CUSTOM_ID: section-11
+:END:
+Section 11: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-12
+:PROPERTIES:
+:CUSTOM_ID: chapter-12
+:END:
+Chapter 12: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-12
+:PROPERTIES:
+:CUSTOM_ID: section-12
+:END:
+Section 12: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-13
+:PROPERTIES:
+:CUSTOM_ID: chapter-13
+:END:
+Chapter 13: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-13
+:PROPERTIES:
+:CUSTOM_ID: section-13
+:END:
+Section 13: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-14
+:PROPERTIES:
+:CUSTOM_ID: chapter-14
+:END:
+Chapter 14: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-14
+:PROPERTIES:
+:CUSTOM_ID: section-14
+:END:
+Section 14: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-15
+:PROPERTIES:
+:CUSTOM_ID: chapter-15
+:END:
+Chapter 15: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-15
+:PROPERTIES:
+:CUSTOM_ID: section-15
+:END:
+Section 15: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-16
+:PROPERTIES:
+:CUSTOM_ID: chapter-16
+:END:
+Chapter 16: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-16
+:PROPERTIES:
+:CUSTOM_ID: section-16
+:END:
+Section 16: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-17
+:PROPERTIES:
+:CUSTOM_ID: chapter-17
+:END:
+Chapter 17: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-17
+:PROPERTIES:
+:CUSTOM_ID: section-17
+:END:
+Section 17: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-18
+:PROPERTIES:
+:CUSTOM_ID: chapter-18
+:END:
+Chapter 18: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-18
+:PROPERTIES:
+:CUSTOM_ID: section-18
+:END:
+Section 18: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-19
+:PROPERTIES:
+:CUSTOM_ID: chapter-19
+:END:
+Chapter 19: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-19
+:PROPERTIES:
+:CUSTOM_ID: section-19
+:END:
+Section 19: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-20
+:PROPERTIES:
+:CUSTOM_ID: chapter-20
+:END:
+Chapter 20: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-20
+:PROPERTIES:
+:CUSTOM_ID: section-20
+:END:
+Section 20: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-21
+:PROPERTIES:
+:CUSTOM_ID: chapter-21
+:END:
+Chapter 21: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-21
+:PROPERTIES:
+:CUSTOM_ID: section-21
+:END:
+Section 21: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-22
+:PROPERTIES:
+:CUSTOM_ID: chapter-22
+:END:
+Chapter 22: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-22
+:PROPERTIES:
+:CUSTOM_ID: section-22
+:END:
+Section 22: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-23
+:PROPERTIES:
+:CUSTOM_ID: chapter-23
+:END:
+Chapter 23: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-23
+:PROPERTIES:
+:CUSTOM_ID: section-23
+:END:
+Section 23: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-24
+:PROPERTIES:
+:CUSTOM_ID: chapter-24
+:END:
+Chapter 24: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-24
+:PROPERTIES:
+:CUSTOM_ID: section-24
+:END:
+Section 24: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-25
+:PROPERTIES:
+:CUSTOM_ID: chapter-25
+:END:
+Chapter 25: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-25
+:PROPERTIES:
+:CUSTOM_ID: section-25
+:END:
+Section 25: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-26
+:PROPERTIES:
+:CUSTOM_ID: chapter-26
+:END:
+Chapter 26: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-26
+:PROPERTIES:
+:CUSTOM_ID: section-26
+:END:
+Section 26: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-27
+:PROPERTIES:
+:CUSTOM_ID: chapter-27
+:END:
+Chapter 27: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-27
+:PROPERTIES:
+:CUSTOM_ID: section-27
+:END:
+Section 27: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-28
+:PROPERTIES:
+:CUSTOM_ID: chapter-28
+:END:
+Chapter 28: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-28
+:PROPERTIES:
+:CUSTOM_ID: section-28
+:END:
+Section 28: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-29
+:PROPERTIES:
+:CUSTOM_ID: chapter-29
+:END:
+Chapter 29: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-29
+:PROPERTIES:
+:CUSTOM_ID: section-29
+:END:
+Section 29: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-30
+:PROPERTIES:
+:CUSTOM_ID: chapter-30
+:END:
+Chapter 30: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-30
+:PROPERTIES:
+:CUSTOM_ID: section-30
+:END:
+Section 30: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-31
+:PROPERTIES:
+:CUSTOM_ID: chapter-31
+:END:
+Chapter 31: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-31
+:PROPERTIES:
+:CUSTOM_ID: section-31
+:END:
+Section 31: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-32
+:PROPERTIES:
+:CUSTOM_ID: chapter-32
+:END:
+Chapter 32: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-32
+:PROPERTIES:
+:CUSTOM_ID: section-32
+:END:
+Section 32: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-33
+:PROPERTIES:
+:CUSTOM_ID: chapter-33
+:END:
+Chapter 33: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-33
+:PROPERTIES:
+:CUSTOM_ID: section-33
+:END:
+Section 33: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-34
+:PROPERTIES:
+:CUSTOM_ID: chapter-34
+:END:
+Chapter 34: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-34
+:PROPERTIES:
+:CUSTOM_ID: section-34
+:END:
+Section 34: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-35
+:PROPERTIES:
+:CUSTOM_ID: chapter-35
+:END:
+Chapter 35: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-35
+:PROPERTIES:
+:CUSTOM_ID: section-35
+:END:
+Section 35: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-36
+:PROPERTIES:
+:CUSTOM_ID: chapter-36
+:END:
+Chapter 36: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-36
+:PROPERTIES:
+:CUSTOM_ID: section-36
+:END:
+Section 36: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-37
+:PROPERTIES:
+:CUSTOM_ID: chapter-37
+:END:
+Chapter 37: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-37
+:PROPERTIES:
+:CUSTOM_ID: section-37
+:END:
+Section 37: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-38
+:PROPERTIES:
+:CUSTOM_ID: chapter-38
+:END:
+Chapter 38: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-38
+:PROPERTIES:
+:CUSTOM_ID: section-38
+:END:
+Section 38: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-39
+:PROPERTIES:
+:CUSTOM_ID: chapter-39
+:END:
+Chapter 39: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-39
+:PROPERTIES:
+:CUSTOM_ID: section-39
+:END:
+Section 39: the contents should include this heading and a live page
+reference.
+
+** CHAPTER-40
+:PROPERTIES:
+:CUSTOM_ID: chapter-40
+:END:
+Chapter 40: editable body text in 12pt Iosevka Publish.
+
+*** SECTION-40
+:PROPERTIES:
+:CUSTOM_ID: section-40
+:END:
+Section 40: the contents should include this heading and a live page
+reference.
+
+FINAL-BOOK-SENTINEL: content after the last contents entry.
