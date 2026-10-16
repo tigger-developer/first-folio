@@ -267,12 +267,12 @@ func TestRT063_6_OfficeRunningPlaceholders(t *testing.T) {
 						pageCount = true
 					}
 					for _, field := range band.all("instrText") {
-						if strings.TrimSpace(field.text()) == "NUMPAGES" {
+						if strings.HasPrefix(strings.TrimSpace(field.text())+" ", "NUMPAGES ") {
 							pageCount = true
 						}
 					}
 					for _, field := range band.all("fldSimple") {
-						if strings.TrimSpace(field.attr("instr")) == "NUMPAGES" {
+						if strings.HasPrefix(strings.TrimSpace(field.attr("instr"))+" ", "NUMPAGES ") {
 							pageCount = true
 						}
 					}

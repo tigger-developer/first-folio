@@ -102,12 +102,12 @@ func TestRT063_6_OfficeRunningMatterVariants(t *testing.T) {
 					fields += len(member.all("page-number")) + len(member.all("page-variable-get"))
 				} else {
 					for _, f := range member.all("instrText") {
-						if strings.TrimSpace(f.text()) == "PAGE" {
+						if strings.HasPrefix(strings.TrimSpace(f.text())+" ", "PAGE ") {
 							fields++
 						}
 					}
 					for _, f := range member.all("fldSimple") {
-						if strings.TrimSpace(f.attr("instr")) == "PAGE" {
+						if strings.HasPrefix(strings.TrimSpace(f.attr("instr"))+" ", "PAGE ") {
 							fields++
 						}
 					}

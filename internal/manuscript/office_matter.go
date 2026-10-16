@@ -249,3 +249,29 @@ func officeTitlePlacement(role, align string, title TitlePageConfig) office.Plac
 	placement.Group = group
 	return placement
 }
+
+// Vertical alignment occupies a page only when a break follows the part.
+// In continuous flow, the PDF renderer keeps it before the following content;
+// an independent page-centred frame would instead overlap later paragraphs.
+func officePartOwnPage(blocks []office.Node, index int, cfg ManuscriptConfig) bool {
+	if cfg.Part.BlankPageAfter != "" && cfg.Part.BlankPageAfter != "false" || index+1 == len(blocks) {
+		return true
+	}
+	next := blocks[index+1]
+	if next.Type != "Header" {
+		return false
+	}
+	content, ok := next.Content.([]any)
+	if !ok || len(content) != 3 {
+		return false
+	}
+	level, ok := content[0].(float64)
+	if !ok || level > 2 {
+		return false
+	}
+	heading := cfg.Chapter
+	if level == 1 {
+		heading = cfg.Part
+	}
+	return heading.PageBreakBefore || heading.BlankPageBefore != "" && heading.BlankPageBefore != "false"
+}

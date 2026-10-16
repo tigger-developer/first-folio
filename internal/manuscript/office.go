@@ -192,7 +192,7 @@ func officePlan(doc office.Document, meta Metadata, cfg Config) (office.Prose, e
 			boundary := office.Boundary{Before: string(hc.BlankPageBefore), After: string(hc.BlankPageAfter), Break: hc.PageBreakBefore, Body: level <= 2, NumberFormat: cfg.Folio.Manuscript.PageNumbering.BodyFormat, Reset: (part+chapter == 1 && cfg.Folio.Manuscript.PageNumbering.BodyReset != "never")}
 			boundary.SkipHeader = hc.SkipHeader
 			boundary.SkipFooter = hc.SkipFooter
-			if level == 1 {
+			if level == 1 && officePartOwnPage(doc.Blocks, i, cfg.Folio.Manuscript) {
 				boundary.Vertical = hc.VerticalAlign
 				if hc.VerticalAlign != "" && hc.VerticalAlign != "top" {
 					plan.Placements[role] = office.Placement{Vertical: hc.VerticalAlign, Horizontal: hc.Align, Group: role}

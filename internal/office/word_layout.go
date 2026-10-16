@@ -294,6 +294,11 @@ func (p *Prose) wordBand(text string, band Band, variant string, state Boundary)
 			if token.field == "total-pages" {
 				instruction = "NUMPAGES"
 			}
+			numberFormat := map[string]string{"i": "roman", "I": "ROMAN"}[state.NumberFormat]
+			if numberFormat == "" {
+				numberFormat = "ARABIC"
+			}
+			instruction += ` \* ` + numberFormat
 			n.children = append(n.children, dx("fldSimple", dx("r", style.wordFont(), dxText("1"))).attr("w:instr", instruction))
 			continue
 		}
@@ -404,8 +409,9 @@ func (p *Prose) wordTitleFloats(nodes []docxNode) []docxNode {
 			}
 		}
 		if section != nil {
-			last := &output[len(output)-1]
-			last.ensure("w:pPr").children = append(last.ensure("w:pPr").children, *section)
+			// A section-ending paragraph is ordinary flow in some readers even
+			// with framePr. Keep the section marker outside the positioned text.
+			output = append(output, dx("p", dx("pPr", dx("spacing").attr("w:line", "1").attr("w:lineRule", "exact"), *section)))
 		}
 		title = nil
 	}

@@ -385,6 +385,11 @@ func TestRT063_5_OfficeWordTitleFloatsShareVerticalFlow(t *testing.T) {
 	source := proseSource(t, dir, "source.md", "---\ntitle: CENTER-TITLE\ncontact-name: TOP-CONTACT\nwordcount: TOP-WORDCOUNT\ndate: BOTTOM-DATE\nversion: BOTTOM-VERSION\n---\n\nBODY-SENTINEL\n")
 	pkg := proseConvert(t, source, filepath.Join(dir, "output.docx"))
 	paragraphs := officeBody(t, pkg, "docx").all("p")
+	for _, paragraph := range paragraphs {
+		if len(paragraph.all("framePr")) != 0 && len(paragraph.all("sectPr")) != 0 {
+			t.Error("positioned title paragraph also terminates the section; readers may discard its frame")
+		}
+	}
 	for _, pair := range [][2]string{{"TOP-CONTACT", "TOP-WORDCOUNT"}, {"BOTTOM-DATE", "BOTTOM-VERSION"}} {
 		first, second := -1, -1
 		for i, paragraph := range paragraphs {
@@ -405,5 +410,27 @@ func TestRT063_5_OfficeWordTitleFloatsShareVerticalFlow(t *testing.T) {
 				t.Errorf("%s and %s cannot form one frame: differing %s", pair[0], pair[1], attribute)
 			}
 		}
+	}
+}
+
+func TestRT063_4_OfficePartWithContinuousChapterStaysInFlow(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page: {enabled: false}\n    toc: {enabled: false}\n    part: {vertical-align: center, blank-page-after: false}\n    chapter: {page-break-before: false, blank-page-before: false}\n")
+			src := proseSource(t, dir, "source.md", "# FLOW-PART\n\n## FLOW-CHAPTER\n\nBody.\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			for _, frame := range officeBody(t, pkg, format).all("frame") {
+				if strings.Contains(frame.text(), "FLOW-PART") {
+					t.Error("part preceding a continuous chapter floats over later content")
+				}
+			}
+			for _, paragraph := range officeBody(t, pkg, format).all("p") {
+				if strings.Contains(paragraph.text(), "FLOW-PART") && len(paragraph.all("framePr")) > 0 {
+					t.Error("part preceding a continuous chapter floats over later content")
+				}
+			}
+		})
 	}
 }
