@@ -577,7 +577,28 @@ The following inventory covers *all settings consumed by the current manuscript 
 - Early feasibility evidence :: Before bulk production implementation, exercise minimal native DOCX/ODT examples for forced odd/even blank pages, physical versus displayed page numbering, continuous frontmatter/body transitions and multi-page native contents. Record this bounded preliminary subset under OT063.1 - Rendered feature comparison in =validation.org=, retaining its incomplete overall state until all cases run. Use temporary native documents and the existing rendering tools; no production behaviour is implemented before the test-code gate. A failed mapping requires an explicit scope amendment rather than silent degradation.
 - Contributor prerequisites :: Document LibreOffice and the selected Poppler tools as required for the rendered regression suite and consequently normal =make release=. Add an actionable missing-tool prerequisite check for =make test= and document the requirement in =README.md= and the relevant Makefile guidance; absence must fail rather than skip rendered coverage. These are test dependencies, not new office-conversion runtime dependencies.
 
+* Font-family verification scope
+
+Extended-family selection is excluded from W063 test requirements (approved 2026-10-16).
+Use ordinary Iosevka Publish to prove configured family selection in rendered
+DOCX and ODT; Asap, Liberation Serif and Liberation Sans are also suitable
+family specimens. Percentage stretch remains a separate native property and
+must not be implemented by selecting an Extended face. The previously observed
+Extended substitution remains documented, but is not a delivery requirement.
+Historical failed runs and the earlier accepted-fallback decision below are
+retained as history; strict ordinary-family assertions supersede that fallback.
+
 * Hands-off mode decision log
+
+** 2026-10-16T18:26:14+01:00 :hands-off:review:
+
+*** Operator-approved Extended-face fidelity limitation
+
+- Authority :: The operator accepted parking the observed font selection issue as a documented DOCX/ODT fidelity limitation: "let's just make sure any fidelity limitations are documented".
+- Scope :: LibreOffice rendering of the manuscript specimens may select ordinary-width Iosevka Publish Bold or Italic for configured Extended Bold or Extended Italic. Keep native family references and embedded Extended bytes. This does not waive missing content, other font substitutions, font size, role geometry or package validation.
+- Evidence :: Preserve the original failing rendered runs. The rendered check may accept only these two known substitutions, reporting each explicitly. Correct Extended selection also passes. Word behaviour remains a pending user check; no cause is asserted.
+- Documentation :: Record the limitation and possible wrapping/pagination impact in both format guides. Other observed fidelity limitations must likewise be recorded rather than inferred to pass.
+
 
 ** 2026-10-16T17:13:44Z :hands-off:review:
 

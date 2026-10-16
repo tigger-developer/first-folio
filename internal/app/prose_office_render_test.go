@@ -178,8 +178,8 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 			}{
 				{"OPENING-SAMPLE", "Iosevka-Publish", 20, 12},
 				{"BODY-SAMPLE", "Iosevka-Publish", 30, 12},
-				{"HEADING-SAMPLE", "Iosevka-Publish-Bold-Extended", -1, 16},
-				{"QUOTE-SAMPLE", "Iosevka-Publish-Extended-Italic", 26, 10},
+				{"HEADING-SAMPLE", "Iosevka-Publish-Bold", -1, 16},
+				{"QUOTE-SAMPLE", "Iosevka-Publish-Italic", 26, 10},
 				{"CODE-SAMPLE: 9pt Iosevka Publish.", "Iosevka-Publish", 28, 9},
 			} {
 				found := 0
@@ -502,7 +502,7 @@ func proseAssertHeaderGeometry(t *testing.T, tree *officeXML) {
 				proseAssertRenderedIosevkaSize(t, span, 10)
 			}
 			if strings.Contains(span.text(), "HEADING-SAMPLE") {
-				// 16pt Publish Bold Extended's cap-box top is 3.68pt
+				// 16pt Publish Bold's cap-box top is 3.68pt
 				// below the extracted text-box top in the baseline.
 				if math.Abs(top+3.68-25*72/25.4) > 1 {
 					t.Errorf("body cap-box top %gpt; want 25mm (20mm edge plus 5mm clearance)", top+3.68)

@@ -58,8 +58,6 @@ nodes currently use Word names. It projects those nodes to Pandoc JSON, then
 supplies generated ODF styles. This preserves the current DOCX behaviour while
 leaving a later decision about a common export engine open.
 
-## Failure and resource handling
-
 ## Manuscripts and letters
 
 Use `folio manuscript manuscript.org manuscript.odt` or
@@ -75,9 +73,23 @@ starts a new page; configured displayed numbering and physical page-side rules
 still apply. Letters retain recipient substitutions, Org emphasis and literal
 spans, with their own font/margin/spacing configuration and no running matter.
 
+### Font fidelity limitation
+
+Earlier manuscript specimens rendered by this host's LibreOffice substituted
+ordinary-width Iosevka Publish for Iosevka Publish Extended Bold and Extended
+Italic in both DOCX and ODT. The exports retain the configured family references
+and embed the Extended faces, but embedding does not guarantee that an editor
+selects them. The resulting glyph widths can alter wrapping and pagination.
+Use the ordinary family with the YAML `stretch` percentage when scaling is wanted.
+The selection of an Extended face remains reader-dependent; its cause has
+not been established. Microsoft Word behaviour remains unverified. Inspect the
+result in the intended editor before relying on exact typography or pagination.
+
 The same resource and publication limits below apply. A manuscript's optional
 barcode sidecar publishes after its document. Letter targets are preflighted
 as a batch but published individually; later failure reports earlier outputs.
+
+## Failure and resource handling
 
 ### Shared resource limits
 

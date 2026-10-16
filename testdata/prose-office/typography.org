@@ -2,7 +2,7 @@
 #+AUTHOR: Example Author
 #+DATE: 2026-10-16
 
-** HEADING-SAMPLE: 16pt bold Iosevka Publish Extended
+** HEADING-SAMPLE: 16pt bold Iosevka Publish
 :PROPERTIES:
 :CUSTOM_ID: heading-sample-16pt-bold-iosevka-publish-extended
 :END:
@@ -20,7 +20,7 @@ and =INLINE-CODE-SAMPLE: 9pt Iosevka Publish=. A
 target. CÁIT and MAIRÉAD retain their accents.
 
 #+begin_quote
-QUOTE-SAMPLE: 10pt italic Iosevka Publish Extended. Every line begins
+QUOTE-SAMPLE: 10pt italic Iosevka Publish. Every line begins
 6mm from the body edge; quote clearance adds 4mm above and below.
 
 QUOTE-SECOND-PARAGRAPH: the same 6mm inset, with no extra native quote

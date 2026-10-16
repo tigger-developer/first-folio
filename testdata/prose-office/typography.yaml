@@ -30,7 +30,7 @@ folio:
       letter-spacing: 0pt
     heading:
       font:
-        family: Iosevka Publish Extended
+        family: Iosevka Publish
         size: 16pt
         weight: bold
         style: regular
@@ -38,7 +38,7 @@ folio:
         letter-spacing: 0pt
     quoted-block:
       font:
-        family: Iosevka Publish Extended
+        family: Iosevka Publish
         size: 10pt
         weight: regular
         style: italic

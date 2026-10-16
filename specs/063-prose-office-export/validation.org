@@ -14,6 +14,13 @@
 - Preservation :: The earlier =make test= failed. A temporary overlay restoring the previous presets, without changing their on-disk contents, passes app/config preservation and leaves one manuscript warning-count assertion failing because its observed warnings include the added YAML-load diagnostic. This comparison does not establish a passing normal suite.
 - Security :: The recorded vulnerability scan reports no vulnerabilities.
 
+- Operator decision, 2026-10-16 :: Accepted the observed Extended Bold/Italic substitution as a documented DOCX/ODT reader-fidelity limitation. The historical font failures above remain evidence. Revised checks will accept only those exact fallback faces and report them; they do not prove Extended rendering. Word verification remains pending.
+- Continuous ODT bands :: The native continuous-boundary and rendered page-policy groups passed in =.agent/w063-continuous-bands-followup.log= (58.237s). Additional boundary/template cases remain under review.
+
+- Font-family scope revision, 2026-10-16 :: Extended selection is no longer a requirement. The typography fixtures now request ordinary Iosevka Publish, with strict rendered regular/bold/italic family assertions and no substitution exception. Configuration precedence uses Liberation Serif as the overridden global family. Fixture labels and expectations match the revised requirements.
+- Focused verification :: =go test ./internal/app ./internal/office -run '^TestRT063_(4_|9_AST|11_)' -count=1= passed (application 84.982s; office 0.611s), recorded in =.agent/w063-standard-families.log=. This includes configuration, native role typography/stretch, malformed AST rejection and rendered font/geometry checks. =go vet ./internal/office ./internal/app ./internal/manuscript= also passed. These results do not establish full delivery acceptance.
+- Adapter checkpoints :: =84e5ad3= rejects malformed consumed Pandoc node shapes; =9b86483= carries continuous ODT running text through native fields and isolates blank/title bands. The focused blank/title regression first failed, then passed. Full-template and rendered continuous-boundary review remains outstanding.
+
 * Automated regression
 
 ** RED RT063.1 - Output selection and dependencies :testdef:

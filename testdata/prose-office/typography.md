@@ -30,7 +30,7 @@ folio:
       letter-spacing: 0pt
     heading:
       font:
-        family: Iosevka Publish Extended
+        family: Iosevka Publish
         size: 16pt
         weight: bold
         style: regular
@@ -38,7 +38,7 @@ folio:
         letter-spacing: 0pt
     quoted-block:
       font:
-        family: Iosevka Publish Extended
+        family: Iosevka Publish
         size: 10pt
         weight: regular
         style: italic
@@ -74,7 +74,7 @@ folio:
       show-number: false
 ---
 
-## HEADING-SAMPLE: 16pt bold Iosevka Publish Extended
+## HEADING-SAMPLE: 16pt bold Iosevka Publish
 
 OPENING-SAMPLE: 12pt Iosevka Publish, with no first-line indentation because this paragraph immediately follows its chapter heading.
 
@@ -82,7 +82,7 @@ BODY-SAMPLE: 12pt regular Iosevka Publish, with a 10mm first-line indent. This l
 
 This paragraph contains **BOLD-SAMPLE**, *ITALIC-SAMPLE*, ~~STRIKE-SAMPLE~~ and `INLINE-CODE-SAMPLE: 9pt Iosevka Publish`. A [LINK-SAMPLE](https://example.invalid/manuscript/path) retains its target. CÁIT and MAIRÉAD retain their accents.
 
-> QUOTE-SAMPLE: 10pt italic Iosevka Publish Extended. Every line begins 6mm from the body edge; quote clearance adds 4mm above and below.
+> QUOTE-SAMPLE: 10pt italic Iosevka Publish. Every line begins 6mm from the body edge; quote clearance adds 4mm above and below.
 >
 > QUOTE-SECOND-PARAGRAPH: the same 6mm inset, with no extra native quote indentation.
 

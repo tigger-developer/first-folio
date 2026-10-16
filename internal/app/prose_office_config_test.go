@@ -27,7 +27,7 @@ func TestRT063_4_OfficeConfigurationLayering(t *testing.T) {
 				if err := os.MkdirAll(global, 0700); err != nil {
 					t.Fatal(err)
 				}
-				proseSource(t, global, "script.yaml", "folio:\n  style: british\n  manuscript:\n    margin: 30mm\n    font:\n      family: Iosevka Publish Extended\n      size: 9pt\n")
+				proseSource(t, global, "script.yaml", "folio:\n  style: british\n  manuscript:\n    margin: 30mm\n    font:\n      family: Liberation Serif\n      size: 9pt\n")
 				proseSource(t, global, "script-us.yaml", "folio:\n  manuscript:\n    margin: 40mm\n")
 				src := proseSource(t, dir, "source.md", "---\ntitle: SOURCE-TITLE\nfolio:\n  manuscript:\n    style: us\n    margin: 15mm\n    page: a5\n    font:\n      family: Iosevka Publish\n      size: 11pt\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n---\nLAYERED-FONT-MARKER\n")
 				local := "folio:\n  manuscript:\n    page: 6x9in\n    font:\n      size: 13pt\n"

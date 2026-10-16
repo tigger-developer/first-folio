@@ -61,6 +61,18 @@ sections separate numbering and running matter. Letters use recipient-specific
 paragraphs and never inherit manuscript running matter. Reader pagination may
 differ from PDF; editing and save/reopen need validation in the intended editor.
 
+### Font fidelity limitation
+
+Earlier manuscript specimens rendered by this host's LibreOffice substituted
+ordinary-width Iosevka Publish for Iosevka Publish Extended Bold and Extended
+Italic in both DOCX and ODT. The exports retain the configured family references
+and embed the Extended faces, but embedding does not guarantee that an editor
+selects them. The resulting glyph widths can alter wrapping and pagination.
+Use the ordinary family with the YAML `stretch` percentage when scaling is wanted.
+The selection of an Extended face remains reader-dependent; its cause has
+not been established. Microsoft Word behaviour remains unverified. Inspect the
+result in the intended editor before relying on exact typography or pagination.
+
 Input is limited to 32 MiB across manuscript files; Pandoc JSON and output are
 bounded at 128 MiB. Pandoc calls have a 120-second deadline and 64 KiB diagnostic
 limit. Package and font limits above also apply. Destination aliases, symlinks
