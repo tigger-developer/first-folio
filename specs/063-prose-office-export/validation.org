@@ -21,6 +21,8 @@
 - Focused verification :: =go test ./internal/app ./internal/office -run '^TestRT063_(4_|9_AST|11_)' -count=1= passed (application 84.982s; office 0.611s), recorded in =.agent/w063-standard-families.log=. This includes configuration, native role typography/stretch, malformed AST rejection and rendered font/geometry checks. =go vet ./internal/office ./internal/app ./internal/manuscript= also passed. These results do not establish full delivery acceptance.
 - Adapter checkpoints :: =84e5ad3= rejects malformed consumed Pandoc node shapes; =9b86483= carries continuous ODT running text through native fields and isolates blank/title bands. The focused blank/title regression first failed, then passed. Full-template and rendered continuous-boundary review remains outstanding.
 
+- Full regression rerun, 2026-10-16 :: =make test= exited 2 against the standard-family checkpoint. The application package ran for 393.606s; no W063 regression is listed among failures. Application, configuration and manuscript packages still fail existing running-matter/default-font/default-spacing and warning-count assertions. Office passed in 2.287s; letter, play and Typst packages also passed. Full output: =.agent/w063-make-test-current.log=. The suite remains RED; the passing focused font checks do not override that result.
+
 * Automated regression
 
 ** RED RT063.1 - Output selection and dependencies :testdef:
