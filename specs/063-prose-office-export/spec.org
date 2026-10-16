@@ -579,6 +579,16 @@ The following inventory covers *all settings consumed by the current manuscript 
 
 * Hands-off mode decision log
 
+** 2026-10-16T17:13:44Z :hands-off:review:
+
+*** Native title flow and list-marker verification
+
+- Decision :: Coalesce ODT top and bottom title floats within each page into expanding text frames, retaining each paragraph's horizontal alignment. Emit contact matter first, matching the existing title template's float order. Keep the centred title group independent. This prevents full-width frames from obscuring separately positioned fields.
+- Regression :: =TestRT063_5_OfficeODTTitleFloatsShareVerticalFlow= first failed for both top and bottom pairs, then passed alongside independent alignment and copyright-group checks. The composed title-page PNG now shows contact, word count, title, subtitle, attribution, date and version together. This is partial visual evidence, not full title-page conformance.
+- List markers :: The rendered DOCX probe exposed a 7pt generated number beside 12pt text, displaced by 12.475pt. Keep numbered Word paragraphs and their labels on the native baseline; retain configured font size, line interval and paragraph spacing. The added rendered label-size and alignment assertions pass in both formats; Extended font-family assertions still fail.
+- Fixture :: The contrasting letter profile uses =us-letter=, the paper identifier accepted by the unchanged Typst route, instead of =letter=. Both recipient outputs now generate and render in PDF, DOCX and ODT.
+- Continuation :: Hands-off delivery continues in this invocation. The matching native goal remains paused; no budget was reset or replacement goal created.
+
 ** 2026-10-16T16:46:07Z :hands-off:review:
 
 *** Isolate fixture headers and retain rendered font failures

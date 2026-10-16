@@ -249,6 +249,29 @@ func TestRT063_5_OfficeCopyrightBottomGroup(t *testing.T) {
 	}
 }
 
+func TestRT063_5_OfficeODTTitleFloatsShareVerticalFlow(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	dir := t.TempDir()
+	proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    toc:\n      enabled: false\n    title-page:\n      enabled: true\n      contact:\n        align: top-left\n      wordcount:\n        align: top-right\n      date:\n        align: bottom-left\n      version:\n        align: bottom-right\n")
+	source := proseSource(t, dir, "source.md", "---\ntitle: CENTER-TITLE\ncontact-name: TOP-CONTACT\nwordcount: TOP-WORDCOUNT\ndate: BOTTOM-DATE\nversion: BOTTOM-VERSION\n---\n\nBODY-SENTINEL\n")
+	pkg := proseConvert(t, source, filepath.Join(dir, "output.odt"))
+	for _, pair := range [][2]string{{"TOP-CONTACT", "TOP-WORDCOUNT"}, {"BOTTOM-DATE", "BOTTOM-VERSION"}} {
+		found := false
+		for _, box := range pkg["content.xml"].all("text-box") {
+			text := box.text()
+			if strings.Contains(text, pair[0]) && strings.Contains(text, pair[1]) {
+				found = true
+				if strings.Index(text, pair[0]) > strings.Index(text, pair[1]) {
+					t.Errorf("positioned fields have reversed flow: %s", text)
+				}
+			}
+		}
+		if !found {
+			t.Errorf("%s and %s occupy overlapping independent frames instead of one vertical flow", pair[0], pair[1])
+		}
+	}
+}
+
 func TestRT063_5_OfficeCopyrightSpacing(t *testing.T) {
 	for _, format := range []string{"docx", "odt"} {
 		t.Run(format, func(t *testing.T) {

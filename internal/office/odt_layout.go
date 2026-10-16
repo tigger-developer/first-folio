@@ -212,6 +212,7 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 			p.odtPlacement(n, role, placement, styles)
 		}
 	}
+	p.odtTitleFloats(flow)
 	p.odtPlacementGroups(flow)
 	p.odtBlockSpacing(flow, styles)
 	files["content.xml"], err = docxEncode(*root, DataLimit)
@@ -220,6 +221,34 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 	}
 	files["styles.xml"], err = docxEncode(*styles, DataLimit)
 	return err
+}
+
+// Top and bottom title floats occupy successive vertical space, even when
+// their text aligns to opposite edges. Independent full-width frames would
+// obscure one another. Keep paragraph alignment inside one expanding frame.
+func (p *Prose) odtTitleFloats(flow *docxNode) {
+	var output []docxNode
+	groups := map[string]int{}
+	for _, node := range flow.children {
+		if strings.HasPrefix(odtRole(&node), "FolioPageParagraph") {
+			groups = map[string]int{}
+		}
+		frame := node.child("draw:frame")
+		if frame != nil {
+			role := strings.TrimPrefix(frame.get("draw:name"), "FolioFrame")
+			placement := p.Placements[role]
+			if (placement.Group == "title" || placement.Group == "footer") && (placement.Vertical == "top" || placement.Vertical == "bottom") {
+				if index, exists := groups[placement.Vertical]; exists {
+					box := output[index].child("draw:frame").child("draw:text-box")
+					box.children = append(box.children, frame.child("draw:text-box").children...)
+					continue
+				}
+				groups[placement.Vertical] = len(output)
+			}
+		}
+		output = append(output, node)
+	}
+	flow.children = output
 }
 func (p *Prose) odtBand(text string, band Band, variant string, state Boundary, styles *docxNode) docxNode {
 	style := band.Font

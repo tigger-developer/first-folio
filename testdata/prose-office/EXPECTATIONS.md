@@ -1,6 +1,6 @@
 ---
 title: Prose office fixture expectations
-version: 1
+version: 2
 last-updated: 2026-10-16
 ---
 
@@ -20,7 +20,7 @@ This checklist defines W063 inspection expectations. It is not evidence that exp
 | `folio.letter.margin-left` | letter, letter-contrasting | letter: `"30mm"`; letter-contrasting: `"22mm"` | UT063.11 - Letter typography | LETTER-BODY-SAMPLE; SENDER-SAMPLE; recipient/date/subject/closing/signoff | pgSz/pgMar and paragraph spacing / page-layout and paragraph margins | `TestRT063_4_OfficeLetterTypographyAndGeometry` |
 | `folio.letter.margin-right` | letter, letter-contrasting | letter: `"25mm"`; letter-contrasting: `"23mm"` | UT063.11 - Letter typography | LETTER-BODY-SAMPLE; SENDER-SAMPLE; recipient/date/subject/closing/signoff | pgSz/pgMar and paragraph spacing / page-layout and paragraph margins | `TestRT063_4_OfficeLetterTypographyAndGeometry` |
 | `folio.letter.margin-top` | letter, letter-contrasting | letter: `"25mm"`; letter-contrasting: `"20mm"` | UT063.11 - Letter typography | LETTER-BODY-SAMPLE; SENDER-SAMPLE; recipient/date/subject/closing/signoff | pgSz/pgMar and paragraph spacing / page-layout and paragraph margins | `TestRT063_4_OfficeLetterTypographyAndGeometry` |
-| `folio.letter.page` | letter, letter-contrasting | letter: `"a4"`; letter-contrasting: `"letter"` | UT063.11 - Letter typography | LETTER-BODY-SAMPLE; SENDER-SAMPLE; recipient/date/subject/closing/signoff | pgSz/pgMar and paragraph spacing / page-layout and paragraph margins | `TestRT063_4_OfficeLetterTypographyAndGeometry` |
+| `folio.letter.page` | letter, letter-contrasting | letter: `"a4"`; letter-contrasting: `"us-letter"` | UT063.11 - Letter typography | LETTER-BODY-SAMPLE; SENDER-SAMPLE; recipient/date/subject/closing/signoff | pgSz/pgMar and paragraph spacing / page-layout and paragraph margins | `TestRT063_4_OfficeLetterTypographyAndGeometry` |
 | `folio.letter.space-after-date` | letter, letter-contrasting | letter: `"5mm"`; letter-contrasting: `"2mm"` | UT063.11 - Letter typography | LETTER-BODY-SAMPLE; SENDER-SAMPLE; recipient/date/subject/closing/signoff | pgSz/pgMar and paragraph spacing / page-layout and paragraph margins | `TestRT063_11_OfficeRenderedLetterMargins` |
 | `folio.letter.space-after-recipient` | letter, letter-contrasting | letter: `"6mm"`; letter-contrasting: `"3mm"` | UT063.11 - Letter typography | LETTER-BODY-SAMPLE; SENDER-SAMPLE; recipient/date/subject/closing/signoff | pgSz/pgMar and paragraph spacing / page-layout and paragraph margins | `TestRT063_11_OfficeRenderedLetterMargins` |
 | `folio.letter.space-after-sender` | letter, letter-contrasting | letter: `"8mm"`; letter-contrasting: `"4mm"` | UT063.11 - Letter typography | LETTER-BODY-SAMPLE; SENDER-SAMPLE; recipient/date/subject/closing/signoff | pgSz/pgMar and paragraph spacing / page-layout and paragraph margins | `TestRT063_11_OfficeRenderedLetterMargins` |
@@ -384,8 +384,10 @@ env HOME="$specimen_dir" "$specimen_dir/folio" letter "$specimen_dir/letters.org
 env HOME="$specimen_dir" "$specimen_dir/folio" letter "$specimen_dir/letters.org" --format odt --dir "$specimen_dir"
 ```
 
-Office commands remain expected failures until implementation. Do not interpret their presence here as delivered support. The retained rendered RT helper performs explicit field/index refresh in a private LibreOffice profile; plain `--convert-to` does not establish refreshed contents.
+Office commands now produce editable output. Rendering and conformance remain under validation; current results are recorded in [W063 validation](../../specs/063-prose-office-export/validation.org). The retained rendered RT helper performs explicit field/index refresh in a private LibreOffice profile; plain `--convert-to` does not establish refreshed contents.
 
 ## Checklist revision
 
 - 2026-10-16: Added per-key native representation, named regression mapping and inspection region. Independent copyright baseline measured a 13.62pt line interval for 12pt Publish at line-spacing 1.4; copyright retains its distinct leading contract. Native blank-page assertions establish structural intent; rendered tests and visual inspection establish physical effects.
+
+Version 2 corrects the contrasting letter paper identifier to `us-letter` and links current delivery evidence.

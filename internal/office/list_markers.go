@@ -24,7 +24,7 @@ func (p *Prose) alignListMarkers(files map[string][]byte, format string) error {
 		root.visit(func(n *docxNode) {
 			if format == "docx" && n.name == "w:lvl" {
 				pr := n.ensure("w:rPr")
-				pr.ensure("w:position").set("w:val", style.wordPosition())
+				pr.remove("w:position")
 				pr.ensure("w:sz").set("w:val", strconv.Itoa(int(style.Size*2+0.5)))
 				if number := n.child("w:numFmt"); number != nil && number.get("w:val") != "bullet" {
 					pr.ensure("w:rFonts").set("w:ascii", style.Font.Family)

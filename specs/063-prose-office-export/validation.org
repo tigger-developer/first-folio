@@ -4,6 +4,16 @@
 #+OPTIONS: toc:2 num:nil
 #+TODO: AMBER RED | GREEN
 
+* Current delivery observations
+
+- Candidate :: =e1b82b9= plus the title-flow, letter-fixture and list-baseline changes under verification on 2026-10-16. Historical preimplementation records below remain preserved; they are not current delivery acceptance.
+- Native regression :: The complete non-rendered W063 application and office groups passed in =.agent/w063-native-current.log= (office 0.926s; application 156.084s) before the subsequent Word list-baseline adjustment. The subsequent native rerun also passed in =.agent/w063-native-marker.log= (office 0.821s; application 152.937s).
+- Rendered regression :: =.agent/w063-list-baseline-red.log= reproduces the DOCX label-size and displacement defect. =.agent/w063-list-baseline-followup.log= passes those new assertions in both formats, but still fails the two Extended-face specimens in each format. The group remains RED.
+- One-off comparison :: =.agent/w063-ot-next-rerun.log= records successful preparation of typography and contrasting letters (71.725s). The earlier setup invocation built the root library archive rather than the CLI, so it failed before conversion; rebuilding =./cmd/folio= enabled the run. These results do not substitute for the full comparison.
+- Title inspection :: At the retained composed-book =flow-01.png= specimen, all title/contact/footer fields are visible. Previous full-width independent frames hid date and word-count text despite text extraction retaining it. Native grouping assertions pass; the complete profile matrix remains pending.
+- Preservation :: The earlier =make test= failed. A temporary overlay restoring the previous presets, without changing their on-disk contents, passes app/config preservation and leaves one manuscript warning-count assertion failing because its observed warnings include the added YAML-load diagnostic. This comparison does not establish a passing normal suite.
+- Security :: The recorded vulnerability scan reports no vulnerabilities.
+
 * Automated regression
 
 ** RED RT063.1 - Output selection and dependencies :testdef:

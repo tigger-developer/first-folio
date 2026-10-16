@@ -224,6 +224,11 @@ func (p *Prose) wordRunSizes(root *docxNode) {
 		if !ok {
 			return
 		}
+		// List labels share the paragraph's native baseline. Readers do not
+		// consistently apply run-position offsets to generated numbering.
+		if pr := paragraph.child("w:pPr"); pr != nil && pr.child("w:numPr") != nil {
+			style.BaselineShift = 0
+		}
 		paragraph.visit(func(run *docxNode) {
 			if run.name != "w:r" || run.child("w:t") == nil {
 				return

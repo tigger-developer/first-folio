@@ -30,7 +30,7 @@ func officeGeneratedMatter(p *office.Prose, meta Metadata, cfg Config) error {
 		for _, item := range []struct {
 			role, text, align string
 			include           bool
-		}{{"Title", meta.Title, tp.Title.Align, tp.IncludeTitle}, {"Subtitle", meta.Subtitle, tp.Subtitle.Align, tp.IncludeSubtitle}, {"Author", author, tp.Author.Align, tp.IncludeAuthor}, {"Date", renderDate(meta.Date, ms.DateFormat), tp.Date.Align, tp.IncludeDate}, {"Wordcount", meta.WordCount, tp.WordCount.Align, tp.IncludeWordCount}, {"Version", meta.Version, tp.Version.Align, tp.IncludeVersion}, {"Contact", strings.Join(contact, "\n"), tp.Contact.Align, len(contact) > 0}} {
+		}{{"Contact", strings.Join(contact, "\n"), tp.Contact.Align, len(contact) > 0}, {"Title", meta.Title, tp.Title.Align, tp.IncludeTitle}, {"Subtitle", meta.Subtitle, tp.Subtitle.Align, tp.IncludeSubtitle}, {"Author", author, tp.Author.Align, tp.IncludeAuthor}, {"Date", renderDate(meta.Date, ms.DateFormat), tp.Date.Align, tp.IncludeDate}, {"Wordcount", meta.WordCount, tp.WordCount.Align, tp.IncludeWordCount}, {"Version", meta.Version, tp.Version.Align, tp.IncludeVersion}} {
 			if !item.include || item.text == "" {
 				continue
 			}

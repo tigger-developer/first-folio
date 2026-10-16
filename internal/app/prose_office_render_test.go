@@ -215,11 +215,46 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 			}
 			proseAssertOpeningIntervals(t, tree)
 			proseAssertHeaderGeometry(t, tree)
+			proseAssertOrderedListBaseline(t, tree)
 			if strings.Contains(tree.text(), "PRIVATE-SENTINEL") || !strings.Contains(tree.text(), "FINAL-SENTINEL") {
 				t.Error("rendered content leaked private text or lost final content")
 			}
 		})
 	}
+}
+
+func proseAssertOrderedListBaseline(t *testing.T, tree *officeXML) {
+	t.Helper()
+	for _, page := range tree.all("page") {
+		for _, text := range page.all("text") {
+			if !strings.Contains(text.text(), "ORDERED-FIRST") {
+				continue
+			}
+			if strings.HasPrefix(text.text(), "1.") {
+				proseAssertRenderedIosevkaSize(t, text, 12)
+				return
+			}
+			for _, marker := range page.all("text") {
+				if strings.TrimSpace(marker.text()) != "1." {
+					continue
+				}
+				proseAssertRenderedIosevkaSize(t, marker, 12)
+				top, err := strconv.ParseFloat(text.attr("top"), 64)
+				if err != nil {
+					t.Fatal(err)
+				}
+				markerTop, err := strconv.ParseFloat(marker.attr("top"), 64)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if math.Abs(top-markerTop) > 1 {
+					t.Errorf("ordered label and item text differ vertically by %gpt; want at most 1pt", markerTop-top)
+				}
+				return
+			}
+		}
+	}
+	t.Error("ordered list label was not measured")
 }
 
 func TestRT063_12_OfficeRenderedContentsReferences(t *testing.T) {

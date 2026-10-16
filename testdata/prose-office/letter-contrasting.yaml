@@ -1,6 +1,6 @@
 folio:
   letter:
-    page: letter
+    page: us-letter
     font: {family: Iosevka Publish, size: 11pt, weight: regular, style: regular, stretch: 95%, letter-spacing: 0.2pt}
     margin-top: 20mm
     margin-bottom: 21mm
