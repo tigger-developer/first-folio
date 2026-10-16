@@ -88,6 +88,9 @@ func (s *astCounter) visit(value any, depth int) error {
 		}
 	case map[string]any:
 		if kind, ok := v["t"].(string); ok {
+			if err := validateAdapterNode(kind, v["c"]); err != nil {
+				return err
+			}
 			switch {
 			case blockKinds[kind]:
 				s.blocks++
