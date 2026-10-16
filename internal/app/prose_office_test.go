@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -374,12 +375,21 @@ func TestRT063_3_OfficeManuscriptStructuredContent(t *testing.T) {
 				}
 				last := -1
 				for _, marker := range []string{"HEADING-SAMPLE", "OPENING-SAMPLE", "BODY-SAMPLE", "BOLD-SAMPLE", "ITALIC-SAMPLE", "STRIKE-SAMPLE", "INLINE-CODE-SAMPLE", "LINK-SAMPLE", "QUOTE-SAMPLE", "QUOTE-SECOND-PARAGRAPH", "CODE-SAMPLE:", "STANDALONE-CODE-SAMPLE", "LIST-FIRST", "LIST-NESTED", "LIST-LAST", "ORDERED-FIRST", "ORDERED-LAST", "TABLE-HEADER-LEFT", "TABLE-CELL-LEFT", "NOTE-ANCHOR", "FINAL-SENTINEL"} {
-					// CODE-SAMPLE also appears in INLINE-CODE-SAMPLE; use its full sentence.
+					// Match marker boundaries: the fenced-code sentence is also a suffix
+					// of the inline-code specimen and must not count as that block.
 					if marker == "CODE-SAMPLE:" {
 						marker = "CODE-SAMPLE: 9pt Iosevka Publish."
 					}
-					at := strings.Index(text, marker)
-					if at < last || at < 0 || strings.Count(text, marker) != 1 {
+					pattern := `(` + regexp.QuoteMeta(marker) + `)`
+					if strings.HasPrefix(marker, "CODE-SAMPLE:") {
+						pattern = `(?:^|[^A-Z-])` + pattern
+					}
+					matches := regexp.MustCompile(pattern).FindAllStringSubmatchIndex(text, -1)
+					at := -1
+					if len(matches) > 0 {
+						at = matches[0][2]
+					}
+					if at < last || at < 0 || len(matches) != 1 {
 						t.Errorf("missing, duplicated, or reordered marker %q at %d after %d", marker, at, last)
 					}
 					last = at

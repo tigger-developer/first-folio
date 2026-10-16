@@ -64,6 +64,9 @@ func (n *officeXML) all(name string) []*officeXML {
 	return out
 }
 func (n *officeXML) text() string {
+	if n.Name.Local == "br" || n.Name.Local == "line-break" {
+		return "\n"
+	}
 	s := n.Text
 	for _, c := range n.Children {
 		s += c.text()

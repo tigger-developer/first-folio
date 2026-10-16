@@ -132,12 +132,14 @@ func TestRT063_4_OfficeResolvedMetadata(t *testing.T) {
 			}
 			pkg := prosePackage(t, target, format)
 			text := officeBody(t, pkg, format).text()
-			for _, want := range []string{"CLI-TITLE", "SOURCE-SUBTITLE", "LOCAL-AUTHOR", "Composed by", "16/10/2026", "Approximately 1200 words", "Review copy", "LOCAL-CONTACT"} {
+			// Preserve the existing manuscript override order: resolved config is
+			// applied after CLI metadata. The unchanged Typst route is the baseline.
+			for _, want := range []string{"LOCAL-TITLE", "SOURCE-SUBTITLE", "LOCAL-AUTHOR", "Written by", "16/10/2026", "Approximately 1200 words", "Review copy", "LOCAL-CONTACT"} {
 				if !strings.Contains(text, want) {
 					t.Errorf("resolved visible metadata lacks %q", want)
 				}
 			}
-			for _, obsolete := range []string{"SOURCE-TITLE", "LOCAL-TITLE", "SOURCE-AUTHOR", "Written by", "SOURCE-CONTACT"} {
+			for _, obsolete := range []string{"SOURCE-TITLE", "CLI-TITLE", "SOURCE-AUTHOR", "Composed by", "SOURCE-CONTACT"} {
 				if strings.Contains(text, obsolete) {
 					t.Errorf("superseded metadata leaked: %s", obsolete)
 				}
@@ -149,7 +151,7 @@ func TestRT063_4_OfficeResolvedMetadata(t *testing.T) {
 			if properties == nil {
 				t.Fatal("native document metadata absent")
 			}
-			if !strings.Contains(properties.text(), "CLI-TITLE") || !strings.Contains(properties.text(), "LOCAL-AUTHOR") {
+			if !strings.Contains(properties.text(), "LOCAL-TITLE") || !strings.Contains(properties.text(), "LOCAL-AUTHOR") {
 				t.Errorf("native metadata does not match resolved title/author: %s", properties.text())
 			}
 		})

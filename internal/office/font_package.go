@@ -16,6 +16,10 @@ import (
 )
 
 func EmbedFonts(raw []byte, format string) ([]byte, []string, error) {
+	return embedFonts(raw, format, false)
+}
+
+func embedFonts(raw []byte, format string, strict bool) ([]byte, []string, error) {
 	z, err := zip.NewReader(bytes.NewReader(raw), int64(len(raw)))
 	if err != nil {
 		return nil, nil, err
@@ -52,6 +56,11 @@ func EmbedFonts(raw []byte, format string) ([]byte, []string, error) {
 		names = append(names, name)
 	}
 	fonts, warnings := ResolveFonts(names, fontFaceDirs())
+	if strict {
+		if err := selectedFontLimits(names, fonts, warnings); err != nil {
+			return nil, warnings, err
+		}
+	}
 	if len(fonts) == 0 {
 		return raw, warnings, nil
 	}

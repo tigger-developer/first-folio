@@ -12,14 +12,28 @@ import (
 
 	"github.com/tigger-developer/first-folio/internal/config"
 	"github.com/tigger-developer/first-folio/internal/letter"
+	"github.com/tigger-developer/first-folio/internal/office"
 )
 
-func runLetter(args []string, stdout io.Writer) error {
+func runLetter(args []string, stdout, stderr io.Writer) error {
+	args, format, err := letterOutputFormat(args)
+	if err != nil {
+		return err
+	}
 	to, outputDir, prefix, source, err := parseLetterOptions(args)
 	if err != nil {
 		return err
 	}
-	raw, err := readTextInput(source)
+	var raw []byte
+	if format == "pdf" {
+		raw, err = readTextInput(source)
+	} else {
+		var sources [][]byte
+		sources, err = office.ReadSources([]string{source})
+		if err == nil {
+			raw = sources[0]
+		}
+	}
 	if err != nil {
 		return err
 	}
@@ -51,6 +65,9 @@ func runLetter(args []string, stdout io.Writer) error {
 			return fmt.Errorf("invalid recipient filter %q: %w", to, err)
 		}
 	}
+	if format != "pdf" {
+		return exportOfficeLetters(letters, cfg, filter, source, outputDir, prefix, format, stdout, stderr)
+	}
 	count := 0
 	for _, item := range letters {
 		if filter != nil && !filter.MatchString(item.Organization) && !filter.MatchString(item.Recipient) {
@@ -79,6 +96,90 @@ func runLetter(args []string, stdout io.Writer) error {
 	}
 	if count > 1 {
 		fmt.Fprintf(stdout, "%d cover letter(s) generated.\n", count)
+	}
+	return nil
+}
+
+func letterOutputFormat(args []string) ([]string, string, error) {
+	format := "pdf"
+	var remaining []string
+	for i := 0; i < len(args); i++ {
+		if args[i] == "--format" || strings.HasPrefix(args[i], "--format=") {
+			_, value, consumed, err := optionValue(args, i)
+			if err != nil {
+				return nil, "", fmt.Errorf("letter --format requires pdf, docx or odt: %w", err)
+			}
+			i += consumed
+			format = strings.ToLower(value)
+			if format != "pdf" && format != "docx" && format != "odt" {
+				return nil, "", fmt.Errorf("invalid letter format %q; expected pdf, docx or odt", value)
+			}
+		} else {
+			remaining = append(remaining, args[i])
+		}
+	}
+	return remaining, format, nil
+}
+
+func exportOfficeLetters(letters []letter.Letter, cfg config.Config, filter *regexp.Regexp, source, dir, prefix, format string, stdout, stderr io.Writer) error {
+	if strings.ContainsAny(prefix, `/\`) || prefix == "." || prefix == ".." {
+		return fmt.Errorf("office letter prefix must not contain path separators or traversal")
+	}
+	type target struct {
+		item letter.Letter
+		path string
+	}
+	var selected []target
+	seen := map[string]bool{}
+	for _, item := range letters {
+		if filter != nil && !filter.MatchString(item.Organization) && !filter.MatchString(item.Recipient) {
+			continue
+		}
+		slug := letter.Slug(item.Organization)
+		if slug == "" {
+			slug = letter.Slug(item.Recipient)
+		}
+		if slug == "" {
+			slug = fmt.Sprintf("letter-%d", len(selected))
+		}
+		path := filepath.Join(dir, prefix+"-"+slug+"."+format)
+		key := strings.ToLower(filepath.Clean(path))
+		if seen[key] {
+			return fmt.Errorf("duplicate office letter target %s", path)
+		}
+		seen[key] = true
+		if err := office.CheckTarget([]string{source}, path); err != nil {
+			return err
+		}
+		selected = append(selected, target{item, path})
+	}
+	if len(selected) == 0 && filter != nil {
+		return fmt.Errorf("no recipients matching '%s' found", filter.String())
+	}
+	for _, target := range selected {
+		plan, err := letter.Office(target.item, cfg)
+		if err != nil {
+			return fmt.Errorf("converting %s: %w", target.path, err)
+		}
+		raw, warnings, err := plan.Export(format)
+		if err != nil {
+			return fmt.Errorf("converting %s: %w", target.path, err)
+		}
+		for _, warning := range warnings {
+			if _, err := fmt.Fprintln(stderr, "Warning:", warning); err != nil {
+				return err
+			}
+		}
+		if err := office.Publish(target.path, raw); err != nil {
+			return err
+		}
+		if _, err := fmt.Fprintf(stdout, "Generated: %s\n", target.path); err != nil {
+			return err
+		}
+	}
+	if len(selected) > 1 {
+		_, err := fmt.Fprintf(stdout, "%d cover letter(s) generated.\n", len(selected))
+		return err
 	}
 	return nil
 }
