@@ -1,6 +1,6 @@
 // ABOUTME: Resolves complete, editable TrueType/OpenType faces for office exports.
 // ABOUTME: Reads bundled and local fonts without installing or downloading anything.
-package app
+package office
 
 import (
 	"bytes"
@@ -18,30 +18,30 @@ import (
 	folio "github.com/tigger-developer/first-folio"
 )
 
-const officeFontLimit = 32 << 20
-const officeFontsLimit = 64 << 20
+const fontFaceLimit = 32 << 20
+const fontFacesLimit = 64 << 20
 
-type officeFont struct {
+type fontFace struct {
 	family string
 	face   int // regular, bold, italic, bold italic
 	ext    string
-	raw    []byte
+	Raw    []byte
 	rights uint16
 }
 
 // SFNT offsets are checked before slicing. Collections and variable fonts are
 // deliberately excluded: their faces need extraction/instantiation first.
-func parseOfficeFont(raw []byte) (officeFont, error) {
+func ParseFont(raw []byte) (fontFace, error) {
 	f, err := readOfficeFontInfo(bytes.NewReader(raw), int64(len(raw)))
 	if err == nil {
-		f.raw = raw
+		f.Raw = raw
 	}
 	return f, err
 }
 
-func readOfficeFontInfo(reader io.ReaderAt, length int64) (officeFont, error) {
-	f := officeFont{ext: "ttf"}
-	if length < 12 || length > officeFontLimit {
+func readOfficeFontInfo(reader io.ReaderAt, length int64) (fontFace, error) {
+	f := fontFace{ext: "ttf"}
+	if length < 12 || length > fontFaceLimit {
 		return f, fmt.Errorf("invalid font size")
 	}
 	raw := make([]byte, 12)
@@ -128,13 +128,13 @@ func readOfficeFontInfo(reader io.ReaderAt, length int64) (officeFont, error) {
 	return f, nil
 }
 
-func (f officeFont) editable() bool {
+func (f fontFace) editable() bool {
 	// OS/2 fsType: installable (0) or editable (8), never restricted,
 	// preview/print-only or bitmap-only. Full faces also honour no-subsetting.
 	return f.rights&0x202 == 0 && (f.rights&0xC == 0 || f.rights&8 != 0)
 }
 
-func officeFontDirs() []string {
+func fontFaceDirs() []string {
 	dirs := filepath.SplitList(os.Getenv("TYPST_FONT_PATHS"))
 	home, _ := os.UserHomeDir()
 	switch runtime.GOOS {
@@ -152,16 +152,16 @@ func officeFontDirs() []string {
 	return dirs
 }
 
-func resolveOfficeFonts(families []string, dirs []string) ([]officeFont, []string) {
+func ResolveFonts(families []string, dirs []string) ([]fontFace, []string) {
 	wanted := map[string]bool{}
 	for _, name := range families {
 		wanted[name] = true
 	}
-	selected := map[string]map[int]officeFont{}
+	selected := map[string]map[int]fontFace{}
 	issues := map[string]string{}
 	total := 0
 	accept := func(raw []byte) {
-		f, err := parseOfficeFont(raw)
+		f, err := ParseFont(raw)
 		if err != nil || !wanted[f.family] {
 			return
 		}
@@ -173,9 +173,9 @@ func resolveOfficeFonts(families []string, dirs []string) ([]officeFont, []strin
 			return
 		}
 		if selected[f.family] == nil {
-			selected[f.family] = map[int]officeFont{}
+			selected[f.family] = map[int]fontFace{}
 		}
-		if len(raw) > officeFontsLimit-total {
+		if len(raw) > fontFacesLimit-total {
 			issues[f.family] = "64 MiB font budget exceeded"
 			return
 		}
@@ -218,7 +218,7 @@ func resolveOfficeFonts(families []string, dirs []string) ([]officeFont, []strin
 				return nil
 			}
 			info, err := entry.Info()
-			if err != nil || !info.Mode().IsRegular() || info.Size() > officeFontLimit {
+			if err != nil || !info.Mode().IsRegular() || info.Size() > fontFaceLimit {
 				return nil
 			}
 			file, err := os.Open(path)
@@ -231,7 +231,7 @@ func resolveOfficeFonts(families []string, dirs []string) ([]officeFont, []strin
 			var readErr error
 			if metadataErr == nil && wanted[metadata.family] && !exists {
 				if metadata.editable() {
-					raw, readErr = io.ReadAll(io.LimitReader(file, officeFontLimit+1))
+					raw, readErr = io.ReadAll(io.LimitReader(file, fontFaceLimit+1))
 				} else {
 					issues[metadata.family] = "a face prohibits editable embedding"
 				}
@@ -243,7 +243,7 @@ func resolveOfficeFonts(families []string, dirs []string) ([]officeFont, []strin
 			return nil
 		})
 	}
-	var fonts []officeFont
+	var fonts []fontFace
 	var warnings []string
 	sort.Strings(families)
 	for _, family := range families {
