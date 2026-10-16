@@ -1,4 +1,4 @@
-#+TITLE: W064 - Report configuration overrides during manuscript rendering
+#+TITLE: W064 - Report YAML files in manuscript configuration cascade
 #+SCHEMA: 8
 #+SUBTITLE: Configuration diagnostics
 #+STARTUP: overview
@@ -12,8 +12,8 @@
 
 ** Outcome
 
-- Manuscript generation reports *which configured value wins* when one
-  user-supplied layer replaces another.
+- Manuscript generation reports *which user YAML files enter the configuration
+  cascade*.
 
 ** Before
 
@@ -22,31 +22,31 @@
 
 ** After
 
-- Each differing user-configured value replaced by a higher-precedence
-  user-supplied layer *produces a warning on stderr*.
-- Warnings identify the key and both layers, while *omitting the values*.
+- Each user-supplied YAML file loaded into the manuscript configuration cascade
+  *produces a stderr warning that says it joined the cascade*.
+- Warnings identify the loaded file, without listing individual settings.
 
 ** Changes
 
-- Diagnostics apply to manuscript configuration mappings and configured
-  metadata overrides on every manuscript output route.
+- Diagnostics apply to file-based YAML configuration sources on every
+  manuscript output route.
 
 ** Unchanged
 
 - Existing precedence, recursive merge, selected output, and successful exit
   *remain unchanged*.
 - Built-in preset composition and non-manuscript commands *produce no new
-  override warnings*.
+  load warnings*.
 
 ** Edge cases
 
-- Repeating a value already effective *does not warn*; replacing it again at a
-  higher layer produces another warning for that override.
+- A loaded file produces one warning *regardless of how many settings it
+  supplies or replaces*.
 
 ** Decisions
 
-- Diagnostics identify *key and source layers only*; they do not disclose
-  values or full filesystem paths.
+- Diagnostics identify *the particular YAML file loaded into the cascade* and
+  do not enumerate its settings or values.
 
 ** Next step
 
@@ -63,40 +63,39 @@
 ** Problem
 
 Configuration precedence is intentional: later sources can replace earlier
-values. During manuscript generation, that makes source-frontmatter settings
-look ignored when a discovered local =script.yaml= supplies the winning value.
-The current configuration reference documents the precedence, but the
-application does not report ordinary overrides.
+values. During manuscript generation, source-frontmatter settings can be
+replaced by a discovered local =script.yaml=. The current configuration
+reference documents the precedence, but the application does not report which
+external YAML files were loaded into the cascade.
 
 ** Outcome
 
-The manuscript command makes each effective user-configuration override
-visible on stderr without changing which value is used or exposing configured
-values in diagnostics.
+The manuscript command reports each external user YAML configuration file
+loaded into the cascade on stderr, without enumerating settings or changing
+which values are used.
 
 ** Scope
 
 *** In scope
 
 - =folio manuscript= across its supported output routes.
-- Differing leaf values replaced across user-supplied configuration layers:
-  global =script.yaml=, global style-specific YAML, source Markdown =folio:= or
-  =render:= mappings, nearest local =script.yaml=, local style-specific YAML,
-  and CLI overrides.
-- Supported top-level manuscript metadata from YAML configuration when it
-  replaces a value from manuscript frontmatter.
-- One warning for each override event, including a key replaced successively by
-  more than one higher-precedence user layer.
+- Each external user-supplied YAML file that the manuscript loader actually
+  loads: global =script.yaml=, global style-specific YAML, nearest local
+  =script.yaml=, and local style-specific YAML.
+- One warning per loaded file per manuscript invocation, whether it supplies
+  new settings, repeats existing settings, or replaces lower-precedence values.
 
 *** Out of scope
 
 - Changing configuration precedence, merge semantics, validation, or output.
-- Warnings for built-in base or style preset composition, absent keys, or a
-  higher layer that supplies the already-effective value unchanged.
+- Warnings for YAML files that are absent, not selected, or not loaded, or for
+  built-in base and style preset composition.
+- Per-setting or per-metadata override diagnostics, and warnings for embedded
+  source-frontmatter YAML or CLI values (neither is a loaded external YAML
+  configuration file).
 - New warning controls, logging frameworks, configuration files, or changes to
   script, letter, conversion, or other non-manuscript command behaviour.
-- Printing old or new values, full source paths, or unsupported/unknown keys
-  that do not affect an effective setting.
+- Printing individual setting names or values.
 
 *** Unchanged
 
@@ -133,16 +132,13 @@ values in diagnostics.
 
 ** Decisions
 
-- An override event occurs when a user-supplied layer replaces a value already
-  supplied by a lower-precedence user source with a different value.
-- Supported metadata from manuscript frontmatter is the initial metadata
-  source; any configured metadata layer that replaces it participates in the
-  same warning contract.
-- A diagnostic names the configuration key, the replaced source layer, and the
-  winning source layer. It contains no configured values or absolute paths.
-- A key overridden again at a later layer produces a separate diagnostic for
-  that later event.
-- Built-in preset values establish defaults and are excluded from override
+- A load event occurs when the manuscript command successfully loads an
+  external user YAML file as a configuration layer.
+- A diagnostic identifies the loaded file sufficiently to distinguish it from
+  the other loaded YAML layers. It does not list keys or values.
+- Each loaded file produces one diagnostic, independent of how many settings it
+  supplies or whether those settings replace earlier values.
+- Built-in preset values establish defaults and are excluded from load
   warnings, avoiding diagnostics for normal preset composition.
 
 ** Unresolved blockers
@@ -154,38 +150,38 @@ values in diagnostics.
 :CUSTOM_ID: acceptance-criteria
 :END:
 
-** AC064.1 - Differing user-layer overrides are reported :ac:
+** AC064.1 - Loaded user YAML files are reported :ac:
 :PROPERTIES:
 :CUSTOM_ID: ac-064-1
 :END:
 
-- Criterion :: During =folio manuscript=, when a higher-precedence
-  user-supplied layer replaces a differing value from a lower-precedence
-  user-supplied layer, the command emits one stderr warning naming the key and
-  both source layers. Each successive replacement is reported.
-- Proven by :: [[#rt-064-1][RT064.1 - CLI override diagnostics preserve precedence]] and
+- Criterion :: During =folio manuscript=, each external user YAML file actually
+  loaded into the configuration cascade produces one stderr warning stating
+  that the file was loaded into the cascade and identifying that file. The
+  warning does not enumerate settings.
+- Proven by :: [[#rt-064-1][RT064.1 - Loaded YAML files are reported once]] and
   [[#rt-064-2][RT064.2 - Diagnostics cover manuscript output routes]].
 
-** AC064.2 - Diagnostics preserve output and protect configured values :ac:
+** AC064.2 - Diagnostics preserve output and omit setting details :ac:
 :PROPERTIES:
 :CUSTOM_ID: ac-064-2
 :END:
 
-- Criterion :: Override warnings do not change the effective value, generated
-  output, or successful exit. They do not appear on stdout and do not disclose
-  old or new values or full source paths.
-- Proven by :: [[#rt-064-1][RT064.1 - CLI override diagnostics preserve precedence]] and
+- Criterion :: Load warnings do not change the effective configuration,
+  generated output, or successful exit. They do not appear on stdout or list
+  individual setting names or values.
+- Proven by :: [[#rt-064-1][RT064.1 - Loaded YAML files are reported once]] and
   [[#rt-064-2][RT064.2 - Diagnostics cover manuscript output routes]].
 
-** AC064.3 - Non-overrides and other commands stay quiet :ac:
+** AC064.3 - Unloaded files and other commands stay quiet :ac:
 :PROPERTIES:
 :CUSTOM_ID: ac-064-3
 :END:
 
-- Criterion :: Equal values, absent lower-layer values, built-in preset
-  composition, and non-manuscript commands do not produce new override
-  warnings. Existing diagnostics remain unchanged.
-- Proven by :: [[#rt-064-1][RT064.1 - CLI override diagnostics preserve precedence]] and
+- Criterion :: Missing or unselected YAML files, built-in preset composition,
+  and non-manuscript commands do not produce new load warnings. Existing
+  diagnostics remain unchanged.
+- Proven by :: [[#rt-064-1][RT064.1 - Loaded YAML files are reported once]] and
   [[#rt-064-2][RT064.2 - Diagnostics cover manuscript output routes]].
 
 * Test Definitions
@@ -193,31 +189,28 @@ values in diagnostics.
 :CUSTOM_ID: test-definitions
 :END:
 
-** RT064.1 - CLI override diagnostics preserve precedence :testdef:
+** RT064.1 - Loaded YAML files are reported once :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-064-1
 :END:
 
-- Covers :: [[#ac-064-1][AC064.1 - Differing user-layer overrides are reported]],
-  [[#ac-064-2][AC064.2 - Diagnostics preserve output and protect configured values]],
-  and [[#ac-064-3][AC064.3 - Non-overrides and other commands stay quiet]].
+- Covers :: [[#ac-064-1][AC064.1 - Loaded user YAML files are reported]],
+  [[#ac-064-2][AC064.2 - Diagnostics preserve output and omit setting details]],
+  and [[#ac-064-3][AC064.3 - Unloaded files and other commands stay quiet]].
 - Boundary :: Public =folio manuscript= CLI with temporary manuscript and YAML
-  files; use generated Typst output or =--dry-run= where it exposes the
-  effective setting.
-- Setup :: In a temporary home and project, set synthetic global and local
-  =title= values alongside a source-frontmatter title. Set distinct global,
-  source, local and selected-style values for
-  =folio.manuscript.margin=. Set =folio.style= in source and local YAML, then
-  select =us= with the existing =--style= CLI option. Include separate cases
-  for an equal-value layer and a value set only at the higher layer.
-- Action :: Run =folio manuscript= to a Typst target, then run =folio convert=
-  with the same local YAML file.
-- Expected :: Stderr has one warning for each differing replacement, naming
-  the key plus old and winning source layers. It contains neither configured
-  values nor absolute paths. Stdout contains no warnings; manuscript generation
-  succeeds and uses the existing winning title, margin and style. The
-  equal-value, higher-only, preset-only, unsupported-key, and conversion cases
-  add no override warning.
+  files; inspect stderr, stdout, exit status, and generated output.
+- Setup :: In a temporary home and project, provide global =script.yaml=,
+  global style-specific YAML, nearest local =script.yaml=, and local
+  style-specific YAML. Use values that include repeated and successively
+  replaced settings so the test proves diagnostics do not enumerate keys.
+- Action :: Run =folio manuscript= to a Typst target with the matching style
+  selected, then run a non-manuscript command with the same configuration.
+- Expected :: Stderr contains exactly one warning identifying each external
+  YAML file actually loaded, whether or not it changes the effective settings.
+  No warning lists setting names or values. Stdout contains no load warnings;
+  manuscript generation succeeds and preserves the existing winning settings.
+  Missing or unselected files, built-in preset composition, source frontmatter,
+  CLI values, and the non-manuscript command produce no new load warning.
 - Retention :: Persistent regression suite under =make test=.
 
 ** RT064.2 - Diagnostics cover manuscript output routes :testdef:
@@ -225,16 +218,15 @@ values in diagnostics.
 :CUSTOM_ID: rt-064-2
 :END:
 
-- Covers :: [[#ac-064-1][AC064.1 - Differing user-layer overrides are reported]] and
-  [[#ac-064-2][AC064.2 - Diagnostics preserve output and protect configured values]].
+- Covers :: [[#ac-064-1][AC064.1 - Loaded user YAML files are reported]] and
+  [[#ac-064-2][AC064.2 - Diagnostics preserve output and omit setting details]].
 - Boundary :: Public =folio manuscript= CLI on each supported output route:
   Typst, PDF, DOCX, and ODT.
-- Setup :: Supply one differing source-frontmatter and local-YAML value using
-  synthetic content and temporary configuration.
+- Setup :: Supply a local YAML file using synthetic configuration.
 - Action :: Generate each output format.
-- Expected :: Each successful route reports the same key and source-layer
-  warning on stderr, keeps its existing winning value and produces its requested
-  output. No warning is written to stdout.
+- Expected :: Each successful route reports one warning identifying the loaded
+  YAML file on stderr, preserves its existing winning values, and produces its
+  requested output. No warning is written to stdout.
 - Retention :: Persistent regression suite under =make test=.
 
 * Edge Cases
@@ -242,12 +234,10 @@ values in diagnostics.
 :CUSTOM_ID: edge-cases
 :END:
 
-- A later layer that repeats the current value is not a differing override and
-  *does not warn* ([[#ac-064-3][AC064.3 - Non-overrides and other commands stay quiet]]).
-- A value replaced more than once produces a warning for *each differing layer
-  transition* ([[#ac-064-1][AC064.1 - Differing user-layer overrides are reported]]).
-- Warnings never include configured values, including metadata values that may
-  contain contact details ([[#ac-064-2][AC064.2 - Diagnostics preserve output and protect configured values]]).
+- A loaded YAML file produces one warning even when *many settings* are
+  repeated or replaced ([[#ac-064-1][AC064.1 - Loaded user YAML files are reported]]).
+- A YAML file that is absent or not selected produces *no load warning*
+  ([[#ac-064-3][AC064.3 - Unloaded files and other commands stay quiet]]).
 
 * Solution Design
 :PROPERTIES:
@@ -268,37 +258,29 @@ values in diagnostics.
 
 *** Components and responsibilities
 
-- Extend the existing configuration merge path to retain the origin of each
-  explicitly supplied leaf while applying user layers. Reuse the ordered layer
-  sequence and warning collection; do not add a second configuration loader.
-- Connect manuscript document metadata to the same diagnostic contract so each
-  configured metadata layer replacing source-frontmatter metadata is reported.
+- Extend the existing configuration load path to record each external YAML
+  file as it enters the manuscript cascade. Reuse the ordered layer sequence
+  and warning collection; do not add a second configuration loader.
+- Report loaded external YAML files independently of which settings or metadata
+  they supply.
 - Keep stderr emission in the existing manuscript command boundaries for all
   supported output formats.
 
 *** Flow
 
-1. Load built-in base and style values without treating them as user sources.
-2. Apply user-supplied layers in the existing order. For each supported leaf already set
-   by a user source, compare the incoming value; record a warning only when it
-   differs, then associate the effective leaf with the new source.
-3. Resolve manuscript metadata with its existing precedence, tracking the
-   source-frontmatter metadata as the lowest metadata layer. Add a warning for
-   each differing configuration layer that replaces it or an earlier layer.
+1. Load built-in base and style values without treating them as user YAML files.
+2. When the existing loader successfully reads an external user YAML file into
+   the manuscript cascade, record one diagnostic identifying that file.
+3. Resolve settings and metadata using the unchanged precedence.
 4. Validate and render using the unchanged effective configuration; write the
-   collected warnings to stderr through the existing manuscript paths.
+   collected load warnings to stderr through the existing manuscript paths.
 
 *** Essential mechanisms
 
-- Treat nested mappings recursively and report overrides at the replaced leaf
-  path. A scalar or list replaces its value at that path. Do not serialize
-  values into diagnostics.
-- Identify sources by safe layer labels such as =manuscript frontmatter=,
-  =global script.yaml=, =global style-specific YAML=, =local script.yaml=,
-  =local style-specific YAML=, or =command line=; do not include full paths.
-- Preserve an ordered warning list, with one entry per differing layer
-  transition. Built-in base and style values have no user-source provenance and
-  do not create warnings.
+- Identify each loaded YAML file by its resolved path so files with the same
+  basename remain distinguishable. Do not include setting names or values.
+- Preserve deterministic cascade order and emit one warning for each external
+  user YAML file loaded. Built-in base and style values do not create warnings.
 
 *** Failure behaviour
 
@@ -309,29 +291,29 @@ values in diagnostics.
 
 *** Simplicity and proportionality
 
-- Provenance is collected during the existing merge and returned through the
-  existing warning channel. No new configuration syntax, runtime option,
-  dependency, or output format is introduced.
+- Loaded-file diagnostics are collected during the existing load and returned
+  through the existing warning channel. No new configuration syntax, runtime
+  option, dependency, or output format is introduced.
 
 ** Design decisions and verification
 
-*** Report differing user-layer replacements, not preset composition
+*** Report loaded YAML files, not individual settings
 
-- Decision :: Emit diagnostics only when an explicit user layer changes an
-  already supplied value from another user layer.
-- Rationale :: Built-in style composition is expected. Reporting it would add
-  noise without explaining a user-controlled precedence decision.
-- Verification :: RT064.1 covers collisions, repeated replacement, equal
-  values, absent lower-layer values and preset-only settings.
+- Decision :: Emit one diagnostic for each external user YAML file successfully
+  loaded into the manuscript cascade, regardless of its effective settings.
+- Rationale :: The operator needs to know which file participates in precedence;
+  enumerating keys is unnecessary detail.
+- Verification :: RT064.1 covers each configured file, repeated and replaced
+  settings, absent files, style selection, and preset-only composition.
 
-*** Identify keys and sources without values or full paths
+*** Identify the particular YAML file
 
-- Decision :: Warnings identify the setting and source layers, and omit values
-  and absolute paths.
-- Rationale :: This explains precedence while avoiding disclosure of personal
-  metadata or local filesystem details.
-- Verification :: RT064.1 checks diagnostic content and confirms configured
-  values and absolute paths are absent.
+- Decision :: Warnings identify the resolved path of the loaded YAML file and
+  omit individual setting names and values.
+- Rationale :: The resolved path identifies which file participates in the
+  cascade, including when several files share a basename.
+- Verification :: RT064.1 checks one path-identifying warning per loaded file
+  and confirms setting names and values are absent.
 
 *** Architecture impact
 
@@ -339,8 +321,9 @@ values in diagnostics.
 
 - Threat boundary :: Existing local configuration inputs and CLI values remain
   within the current configuration boundary.
-- Data and secrets :: Diagnostics omit values and absolute paths; no new data is
-  persisted or transmitted.
+- Data and secrets :: Diagnostics include the resolved path of each loaded
+  YAML file, which may disclose local directory names, but omit setting names
+  and values. No new data is persisted or transmitted.
 - Access :: No permissions, file discovery, or external access are added.
 - Conclusion :: No new trust boundary; output minimization is required by
   AC064.2.
@@ -361,9 +344,9 @@ values in diagnostics.
   and [[file:../../specs/063-prose-office-export/spec.org][W063 - manuscript office export contract]].
 - Entry conditions :: Explicit operator approval of this definition and current
   definition-gate evidence in =audits.yaml=.
-- First implementation step :: Add public CLI regression coverage for the
-  warning stream, source labels, precedence preservation, and no-warning cases
-  in [[#rt-064-1][RT064.1 - CLI override diagnostics preserve precedence]].
+- First implementation step :: Add public CLI regression coverage for one
+  loaded-file warning, its resolved path, precedence preservation, and no-warning
+  cases in [[#rt-064-1][RT064.1 - Loaded YAML files are reported once]].
 - Definition evidence :: [[file:audits.yaml][=audits.yaml=]]
 - Validation evidence :: [[file:validation.org][=validation.org=]]; delivery creates
   the record headings and records current results for both RTs.
