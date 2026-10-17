@@ -1,7 +1,7 @@
 ---
 title: DOCX Script Export
-version: "1.5"
-last-updated: 2026-10-16
+version: "1.6"
+last-updated: 2026-10-17
 ---
 
 # DOCX script export
@@ -61,12 +61,27 @@ sections separate numbering and running matter. Letters use recipient-specific
 paragraphs and never inherit manuscript running matter. Reader pagination may
 differ from PDF; editing and save/reopen need validation in the intended editor.
 
-### Outstanding prose delivery checks
+### Opening-page header/footer fidelity limitation
 
-A rendered contents opening on physical page 2 uses the odd first-page header
-instead of the configured even header. Subsequent contents pages select parity
-correctly. This remains an unresolved requirement of W063, the prose office
-export change; it has not been accepted as a fidelity exception.
+A manuscript section with special first-page handling uses the odd-page version
+of any retained opening header or footer, even when that opening falls on an
+even physical page. This is an accepted DOCX fidelity limitation. Special
+handling includes opening-header/footer suppression, title sections and contents
+continuation padding. Subsequent pages select their odd/even variants normally.
+
+For an ordinary chapter or part opening:
+
+| Opening-page settings | Physical page 43 | Physical page 44 |
+|-----------------------|------------------|------------------|
+| Keep both bands | Odd header and footer | Even header and footer |
+| Hide header, keep footer | No header; odd footer | No header; odd footer instead of even |
+| Keep header, hide footer | Odd header; no footer | Odd header instead of even; no footer |
+| Hide both bands | Neither appears | Neither appears |
+
+The chapter or part heading in the document body is unaffected. The limitation
+changes running text or its alignment, not the displayed page counter. Identical
+odd/even variants have no visible difference. These examples assume no numbering
+restart. Suppression remains effective; a hidden header or footer is not restored.
 
 Nonstandard weight handling has a separate
 [documented limitation](font-embedding.md#prose-weight-fidelity).
@@ -98,6 +113,8 @@ title composition, page settings and spacing. That generic conversion is not
 the product ODT route. The native DOCX writer remains unchanged.
 
 ## History
+
+- 1.6 (2026-10-17): Document the accepted manuscript opening-page band limitation.
 
 - 1.5 (2026-10-16): Document manuscript and letter office output.
 

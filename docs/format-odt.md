@@ -1,7 +1,7 @@
 ---
 title: ODT Script Export
-version: "1.4"
-last-updated: 2026-10-16
+version: "1.5"
+last-updated: 2026-10-17
 ---
 
 # ODT script export
@@ -73,15 +73,16 @@ starts a new page; configured displayed numbering and physical page-side rules
 still apply. Letters retain recipient substitutions, Org emphasis and literal
 spans, with their own font/margin/spacing configuration and no running matter.
 
-### Outstanding prose delivery checks
+### Frontmatter/body page-break limitation
 
-A continuous frontmatter/body transition with unchanged number format does not
-yet apply a requested body-number reset. Continuous changes that alter the
-header/footer page-field structure are also unresolved. Starting a new page
-for these cases is a pending proposal, not the implemented or approved policy.
-The existing approved number-format-change page break remains separate.
+The body starts on a new page when the frontmatter/body transition changes the
+number format, requests a numbering reset, or changes the sequence of live
+page/page-count fields in a header or footer. This can leave unused space at
+the end of the introduction, even when no chapter page break was requested.
+Configured numbering and page-side rules still apply. Wording changes around
+the same page fields remain continuous when no reset or break is requested.
 
-These remain unresolved requirements of W063, the prose office export change.
+This is an accepted fidelity limitation for prose ODT exports.
 Nonstandard weight handling has a separate
 [documented limitation](font-embedding.md#prose-weight-fidelity).
 
@@ -118,6 +119,8 @@ staged beside the destination and published by rename with mode 0600. A failed
 conversion leaves an existing destination unchanged.
 
 ## History
+
+- 1.5 (2026-10-17): Document accepted frontmatter/body reset and page-field transition breaks.
 
 - 1.4 (2026-10-16): Document manuscript and letter office output.
 

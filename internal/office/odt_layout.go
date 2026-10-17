@@ -1,5 +1,5 @@
 // ABOUTME: Applies ODT page masters, editable frames and live references to prose.
-// ABOUTME: Uses master changes only at requested breaks or the approved number-format transition.
+// ABOUTME: Uses master changes at requested breaks and approved frontmatter/body transitions.
 package office
 
 import (
@@ -184,7 +184,7 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 			if boundary.Fields == nil {
 				boundary.Fields = state.Fields
 			}
-			change = change || boundary.Break || boundary.Before == "true" || strings.HasPrefix(boundary.Before, "enforce-") || boundary.NumberFormat != state.NumberFormat
+			change = change || boundary.Break || boundary.Before == "true" || strings.HasPrefix(boundary.Before, "enforce-") || boundary.NumberFormat != state.NumberFormat || p.odtBodyMasterChange(state, boundary)
 			if change {
 				index++
 				masterName = fmt.Sprintf("FolioMaster%d", index)

@@ -1,4 +1,4 @@
-// ABOUTME: Checks ODT running templates across an unbroken frontmatter/body transition.
+// ABOUTME: Checks continuous ODT wording and approved frontmatter/body page transitions.
 // ABOUTME: Uses rendered page text so native field declarations alone cannot pass.
 package app
 
@@ -10,19 +10,23 @@ import (
 )
 
 func TestRT063_12_ODTContinuousRunningTemplates(t *testing.T) {
-	proseCheckODTContinuousBoundary(t, "never")
+	proseCheckODTContinuousBoundary(t, "never", false)
 }
 
 func TestRT063_12_ODTContinuousNumberReset(t *testing.T) {
-	proseCheckODTContinuousBoundary(t, "first-part-or-chapter")
+	proseCheckODTContinuousBoundary(t, "first-part-or-chapter", false)
 }
 
-func proseCheckODTContinuousBoundary(t *testing.T, reset string) {
+func TestRT063_12_ODTRunningFieldStructureChanges(t *testing.T) {
+	proseCheckODTContinuousBoundary(t, "never", true)
+}
+
+func proseCheckODTContinuousBoundary(t *testing.T, reset string, differentFields bool) {
 	t.Helper()
 	root := proseRenderBudget(t, 50<<20)
 	dir := proseRenderCase(t, root, "continuous")
 	t.Setenv("HOME", dir)
-	proseSource(t, dir, "script.yaml", fmt.Sprintf(`folio:
+	configuration := fmt.Sprintf(`folio:
   page-header:
     enabled: true
     format: '[page] BODY-HEADER'
@@ -49,8 +53,12 @@ func proseCheckODTContinuousBoundary(t *testing.T, reset string) {
       frontmatter-format: '1'
       body-format: '1'
       body-reset: %s
-`, reset))
-	source := proseSource(t, dir, "source.md", "INTRO-FIRST\n\n"+strings.Repeat("Introduction paragraph.\n\n", 30)+"## Body Chapter\n\n"+strings.Repeat("Body paragraph.\n\n", 30)+"BODY-LAST\n")
+`, reset)
+	if differentFields {
+		configuration = strings.ReplaceAll(configuration, "FRONT-HEADER [page]", "FRONT-HEADER")
+	}
+	proseSource(t, dir, "script.yaml", configuration)
+	source := proseSource(t, dir, "source.md", "INTRO-FIRST\n\n"+strings.Repeat("Introduction paragraph.\n\n", 30)+"INTRO-LAST\n\n## Body Chapter\n\n"+strings.Repeat("Body paragraph.\n\n", 30)+"BODY-LAST\n")
 	target := filepath.Join(dir, "output.odt")
 	proseConvert(t, source, target)
 	pdf := proseRenderPDF(t, target)
@@ -58,7 +66,11 @@ func proseCheckODTContinuousBoundary(t *testing.T, reset string) {
 	pages := strings.Split(proseTool(t, "pdftotext", "-layout", pdf, "-"), "\f")
 	firstBody := -1
 	found := false
+	introLast := -1
 	for pageIndex, page := range pages {
+		if strings.Contains(page, "INTRO-LAST") {
+			introLast = pageIndex
+		}
 		if firstBody < 0 && strings.Contains(page, "Body paragraph.") {
 			firstBody = pageIndex
 		}
@@ -70,12 +82,17 @@ func proseCheckODTContinuousBoundary(t *testing.T, reset string) {
 			if reset != "never" {
 				want := fmt.Sprintf("%d BODY-HEADER", pageIndex-firstBody+1)
 				if !strings.Contains(page, want) {
-					t.Errorf("continuous reset wanted %q: %s", want, page)
+					t.Errorf("body reset wanted %q: %s", want, page)
 				}
 			}
 			if !strings.Contains(page, "BODY-HEADER") || strings.Contains(page, "FRONT-HEADER") {
 				t.Errorf("body continuation uses wrong running template: %s", page)
 			}
+		}
+	}
+	if reset != "never" || differentFields {
+		if introLast < 0 || firstBody <= introLast {
+			t.Error("approved ODT boundary did not start body on a new page")
 		}
 	}
 	if !found {

@@ -7,8 +7,8 @@
 * Current delivery observations
 
 - Current checkpoint :: =c57bbb5= contains the retained standard ODT weight correction; =f8ea875= records the outstanding prose limits and uninstalled-family evidence. The final full-suite run failed only the two retained page-policy regressions; all other tests passed. Application 435.036s, manuscript 112.968s, office 1.140s; evidence: =.agent/w063-delivery-current-suite.log=.
-- Delivery state :: Typography and rendered page-policy requirements remain unresolved. The rendered comparison cannot be accepted, and delivery-code review has not started. The twelve named user tests remain AMBER.
-- Pending operator decisions :: Whether to permit ODT new pages for reset/running-field structure changes, accept the DOCX first-page parity limitation, and accept the nonstandard-weight limits. No pending decision is treated as approval.
+- Delivery state :: ODT transition, weight and DOCX opening-band parity limitations are accepted. Regression expectations and final delivery verification remain to be reconciled; delivery-code review has not started. The twelve named user tests remain AMBER.
+- Fidelity decisions :: Approved 2026-10-17: DOCX retained opening bands may use odd variants under special first-page handling. Conditional ODT acceptance does not establish an ODT parity defect or waive unrelated requirements.
 
 ** Earlier observations (retained history)
 
@@ -57,6 +57,12 @@
 - Uninstalled-family follow-up :: At =c57bbb5=, the bounded =TestOT063UninstalledProseFamily= overlay exported and rendered a temporary renamed metadata fixture derived from the bundled regular face. The host font inventory contained no Fixture Publish family, and LibreOffice did not receive a font installation. Both PDFs used =Fixture-Publish=. The first check expected an incorrect PostScript spelling; reading source name-table ID 6 established the correct spelling before the successful rerun (application 24.501s). Evidence: =.agent/w063-uninstalled-render.log= and =.agent/w063-uninstalled-render-verified.log=. This closes the uninstalled-family rendering evidence gap, not the distinct-weight gap. Four office renders across the initial and corrected checks, no baseline PDF renders, 50 MiB checked temporary bound per run, standard 120-second process deadlines; framework-owned cleanup removed the temporary profiles and documents.
 - Focused preservation :: The retained standard-weight mapping passed the office/application font, role and packaging checks in =.agent/w063-weight-native-final.log= (office 0.351s; application 58.454s). =make lint= passed in =.agent/w063-delivery-current-lint.log=.
 - Readiness :: Local validation reports a valid schema and the expected unresolved typography, page-policy and rendered-comparison records. Evidence: =.agent/w063-current-readiness.yaml=. This is a readiness check, not an external audit verdict.
+
+** Accepted limitations follow-up
+
+- Operator authority :: Accepted the ODT new-page proposal and the documented weight mapping. DOCX first-page header parity remains undecided. The operator expects no TOC running header; the observed TOC failure deliberately enabled headers and does not represent that intended layout.
+- Regression RED :: With the approved new-page expectations, the reset and changed-field-sequence cases failed; the unchanged-sequence/no-reset case passed. Evidence: =.agent/w063-approved-boundary-red.log= (application 36.844s).
+- Native sequence checks :: =TestRT063_6_ODTBoundaryFieldSequences= covers adding/removing/reordering page and page-count fields in odd/even headers and footers, ignored disabled bands and preservation of later body boundaries. The office suite passed in 0.834s; =.agent/w063-boundary-sequences.log=.
 
 * Automated regression
 
@@ -128,12 +134,12 @@
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.4 - Configuration and role geometry :testdef:
+** GREEN RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
 :REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
 :COMMAND: make test
-:EVIDENCE: Existing suite assertions, including the new ODT weight mapping test, passed with c57bbb5, but self-review found the unresolved distinct-weight requirement. Standard ODT weight mapping has a separate RED/GREEN regression; see current observations.
+:EVIDENCE: Existing suite assertions, including the new ODT weight mapping test, passed with c57bbb5. The operator subsequently accepted the documented weight mapping, resolving the earlier scope gap. Earlier observations retain that gap as history.
 :END:
 
 *** Previous record metadata (retained)
@@ -460,3 +466,8 @@
 :REASON: Awaiting delivered fixtures and user validation.
 :END:
 - Definition :: [[file:spec.org::#ut-063-12][UT063.12 - Letter substitutions, literals and excluded running matter]].
+
+* Accepted fidelity documentation, 2026-10-17
+
+- Scope :: Record DOCX opening-page header/footer selection and the separate ODT frontmatter/body page-break limitation. Preserve earlier failures as historical evidence; no test status changes follow from documentation alone.
+- ODT focused follow-up :: Native page policy and the three ODT continuous/reset/changed-field rendered cases passed: office 0.354s and application 68.654s in =.agent/w063-approved-boundary-green.log=. Additional native sequence checks passed in 0.834s in =.agent/w063-boundary-sequences.log=. These results do not establish a passing full suite.

@@ -81,3 +81,29 @@ func odtVariableDeclarations(flow *docxNode) {
 		flow.children = append([]docxNode{decls}, flow.children...)
 	}
 }
+
+// The approved frontmatter/body exception permits a new master for a reset or
+// a different sequence of native page fields. Literal wording stays continuous.
+func (p *Prose) odtBodyMasterChange(previous, next Boundary) bool {
+	if previous.Body || !next.Body {
+		return false
+	}
+	if next.Reset {
+		return true
+	}
+	signature := func(value string) string {
+		var fields string
+		for _, token := range fieldTokens(value) {
+			if token.field == "page" || token.field == "total-pages" {
+				fields += "/" + token.field
+			}
+		}
+		return fields
+	}
+	for _, band := range []Band{p.Page.Header, p.Page.Footer} {
+		if band.Enabled && (signature(band.FrontOdd) != signature(band.Odd) || signature(band.FrontEven) != signature(band.Even)) {
+			return true
+		}
+	}
+	return false
+}

@@ -45,8 +45,8 @@ Family selection and percentage stretch are independent of font weight. Current
 DOCX prose styles express weight through regular/bold flags. ODT prose styles
 retain thin through black as numeric weights in steps of 100; explicit generated
 heading bold overrides take precedence. Intermediate numeric values, such as
-643, still use the regular/bold fallback. These are unresolved delivery limits,
-not evidence that every configured weight is faithfully reproduced.
+643, still use the regular/bold fallback. These are accepted conversion limits; they do not imply that every configured
+weight is faithfully reproduced.
 
 Embedding still includes supported regular/bold/italic faces only. A numeric
 ODT style therefore does not prove that a distinct light or semibold face was
