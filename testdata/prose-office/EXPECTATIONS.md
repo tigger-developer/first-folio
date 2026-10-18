@@ -398,3 +398,5 @@ Version 3 adds these delivery regressions to the existing key-to-test mapping:
 - Copyright `isbn-barcode`: `TestRT063_5_OfficeCopyrightBarcodePlacementAndRatio` proves bottom-group placement, a natural image line box, the 40mm width and preserved SVG aspect ratio.
 - Chapter `align` versus local sections: `TestRT063_4_OfficeSectionAlignmentIndependentOfChapter` proves that local headings stay left-aligned with the existing 1.2em/0.4em spacing.
 - Generated title/body separation: `TestRT063_6_OfficeGeneratedMatterBeforeStructuredBlock` proves the boundary before a paragraph, table or list without flattening their content.
+
+- Running-band font roles: `TestRT063_11_OfficeRenderedPageFieldTypography` proves that refreshed page and page-count fields retain the header/footer family, size, style and baseline.

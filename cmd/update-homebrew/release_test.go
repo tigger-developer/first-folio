@@ -56,7 +56,7 @@ func TestReleaseGateAndTap(t *testing.T) {
 			if runErr != nil {
 				t.Fatalf("release: %v\n%s", runErr, output)
 			}
-			for _, want := range []string{"go <test> <./...>", "git <tag> <-a> <v0.4.16>", "git <push> <origin> <v0.4.16>", "<--publish-tap> <" + tap + "> <0.4.16>"} {
+			for _, want := range []string{"go <test> <-timeout=20m> <./...>", "git <tag> <-a> <v0.4.16>", "git <push> <origin> <v0.4.16>", "<--publish-tap> <" + tap + "> <0.4.16>"} {
 				if !strings.Contains(calls, want) {
 					t.Errorf("missing %q in calls:\n%s", want, calls)
 				}
