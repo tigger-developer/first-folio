@@ -106,7 +106,7 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 				if item.kind == "header" && variant != "first" {
 					band.Font.After += state.ContinuationPadding
 				}
-				bandRoot := dxRoot(map[string]string{"header": "hdr", "footer": "ftr"}[item.kind], p.wordBand(text, band, variant, state))
+				bandRoot := dxRoot(map[string]string{"header": "hdr", "footer": "ftr"}[item.kind], p.wordBand(text, band, variant, state, "FolioBand"+item.kind))
 				raw, e := docxEncode(bandRoot, DataLimit)
 				if e != nil {
 					return e
@@ -278,8 +278,12 @@ func (p *Prose) wordHeadingAnchors(body *docxNode) {
 func wordBlankPage() docxNode {
 	return dx("p", dx("pPr", dx("spacing").attr("w:line", "1").attr("w:lineRule", "exact")), dx("r", dx("br").attr("w:type", "page")))
 }
-func (p *Prose) wordBand(text string, band Band, variant string, state Boundary) docxNode {
+func (p *Prose) wordBand(text string, band Band, variant string, state Boundary, role string) docxNode {
 	style := band.Font
+	if role == "FolioBandheader" {
+		// Position the whole band at its baseline; refreshed fields discard run shifts.
+		style.BaselineShift = 0
+	}
 	style.Align = band.Align
 	if pair := strings.Split(band.Align, "-"); len(pair) == 2 {
 		style.Align = pair[1]
@@ -288,6 +292,9 @@ func (p *Prose) wordBand(text string, band Band, variant string, state Boundary)
 		}
 	}
 	n := dx("p", style.wordParagraph())
+	// Refreshed field results inherit paragraph typography in office readers.
+	pr := n.child("w:pPr")
+	pr.children = append([]docxNode{dxVal("pStyle", role)}, pr.children...)
 	for _, token := range fieldTokens(text) {
 		if token.field == "page" || token.field == "total-pages" {
 			instruction := "PAGE"

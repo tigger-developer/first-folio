@@ -1,7 +1,7 @@
 ---
 title: First Folio
-version: "1.9"
-last-updated: 2026-10-16
+version: "1.10"
+last-updated: 2026-10-18
 ---
 
 # First Folio
@@ -184,7 +184,8 @@ The regression suite requires Go, Typst, Pandoc, LibreOffice (`soffice`) and
 Poppler's `pdftotext`, `pdftohtml` and `pdftoppm` on `PATH`. `make test` checks
 these dependencies and fails with the missing executable's name. Normal
 `make release` runs this suite too. LibreOffice and Poppler are test tools;
-ordinary DOCX/ODT conversion does not invoke them.
+ordinary DOCX/ODT conversion does not invoke them. The suite allows 20 minutes
+per Go package; each office subprocess retains its 120-second deadline.
 
 Office regressions refresh native fields in isolated LibreOffice profiles,
 export PDFs and measure font, spacing, numbering and contents evidence. They
@@ -211,6 +212,8 @@ make lint   # Go static analysis
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.10 (2026-10-18): State the rendered suite's aggregate package deadline.
 
 - 1.9 (2026-10-16): Add manuscript/letter office commands and rendered regression prerequisites.
 

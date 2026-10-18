@@ -11,7 +11,7 @@ func TestRT063_6_WordPageFieldNumberFormat(t *testing.T) {
 	for _, tc := range []struct{ format, suffix string }{{"1", "ARABIC"}, {"i", "roman"}, {"I", "ROMAN"}} {
 		t.Run(tc.format, func(t *testing.T) {
 			p := &Prose{}
-			band := p.wordBand("[page]", Band{}, "first", Boundary{Title: true, TitleNumber: true, NumberFormat: tc.format})
+			band := p.wordBand("[page]", Band{}, "first", Boundary{Title: true, TitleNumber: true, NumberFormat: tc.format}, "FolioBandheader")
 			found := false
 			band.visit(func(n *docxNode) {
 				if n.name == "w:fldSimple" && strings.TrimSpace(n.get("w:instr")) == `PAGE \* `+tc.suffix {

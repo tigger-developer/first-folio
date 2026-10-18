@@ -21,6 +21,13 @@ func (p *Prose) Export(format string) (result []byte, warnings []string, resultE
 		return nil, nil, fmt.Errorf("unsupported office format %s", format)
 	}
 	p.resolveBaselines()
+	if format == "docx" {
+		for name, band := range map[string]Band{"FolioBandheader": p.Page.Header, "FolioBandfooter": p.Page.Footer} {
+			if band.Font.Size > 0 {
+				p.Styles[name] = band.Font
+			}
+		}
+	}
 	writerDocument := p.Document
 	writerDocument.Meta = map[string]any{}
 	writerDocument.Blocks = p.generatedImages(p.flowBoundaries(writerDocument.Blocks))

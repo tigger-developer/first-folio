@@ -6,6 +6,30 @@
 
 * Current delivery observations
 
+- Code candidate :: =94ff8a4= plus the DOCX field-typography correction under verification. The new rendered regression exposed page fields reverting to body typography on refresh. RT063.11 and OT063.1 remain RED pending remediation; delivery-code review has not started. Twelve named user tests remain AMBER.
+- Remediation :: Copyright mini-Markdown, barcode image line height/bottom grouping, local section layout and generated-matter boundaries before tables/lists have focused RED-to-GREEN evidence below.
+- Accepted limits :: The documented ODT transition, DOCX special-opening parity and weight mappings remain the approved boundaries. No ODT parity waiver is inferred.
+
+** 2026-10-18 - Delivery verification
+
+- Page-field typography :: The composed DOCX XML/PDF comparison showed header page numbers using body font/size and a different baseline. =TestRT063_11_OfficeRenderedPageFieldTypography= proves family, size, style and baseline for refreshed page/page-count fields. Its first fixture omitted explicit odd variants and failed before those assertions; the corrected fixture passes ODT and reproduces the DOCX defect in =.agent/w063-field-font-red-explicit.log= (43.022s).
+- Full-suite deadline :: The =3bfc94b= full suite hit Go's aggregate 10-minute package deadline while running RT063.4, recorded in =.agent/w063-delivery-final-suite.log=. This is a failed run, not a behavioural pass. Final verification will run with a declared 20-minute aggregate package deadline; each conversion/render process retains its 120-second bound.
+
+- Earlier passing suite :: At =5064fef= plus accepted DOCX parity reconciliation, =make test= passed: application 493.505s, manuscript 121.184s; =.agent/w063-final-accepted-suite.log=. At =9725324=, the copyright mini-Markdown suite also passed: application 506.397s, manuscript 130.910s; =.agent/w063-copyright-full-suite.log=. Later layout changes require the current final rerun.
+- Copyright semantics :: =TestRT063_5_OfficeCopyrightMiniMarkdown= reproduced lost literal heading/link punctuation and rule markers in both formats. The focused copyright follow-up also asserts native bold and italic. Logs: =.agent/w063-copyright-mini-red.log= and =.agent/w063-copyright-mini-green.log= (12.752s).
+- Barcode :: Native and visual evidence exposed fixed-line clipping and misplaced copyright barcodes; DOCX section-ending image paragraphs lost their frame. =TestRT063_5_OfficeCopyrightBarcodePlacementAndRatio= proves placement, natural line height, 40mm width and SVG proportions. RED evidence: =.agent/w063-barcode-height-red.log= and =.agent/w063-barcode-frame-red.log=; focused title/copyright/section follow-up passed in 53.007s at =3bfc94b=, =.agent/w063-layout-followup-green.log=.
+- Local sections :: =TestRT063_4_OfficeSectionAlignmentIndependentOfChapter= reproduced chapter alignment leaking into local headings and absent 1.2em/0.4em clearances. =.agent/w063-section-layout-red.log= retains the failures; the preceding focused follow-up proves the correction.
+- Structured first block :: =TestRT063_6_OfficeGeneratedMatterBeforeStructuredBlock= compares a paragraph control with a table/list. The original test overcounted the expected DOCX break; after correcting that oracle, the paragraph control passed and all four structured-block cases failed. =.agent/w063-block-boundary-red-corrected.log= and =.agent/w063-block-boundary-green.log= (3.802s) retain the meaningful RED/GREEN evidence.
+- Visual comparison :: Seven profiles were generated with Pandoc 3.9.0.2, Typst 0.14.2, LibreOffice 26.2.3.2 and Poppler 26.09.0. The initial preparation passed in 229.786s; focused book rerenders after corrections passed in 78.338s and 114.462s. A temporary overlay initially duplicated an existing import and failed compilation; the corrected retry is the executed evidence. Preparation alone is not visual acceptance.
+- Inspection :: Inspected 150-DPI typography/contrasting typography, both letter profiles and book/generated-matter profiles. Final copyright images place full-height barcodes below publication/ISBN in both formats; contrasting copyright keeps its ISBN on its own page. Local sections retain left alignment. Inspected title fields, part/chapter pages, contents, body, native notes, lists/tables, literal URLs, emphasis and final text are visible without the clipping/overlap defects identified during remediation. Wrapping, pagination, hyperlink decoration and native list/table appearance differ between engines. The contrasting PDF baseline still displays TOC leaders/page numbers despite its false switches; office output follows the authored false settings, not that baseline defect.
+- Comparison evidence :: =.agent/w063-accepted-ot-path= identifies the OS temporary directory with =comparison.html=, PDF map, text, bounds XML and images. Semantic regions are matched independently of physical page number. This candidate/remediation series used 32 office renders and nine PDF baselines, retained 17,066,107 bytes, and kept the 120-second process limits. Temporary LibreOffice profiles were removed. The last structured-block correction does not affect these heading-first book profiles.
+- Font evidence :: The earlier bounded uninstalled-family probe remains applicable: both formats rendered the temporary Fixture Publish metadata fixture without host installation. No font resolver/embedding change followed that probe. Strict ordinary Iosevka Publish family checks remain in the rendered regression suite; Extended selection is outside the approved test requirements.
+- CLI evidence :: At =6d4c1be=, four outside-checkout office commands and four help invocations passed, producing two manuscript and four recipient files. =.agent/w063-ot2-delivery-path= identifies the current binaries, inputs, outputs and command logs. No installation, release or push occurred.
+- Static/security evidence :: Final =make lint= passed in =.agent/w063-final-boundary-lint.log=. The office package race check passed in 5.114s at =3bfc94b=; its package-only coverage was 20.4%, not the integration coverage measure. The existing vulnerability scan reports no vulnerabilities in =.agent/w063-vulnerabilities.log=; =go.mod= and =go.sum= have not changed since that scan's candidate.
+
+** Previous checkpoint observations (retained history)
+
+
 - Current checkpoint :: =c57bbb5= contains the retained standard ODT weight correction; =f8ea875= records the outstanding prose limits and uninstalled-family evidence. The final full-suite run failed only the two retained page-policy regressions; all other tests passed. Application 435.036s, manuscript 112.968s, office 1.140s; evidence: =.agent/w063-delivery-current-suite.log=.
 - Delivery state :: ODT transition, weight and DOCX opening-band parity limitations are accepted. Regression expectations and final delivery verification remain to be reconciled; delivery-code review has not started. The twelve named user tests remain AMBER.
 - Fidelity decisions :: Approved 2026-10-17: DOCX retained opening bands may use odd variants under special first-page handling. Conditional ODT acceptance does not establish an ODT parity defect or waive unrelated requirements.
@@ -297,7 +321,7 @@
 - Coverage follow-up, 2026-10-16 :: After the shared test-helper paragraph-selection change, existing TestOfficeEmbeddedFonts and TestOfficeLocalFontOverride passed together in 2.551s; TestRT054_2OfficeActiveRoleFonts passed in 1.029s. This is focused preservation evidence, not a new full-suite run.
 - Initial preservation evidence, 2026-10-16 :: At =ec9955e= with only new test/fixture files in the working tree, =go test ./... -skip '^TestRT063_' -count=1= passed all existing packages. Go build/module caches were scoped to ignored =.agent/cache/=. The application package took 172.702 seconds; manuscript took 112.050 seconds. No production code had changed. This is the pre-change baseline, not post-implementation verification.
 
-** GREEN RT063.11 - Rendered font and geometry conformance :testdef:
+** RED RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
 :REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
@@ -348,9 +372,9 @@
 ** RED OT063.1 - Rendered feature comparison :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-1-result
-:REVISION: b5c3c7c through df540a5 - recorded comparison checkpoints
-:COMMAND: See dated comparison and consuming-directory command logs
-:EVIDENCE: Rendered comparison executed, but page-policy failures and the nonstandard-weight mapping gap prevent acceptance. See current observations and retained comparison index.
+:REVISION: 3bfc94b; 6d4c1be structured-block-only follow-up does not alter these profiles
+:COMMAND: Bounded seven-profile export/render preparation and semantic PNG inspection
+:EVIDENCE: Observed barcode and section-layout defects were remediated and reinspected. See dated verification and .agent/w063-accepted-ot-path; 32 office renders, nine PDF baselines, under 100 MiB.
 :END:
 
 - Previous deferred reason :: Delivery and bounded verification not yet executed.
@@ -373,9 +397,9 @@
 ** GREEN OT063.2 - Installed-layout CLI and documentation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-2-result
-:REVISION: b5c3c7c through df540a5 - recorded comparison checkpoints
-:COMMAND: See dated comparison and consuming-directory command logs
-:EVIDENCE: Four outside-checkout office commands and four public help commands passed at b5c3c7c. Six output files were produced. Logs and outputs are identified by .agent/w063-ot2-final-path; no installation occurred.
+:REVISION: 6d4c1be
+:COMMAND: Four public conversions and four help invocations from an OS temporary consuming directory
+:EVIDENCE: All eight commands passed; six office files produced. Current evidence: .agent/w063-ot2-delivery-path. No installation.
 :END:
 
 - Previous deferred reason :: Delivery and bounded verification not yet executed.

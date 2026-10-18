@@ -172,7 +172,7 @@ func (p *Prose) configureStyles(files map[string][]byte, format string) error {
 	return err
 }
 func (p Page) wordSection() docxNode {
-	return dx("sectPr", dx("pgSz").attr("w:w", twip(p.Width)).attr("w:h", twip(p.Height)), dx("pgMar").attr("w:top", twip(p.Top)).attr("w:bottom", twip(p.Bottom)).attr("w:left", twip(p.Left)).attr("w:right", twip(p.Right)).attr("w:gutter", twip(p.Gutter)).attr("w:header", twip(p.Header.Edge)).attr("w:footer", twip(p.Footer.Edge)))
+	return dx("sectPr", dx("pgSz").attr("w:w", twip(p.Width)).attr("w:h", twip(p.Height)), dx("pgMar").attr("w:top", twip(p.Top)).attr("w:bottom", twip(p.Bottom)).attr("w:left", twip(p.Left)).attr("w:right", twip(p.Right)).attr("w:gutter", twip(p.Gutter)).attr("w:header", twip(max(0, p.Header.Edge-p.Header.Font.BaselineShift))).attr("w:footer", twip(p.Footer.Edge)))
 }
 func (p Page) odtLayout(name string) docxNode {
 	usage := "all"

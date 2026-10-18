@@ -694,3 +694,64 @@ func proseAssertContentsContinuation(t *testing.T, tree *officeXML, contentsPage
 		t.Error("no contents continuation page measured")
 	}
 }
+
+func TestRT063_11_OfficeRenderedPageFieldTypography(t *testing.T) {
+	root := proseRenderBudget(t, 50<<20)
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			dir := proseRenderCase(t, root, format)
+			t.Setenv("HOME", dir)
+			proseSource(t, dir, "script.yaml", "folio:\n  page-header:\n    enabled: true\n    font: {family: Iosevka Publish, size: 10pt, style: italic, weight: regular, stretch: 100%, letter-spacing: 0pt}\n    format: 'HEADER-FIELD [page]'\n    frontmatter-format: 'HEADER-FIELD [page]'\n    alt-format: 'HEADER-FIELD [page]'\n    alt-frontmatter-format: 'HEADER-FIELD [page]'\n  page-footer:\n    enabled: true\n    font: {family: Iosevka Publish, size: 9pt, style: regular, weight: bold, stretch: 100%, letter-spacing: 0pt}\n    format: 'FOOTER-FIELD [total-pages]'\n    frontmatter-format: 'FOOTER-FIELD [total-pages]'\n    alt-format: 'FOOTER-FIELD [total-pages]'\n    alt-frontmatter-format: 'FOOTER-FIELD [total-pages]'\n  manuscript:\n    title-page: {enabled: false}\n    toc: {enabled: false}\n    copyright: {enabled: false}\n")
+			src := proseSource(t, dir, "source.md", "Body text.\n")
+			target := filepath.Join(dir, "output."+format)
+			proseConvert(t, src, target)
+			pdf := proseRenderPDF(t, target)
+			xmlPath := filepath.Join(dir, "fields.xml")
+			proseTool(t, "pdftohtml", "-xml", "-zoom", "1", "-noroundcoord", "-fontfullname", pdf, xmlPath)
+			raw, err := os.ReadFile(xmlPath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			tree := officeParseXML(t, raw)
+			fonts := map[string]string{}
+			for _, font := range tree.all("fontspec") {
+				fonts[font.attr("id")] = font.attr("family")
+			}
+			for _, band := range []struct {
+				marker, face string
+				size         float64
+			}{{"HEADER-FIELD", "Italic", 10}, {"FOOTER-FIELD", "Bold", 9}} {
+				var label *officeXML
+				for _, span := range tree.all("text") {
+					if strings.Contains(span.text(), band.marker) {
+						label = span
+						break
+					}
+				}
+				if label == nil {
+					t.Fatalf("missing %s", band.marker)
+				}
+				labelTop, _ := strconv.ParseFloat(label.attr("top"), 64)
+				found := false
+				for _, span := range tree.all("text") {
+					top, _ := strconv.ParseFloat(span.attr("top"), 64)
+					if math.Abs(top-labelTop) > 30 || !strings.Contains(span.text(), "1") {
+						continue
+					}
+					found = true
+					if !strings.Contains(fonts[span.attr("font")], "Iosevka-Publish-"+band.face) {
+						t.Errorf("%s field font=%s", band.marker, fonts[span.attr("font")])
+					}
+					proseAssertRenderedIosevkaSize(t, span, band.size)
+					if math.Abs(top-labelTop) > 0.3 {
+						t.Errorf("%s field baseline differs from label by %.3fpt", band.marker, top-labelTop)
+					}
+				}
+				if !found {
+					t.Errorf("missing refreshed field beside %s", band.marker)
+				}
+			}
+			proseFailurePages(t, pdf, dir, 1, "failed-fields")
+		})
+	}
+}
