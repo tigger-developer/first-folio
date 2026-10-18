@@ -6,11 +6,17 @@
 
 * Current delivery observations
 
-- Code candidate :: =4c6c3a5=. DOCX page-field typography now passes its focused rendered regression and three book rerenders. The full suite remains under verification after its release-gate assertion exposed the changed aggregate timeout. Delivery-code review has not started. Twelve named user tests remain AMBER.
+- Code candidate :: =02a89f7=. All product packages passed the coverage run at =736e7b6=; its only failure was the release command expectation, subsequently corrected and retested. The final ordinary =make test= run includes that correction, expanded continuity assertion and root help update. Delivery-code review awaits that result. Twelve named user tests remain AMBER.
 - Remediation :: Copyright mini-Markdown, barcode image line height/bottom grouping, local section layout and generated-matter boundaries before tables/lists have focused RED-to-GREEN evidence below.
 - Accepted limits :: The documented ODT transition, DOCX special-opening parity and weight mappings remain the approved boundaries. No ODT parity waiver is inferred.
 
 ** 2026-10-18 - Delivery verification
+
+- Inter-table clearance :: =TestRT063_4_OfficeParagraphBetweenTables= reproduced ODT dropping the first table's 9pt after-clearance while DOCX retained both sides. =.agent/w063-inter-table-red.log= retains the failure. The ODT edge style now retains its resolved predecessor; the new case and existing additive/table groups pass in 9.620s, =.agent/w063-inter-table-green.log=. Full-suite follow-up is pending.
+
+
+- Combined coverage run :: All product packages passed at =736e7b6=: application 482.101s, manuscript 118.794s, office 2.387s. The overall command failed solely in the release argv fixture; retain that failure in =.agent/w063-delivery-verified-suite.log=. With duplicate blocks merged by source location, the new office package and prose adapters have 2,565/2,853 covered statements (89.9%). =.agent/w063-delivery-coverage.out= and =.agent/w063-final-coverage-summary.txt= retain the measurement.
+
 
 - Continuity oracle :: The existing same-format wording-only ODT render now explicitly asserts that the first body paragraph shares the introduction endpoint page. This strengthens verification of the already-required behaviour; no production change. Focused run passed in 12.259s, =.agent/w063-continuity-assertion.log=.
 - Current race/static checks :: Office race check passed in 4.930s, =.agent/w063-final-office-race.log=; =make lint= passed in =.agent/w063-final-checkpoint-lint.log=.
@@ -100,10 +106,17 @@
 ** GREEN RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -123,10 +136,17 @@
 ** GREEN RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -145,10 +165,17 @@
 ** GREEN RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -168,10 +195,17 @@
 ** GREEN RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: Existing suite assertions, including the new ODT weight mapping test, passed with c57bbb5. The operator subsequently accepted the documented weight mapping, resolving the earlier scope gap. Earlier observations retain that gap as history.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: Existing suite assertions, including the new ODT weight mapping test, passed with c57bbb5. The operator subsequently accepted the documented weight mapping, resolving the earlier scope gap. Earlier observations retain that gap as history.
+
 
 *** Previous record metadata (retained)
 
@@ -194,10 +228,17 @@
 ** GREEN RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -219,10 +260,17 @@
 ** GREEN RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -244,10 +292,17 @@
 ** GREEN RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -266,10 +321,17 @@
 ** GREEN RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -289,10 +351,17 @@
 ** GREEN RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -314,10 +383,17 @@
 ** GREEN RT063.10 - Existing route preservation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-10-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -328,13 +404,20 @@
 - Coverage follow-up, 2026-10-16 :: After the shared test-helper paragraph-selection change, existing TestOfficeEmbeddedFonts and TestOfficeLocalFontOverride passed together in 2.551s; TestRT054_2OfficeActiveRoleFonts passed in 1.029s. This is focused preservation evidence, not a new full-suite run.
 - Initial preservation evidence, 2026-10-16 :: At =ec9955e= with only new test/fixture files in the working tree, =go test ./... -skip '^TestRT063_' -count=1= passed all existing packages. Go build/module caches were scoped to ignored =.agent/cache/=. The application package took 172.702 seconds; manuscript took 112.050 seconds. No production code had changed. This is the pre-change baseline, not post-implementation verification.
 
-** RED RT063.11 - Rendered font and geometry conformance :testdef:
+** GREEN RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: All assertions in this group passed in the final full suite with the c57bbb5 production changes; .agent/w063-delivery-current-suite.log. The overall suite remains RED for the separately recorded page-policy failures.
+
 
 *** Previous record metadata (retained)
 
@@ -351,13 +434,20 @@
 - Coverage follow-up, 2026-10-16 :: The temporary TestW063BaselineMeasurements overlay passed against independently generated existing typography and letter PDFs (0.409s, then 0.511s). It validates fractional font-size inference, line/paragraph intervals, header/body reference coordinates, sender placement and all six letter gaps. Office RTs still fail before rendering. The seven-profile checklist now includes concrete measurements and reproduction commands.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.12 - Rendered page policy and contents references :testdef:
+** GREEN RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
-:REVISION: c57bbb5 - retained standard ODT weights and documented fidelity gaps
-:COMMAND: make test
-:EVIDENCE: Current full-suite failures are continuous ODT number reset and DOCX first contents-page parity. Evidence: .agent/w063-delivery-current-suite.log. Other page-policy cases passed.
+:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
+:COMMAND: make test with combined coverage; focused continuity follow-up
+:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
 :END:
+
+*** Earlier verification metadata (retained)
+
+- REVISION :: c57bbb5 - retained standard ODT weights and documented fidelity gaps
+- COMMAND :: make test
+- EVIDENCE :: Current full-suite failures are continuous ODT number reset and DOCX first contents-page parity. Evidence: .agent/w063-delivery-current-suite.log. Other page-policy cases passed.
+
 
 *** Previous record metadata (retained)
 
@@ -376,12 +466,12 @@
 
 * One-off checks
 
-** RED OT063.1 - Rendered feature comparison :testdef:
+** GREEN OT063.1 - Rendered feature comparison :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-1-result
-:REVISION: 3bfc94b; 6d4c1be structured-block-only follow-up does not alter these profiles
+:REVISION: 736e7b6 DOCX book follow-up; earlier unchanged ODT/typography/letter profiles retained
 :COMMAND: Bounded seven-profile export/render preparation and semantic PNG inspection
-:EVIDENCE: Observed barcode and section-layout defects were remediated and reinspected. See dated verification and .agent/w063-accepted-ot-path; 32 office renders, nine PDF baselines, under 100 MiB.
+:EVIDENCE: Barcode, section layout and refreshed field typography were remediated and reinspected. Earlier 32-render/nine-baseline series plus three focused DOCX rerenders; 17,303,496 retained bytes. Comparison index: .agent/w063-accepted-ot-path.
 :END:
 
 - Previous deferred reason :: Delivery and bounded verification not yet executed.
@@ -404,9 +494,9 @@
 ** GREEN OT063.2 - Installed-layout CLI and documentation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-2-result
-:REVISION: 6d4c1be
+:REVISION: 4c6c3a5; subsequent test-only continuity assertion does not alter CLI output
 :COMMAND: Four public conversions and four help invocations from an OS temporary consuming directory
-:EVIDENCE: All eight commands passed; six office files produced. Current evidence: .agent/w063-ot2-delivery-path. No installation.
+:EVIDENCE: All eight commands passed; six office files produced. Current evidence: .agent/w063-ot2-final-path. Earlier .agent/w063-ot2-delivery-path retained. No installation.
 :END:
 
 - Previous deferred reason :: Delivery and bounded verification not yet executed.
@@ -417,84 +507,84 @@
 ** AMBER UT063.1 - Editing manuscripts :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-1-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-1][UT063.1 - Editing manuscripts]].
 
 ** AMBER UT063.2 - Editing letters :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-2-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-2][UT063.2 - Editing letters]].
 
 ** AMBER UT063.3 - Manuscript font roles and inline specimens :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-3-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-3][UT063.3 - Manuscript font roles and inline specimens]].
 
 ** AMBER UT063.4 - Paragraph and block spacing :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-4-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-4][UT063.4 - Paragraph and block spacing]].
 
 ** AMBER UT063.5 - Paper geometry and running matter :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-5-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-5][UT063.5 - Paper geometry and running matter]].
 
 ** AMBER UT063.6 - Title-page fields and independent placement :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-6-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-6][UT063.6 - Title-page fields and independent placement]].
 
 ** AMBER UT063.7 - Part and chapter presentation and pagination :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-7-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-7][UT063.7 - Part and chapter presentation and pagination]].
 
 ** AMBER UT063.8 - Contents layout and live references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-8-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-8][UT063.8 - Contents layout and live references]].
 
 ** AMBER UT063.9 - Copyright composition and barcode modes :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-9-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-9][UT063.9 - Copyright composition and barcode modes]].
 
 ** AMBER UT063.10 - Metadata, style and configuration precedence :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-10-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-10][UT063.10 - Metadata, style and configuration precedence]].
 
 ** AMBER UT063.11 - Letter typography, margins and block spacing :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-11-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-11][UT063.11 - Letter typography, margins and block spacing]].
 
 ** AMBER UT063.12 - Letter substitutions, literals and excluded running matter :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-12-result
-:REASON: Awaiting delivered fixtures and user validation.
+:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
 :END:
 - Definition :: [[file:spec.org::#ut-063-12][UT063.12 - Letter substitutions, literals and excluded running matter]].
 

@@ -73,6 +73,9 @@ func (p *Prose) odtBlockSpacing(flow, styles *docxNode) {
 		style.After += after
 		name := fmt.Sprintf("FolioBlockEdge%d", index)
 		index++
+		// A paragraph can border two blocks; retain the first edge's resolved
+		// properties when the second edge adds its independent clearance.
+		p.Styles[name] = style
 		styles.ensure("office:styles").children = append(styles.ensure("office:styles").children,
 			ox("style:style", style.odtParagraph(), style.odtFont()).attr("style:name", name).attr("style:family", "paragraph").attr("style:parent-style-name", role))
 		n.set("text:style-name", name)

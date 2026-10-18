@@ -759,3 +759,9 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Finding :: DOCX direct run properties did not survive field refresh in LibreOffice; field results reverted to body typography. ODT passes the same explicit fixture.
 - Correction :: Give DOCX running bands named paragraph styles carrying resolved typography so refreshed field results inherit the band role. Position the header band from its resolved baseline rather than shifting individual runs, because field refresh discards run shifts.
 - Final verification bounds :: Use a 20-minute aggregate Go package deadline after the earlier full-suite timeout; retain every per-tool bound and assertion. The revised field candidate adds only three focused DOCX book-profile renders, not another broad comparison. The earlier 32-render comparison remains retained history.
+
+*** Successive block clearances
+
+- Regression :: =TestRT063_4_OfficeParagraphBetweenTables= compares zero and non-zero table clearances in both formats. DOCX retained both edges; ODT lost the first table's after-clearance when applying the second table's before-clearance.
+- Correction :: Retain the resolved generated ODT paragraph style so later block-edge adjustments add to its existing properties. This preserves the existing additive spacing contract.
+- Verification :: Rerun the additive block/table groups and full suite. The seven visual profiles contain no inter-table paragraph, so their retained comparisons remain applicable; the new native regression exercises the affected composition.

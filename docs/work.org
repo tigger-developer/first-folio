@@ -93,6 +93,9 @@ classification; it is provenance, not current state.
 :CREATED: 2026-10-16
 :END:
 - Specification :: [[file:../specs/063-prose-office-export/spec.org][W063 - Prose office export definition]].
+- Delivery evidence :: [[file:../specs/063-prose-office-export/validation.org][Regression, comparison and operator checks]]; [[file:../specs/063-prose-office-export/internal-review.md][Current-session internal delivery review]]. The standing internal-only policy applies to the delivery review; the historical definition record below is retained.
+- Operator validation :: [[file:../testdata/prose-office/EXPECTATIONS.md][Labelled profiles, YAML expectations and reproduction commands]]. Twelve user tests remain operator-owned; installation, release and closure are separate.
+
 - Scope :: *Full applicable YAML typography and document features*, with editor-dependent pagination; one editable file per selected letter recipient.
 - Review route :: External definition review reinstated 2026-10-16, superseding the earlier self-review-only exception for this definition. See [[file:../specs/063-prose-office-export/audits.yaml][Independent definition review]]. Definition approved 2026-10-16 with the bounded clarifications; no repeat definition review required.
 

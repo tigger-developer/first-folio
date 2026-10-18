@@ -170,3 +170,23 @@ func TestRT063_4_OfficeTableClearance(t *testing.T) {
 		})
 	}
 }
+
+func TestRT063_4_OfficeParagraphBetweenTables(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			src := proseSource(t, dir, "source.md", "| First |\n|-------|\n| Cell |\n\nBETWEEN-TABLES\n\n| Second |\n|--------|\n| Cell |\n")
+			var before, after [2]float64
+			for i, spacing := range []string{"space-before: 0pt\n      space-after: 0pt", "space-before: 6pt\n      space-after: 9pt"} {
+				proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page: {enabled: false}\n    toc: {enabled: false}\n    table:\n      "+spacing+"\n")
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				before[i] = proseParagraphSpace(t, pkg, format, "BETWEEN-TABLES", "before")
+				after[i] = proseParagraphSpace(t, pkg, format, "BETWEEN-TABLES", "after")
+			}
+			if math.Abs(before[1]-before[0]-9) > 0.051 || math.Abs(after[1]-after[0]-6) > 0.051 {
+				t.Errorf("inter-table paragraph clearance changes %g/%gpt; want 9/6pt", before[1]-before[0], after[1]-after[0])
+			}
+		})
+	}
+}

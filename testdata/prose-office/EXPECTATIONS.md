@@ -400,3 +400,5 @@ Version 3 adds these delivery regressions to the existing key-to-test mapping:
 - Generated title/body separation: `TestRT063_6_OfficeGeneratedMatterBeforeStructuredBlock` proves the boundary before a paragraph, table or list without flattening their content.
 
 - Running-band font roles: `TestRT063_11_OfficeRenderedPageFieldTypography` proves that refreshed page and page-count fields retain the header/footer family, size, style and baseline.
+
+- Table `space-before` and `space-after`: `TestRT063_4_OfficeParagraphBetweenTables` proves both independent clearances survive when one paragraph lies between two tables.
