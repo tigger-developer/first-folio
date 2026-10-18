@@ -739,3 +739,10 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Correction :: Use the existing mini-Markdown bold/italic boundaries and dash conversion to construct native spans. Recognize rule-only entries with the existing rule predicate and configured scene-break marker. PDF and script rendering remain unchanged.
 - Regression :: =TestRT063_5_OfficeCopyrightMiniMarkdown= failed for both formats before correction; preserve that RED evidence and rerun the copyright group and full suite.
 - Comparison bounds :: Candidate =5064fef= plus accepted parity test reconciliation uses 18 office renders and nine PDF outputs across seven profiles, with 100 MiB retained-output and 120-second per-process bounds. After copyright remediation, rerender only the three affected book ODT/DOCX profiles within the 32-render candidate budget.
+
+*** Rendered copyright and local-section follow-up
+
+- Evidence :: The composed copyright PNG placed the barcode above publication text. Its native drawing retained the SVG aspect ratio, but the fixed text line interval clipped the image. A DOCX section marker on the image paragraph also caused LibreOffice to ignore its frame.
+- Correction :: Give the barcode a natural image line box in the copyright bottom group and keep DOCX section markers outside that positioned group. Local section headings retain the existing left alignment and 1.2em/0.4em spacing instead of inheriting chapter alignment.
+- Regressions :: =TestRT063_5_OfficeCopyrightBarcodePlacementAndRatio= and =TestRT063_4_OfficeSectionAlignmentIndependentOfChapter= reproduced the defects before correction. Retain the RED logs and rerun their affected groups, the full suite and the book comparison.
+- Bounds :: Two composed-book renders verify the barcode correction. The final three book profiles require six further office renders, bringing this candidate/remediation comparison to 32 office renders and nine PDF baselines. Retained evidence remains bounded to 100 MiB.

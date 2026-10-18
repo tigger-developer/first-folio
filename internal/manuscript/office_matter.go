@@ -201,7 +201,11 @@ func officeCopyright(p *office.Prose, meta Metadata, cfg Config) ([]office.Node,
 		}
 		p.Images["FolioBarcode"] = []byte(svg)
 		nodes = append(nodes, office.Paragraph("FolioBarcode", nil))
-		p.Styles["FolioBarcode"] = p.Styles["FolioCopyright"]
+		style := p.Styles["FolioCopyright"]
+		// Let the inline image determine its line box; a fixed text interval clips it.
+		style.Line = 0
+		p.Styles["FolioBarcode"] = style
+		p.Placements["FolioBarcode"] = office.Placement{Vertical: "bottom", Horizontal: c.Align, Group: "copyright-bottom"}
 	}
 	if len(nodes) > 0 {
 		role := nodes[0].Content.([]any)[0].([]any)[2].([][]string)[0][1]

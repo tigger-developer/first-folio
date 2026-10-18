@@ -388,7 +388,7 @@ func (p *Prose) wordPlacement(n *docxNode, role string, placement Placement) {
 }
 
 // Word joins adjacent paragraphs with identical frame properties. Collect each
-// title band together so independently aligned fields cannot obscure each other.
+// title band and copyright bottom group so their section markers stay outside frames.
 func (p *Prose) wordTitleFloats(nodes []docxNode) []docxNode {
 	var output, title []docxNode
 	flush := func() {
@@ -417,7 +417,7 @@ func (p *Prose) wordTitleFloats(nodes []docxNode) []docxNode {
 	}
 	for _, node := range nodes {
 		placement := p.Placements[wordRole(&node)]
-		if placement.Group == "title" || placement.Group == "footer" {
+		if placement.Group == "title" || placement.Group == "footer" || placement.Group == "copyright-bottom" {
 			title = append(title, node)
 			continue
 		}

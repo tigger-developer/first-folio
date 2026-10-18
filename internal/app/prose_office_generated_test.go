@@ -479,3 +479,82 @@ func TestRT063_5_OfficeCopyrightMiniMarkdown(t *testing.T) {
 		})
 	}
 }
+
+func TestRT063_5_OfficeCopyrightBarcodePlacementAndRatio(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page: {enabled: false}\n    toc: {enabled: false}\n    copyright:\n      enabled: true\n      publication: [PUBLICATION-BEFORE-BARCODE]\n      isbn: '978-0-000000-00-2'\n      isbn-barcode: render\n")
+			src := proseSource(t, dir, "source.md", "## Chapter\n\nBody.\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			body := officeBody(t, pkg, format)
+			found := false
+			if format == "docx" {
+				for _, para := range body.all("p") {
+					if len(para.all("drawing")) == 0 {
+						continue
+					}
+					found = true
+					layers := officeEffective(t, pkg, format, para)
+					line, _ := officeEffectiveAttr(layers, "spacing", "line")
+					rule, _ := officeEffectiveAttr(layers, "spacing", "lineRule")
+					if rule == "exact" && officeLengthPoints(t, line+"pt")/20 < 40*72/25.4*72/115 {
+						t.Error("barcode paragraph clips image height")
+					}
+					if len(para.all("sectPr")) != 0 {
+						t.Error("barcode paragraph terminates its section and loses its frame")
+					}
+					frames := para.all("framePr")
+					if len(frames) != 1 || frames[0].attr("yAlign") != "bottom" {
+						t.Error("barcode is not in bottom copyright frame")
+					}
+					for _, extent := range para.all("extent") {
+						width := officeLengthPoints(t, extent.attr("cx")+"pt") / 12700
+						height := officeLengthPoints(t, extent.attr("cy")+"pt") / 12700
+						if math.Abs(width-40*72/25.4) > 0.1 || math.Abs(height/width-72.0/115) > 0.001 {
+							t.Errorf("barcode size %.3f x %.3fpt loses 40mm width or SVG aspect ratio", width, height)
+						}
+					}
+				}
+			} else {
+				for _, box := range body.all("text-box") {
+					if !strings.Contains(box.text(), "PUBLICATION-BEFORE-BARCODE") {
+						continue
+					}
+					for _, frame := range box.all("frame") {
+						if len(frame.all("image")) == 0 {
+							continue
+						}
+						found = true
+						width := officeLengthPoints(t, frame.attr("width"))
+						height := officeLengthPoints(t, frame.attr("height"))
+						if math.Abs(width-40*72/25.4) > 0.1 || math.Abs(height/width-72.0/115) > 0.001 {
+							t.Errorf("barcode size %.3f x %.3fpt loses 40mm width or SVG aspect ratio", width, height)
+						}
+					}
+				}
+			}
+			if !found {
+				t.Error("barcode missing from copyright publication group")
+			}
+		})
+	}
+}
+
+func TestRT063_4_OfficeSectionAlignmentIndependentOfChapter(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page: {enabled: false}\n    toc: {enabled: false}\n    font: {size: 12pt}\n    chapter: {align: right, show-number: false}\n")
+			src := proseSource(t, dir, "source.md", "## CHAPTER-ALIGN\n\nBody.\n\n### SECTION-ALIGN\n\nSection body.\n")
+			pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+			proseAssertAlignment(t, pkg, format, "CHAPTER-ALIGN", "right")
+			proseAssertAlignment(t, pkg, format, "SECTION-ALIGN", "left")
+			layers := officeEffective(t, pkg, format, officeParagraph(t, officeBody(t, pkg, format), "SECTION-ALIGN"))
+			officeAssertLength(t, layers, format, "spacing", "before", "paragraph-properties", "margin-top", 14.4)
+			officeAssertLength(t, layers, format, "spacing", "after", "paragraph-properties", "margin-bottom", 4.8)
+		})
+	}
+}

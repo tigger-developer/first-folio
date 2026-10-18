@@ -188,7 +188,13 @@ func officePlan(doc office.Document, meta Metadata, cfg Config) (office.Prose, e
 			}
 			role = fmt.Sprintf("FolioHeading%d", i)
 			style := plan.Styles["FolioHeading"]
-			style.Align = hc.Align
+			if level <= 2 {
+				style.Align = hc.Align
+			} else {
+				// Local sections use the existing left-aligned 1.2em/0.4em spacing.
+				style.Before = 1.2 * plan.Styles["FolioBody"].Size
+				style.After = 0.4 * plan.Styles["FolioBody"].Size
+			}
 			boundary := office.Boundary{Before: string(hc.BlankPageBefore), After: string(hc.BlankPageAfter), Break: hc.PageBreakBefore, Body: level <= 2, NumberFormat: cfg.Folio.Manuscript.PageNumbering.BodyFormat, Reset: (part+chapter == 1 && cfg.Folio.Manuscript.PageNumbering.BodyReset != "never")}
 			boundary.SkipHeader = hc.SkipHeader
 			boundary.SkipFooter = hc.SkipFooter
