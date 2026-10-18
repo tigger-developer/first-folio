@@ -94,6 +94,8 @@ func proseCheckODTContinuousBoundary(t *testing.T, reset string, differentFields
 		if introLast < 0 || firstBody <= introLast {
 			t.Error("approved ODT boundary did not start body on a new page")
 		}
+	} else if introLast < 0 || firstBody != introLast {
+		t.Error("same-format wording-only ODT boundary did not remain on the introduction's last page")
 	}
 	if !found {
 		t.Error("rendered body endpoint missing")

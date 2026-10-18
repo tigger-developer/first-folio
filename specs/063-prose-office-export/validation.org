@@ -6,11 +6,18 @@
 
 * Current delivery observations
 
-- Code candidate :: =94ff8a4= plus the DOCX field-typography correction under verification. The new rendered regression exposed page fields reverting to body typography on refresh. RT063.11 and OT063.1 remain RED pending remediation; delivery-code review has not started. Twelve named user tests remain AMBER.
+- Code candidate :: =4c6c3a5=. DOCX page-field typography now passes its focused rendered regression and three book rerenders. The full suite remains under verification after its release-gate assertion exposed the changed aggregate timeout. Delivery-code review has not started. Twelve named user tests remain AMBER.
 - Remediation :: Copyright mini-Markdown, barcode image line height/bottom grouping, local section layout and generated-matter boundaries before tables/lists have focused RED-to-GREEN evidence below.
 - Accepted limits :: The documented ODT transition, DOCX special-opening parity and weight mappings remain the approved boundaries. No ODT parity waiver is inferred.
 
 ** 2026-10-18 - Delivery verification
+
+- Continuity oracle :: The existing same-format wording-only ODT render now explicitly asserts that the first body paragraph shares the introduction endpoint page. This strengthens verification of the already-required behaviour; no production change. Focused run passed in 12.259s, =.agent/w063-continuity-assertion.log=.
+- Current race/static checks :: Office race check passed in 4.930s, =.agent/w063-final-office-race.log=; =make lint= passed in =.agent/w063-final-checkpoint-lint.log=.
+
+- Page-field follow-up :: At =736e7b6=, the rendered page-field and header/body geometry groups passed (application 45.231s, office 0.693s), =.agent/w063-field-font-band-position.log=. Three focused DOCX book rerenders passed in 37.771s, =.agent/w063-final-field-render.log=. Inspected the composed contents header/footer, copyright page, base final page and contrasting even chapter page. Fields retain matching typography/baselines; the barcode remains unclipped. The comparison now retains 17,308,272 bytes before regenerated comparison PNGs, within 100 MiB.
+- Additional deadline evidence :: The =6d4c1be= full suite also reached the old 10-minute aggregate deadline, during =TestScriptRunningBodyBoundaryWithoutAct=; =.agent/w063-final-boundary-suite.log=. The current 20-minute run exposed the release fixture expecting the previous test arguments. =TestReleaseGateAndTap= now requires the new deadline and retains failed-test publication blocking; focused follow-up passed in 1.225s, =.agent/w063-release-deadline-followup.log=.
+- Current CLI evidence :: At =4c6c3a5=, four conversions and four help commands passed outside the checkout, producing six editable files. =.agent/w063-ot2-final-path= identifies the retained consuming directory. The top-level help now names DOCX and ODT alongside Typst/PDF. No installation or publication occurred.
 
 - Page-field typography :: The composed DOCX XML/PDF comparison showed header page numbers using body font/size and a different baseline. =TestRT063_11_OfficeRenderedPageFieldTypography= proves family, size, style and baseline for refreshed page/page-count fields. Its first fixture omitted explicit odd variants and failed before those assertions; the corrected fixture passes ODT and reproduces the DOCX defect in =.agent/w063-field-font-red-explicit.log= (43.022s).
 - Full-suite deadline :: The =3bfc94b= full suite hit Go's aggregate 10-minute package deadline while running RT063.4, recorded in =.agent/w063-delivery-final-suite.log=. This is a failed run, not a behavioural pass. Final verification will run with a declared 20-minute aggregate package deadline; each conversion/render process retains its 120-second bound.
