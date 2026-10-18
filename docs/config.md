@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.31"
-last-updated: 2026-10-16
+version: "0.32"
+last-updated: 2026-10-18
 ---
 
 # Configuration
@@ -17,8 +17,10 @@ shared running matter. Letter DOCX/ODT exports consume `folio.letter`, without
 headers or footers. Select these outputs through the manuscript target extension
 or `folio letter --format docx|odt`; no extra YAML output schema is introduced.
 Native office editors control final pagination and field refresh. ODT starts a
-new page when the frontmatter/body page-number format changes, while preserving
-the configured displayed-number reset policy.
+new page when the frontmatter/body number format changes, a reset is requested
+or the running-band page-field structure changes. See the
+[ODT boundary limitation](format-odt.md#frontmatterbody-page-break-limitation) and
+[DOCX opening-page limitation](format-docx.md#opening-page-headerfooter-fidelity-limitation).
 
 ## File locations
 
@@ -798,6 +800,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.32 (2026-10-18): Clarify accepted native office page-boundary and opening-page limits.
 
 - 0.30 (2026-10-16): Documented manuscript stderr warnings for each loaded external YAML file.
 - 0.29 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.

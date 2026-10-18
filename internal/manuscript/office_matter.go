@@ -146,28 +146,27 @@ func officeTextLines(value string) []office.Node {
 func officeCopyright(p *office.Prose, meta Metadata, cfg Config) ([]office.Node, error) {
 	c := cfg.Folio.Manuscript.Copyright
 	var nodes []office.Node
-	add := func(text string, bottom bool) error {
-		raw, _, err := office.Pandoc([]byte(text), "--from=markdown", "--to=json")
-		if err != nil {
-			return err
-		}
-		doc, err := office.Decode(raw)
-		if err != nil {
-			return err
-		}
+	add := func(text string, bottom bool) {
 		role := fmt.Sprintf("FolioLegal%d", len(nodes))
-		p.Styles[role] = p.Styles["FolioCopyright"]
+		style := p.Styles["FolioCopyright"]
+		inlines := officeCopyrightInlines(text)
+		if isMarkdownRule(strings.TrimSpace(text)) {
+			marker := cfg.Folio.Manuscript.SceneBreak.Marker
+			if marker == "" {
+				marker = "#"
+			}
+			inlines = office.Text(marker)
+			style.Align = "center"
+		}
+		p.Styles[role] = style
 		if bottom {
 			p.Placements[role] = office.Placement{Vertical: "bottom", Horizontal: c.Align, Group: "copyright-bottom"}
 		}
-		nodes = append(nodes, office.N("Div", []any{office.Attr("", nil, []string{"custom-style", role}), doc.Blocks}))
-		return nil
+		nodes = append(nodes, office.Paragraph(role, inlines))
 	}
 	for _, text := range append(effectiveCredits(meta, c), c.Body...) {
 		if strings.TrimSpace(text) != "" {
-			if err := add(text, false); err != nil {
-				return nil, err
-			}
+			add(text, false)
 		}
 	}
 	if c.Separator != "" {
@@ -187,9 +186,7 @@ func officeCopyright(p *office.Prose, meta Metadata, cfg Config) ([]office.Node,
 		nodes = append(nodes, office.Paragraph(role, office.Text(c.Separator)))
 	}
 	if len(c.Publication) > 0 {
-		if err := add(strings.Join(c.Publication, "  \n"), true); err != nil {
-			return nil, err
-		}
+		add(strings.Join(c.Publication, "\n"), true)
 	}
 	if c.Publisher != "" {
 		officeCopyrightLabel(p, &nodes, c.PublisherPreposition+" ", c.Publisher, "", c.Align)

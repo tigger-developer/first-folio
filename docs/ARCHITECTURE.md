@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.16"
-last-updated: 2026-10-16
+version: "0.17"
+last-updated: 2026-10-18
 ---
 
 # Architecture
@@ -116,8 +116,10 @@ Bounds apply to aggregate input, semantic depth/counts, subprocess time and
 diagnostics, JSON, ZIP entries and expanded data. Manuscript output publishes
 before its optional barcode sidecar. Letters preflight all target names and
 publish individually, reporting prior successful paths on later failure.
-ODT number-format transitions may require a new physical page; displayed
-numbering and configured page-side policy remain separate.
+ODT frontmatter/body number-format changes, requested resets and changed
+running-band page-field structure use a new physical page. Displayed numbering
+and configured page-side policy remain separate. DOCX special first-page bands
+retain the documented odd-variant limitation.
 
 
 Substantial Typst layouts live in real `.typ` files. Go code owns:
@@ -152,6 +154,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.17 (2026-10-18): Record accepted native office pagination boundaries.
 
 - 0.16 (2026-10-16): Describe prose office adapters and publication boundaries.
 

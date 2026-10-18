@@ -434,3 +434,48 @@ func TestRT063_4_OfficePartWithContinuousChapterStaysInFlow(t *testing.T) {
 		})
 	}
 }
+
+func TestRT063_5_OfficeCopyrightMiniMarkdown(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page: {enabled: false}\n    toc: {enabled: false}\n    scene-break: {marker: LEGAL-RULE}\n    copyright:\n      enabled: true\n      credits: []\n      body: ['# Literal heading', '[Literal link](target)', '---', '**Bold legal** and *italic legal* -- dash']\n")
+			source := proseSource(t, dir, "source.md", "Body sentinel.\n")
+			pkg := proseConvert(t, source, filepath.Join(dir, "output."+format))
+			text := officeBody(t, pkg, format).text()
+			for _, want := range []string{"# Literal heading", "[Literal link](target)", "LEGAL-RULE", "Bold legal and italic legal – dash"} {
+				if !strings.Contains(text, want) {
+					t.Errorf("copyright mini-Markdown lost %q: %s", want, text)
+				}
+			}
+			proseAssertAlignment(t, pkg, format, "LEGAL-RULE", "center")
+			for _, marker := range []string{"italic legal", "Bold legal"} {
+				layers := proseInlineLayers(t, pkg, format, marker)
+				element, attr, want := "i", "val", "true"
+				if marker == "Bold legal" {
+					element = "b"
+				}
+				if format == "odt" {
+					element, attr, want = "text-properties", "font-style", "italic"
+					if marker == "Bold legal" {
+						attr, want = "font-weight", "bold"
+					}
+				}
+				got, exists := officeEffectiveAttr(layers, element, attr)
+				if format == "docx" {
+					for _, layer := range layers {
+						for _, property := range layer.all(element) {
+							if property.attr("val") == "" {
+								got, exists = "true", true
+							}
+						}
+					}
+				}
+				if !exists || got != want && !(format == "docx" && got == "") {
+					t.Errorf("%s emphasis=%q present=%v; want %s", marker, got, exists, want)
+				}
+			}
+		})
+	}
+}

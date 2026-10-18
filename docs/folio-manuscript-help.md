@@ -40,8 +40,10 @@ Editable office output:
   neither requires Typst. Existing manuscript YAML controls the document.
   Available permitted full font faces are embedded. Missing fonts warn.
   Update contents and page fields in the editor before printing. Pagination
-  can differ between editors. ODT starts a new page when frontmatter/body
-  page-number formats differ; displayed numbering follows the configuration.
+  can differ between editors. ODT starts a new page for frontmatter/body
+  number-format changes, requested resets or changed page-field structure.
+  DOCX special opening pages may retain odd-page running matter on an even
+  page. See the format guides for these accepted fidelity limitations.
   Output is published by rename after validation. An ISBN sidecar is published
   afterwards; a sidecar failure reports that the manuscript was already written.
 
