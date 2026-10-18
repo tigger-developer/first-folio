@@ -1,7 +1,7 @@
 ---
 title: Prose office fixture expectations
-version: 2
-last-updated: 2026-10-16
+version: 3
+last-updated: 2026-10-18
 ---
 
 # Prose office fixture expectations
@@ -391,3 +391,10 @@ Office commands now produce editable output. Rendering and conformance remain un
 - 2026-10-16: Added per-key native representation, named regression mapping and inspection region. Independent copyright baseline measured a 13.62pt line interval for 12pt Publish at line-spacing 1.4; copyright retains its distinct leading contract. Native blank-page assertions establish structural intent; rendered tests and visual inspection establish physical effects.
 
 Version 2 corrects the contrasting letter paper identifier to `us-letter` and links current delivery evidence.
+
+Version 3 adds these delivery regressions to the existing key-to-test mapping:
+
+- Copyright `body`, `credits` and `publication`: `TestRT063_5_OfficeCopyrightMiniMarkdown` proves literal unsupported markup, bold/italic, dash conversion and rule-only entries using `scene-break.marker`.
+- Copyright `isbn-barcode`: `TestRT063_5_OfficeCopyrightBarcodePlacementAndRatio` proves bottom-group placement, a natural image line box, the 40mm width and preserved SVG aspect ratio.
+- Chapter `align` versus local sections: `TestRT063_4_OfficeSectionAlignmentIndependentOfChapter` proves that local headings stay left-aligned with the existing 1.2em/0.4em spacing.
+- Generated title/body separation: `TestRT063_6_OfficeGeneratedMatterBeforeStructuredBlock` proves the boundary before a paragraph, table or list without flattening their content.
