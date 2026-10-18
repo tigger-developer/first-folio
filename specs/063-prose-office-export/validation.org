@@ -6,13 +6,18 @@
 
 * Current delivery observations
 
-- Code candidate :: =02a89f7=. All product packages passed the coverage run at =736e7b6=; its only failure was the release command expectation, subsequently corrected and retested. The final ordinary =make test= run includes that correction, expanded continuity assertion and root help update. Delivery-code review awaits that result. Twelve named user tests remain AMBER.
+- Code candidate :: =1079f63=. Full =make test= passed at =02a89f7=; the subsequent ODT style-accumulation correction passed its affected additive/table regression groups. Current lint and office race checks pass. RTs and OTs are GREEN; twelve named user tests remain AMBER. Delivery review is recorded separately in [[file:internal-review.md][the internal review record]].
 - Remediation :: Copyright mini-Markdown, barcode image line height/bottom grouping, local section layout and generated-matter boundaries before tables/lists have focused RED-to-GREEN evidence below.
 - Accepted limits :: The documented ODT transition, DOCX special-opening parity and weight mappings remain the approved boundaries. No ODT parity waiver is inferred.
 
 ** 2026-10-18 - Delivery verification
 
-- Inter-table clearance :: =TestRT063_4_OfficeParagraphBetweenTables= reproduced ODT dropping the first table's 9pt after-clearance while DOCX retained both sides. =.agent/w063-inter-table-red.log= retains the failure. The ODT edge style now retains its resolved predecessor; the new case and existing additive/table groups pass in 9.620s, =.agent/w063-inter-table-green.log=. Full-suite follow-up is pending.
+- Settled verification :: =make test= exited zero at =02a89f7=: application 483.243s, manuscript 116.086s, office 2.630s and release gate 3.599s; all other packages passed. =.agent/w063-final-make-test.log= retains the full result. The later =1079f63= ODT edge-style correction passed the new inter-table and existing additive/table groups in 9.620s. Under TESTING's affected-check rule, the unaffected full-suite results remain current; no claim is made that the full run included that later assignment. Current =make lint= passed in =.agent/w063-delivery-lint-final.log=; the office race check passed from cache in =.agent/w063-delivery-race-final.log=.
+- Coverage scope :: At =736e7b6=, new office mechanics and manuscript/letter adapters cover 2,565/2,853 statements (89.9%) and 3,015/3,519 instrumented source-line ranges (85.7%). This is scoped integration coverage, not whole-repository coverage. The subsequent ODT style-map assignment is exercised by the inter-table regression.
+- Handoff evidence :: Maintained fixtures and expected YAML values are in =testdata/prose-office/EXPECTATIONS.md=. The comparison index is identified by =.agent/w063-accepted-ot-path=; editable CLI samples by =.agent/w063-ot2-final-path=. These are temporary review artefacts; maintained sources and reproduction commands remain in the repository. No installation, release, push or ticket closure occurred.
+
+
+- Inter-table clearance :: =TestRT063_4_OfficeParagraphBetweenTables= reproduced ODT dropping the first table's 9pt after-clearance while DOCX retained both sides. =.agent/w063-inter-table-red.log= retains the failure. The ODT edge style now retains its resolved predecessor; the new case and existing additive/table groups pass in 9.620s, =.agent/w063-inter-table-green.log=. The later settled verification entry records the full-suite candidate and affected-check boundary.
 
 
 - Combined coverage run :: All product packages passed at =736e7b6=: application 482.101s, manuscript 118.794s, office 2.387s. The overall command failed solely in the release argv fixture; retain that failure in =.agent/w063-delivery-verified-suite.log=. With duplicate blocks merged by source location, the new office package and prose adapters have 2,565/2,853 covered statements (89.9%). =.agent/w063-delivery-coverage.out= and =.agent/w063-final-coverage-summary.txt= retain the measurement.
@@ -106,9 +111,9 @@
 ** GREEN RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -136,9 +141,9 @@
 ** GREEN RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -165,9 +170,9 @@
 ** GREEN RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -195,9 +200,9 @@
 ** GREEN RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -228,9 +233,9 @@
 ** GREEN RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -260,9 +265,9 @@
 ** GREEN RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -292,9 +297,9 @@
 ** GREEN RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -321,9 +326,9 @@
 ** GREEN RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -351,9 +356,9 @@
 ** GREEN RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -383,9 +388,9 @@
 ** GREEN RT063.10 - Existing route preservation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-10-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -407,9 +412,9 @@
 ** GREEN RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)
@@ -437,9 +442,9 @@
 ** GREEN RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
-:REVISION: 736e7b6; 02a89f7 continuity assertion follow-up
-:COMMAND: make test with combined coverage; focused continuity follow-up
-:EVIDENCE: Product packages passed in .agent/w063-delivery-verified-suite.log (application 482.101s, manuscript 118.794s, office 2.387s). Expanded continuity assertion passed in .agent/w063-continuity-assertion.log (12.259s). The separate release assertion failure does not change these group results.
+:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+:COMMAND: make test; affected additive/table regression groups
+:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
 :END:
 
 *** Earlier verification metadata (retained)

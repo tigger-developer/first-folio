@@ -764,4 +764,4 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 
 - Regression :: =TestRT063_4_OfficeParagraphBetweenTables= compares zero and non-zero table clearances in both formats. DOCX retained both edges; ODT lost the first table's after-clearance when applying the second table's before-clearance.
 - Correction :: Retain the resolved generated ODT paragraph style so later block-edge adjustments add to its existing properties. This preserves the existing additive spacing contract.
-- Verification :: Rerun the additive block/table groups and full suite. The seven visual profiles contain no inter-table paragraph, so their retained comparisons remain applicable; the new native regression exercises the affected composition.
+- Verification :: Use the full-suite result at =02a89f7= together with the affected additive/table groups after the ODT correction. TESTING permits unaffected results to remain current after scoped remediation. The seven visual profiles contain no inter-table paragraph, so their retained comparisons remain applicable; the new native regression exercises the affected composition.
