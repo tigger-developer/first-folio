@@ -536,3 +536,28 @@ func TestRT063_6_ODTUnsuppressedOpeningUsesParityBands(t *testing.T) {
 		t.Error("unsuppressed opening overrides the physical odd/even header with a fixed first-page band")
 	}
 }
+
+func TestRT063_6_OfficeGeneratedMatterBeforeStructuredBlock(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		for _, item := range []struct{ name, source string }{
+			{"paragraph", "BODY-SENTINEL\n"},
+			{"table", "| BODY-SENTINEL | Value |\n|---|---|\n| Cell | Data |\n"},
+			{"list", "- BODY-SENTINEL\n- Second item\n"},
+		} {
+			t.Run(format+"/"+item.name, func(t *testing.T) {
+				t.Setenv("HOME", t.TempDir())
+				dir := t.TempDir()
+				proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page: {enabled: true}\n    toc: {enabled: false, page-break-before: true}\n    copyright: {enabled: false}\n")
+				src := proseSource(t, dir, "source.md", "---\ntitle: TITLE-SENTINEL\n---\n\n"+item.source)
+				pkg := proseConvert(t, src, filepath.Join(dir, "output."+format))
+				want := 1
+				if got := proseNativeBreakCount(t, pkg, format); got != want {
+					t.Errorf("title/body boundaries=%d; want %d before %s", got, want, item.name)
+				}
+				if !strings.Contains(officeBody(t, pkg, format).text(), "BODY-SENTINEL") {
+					t.Fatal("body content lost")
+				}
+			})
+		}
+	}
+}

@@ -34,12 +34,17 @@ func (p *Prose) flowBoundaries(blocks []Node) []Node {
 	for i, node := range blocks {
 		role := blockRole(node)
 		originalRole := role
+		anchor := false
 		boundary, exists := p.Boundaries[role]
 		if !exists && (pending.Break || pending.Before != "" && pending.Before != "false") {
 			role = fmt.Sprintf("FolioFlow%d", i)
 			p.Styles[role] = p.Styles[originalRole]
 			c := node.Content.([]any)
-			node.Content = []any{Attr("", nil, []string{"custom-style", role}), c[1]}
+			children, ok := c[1].([]Node)
+			anchor = !ok || len(children) != 1 || children[0].Type != "Para" && children[0].Type != "Plain" && children[0].Type != "Header"
+			if !anchor {
+				node.Content = []any{Attr("", nil, []string{"custom-style", role}), c[1]}
+			}
 		}
 		if pending.Break {
 			boundary.Break = true
@@ -66,6 +71,15 @@ func (p *Prose) flowBoundaries(blocks []Node) []Node {
 		}
 		if exists {
 			p.Boundaries[role] = boundary
+		}
+		if anchor {
+			// Native section/page properties need one top-level paragraph before
+			// tables, lists or multi-paragraph blocks. Preserve their own styles.
+			style := p.Styles[role]
+			style.Size, style.Line, style.Before, style.After = 1, 0.05, 0, 0
+			style.KeepNext = true
+			p.Styles[role] = style
+			out = append(out, Paragraph(role, Text("\u200b")))
 		}
 		out = append(out, node)
 		pending = p.Ends[originalRole]

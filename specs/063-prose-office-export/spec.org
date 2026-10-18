@@ -746,3 +746,9 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Correction :: Give the barcode a natural image line box in the copyright bottom group and keep DOCX section markers outside that positioned group. Local section headings retain the existing left alignment and 1.2em/0.4em spacing instead of inheriting chapter alignment.
 - Regressions :: =TestRT063_5_OfficeCopyrightBarcodePlacementAndRatio= and =TestRT063_4_OfficeSectionAlignmentIndependentOfChapter= reproduced the defects before correction. Retain the RED logs and rerun their affected groups, the full suite and the book comparison.
 - Bounds :: Two composed-book renders verify the barcode correction. The final three book profiles require six further office renders, bringing this candidate/remediation comparison to 32 office renders and nine PDF baselines. Retained evidence remains bounded to 100 MiB.
+
+*** Generated matter before structured blocks
+
+- Regression :: =TestRT063_6_OfficeGeneratedMatterBeforeStructuredBlock= compares a paragraph control with a first table/list after the title page. The paragraph control passes and both structured blocks lose the native page boundary in both formats before remediation.
+- Correction :: Carry pending generated-matter boundaries on one minimal native paragraph before a table, list or multi-paragraph block. Keep the block's existing style and editable structure; the anchor has a one-twip line interval and stays with the following block.
+- Verification :: Rerun the boundary regression and complete suite. The seven-profile comparison remains applicable because its generated-matter boundaries precede headings, not these structured-block cases.
