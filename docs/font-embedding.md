@@ -1,7 +1,7 @@
 ---
 title: Fonts in Editable Office Exports
-version: "1.1"
-last-updated: 2026-10-16
+version: "1.2"
+last-updated: 2026-10-19
 ---
 
 # Fonts in editable office exports
@@ -16,6 +16,8 @@ remain `folio.manuscript.*.font` and `folio.letter.font`; script role settings
 do not replace those mode-specific roles. An office reader may still substitute
 a face despite its presence in the package. The rendered prose regression
 checks the PDF's actual font names separately from embedded-file assertions.
+Native office source parsing does not change this policy. DOCX reaches the
+shared font packager without Pandoc; ODT embeds fonts after its configured writer.
 
 The bundled Iosevka Publish and Iosevka Publish Extended families are available
 without a host installation. Other families are discovered in `TYPST_FONT_PATHS`
@@ -72,6 +74,8 @@ Standalone `.typ` files still require the selected fonts on the compiling host.
 PDF generation continues through the existing Typst font path.
 
 ## History
+
+- 1.2 (2026-10-19): Clarify the unchanged font policy after native source parsing.
 
 - 1.1 (2026-10-16): Document manuscript and letter office output.
 

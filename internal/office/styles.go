@@ -155,6 +155,29 @@ func (p *Prose) configureStyles(files map[string][]byte, format string) error {
 		}
 	}
 	if format == "odt" {
+		body := p.Styles["FolioBody"]
+		position := 33.0
+		if body.FontBox > 0 {
+			position += body.BaselineShift / body.FontBox * 100
+		}
+		// A native note anchor otherwise uses the unshifted font baseline,
+		// below prose whose cap box has been aligned to the content edge.
+		anchor := ox("style:style", ox("style:text-properties").attr("style:text-position", strconv.FormatFloat(position, 'f', 5, 64)+"% 58%")).attr("style:name", "FolioNoteAnchor").attr("style:family", "text")
+		found := false
+		for i := range styles.children {
+			if styles.children[i].get("style:name") == "FolioNoteAnchor" {
+				styles.children[i], found = anchor, true
+				break
+			}
+		}
+		if !found {
+			styles.children = append(styles.children, anchor)
+		}
+		notes := styles.ensure("text:notes-configuration")
+		notes.set("text:note-class", "footnote")
+		notes.set("text:citation-body-style-name", "FolioNoteAnchor")
+	}
+	if format == "odt" {
 		faces := root.ensure("office:font-face-decls")
 		seen := map[string]bool{}
 		for _, face := range faces.children {
