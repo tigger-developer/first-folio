@@ -6,6 +6,11 @@
 
 * Current correction status
 
+** 2026-10-19 - PDF configuration-cascade parity clarified
+
+- Definition :: AC063.4 - Resolved typography and block geometry and the solution design now explicitly require the PDF renderer's existing YAML cascade for office output. RT063.4 - Configuration and role geometry adds named cross-format precedence and inheritance observations using independent expectations. No configuration behaviour is newly authorized.
+- Evidence boundary :: RT063.4 - Configuration and role geometry is AMBER for the expanded comparison until those cases execute. Its earlier GREEN evidence remains below; no result is inferred for the new observations.
+
 ** 2026-10-19 - Corrected validator recognizes all test categories
 
 - Check :: =sdlc-validate --spec specs/063-prose-office-export/spec.org --readiness-check=test-code= reports *schema valid* and 13 acceptance criteria, with 28 tests: one AT, thirteen RTs, two OTs and twelve UTs.
@@ -265,13 +270,18 @@
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** GREEN RT063.4 - Configuration and role geometry :testdef:
+** AMBER RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REASON: Expanded PDF/DOCX/ODT cascade-parity cases require implementation and execution; earlier configuration checks do not establish these new comparisons.
 :END:
+
+*** Historical result before explicit PDF cascade comparison
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 
 *** Superseded record before shared-exporter verification
 

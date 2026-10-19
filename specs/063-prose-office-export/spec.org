@@ -24,8 +24,8 @@
 
 - *Manuscript target extensions select DOCX or ODT*; *letter --format selects pdf, docx or odt*.
 - *Letters retain one file per recipient*, filtering, substitution and naming.
-- *Resolved YAML configuration controls every applicable feature*, including manuscript contents, copyright, numbering and running matter.
-- *Manuscript configuration includes YAML frontmatter* from the first resolved Markdown input: its =folio:= and =render:= mappings merge above global YAML files and below local YAML files and CLI overrides.
+- *DOCX and ODT follow the same YAML configuration cascade as their mode's PDF renderer*, controlling every applicable feature, including manuscript contents, copyright, numbering and running matter.
+- Cascade, lowest to highest :: British built-in preset; selected style preset; global =script.yaml=; global style-specific YAML; first resolved Markdown manuscript input's =folio:= and =render:= frontmatter mappings (manuscripts only); local =script.yaml=; local style-specific YAML; CLI overrides.
 - *Fonts use the existing embedding policy*; *pagination may differ* between reading applications and PDF.
 - *Labelled reference fixtures and named user tests demonstrate every supported YAML feature*, with explicit expected values and a key-to-test checklist.
 - *Automated office-to-PDF measurements precede user review*; page PNGs support visual inspection without requiring pixel-identical pagination.
@@ -146,7 +146,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 :PROPERTIES:
 :CUSTOM_ID: ac-063-4
 :END:
-- Criterion :: Each office document uses *its mode's fully resolved YAML settings* for fonts, alignment, spacing, indentation and paper geometry, including the role distinctions in the [[#mapping][feature mapping]].
+- Criterion :: Each office document uses *the same YAML configuration cascade as its mode's PDF renderer*, including source frontmatter where applicable, with unchanged discovery, precedence, merging, normalization and validation. Its fully resolved settings control fonts, alignment, spacing, indentation and paper geometry, including the role distinctions in the [[#mapping][feature mapping]]. Output format does not select a different configuration cascade.
 - Proven by :: [[#rt-063-4][RT063.4 - Configuration and role geometry]], [[#ot-063-1][OT063.1 - Rendered feature comparison]].
 - Additional proof :: [[#rt-063-11][RT063.11 - Rendered geometry]], [[#ut-063-3][UT063.3 - Font roles]], [[#ut-063-4][UT063.4 - Block spacing]], [[#ut-063-5][UT063.5 - Page geometry]], [[#ut-063-6][UT063.6 - Title typography]], [[#ut-063-8][UT063.8 - Contents typography]], [[#ut-063-9][UT063.9 - Copyright typography]], [[#ut-063-10][UT063.10 - Configuration precedence]] and [[#ut-063-11][UT063.11 - Letter geometry]].
 - Scale proof :: [[#at-063-1][AT063.1 - Novel-scale rendered manuscripts]].
@@ -298,6 +298,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 :END:
 - Covers :: [[#ac-063-4][AC063.4 - Typography and geometry]].
 - Action :: Use distinct fonts/sizes and non-default values for every row of [[#mapping][the feature mapping]], including all six font properties. Exercise British/US layers, global/local/style overrides, first-source manuscript configuration and CLI precedence. Test body, heading, quote, inline code and block code independently; use both absolute and font-relative lengths. Exercise hyphenation on/off/auto and widow/orphan switches. Invalid effective alignment/length/font values must fail.
+- Cascade parity :: For each mode, invoke its public PDF, DOCX and ODT routes with the same source, configuration roots and supported CLI overrides. Use independently specified conflicting font-family, size, margin and style values, making each applicable cascade layer the winner in a named case. Check native office properties and corresponding observable PDF specimens against those expected values, allowing only the existing serialization/rendering tolerances. Include a source-only Markdown override, local-over-source precedence, supported CLI precedence, partial same-role inheritance and rejection of configuration in a later Markdown input. Org manuscripts and letters retain their existing file-based cascade without a source YAML layer.
 - Expected :: Native properties resolve to the effective values and correct role basis, within one native serialization unit. Changing one role does not leak into another. Paragraph and additive block clearances retain their arithmetic; hyphenation policy and widow/orphan flags change accordingly. Invalid fields identify their YAML path before publication. All consumed configuration keys have a named matrix case, not only a default smoke test.
 
 ** RT063.5 - Generated matter and heading controls :testdef:
@@ -568,6 +569,17 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Dependencies :: Select the output route before any external-tool setup. *DOCX never invokes or requires Pandoc*, including source readers and probes. Only ODT calls the configured Pandoc writer and ODT compatibility probes, with fixed arguments. No user filters, templates, extra argument pass-through or output-format fallback.
 
 
+** Shared YAML configuration cascade
+:PROPERTIES:
+:CUSTOM_ID: configuration-cascade
+:END:
+
+- Authority :: Reuse *the same mode-specific cascade as PDF*, in the order defined by [[file:../../docs/ARCHITECTURE.md][Architecture - Configuration]]: British preset, selected style preset, global YAML, global style YAML, applicable manuscript source frontmatter, local YAML, local style YAML, then CLI overrides. Preserve discovery from the source directory, first-resolved-input selection, same-role deep merging, deprecated-key normalization, validation and diagnostics.
+- Manuscripts :: Reuse native source-frontmatter extraction and =loadConfigWithSource= for PDF and office output, with =internal/config.Load= owning the merge. Only the first resolved Markdown input supplies =folio:= and =render:= configuration mappings; keep metadata handling distinct and preserve the existing later-input rejection. Org input does not gain a YAML source layer.
+- Letters :: Reuse the =ModeLetter= configuration already loaded by the letter command for its PDF route. Pass that same resolved configuration to the office adapter; recipient composition does not reload it or introduce per-recipient overrides. Existing exclusions, including manuscript running matter, remain.
+- Export boundary :: Mode adapters consume the resolved typed settings. =internal/office= translates those values into native DOCX/ODT properties and the configured ODT reference; it does not rediscover YAML, reorder layers or introduce office-only defaults. Native unit conversion and accepted fidelity mappings do not change configuration precedence. Reusing the PDF configuration path does not invoke PDF rendering, Typst or Pandoc source readers.
+- Verification :: RT063.4 - Configuration and role geometry proves observable cascade parity. Implementation review traces PDF and office callers to the existing shared loader and source-extraction path; equivalent output alone does not establish reuse. UT063.10 - Metadata, style and configuration precedence retains human verification of the resolved values.
+
 ** Shared native parsing and mode adapters
 
 - Starting point :: =internal/app/convert.go= calls =play.Parse= in =internal/play/parser.go=. That parser recognizes Org, Markdown and Fountain and classifies script events. *Extend this implementation*, extracting reusable source recognition into a small shared native parsing package where needed; do not feed prose through unchanged script-event classification.
@@ -578,14 +590,14 @@ Manuscript and letter users need *editable office documents without rebuilding t
 
 ** DOCX workflow: native throughout
 
-1. Select DOCX, resolve inputs and YAML through the existing mode contract, and parse with the shared native implementation above. Metadata and dry-run use this same native route.
+1. Select DOCX, resolve inputs and configuration through the [[#configuration-cascade][same YAML cascade as the mode's PDF renderer]], and parse with the shared native implementation above. Metadata and dry-run use this same native route.
 2. Apply the mode adapter: manuscript roles, generated matter and page policy, or recipient-specific letter composition. Preserve structured editable content.
 3. Call the *existing native DOCX serializer used by folio convert*, extended for prose blocks, lists, tables, links, notes and fields. Reuse its native XML, styles, relationships and ZIP assembly in =internal/office=.
 4. Apply native sections, running matter and fonts; validate the package and publish atomically. *No step calls Pandoc*, requests a reference DOCX, or discovers a Pandoc API/version. No DOCX-to-other-format round trip occurs.
 
 ** ODT workflow: native content, configured Pandoc writer
 
-1. Resolve and parse source natively using the same office mode adapters as DOCX. *Pandoc does not read Markdown or Org* in this route.
+1. Resolve configuration through the [[#configuration-cascade][same YAML cascade as the mode's PDF renderer]] and parse source natively using the same office mode adapters as DOCX. *Pandoc does not read Markdown or Org* in this route.
 2. Project structured content into Pandoc JSON. Resolve semantic roles and the effective YAML into named ODF styles and the *existing native-generated ODT reference package*. Compatibility/version probes, if required, belong only to this ODT branch and share its process bounds.
 3. Invoke the *existing shared configured Pandoc ODT writer* with JSON input, ODT output and that generated reference. Pandoc creates the initial ODT content package; it does not choose the application's layout from defaults. Do not request a default reference from Pandoc, and do not generate or convert a DOCX intermediate.
 4. Validate the writer's ZIP/XML output, then apply native ODF layout that needs postprocessing: page masters, header/footer variants, numbering, fields, generated matter and configured spacing. Preserve the accepted ODT transition limitations.

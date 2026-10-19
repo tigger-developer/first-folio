@@ -1,6 +1,6 @@
 ---
 title: W063 internal delivery review
-version: 7
+version: 8
 last-updated: 2026-10-19
 ---
 
@@ -414,3 +414,40 @@ UT063.10 - Metadata, style and configuration precedence. This clarifies the
 existing requirement; it adds no source format, configuration layer or test
 obligation. Earlier definition findings remain addressed. No implementation,
 test execution or sign-off is implied.
+
+# 2026-10-19: PDF YAML-cascade alignment review
+
+Review method: internal (current session; not independent)
+
+Gate: definition
+
+Revision: `7956961` (frontmatter synopsis clarification) plus the specification
+and validation amendments requiring the PDF renderer's YAML cascade.
+
+Specification SHA-256:
+`a8ba6fb00cb6d35f26abde7cbfb542b8951701d36556d3cd4a88e3635d379496`.
+
+Validation SHA-256:
+`761fd821e1b9e8e77acd92c448f3b2b7e169a50489a8b125e70c5b8ff5cd5085`.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+Reviewed the changed Synopsis, AC063.4 - Resolved typography and block geometry,
+RT063.4 - Configuration and role geometry, shared-cascade design and both office
+workflow entry steps against the existing configuration authority and inspected
+PDF/office callers. The named cascade and first-Markdown-source boundary agree
+across those sections. The design reuses manuscript source extraction and the
+existing shared loader; letters use the command's already-resolved ModeLetter
+configuration. No office-specific precedence or additional configuration source
+is introduced. The expanded behavioural comparison has independent expectations
+and preserves historical evidence under its AMBER execution record.
+
+The schema check accepts all 13 criteria and 28 tests. Test-code readiness remains
+false for unexecuted RT063.1 - Output selection and dependencies, RT063.4 -
+Configuration and role geometry, RT063.13 - Shared parser and mode semantics,
+and AT063.1 - Novel-scale rendered manuscripts. This is expected before the
+test-writing stage and does not block definition sign-off. Sanitization and
+whitespace checks pass. No product tests were executed; operator sign-off remains
+pending, and implementation has not started in this workflow.
