@@ -1,6 +1,6 @@
 ---
 title: W063 internal delivery review
-version: 4
+version: 5
 last-updated: 2026-10-19
 ---
 
@@ -269,3 +269,89 @@ Inspected preserved interfaces and ownership: source/configuration precedence, s
 - Product documentation explains source-reader versus writer dependencies, commands, field refresh, resource/publication behaviour and accepted fidelity limits. Authored additions were processed with `sanitize`.
 
 The accepted DOCX special-opening parity, ODT frontmatter/body transition and weight limitations remain. Reader pagination and font selection are not guaranteed identical to PDF. LibreOffice rendering and package structure do not establish Microsoft Word fidelity, editing, or save/reopen behaviour. The twelve named user tests remain operator-owned. No external audit, harness-record mutation, installation, release, push or work-item closure occurred.
+
+# 2026-10-19: Novel-scale specification and test-definition review
+
+Review method: internal (current session; not independent)
+
+Gate: definition
+
+Revision: `82ea97be60ac472f879b3d525c484e6cfdbadee5` plus the specification and
+validation amendments recorded here. Production and executable tests are unchanged.
+
+Reviewed specification SHA-256:
+`906e2cc7ba03a2cc159ef72d2e3b2bbaba2261eded83a183f2f52e3bc7a47846`.
+
+Reviewed validation SHA-256:
+`2e8bd9ad64480915f4138c60cc4ab3e2e5e048966cc82dae4b10b2f700e1a775`.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+This is a **definition-only result under the explicitly required AT category**.
+It is not an automated schema pass, implementation admission, test result or
+operator sign-off. The installed validator rejects AT; that limitation remains
+visible below and must be resolved before relying on automated delivery readiness.
+
+## Criteria and evidence
+
+Applied MAIN, ISSUES, TESTING, AUDITS, ARCHITECTURE, CODING, SECURITY, GO,
+DOCUMENTATION, ORGMODE, ORG-SCHEMA, MARKDOWN and GIT, read in full in this retained
+session. Reviewed the complete specification, including its preserved history,
+and the affected validation records. Consulted the project profile, README,
+product vision, architecture, W063 work-ledger entry, manuscript source contract,
+letter schema, command help and font policy. The ledger and implementation were
+examined in the relevant sections, not treated as an exhaustive code audit.
+No processed-feedback file was found in the work-item directory.
+
+Inspected the convert parser call, manuscript office parsing, letter adapter,
+shared DOCX/ODT export and AST bounds, dependency tests and representative
+generated-matter/rendered tests. These establish the current baseline and its
+limitations, not successful delivery of the proposed parser correction. Historical
+external evidence remains linked through [audits.yaml](audits.yaml); it was not
+changed or presented as a current verdict.
+
+## Findings, amendments and reassessment
+
+| Finding | Amendment and reassessment |
+|---|---|
+| The named scale case specified DOCX only | RT063.13 - Shared parser and mode semantics now explicitly covers Markdown/Org to DOCX/ODT, with real configured ODT writing and trapped DOCX dependencies. |
+| Novel-scale support appeared only in a test definition | AC063.3 - Manuscript semantic content now requires the novel-scale content and usability outcome, traced to RT, AT and UT evidence. |
+| Package inspection plus small rendered specimens could miss unusable long documents | AT063.1 - Novel-scale rendered manuscripts requires full reader rendering, complete ordered content, refreshed contents references and distributed geometry checks for all four cases. UT063.1 - Editing manuscripts adds human inspection, edits, refresh, save and reopen of those same outputs. |
+| Repeatable ticket-scoped rendering must not be labelled OT | The new rendering check is AT, outside the retained regression pack, with intended RED/GREEN, explicit local bounds and fourfold conversion/render execution headroom. Existing OT evidence remains preserved. |
+| Old successes could be mistaken for the expanded outcome | A dated validation note separates historical small-fixture evidence from unexecuted scale requirements. The changed RT and UT and the new AT remain AMBER. |
+
+The revised definitions specify independent expectations, exact matrix rows,
+complete-content assertions, field refresh, known layout exceptions, error
+outcomes and candidate-specific evidence. Reader rendering is separate from Word
+behaviour and human editability. The scale fixture remains synthetic and bounded;
+no private manuscript, external service or new test framework is required.
+
+The solution design retains native convert-parser reuse below distinct mode
+adapters, native DOCX throughout, and the existing configured ODT writer after
+native parsing. Parser reuse requires call-path review as well as behavioural
+tests. The amendment adds verification, not another exporter or semantic model.
+It preserves source/configuration contracts, output safety and the existing
+PDF/Typst boundary. No additional product-design blocker was identified.
+
+## Checks and limitations
+
+- `sanitize` processed the amended specification and validation text without
+  changes. `git diff --check` passed.
+- The installed `sdlc-validate --readiness-check=test-code` returned exit 2 with
+  exactly two `INVALID_ID` diagnostics: the AT heading in each Org file. Its
+  documented ID allowlist is AC/RT/OT/UT. The explicit instruction to include AT
+  governs the definition; relabelling it OT or removing it would conceal the gap.
+- Manual record comparison includes **13 ACs and 28 tests: 13 RTs, one AT,
+  two OTs and twelve UTs**. The new AT has matching definition/result identities,
+  a unique custom anchor, reciprocal AC links and an AMBER reason. The validator's
+  27-test inventory excludes AT and is not a complete readiness assessment.
+- This internal definition review accepts the explicit AT extension. It does
+  **not** waive the implementation readiness checks, authorize editing the
+  external SDLC, or report schema validity. Tooling support for AT remains an
+  implementation-admission limitation. Revised RT/AT cases are also unexecuted.
+- No product tests, document conversions, reader checks or user tests were run
+  for this documentation amendment. Test implementation and execution belong to
+  delivery after sign-off. The earlier internal definition result remains
+  historical for its own candidate; this entry assesses the amended candidate.

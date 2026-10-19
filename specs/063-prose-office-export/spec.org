@@ -28,6 +28,7 @@
 - *Fonts use the existing embedding policy*; *pagination may differ* between reading applications and PDF.
 - *Labelled reference fixtures and named user tests demonstrate every supported YAML feature*, with explicit expected values and a key-to-test checklist.
 - *Automated office-to-PDF measurements precede user review*; page PNGs support visual inspection without requiring pixel-identical pagination.
+- *Novel-scale Markdown and Org produce usable DOCX and ODT*: retained conversion regressions, a ticket-scoped automated rendering test and human editing checks cover all four combinations.
 
 ** Changes
 
@@ -102,6 +103,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Fonts :: The existing permission, discovery and supported-font-file policy remains applicable. Referenced unavailable or non-embeddable faces warn and retain their family references. This exception does not permit dropping configured size, style, stretch or tracking. The approved weight mapping is regular below 600 and bold from 600 upwards in DOCX; ODT retains standard weights in steps of 100 and uses that same binary fallback for intermediate values. Embedding retains the existing regular/bold/italic face policy; numeric ODT weights do not guarantee a distinct embedded face.
 - Review route :: External composite definition review covers specification, design and test definitions. The earlier session exception allowing self-review alone is superseded for this definition on 2026-10-16. Only the harness creates or updates [[file:audits.yaml][Independent review evidence]]. From 2026-10-18, the standing internal-only policy supersedes that invocation route for remaining reviews; record the delivery review in =internal-review.md= and preserve historical harness evidence.
 - Delivery admission :: Requires explicit sign-off of this document. The acknowledgements establishing scope do not approve an unseen solution design.
+- Test categories :: *RT* denotes retained automated regression, *AT* ticket-scoped automated RED/GREEN verification outside the regression pack, *OT* genuinely one-off verification, and *UT* human-dependent verification. The explicit AT category applies to this amendment. The installed Org schema currently lists only RT, OT and UT; retain AT's identity and report that validator limitation rather than silently treating AT as OT or omitting it from readiness review.
 
 ** Decisions and unresolved blockers
 
@@ -134,7 +136,9 @@ Manuscript and letter users need *editable office documents without rebuilding t
 :CUSTOM_ID: ac-063-3
 :END:
 - Criterion :: Office manuscripts preserve *ordered visible content and native editable structure* for all accepted source constructs, with the existing metadata, input ordering and private-section rules.
+- Scale :: This applies to *novel-length Markdown and Org*, including at least 120,000 words, 50 chapters and 10,000 prose paragraphs within the declared resource limits. Both DOCX and ODT retain the content through rendering and ordinary editing, field refresh, save and reopen; a small specimen or structurally valid package alone does not establish this outcome.
 - Proven by :: [[#rt-063-3][RT063.3 - Structured manuscript content]], [[#ut-063-1][UT063.1 - Editing manuscripts]].
+- Scale proof :: [[#rt-063-13][RT063.13 - Shared parser and mode semantics]], [[#at-063-1][AT063.1 - Novel-scale rendered manuscripts]] and [[#ut-063-1][UT063.1 - Editing manuscripts]].
 - Additional proof :: [[#rt-063-11][RT063.11 - Rendered content]], [[#ut-063-3][UT063.3 - Inline specimens]] and [[#ut-063-10][UT063.10 - Metadata precedence]].
 
 ** AC063.4 - Resolved typography and block geometry :ac:
@@ -144,6 +148,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Criterion :: Each office document uses *its mode's fully resolved YAML settings* for fonts, alignment, spacing, indentation and paper geometry, including the role distinctions in the [[#mapping][feature mapping]].
 - Proven by :: [[#rt-063-4][RT063.4 - Configuration and role geometry]], [[#ot-063-1][OT063.1 - Rendered feature comparison]].
 - Additional proof :: [[#rt-063-11][RT063.11 - Rendered geometry]], [[#ut-063-3][UT063.3 - Font roles]], [[#ut-063-4][UT063.4 - Block spacing]], [[#ut-063-5][UT063.5 - Page geometry]], [[#ut-063-6][UT063.6 - Title typography]], [[#ut-063-8][UT063.8 - Contents typography]], [[#ut-063-9][UT063.9 - Copyright typography]], [[#ut-063-10][UT063.10 - Configuration precedence]] and [[#ut-063-11][UT063.11 - Letter geometry]].
+- Scale proof :: [[#at-063-1][AT063.1 - Novel-scale rendered manuscripts]].
 
 ** AC063.5 - Manuscript generated matter and numbering :ac:
 :PROPERTIES:
@@ -152,6 +157,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Criterion :: Office manuscripts preserve configured *title, copyright, barcode, contents and heading presentation*, including their enable/disable switches, order, numbering and native updateable contents/page references.
 - Proven by :: [[#rt-063-5][RT063.5 - Generated matter and heading controls]], [[#ot-063-1][OT063.1 - Rendered feature comparison]], [[#ut-063-1][UT063.1 - Editing manuscripts]].
 - Additional proof :: [[#rt-063-12][RT063.12 - Rendered contents]], [[#ut-063-6][UT063.6 - Title fields]], [[#ut-063-7][UT063.7 - Heading presentation]], [[#ut-063-8][UT063.8 - Contents references]] and [[#ut-063-9][UT063.9 - Copyright and barcodes]].
+- Scale proof :: [[#at-063-1][AT063.1 - Novel-scale rendered manuscripts]].
 
 ** AC063.6 - Manuscript page and running-matter policy :ac:
 :PROPERTIES:
@@ -160,6 +166,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Criterion :: Office manuscripts retain configured *breaks, parity, page numbering and running-matter variants*, including frontmatter/body separation and suppression, subject to the accepted DOCX opening-page and ODT frontmatter/body exceptions under Constraints; other unrequested section breaks and numbering resets remain prohibited.
 - Proven by :: [[#rt-063-6][RT063.6 - Sections and page fields]], [[#ot-063-1][OT063.1 - Rendered feature comparison]].
 - Additional proof :: [[#rt-063-12][RT063.12 - Rendered page policy]], [[#ut-063-5][UT063.5 - Running matter]], [[#ut-063-7][UT063.7 - Pagination]], [[#ut-063-8][UT063.8 - Contents pages]] and [[#ut-063-9][UT063.9 - Copyright pages]].
+- Scale proof :: [[#at-063-1][AT063.1 - Novel-scale rendered manuscripts]].
 
 ** AC063.7 - Letter composition and inline syntax :ac:
 :PROPERTIES:
@@ -211,6 +218,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 :END:
 - Criterion :: Manuscript and letter ODT output *extends the existing configured Pandoc ODT exporter*. Native parsed content and resolved YAML supply its JSON input and generated reference; native postprocessing, font embedding, validation and atomic publication retain the required layout. No DOCX intermediate or Pandoc source reader is used in this office route. Missing Pandoc fails ODT actionably without replacing an existing destination.
 - Proven by :: [[#rt-063-1][RT063.1 - Output selection and dependencies]], [[#rt-063-4][RT063.4 - Configuration and role geometry]] and [[#rt-063-9][RT063.9 - Resource and publication failures]], with shared-exporter inspection during implementation review.
+- Scale proof :: [[#rt-063-13][RT063.13 - Shared parser and mode semantics]].
 
 * Test Definitions
 :PROPERTIES:
@@ -239,6 +247,17 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Coverage checklist :: Enumerate *every supported leaf YAML key* in the manuscript and letter contracts, including the six properties of each font role. Map each key to fixture, named profile, visible specimen/marker, exact expected value, named UT and relevant RT. Wildcard families below must be expanded in this checklist. Record absent/empty/disabled/inherited cases explicitly; they cannot be proved merely by displaying a label.
 - Profiles :: Reuse labelled content for base, customized and contrasting profiles. Include disabled features, missing optional fields, inheritance and alternate numbering/parity where a single output cannot show both states. Each profile has exact commands to generate PDF, DOCX and ODT side by side. Keep the set small; do not multiply it by the Cartesian product of settings.
 - Fonts and output :: Use bundled or already available redistributable test fonts; no font download/build. Keep generated documents in temporary output, with reproducible commands and durable observations in =validation.org=. Labels are inspection aids, not proof that actual font metrics or spacing match.
+
+*** Novel-scale fixture and matrix
+:PROPERTIES:
+:CUSTOM_ID: novel-scale-fixture
+:END:
+
+- Content :: Add *one deterministic synthetic novel* with semantically equivalent Markdown and Org sources: at least 120,000 words, 50 chapters and 10,000 prose paragraphs. Include varied paragraph lengths and labelled emphasis, Unicode, literal/code, quote, nested-list, table, link and footnote specimens near the beginning, middle and end. Include private markers that must never appear in output. Keep each source within the unchanged byte, block, span and depth limits.
+- Oracle :: Retain the generation recipe, exact source counts and an independently derived ordered content inventory with unique paragraph/chapter identifiers. Expected text and structure come from the fixture definition, not the parser/exporter under test. Record intentional repeated headings in contents and running matter separately from body occurrences; do not mistake those for duplication or normalize away missing words.
+- Profile :: Use a named bundled-font book profile with title, copyright, multi-page contents, page numbering and distinct running matter. Define expected labels, role geometry and page-policy relationships before conversion. Use the same effective settings for both source forms; this is one scale profile, not another Cartesian product of all YAML settings.
+- Required matrix :: *Markdown to DOCX, Org to DOCX, Markdown to ODT and Org to ODT* are four separately recorded cases in the scale RT, AT and UT. A pass for one row does not establish another.
+- Retention :: Keep the compact generation recipe and expectations in the repository; generate source and output under OS temporary directories. Deliver labelled office artefacts and reproduction commands for user validation. Private real manuscripts are not required and must not be read or copied without separate scope authorization.
 
 ** Shared named user-test procedure
 
@@ -355,10 +374,25 @@ Manuscript and letter users need *editable office documents without rebuilding t
 :PROPERTIES:
 :CUSTOM_ID: rt-063-13
 :END:
-- Covers :: [[#ac-063-11][AC063.11 - Extend the convert parser]], [[#ac-063-12][AC063.12 - DOCX without Pandoc]], [[#ac-063-3][AC063.3 - Semantic content]] and [[#ac-063-10][AC063.10 - Compatibility]].
-- Named cases :: =TestRT063_13_SharedSourceRecognition= exercises the extracted native source-recognition boundary and its real play, manuscript and letter callers. =TestRT063_13_ModeSpecificSemantics= invokes the public commands with heading, table, quote, emphasis and literal specimens whose meanings differ by mode. =TestRT063_13_NovelScaleDOCXWithoutPandoc= uses deterministic synthetic prose with at least 120,000 words, 50 chapters and 10,000 paragraphs, within the declared source/block/span limits.
-- Expected :: Org =*bold*= and =/italic/=, Markdown =**bold**= and =*italic*=, and literal/code protection retain their source-specific meanings. Manuscript headings/lists/tables are not script cues/cast tables; letters retain recipient composition. All visible text appears once, in order, with native structure and no Pandoc call. The large DOCX preserves chapter and paragraph counts and first/middle/final markers without a per-word Pandoc AST limit failure. Test runtime remains within the normal suite deadline; no renderer is needed for the large case.
+- Covers :: [[#ac-063-11][AC063.11 - Extend the convert parser]], [[#ac-063-12][AC063.12 - DOCX without Pandoc]], [[#ac-063-13][AC063.13 - Configured ODT writer route]], [[#ac-063-3][AC063.3 - Semantic content]] and [[#ac-063-10][AC063.10 - Compatibility]].
+- Named cases :: =TestRT063_13_SharedSourceRecognition= exercises the extracted native source-recognition boundary and its real play, manuscript and letter callers. =TestRT063_13_ModeSpecificSemantics= invokes the public commands with heading, table, quote, emphasis and literal specimens whose meanings differ by mode. Retain =TestRT063_13_NovelScaleDOCXWithoutPandoc= and add =TestRT063_13_NovelScaleODTConfiguredWriter=; each uses both source forms from the [[#novel-scale-fixture][novel-scale fixture]].
+- Scale action :: Invoke the public manuscript command for all four source/output combinations. DOCX runs with the recording Pandoc trap; the absent-Pandoc cases remain required under RT063.1 - Output selection and dependencies. ODT uses the recording wrapper around real Pandoc, permitting only its configured JSON writer and bounded compatibility probes. Decode each resulting package and compare its complete ordered body content, chapter/paragraph inventory and structured specimens against the independent oracle.
+- Expected :: Org =*bold*= and =/italic/=, Markdown =**bold**= and =*italic*=, and literal/code protection retain their source-specific meanings. Manuscript headings/lists/tables are not script cues/cast tables; letters retain recipient composition. Visible body content appears once in order, private markers are absent, and all labelled lists, tables, links and notes remain native editable structures. DOCX records zero Pandoc calls; ODT records no source-reader or DOCX calls. Both formats retain the complete novel without token-expansion limit failures, truncation or weakened safety limits.
+- Evidence boundary :: Retain these automated cases in =make test= and keep runtime within its normal deadline. Package inspection does not prove reader usability; [[#at-063-1][AT063.1 - Novel-scale rendered manuscripts]] and [[#ut-063-1][UT063.1 - Editing manuscripts]] provide that evidence.
 - Architecture proof :: The internal implementation review must record the shared parsing functions and actual call paths from =convert=, =manuscript= and =letter=, with their changed files. Inspect that prose extends existing parsing mechanics rather than delegating to an independent parser hidden behind a common API. Tests prove behaviour; neither matching outputs, coverage percentages nor a source grep establishes this architecture on its own.
+
+** AT063.1 - Novel-scale rendered manuscripts :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-063-1
+:END:
+- Covers :: [[#ac-063-3][AC063.3 - Semantic content]], [[#ac-063-4][AC063.4 - Typography and geometry]], [[#ac-063-5][AC063.5 - Generated matter]] and [[#ac-063-6][AC063.6 - Page policy]].
+- Category :: *Ticket-scoped automated RED/GREEN test*, executable on demand outside =make test= and CI. It is repeatable AT evidence, not a one-attempt OT and not human validation. Reuse the existing rendering/extraction helpers; no new test framework or runtime dependency is required.
+- Setup :: Use the four cases and exact profile from the [[#novel-scale-fixture][novel-scale fixture]]. Invoke a built binary from a temporary consuming directory outside the checkout, with controlled configuration and font roots. Record source/profile hashes, expected counts, product revision, tool versions and exact commands.
+- Action :: Generate each office file, open it headlessly in a private LibreOffice profile with source-document macros disabled, explicitly refresh fields/indexes and export every page to PDF. Reuse the verified refresh mechanism from RT063.12 - Rendered page policy. Extract page-associated body text and geometry with the existing Poppler tools. Check the entire content inventory and all contents references, then measure labelled role specimens near the beginning, middle and end.
+- Expected :: All four cases convert and render successfully with nonempty PDFs. The complete ordered body inventory is present without missing/duplicate text or private markers; the final paragraph remains visible. Every contents entry agrees with the resulting heading page after refresh. Configured numbering, physical parity and running matter satisfy the existing exceptions. Sampled font sizes, insets and clearances use RT063.11 - Rendered geometry's independent expectations and tolerances. Native editable structures remain present in the office packages; PDF text alone is insufficient.
+- Interpretation :: Normalize only documented line-wrap, hyphenation and extraction differences while retaining word order and content. Distinguish body text from generated contents/running matter. An ambiguous extraction or missing renderer is missing evidence, never GREEN. Repair warnings, field-refresh failures, timeout, truncation or absent final content fail the case. Do not infer Word behaviour or visual acceptance from LibreOffice or extraction.
+- Operational bounds :: One expected pass comprises four CLI conversions and four office-to-PDF renders. Allow at most *16 conversions and 16 renders* across RED, remediation and GREEN for one delivery candidate, with no automatic retries. Every CLI conversion retains the product's 120-second Pandoc bounds and has a 120-second test deadline; each reader render/refresh has a 300-second deadline. Extraction processes have 120-second deadlines. Stop at 150 minutes aggregate execution or 512 MiB retained artefacts, with 64 KiB diagnostics per process. Render at most 24 selected PNG pages across the final four cases, covering opening, middle, final and contents regions. These test-only reader limits do not relax product limits or the smaller existing comparisons.
+- Evidence and sequence :: Preserve intended assertion RED before target implementation and GREEN for every matrix row afterwards, with logs, counts, output hashes and labelled artefact paths in =validation.org=. Setup failure is AMBER. Run after the scale RT and before UT063.1 - Editing manuscripts. Retain the on-demand test recipe for reproducibility; do not add it to the persistent regression pack. No network, metered service, installation or UI automation is involved.
 
 ** OT063.1 - Rendered feature comparison :testdef:
 
@@ -389,9 +423,10 @@ Manuscript and letter users need *editable office documents without rebuilding t
 :CUSTOM_ID: ut-063-1
 :END:
 - Covers :: [[#ac-063-3][AC063.3 - Semantic content]], [[#ac-063-5][AC063.5 - Generated matter]] and [[#ac-063-8][AC063.8 - Fonts]].
-- Fixture and YAML :: Reuse the manuscript fixtures and profiles from UT063.3 - Font roles through UT063.10 - Metadata precedence. This test proves retention of those settings during editing/save/reopen, not another configuration feature.
-- Procedure :: In Word for DOCX and LibreOffice for ODT, open the representative manuscript, add paragraphs and a heading, edit a table and footnote, update contents/page fields, save and reopen.
-- Expected :: Ordinary editable content, retained role typography, usable lists/tables/notes, working links and refreshed contents. No repair prompt or flattened page images. Record application versions and user validation in =validation.org=.
+- Fixture and YAML :: Retain the small manuscript fixtures and profiles from UT063.3 - Font roles through UT063.10 - Metadata precedence. Additionally use *all four novel-scale outputs* from AT063.1 - Novel-scale rendered manuscripts, with the same source/profile/output hashes. This proves usability and retention during editing/save/reopen; small-document results do not substitute for novel-scale results.
+- Procedure :: The human opens each DOCX in Word and each ODT in LibreOffice. Inspect opening, middle and final chapters, contents continuation, running matter and labelled structured specimens for clipping, overlap or missing content. Add a uniquely labelled paragraph near the beginning and end and a heading in the middle; edit a table and footnote. Refresh contents/page fields, save to a new local file, close and reopen. Verify every edit and the original final paragraph, follow a contents link to the added heading and check its refreshed page reference.
+- Expected :: Ordinary editable content, retained role typography, usable lists/tables/notes, working links and refreshed contents throughout the novel. Opening, editing, refresh and reopening produce no repair prompt, hang, lost content or flattened page images. Report observed operation durations and usability; no unmeasured performance claim is inferred. The human assesses clipping and overlap that extraction cannot establish.
+- Evidence :: Record *one result per source/output combination*, application version, candidate revision, fixture/profile/output hashes, edits, observations and saved/reopened artefact path in =validation.org=. Method is user validation. Preserve the small-fixture checks separately. All four novel-scale cases must pass before the scale outcome is accepted; automated rendering cannot make this UT GREEN.
 
 ** UT063.2 - Editing letters :testdef:
 :PROPERTIES:
@@ -509,6 +544,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 ** Resource pressure and partial batches
 
 - A large manuscript or font package may exceed the explicit bounds. *Failure is preferable to truncation*. Publication is per file, not a transaction spanning recipients or barcode sidecars; all selected paths are preflighted before writing. Covered by [[#rt-063-9][RT063.9 - Resource and publication failures]].
+- *Novel-scale supported input within those bounds must succeed*, not merely fail safely. The scale RT, AT and UT use the same four-case fixture matrix; over-limit rejection is not evidence of that positive outcome.
 
 * Solution Design
 :PROPERTIES:
@@ -630,10 +666,11 @@ The following inventory covers *all settings consumed by the current manuscript 
 - First delivery step :: Write the RT package and observe intended behavioural RED; record preservation GREEN separately. Create schema-conforming =validation.org= at admission. Resolve the high-risk native page/contents mappings early; inability to meet them requires an amendment, not an undisclosed fallback.
 - Review evidence :: [[file:internal-review.md][Current-session internal definition review]] governs this correction under the standing policy. Preserve [[file:audits.yaml][historical harness evidence]] unchanged; neither it nor earlier delivery passes proves the new parser/dependency criteria.
 
-- Validation evidence :: =validation.org= owns one tagged execution record per RT, OT and UT, with dated commands, revision and observations. Definition has no execution results.
+- Validation evidence :: =validation.org= owns one tagged execution record per RT, AT, OT and UT, with dated commands, revision and observations. Definition has no execution results. Preserve the AT record even if the installed validator rejects its category; inspect AT traceability and state explicitly and report the tooling limitation. Do not claim automated readiness from an inventory that omits AT.
 - Documentation impact :: Update =README.md=, =docs/ARCHITECTURE.md=, =docs/folio-manuscript-help.md=, =docs/folio-letter-help.md=, =docs/config.md=, =docs/format-docx.md=, =docs/format-odt.md= and =docs/font-embedding.md=. Reconcile =docs/format-manuscript-markdown.md= and =schema/letter.org= where output descriptions change; source syntax remains unchanged. Cover Pandoc requirements, field refresh, supported features, limits and partial-batch/sidecar failures.
-- Delivery checks :: Focused RTs, =make test=, applicable lint/vulnerability checks, both OTs and the required review. User editing checks remain separate and must not be inferred from structural or rendered evidence. No release, push of implementation, installation or ticket closure is implied by definition sign-off.
+- Delivery checks :: Focused RTs, =make test=, AT063.1 - Novel-scale rendered manuscripts, applicable lint/vulnerability checks, both OTs and the required review. Before test-code review, the AT must be written and have intended RED or justified preservation GREEN evidence; before delivery-code review, all RTs, ATs and OTs must be GREEN. User editing checks remain separate and must not be inferred from structural or rendered evidence. No release, push of implementation, installation or ticket closure is implied by definition sign-off.
 - Fixture handoff :: Deliver the three maintained logical reference fixtures, named configuration profiles, explicit expectation checklist and reproduction commands with the RT package. Run RT063.11 - Rendered geometry and RT063.12 - Rendered page policy, then OT063.1 - Rendered feature comparison before requesting the named feature UTs. Record unfinished cases honestly; automation is intended to reduce avoidable UT failures, not replace user acceptance.
+- Scale handoff :: Also deliver the compact novel generator/oracle and labelled four-case artefact set. Run RT063.13 - Shared parser and mode semantics, then AT063.1 - Novel-scale rendered manuscripts before requesting UT063.1 - Editing manuscripts. Preserve failed and successful candidate evidence separately. Closure requires all four human editing cases as well as the automated cases.
 - Early feasibility evidence :: Before bulk production implementation, exercise minimal native DOCX/ODT examples for forced odd/even blank pages, physical versus displayed page numbering, continuous frontmatter/body transitions and multi-page native contents. Record this bounded preliminary subset under OT063.1 - Rendered feature comparison in =validation.org=, retaining its incomplete overall state until all cases run. Use temporary native documents and the existing rendering tools; no production behaviour is implemented before the test-code gate. A failed mapping requires an explicit scope amendment rather than silent degradation.
 - Contributor prerequisites :: Document LibreOffice and the selected Poppler tools as required for the rendered regression suite and consequently normal =make release=. Add an actionable missing-tool prerequisite check for =make test= and document the requirement in =README.md= and the relevant Makefile guidance; absence must fail rather than skip rendered coverage. These are test dependencies, not new office-conversion runtime dependencies.
 
@@ -649,6 +686,8 @@ Historical failed runs and the earlier accepted-fallback decision below are
 retained as history; strict ordinary-family assertions supersede that fallback.
 
 * Architecture correction history
+
+- Scale verification amendment, 2026-10-19 :: The DOCX-only structural scale definition is superseded by explicit Markdown/Org to DOCX/ODT coverage. RT063.13 - Shared parser and mode semantics retains conversion regressions; AT063.1 - Novel-scale rendered manuscripts adds ticket-scoped automated reader evidence; UT063.1 - Editing manuscripts adds human editing/save/reopen of every scale output. Small fixture checks, existing limits, accepted layout exceptions and historical executions remain. Sign-off is still pending; the amendment is not execution evidence.
 
 - Current correction, 2026-10-19 :: The operator requires extending the =convert= parser as well as its exporters. The earlier allowance for manuscript Pandoc source readers and the reader-only test below are *superseded*. AC063.11-13, RT063.13 and the revised RT063.1 now define parser reuse, zero Pandoc throughout DOCX, and the ODT-only writer boundary. Earlier sign-off does not approve this revised text; renewed sign-off is pending. All existing layout requirements and twelve named UTs remain.
 

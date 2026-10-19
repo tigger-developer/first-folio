@@ -6,6 +6,12 @@
 
 * Current correction status
 
+** 2026-10-19 - Novel-scale verification definitions expanded
+
+- Definition only :: The current specification requires Markdown and Org to DOCX and ODT at novel scale. RT063.13 - Shared parser and mode semantics now covers all four conversion cases; AT063.1 - Novel-scale rendered manuscripts adds ticket-scoped automated rendering; UT063.1 - Editing manuscripts adds four human editing/save/reopen cases. These amended cases have not been implemented or executed.
+- Evidence boundary :: Historical small-fixture conversions, renders and editing definitions do not prove the expanded scale outcome. Each source/output row needs its own dated candidate evidence. No new RED or GREEN is claimed.
+- Validator boundary :: The installed Org schema does not list AT. The explicit AT definition and result record remain present; automated inventory/readiness must not be reported as covering AT until tooling supports it. This amendment does not change the external SDLC installation.
+
 ** 2026-10-19 - Parser reuse correction awaiting implementation
 
 - Evidence boundary :: Earlier shared-exporter checks below allowed manuscript Pandoc readers. They do not prove AC063.11 - Parser reuse, AC063.12 - DOCX without Pandoc, or AC063.13 - Configured ODT writer route. The new/changed test definitions have not been implemented or executed. No fresh GREEN is claimed.
@@ -661,9 +667,11 @@
 ** AMBER UT063.1 - Editing manuscripts :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut063-1-result
-:REASON: Awaiting operator validation using testdata/prose-office/EXPECTATIONS.md and the delivered reference profiles.
+:REASON: Awaiting user validation of the retained small profiles and all four novel-scale Markdown/Org to DOCX/ODT cases after automated rendering; no scale editing, field-refresh or save/reopen evidence exists.
 :END:
 - Definition :: [[file:spec.org::#ut-063-1][UT063.1 - Editing manuscripts]].
+- Required scale records :: Markdown to DOCX, Org to DOCX, Markdown to ODT and Org to ODT, each with candidate and artefact hashes, application version, edits, refreshed references and saved/reopened observations. None has been executed for this amendment.
+- Previous reason, retained :: Awaiting operator validation using =testdata/prose-office/EXPECTATIONS.md= and the delivered reference profiles.
 
 ** AMBER UT063.2 - Editing letters :testdef:
 :PROPERTIES:
@@ -750,5 +758,18 @@
 ** AMBER RT063.13 - Shared parser and mode semantics :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-13-result
-:REASON: Newly defined parser-reuse, mode-semantics and novel-scale cases await implementation and execution after revised specification sign-off.
+:REASON: Parser-reuse, mode-semantics and the expanded four-case novel-scale conversion matrix await implementation and execution after revised specification sign-off.
 :END:
+- Definition :: [[file:spec.org::#rt-063-13][RT063.13 - Shared parser and mode semantics]].
+- Previous reason, retained :: Newly defined parser-reuse, mode-semantics and novel-scale cases await implementation and execution after revised specification sign-off.
+
+* Ticket-scoped automated validation
+
+** AMBER AT063.1 - Novel-scale rendered manuscripts :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at063-1-result
+:REASON: Newly defined ticket-scoped rendering test is unwritten and unexecuted; all four novel-scale source/output cases await revised specification sign-off and delivery.
+:END:
+- Definition :: [[file:spec.org::#at-063-1][AT063.1 - Novel-scale rendered manuscripts]].
+- Required records :: Separate intended RED and final GREEN evidence for Markdown to DOCX, Org to DOCX, Markdown to ODT and Org to ODT, including complete-content checks, refreshed contents references, role measurements, commands, versions, hashes, durations and artefact paths.
+- Scope :: Repeatable automated verification outside =make test= and CI, within the specification's per-process, aggregate-time, storage and execution-count bounds. Neither historical OT comparison nor successful package inspection substitutes for these cases.
