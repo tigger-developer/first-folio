@@ -6,7 +6,7 @@ import "strconv"
 
 func (p *Prose) alignListMarkers(files map[string][]byte, format string) error {
 	style, ok := p.Styles["FolioBody"]
-	if !ok || style.BaselineShift == 0 {
+	if !ok {
 		return nil
 	}
 	paths := []string{"word/numbering.xml"}
@@ -33,8 +33,7 @@ func (p *Prose) alignListMarkers(files map[string][]byte, format string) error {
 			}
 			if format == "odt" && (n.name == "text:list-level-style-bullet" || n.name == "text:list-level-style-number") {
 				pr := n.ensure("style:text-properties")
-				font := style.odtFont()
-				pr.set("style:text-position", font.get("style:text-position"))
+				pr.attrs = withoutStyleAttribute(pr.attrs, "style:text-position")
 				pr.set("fo:font-size", point(style.Size))
 				if n.name == "text:list-level-style-number" {
 					pr.set("style:font-name", style.Font.Family)

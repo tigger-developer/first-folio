@@ -46,6 +46,22 @@ the affected tests only. Fresh production/reader verification and a delivery-cod
 review are required; human editor behaviour cannot be inferred from package XML.
 The earlier delivery-code PASS below is superseded for the correction candidate.
 
+Affected-test reassessment before final remediation: expanded the scaling fixture
+to include part headings and their positioned ODT frames. Actual intended RED in
+=editing-parts-red-actual.log= shows ODT named heading/frame/contents styles grow
+from seven to twenty-five; DOCX remains five. The first attempted expansion did
+not insert its part source and failed an inconsistent fixture expectation; retain
+=editing-parts-red.log= as a setup error, not product RED. The corrected test
+retains every part/chapter contents target and rejects exposed named page
+overrides. The expanded package is internally PASS for this test-code purpose.
+Geometry-oracle reassessment: exact native margins and line intervals remain
+asserted independently. The old cap-edge-equals-margin assertions rewarded raised
+characters. Replaced only those ink-edge assertions with first-line-box bounds;
+normal body positioning is now an independent mandatory invariant. The actual
+ODT header-baseline regression remains strict and requires native paragraph
+placement correction. Human editing-view validation remains outstanding.
+
+
 # 2026-10-19: Shared native parser delivery-code review (historical candidate)
 
 Review method: internal (current session; not independent)

@@ -188,7 +188,7 @@ func officePlan(doc office.Document, meta Metadata, cfg Config) (office.Prose, e
 				}
 				seeded[kind] = true
 			}
-			role = fmt.Sprintf("FolioHeading%d", i)
+			role = fmt.Sprintf("FolioHeadingLevel%dInstance%d", int(level), i)
 			style := plan.Styles["FolioHeading"]
 			if level <= 2 {
 				style.Align = hc.Align

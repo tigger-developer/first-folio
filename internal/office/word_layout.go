@@ -214,8 +214,7 @@ func (p *Prose) wordLayout(files map[string][]byte) error {
 	return err
 }
 
-// Explicit run sizes prevent readers from applying their automatic superscript
-// size reduction when a paragraph's baseline position is adjusted.
+// Explicit sizes retain inline role fonts without changing natural character baselines.
 func (p *Prose) wordRunSizes(root *docxNode) {
 	root.visit(func(paragraph *docxNode) {
 		if paragraph.name != "w:p" {
@@ -252,7 +251,7 @@ func (p *Prose) wordRunSizes(root *docxNode) {
 					font = s
 				}
 			}
-			pr.ensure("w:position").set("w:val", style.wordPosition())
+			pr.remove("w:position")
 			if pr.child("w:sz") == nil {
 				pr.children = append(pr.children, dxVal("sz", strconv.Itoa(int(font.Size*2+0.5))))
 			}

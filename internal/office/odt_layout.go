@@ -104,6 +104,10 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 				gap = 0
 			}
 			if item.kind == "header" {
+				// Move the paragraph box to the requested baseline, leaving glyphs
+				// and the editor caret on their natural shared baseline. Compensate
+				// the following gap so the body boundary stays unchanged.
+				gap += item.band.Font.BaselineShift
 				props = props.attr("fo:margin-bottom", point(gap))
 			} else {
 				props = props.attr("fo:margin-top", point(gap))
@@ -111,7 +115,7 @@ func (p *Prose) odtLayout(files map[string][]byte) error {
 			layout.children = append(layout.children, ox("style:"+item.kind+"-style", props))
 			pageProps := layout.child("style:page-layout-properties")
 			if item.kind == "header" {
-				pageProps.set("fo:margin-top", point(item.band.Edge))
+				pageProps.set("fo:margin-top", point(max(0, item.band.Edge-item.band.Font.BaselineShift)))
 			} else {
 				pageProps.set("fo:margin-bottom", point(item.band.Edge))
 			}

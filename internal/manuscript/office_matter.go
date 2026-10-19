@@ -81,7 +81,7 @@ func officeGeneratedMatter(p *office.Prose, meta Metadata, cfg Config) error {
 			if level == 1 && !ms.TOC.IncludeParts || level == 2 && !ms.TOC.IncludeChapters || level > 2 && !ms.TOC.IncludeSections {
 				continue
 			}
-			role := fmt.Sprintf("FolioContentsEntry%d", i)
+			role := fmt.Sprintf("FolioContentsEntryLevel%dInstance%d", level, i)
 			style := p.Styles["FolioContents"]
 			if level == 1 {
 				style.Bold = ms.TOC.PartBold

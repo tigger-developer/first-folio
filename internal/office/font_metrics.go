@@ -7,69 +7,43 @@ import (
 	"strings"
 )
 
-// resolveBaselines aligns cap boxes to the configured content edge and running
-// header baselines to their edge distance, independently of the native line box.
+// resolveBaselines measures header placement without raising ordinary glyphs.
 func (p *Prose) resolveBaselines() {
-	var families []string
-	seen := map[string]bool{}
-	add := func(name string) {
-		if !seen[name] {
-			families = append(families, name)
-			seen[name] = true
-		}
-	}
-	for _, style := range p.Styles {
-		add(style.Font.Family)
-	}
-	if p.Page.Header.Enabled {
-		add(p.Page.Header.Font.Font.Family)
-	}
-	faces, _ := ResolveFonts(families, officeFontDirs())
-	resolve := func(style Style, baseline bool) Style {
-		if style.Character || style.Line == 0 {
-			return style
-		}
-		cap, descent, box := 0.7*style.Size, 0.25*style.Size, 1.25*style.Size
-		wanted := 0
-		if style.Bold {
-			wanted++
-		}
-		if style.Italic {
-			wanted += 2
-		}
-		for _, face := range faces {
-			if face.family != style.Font.Family || face.face != wanted {
-				continue
-			}
-			head, os2 := fontTable(face.Raw, "head"), fontTable(face.Raw, "OS/2")
-			if len(head) < 20 || len(os2) < 90 {
-				continue
-			}
-			units := float64(binary.BigEndian.Uint16(head[18:20]))
-			if units == 0 {
-				continue
-			}
-			cap = float64(binary.BigEndian.Uint16(os2[88:90])) * style.Size / units
-			descent = float64(binary.BigEndian.Uint16(os2[76:78])) * style.Size / units
-			box = float64(binary.BigEndian.Uint16(os2[74:76])+binary.BigEndian.Uint16(os2[76:78])) * style.Size / units
-			break
-		}
-		style.BaselineShift = max(0, style.Line-descent-cap)
-		if baseline {
-			style.BaselineShift = style.Line - descent
-		}
-		style.FontBox = box
-		return style
-	}
+	// Native line boxes own paragraph leading; ordinary glyphs and the editor
+	// caret must share a baseline. Only the header box needs an edge offset.
 	for key, style := range p.Styles {
-		if strings.HasPrefix(key, "FolioContents") {
+		style.BaselineShift, style.FontBox = 0, 0
+		p.Styles[key] = style
+	}
+	if !p.Page.Header.Enabled {
+		return
+	}
+	style := p.Page.Header.Font
+	descent := 0.25 * style.Size
+	wanted := 0
+	if style.Bold {
+		wanted++
+	}
+	if style.Italic {
+		wanted += 2
+	}
+	faces, _ := ResolveFonts([]string{style.Font.Family}, officeFontDirs())
+	for _, face := range faces {
+		if face.family != style.Font.Family || face.face != wanted {
 			continue
 		}
-		p.Styles[key] = resolve(style, false)
+		head, os2 := fontTable(face.Raw, "head"), fontTable(face.Raw, "OS/2")
+		if len(head) < 20 || len(os2) < 78 {
+			continue
+		}
+		units := float64(binary.BigEndian.Uint16(head[18:20]))
+		if units > 0 {
+			descent = float64(binary.BigEndian.Uint16(os2[76:78])) * style.Size / units
+		}
+		break
 	}
-	if p.Page.Header.Enabled {
-		p.Page.Header.Font = resolve(p.Page.Header.Font, true)
-	}
+	style.BaselineShift = style.Line - descent
+	p.Page.Header.Font = style
 }
 
 // TextWidth returns the longest line's advance in points, including configured tracking.

@@ -67,13 +67,21 @@ func TestRT063_13_OfficeStylesDoNotGrowWithChapters(t *testing.T) {
 				counts := []int{}
 				for _, chapters := range []int{4, 40} {
 					dir := t.TempDir()
-					proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: true\n      include-chapters: true\n      page-numbers: true\n      links: true\n")
+					proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: true\n      include-parts: true\n      include-chapters: true\n      page-numbers: true\n      links: true\n")
 					var text strings.Builder
 					prefix := "##"
 					if input == "org" {
 						prefix = "**"
 					}
 					for i := 1; i <= chapters; i++ {
+						if i%2 == 1 {
+							partPrefix := "#"
+							if input == "org" {
+								partPrefix = "*"
+							}
+							fmt.Fprintf(&text, "%s PART%03d\n\n", partPrefix, (i+1)/2)
+						}
+
 						fmt.Fprintf(&text, "%s CH%03d\n\nBODY%03d\n\n", prefix, i, i)
 					}
 					pkg := proseConvert(t, proseSource(t, dir, "source."+input, text.String()), filepath.Join(dir, "output."+format))
@@ -87,10 +95,14 @@ func TestRT063_13_OfficeStylesDoNotGrowWithChapters(t *testing.T) {
 						if format == "odt" {
 							name = style.attr("name")
 						}
-						if strings.HasPrefix(name, "FolioHeading") || strings.HasPrefix(name, "FolioContentsEntry") {
+						if strings.HasPrefix(name, "FolioPageParagraph") {
+							t.Error("instance page override exposed as a named editing style")
+						}
+						if strings.Contains(name, "FolioHeading") || strings.HasPrefix(name, "FolioContentsEntry") {
 							count++
 						}
 					}
+					t.Logf("%d chapters use %d heading/contents named styles", chapters, count)
 					counts = append(counts, count)
 					// Every heading's bookmark and live contents reference must remain distinct.
 					body := officeBody(t, pkg, format)
@@ -105,8 +117,8 @@ func TestRT063_13_OfficeStylesDoNotGrowWithChapters(t *testing.T) {
 							refs[v] = true
 						}
 					}
-					if len(refs) != chapters {
-						t.Errorf("got %d distinct contents references, want %d", len(refs), chapters)
+					if len(refs) != chapters+chapters/2 {
+						t.Errorf("got %d distinct contents references, want %d", len(refs), chapters+chapters/2)
 					}
 					for i := 1; i <= chapters; i++ {
 						if !strings.Contains(body.text(), fmt.Sprintf("BODY%03d", i)) {
