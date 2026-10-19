@@ -1,10 +1,52 @@
 ---
 title: W063 internal delivery review
-version: 10
+version: 11
 last-updated: 2026-10-19
 ---
 
-# 2026-10-19: Shared native parser delivery-code review
+# 2026-10-19: Editor-remediation test-code review
+
+Review method: internal (current session; not independent)
+
+Gate: test-code
+
+Mode: SDLC
+
+Revision: `0eaa6e5` plus `prose_office_editing_test.go` and the recorded
+operator-authorized W063 correction/RED evidence. Production is unchanged.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+Reviewed the two actual public-command regressions, their package/style helpers,
+relevant current baseline/layout and generated-matter code, and the operator's
+reported editing failure against existing AC063.3/4/5/7/11 and UT063.1. Reused
+unchanged AUDITS, TESTING, CODING, ARCHITECTURE, SECURITY and Go standards already
+read in full. This is a routine correction within unaccepted W063, not a new
+ticket or a change to approved product scope.
+
+The baseline test covers Markdown and Org manuscripts plus composed letters in
+both formats, inspecting actual ordinary paragraphs and their inherited styles.
+It fails on nonzero character-position offsets; genuine note references remain
+outside that ordinary-text assertion. Existing font, note and geometry tests
+remain preservation checks. The scaling test compares four with forty chapters
+in all four manuscript combinations and independently requires one distinct
+live contents reference per heading and retained body markers. It rejects style
+counts proportional to instances, without prescribing a production algorithm.
+Existing differing-role/formatting and page-policy tests protect against merging
+incompatible formatting or losing instance-specific layout.
+
+Both tests compiled and failed for the intended defects in `editing-red.log`
+(3.144s): body offsets and nine versus eighty-one heading/contents styles.
+No execution scaffolding or production implementation was needed. Test-code
+readiness passes in `editing-test-readiness.yaml`; other AT/RT records retain
+previous candidate evidence. No blocking test finding remains. This PASS approves
+the affected tests only. Fresh production/reader verification and a delivery-code
+review are required; human editor behaviour cannot be inferred from package XML.
+The earlier delivery-code PASS below is superseded for the correction candidate.
+
+# 2026-10-19: Shared native parser delivery-code review (historical candidate)
 
 Review method: internal (current session; not independent)
 

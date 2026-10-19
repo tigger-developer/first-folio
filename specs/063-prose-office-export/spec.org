@@ -579,6 +579,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Manuscripts :: Reuse native source-frontmatter extraction and =loadConfigWithSource= for PDF and office output, with =internal/config.Load= owning the merge. Only the first resolved Markdown input supplies =folio:= and =render:= configuration mappings; keep metadata handling distinct and preserve the existing later-input rejection. Org input does not gain a YAML source layer.
 - Letters :: Reuse the =ModeLetter= configuration already loaded by the letter command for its PDF route. Pass that same resolved configuration to the office adapter; recipient composition does not reload it or introduce per-recipient overrides. Existing exclusions, including manuscript running matter, remain.
 - Export boundary :: Mode adapters consume the resolved typed settings. =internal/office= translates those values into native DOCX/ODT properties and the configured ODT reference; it does not rediscover YAML, reorder layers or introduce office-only defaults. Native unit conversion and accepted fidelity mappings do not change configuration precedence. Reusing the PDF configuration path does not invoke PDF rendering, Typst or Pandoc source readers.
+- Editing invariant :: Ordinary body/heading/letter text must retain a natural baseline in the editor, without character-position shifts used to simulate paragraph geometry. Equivalent formatting roles reuse named styles; bookmarks and instance layout remain distinct. RT063.4 and RT063.13 add package-level guards, while UT063.1 proves cursor/typing/selection and no editing-view clipping.
 - Verification :: RT063.4 - Configuration and role geometry proves observable cascade parity. Implementation review traces PDF and office callers to the existing shared loader and source-extraction path; equivalent output alone does not establish reuse. UT063.10 - Metadata, style and configuration precedence retains human verification of the resolved values.
 
 ** Shared native parsing and mode adapters
@@ -711,6 +712,17 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Superseded verification delta :: RT063.1 - Output dependencies additionally requires =TestRT063_1_LetterDOCXWithoutPandoc= and =TestRT063_1_ManuscriptDOCXReaderOnly=. The first runs with neither Pandoc nor Typst available. The second permits real Pandoc source-reader calls but rejects every DOCX writer/reference request. Both inspect native editable output. RT063.10 - Existing route preservation protects the extracted script callers.
 
 * Hands-off mode decision log
+
+** 2026-10-19T22:07:53Z :hands-off:review:
+
+*** Unaccepted W063 editor defects returned for correction
+
+- Authority :: The operator reports the same raised-body/cursor/clipping defect and per-instance styles for both source formats and outputs, confirms these remain fixes under unaccepted W063, and instructs proceeding. Continue the existing isolated feature branch in hands-off mode; do not create defect tickets or touch the live executable.
+- Required behaviour :: Ordinary editable text uses its natural character baseline. Character-position offsets are reserved for genuine semantic superscripts, such as footnote anchors. Native paragraph spacing and page geometry own layout; print-preview success does not establish editor usability.
+- Styles :: Reuse named formatting styles for equivalent effective role properties. Preserve unique bookmarks, contents targets, section/page boundaries and running-field values independently of shared formatting; ODT page-transition overrides belong to automatic styles rather than the editor's named-style list.
+- Verification :: Add public-command RED/GREEN checks across Markdown/Org and DOCX/ODT for unshifted body text and style-count stability as chapters grow, retaining distinct contents references. Recheck affected rendered geometry and full novel acceptance. Human cursor, selection, typing and clipping checks remain operator-owned under UT063.1; the reported failed observation is retained, with retest pending after remediation. Local AT counts remain authorized by the prior unlimited-run decision; other process/storage bounds remain.
+- Review status :: The earlier delivery-code PASS applies only to the earlier candidate and is superseded for this correction. A fresh affected-test review and delivery-code review are required; no closure or acceptance is inferred.
+
 
 ** 2026-10-19T20:45:21Z :hands-off:review:
 

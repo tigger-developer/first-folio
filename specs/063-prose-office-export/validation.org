@@ -6,6 +6,13 @@
 
 * Current correction status
 
+** 2026-10-19 - Editor remediation RED
+
+- User observation :: Three screenshots inspected at =/Users/tigger/ss/screenshot-26-10-19-2259-25.png=, =screenshot-26-10-19-2259-34.png= and =screenshot-26-10-19-2259-52.png=. Operator reports body/cursor displacement and editing-view clipping for both source forms and output formats. This fails the editable-document outcome under UT063.1; retest remains pending. Print-preview checks did not establish editor usability.
+- Reproduction :: =editing-red.log= records intended behavioural RED for =TestRT063_4_OfficeNaturalBodyBaseline= (all six manuscript/letter cases) and =TestRT063_13_OfficeStylesDoNotGrowWithChapters= (all four source/output pairs), 3.144s. At four versus forty chapters, heading/contents named styles grow from nine to eighty-one. Body packages contain explicit raised-character positioning. No production change is present at this RED checkpoint.
+- Current review :: Previous delivery-code PASS is historical for its candidate. RT063.4 and RT063.13 require remediation and fresh checks; user editing retest remains AMBER. Other historical results remain preservation evidence pending affected-check reassessment.
+
+
 ** 2026-10-19 - Native parser delivery candidate; automated verification settled
 
 - Candidate :: =723734d= on =feature/W063-prose-office-export=, isolated under =.agent/worktrees/w063=. All results below distinguish the full-suite candidate from subsequent affected checks. Older entries retain their state at the time; they are not current parser-correction acceptance.
@@ -356,13 +363,23 @@ Its =comparison.html= and editable files remain in
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** GREEN RT063.4 - Configuration and role geometry :testdef:
+** RED RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. Family, size, margin and CLI style comparisons pass in .agent/logs/cascade-settled.log (12.245s); existing partial-role inheritance remains covered.
+:REVISION: 0eaa6e5 plus prose_office_editing_test.go
+:COMMAND: go test ./internal/app -run '^TestRT063_(4_OfficeNaturalBodyBaseline|13_OfficeStylesDoNotGrowWithChapters)$' -count=1 -timeout=5m
+:EVIDENCE: Intended editor-baseline/style-growth failures in .agent/logs/editing-red.log, 3.144s; see current correction status.
 :END:
+
+*** Historical GREEN before editor defect report
+
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-4-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. Family, size, margin and CLI style comparisons pass in .agent/logs/cascade-settled.log (12.245s); existing partial-role inheritance remains covered.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -948,13 +965,23 @@ Its =comparison.html= and editable files remain in
 - Scope :: Record DOCX opening-page header/footer selection and the separate ODT frontmatter/body page-break limitation. Preserve earlier failures as historical evidence; no test status changes follow from documentation alone.
 - ODT focused follow-up :: Native page policy and the three ODT continuous/reset/changed-field rendered cases passed: office 0.354s and application 68.654s in =.agent/w063-approved-boundary-green.log=. Additional native sequence checks passed in 0.834s in =.agent/w063-boundary-sequences.log=. These results do not establish a passing full suite.
 
-** GREEN RT063.13 - Shared parser and mode semantics :testdef:
+** RED RT063.13 - Shared parser and mode semantics :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-13-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. Full corrected-fixture Markdown/Org to DOCX/ODT structural oracle and dependency traps pass in .agent/logs/novel-diverse-rt.log and parser-final.log.
+:REVISION: 0eaa6e5 plus prose_office_editing_test.go
+:COMMAND: go test ./internal/app -run '^TestRT063_(4_OfficeNaturalBodyBaseline|13_OfficeStylesDoNotGrowWithChapters)$' -count=1 -timeout=5m
+:EVIDENCE: Intended editor-baseline/style-growth failures in .agent/logs/editing-red.log, 3.144s; see current correction status.
 :END:
+
+*** Historical GREEN before editor defect report
+
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-13-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. Full corrected-fixture Markdown/Org to DOCX/ODT structural oracle and dependency traps pass in .agent/logs/novel-diverse-rt.log and parser-final.log.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
