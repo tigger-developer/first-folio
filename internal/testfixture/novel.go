@@ -27,7 +27,13 @@ func Novel(format string) (string, []string) {
 			}
 			fmt.Fprintf(&out, "\n%s CH%03d\n\n", prefix, i/200+1)
 		}
-		paragraphs[i] = fmt.Sprintf("P%05d Alice carried twelve letters through the quiet courtyard before dawn each morning END%05d.", i, i)
+		body := "Cáit carried twelve letters through the quiet courtyard before dawn each morning."
+		if i%3 == 1 {
+			body += " She waited."
+		} else if i%3 == 2 {
+			body += " Máiréad quietly folded the final page."
+		}
+		paragraphs[i] = fmt.Sprintf("P%05d %s END%05d.", i, body, i)
 		out.WriteString(paragraphs[i] + "\n\n")
 		if i == 0 || i == 5000 || i == 9999 {
 			if format == "org" {

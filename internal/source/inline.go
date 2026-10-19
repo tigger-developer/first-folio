@@ -92,7 +92,7 @@ func (p *parser) inline(text string, depth int) ([]Node, error) {
 				if !hasLabel {
 					label = target
 				}
-				if imageTarget(target) {
+				if !hasLabel && imageTarget(target) {
 					return nil, fmt.Errorf("source images are unsupported")
 				}
 				if err := flush(); err != nil {
@@ -278,8 +278,10 @@ func smart(text string) string {
 
 func imageTarget(target string) bool {
 	lower := strings.ToLower(target)
+	lower, _, _ = strings.Cut(lower, "?")
+	lower, _, _ = strings.Cut(lower, "#")
 	for _, ext := range []string{".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"} {
-		if strings.HasPrefix(lower, "file:") && strings.HasSuffix(lower, ext) {
+		if strings.HasSuffix(lower, ext) {
 			return true
 		}
 	}

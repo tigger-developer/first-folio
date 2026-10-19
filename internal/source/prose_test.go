@@ -51,3 +51,14 @@ func TestNativeLiteralAndEmptyTableCells(t *testing.T) {
 		}
 	}
 }
+
+func TestNativeOrgImageBoundary(t *testing.T) {
+	for _, target := range []string{"file:picture.png", "https://example.invalid/picture.png", "https://example.invalid/picture.PNG?size=2"} {
+		if _, err := Prose("org", "[["+target+"]]\n"); err == nil || !strings.Contains(err.Error(), "images are unsupported") {
+			t.Errorf("image source %s should be rejected, got %v", target, err)
+		}
+	}
+	if _, err := Prose("org", "[[https://example.invalid/picture.png][View the illustration]]\n"); err != nil {
+		t.Errorf("explicitly labelled hyperlink should remain a link: %v", err)
+	}
+}

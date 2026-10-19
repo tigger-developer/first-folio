@@ -142,7 +142,23 @@ func checkNovelReferences(t *testing.T, text string) {
 	heading := regexp.MustCompile(`^CH([0-9]{3})$`)
 	footer := regexp.MustCompile(`NOVEL-PAGE\s+([0-9]+)`)
 	refs, actual := map[string]int{}, map[string]int{}
-	for _, page := range strings.Split(text, "\f") {
+	bodyNumber := 0
+	for index, page := range strings.Split(text, "\f") {
+		if strings.Contains(page, "P00000") || bodyNumber > 0 && strings.TrimSpace(page) != "" {
+			bodyNumber++
+			f := footer.FindStringSubmatch(page)
+			if len(f) != 2 || f[1] != strconv.Itoa(bodyNumber) {
+				t.Errorf("physical page %d must display body page %d", index+1, bodyNumber)
+			}
+			parity := "ODD"
+			if index%2 == 1 {
+				parity = "EVEN"
+			}
+			compact := strings.Join(strings.Fields(page), "")
+			if !strings.Contains(compact, "NOVEL-"+parity+strconv.Itoa(bodyNumber)) {
+				t.Errorf("physical page %d lost its %s body running header", index+1, parity)
+			}
+		}
 		for _, line := range strings.Split(page, "\n") {
 			line = strings.TrimSpace(line)
 			if m := entry.FindStringSubmatch(line); m != nil {

@@ -175,6 +175,7 @@ func TestRT063_11_OfficeRenderedManuscriptFonts(t *testing.T) {
 				t.Fatal(err)
 			}
 			tree := officeParseXML(t, xmlRaw)
+			proseAssertFootnoteAnchor(t, tree)
 			fonts := map[string]string{}
 			for _, f := range tree.all("fontspec") {
 				fonts[f.attr("id")] = f.attr("family")
@@ -764,54 +765,36 @@ func TestRT063_11_OfficeRenderedPageFieldTypography(t *testing.T) {
 	}
 }
 
-func TestRT063_11_OfficeRenderedFootnoteAnchor(t *testing.T) {
-	for _, format := range []string{"docx", "odt"} {
-		t.Run(format, func(t *testing.T) {
-			root := proseRenderBudget(t, 10<<20)
-			t.Setenv("HOME", root)
-			proseSource(t, root, "script.yaml", "folio:\n  manuscript:\n    font:\n      family: Iosevka Publish\n      size: 12pt\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n")
-			source := proseSource(t, root, "source.md", "ANCHOR-BASELINE[^note]\n\n[^note]: NOTE-TEXT\n")
-			target := filepath.Join(root, "note."+format)
-			proseConvert(t, source, target)
-			pdf := proseRenderPDF(t, target)
-			path := filepath.Join(root, "spans.xml")
-			proseTool(t, "pdftohtml", "-xml", "-zoom", "1", "-noroundcoord", pdf, path)
-			raw, err := os.ReadFile(path)
-			if err != nil {
-				t.Fatal(err)
-			}
-			tree := officeParseXML(t, raw)
-			var anchor *officeXML
-			for _, span := range tree.all("text") {
-				if strings.Contains(span.text(), "ANCHOR-BASELINE") {
-					anchor = span
-					break
-				}
-			}
-			if anchor == nil {
-				t.Fatal("rendered anchor text missing")
-			}
-			top, _ := strconv.ParseFloat(anchor.attr("top"), 64)
-			height, _ := strconv.ParseFloat(anchor.attr("height"), 64)
-			found := false
-			for _, span := range tree.all("text") {
-				if strings.TrimSpace(span.text()) != "1" {
-					continue
-				}
-				y, _ := strconv.ParseFloat(span.attr("top"), 64)
-				h, _ := strconv.ParseFloat(span.attr("height"), 64)
-				if math.Abs(y-top) > 20 {
-					continue
-				}
-				found = true
-				if y+h >= top+height-1 {
-					t.Errorf("note reference bottom %g is not above body bottom %g", y+h, top+height)
-				}
-			}
-			if !found {
-				t.Fatal("rendered footnote reference missing beside anchor")
-			}
-			proseFailurePages(t, pdf, root, 1, "failed-note")
-		})
+func proseAssertFootnoteAnchor(t *testing.T, tree *officeXML) {
+	t.Helper()
+	var anchor *officeXML
+	for _, span := range tree.all("text") {
+		if strings.Contains(span.text(), "NOTE-ANCHOR") {
+			anchor = span
+			break
+		}
+	}
+	if anchor == nil {
+		t.Fatal("rendered anchor text missing")
+	}
+	top, _ := strconv.ParseFloat(anchor.attr("top"), 64)
+	height, _ := strconv.ParseFloat(anchor.attr("height"), 64)
+	found := false
+	for _, span := range tree.all("text") {
+		if strings.TrimSpace(span.text()) != "1" {
+			continue
+		}
+		y, _ := strconv.ParseFloat(span.attr("top"), 64)
+		h, _ := strconv.ParseFloat(span.attr("height"), 64)
+		if math.Abs(y-top) > 20 {
+			continue
+		}
+		found = true
+		if y+h >= top+height-1 {
+			t.Errorf("note reference bottom %g is not above body bottom %g", y+h, top+height)
+		}
+	}
+	if !found {
+		t.Fatal("rendered footnote reference missing beside anchor")
 	}
 }
