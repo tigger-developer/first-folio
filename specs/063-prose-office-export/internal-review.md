@@ -1,8 +1,84 @@
 ---
 title: W063 internal delivery review
-version: 8
+version: 9
 last-updated: 2026-10-19
 ---
+
+# 2026-10-19: Shared-parser delivery verification, gate pending
+
+Current candidate: `723734d`, with documentation and evidence updates following.
+
+The current delivery-code gate has **no verdict**. The installed validator
+reports valid schema, thirteen RTs and two OTs GREEN, twelve UTs AMBER, and
+AT063.1 AMBER. The corrected Unicode/varied-length fixture passes both DOCX
+reader cases; its two ODT reader cases await the operator's verification-budget
+decision. Historical delivery PASS records below do not apply to this candidate.
+Do not start or claim the delivery-code gate before that prerequisite is met.
+
+## Verification and review preparation
+
+Method: internal, current session; not independent. External review remains
+suspended. Reused the standards already read in full for this delivery: MAIN,
+AUDITS, TESTING, CODING, ARCHITECTURE, SECURITY, DOCUMENTATION, GIT, GO and
+Org/Markdown documentation rules. Inspected the production delta, written
+tests, affected unchanged configuration/publication boundaries and product
+documentation. These preparation observations are not an audit PASS.
+
+The implementation uses these actual paths:
+
+- `convert` calls `play.Parse`. Its Org and Markdown adapters now consume
+  `source.Recognize` for headings, metadata and notes, and the shared table
+  recognition. Script classification remains in `play`; Fountain is preserved.
+  The shared office script serializer calls `source.ScriptInline`, which uses
+  the same bounded `parser.inline` implementation as prose and letters.
+- Manuscript office routing calls `runOffice`, then `parseOffice`,
+  `source.Prose`, `Recognize` and `parser.inline`. Mode-owned metadata, private
+  sections, heading composition, generated matter and layout remain in
+  `internal/manuscript`. DOCX uses the existing native XML/package machinery.
+  Constructing and validating the internal JSON-shaped nodes starts no process.
+- Letter routing retains its typed recipient parser and substitution. Each
+  `letter.Office` composition creates one `source.LetterParser`; its `Parse`
+  method shares `parser.inline` and carries budgets across all recipient blocks.
+  It maps literals to the existing letter role without rediscovering YAML.
+- ODT passes the native content through `Prose.Export` and the shared
+  `writeODT`: JSON to ODT, native generated reference, bounded configured writer,
+  native layout, font packaging, validation and existing atomic publication.
+  No source-reader, default-reference or intermediate DOCX call is needed.
+- PDF and office manuscripts retain `readConfiguredMarkdown` and
+  `loadConfigWithSource` into `config.Load`; letters use the command's existing
+  resolved `ModeLetter` configuration for both renderers. No office cascade was
+  introduced. PDF/Typst parsing and its tool requirements remain unchanged.
+
+The grammar dispatch functions exceed the coding standard's fifty-line
+tripwire. They implement one bounded source scan, with explicit node budgets,
+literal protection and format/mode distinctions; list and table parsing are
+separate helpers. Keeping that dispatch visible avoids a speculative parser
+framework or a universal document model. This is a recorded maintainability
+tradeoff to assess at the eventual gate, not evidence that tests alone establish
+architecture conformance.
+
+## Findings and remediation evidence
+
+| Finding | Correction and evidence |
+|---|---|
+| New shared-parser error lost ODT diagnostic context | Preserve native DOCX context at the script adapter; the existing ODT error adapter translates it. The previously failing input-limit regression passes in 5.046s. |
+| Table splitting dropped an empty trailing cell | Strip one structural pipe at each edge, preserving empty cells; native RED/GREEN and existing play tests cover the boundary. |
+| Rendered ODT note anchor appeared below the body baseline | Native ODF anchor styling includes the resolved body shift; a repeated-style test prevents duplicate definitions. Both formats pass and final typography PNGs were inspected. The retained assertion reuses existing renders. |
+| Letter budgets reset for each composed paragraph | Own one shared-parser state per recipient. Byte, block and inline exact-limit/overflow tests have intended RED-to-GREEN evidence, plus public letter follow-ups. |
+| Unlabelled remote Org images could become ordinary links | Reject image sources with URL query/fragment suffixes while preserving explicitly labelled hyperlinks. Native RED/GREEN and affected public parser cases pass. No target is fetched. |
+| Novel fixture lacked required Unicode and varied paragraph lengths | Independent inventory test reproduced both omissions. Corrected structural matrix and two DOCX reader cases pass; ODT reader evidence is pending. |
+| AT conversion allowance exceeded | Twenty attempts are recorded, including both four-case RED runs. The agent initially omitted one RED run from its count. Further AT conversions are stopped pending the requested allowance of twenty-two; this does not retrospectively authorize the overrun. |
+
+Full regression passed in `full-suite-final.log` (application 565.617s).
+The W063 group run passed in 410.706s; later affected parser, letter, cascade,
+fixture and rendered-font checks pass separately. Current shared-source
+coverage is 86.4% of statements and 81.3% of instrumented source lines.
+Lint, source/office/letter race checks and the unchanged dependency graph's
+vulnerability check pass. `validation.org` records the exact affected-check
+boundary, artefact paths and preserved failed/setup observations.
+
+The feature worktree is isolated and the live binary hash is unchanged.
+No installation, release, merge, operator UT or issue closure is claimed.
 
 # 2026-10-19: Native parser correction definition review
 

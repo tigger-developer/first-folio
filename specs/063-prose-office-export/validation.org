@@ -6,6 +6,52 @@
 
 * Current correction status
 
+** 2026-10-19 - Native parser delivery candidate; final AT decision pending
+
+- Candidate :: =723734d= on =feature/W063-prose-office-export=, isolated under =.agent/worktrees/w063=. All results below distinguish the full-suite candidate from subsequent affected checks. Older entries retain their state at the time; they are not current parser-correction acceptance.
+- Full regression :: =make test= passed: application 565.617s, manuscript 203.391s, configuration 1.521s, letter 1.103s and play 0.654s, with remaining packages passing or cached. Log: =.agent/logs/full-suite-final.log=. Its earlier failed run exposed an ODT error that lost format context; =input-limit-followup.log= passes in 5.046s after correction. Preserve =full-suite.log= as failed evidence.
+- Affected verification :: All W063 application groups pass in 410.706s (=w063-final.log=). Current parser/dependency/content groups pass in 23.155s (=parser-final.log=); letter composition, font and publication groups pass in 11.231s (=letter-followup.log=). Corrected Unicode/varied-length novel conversions pass all four structural cases in 13.378s (=novel-diverse-rt.log=). These focused checks cover subsequent deltas under the affected-check rule; the full run did not include every later test refinement.
+- Native limits :: =TestLetterAggregateBudgets= initially compiled against a declaration-only wrapper, then reproduced resetting byte/block/inline counts across paragraphs. =letter-budgets-red.log= retains that RED; =letter-budgets-green.log= passes source and letter packages. =TestNativeLiteralAndEmptyTableCells= exposed loss of a trailing empty cell before correction. =TestNativeOrgImageBoundary= rejects unlabelled local/remote images, including query suffixes, while retaining explicit image hyperlinks; =native-images-red.log= and =native-images-green.log= retain the transition.
+- Rendered note :: Visual inspection found ODT's reference below its shifted body baseline. The expanded standalone test reproduced that defect in =odt-note-red.log=; correction passed both formats in =odt-note-probe.log= (46.890s). The retained assertion now shares the existing manuscript font renders, passing in =note-reuse-render.log= (23.943s), so RT063.11 remains six conversions/renders. The native repeated-style regression also passes; preserve =odt-note-style-red.log= and =office-note-green.log=.
+- Cascade :: =cascade-settled.log= passes PDF/DOCX/ODT family, size and margin winners for global, style, first-source and local layers plus supported manuscript CLI style precedence (12.245s). Existing role inheritance, later-source rejection and metadata precedence cases remain. Early family probes selected unavailable families and are not product RED; corrected expectations use Iosevka Publish and Libertinus Serif and strip only standard PDF subset prefixes.
+- Coverage :: Current source-package profiles merge to 432/500 statements (86.4%) and 492/605 instrumented source lines (81.3%). =source-coverage-current.txt= records the two current-line-mapping profiles and scope. This is shared-source coverage, not whole-repository coverage.
+- Static and security :: =make lint= passes (=lint-current.log=); current source/office/letter race results are in =race-current.log=. =govulncheck ./...= reports no vulnerabilities (=vuln.log=); dependencies are unchanged.
+- OT comparison :: Seven maintained profiles generated in 336.589s; two affected ODT typography profiles rerendered in 37.943s. Inspected base/contrasting typography, note anchors, title/copyright/barcode groups, multi-page contents, part/chapter body pages, physical blanks, running bands and both letter profiles against their PDF specimens. No clipping or overlap was observed in those inspected regions after correction; line wrapping differs. The unique uninstalled-family probe passes both formats in 44.265s after its first expected PostScript-name suffix was corrected against the source font's actual name table. Nothing was installed. Total: 24 office renders, nine PDF baselines, within the 32/16 bounds; comparison index and editable files are identified by =.agent/logs/profiles-path=.
+- OT CLI :: The current isolated binary passes four help checks and four public conversions outside the checkout, with DOCX using recording/rejecting Pandoc/Typst traps and zero calls. Six packages validate. Logs and retained directory: =.agent/logs/cli-current.log= and =cli-current-path=. Earlier helper compile/case-check errors are setup failures, not product RED or current OT proof.
+- Tools :: Go 1.27.2 darwin/arm64; Pandoc 3.9.0.2; Typst 0.14.2; LibreOffice 26.2.3.2; Poppler 26.09.0. All conversions, rendering and inspection are local; no UI automation or metered service was used.
+- AT historical GREEN :: The narrower ASCII recipe passes all four built-binary reader cases in =acceptance-first-native.log= (93.273s) and =acceptance-retained.log= (120.540s); the ODT note follow-up passes both affected rows in =acceptance-final-odt.log= (70.359s). These do not establish the corrected fixture's full matrix.
+- AT correction :: =novel-inventory-red.log= proves missing Unicode and uniform lengths; =novel-inventory-green.log= verifies the amended independent recipe. Both corrected DOCX reader cases pass in =acceptance-diverse-docx.log= (43.193s). The current page-policy assertions also pass against the retained completed outputs (=novel-policy-settled.log=), verifying sequential body counters, physical header parity and refreshed contents. The first post-hoc probe raced a still-writing extraction file; preserve its failure in =novel-policy-followup.log= without presenting it as a product failure.
+- AT budget :: Twenty CLI conversion attempts and twelve reader renders have executed. The sixteen-conversion bound was exceeded through an agent tracking error: an earlier four-case RED repetition was omitted from the initial count. This is not retrospectively authorized. Further AT conversions are stopped pending the requested allowance of twenty-two, needed for the two corrected-fixture ODT cases. Sixteen renders, 150 minutes, 512 MiB and per-process limits remain unchanged. AT063.1 is AMBER; no delivery-code PASS is claimed.
+- Human boundary :: All twelve named UTs remain AMBER, including four novel editing/save/reopen cases. LibreOffice rendering and PNG inspection do not establish Word or ordinary editor interaction. No installation, release, merge or ticket closure has occurred. The live binary checksum still matches =6d4143b9764cd7716c33df6b18ea5dc56d03b35d1dc5d172e719772ecea236f2=; recheck at handback.
+
+*** Corrected novel fixture matrix and handoff evidence
+
+The independent recipe now contains 10,000 body paragraphs at three lengths,
+50 chapters and accented Irish names. Markdown has 166,851 whitespace-delimited
+source words; Org has 166,850. The shared profile SHA-256 is
+=e5414256922e88d08b7981ebe2b38efe913f8c66a66333f4d3f81d7649646cab=.
+Source/output hashes and absolute temporary paths are also retained in
+=.agent/logs/novel-corrected-manifest.txt=.
+
+| Case | Current reader evidence | Source SHA-256 | Office SHA-256 |
+|------+-------------------------+---------------+---------------|
+| Markdown to DOCX | GREEN, 21.54s | =5ff5ea4e7391c1279858d1fb08fe0c7757ed15700aa402b064b731d64ca45fd4= | =f83e815dcb21f69b48109fb09c70e6f67e7bcbdede44765d6aec51c826927b36= |
+| Org to DOCX | GREEN, 20.74s | =ac22e0d295249e921855d63abf71f2450b85dc3ce06eac936e0b5b66fcb6c03e= | =1e4631e16f01b108b671a722a2a156b882cb554df9fc639216c8c0b218d39a6e= |
+| Markdown to ODT | AMBER, conversion-budget decision pending | Same Markdown recipe | Not generated for this corrected AT fixture |
+| Org to ODT | AMBER, conversion-budget decision pending | Same Org recipe | Not generated for this corrected AT fixture |
+
+The current corrected DOCX files are
+=/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-diverse-novels.gmhc35S551/md-docx-3786990111/novel.docx=
+and
+=/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-diverse-novels.gmhc35S551/org-docx-293426489/novel.docx=.
+These are automated-reader artefacts, not human editing passes. All four
+corrected source/output combinations already pass the retained structural conversion regression;
+that does not replace the two missing ODT reader cases.
+
+The final small-fixture comparison contains 72,459,602 bytes, below 100 MiB.
+Its =comparison.html= and editable files remain in
+=/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-profiles.a4nas7OY59=.
+
 ** 2026-10-19 - PDF configuration-cascade parity clarified
 
 - Definition :: AC063.4 - Resolved typography and block geometry and the solution design now explicitly require the PDF renderer's existing YAML cascade for office output. RT063.4 - Configuration and role geometry adds named cross-format precedence and inheritance observations using independent expectations. No configuration behaviour is newly authorized.
@@ -152,13 +198,21 @@
 
 * Automated regression
 
-** RED RT063.1 - Output selection and dependencies :testdef:
+** GREEN RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REVISION: e29559d plus the written parser/dependency test package
-:COMMAND: go test ./internal/app -run '^TestRT063_(1_|13_)' -count=1
-:EVIDENCE: Executed intended failure: manuscript DOCX invokes trapped Pandoc source readers and fails without Pandoc; ODT calls source readers instead of writer-only. .agent/logs/parser-red-final.log retains the 5.683s run.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: RED
+- REVISION :: e29559d plus the written parser/dependency test package
+- COMMAND :: go test ./internal/app -run '^TestRT063_(1_|13_)' -count=1
+- EVIDENCE :: Executed intended failure: manuscript DOCX invokes trapped Pandoc source readers and fails without Pandoc; ODT calls source readers instead of writer-only. .agent/logs/parser-red-final.log retains the 5.683s run.
+
 - Previous reason, retained :: Revised parser/dependency contract had not been implemented or executed; earlier reader-only evidence was superseded.
 
 *** Historical shared-exporter result before parser correction
@@ -201,10 +255,18 @@
 ** GREEN RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -238,10 +300,18 @@
 ** GREEN RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -276,10 +346,18 @@
 ** GREEN RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: e29559d plus the written cascade-parity test package
-:COMMAND: go test ./internal/app -run '^TestRT063_4_PDFCascadeParity$' -count=1
-:EVIDENCE: Initially GREEN preservation: PDF/DOCX/ODT retain global, style, source and local font-size winners for manuscript and letter; 4.976s. .agent/logs/cascade-baseline-valid.log. Earlier unchanged geometry evidence remains below; rerun the full group after parser implementation.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. Family, size, margin and CLI style comparisons pass in .agent/logs/cascade-settled.log (12.245s); existing partial-role inheritance remains covered.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: e29559d plus the written cascade-parity test package
+- COMMAND :: go test ./internal/app -run '^TestRT063_4_PDFCascadeParity$' -count=1
+- EVIDENCE :: Initially GREEN preservation: PDF/DOCX/ODT retain global, style, source and local font-size winners for manuscript and letter; 4.976s. .agent/logs/cascade-baseline-valid.log. Earlier unchanged geometry evidence remains below; rerun the full group after parser implementation.
+
 - Previous reason, retained :: Expanded cross-format comparison had required implementation and execution; its initial retired-key fixture error is not RED evidence and remains in .agent/logs/cascade-baseline.log.
 
 *** Historical result before explicit PDF cascade comparison
@@ -325,10 +403,18 @@
 ** GREEN RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -365,10 +451,18 @@
 ** GREEN RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -405,10 +499,18 @@
 ** GREEN RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -442,10 +544,18 @@
 ** GREEN RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -480,10 +590,18 @@
 ** GREEN RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. Native source/letter budgets have intended RED-to-GREEN evidence; the original format-diagnostic failure passes its 5.046s follow-up. Current source guard tests also pass.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -520,10 +638,18 @@
 ** GREEN RT063.10 - Existing route preservation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-10-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -552,10 +678,18 @@
 ** GREEN RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. ODT anchor defect reproduced and corrected; the anchor assertion now reuses the two manuscript font renders (23.943s), keeping the retained group at six renders.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -590,10 +724,18 @@
 ** GREEN RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -630,10 +772,18 @@
 ** GREEN OT063.1 - Rendered feature comparison :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-1-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: Bounded seven-profile comparison, affected rerenders and PNG inspection
-:EVIDENCE: Seven profiles prepared and inspected; final note/reference render checked; uninstalled-family probe passed. Comparison index identified by .agent/w063-native-ot-path.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: Bounded seven-profile comparison, two ODT note rerenders, uninstalled-family probe and semantic PNG inspection
+:EVIDENCE: Seven profiles inspected; 24 office renders and nine PDF baselines including the initial font-oracle mismatch and corrected two-format probe. Current index is identified by .agent/logs/profiles-path. No Word behaviour or human editing result is inferred.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: Bounded seven-profile comparison, affected rerenders and PNG inspection
+- EVIDENCE :: Seven profiles prepared and inspected; final note/reference render checked; uninstalled-family probe passed. Comparison index identified by .agent/w063-native-ot-path.
+
 
 *** Superseded record before shared-exporter verification
 
@@ -660,11 +810,19 @@
 - Explicit refresh follow-up :: A temporary LibreOffice Basic helper, invoked headlessly from the private profile, loads the DOCX with document macros disabled, calls =TextFields.refresh()= and =getDocumentIndexes().getByIndex(i).update()=, refreshes layout and exports PDF. The resulting contents spans three pages. All 80 extracted contents references match their actual physical heading pages. This establishes a local test mechanism, not a new exporter runtime dependency. Configured contents typography, continuation padding and body-number offsets remain separate checks.
 - Temporary evidence :: Source packages, extracted XML, PDF outputs and the short PDF baseline are retained in the OS-allocated =folio-w063-layout-20261016-26948-z7f315= directory for the active experiment. A reproducible retained helper and final measurements are still required before this OT can be GREEN.
 
-** AMBER OT063.2 - Installed-layout CLI and documentation :testdef:
+** GREEN OT063.2 - Installed-layout CLI and documentation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-2-result
-:REASON: Revised parser/dependency contract has not been implemented or executed. Earlier reader-only evidence is superseded for this case.
+:REVISION: 723734d isolated binary
+:COMMAND: TestOT063ConsumingCLI via temporary Go overlay, outside-checkout consuming directory
+:EVIDENCE: Four help invocations and four conversions pass; DOCX runs with child-only recording/rejecting Pandoc and Typst traps and no calls. Six editable ZIP packages validated. See .agent/logs/cli-current.log and cli-current-path.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: AMBER
+- REASON :: Revised parser/dependency contract has not been implemented or executed. Earlier reader-only evidence is superseded for this case.
+
 
 *** Historical shared-exporter result before parser correction
 
@@ -777,25 +935,39 @@
 - Scope :: Record DOCX opening-page header/footer selection and the separate ODT frontmatter/body page-break limitation. Preserve earlier failures as historical evidence; no test status changes follow from documentation alone.
 - ODT focused follow-up :: Native page policy and the three ODT continuous/reset/changed-field rendered cases passed: office 0.354s and application 68.654s in =.agent/w063-approved-boundary-green.log=. Additional native sequence checks passed in 0.834s in =.agent/w063-boundary-sequences.log=. These results do not establish a passing full suite.
 
-** RED RT063.13 - Shared parser and mode semantics :testdef:
+** GREEN RT063.13 - Shared parser and mode semantics :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-13-result
-:REVISION: e29559d plus the written parser/novel test package
-:COMMAND: go test ./internal/app -run '^TestRT063_(1_|13_)' -count=1
-:EVIDENCE: All four novel source/output combinations fail at forbidden Pandoc source readers. The real-reader control separately reproduces semantic-node overflow for both formats and sources. Mode semantics are preservation cases. Logs: .agent/logs/parser-red-final.log and parser-red-valid-fixture.log.
+:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+:COMMAND: make test; all TestRT063 groups; affected checks listed above
+:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. Full corrected-fixture Markdown/Org to DOCX/ODT structural oracle and dependency traps pass in .agent/logs/novel-diverse-rt.log and parser-final.log.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: RED
+- REVISION :: e29559d plus the written parser/novel test package
+- COMMAND :: go test ./internal/app -run '^TestRT063_(1_|13_)' -count=1
+- EVIDENCE :: All four novel source/output combinations fail at forbidden Pandoc source readers. The real-reader control separately reproduces semantic-node overflow for both formats and sources. Mode semantics are preservation cases. Logs: .agent/logs/parser-red-final.log and parser-red-valid-fixture.log.
+
 - Definition :: [[file:spec.org::#rt-063-13][RT063.13 - Shared parser and mode semantics]].
 - Previous reason, retained :: Newly defined parser-reuse, mode-semantics and novel-scale cases await implementation and execution after revised specification sign-off.
 
 * Ticket-scoped automated validation
 
-** RED AT063.1 - Novel-scale rendered manuscripts :testdef:
+** AMBER AT063.1 - Novel-scale rendered manuscripts :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at063-1-result
-:REVISION: e29559d plus the written ticket-scoped novel-rendering test package
-:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_' -count=1 -timeout=150m
-:EVIDENCE: All four built-binary conversion cases fail at the intended semantic-node limit before reader rendering; 7.966s, .agent/logs/acceptance-red-final.log. The downstream reader/content/field/geometry assertions are written but their conformance is not established by this RED run.
+:REASON: Corrected varied-length Unicode fixture passes both DOCX cases; its two ODT renders await explicit approval of the AT conversion-budget exception. Earlier four-case GREEN used the narrower ASCII fixture and remains historical evidence.
 :END:
+
+*** Historical record before the 2026-10-19 shared-parser verification
+
+- State :: RED
+- REVISION :: e29559d plus the written ticket-scoped novel-rendering test package
+- COMMAND :: go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_' -count=1 -timeout=150m
+- EVIDENCE :: All four built-binary conversion cases fail at the intended semantic-node limit before reader rendering; 7.966s, .agent/logs/acceptance-red-final.log. The downstream reader/content/field/geometry assertions are written but their conformance is not established by this RED run.
+
 - Definition :: [[file:spec.org::#at-063-1][AT063.1 - Novel-scale rendered manuscripts]].
 - Required records :: Separate intended RED and final GREEN evidence for Markdown to DOCX, Org to DOCX, Markdown to ODT and Org to ODT, including complete-content checks, refreshed contents references, role measurements, commands, versions, hashes, durations and artefact paths.
 - Scope :: Repeatable automated verification outside =make test= and CI, within the specification's per-process, aggregate-time, storage and execution-count bounds. Neither historical OT comparison nor successful package inspection substitutes for these cases.

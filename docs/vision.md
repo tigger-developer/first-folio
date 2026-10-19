@@ -1,14 +1,14 @@
 ---
 title: First Folio Vision
-version: "0.4"
-last-updated: 2026-10-11
+version: "0.5"
+last-updated: 2026-10-19
 ---
 
 # First Folio - Vision
 
 ## Purpose
 
-First Folio is a command-line publishing tool for stage plays, submission letters, and prose manuscripts. It converts structured play sources without discarding their dramatic semantics and renders scripts, letters, and manuscripts as production-quality Typst or PDF documents.
+First Folio is a command-line publishing tool for stage plays, submission letters, and prose manuscripts. It converts structured play sources without discarding their dramatic semantics and renders scripts, letters, and manuscripts as Typst/PDF or editable DOCX/ODT documents, retaining each mode's supported content and configured typography.
 
 ## Name
 
@@ -28,7 +28,7 @@ Writers work across multiple tools and workflows. A play may be drafted in Emacs
 
 4. **CLI-first, scriptable.** All operations are available as command-line tools that read from files or stdin and write to files or stdout. Batch processing, piping, and scripting are first-class use cases.
 
-5. **Minimal dependencies.** The installed application is one Go binary. PDF output requires Typst. Rich manuscript Markdown/org parsing and conversion may depend on Pandoc where using a standard document AST avoids custom parser complexity.
+5. **Minimal dependencies.** The installed application is one Go binary. PDF output requires Typst, and the manuscript PDF/Typst route retains its Pandoc parsing dependency. All DOCX routes use shared native parsing and generation. ODT parses sources natively and uses the configured Pandoc writer.
 
 6. **Project configuration.** A project may keep First Folio and Yapper settings in one `script.yaml`. Only documented top-level metadata and `render` keys are shared. The `folio:` and `yapper:` namespaces belong exclusively to their respective applications. The nearest project config and its style-specific sibling override global settings and built-in presets by key. See [docs/config.md](config.md).
 
@@ -42,10 +42,11 @@ Writers work across multiple tools and workflows. A play may be drafted in Emacs
 | Typst/PDF play | No | Yes | British, US stage-play, or US screenplay layout |
 | DOCX play | No | Yes | Editable script export with [documented layout limits](format-docx.md) |
 | ODT play | No | Yes | Configured Pandoc export with [documented layout limits](format-odt.md) |
-| Org-mode manuscript | Yes | No | Canonicalized through the Markdown manuscript contract |
+| Org-mode manuscript | Yes | No | Native office parsing; PDF/Typst canonicalizes through the Markdown contract |
 | Markdown manuscript | Yes | No | Canonical manuscript input contract |
 | Typst/PDF manuscript | No | Yes | British or US manuscript layout |
-| Org-mode letter sections | Yes | No | Recipient-specific letters rendered to PDF |
+| DOCX/ODT manuscript | No | Yes | Editable prose with the PDF renderer's YAML cascade |
+| Org-mode letter sections | Yes | No | Recipient-specific letters rendered to PDF, DOCX or ODT |
 
 PDF and Typst are final-output formats. Manuscript text-format emission and source-document images remain outside the current contract.
 
@@ -70,6 +71,8 @@ The interface should feel approachable to a writer who has never used a terminal
 - **Content editing.** First Folio converts between formats and renders to PDF. It does not provide editing, linting, or structural validation of play content.
 
 ## History
+
+- 0.5 (2026-10-19): Extend native parsing and configured office output to manuscripts and letters.
 
 - 0.3 (2026-10-11): Adopt editable DOCX script export within a bounded support contract.
 - 0.2 (2026-08-10): Previous vision baseline, excluding word-processor formats.

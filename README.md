@@ -200,8 +200,8 @@ The ticket-scoped full-novel acceptance test runs separately from `make test`:
 go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_' -count=1 -timeout=150m -v
 ```
 
-It generates equivalent Markdown and Org novels with 10,000 paragraphs and
-50 chapters, converts each to DOCX and ODT, refreshes native fields in an isolated
+It generates equivalent Markdown and Org novels with 10,000 varied-length
+Unicode paragraphs and 50 chapters, converts each to DOCX and ODT, refreshes native fields in an isolated
 LibreOffice profile and checks the complete rendered content. Set
 `FOLIO_W063_ACCEPTANCE_DIR` to an OS-allocated temporary directory to retain the
 labelled documents, PDFs, measurements and selected page images for user tests.

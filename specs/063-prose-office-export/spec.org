@@ -64,6 +64,7 @@
 ** Next step
 
 - Review this definition and obtain sign-off before delivery as described in [[#delivery-handoff][Delivery Handoff]].
+- Current delivery :: The definition-stage step above was satisfied by approval dated 2026-10-19. Delivery is admitted on the isolated feature branch; current results and the pending AT-budget exception are recorded in =validation.org= and the hands-off decision log.
 
 -----
 
@@ -720,6 +721,21 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Live baseline :: =/Users/tigger/.local/bin/folio= resolves to =/Users/tigger/code/tigoss/first-folio/dist/folio=; starting SHA-256 is =6d4143b9764cd7716c33df6b18ea5dc56d03b35d1dc5d172e719772ecea236f2=. Do not run installation, release or a build targeting that path. Compare the link target and checksum at handback.
 - Native continuation :: Goal activation was verified with the configured 2,000,000-token budget. The objective ends at operator-validation readiness, not closure.
 - Verification budget :: All specified automated checks and bounded OTs use local synthetic data and existing local tools. No metered external operation is required; no monetary budget is needed. Existing AT/OT process, count and storage limits remain.
+
+*** Shared native source implementation and regression findings
+
+- Parser :: Extract convert's Org/Markdown heading, metadata, note and table recognition into =internal/source=. Script events keep their own classification; manuscript prose adds bounded structured blocks. Script, manuscript and letter office content use the same source-aware inline mechanics. Plain prose remains contiguous instead of expanding to a node per word.
+- Configuration :: Retain the existing PDF loaders and first-input frontmatter extraction. Cross-format checks exercise independent font-family, size and margin winners through global, source, local, style and applicable CLI layers; existing cases retain partial same-role inheritance and later-source rejection.
+- Remediation :: Preserve ODT format context on shared-parser errors. Keep trailing empty table cells. Correct the ODT note reference baseline and verify it in the two existing manuscript font renders, retaining RT063.11's six-render budget rather than adding a permanent pair of renders.
+- Letter limits :: One native inline-parser state belongs to each composed recipient letter, so byte, block and inline budgets cannot reset between paragraphs. Exact-limit and one-beyond checks reproduced the earlier reset before correction. This retains the signed-off limits; it introduces no new source syntax or configuration.
+- Source image boundary :: Reject unlabelled Org image sources, including remote targets and query suffixes, before office generation. Explicitly labelled hyperlinks remain links; no target is fetched. Preserve the native RED/GREEN evidence for the remote-image case.
+
+*** Novel fixture correction and verification-budget exception pending
+
+- Finding :: The first synthetic recipe used uniform ASCII body paragraphs. It met the word/paragraph inventory but did not meet this definition's varied-length and Unicode requirements. Preserve the earlier passing results as evidence for that narrower fixture; do not claim that they verify the corrected fixture.
+- Correction :: Add three body-paragraph lengths and accented Irish names, with an independent fixture-inventory test. Retain complete ordered-content, native structure, contents and geometry checks. Also assert sequential displayed body numbering and physical odd/even running headers against the retained page-associated extraction.
+- Budget discrepancy :: Twenty AT conversion attempts have executed: eight across two retained four-case RED runs, four in the first native GREEN run, four in the retained-artefact GREEN run, two after ODT note remediation, and two DOCX cases for the corrected fixture. Twelve reader renders have executed. The conversion total exceeds the specified sixteen; this was an agent tracking error, not operator authorization. No further AT conversion is permitted while the exception is pending.
+- Pending decision :: Operator approval is requested to raise the conversion-attempt allowance from sixteen to twenty-two, solely for the two corrected-fixture ODT cases. The sixteen-render, 150-minute, 512 MiB and per-process limits stay unchanged. Do not treat elapsed time or absence of a response as approval.
 
 ** 2026-10-16T19:34:17+01:00 :hands-off:review:
 
