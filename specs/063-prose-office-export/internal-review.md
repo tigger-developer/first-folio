@@ -1,6 +1,6 @@
 ---
 title: W063 internal delivery review
-version: 2
+version: 3
 last-updated: 2026-10-19
 ---
 
@@ -9,7 +9,7 @@ last-updated: 2026-10-19
 The previous delivery and its internal PASS are rejected as acceptance evidence.
 The implementation used a separate Pandoc DOCX writer rather than extending the
 existing native script exporter. The historical review below is retained; it
-does not validate the corrective implementation. Fresh review is required.
+does not validate the corrective implementation. The fresh corrective delivery review appears at the end of this record.
 
 # 2026-10-18: Delivery-code review
 
@@ -171,3 +171,46 @@ INTERNAL REVIEW: PASS
 
 This result permits corrective implementation within the approved architecture.
 It is not delivery acceptance, independent review, or operator closure.
+
+# 2026-10-19: Shared-exporter delivery-code review
+
+Review method: internal (current session; not independent)
+
+Gate: delivery-code
+
+Mode: SDLC
+
+Revision: `91ad009` plus the restored malformed-AST regression and current specification/validation records. The restoration changes tests only; production ends at `91ad009`.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+No unresolved blocking finding remains in this internal review. This author self-review permits operator validation, not installation, publication or closure.
+
+## Scope and criteria
+
+Reviewed the corrected shared-exporter architecture, production delta, affected tests, command boundaries and product documentation against the signed-off W063 scope. Applied MAIN, CODING, TESTING, ARCHITECTURE, SECURITY, AUDITS, Go and documentation/Org/Markdown standards. The earlier definition and test-code reviews remain the admission record; this is fresh delivery review of their replacement implementation.
+
+The script DOCX path and prose DOCX path both use the extracted native paragraph/XML/package primitives. Prose preserves its own semantic adapter and resolved role/page model. Both ODT paths use the same bounded writer and native configured-reference packaging. Manuscript source parsing still calls Pandoc; letter DOCX does not. Dependency tests execute the real manuscript reader while rejecting writer/reference calls, rather than treating a source search as architectural proof.
+
+Inspected preserved interfaces and ownership: source/configuration precedence, script target guards, letter batch preflight and partial publication, manuscript document/sidecar order, bounded process cancellation, ZIP/XML validation, local font embedding and failure diagnostics. Existing PDF/Typst routing and unrelated preset/configuration changes remain outside the corrective implementation.
+
+## Findings and remediation
+
+- Native rich-content review exposed missing outline and nested-list levels, footnote hyperlink relationships, code/note role names, barcode proportions and document-level automatic hyphenation. Focused regressions reproduced the defects and passed after remediation.
+- The visual note-reference finding was not resolved by run positioning or a dedicated reference style. The final implementation keeps reference and surrounding text on the native paragraph baseline. The retained rendered regression measures the raised reference; the final typography PNG was inspected. Property-only intermediate failures remain recorded.
+- Source semantics review found double quotation substituted for single quotation, decimal labels substituted for alphabetic labels, and missing cell alignment. `TestRT063_3_DOCXSourceSemantics` reproduced all three. The final affected suite passes. Empty notes also retain an editable paragraph and owned reference without slicing an empty child list.
+- The final historical-test comparison found `TestRT063_9_ASTRejectsMalformedAdapterNodes` omitted during selective restoration. Restored it unchanged. The AST group passes in `.agent/w063-native-audit-ast.log` (0.378s). No other prior test function was removed by the correction; dependency assertions were updated to the authorized native architecture.
+- Historical delivery acceptance is explicitly superseded. Current RT/OT records now point to fresh replacement evidence; old failures and results remain available as history.
+
+## Evidence and limits
+
+- Delivery readiness is valid and ready in `.agent/w063-native-delivery-readiness.yaml`: twelve RT groups and both OTs GREEN, twelve operator UTs AMBER.
+- Full `make test` passed on the extraction candidate. All W063 groups subsequently passed, followed by the final affected RT063.3/4/11 run at the current production revision. Validation records identify the candidate boundaries; the full run is not misrepresented as including later edits.
+- New prose adapters/mechanics have 87.4% statement and 82.7% instrumented-line coverage. The measure excludes extracted existing script/font implementations and avoids merging stale line positions for changed files. Coverage does not establish useful assertions by itself; public-path, native-property, failure-path and rendered oracles were reviewed separately.
+- Current lint reports zero issues, vet passes, the office race check passes and the unchanged dependency graph has no reported vulnerabilities. Resource tests cover source/AST/ZIP/font budgets, malformed structures, process output/deadline failures and atomic publication failures.
+- Seven comparison profiles were generated and inspected, with targeted DOCX rerenders after remediation. The uninstalled-font probe passes for both formats. The outside-checkout CLI produces six valid editable files. Exact commands, bounds and temporary evidence paths are in `validation.org`.
+- Product documentation explains source-reader versus writer dependencies, commands, field refresh, resource/publication behaviour and accepted fidelity limits. Authored additions were processed with `sanitize`.
+
+The accepted DOCX special-opening parity, ODT frontmatter/body transition and weight limitations remain. Reader pagination and font selection are not guaranteed identical to PDF. LibreOffice rendering and package structure do not establish Microsoft Word fidelity, editing, or save/reopen behaviour. The twelve named user tests remain operator-owned. No external audit, harness-record mutation, installation, release, push or work-item closure occurred.

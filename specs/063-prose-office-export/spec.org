@@ -782,3 +782,9 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Typography :: Native inline code uses the manuscript mono role; native footnotes use its existing derived note role. Generated SVG dimensions determine the barcode aspect ratio. Each is checked by the retained regressions.
 - Hyphenation :: Enable or disable document-level Word automatic hyphenation as well as paragraph exclusions. Microsoft documents that omission disables automatic hyphenation; paragraph opt-in alone is insufficient. The four on/off/auto assertions reproduced the missing setting before remediation. Source: https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.autohyphenation
 - Evidence boundary :: Full regression, fresh seven-profile comparison, packaged CLI checks and final internal delivery review remain separate checks. Historical delivery acceptance does not validate this replacement. No installation, release, push or closure is included.
+
+*** Native source and note regression follow-up, 2026-10-19
+
+- Source semantics :: =TestRT063_3_DOCXSourceSemantics= preserves single quotations, alphabetic list labels/delimiters and table-cell alignment. =TestRT063_3_NativeEmptyFootnote= verifies a native editable note paragraph and owned reference for an empty note.
+- Rendered note :: =TestRT063_11_OfficeRenderedFootnoteAnchor= measures the reference above its surrounding text after office-to-PDF conversion. The existing =TestRT063_3_OfficeFootnoteTypography= also asserts the reference and text share the native paragraph baseline. Package properties alone did not establish visible superscript placement.
+- Verification scope :: The final correction changes only native prose semantics and note positioning. Existing script serializers and PDF rendering are unchanged by this follow-up. Retain unaffected full-suite evidence and rerun the affected source, role-geometry and rendered-font groups.

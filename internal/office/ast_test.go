@@ -108,3 +108,20 @@ func TestRT063_9_ASTMalformedInput(t *testing.T) {
 		}
 	}
 }
+
+func TestRT063_9_ASTRejectsMalformedAdapterNodes(t *testing.T) {
+	attr := []any{"", []any{}, []any{}}
+	for _, node := range []any{
+		astNode("Header", []any{2, attr, "not inlines"}),
+		astNode("Header", []any{"two", attr, []any{}}),
+		astNode("Para", []any{astNode("Str", 17)}),
+		astNode("Para", []any{astNode("Code", []any{attr})}),
+		astNode("Para", []any{astNode("Span", []any{attr, "not inlines"})}),
+		astNode("Para", []any{astNode("Link", []any{attr, []any{}, "not target"})}),
+		astNode("Para", []any{astNode("Strong", "not inlines")}),
+	} {
+		if _, err := Decode(astDocument(t, []any{node})); err == nil {
+			t.Errorf("malformed adapter input accepted: %#v", node)
+		}
+	}
+}

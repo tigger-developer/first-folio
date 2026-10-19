@@ -93,7 +93,7 @@ classification; it is provenance, not current state.
 :CREATED: 2026-10-16
 :END:
 - Specification :: [[file:../specs/063-prose-office-export/spec.org][W063 - Prose office export definition]].
-- Correction 2026-10-19 :: Previous delivery acceptance is superseded. Extend existing native DOCX and configured Pandoc ODT exporters to manuscript and letter modes; selective rollback preserves unrelated work. Fresh regression and internal review evidence are pending.
+- Correction 2026-10-19 :: Previous delivery acceptance is superseded. Existing native DOCX and configured Pandoc ODT exporters now serve manuscript and letter adapters; selective rollback preserved unrelated work. Initially pending fresh checks now pass: full regression plus affected follow-ups, seven-profile comparison, outside-checkout CLI and internal delivery-code review. Twelve operator UTs remain pending; this is not closure.
 - Delivery evidence :: [[file:../specs/063-prose-office-export/validation.org][Regression, comparison and operator checks]]; [[file:../specs/063-prose-office-export/internal-review.md][Current-session internal delivery review]]. The standing internal-only policy applies to the delivery review; the historical definition record below is retained.
 - Operator validation :: [[file:../testdata/prose-office/EXPECTATIONS.md][Labelled profiles, YAML expectations and reproduction commands]]. Twelve user tests remain operator-owned; installation, release and closure are separate.
 

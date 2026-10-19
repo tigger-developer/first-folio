@@ -6,8 +6,22 @@
 
 * Current correction status
 
+** 2026-10-19 - Shared exporter replacement verification
+
+- Candidate :: =91ad009= extends the established native DOCX and configured Pandoc ODT serializers. The old separate Pandoc DOCX implementation remains superseded.
+- Full regression :: =make test= exited zero, with application 410.979s, manuscript 115.357s, office 2.279s, configuration 2.039s and letter 0.502s. =.agent/w063-native-full-suite.log= records the extraction candidate before later focused corrections. The unaffected results remain applicable under TESTING's affected-check rule.
+- Current W063 execution :: All twelve W063 groups passed in =.agent/w063-native-coverage.log= (application 234.150s; office 1.249s). After the final native semantics and note-baseline changes, RT063.3/4/11 passed in =.agent/w063-native-final-followup.log= (application 107.975s; office 0.394s). Dependency and shared-process groups passed separately in =.agent/w063-native-dependencies.log= and =.agent/w063-native-shared-process.log=.
+- Defects remediated :: Fresh regressions exposed missing outline/nested-list levels, note hyperlink relationships, document hyphenation, barcode proportions, single quotation marks, alphabetic list labels and cell alignment. The rendered note reference remained too low after two property-only attempts; using the native paragraph baseline for both reference and surrounding text passes the rendered check and the inspected final PNG. Earlier failed logs remain retained.
+- Coverage :: The new prose adapters and shared prose mechanics cover 2,472/2,828 statements (87.4%) and 2,880/3,481 instrumented source lines (82.7%). Extracted existing script/font implementations are excluded from this new-code measure. Changed source files use only final follow-up coverage, avoiding stale line mappings. Scope and profiles are recorded in =.agent/w063-native-coverage-summary.txt=.
+- Static and security checks :: =.agent/w063-native-final-lint.log= reports zero issues; =go vet ./...= passed in =.agent/w063-native-vet.log=. The office race check passed in 4.920s, =.agent/w063-native-final-race.log=. The unchanged dependency graph has no reported vulnerabilities in =.agent/w063-native-vuln.log=.
+- Rendered comparison :: Seven fixture profiles passed preparation in 216.848s; five affected DOCX profiles passed refresh in 63.030s; the final two typography DOCX profiles passed in 25.358s. Inspected typography, notes, title/copyright/barcode groups, contents, chapter/part pages, running bands, intentional blanks and both letter profiles. No clipping or overlap was observed in those inspected regions. Wrapping and pagination differ from the PDF baseline. Package assertions establish editable structures; actual editor interaction remains operator validation.
+- Comparison bounds :: This replacement comparison used 25 office renders and nine PDF baselines. A separate two-render uninstalled-family probe passed in 25.498s without installing a font. Every process retained the 120-second bound. The retained comparison remains below 100 MiB (approximately 65 MiB); =.agent/w063-native-ot-path= identifies its =comparison.html=, PDF map, source profiles and editable files. Logs: =.agent/w063-native-ot.log=, =.agent/w063-native-ot-refresh.log=, =.agent/w063-native-ot-note-final.log= and =.agent/w063-native-uninstalled.log=.
+- CLI verification :: Four help commands and four office conversions passed outside the checkout, producing six ZIP-validated editable files. Final manuscript samples were regenerated after native remediation. =.agent/w063-native-ot2-path= identifies the consuming directory; commands/results are in =.agent/w063-native-ot2.log= and =.agent/w063-native-ot2-followup.log=. Nothing was installed or published.
+- Audit follow-up :: Restored the historical malformed-adapter AST regression omitted during selective recovery. The AST group passed in 0.378s, =.agent/w063-native-audit-ast.log=. This is a test-only addition after =91ad009=.
+- Operator boundary :: The twelve named UTs remain AMBER. Existing pagination and weight limitations remain documented; there is no new ODT parity waiver. Internal delivery review is recorded separately and does not imply operator acceptance or closure.
+
 - 2026-10-19 :: The previous implementation and delivery acceptance were rejected because prose DOCX used a separate Pandoc writer instead of extending the existing native exporter. Earlier results below are historical evidence only and do not validate the replacement. All RT and OT groups require fresh execution; UTs remain pending.
-- Current RED :: At =d1ed1b9= plus restored tests and declaration-only boundary scaffolding, all prose RT groups executed in =.agent/w063-native-rt-red.log= (22.788s). Office target selection is absent; the two new native-dependency tests fail as intended. Boundary tests execute in =.agent/w063-native-boundary-red.log= and reject the no-op placeholders. Passing invalid-input cases are preservation evidence, not proof of export.
+- Initial correction RED :: At =d1ed1b9= plus restored tests and declaration-only boundary scaffolding, all prose RT groups executed in =.agent/w063-native-rt-red.log= (22.788s). Office target selection is absent; the two new native-dependency tests fail as intended. Boundary tests execute in =.agent/w063-native-boundary-red.log= and reject the no-op placeholders. Passing invalid-input cases are preservation evidence, not proof of export.
 - Preservation subset :: Existing application and manuscript tests selected by =TestRT058_1|TestRT054_1|TestLetter|TestManuscript= passed in 7.723s and 14.369s. The letter package had no matching tests; no letter-package pass is inferred. RT063.10 - Existing route preservation is initially GREEN for that subset only; the full suite remains required after extraction.
 - Recovery :: Selective restoration to =161a071= preserves unrelated W064 configuration diagnostics, edited presets and historical specification/review records.
 
@@ -115,13 +129,21 @@
 
 * Automated regression
 
-** RED RT063.1 - Output selection and dependencies :testdef:
+** GREEN RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -145,13 +167,21 @@
 - Coverage follow-up, 2026-10-16 :: Dependency isolation now exercises both prose modes and formats with real Pandoc, missing Pandoc, incompatible API responses and a forbidden-Typst marker. All compiled; exports remain blocked by the absent routes, so dependency guards are not yet reached.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.2 - Recipient batches and CLI errors :testdef:
+** GREEN RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -174,13 +204,21 @@
 - Definition :: [[file:spec.org::#rt-063-2][RT063.2 - Recipient batches and CLI errors]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.3 - Structured manuscript content :testdef:
+** GREEN RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -204,13 +242,21 @@
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.4 - Configuration and role geometry :testdef:
+** GREEN RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -237,13 +283,21 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.5 - Generated matter and heading controls :testdef:
+** GREEN RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -269,13 +323,21 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.6 - Sections and page fields :testdef:
+** GREEN RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -301,13 +363,21 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.7 - Letter content and geometry :testdef:
+** GREEN RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -330,13 +400,21 @@
 - Definition :: [[file:spec.org::#rt-063-7][RT063.7 - Letter content and geometry]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.8 - Font packaging :testdef:
+** GREEN RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -360,13 +438,21 @@
 - Expanded execution, 2026-10-16 :: Public cases now cover all four bundled faces in both modes/formats, a permitted local metadata fixture, restricted/missing families with retained family references and warnings, duplicate payload rejection, and a selected font one byte above 32 MiB. =go test ./internal/app -run '^TestRT063_8_' -count=1= compiled and failed at the missing office routes. Internal selected-font budget tests separately exercise exact 32/64 MiB thresholds and overflow against a declaration-only placeholder. Full font-policy coverage is not yet established.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.9 - Resource and publication failures :testdef:
+** GREEN RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -395,10 +481,18 @@
 ** GREEN RT063.10 - Existing route preservation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-10-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: GREEN
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -416,13 +510,21 @@
 - Coverage follow-up, 2026-10-16 :: After the shared test-helper paragraph-selection change, existing TestOfficeEmbeddedFonts and TestOfficeLocalFontOverride passed together in 2.551s; TestRT054_2OfficeActiveRoleFonts passed in 1.029s. This is focused preservation evidence, not a new full-suite run.
 - Initial preservation evidence, 2026-10-16 :: At =ec9955e= with only new test/fixture files in the working tree, =go test ./... -skip '^TestRT063_' -count=1= passed all existing packages. Go build/module caches were scoped to ignored =.agent/cache/=. The application package took 172.702 seconds; manuscript took 112.050 seconds. No production code had changed. This is the pre-change baseline, not post-implementation verification.
 
-** RED RT063.11 - Rendered font and geometry conformance :testdef:
+** GREEN RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -446,13 +548,21 @@
 - Coverage follow-up, 2026-10-16 :: The temporary TestW063BaselineMeasurements overlay passed against independently generated existing typography and letter PDFs (0.409s, then 0.511s). It validates fractional font-size inference, line/paragraph intervals, header/body reference coordinates, sender placement and all six letter gaps. Office RTs still fail before rendering. The seven-profile checklist now includes concrete measurements and reproduction commands.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.12 - Rendered page policy and contents references :testdef:
+** GREEN RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
-:REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
-:COMMAND: make test; affected additive/table regression groups
-:EVIDENCE: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: RED
+- REVISION :: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
+- COMMAND :: make test; affected additive/table regression groups
+- EVIDENCE :: Full suite passed in .agent/w063-final-make-test.log (application 483.243s, manuscript 116.086s, office 2.630s). The later ODT style change passed affected groups in .agent/w063-inter-table-green.log (9.620s); unaffected results retained under TESTING. See dated verification for exact revision boundaries.
+
 
 *** Earlier verification metadata (retained)
 
@@ -478,13 +588,21 @@
 
 * One-off checks
 
-** AMBER OT063.1 - Rendered feature comparison :testdef:
+** GREEN OT063.1 - Rendered feature comparison :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-1-result
-:REVISION: 736e7b6 DOCX book follow-up; earlier unchanged ODT/typography/letter profiles retained
-:COMMAND: Bounded seven-profile export/render preparation and semantic PNG inspection
-:EVIDENCE: Barcode, section layout and refreshed field typography were remediated and reinspected. Earlier 32-render/nine-baseline series plus three focused DOCX rerenders; 17,303,496 retained bytes. Comparison index: .agent/w063-accepted-ot-path.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: Bounded seven-profile comparison, affected rerenders and PNG inspection
+:EVIDENCE: Seven profiles prepared and inspected; final note/reference render checked; uninstalled-family probe passed. Comparison index identified by .agent/w063-native-ot-path.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: AMBER
+- REVISION :: 736e7b6 DOCX book follow-up; earlier unchanged ODT/typography/letter profiles retained
+- COMMAND :: Bounded seven-profile export/render preparation and semantic PNG inspection
+- EVIDENCE :: Barcode, section layout and refreshed field typography were remediated and reinspected. Earlier 32-render/nine-baseline series plus three focused DOCX rerenders; 17,303,496 retained bytes. Comparison index: .agent/w063-accepted-ot-path.
+
 
 - Previous deferred reason :: Delivery and bounded verification not yet executed.
 - Definition :: [[file:spec.org::#ot-063-1][OT063.1 - Rendered feature comparison]].
@@ -503,13 +621,21 @@
 - Explicit refresh follow-up :: A temporary LibreOffice Basic helper, invoked headlessly from the private profile, loads the DOCX with document macros disabled, calls =TextFields.refresh()= and =getDocumentIndexes().getByIndex(i).update()=, refreshes layout and exports PDF. The resulting contents spans three pages. All 80 extracted contents references match their actual physical heading pages. This establishes a local test mechanism, not a new exporter runtime dependency. Configured contents typography, continuation padding and body-number offsets remain separate checks.
 - Temporary evidence :: Source packages, extracted XML, PDF outputs and the short PDF baseline are retained in the OS-allocated =folio-w063-layout-20261016-26948-z7f315= directory for the active experiment. A reproducible retained helper and final measurements are still required before this OT can be GREEN.
 
-** AMBER OT063.2 - Installed-layout CLI and documentation :testdef:
+** GREEN OT063.2 - Installed-layout CLI and documentation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-2-result
-:REVISION: 4c6c3a5; subsequent test-only continuity assertion does not alter CLI output
-:COMMAND: Four public conversions and four help invocations from an OS temporary consuming directory
-:EVIDENCE: All eight commands passed; six office files produced. Current evidence: .agent/w063-ot2-final-path. Earlier .agent/w063-ot2-delivery-path retained. No installation.
+:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
+:COMMAND: Packaged CLI help and manuscript/letter exports outside checkout
+:EVIDENCE: Four help commands and four public conversions passed outside checkout; six valid office files. Final native manuscript regeneration passed. See .agent/w063-native-ot2-followup.log.
 :END:
+
+*** Superseded record before shared-exporter verification
+
+- State :: AMBER
+- REVISION :: 4c6c3a5; subsequent test-only continuity assertion does not alter CLI output
+- COMMAND :: Four public conversions and four help invocations from an OS temporary consuming directory
+- EVIDENCE :: All eight commands passed; six office files produced. Current evidence: .agent/w063-ot2-final-path. Earlier .agent/w063-ot2-delivery-path retained. No installation.
+
 
 - Previous deferred reason :: Delivery and bounded verification not yet executed.
 - Definition :: [[file:spec.org::#ot-063-2][OT063.2 - Installed-layout CLI and documentation]].
