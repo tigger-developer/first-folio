@@ -133,3 +133,39 @@ func TestRT063_13_OfficeStylesDoNotGrowWithChapters(t *testing.T) {
 		}
 	}
 }
+
+func TestRT063_13_OfficeDeepOrgStylesReuse(t *testing.T) {
+	for _, format := range []string{"docx", "odt"} {
+		t.Run(format, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			dir := t.TempDir()
+			proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n")
+			var source strings.Builder
+			for i := 1; i <= 20; i++ {
+				fmt.Fprintf(&source, "******* DEEP-%03d\n\nBODY-%03d\n\n", i, i)
+			}
+			pkg := proseConvert(t, proseSource(t, dir, "source.org", source.String()), filepath.Join(dir, "deep."+format))
+			styles := pkg["word/styles.xml"]
+			if format == "odt" {
+				styles = pkg["styles.xml"].all("styles")[0]
+			}
+			count := 0
+			for _, style := range styles.all("style") {
+				name := style.attr("styleId")
+				if format == "odt" {
+					name = style.attr("name")
+				}
+				if strings.HasPrefix(name, "FolioHeading") {
+					count++
+				}
+			}
+			if count > 2 {
+				t.Errorf("twenty accepted level-seven headings created %d named heading styles", count)
+			}
+			body := officeBody(t, pkg, format)
+			if strings.Count(body.text(), "DEEP-") != 20 || !strings.Contains(body.text(), "BODY-020") {
+				t.Error("deep heading/body content lost")
+			}
+		})
+	}
+}

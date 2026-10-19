@@ -11,8 +11,9 @@ last-updated: 2026-10-19
 W063 remains unaccepted. Ordinary body characters now use the natural baseline;
 formatting styles are shared by semantic level/role and exact properties while
 anchors, fields and page boundaries stay distinct. Automated baseline/style
-regressions and the four-case novel reader acceptance pass. Full regression and
-the fresh internal delivery-code review are being settled before handback.
+regressions, full regression and the four-case novel reader acceptance pass.
+The current internal delivery-code review is recorded separately in
+[internal-review.md](internal-review.md); no independent review is claimed.
 The earlier handoff and its files below are historical evidence for the reported
 editor defects, not the current retest candidate.
 

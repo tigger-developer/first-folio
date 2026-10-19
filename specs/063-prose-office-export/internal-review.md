@@ -46,6 +46,17 @@ the affected tests only. Fresh production/reader verification and a delivery-cod
 review are required; human editor behaviour cannot be inferred from package XML.
 The earlier delivery-code PASS below is superseded for the correction candidate.
 
+Final source-boundary reassessment before remediation: the accepted Org parser
+allows positive heading levels beyond Markdown's six. A new public-command
+level-seven preservation test reproduces twenty-one named styles for twenty
+headings in both outputs (=editing-deep-org-red.log=, 0.962s). Its content
+assertions pass while style reuse fails, isolating an over-narrow classifier
+rather than introducing new source syntax. The current-session affected-test
+review is PASS for this additional case. The intended correction admits every
+already accepted positive outline level to the same role-based style reuse;
+existing Markdown levels and instance-specific layout remain unchanged.
+
+
 Final affected-test review also preserves the genuine note superscript while
 rejecting inheritance of legacy body offsets: the updated stable-anchor unit
 test fails at 73 percent before correction and passes at its ordinary 33 percent

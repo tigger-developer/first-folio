@@ -6,7 +6,37 @@
 
 * Current correction status
 
-** 2026-10-19 - Editor remediation RED
+** 2026-10-19 - Editor remediation verification
+
+- Scope :: Both reported issues remain corrections under unaccepted W063. Ordinary body/heading/letter characters no longer receive position shifts; genuine footnote superscripts remain. Native paragraphs own leading and header placement. Equivalent named formatting is shared within semantic levels/roles after per-instance bookmarks, fields and boundaries have been applied. ODT page overrides are automatic styles.
+- Regression :: The settled =make test= run passes in =editing-full-suite-verified.log=: application 439.946s, manuscript 129.803s, office 1.238s and other packages passing/cached. This run includes the note-default assertion correction. The later tighter 24.93pt line-box oracle passes the six rendered font/geometry cases in =editing-render-verified.log= (69.625s). The final accepted-depth Org classifier correction receives the affected RT063.3/4/13 follow-up recorded below; the full run predates that narrow extension and is not presented as one run of every final refinement.
+- New failure evidence :: =editing-red.log= reproduces all six normal-body manuscript/letter baseline failures and four style-growth cases (3.144s). The initial chapter-only count changes from nine to eighty-one between four and forty chapters. Extended part/frame coverage exposes ODT seven-to-twenty-five growth in =editing-parts-red-actual.log= (2.903s). The new accepted Org level-seven case exposes twenty-one styles for twenty headings in both formats in =editing-deep-org-red.log= (0.962s). These are behavioural RED, separate from setup errors.
+- New passing cases :: =editing-settled-green-final.log= passes baseline and part/chapter/frame reuse in 3.795s: both source formats, both outputs, distinct live contents targets retained, five relevant named styles in DOCX and six in ODT at both four and forty chapters. Final RT063.3/4/13 follow-up =editing-affected-settled.log= passes in 45.696s and includes the accepted-depth case and preservation of differing styles, fields, configuration and content. Ordinary letter bodies are covered too.
+- Note and geometry assertions :: =editing-note-isolation-red.log= reproduces a note inheriting a legacy body shift; the whole office package passes after preserving only the genuine note superscript (=editing-office-final.log=, 0.858s). The public note default-position follow-up passes in 0.846s. Exact native margins/line intervals and the running-header baseline remain strict. Old cap-edge-on-margin assertions rewarded raised characters; their replacement verifies the native first line box plus independent no-offset assertions. Word/LibreOffice interactive behaviour is not inferred.
+- Failed/setup history :: =editing-full-suite.log= fails on the old ink-edge and redundant zero-position expectations (application 492.313s); =editing-full-suite-final.log= retains the remaining explicit-zero expectation failure (455.192s). These are not passing full-suite evidence. =editing-first-green.log= is a missing-import compilation error, and =editing-parts-red.log= is an incomplete fixture expansion; neither is product RED. The first post-documentation OT selection ran CLI only; the subsequent selection explicitly includes the composed-book profile. All observations remain retained.
+- Novel acceptance :: Both four-case reader runs pass: 99.878s in =editing-acceptance.log= and final 108.536s in =editing-acceptance-final.log=. Final subcases: Markdown DOCX 29.67s, Markdown ODT 27.68s, Org DOCX 24.68s, Org ODT 24.77s. All 10,000 paragraphs, fifty chapter references, notes, page counters/parity and measured font/margins pass. Each output renders to 654 pages and has three heading/contents named definitions in the relevant families. Eight AT CLI attempts and eight reader exports ran in this remediation; cumulative delivery totals are thirty attempts and twenty-two exports under the operator's further-run authorization. Final novel evidence is 43,028,228 bytes, below 512 MiB, including four extra first-body-page images.
+- One-off feature comparison :: Seven profiles prepared in 250.27s, with the uninstalled-family pair passing in 26.90s; the full one-off batch is 279.188s. The affected composed-book profile was refreshed in 26.83s after heading-frame interning; =editing-ot-followup-settled.log= records that and the final consuming CLI. Counting the initial typography/letter probe, this candidate used twenty-eight office renders and thirteen PDF baselines, below 32/16. Final comparison evidence is 77,777,582 bytes, below 100 MiB. Retained index: =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-editor-profiles.MdVvnfyZWJ/comparison.html=.
+- Visual inspection :: Inspected fresh novel first-body pages in DOCX and ODT; composed-book title/contact fields, copyright/barcode, contents, separate part frames and first chapter; base-book body; contrasting contents; normal and contrasting typography including notes; both letter profiles; source PDF typography/part/body specimens; and the uninstalled ODT face. No clipping or overlap was observed in those inspected regions. Wrapping and native first-line ink placement differ. These are local image inspections, not human editing-view validation or inspection of every page.
+- Consuming CLI :: Four helps and four office commands per bounded execution, six output packages, with DOCX rejecting/recording Pandoc and Typst traps and zero calls. Three recorded executions cover the initial candidate, the CLI-only post-documentation selection and the settled composed-book/CLI follow-up; the final CLI subcase passes in 0.85s. No installation or release was used. The repeated local executions remain within the operator's instruction to run as many as needed; no automatic retry loop or metered operation was added.
+- Static, race and coverage :: =editing-lint-verified.log= passes. Office, manuscript and letter race checks pass in 5.140s/29.882s/2.613s. The initial affected application coverage pass is 58.810s and 63.3% of the whole existing office package; new style-reuse code alone covers 70/77 statements (90.9%) and 80/93 instrumented lines (86.0%). This is not a claim of eighty-percent whole-office coverage. Dependencies are unchanged from the retained no-vulnerabilities graph check.
+- Human boundary :: The original failed editor observation remains above. All twelve user tests remain AMBER for the corrected candidate, with explicit caret/typing/selection/clipping checks added to the existing editing procedure. W063 is not accepted or closed. The live binary SHA-256 remains =6d4143b9764cd7716c33df6b18ea5dc56d03b35d1dc5d172e719772ecea236f2=; recheck at handback.
+
+*** Fresh novel files and hashes
+
+Root: =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-editor-novels-final.r5TPd2jF0z=. Source/profile hashes match the corrected recipe retained below.
+
+| Case | Office SHA-256 | Editable file |
+|------+---------------+---------------|
+| Markdown DOCX | =97d5252c03f1a6e6796bdeb164b629a15133cee7b8bbfb8fe9ae9a31983895bb= | =md-docx-3761308049/novel.docx= |
+| Markdown ODT | =aa8438edd611885b8631ab608a505b286fb584ad9d1b27fe659469bfea3552b6= | =md-odt-614836670/novel.odt= |
+| Org DOCX | =97d5252c03f1a6e6796bdeb164b629a15133cee7b8bbfb8fe9ae9a31983895bb= | =org-docx-40061999/novel.docx= |
+| Org ODT | =6290a7246866ea18d9875bfb4e34bdf8cc14bd8287bb144cc2b6757feeb89da9= | =org-odt-732247428/novel.odt= |
+
+All four first-body-page images are retained beside these files. The current
+[handoff] is =handoff.md=; its original file links remain labelled historical.
+The complete source/profile/output manifest is =.agent/logs/editing-novels-manifest.txt=.
+
+** 2026-10-19 - Editor remediation RED checkpoint (historical)
 
 - User observation :: Three screenshots inspected at =/Users/tigger/ss/screenshot-26-10-19-2259-25.png=, =screenshot-26-10-19-2259-34.png= and =screenshot-26-10-19-2259-52.png=. Operator reports body/cursor displacement and editing-view clipping for both source forms and output formats. This fails the editable-document outcome under UT063.1; retest remains pending. Print-preview checks did not establish editor usability.
 - Reproduction :: =editing-red.log= records intended behavioural RED for =TestRT063_4_OfficeNaturalBodyBaseline= (all six manuscript/letter cases) and =TestRT063_13_OfficeStylesDoNotGrowWithChapters= (all four source/output pairs), 3.144s. At four versus forty chapters, heading/contents named styles grow from nine to eighty-one. Body packages contain explicit raised-character positioning. No production change is present at this RED checkpoint.
@@ -221,10 +251,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: make test
+:EVIDENCE: Settled full regression passes in editing-full-suite-verified.log (application 439.946s); unchanged parsing, cascade, publication and script/PDF routes retain their required assertions.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-1-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -275,10 +316,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: make test
+:EVIDENCE: Settled full regression passes in editing-full-suite-verified.log (application 439.946s); unchanged parsing, cascade, publication and script/PDF routes retain their required assertions.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-2-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -320,10 +372,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: go test ./internal/app -run '^TestRT063_(3_|4_|13_)' -count=1 -timeout=10m; make test
+:EVIDENCE: Full regression passes (application 439.946s), followed by final affected RT063.3/4/13 PASS in 45.696s, including natural baselines, bounded named styles and accepted deep Org levels; see editor-remediation verification.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-3-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -363,13 +426,24 @@ Its =comparison.html= and editable files remain in
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** RED RT063.4 - Configuration and role geometry :testdef:
+** GREEN RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REVISION: 0eaa6e5 plus prose_office_editing_test.go
-:COMMAND: go test ./internal/app -run '^TestRT063_(4_OfficeNaturalBodyBaseline|13_OfficeStylesDoNotGrowWithChapters)$' -count=1 -timeout=5m
-:EVIDENCE: Intended editor-baseline/style-growth failures in .agent/logs/editing-red.log, 3.144s; see current correction status.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: go test ./internal/app -run '^TestRT063_(3_|4_|13_)' -count=1 -timeout=10m; make test
+:EVIDENCE: Full regression passes (application 439.946s), followed by final affected RT063.3/4/13 PASS in 45.696s, including natural baselines, bounded named styles and accepted deep Org levels; see editor-remediation verification.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: RED
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-4-result
+- :REVISION: 0eaa6e5 plus prose_office_editing_test.go
+- :COMMAND: go test ./internal/app -run '^TestRT063_(4_OfficeNaturalBodyBaseline|13_OfficeStylesDoNotGrowWithChapters)$' -count=1 -timeout=5m
+- :EVIDENCE: Intended editor-baseline/style-growth failures in .agent/logs/editing-red.log, 3.144s; see current correction status.
+- :END:
+
 
 *** Historical GREEN before editor defect report
 
@@ -433,10 +507,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: make test
+:EVIDENCE: Settled full regression passes in editing-full-suite-verified.log (application 439.946s); unchanged parsing, cascade, publication and script/PDF routes retain their required assertions.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-5-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -481,10 +566,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: make test
+:EVIDENCE: Settled full regression passes in editing-full-suite-verified.log (application 439.946s); unchanged parsing, cascade, publication and script/PDF routes retain their required assertions.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-6-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -529,10 +625,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: make test
+:EVIDENCE: Settled full regression passes in editing-full-suite-verified.log (application 439.946s); unchanged parsing, cascade, publication and script/PDF routes retain their required assertions.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-7-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -574,10 +681,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: make test
+:EVIDENCE: Settled full regression passes in editing-full-suite-verified.log (application 439.946s); unchanged parsing, cascade, publication and script/PDF routes retain their required assertions.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-8-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -620,10 +738,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. Native source/letter budgets have intended RED-to-GREEN evidence; the original format-diagnostic failure passes its 5.046s follow-up. Current source guard tests also pass.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: make test
+:EVIDENCE: Settled full regression passes in editing-full-suite-verified.log (application 439.946s); unchanged parsing, cascade, publication and script/PDF routes retain their required assertions.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-9-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. Native source/letter budgets have intended RED-to-GREEN evidence; the original format-diagnostic failure passes its 5.046s follow-up. Current source guard tests also pass.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -668,10 +797,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.10 - Existing route preservation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-10-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: make test
+:EVIDENCE: Settled full regression passes in editing-full-suite-verified.log (application 439.946s); unchanged parsing, cascade, publication and script/PDF routes retain their required assertions.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-10-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -708,10 +848,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. ODT anchor defect reproduced and corrected; the anchor assertion now reuses the two manuscript font renders (23.943s), keeping the retained group at six renders.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: go test ./internal/app -run '^TestRT063_11_' -count=1 -timeout=10m; make test
+:EVIDENCE: Full regression passes; tightened first-line-box and genuine-note/header/font/spacing rendered follow-up passes in 69.625s; see editor-remediation verification.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-11-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above. ODT anchor defect reproduced and corrected; the anchor assertion now reuses the two manuscript font renders (23.943s), keeping the retained group at six renders.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -754,10 +905,21 @@ Its =comparison.html= and editable files remain in
 ** GREEN RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: make test; all TestRT063 groups; affected checks listed above
-:EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: make test
+:EVIDENCE: Settled full regression passes in editing-full-suite-verified.log (application 439.946s); unchanged parsing, cascade, publication and script/PDF routes retain their required assertions.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: GREEN
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-12-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: make test; all TestRT063 groups; affected checks listed above
+- :EVIDENCE: Full suite passed (application 565.617s), all W063 groups passed (410.706s), and current affected parser/letter/rendered checks passed; see the dated correction evidence above.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -802,10 +964,20 @@ Its =comparison.html= and editable files remain in
 ** GREEN OT063.1 - Rendered feature comparison :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-1-result
-:REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
-:COMMAND: Bounded seven-profile comparison, two ODT note rerenders, uninstalled-family probe and semantic PNG inspection
-:EVIDENCE: Seven profiles inspected; 24 office renders and nine PDF baselines including the initial font-oracle mismatch and corrected two-format probe. Current index is identified by .agent/logs/profiles-path. No Word behaviour or human editing result is inferred.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: Local seven-profile preparation, explicit reader refresh/extraction, uninstalled-family pair and composed-book follow-up; commands/helpers retained under the OS evidence directory
+:EVIDENCE: Seven profiles and final affected refresh pass; selected source/office PNGs inspected for clipping/overlap. Twenty-eight office renders and thirteen PDF baselines; evidence 77,777,582 bytes. See editor-remediation visual observation and comparison index.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- :PROPERTIES:
+- :CUSTOM_ID: ot063-1-result
+- :REVISION: 723734d; full-suite candidate plus the identified affected follow-ups
+- :COMMAND: Bounded seven-profile comparison, two ODT note rerenders, uninstalled-family probe and semantic PNG inspection
+- :EVIDENCE: Seven profiles inspected; 24 office renders and nine PDF baselines including the initial font-oracle mismatch and corrected two-format probe. Current index is identified by .agent/logs/profiles-path. No Word behaviour or human editing result is inferred.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -843,10 +1015,20 @@ Its =comparison.html= and editable files remain in
 ** GREEN OT063.2 - Installed-layout CLI and documentation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-2-result
-:REVISION: 723734d isolated binary
-:COMMAND: TestOT063ConsumingCLI via temporary Go overlay, outside-checkout consuming directory
-:EVIDENCE: Four help invocations and four conversions pass; DOCX runs with child-only recording/rejecting Pandoc and Typst traps and no calls. Six editable ZIP packages validated. See .agent/logs/cli-current.log and cli-current-path.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: Built isolated CLI from a temporary consuming directory: four help commands and four office conversions per recorded bounded execution
+:EVIDENCE: Current CLI and final documentation follow-up pass, DOCX traps record zero Pandoc/Typst calls and six packages validate. Final CLI subcase 0.85s; see recorded three local executions and scope boundary.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- :PROPERTIES:
+- :CUSTOM_ID: ot063-2-result
+- :REVISION: 723734d isolated binary
+- :COMMAND: TestOT063ConsumingCLI via temporary Go overlay, outside-checkout consuming directory
+- :EVIDENCE: Four help invocations and four conversions pass; DOCX runs with child-only recording/rejecting Pandoc and Typst traps and no calls. Six editable ZIP packages validated. See .agent/logs/cli-current.log and cli-current-path.
+- :END:
+
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
@@ -965,13 +1147,24 @@ Its =comparison.html= and editable files remain in
 - Scope :: Record DOCX opening-page header/footer selection and the separate ODT frontmatter/body page-break limitation. Preserve earlier failures as historical evidence; no test status changes follow from documentation alone.
 - ODT focused follow-up :: Native page policy and the three ODT continuous/reset/changed-field rendered cases passed: office 0.354s and application 68.654s in =.agent/w063-approved-boundary-green.log=. Additional native sequence checks passed in 0.834s in =.agent/w063-boundary-sequences.log=. These results do not establish a passing full suite.
 
-** RED RT063.13 - Shared parser and mode semantics :testdef:
+** GREEN RT063.13 - Shared parser and mode semantics :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-13-result
-:REVISION: 0eaa6e5 plus prose_office_editing_test.go
-:COMMAND: go test ./internal/app -run '^TestRT063_(4_OfficeNaturalBodyBaseline|13_OfficeStylesDoNotGrowWithChapters)$' -count=1 -timeout=5m
-:EVIDENCE: Intended editor-baseline/style-growth failures in .agent/logs/editing-red.log, 3.144s; see current correction status.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: go test ./internal/app -run '^TestRT063_(3_|4_|13_)' -count=1 -timeout=10m; make test
+:EVIDENCE: Full regression passes (application 439.946s), followed by final affected RT063.3/4/13 PASS in 45.696s, including natural baselines, bounded named styles and accepted deep Org levels; see editor-remediation verification.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- State :: RED
+- :PROPERTIES:
+- :CUSTOM_ID: rt063-13-result
+- :REVISION: 0eaa6e5 plus prose_office_editing_test.go
+- :COMMAND: go test ./internal/app -run '^TestRT063_(4_OfficeNaturalBodyBaseline|13_OfficeStylesDoNotGrowWithChapters)$' -count=1 -timeout=5m
+- :EVIDENCE: Intended editor-baseline/style-growth failures in .agent/logs/editing-red.log, 3.144s; see current correction status.
+- :END:
+
 
 *** Historical GREEN before editor defect report
 
@@ -998,10 +1191,20 @@ Its =comparison.html= and editable files remain in
 ** GREEN AT063.1 - Novel-scale rendered manuscripts :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at063-1-result
-:REVISION: 723734d; approval/evidence checkpoint following 28a7b7e
-:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_NovelScaleRenderedManuscripts/(md|org)/docx$' -count=1 -timeout=150m -v; repeat with odt suffix
-:EVIDENCE: Corrected Unicode/varied-length fixture passes all four native-package and refreshed-reader cases; DOCX 43.193s and ODT 39.795s. Complete paragraph inventory, all fifty contents references, page counters/parity and measured start/middle/end font/margins pass. Final artefacts 42,814,234 bytes and twenty-four selected PNGs; see corrected matrix above.
+:REVISION: 701d882 plus the settled editor-remediation delta
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_' -count=1 -timeout=150m -v
+:EVIDENCE: Final four-case novel reader acceptance passes in 108.536s; all content, references, counters/parity and measurements pass. Current files have natural body baselines and three relevant heading/contents style definitions; see editor-remediation matrix.
 :END:
+
+*** Historical record before the editor-remediation verification
+
+- :PROPERTIES:
+- :CUSTOM_ID: at063-1-result
+- :REVISION: 723734d; approval/evidence checkpoint following 28a7b7e
+- :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_NovelScaleRenderedManuscripts/(md|org)/docx$' -count=1 -timeout=150m -v; repeat with odt suffix
+- :EVIDENCE: Corrected Unicode/varied-length fixture passes all four native-package and refreshed-reader cases; DOCX 43.193s and ODT 39.795s. Complete paragraph inventory, all fifty contents references, page counters/parity and measured start/middle/end font/margins pass. Final artefacts 42,814,234 bytes and twenty-four selected PNGs; see corrected matrix above.
+- :END:
+
 
 *** Historical checkpoint before operator authorization
 

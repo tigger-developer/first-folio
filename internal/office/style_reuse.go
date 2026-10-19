@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var instanceStyle = regexp.MustCompile(`^((?:FolioFrame)?(?:FolioHeading|FolioContentsEntry)Level[1-6])Instance[0-9]+$|^(Folio(?:LetterBody|Legal|Flow|Blank|Band))[0-9]+(?:_[0-9]+)?$`)
+var instanceStyle = regexp.MustCompile(`^((?:FolioFrame)?(?:FolioHeading|FolioContentsEntry)Level[1-9][0-9]*)Instance[0-9]+$|^(Folio(?:LetterBody|Legal|Flow|Blank|Band))[0-9]+(?:_[0-9]+)?$`)
 
 // compactProseStyles runs after instance-specific layout has been applied. Only
 // exact formatting matches within one role family share a named style. Layout

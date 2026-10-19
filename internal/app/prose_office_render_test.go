@@ -529,11 +529,12 @@ func proseAssertHeaderGeometry(t *testing.T, tree *officeXML) {
 			}
 			if strings.Contains(span.text(), "HEADING-SAMPLE") {
 				// The native paragraph's first line box begins at 25mm. Its
-				// ordinary glyphs occupy that box; forcing the cap top onto the
+				// 24.93pt (16.62pt single interval times 1.5) ordinary line
+				// box contains its glyphs; forcing the cap top onto the
 				// margin with raised characters breaks editing. Native-property
 				// tests assert the exact margin and independent line interval.
 				capTop := top + 3.68
-				if capTop < 25*72/25.4-1 || capTop > 25*72/25.4+30 {
+				if capTop < 25*72/25.4-1 || capTop > 25*72/25.4+24.93 {
 					t.Errorf("heading cap-box top %gpt lies outside its first native line box", capTop)
 				}
 			}
