@@ -87,14 +87,15 @@ classification; it is provenance, not current state.
 - Scope :: Report each external user YAML file loaded into the manuscript
   configuration cascade on stderr, preserving existing precedence and output.
 
-** ACTIVE W063 - Editable DOCX and ODT manuscripts and letters :feature:
+** REVIEW W063 - Editable DOCX and ODT manuscripts and letters :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-063
 :CREATED: 2026-10-16
 :END:
 - Specification :: [[file:../specs/063-prose-office-export/spec.org][W063 - Prose office export definition]].
 - Delivery admission 2026-10-19 :: Current definition approved for hands-off delivery on an isolated feature branch. Preserve the live primary-checkout binary; return for the defined user tests after automated delivery and internal review.
-- Automated verification 2026-10-19 :: The operator removed the local AT execution-count cap. Corrected Unicode/varied-length novel reader acceptance now passes all four DOCX/ODT combinations, supplementing the passing RTs and OTs. Internal delivery-code review is next; all twelve UTs remain AMBER.
+- Operator-validation handoff 2026-10-19 :: Internal delivery-code PASS at =ec5113f= (current-session author self-review, not independent). All required AT/RT/OT records are GREEN and delivery-code readiness passes. Twelve UTs remain AMBER for the agreed joint validation. The live symlink/checksum are unchanged; no merge, installation, release or closure.
+- Automated verification 2026-10-19 (before internal review) :: The operator removed the local AT execution-count cap. Corrected Unicode/varied-length novel reader acceptance now passes all four DOCX/ODT combinations, supplementing the passing RTs and OTs. Internal delivery-code review is next; all twelve UTs remain AMBER.
 - Delivery checkpoint 2026-10-19 (historical, before further-run authorization) :: Native shared-parser candidate =723734d= is on =feature/W063-prose-office-export=. Full regression, affected RTs and both OTs pass; corrected-fixture DOCX acceptance passes. Two corrected-fixture ODT acceptance cases await the explicit AT conversion-budget exception after an agent counting error. Delivery-code review has no current verdict; all twelve UTs remain AMBER and the live binary is unchanged.
 - Parser correction 2026-10-19 (historical definition stage) :: Specification review now requires reuse of the convert parser and zero Pandoc calls throughout DOCX. Revised sign-off is pending. Earlier reader-only tests and internal delivery PASS do not establish these requirements; implementation and fresh evidence remain outstanding.
 - Correction 2026-10-19 (historical exporter verification) :: Previous delivery acceptance is superseded. Existing native DOCX and configured Pandoc ODT exporters now serve manuscript and letter adapters; selective rollback preserved unrelated work. Initially pending fresh checks now pass: full regression plus affected follow-ups, seven-profile comparison, outside-checkout CLI and internal delivery-code review. Twelve operator UTs remain pending; this is not closure.

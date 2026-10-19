@@ -1,10 +1,80 @@
 ---
 title: W063 internal delivery review
-version: 9
+version: 10
 last-updated: 2026-10-19
 ---
 
-# 2026-10-19: Shared-parser delivery verification, gate pending
+# 2026-10-19: Shared native parser delivery-code review
+
+Review method: internal (current session; not independent)
+
+Gate: delivery-code
+
+Mode: SDLC
+
+Revision: `ec5113f514e3d3757a6e6b3cdca3f043225a796f`, clean worktree at review start.
+The production/test candidate is `723734d`; subsequent checkpoints record
+operator authorization and settled verification. This entry and the linked
+handoff records are review outputs, with no production/test changes.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+No unresolved blocking findings remain. This author self-review permits the
+agreed user-validation handoff; it does not establish independent assurance,
+Word editing behaviour, merge, installation, release or closure. The pending
+checkpoint below is historical and superseded by this result.
+
+## Readiness and criteria
+
+Before beginning this gate, all required checks had finished, AT063.1, all
+thirteen RTs and both OTs were GREEN, and the installed validator returned
+`schema.valid: true` and `delivery-code.ready: true` in
+`.agent/logs/delivery-readiness-current.yaml`. All twelve UTs remain AMBER.
+The operator's "run as many as you like" authorization supersedes the local
+AT execution-count cap; it does not erase the earlier recorded tracking error.
+
+Applied AUDITS, CODING, TESTING, ARCHITECTURE, SECURITY and the applicable Go,
+Shell, documentation, Org, Markdown and Git standards. Reused unchanged
+standards already read in full. Reviewed affected tests first, then the complete
+shared-parser production delta, relevant unchanged source/configuration,
+writer and publication interfaces, and affected product documentation.
+
+| Criterion | Review conclusion and evidence |
+|---|---|
+| Parser reuse and mode ownership, AC063.3/7/10/11 | Convert's `play.Parse` consumes shared heading/metadata/note recognition and table cells. Script serialization, manuscript prose and composed letters consume the same bounded inline implementation. Rich prose extends that recognition; play events, manuscript semantics and letter recipients retain separate adapters. Fountain and PDF/Typst remain separate. This conclusion includes actual call-path inspection, not only passing tests. |
+| End-to-end DOCX independence, AC063.1/12 | Manuscript `runOffice` and native `parseOffice`, letter composition and the existing DOCX serializer start no Pandoc process. Public absent/trapping-Pandoc cases cover Markdown, Org, letters, scripts and dry-run; the novel DOCX regression rejects any call. Native generation and JSON validation require no executable. |
+| ODT extension, AC063.13 | Native content and generated reference reach the existing `writeODT` with fixed JSON-to-ODT arguments. Recording/rejecting wrappers permit that writer only. Native layout, fonts, validation and publication follow; there is no source-reader or DOCX intermediate. |
+| Same PDF YAML cascade, AC063.4 | Manuscript PDF and office reuse `readConfiguredMarkdown`, `loadConfigWithSource` and `config.Load`; letters pass the existing resolved `ModeLetter` config. Independent family, size and margin expectations cover global/source/local/style and supported CLI winners, with existing inheritance and later-source rejection checks. |
+| Native features and fonts, AC063.4/5/6/8 | Existing role, generated matter, spacing, page/field and font regressions pass. Seven-profile comparison and actual selected PNG inspection cover the required visual effects, including corrected ODT note positioning. Accepted ODT boundary, DOCX opening-band and weight mappings remain explicit. Uninstalled-family evidence uses retained files without installation. |
+| Novel-scale adequacy | The independent recipe has 10,000 varied-length Unicode body paragraphs and fifty chapters. All four corrected cases pass complete ordered package and refreshed-reader inventories, notes, contents references, body counters, physical header parity and start/middle/end measurements. Retained outputs each contain 654 rendered pages. Selected contents, middle and final-page PNGs were inspected; this is not inspection of every page or human editing evidence. |
+| Failure, limits and security, AC063.9 | Source, aggregate letter, semantic, output, ZIP/XML and font limits remain. Public preservation/failure cases and native exact-limit/overflow checks cover their owning boundaries. Fixed subprocess arguments, private staging and per-file atomic publication remain; hyperlinks are not fetched. No dependency change, executable source content or network service was introduced. |
+| Maintainability and documentation | Shared grammar stays below mode adapters; it does not introduce a universal semantic model or third-party parser. The long bounded grammar dispatch is the recorded fifty-line tripwire tradeoff, with lists/tables separated. Product help, dependency/format/configuration documents and architecture describe the implemented routes and limitations. |
+
+## Findings, remediation and checks
+
+Preparation findings and their RED/GREEN evidence are retained in the historical
+checkpoint below: format diagnostics, empty table cells, ODT note positioning,
+letter-wide budgets, remote Org images and the novel recipe. Reassessed those
+corrections against the settled candidate. No additional blocking finding was
+identified at this gate.
+
+Full regression passes in `full-suite-final.log`; subsequent affected parser,
+letter, cascade, novel and rendered-note checks pass in their named logs in
+`validation.org`. The full run preceded later refinements, so it is not claimed
+as a single run of every final test. Current shared-source coverage is 86.4% of
+statements and 81.3% of instrumented lines. Lint, affected race checks and the
+unchanged dependency graph's vulnerability check pass. Corrected DOCX reader
+acceptance passes in 43.193s and ODT in 39.795s. Their retained artefacts total
+42,814,234 bytes and include twenty-four selected PNGs.
+
+The live symlink and SHA-256 were rechecked unchanged. The feature branch is the
+handoff candidate. Only the twelve named human UTs remain; none is inferred
+GREEN from automated LibreOffice rendering. Editable files and commands are
+linked from `validation.org` and the maintained fixture expectations.
+
+# 2026-10-19: Historical shared-parser verification checkpoint, gate pending at that time
 
 Current candidate: `723734d`, with documentation and evidence updates following.
 

@@ -722,6 +722,12 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Continuation :: Execute the two corrected-fixture ODT cases, reconcile the four-case matrix and run the internal delivery-code review. Human UTs remain pending. The goal API still reports the previous blocked state and exposes no resume operation; continue in-session without claiming native continuation has been reactivated.
 
 
+*** Settled acceptance and internal delivery review
+
+- Candidate :: =ec5113f= records operator authorization and the final four-case corrected novel evidence; production/tests remain at =723734d=. Markdown/Org to DOCX/ODT all pass native package and refreshed reader checks, with 654 rendered pages per output. Twenty-two AT CLI attempts and fourteen reader exports are recorded across this delivery; final corrected artefacts total 42,814,234 bytes.
+- Review :: All required AT/RT/OT records are GREEN and the installed delivery-code readiness check passes. Internal delivery-code review records PASS in =internal-review.md=, explicitly current-session author self-review without independence. Preparation findings and earlier failed evidence remain retained.
+- Handoff :: Return the feature branch and editable artefacts for all twelve named human UTs, which remain AMBER. Recheck published branch cleanliness and the live binary link/checksum before handback. No merge, installation, release or work-item closure is authorized by this result.
+
 ** 2026-10-19T15:14:00Z :hands-off:review:
 
 *** Isolated feature-branch delivery and live binary protection
