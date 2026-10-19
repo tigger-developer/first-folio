@@ -87,13 +87,14 @@ classification; it is provenance, not current state.
 - Scope :: Report each external user YAML file loaded into the manuscript
   configuration cascade on stderr, preserving existing precedence and output.
 
-** ACTIVE W063 - Editable DOCX and ODT manuscripts and letters :feature:
+** REVIEW W063 - Editable DOCX and ODT manuscripts and letters :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-063
 :CREATED: 2026-10-16
 :END:
 - Specification :: [[file:../specs/063-prose-office-export/spec.org][W063 - Prose office export definition]].
 - Delivery admission 2026-10-19 :: Current definition approved for hands-off delivery on an isolated feature branch. Preserve the live primary-checkout binary; return for the defined user tests after automated delivery and internal review.
+- Editor retest handoff 2026-10-19 :: Internal delivery-code PASS for native baselines and shared formatting at =623af4e=, current-session self-review without independence. Required AT/RT/OT evidence and readiness are GREEN; twelve UTs remain AMBER. Fresh editable files and exact retest steps are in [[file:../specs/063-prose-office-export/handoff.md][the W063 handoff]]. W063 remains unaccepted. The live binary/symlink are unchanged; no merge, installation, release or closure.
 - Editor correction 2026-10-19 :: Operator reports raised ordinary body text with displaced cursor and editing-view clipping, plus per-instance heading/contents styles, across Markdown/Org and DOCX/ODT. These remain corrections under unaccepted W063. Resume delivery in the isolated feature branch; previous handoff evidence is historical for its candidate.
 - Operator-validation handoff 2026-10-19 (historical) :: Internal delivery-code PASS at =ec5113f= (current-session author self-review, not independent). All required AT/RT/OT records are GREEN and delivery-code readiness passes. Twelve UTs remain AMBER for the agreed joint validation. The live symlink/checksum are unchanged; no merge, installation, release or closure.
 - Automated verification 2026-10-19 (before internal review) :: The operator removed the local AT execution-count cap. Corrected Unicode/varied-length novel reader acceptance now passes all four DOCX/ODT combinations, supplementing the passing RTs and OTs. Internal delivery-code review is next; all twelve UTs remain AMBER.

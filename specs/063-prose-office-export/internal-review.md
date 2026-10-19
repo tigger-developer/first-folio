@@ -1,8 +1,81 @@
 ---
 title: W063 internal delivery review
-version: 11
+version: 12
 last-updated: 2026-10-19
 ---
+
+# 2026-10-19: Editor-remediation delivery-code review
+
+Review method: internal (current session; not independent)
+
+Gate: delivery-code
+
+Mode: SDLC
+
+Revision: `623af4e9b155d6803e7091624d997e177945e781`, clean worktree at review.
+Reviewed the complete remediation delta from the original `0eaa6e5` handoff.
+Only this verdict and its derived validation/lifecycle records follow review;
+no production, executable-test or product-documentation change is part of the
+review output.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+No unresolved blocking findings remain in the reviewed implementation and
+required automated/one-off evidence. This author self-review authorizes the
+agreed editing retest handoff only. W063 remains unaccepted; no Word or
+LibreOffice interactive caret, selection, clipping, save/reopen or style-editing
+PASS is inferred. All twelve UTs remain AMBER for the corrected candidate.
+
+## Readiness, criteria and review
+
+All required checks had finished before this final review. The installed
+validator reports valid schema and delivery-code readiness true, with one AT,
+thirteen RTs and two OTs GREEN and twelve UTs AMBER. Reused unchanged full
+readings of AUDITS, TESTING, CODING, ARCHITECTURE, SECURITY, Go, documentation,
+Org/Markdown and Git standards. Reviewed affected tests first, including their
+helpers and observed failures, then the complete production delta, relevant
+unchanged parser/export/publication interfaces and affected product documents.
+
+| Criterion | Review conclusion |
+|---|---|
+| Ordinary editable baselines | `resolveBaselines` clears character offsets from ordinary paragraph roles. Word run normalization removes position properties; ODT ordinary paragraph/text styles do not serialize them. Native list markers use the same natural baseline. Font sizing and genuine `vertAlign`/note superscripts remain distinct. Both manuscript sources and both outputs, plus letters, have public-command guards against direct/inherited offsets. |
+| Native geometry | Header metrics position the header paragraph box, with a compensating ODT following gap preserving the body boundary. Native margins and authored line intervals remain strict. The old ink-edge oracle was replaced because it rewarded the defective character shifts; its first-line-box bound now uses the independently specified 24.93pt interval. Genuine notes, font sizes, list alignment and field baselines retain rendered assertions. |
+| Shared formatting, separate identities | Exact serialized formatting is interned within each semantic level/role after instance layout has been applied. Copies protect retained nodes while deriving signatures. Alias rewriting is restricted to style references; bookmarks, contents targets, numbering, fields and frame names remain individual. ODT page-transition overrides move into automatic styles. Positioned heading frames also share formatting. |
+| Source and scale boundaries | The classifier accepts every already-supported positive Org outline level, rather than imposing Markdown's six-level recognition boundary. A level-seven case has intended RED and final GREEN. Four versus forty chapters with parts/frames retain constant common named-style inventories, independent of name prefixes, and distinct contents targets. The fifty-chapter novels retain three relevant heading/contents definitions each. |
+| Preservation and resource/security rules | Native parser reuse, the PDF YAML cascade, zero-Pandoc DOCX and configured-writer-only ODT paths are unchanged and retain full-suite evidence. No dependencies, source fetching, public flags or access were added. The normalizer operates on already bounded/validated XML, then existing font/package validation and atomic publication continue. Regex/maps have no mutable cross-export state. |
+| Maintainability and documentation | The normalization is a bounded collection/alias-rewrite phase, with separate renaming and reference helpers. Its main function exceeds the fifty-line tripwire; retaining one visible style pass avoids spreading shared local state across a new framework. Architecture, both format guides, independent fixture expectations and the UT handoff describe the native-baseline/shared-style contract. The expectation sheet's revision date was corrected and rechecked before this verdict. |
+
+## Findings addressed and verification boundary
+
+The observed baseline and per-instance style defects are addressed under W063,
+not separate tickets. Preparation also caught ODT positioned-part styles,
+accepted Org levels beyond six, the obsolete note compensation and two invalid
+representation-coupled test expectations. Their RED, setup-failure and GREEN
+records remain distinguishable in `validation.org`; none was erased or treated
+as proof of successful editing.
+
+The full regression passes with application 439.946s and manuscript 129.803s.
+Later affected RT063.3/4/13 checks pass in 45.696s, the tightened rendered group
+passes in 69.625s and final whole-inventory/deep-Org cases pass in 2.316s. This is
+a full run plus explicitly identified affected follow-ups, not a claim that one
+full invocation contained every later test refinement. Lint and affected race
+checks pass. New normalization code has 90.9% statement and 86.0% instrumented-line
+coverage; whole-office coverage from the selected application cases is 63.3%.
+No new dependency graph was introduced; retained vulnerability evidence applies.
+
+All four novel reader cases pass in 108.536s, retaining complete content,
+references, counters/parity and measured font/margins across 654 pages per file.
+The seven-profile comparison, affected composed-book refresh, unique uninstalled
+font and consuming-directory CLI checks pass. Actual selected page images were
+inspected, including positioned part frames and first-body pages. No clipping or
+overlap was observed in those regions. These checks remain print/reader evidence;
+the operator's reported editing-view defect requires the explicit fresh UT retest.
+
+The live symlink/checksum remain at their recorded baseline. The feature branch
+and new editable files may be returned for operator validation. No merge,
+installation, release, ticket closure or independent assurance is claimed.
 
 # 2026-10-19: Editor-remediation test-code review
 
