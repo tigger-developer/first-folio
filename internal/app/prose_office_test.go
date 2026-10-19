@@ -553,3 +553,26 @@ func TestRT063_3_DOCXFootnoteLinksRemainEditable(t *testing.T) {
 		t.Error("footnote link does not resolve from its owning part")
 	}
 }
+
+func TestRT063_3_DOCXSourceSemantics(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	dir := t.TempDir()
+	proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: false\n")
+	source := proseSource(t, dir, "source.md", "He said, \"a 'single' quotation\".\n\na) ALPHA-FIRST\nb) ALPHA-SECOND\n\n| LEFT | RIGHT |\n|:-----|------:|\n| CELL | VALUE |\n")
+	pkg := proseConvert(t, source, filepath.Join(dir, "output.docx"))
+	body := officeBody(t, pkg, "docx")
+	if !strings.Contains(body.text(), "‘single’") {
+		t.Error("single quotation converted to double quotation")
+	}
+	numbering := pkg["word/numbering.xml"]
+	if numbering == nil {
+		t.Fatal("numbering part missing")
+	}
+	officeAssertAttr(t, numbering, "numFmt", "val", "lowerLetter")
+	officeAssertAttr(t, numbering, "lvlText", "val", "%1)")
+	for _, paragraph := range body.all("p") {
+		if paragraph.text() == "VALUE" {
+			officeAssertAttr(t, paragraph, "jc", "val", "right")
+		}
+	}
+}

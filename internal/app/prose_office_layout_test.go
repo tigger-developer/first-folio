@@ -243,6 +243,15 @@ func TestRT063_3_OfficeFootnoteTypography(t *testing.T) {
 			if format == "docx" {
 				officeAssertEffective(t, layers, "rFonts", "ascii", "Iosevka Publish")
 				officeAssertEffective(t, layers, "sz", "val", "20")
+				for _, run := range officeBody(t, pkg, format).all("r") {
+					if len(run.all("footnoteReference")) > 0 {
+						officeAssertAttr(t, run, "vertAlign", "val", "superscript")
+						if positions := run.all("position"); len(positions) != 1 || positions[0].attr("val") != "0" {
+							t.Error("footnote reference must share the unshifted paragraph baseline")
+						}
+					}
+				}
+
 			} else {
 				officeAssertEffective(t, layers, "text-properties", "font-size", "10.2pt")
 			}

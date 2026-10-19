@@ -230,8 +230,15 @@ func (p *Prose) wordRunSizes(root *docxNode) {
 		if pr := paragraph.child("w:pPr"); pr != nil && pr.child("w:numPr") != nil {
 			style.BaselineShift = 0
 		}
+		// Native footnote anchors use the reader's paragraph baseline, as list
+		// labels do. Keep their surrounding text on that same baseline.
+		paragraph.visit(func(node *docxNode) {
+			if node.name == "w:footnoteReference" {
+				style.BaselineShift = 0
+			}
+		})
 		paragraph.visit(func(run *docxNode) {
-			if run.name != "w:r" || run.child("w:t") == nil {
+			if run.name != "w:r" || run.child("w:t") == nil && run.child("w:footnoteReference") == nil {
 				return
 			}
 			pr := run.child("w:rPr")
@@ -245,9 +252,7 @@ func (p *Prose) wordRunSizes(root *docxNode) {
 					font = s
 				}
 			}
-			if style.BaselineShift != 0 {
-				pr.ensure("w:position").set("w:val", style.wordPosition())
-			}
+			pr.ensure("w:position").set("w:val", style.wordPosition())
 			if pr.child("w:sz") == nil {
 				pr.children = append(pr.children, dxVal("sz", strconv.Itoa(int(font.Size*2+0.5))))
 			}

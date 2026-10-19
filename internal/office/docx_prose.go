@@ -183,6 +183,7 @@ func (b *proseDOCX) blocks(nodes []Node, role string, depth int) ([]docxNode, er
 			start := 1
 			kind := "bullet"
 			label := "•"
+			delimiter := "Period"
 			if node.Type == "OrderedList" {
 				if len(c) != 2 {
 					return nil, fmt.Errorf("invalid ordered list")
@@ -194,7 +195,14 @@ func (b *proseDOCX) blocks(nodes []Node, role string, depth int) ([]docxNode, er
 					start = int(v)
 				}
 				kind = "decimal"
-				label = "%1."
+				if len(attrs) == 3 {
+					style, _ := attrs[1].(map[string]any)
+					if mapped := map[string]string{"LowerRoman": "lowerRoman", "UpperRoman": "upperRoman", "LowerAlpha": "lowerLetter", "UpperAlpha": "upperLetter"}[fmt.Sprint(style["t"])]; mapped != "" {
+						kind = mapped
+					}
+					delim, _ := attrs[2].(map[string]any)
+					delimiter, _ = delim["t"].(string)
+				}
 			}
 			number := len(b.numbering)/2 + 1
 			listLevel := b.listLevel
@@ -203,7 +211,15 @@ func (b *proseDOCX) blocks(nodes []Node, role string, depth int) ([]docxNode, er
 			nativeLevel := min(listLevel, 8)
 			indent := dxInt((listLevel + 1) * 360)
 			if kind != "bullet" {
-				label = "%" + dxInt(nativeLevel+1) + "."
+				label = "%" + dxInt(nativeLevel+1)
+				switch delimiter {
+				case "OneParen":
+					label += ")"
+				case "TwoParens":
+					label = "(" + label + ")"
+				default:
+					label += "."
+				}
 			}
 			level := dx("lvl", dxVal("start", dxInt(start)), dxVal("numFmt", kind), dxVal("lvlText", label), dx("pPr", dx("tabs", dx("tab").attr("w:val", "num").attr("w:pos", indent)), dx("ind").attr("w:left", indent).attr("w:hanging", "360"))).attr("w:ilvl", dxInt(nativeLevel))
 			b.numbering = append(b.numbering, dx("abstractNum", level).attr("w:abstractNumId", dxInt(number)), dx("num", dxVal("abstractNumId", dxInt(number))).attr("w:numId", dxInt(number)))
@@ -337,8 +353,12 @@ func (b *proseDOCX) inlines(value any, props docxNode, depth int) ([]docxNode, e
 				return nil, e
 			}
 			if len(paragraphs) == 0 {
-				paragraphs = []docxNode{dx("p")}
+				paragraphs = []docxNode{dx("p", dx("pPr", dxVal("pStyle", "FootnoteText")))}
 			}
+			if paragraphs[0].name != "w:p" {
+				paragraphs = append([]docxNode{dx("p", dx("pPr", dxVal("pStyle", "FootnoteText")))}, paragraphs...)
+			}
+			paragraphs[0].ensure("w:pPr")
 			paragraphs[0].children = append(paragraphs[0].children[:1], append([]docxNode{dx("r", dx("footnoteRef")), docxRun(" ", dx("rPr"))}, paragraphs[0].children[1:]...)...)
 			b.writer.footnotes = append(b.writer.footnotes, dx("footnote", paragraphs...).attr("w:id", dxInt(id)))
 			children = []docxNode{dx("r", dx("rPr", dxVal("vertAlign", "superscript")), dx("footnoteReference").attr("w:id", dxInt(id)))}
@@ -350,8 +370,13 @@ func (b *proseDOCX) inlines(value any, props docxNode, depth int) ([]docxNode, e
 			if e != nil {
 				return nil, e
 			}
-			children = append([]docxNode{docxRun("“", props)}, runs...)
-			children = append(children, docxRun("”", props))
+			open, close := "“", "”"
+			quote, _ := c[0].(map[string]any)
+			if quote["t"] == "SingleQuote" {
+				open, close = "‘", "’"
+			}
+			children = append([]docxNode{docxRun(open, props)}, runs...)
+			children = append(children, docxRun(close, props))
 		case "Image":
 			children, err = b.image(c)
 		default:
@@ -408,7 +433,7 @@ func (b *proseDOCX) table(c []any, role string, depth int) (docxNode, error) {
 		}
 		cells, _ := row[1].([]any)
 		tr := dx("tr")
-		for _, value := range cells {
+		for column, value := range cells {
 			cell, _ := value.([]any)
 			if len(cell) != 5 {
 				return docxNode{}, fmt.Errorf("invalid table cell")
@@ -427,6 +452,22 @@ func (b *proseDOCX) table(c []any, role string, depth int) (docxNode, error) {
 			}
 			if len(paragraphs) == 0 {
 				paragraphs = []docxNode{dx("p")}
+			}
+			alignment, _ := cell[1].(map[string]any)
+			align := fmt.Sprint(alignment["t"])
+			if align == "AlignDefault" && column < len(columns) {
+				definition, _ := columns[column].([]any)
+				if len(definition) > 0 {
+					alignment, _ = definition[0].(map[string]any)
+					align = fmt.Sprint(alignment["t"])
+				}
+			}
+			if value := map[string]string{"AlignLeft": "left", "AlignRight": "right", "AlignCenter": "center"}[align]; value != "" {
+				for i := range paragraphs {
+					if paragraphs[i].name == "w:p" {
+						paragraphs[i].ensure("w:pPr").ensure("w:jc").set("w:val", value)
+					}
+				}
 			}
 			tr.children = append(tr.children, dx("tc", append([]docxNode{props}, paragraphs...)...))
 		}
