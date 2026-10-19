@@ -1,6 +1,6 @@
 ---
 title: W063 internal delivery review
-version: 6
+version: 7
 last-updated: 2026-10-19
 ---
 
@@ -392,3 +392,25 @@ The earlier AT tooling limitation no longer applies. **Definition PASS does not
 establish test-code readiness**: those records remain AMBER. No product tests
 were run and no execution state or operator sign-off changed. Sanitization and
 whitespace checks pass for this documentation reconciliation.
+
+# 2026-10-19: Frontmatter configuration synopsis clarification
+
+Review method: internal (current session; not independent)
+
+Gate: definition
+
+Revision: `2f648e9` (AT validator reconciliation) plus the synopsis clarification;
+specification SHA-256 `25740ce30d60838d52716172a5c06b05b4589cc9516693f3b65dce5f8f8d2460`.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+The synopsis now explicitly includes the first resolved Markdown manuscript's
+`folio:` and `render:` frontmatter mappings, above global YAML files and below
+local YAML files and CLI overrides. Checked against manuscript source-configuration
+extraction, command help, RT063.4 - Configuration and role geometry and
+UT063.10 - Metadata, style and configuration precedence. This clarifies the
+existing requirement; it adds no source format, configuration layer or test
+obligation. Earlier definition findings remain addressed. No implementation,
+test execution or sign-off is implied.

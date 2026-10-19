@@ -24,7 +24,8 @@
 
 - *Manuscript target extensions select DOCX or ODT*; *letter --format selects pdf, docx or odt*.
 - *Letters retain one file per recipient*, filtering, substitution and naming.
-- *Existing YAML controls every applicable feature*, including manuscript contents, copyright, numbering and running matter.
+- *Resolved YAML configuration controls every applicable feature*, including manuscript contents, copyright, numbering and running matter.
+- *Manuscript configuration includes YAML frontmatter* from the first resolved Markdown input: its =folio:= and =render:= mappings merge above global YAML files and below local YAML files and CLI overrides.
 - *Fonts use the existing embedding policy*; *pagination may differ* between reading applications and PDF.
 - *Labelled reference fixtures and named user tests demonstrate every supported YAML feature*, with explicit expected values and a key-to-test checklist.
 - *Automated office-to-PDF measurements precede user review*; page PNGs support visual inspection without requiring pixel-identical pagination.
