@@ -24,7 +24,7 @@ func TestReleaseGateAndTap(t *testing.T) {
 			dir := t.TempDir()
 			log := filepath.Join(dir, "calls")
 			// POSIX fixture executables only record argv; no real Git or Go runs.
-			for _, name := range []string{"go", "git", "typst", "pandoc", "soffice", "pdftotext", "pdftohtml", "pdftoppm"} {
+			for _, name := range []string{"go", "git", "typst", "pandoc"} {
 				script := "#!/bin/sh\nset -eu\nprintf '%s' \"${0##*/}\" >> \"$RELEASE_TEST_LOG\"\nprintf ' <%s>' \"$@\" >> \"$RELEASE_TEST_LOG\"\nprintf '\\n' >> \"$RELEASE_TEST_LOG\"\nif [ \"${0##*/}\" = go ] && [ \"${1:-}\" = test ] && [ \"$RELEASE_TEST_FAIL\" = yes ]; then exit 1; fi\n"
 				if err := os.WriteFile(filepath.Join(dir, name), []byte(script), 0700); err != nil {
 					t.Fatal(err)
@@ -56,7 +56,7 @@ func TestReleaseGateAndTap(t *testing.T) {
 			if runErr != nil {
 				t.Fatalf("release: %v\n%s", runErr, output)
 			}
-			for _, want := range []string{"go <test> <-timeout=20m> <./...>", "git <tag> <-a> <v0.4.16>", "git <push> <origin> <v0.4.16>", "<--publish-tap> <" + tap + "> <0.4.16>"} {
+			for _, want := range []string{"go <test> <./...>", "git <tag> <-a> <v0.4.16>", "git <push> <origin> <v0.4.16>", "<--publish-tap> <" + tap + "> <0.4.16>"} {
 				if !strings.Contains(calls, want) {
 					t.Errorf("missing %q in calls:\n%s", want, calls)
 				}

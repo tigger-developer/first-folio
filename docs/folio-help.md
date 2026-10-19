@@ -5,7 +5,7 @@ A format converter and publishing tool for stage plays, submission letters, and 
 Commands:
   convert    Convert a play between formats
   letter     Generate letters from :letter: tagged sections
-  manuscript Render prose to Typst, PDF, DOCX or ODT
+  manuscript Render prose manuscript chapters to Typst or PDF
 
 Options:
   -h, --help     Show this help message

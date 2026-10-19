@@ -1,7 +1,7 @@
 ---
 title: ODT Script Export
-version: "1.5"
-last-updated: 2026-10-17
+version: "1.3"
+last-updated: 2026-10-12
 ---
 
 # ODT script export
@@ -27,8 +27,8 @@ writes the document. Unsupported, missing or restricted fonts produce warnings.
 
 The destination extension takes precedence over `--to`. With no target, use
 `--to odt` or `folio.default-format: odt` and redirect stdout. Binary terminal
-output requires `--force`. ODT is write-only. Manuscript and letter exports use
-the separate prose route below.
+output requires `--force`. ODT is write-only and available only to `convert`,
+not the manuscript or letter commands.
 
 ## Formatting and editing
 
@@ -58,53 +58,7 @@ nodes currently use Word names. It projects those nodes to Pandoc JSON, then
 supplies generated ODF styles. This preserves the current DOCX behaviour while
 leaving a later decision about a common export engine open.
 
-## Manuscripts and letters
-
-Use `folio manuscript manuscript.org manuscript.odt` or
-`folio letter letters.org --format odt`. Both use existing mode-specific YAML
-and require Pandoc without Typst. They write ODT directly from structured prose;
-no DOCX intermediate is created. The script approximations above do not define
-the prose feature contract.
-
-Manuscripts use native paragraphs, lists, tables, footnotes, heading bookmarks,
-editable positioned groups and contents page references. Update fields in the
-editor before printing. An ODT frontmatter/body change of page-number format
-starts a new page; configured displayed numbering and physical page-side rules
-still apply. Letters retain recipient substitutions, Org emphasis and literal
-spans, with their own font/margin/spacing configuration and no running matter.
-
-### Frontmatter/body page-break limitation
-
-The body starts on a new page when the frontmatter/body transition changes the
-number format, requests a numbering reset, or changes the sequence of live
-page/page-count fields in a header or footer. This can leave unused space at
-the end of the introduction, even when no chapter page break was requested.
-Configured numbering and page-side rules still apply. Wording changes around
-the same page fields remain continuous when no reset or break is requested.
-
-This is an accepted fidelity limitation for prose ODT exports.
-Nonstandard weight handling has a separate
-[documented limitation](font-embedding.md#prose-weight-fidelity).
-
-### Font fidelity limitation
-
-Earlier manuscript specimens rendered by this host's LibreOffice substituted
-ordinary-width Iosevka Publish for Iosevka Publish Extended Bold and Extended
-Italic in both DOCX and ODT. The exports retain the configured family references
-and embed the Extended faces, but embedding does not guarantee that an editor
-selects them. The resulting glyph widths can alter wrapping and pagination.
-Use the ordinary family with the YAML `stretch` percentage when scaling is wanted.
-The selection of an Extended face remains reader-dependent; its cause has
-not been established. Microsoft Word behaviour remains unverified. Inspect the
-result in the intended editor before relying on exact typography or pagination.
-
-The same resource and publication limits below apply. A manuscript's optional
-barcode sidecar publishes after its document. Letter targets are preflighted
-as a batch but published individually; later failure reports earlier outputs.
-
 ## Failure and resource handling
-
-### Shared resource limits
 
 Source input must be regular UTF-8 text representable in XML, at most 32 MiB.
 The shared office layout bounds events to 50,000 and expanded inline segments
@@ -119,10 +73,6 @@ staged beside the destination and published by rename with mode 0600. A failed
 conversion leaves an existing destination unchanged.
 
 ## History
-
-- 1.5 (2026-10-17): Document accepted frontmatter/body reset and page-field transition breaks.
-
-- 1.4 (2026-10-16): Document manuscript and letter office output.
 
 - 1.3 (2026-10-12): Correct Org single-asterisk bold in body text and footnotes.
 

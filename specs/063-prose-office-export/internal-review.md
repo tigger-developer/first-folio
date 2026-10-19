@@ -1,8 +1,15 @@
 ---
 title: W063 internal delivery review
-version: 1
-last-updated: 2026-10-18
+version: 2
+last-updated: 2026-10-19
 ---
+
+# 2026-10-19: Superseded delivery review
+
+The previous delivery and its internal PASS are rejected as acceptance evidence.
+The implementation used a separate Pandoc DOCX writer rather than extending the
+existing native script exporter. The historical review below is retained; it
+does not validate the corrective implementation. Fresh review is required.
 
 # 2026-10-18: Delivery-code review
 

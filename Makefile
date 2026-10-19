@@ -6,7 +6,7 @@ VERSION ?= $(patsubst v%,%,$(CURRENT_VERSION))
 RELEASE_VERSION ?= $(basename $(CURRENT_VERSION)).$(shell expr $(patsubst .%,%,$(suffix $(CURRENT_VERSION))) + 1)
 LDFLAGS := -X github.com/tigger-developer/first-folio/internal/app.Version=$(VERSION)
 
-.PHONY: build install uninstall test lint check-test-deps check-release-deps release sync
+.PHONY: build install uninstall test lint check-release-deps release sync
 
 build:
 	@mkdir -p "$(BUILD_DIR)"
@@ -24,15 +24,8 @@ uninstall:
 lint:
 	@go vet ./...
 
-test: check-test-deps
-	@go test -timeout=20m ./...
-
-# Rendered office regressions refresh fields in a private LibreOffice profile
-# and measure its PDF output. These tools are not conversion dependencies.
-check-test-deps:
-	@for tool in go typst pandoc soffice pdftotext pdftohtml pdftoppm; do \
-		command -v "$$tool" >/dev/null || { echo "make test requires $$tool on PATH (see README contributor prerequisites)" >&2; exit 1; }; \
-	done
+test:
+	@go test ./...
 
 check-release-deps:
 	@command -v go >/dev/null

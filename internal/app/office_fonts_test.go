@@ -15,7 +15,6 @@ import (
 	"testing"
 
 	folio "github.com/tigger-developer/first-folio"
-	"github.com/tigger-developer/first-folio/internal/office"
 )
 
 func officeFontMembers(t *testing.T, raw []byte) map[string][]byte {
@@ -163,11 +162,11 @@ func TestOfficeFontPermissionsAndBounds(t *testing.T) {
 			if err := os.WriteFile(filepath.Join(dir, "font.ttf"), raw, 0600); err != nil {
 				t.Fatal(err)
 			}
-			fonts, warnings := office.ResolveFonts([]string{"Fixture Publish"}, []string{dir})
+			fonts, warnings := resolveOfficeFonts([]string{"Fixture Publish"}, []string{dir})
 			if (len(fonts) == 1) != tc.want {
 				t.Fatalf("embedded=%d warnings=%v", len(fonts), warnings)
 			}
-			if tc.want && !bytes.Equal(fonts[0].Raw, raw) {
+			if tc.want && !bytes.Equal(fonts[0].raw, raw) {
 				t.Fatal("font was subsetted or changed")
 			}
 			if !tc.want && !strings.Contains(strings.Join(warnings, " "), "prohibits editable embedding") {
@@ -177,13 +176,13 @@ func TestOfficeFontPermissionsAndBounds(t *testing.T) {
 	}
 	raw := officeTestFont(t, 0)
 	for _, size := range []int{0, 4, 11, 12, 100, len(raw) / 2, len(raw) - 1} {
-		if _, err := office.ParseFont(raw[:size]); err == nil {
+		if _, err := parseOfficeFont(raw[:size]); err == nil {
 			t.Errorf("accepted truncated font of %d bytes", size)
 		}
 	}
 	broken := bytes.Clone(raw)
 	endian.BigEndian.PutUint32(broken[20:24], 0xffffffff)
-	if _, err := office.ParseFont(broken); err == nil {
+	if _, err := parseOfficeFont(broken); err == nil {
 		t.Fatal("accepted out-of-bounds table")
 	}
 }
@@ -241,8 +240,8 @@ func TestOfficeFontDiscoverySkipsFontBodies(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "z-selected.ttf"), want, 0600); err != nil {
 		t.Fatal(err)
 	}
-	fonts, warnings := office.ResolveFonts([]string{"Fixture Publish"}, []string{dir})
-	if len(fonts) != 1 || !bytes.Equal(fonts[0].Raw, want) {
+	fonts, warnings := resolveOfficeFonts([]string{"Fixture Publish"}, []string{dir})
+	if len(fonts) != 1 || !bytes.Equal(fonts[0].raw, want) {
 		t.Fatalf("unrelated font bodies hid configured font: %v", warnings)
 	}
 }

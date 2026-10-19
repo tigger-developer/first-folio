@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.17"
-last-updated: 2026-10-18
+version: "0.14"
+last-updated: 2026-10-12
 ---
 
 # Architecture
@@ -15,8 +15,8 @@ First Folio is a CLI-first Go application. One `folio` executable owns stage-pla
 The subcommands are:
 
 - `folio convert`: parses Org, Markdown, or Fountain stage plays into typed events and emits Org, Markdown, Fountain, Typst, PDF, DOCX, or ODT.
-- `folio letter`: parses Org `:letter:` sections and renders recipient-specific PDF, DOCX or ODT files.
-- `folio manuscript`: parses Markdown or Org prose manuscripts and renders Typst, PDF, DOCX or ODT.
+- `folio letter`: parses Org `:letter:` sections and renders recipient-specific PDFs.
+- `folio manuscript`: parses Markdown or Org prose manuscripts and renders Typst or PDF.
 
 Typst and Pandoc remain explicit external tools where their documented features require them. No command invokes Perl or a project-owned shell script.
 
@@ -30,7 +30,6 @@ Typst and Pandoc remain explicit external tools where their documented features 
 | `internal/play/` | Typed stage-play model plus Org, Markdown, and Fountain parsers/emitters |
 | `internal/letter/` | Cover-letter model, Org parser, Typst renderer, and compiler |
 | `internal/manuscript/` | Manuscript input, parser, canonicalization, rendering, and compilation |
-| `internal/office/` | Bounded Pandoc interchange, prose native layout, package validation, publication and shared fonts |
 | `templates/` | File-backed Typst layouts for scripts, letters, and manuscripts |
 | `presets/` | British base and explicit style override YAML |
 | `cmd/update-homebrew/` | Checked release-formula update and publication tooling |
@@ -84,14 +83,12 @@ The loader deep-merges ordinary keys and partial font blocks, validates every ef
 
 Running matter is configured at `folio.page-header` and `folio.page-footer` for scripts and manuscripts. Deprecated manuscript-local blocks are normalized within each configuration layer, before merging, so same-layer manuscript overrides do not bypass higher-layer shared settings. Manuscript command diagnostics report their use on stderr. Letter rendering ignores running-matter settings because letters are supplementary correspondence, not manuscript pages.
 
-For manuscript mode, the shared loader records each external YAML file successfully loaded as a layer. The existing warning channel passes one resolved-path diagnostic per file, in cascade order, to both Typst/PDF and office command routes for stderr emission. Built-in presets, source frontmatter, CLI values, and other command modes do not produce load diagnostics. Warning collection does not change the merged configuration.
-
 ## Rendering
 
 DOCX is a sibling output route after script parsing, configuration and filtering.
 The `docx_*.go` adapter builds native WordprocessingML with `encoding/xml`,
 packages it with `archive/zip`, and publishes through a same-directory staged
-rename. No Pandoc or Typst process runs for script DOCX. British scene tables, font
+rename. No Pandoc or Typst process runs for DOCX. British scene tables, font
 mapping, resource bounds and approximations are described in [DOCX export](format-docx.md).
 The conversion entry point passes the source format into the shared office inline renderer, so Org single-asterisk bold also applies to DOCX and ODT, including footnotes. The existing Typst route retains its independent source-aware renderer.
 
@@ -102,24 +99,6 @@ DOCX package is written or parsed in this route. Pandoc runs with fixed argument
 a bounded output pipe and a 120-second deadline. The resulting ZIP/XML is
 validated before the existing atomic publication helper runs. DOCX serialization
 is unchanged. See [ODT export](format-odt.md) for compatibility and limits.
-
-Manuscript and letter office output use separate mode adapters into
-`internal/office.Prose`. Manuscripts read canonical structured Pandoc content
-before Typst rendering; letters compose the existing parsed recipient model.
-The shared package generates a private reference, invokes Pandoc's DOCX or ODT
-writer, then applies native roles, sections/page masters, fields, editable
-frames and generated images. It validates packages before full-font embedding
-and again before publication. This does not route scripts through the prose
-model or round-trip DOCX into ODT.
-
-Bounds apply to aggregate input, semantic depth/counts, subprocess time and
-diagnostics, JSON, ZIP entries and expanded data. Manuscript output publishes
-before its optional barcode sidecar. Letters preflight all target names and
-publish individually, reporting prior successful paths on later failure.
-ODT frontmatter/body number-format changes, requested resets and changed
-running-band page-field structure use a new physical page. Displayed numbering
-and configured page-side policy remain separate. DOCX special first-page bands
-retain the documented odd-variant limitation.
 
 
 Substantial Typst layouts live in real `.typ` files. Go code owns:
@@ -155,11 +134,6 @@ Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/em
 
 ## Document History
 
-- 0.17 (2026-10-18): Record accepted native office pagination boundaries.
-
-- 0.16 (2026-10-16): Describe prose office adapters and publication boundaries.
-
-- 0.15 (2026-10-16): Record manuscript YAML load diagnostics and their stderr ownership.
 - 0.14 (2026-10-12): Carry source format into shared DOCX/ODT emphasis handling.
 
 - 0.13 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.

@@ -50,10 +50,6 @@ func RunWithStreams(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	extension := strings.ToLower(filepath.Ext(opts.Output))
-	if extension == ".docx" || extension == ".odt" {
-		return runOffice(inputSet, opts, stdout, stderr)
-	}
 
 	text, source, err := readConfiguredInputs(inputSet)
 	if err != nil {
@@ -112,7 +108,7 @@ func writeManuscriptOutput(typst string, output string, cfg Config) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("manuscript output must end in .pdf, .typ, .docx or .odt")
+		return fmt.Errorf("manuscript output must end in .pdf or .typ")
 	}
 	return writeBarcodeSidecar(output, cfg.Folio.Manuscript.Copyright)
 }

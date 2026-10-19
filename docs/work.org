@@ -93,6 +93,7 @@ classification; it is provenance, not current state.
 :CREATED: 2026-10-16
 :END:
 - Specification :: [[file:../specs/063-prose-office-export/spec.org][W063 - Prose office export definition]].
+- Correction 2026-10-19 :: Previous delivery acceptance is superseded. Extend existing native DOCX and configured Pandoc ODT exporters to manuscript and letter modes; selective rollback preserves unrelated work. Fresh regression and internal review evidence are pending.
 - Delivery evidence :: [[file:../specs/063-prose-office-export/validation.org][Regression, comparison and operator checks]]; [[file:../specs/063-prose-office-export/internal-review.md][Current-session internal delivery review]]. The standing internal-only policy applies to the delivery review; the historical definition record below is retained.
 - Operator validation :: [[file:../testdata/prose-office/EXPECTATIONS.md][Labelled profiles, YAML expectations and reproduction commands]]. Twelve user tests remain operator-owned; installation, release and closure are separate.
 
@@ -169,7 +170,7 @@ classification; it is provenance, not current state.
 - Historical brief :: [[file:../specs/055-docx-first-spike/spike.org][Original W055 - DOCX-first exploration]].
 - Allocation history :: The parallel spike independently allocated W055,
   colliding with W055 - Org emphasis. W056 is the adoption successor, not a
-  renumbering of historical spike artifacts or test evidence.
+  renumbering of historical spike artefacts or test evidence.
 - Original spike boundary :: Isolated branch, no merge or deployment; superseded
   for local integration by approval dated 2026-10-11. No installation or publication.
 
@@ -944,49 +945,49 @@ Org-mode documents convert to Markdown, Fountain, and PDF with semantic play con
 
 **** Tests
 
-***** RT-1.7 - org→md output contains Markdown structure: =##= act headers, =###= scene headers, =*italic*= stage directions, =*NAME:*= character lines, and dialogue text
+***** RT-1.7 - org->md output contains Markdown structure: =##= act headers, =###= scene headers, =*italic*= stage directions, =*NAME:*= character lines, and dialogue text
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** RT-1.8 - org→fountain output contains Fountain structure: Title Page block, =#= section for acts, =.= forced scene headings, ALL-CAPS character names on own lines, and dialogue text
+***** RT-1.8 - org->fountain output contains Fountain structure: Title Page block, =#= section for acts, =.= forced scene headings, ALL-CAPS character names on own lines, and dialogue text
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** RT-1.9 - org→pdf produces a non-empty, valid PDF file
+***** RT-1.9 - org->pdf produces a non-empty, valid PDF file
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** RT-1.33 - Unicode character names (CÁIT, MAIRÉAD) survive org→md conversion intact
+***** RT-1.33 - Unicode character names (CÁIT, MAIRÉAD) survive org->md conversion intact
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** RT-1.34 - org→fountain→org round-trip preserves acts, scenes, characters, and dialogue
+***** RT-1.34 - org->fountain->org round-trip preserves acts, scenes, characters, and dialogue
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** UT-1.2 - org→md output renders as clean, readable Markdown play
+***** UT-1.2 - org->md output renders as clean, readable Markdown play
 
 - *Type:* User test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** UT-1.3 - org→fountain output reads correctly as Fountain format
+***** UT-1.3 - org->fountain output reads correctly as Fountain format
 
 - *Type:* User test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** UT-1.4 - org→pdf output renders as a properly formatted stage play (title page, indented dialogue, italic directions)
+***** UT-1.4 - org->pdf output renders as a properly formatted stage play (title page, indented dialogue, italic directions)
 
 - *Type:* User test
 - *Status:* PASS
@@ -1010,37 +1011,37 @@ Markdown documents convert to org-mode, Fountain, and PDF with semantic play con
 
 **** Tests
 
-***** RT-1.10 - md→org output contains org structure: =*= act headings, =*= scene headings, =**= stage directions, =****= character headings, and dialogue text
+***** RT-1.10 - md->org output contains org structure: =*= act headings, =*= scene headings, =**= stage directions, =****= character headings, and dialogue text
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** RT-1.11 - md→fountain output contains Fountain structure: Title Page, =#= sections, =.= scene headings, ALL-CAPS characters, dialogue
+***** RT-1.11 - md->fountain output contains Fountain structure: Title Page, =#= sections, =.= scene headings, ALL-CAPS characters, dialogue
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** RT-1.12 - md→pdf produces a non-empty, valid PDF file
+***** RT-1.12 - md->pdf produces a non-empty, valid PDF file
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** UT-1.5 - md→org output is valid org-mode with correct heading levels
+***** UT-1.5 - md->org output is valid org-mode with correct heading levels
 
 - *Type:* User test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** UT-1.6 - md→fountain output reads correctly as Fountain format
+***** UT-1.6 - md->fountain output reads correctly as Fountain format
 
 - *Type:* User test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** UT-1.7 - md→pdf output renders as a properly formatted stage play
+***** UT-1.7 - md->pdf output renders as a properly formatted stage play
 
 - *Type:* User test
 - *Status:* PASS
@@ -1064,37 +1065,37 @@ Fountain documents convert to org-mode, Markdown, and PDF with semantic play con
 
 **** Tests
 
-***** RT-1.13 - fountain→org output contains org structure: =*= act headings, =*= scene headings, =**= stage directions, =****= character headings, and dialogue text
+***** RT-1.13 - fountain->org output contains org structure: =*= act headings, =*= scene headings, =**= stage directions, =****= character headings, and dialogue text
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** RT-1.14 - fountain→md output contains Markdown structure: =##= act headers, =###= scene headers, =*italic*= stage directions, =*NAME:*= characters, dialogue
+***** RT-1.14 - fountain->md output contains Markdown structure: =##= act headers, =###= scene headers, =*italic*= stage directions, =*NAME:*= characters, dialogue
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** RT-1.15 - fountain→pdf produces a non-empty, valid PDF file
+***** RT-1.15 - fountain->pdf produces a non-empty, valid PDF file
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** UT-1.8 - fountain→org output is valid org-mode with correct heading levels
+***** UT-1.8 - fountain->org output is valid org-mode with correct heading levels
 
 - *Type:* User test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** UT-1.9 - fountain→md output renders as clean, readable Markdown play
+***** UT-1.9 - fountain->md output renders as clean, readable Markdown play
 
 - *Type:* User test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; archived ticket comment records the implementation suite and user tests as passing.
 
-***** UT-1.10 - fountain→pdf output renders as a properly formatted stage play
+***** UT-1.10 - fountain->pdf output renders as a properly formatted stage play
 
 - *Type:* User test
 - *Status:* PASS
@@ -2121,11 +2122,11 @@ Generic tag system: any H4 tag under :to: becomes a placeholder variable.
 
 - The ticket snapshot is the source for this migrated criterion; complete source text remains in =docs/archive/migrated-tickets/8.md=.
 
-*** VALID AC8.2 - =folio.font-weight= accepted as numeric (100–900) and emitted unquoted
+*** VALID AC8.2 - =folio.font-weight= accepted as numeric (100--900) and emitted unquoted
 
 **** Requirement
 
-=folio.font-weight= accepted as numeric (100–900) and emitted unquoted.
+=folio.font-weight= accepted as numeric (100--900) and emitted unquoted.
 
 **** Provenance
 
@@ -3099,7 +3100,7 @@ Given existing script inputs and targets, Go conversion preserves the accepted O
 - *Status:* PASS
 - *Evidence:* Original source status marker ✅.
 
-***** RT10.5 - verify Org↔Markdown, Org↔Fountain, and Markdown↔Fountain return-leg round trips over their common lossless semantics
+***** RT10.5 - verify Org<->Markdown, Org<->Fountain, and Markdown<->Fountain return-leg round trips over their common lossless semantics
 
 - *Type:* Automated regression test
 - *Status:* PASS
@@ -4463,13 +4464,13 @@ Given no user configuration, =folio.manuscript.page-header.format= defaults to =
 
 **** Tests
 
-***** RT-16.9 - default =per-part= — chapter counter resets to 1 at each new part (unchanged)
+***** RT-16.9 - default =per-part= --- chapter counter resets to 1 at each new part (unchanged)
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; current =make test= passed the maintained RT definition.
 
-***** RT-16.10 - =never= — chapters number continuously (part 1: chapters 1-5, part 2: chapters 6-9, ...)
+***** RT-16.10 - =never= --- chapters number continuously (part 1: chapters 1-5, part 2: chapters 6-9, ...)
 
 - *Type:* Automated regression test
 - *Status:* PASS
@@ -4815,7 +4816,7 @@ The =case-transform= config field on =part= and =chapter= (currently: =as-writte
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; current =make test= passed the maintained RT definition.
 
-***** RT-21.2 - title → TOC → body order unchanged when disabled
+***** RT-21.2 - title -> TOC -> body order unchanged when disabled
 
 - *Type:* Automated regression test
 - *Status:* PASS
@@ -5408,13 +5409,13 @@ Typography inherits from manuscript body when unset: =copyright.font= from =manu
 
 **** Tests
 
-***** RT-24.4 - =alt-frontmatter-format= set + =frontmatter-format= set → verso frontmatter uses =frontmatter-format=, recto frontmatter uses =alt-frontmatter-format=
+***** RT-24.4 - =alt-frontmatter-format= set + =frontmatter-format= set -> verso frontmatter uses =frontmatter-format=, recto frontmatter uses =alt-frontmatter-format=
 
 - *Type:* Automated regression test
 - *Status:* PASS
 - *Evidence:* Original source marker ⏳; current =make test= passed the maintained RT definition.
 
-***** RT-24.5 - =alt-frontmatter-format= unset + =frontmatter-format= set → all frontmatter pages use =frontmatter-format= regardless of parity
+***** RT-24.5 - =alt-frontmatter-format= unset + =frontmatter-format= set -> all frontmatter pages use =frontmatter-format= regardless of parity
 
 - *Type:* Automated regression test
 - *Status:* PASS

@@ -1,7 +1,7 @@
 ---
 title: Markdown Manuscript Format
-version: "0.8"
-last-updated: 2026-10-16
+version: "0.7"
+last-updated: 2026-09-27
 ---
 
 # Markdown Manuscript Format
@@ -10,7 +10,7 @@ Markdown manuscript input is a limited prose contract, separate from the Markdow
 
 ## Metadata Contract
 
-Examples declare `schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md` in YAML frontmatter. The existing Markdown serializer emits that declaration even with empty metadata. The public manuscript command writes Typst, PDF, DOCX or ODT, selected by the target extension, without a schema declaration in those outputs. Office export uses the same source contract and requires Pandoc.
+Examples declare `schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md` in YAML frontmatter. The existing Markdown serializer emits that declaration even with empty metadata. The public manuscript command continues to write Typst/PDF only, without a schema declaration in those outputs.
 
 All YAML frontmatter values are treated as manuscript strings. Quote values when that keeps the intent clearest, but the parser also accepts YAML scalars and converts them to strings, so `wordcount: about 90,000 words`, `wordcount: approx 100k words`, `wordcount: 20.000 mots`, and `wordcount: 90000` are all valid. Dates should be written as ISO strings such as `2026-07-06`; rendered output uses `folio.manuscript.date-format`.
 
@@ -94,8 +94,6 @@ The previous example also included a private Notes section containing the text
 described in the table; the example no longer embeds HTML-comment syntax.
 
 ## Revision History
-
-- 0.8 (2026-10-16): Document manuscript and letter office output.
 
 - 0.7, 2026-09-27: Linked stretch and hyphenation controls and reconciled current block-clearance defaults.
 - 0.6, 2026-09-26: Document exact quote indentation and additive quote clearance.

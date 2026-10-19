@@ -13,14 +13,10 @@ func readConfiguredInputs(inputs InputSet) (string, map[string]any, error) {
 		text, err := ReadJoined(inputs.Paths)
 		return text, nil, err
 	}
-	return readConfiguredMarkdown(inputs, os.ReadFile)
-}
-
-func readConfiguredMarkdown(inputs InputSet, read func(string) ([]byte, error)) (string, map[string]any, error) {
 	var joined strings.Builder
 	var source map[string]any
 	for index, path := range inputs.Paths {
-		raw, err := read(path)
+		raw, err := os.ReadFile(path)
 		if err != nil {
 			return "", nil, fmt.Errorf("reading %s: %w", path, err)
 		}
