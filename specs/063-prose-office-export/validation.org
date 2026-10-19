@@ -6,11 +6,17 @@
 
 * Current correction status
 
+** 2026-10-19 - Corrected validator recognizes all test categories
+
+- Check :: =sdlc-validate --spec specs/063-prose-office-export/spec.org --readiness-check=test-code= reports *schema valid* and 13 acceptance criteria, with 28 tests: one AT, thirteen RTs, two OTs and twelve UTs.
+- Readiness :: Exit 1, *not ready for test-code review*, solely because RT063.1 - Output selection and dependencies, RT063.13 - Shared parser and mode semantics, and AT063.1 - Novel-scale rendered manuscripts remain AMBER. The validator now evaluates their required execution evidence instead of rejecting AT identifiers.
+- Evidence boundary :: This supersedes the tooling limitation below. No product test was executed and no test state changed. Specification review does not require these implementation-stage results.
+
 ** 2026-10-19 - Novel-scale verification definitions expanded
 
 - Definition only :: The current specification requires Markdown and Org to DOCX and ODT at novel scale. RT063.13 - Shared parser and mode semantics now covers all four conversion cases; AT063.1 - Novel-scale rendered manuscripts adds ticket-scoped automated rendering; UT063.1 - Editing manuscripts adds four human editing/save/reopen cases. These amended cases have not been implemented or executed.
 - Evidence boundary :: Historical small-fixture conversions, renders and editing definitions do not prove the expanded scale outcome. Each source/output row needs its own dated candidate evidence. No new RED or GREEN is claimed.
-- Validator boundary :: The installed Org schema does not list AT. The explicit AT definition and result record remain present; automated inventory/readiness must not be reported as covering AT until tooling supports it. This amendment does not change the external SDLC installation.
+- Historical validator boundary, superseded :: At the amendment's first validation, the installed Org schema did not list AT. The explicit AT definition and result record were retained, and automated inventory/readiness was not reported as covering AT. The corrected-validator entry above records the subsequent check; this project did not change the external SDLC installation.
 
 ** 2026-10-19 - Parser reuse correction awaiting implementation
 

@@ -1,6 +1,6 @@
 ---
 title: W063 internal delivery review
-version: 5
+version: 6
 last-updated: 2026-10-19
 ---
 
@@ -355,3 +355,40 @@ PDF/Typst boundary. No additional product-design blocker was identified.
   for this documentation amendment. Test implementation and execution belong to
   delivery after sign-off. The earlier internal definition result remains
   historical for its own candidate; this entry assesses the amended candidate.
+
+# 2026-10-19: Corrected AT validator reconciliation
+
+Review method: internal (current session; not independent)
+
+Gate: definition
+
+Revision: `4bc7f73` (manuscript-scale test definitions) plus the specification,
+validation and review-record reconciliation in this entry.
+
+Specification SHA-256:
+`fee98f9912e516c4c9e1efa868caf63a1a07e4699a116e82162905e3404fd040`.
+
+Validation SHA-256:
+`7ac88e7db2cab508d1870c44511e1acb5a05003817dcb83dffd0843336312c54`.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+Read the corrected TESTING and ORG-SCHEMA standards and validator help in full.
+The four-category contract now supports the existing definition directly.
+Reviewed the documentation delta against the preceding definition review:
+requirements, architecture and test expectations are unchanged. The handoff now
+explicitly names the AT/RT package as its first delivery step. Earlier tooling
+failures remain historical evidence and are superseded by this check.
+
+The validator reports **schema valid**, 13 acceptance criteria and all 28 tests:
+one AT, thirteen RTs, two OTs and twelve UTs. Its test-code check returns exit 1
+only for the three unexecuted automated records: RT063.1 - Output selection and
+dependencies, RT063.13 - Shared parser and mode semantics, and AT063.1 - Novel-scale
+rendered manuscripts. It reports no schema error or missing category.
+
+The earlier AT tooling limitation no longer applies. **Definition PASS does not
+establish test-code readiness**: those records remain AMBER. No product tests
+were run and no execution state or operator sign-off changed. Sanitization and
+whitespace checks pass for this documentation reconciliation.
