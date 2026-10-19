@@ -36,8 +36,11 @@ Source configuration:
   Later input files cannot supply another configuration layer.
 
 Editable office output:
-  The target extension selects DOCX or ODT. Both use Pandoc for source parsing;
-  DOCX generation is native, and ODT uses the configured Pandoc writer. Neither\n  requires Typst. Existing manuscript YAML controls the document.
+  The target extension selects DOCX or ODT. Both parse sources natively.
+  DOCX requires neither Pandoc nor Typst at any stage, including dry-run.
+  ODT uses the configured Pandoc writer and does not require Typst.
+  Both follow the same YAML cascade as PDF, including first-input Markdown
+  frontmatter. The existing PDF/Typst source-reading dependencies are unchanged.
   Available permitted full font faces are embedded. Missing fonts warn.
   Update contents and page fields in the editor before printing. Pagination
   can differ between editors. ODT starts a new page for frontmatter/body

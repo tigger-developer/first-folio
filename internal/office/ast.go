@@ -6,16 +6,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/tigger-developer/first-folio/internal/source"
 	"io"
 )
 
 type astLimits struct{ bytes, blocks, inlines, depth int }
 
 // Node is Pandoc's tagged JSON node; Content retains its documented array shape.
-type Node struct {
-	Type    string `json:"t"`
-	Content any    `json:"c,omitempty"`
-}
+type Node = source.Node
 
 // Document carries the reader's API version through the office writer.
 type Document struct {
@@ -24,7 +22,7 @@ type Document struct {
 	Blocks []Node         `json:"blocks"`
 }
 
-func N(kind string, content any) Node { return Node{kind, content} }
+func N(kind string, content any) Node { return Node{Type: kind, Content: content} }
 
 // Decode validates source JSON before allocating the adapter's typed root.
 func Decode(raw []byte) (Document, error) {

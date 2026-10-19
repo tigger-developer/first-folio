@@ -1,6 +1,6 @@
 ---
 title: First Folio
-version: "1.11"
+version: "1.12"
 last-updated: 2026-10-19
 ---
 
@@ -92,7 +92,7 @@ go run ./cmd/update-homebrew --publish-tap /path/to/homebrew-tap 0.4.16
 
 - **Go 1.26+** (build only; Homebrew installs a compiled binary)
 - **Typst** (required only for PDF output)
-- **Pandoc** (required for ODT writing and manuscript source parsing; script and letter DOCX generation is native)
+- **Pandoc** (required for ODT writing and the existing manuscript PDF/Typst route; every DOCX route is native)
 
 Iosevka Publish, a customized Iosevka family, is bundled with the executable
 under the [SIL Open Font Licence](fonts/iosevka-publish/LICENSE.md). US script
@@ -169,6 +169,7 @@ For page-limited script submissions, set `folio.title-page.enabled: false` to pl
 | `internal/app/` | Public command dispatch and integration |
 | `internal/config/` | Shared layered YAML configuration |
 | `internal/play/` | Stage-play model, parsers, and text emitters |
+| `internal/source/` | Shared native source recognition and structured office prose parsing |
 | `internal/letter/` | Cover-letter parser and renderer |
 | `internal/manuscript/` | Go manuscript parsing, config, and Typst rendering |
 | `internal/office/` | Shared native DOCX and configured ODT writers, mode adapters and font packaging |
@@ -193,6 +194,19 @@ do not replace editing and save/reopen validation in the intended application.
 The labelled fixtures and YAML checklist live in
 [`testdata/prose-office`](testdata/prose-office/EXPECTATIONS.md).
 
+The ticket-scoped full-novel acceptance test runs separately from `make test`:
+
+```bash
+go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_' -count=1 -timeout=150m -v
+```
+
+It generates equivalent Markdown and Org novels with 10,000 paragraphs and
+50 chapters, converts each to DOCX and ODT, refreshes native fields in an isolated
+LibreOffice profile and checks the complete rendered content. Set
+`FOLIO_W063_ACCEPTANCE_DIR` to an OS-allocated temporary directory to retain the
+labelled documents, PDFs, measurements and selected page images for user tests.
+Word and LibreOffice editing, save and reopen remain human validation.
+
 ```bash
 make test   # Go unit, integration, Typst, and PDF regression suite
 make lint   # Go static analysis
@@ -212,6 +226,8 @@ make lint   # Go static analysis
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.12 (2026-10-19): Document native office source parsing and separate novel-scale acceptance.
 
 - 2026-10-19: Extend the shared native DOCX and configured ODT writers to manuscript and letter adapters.
 

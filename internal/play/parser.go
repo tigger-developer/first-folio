@@ -4,19 +4,12 @@ package play
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 	"unicode"
 	"unicode/utf8"
 
+	nativesource "github.com/tigger-developer/first-folio/internal/source"
 	"gopkg.in/yaml.v3"
-)
-
-var (
-	orgKeywordRE  = regexp.MustCompile(`^#\+(\w+):\s*(.*)$`)
-	orgHeadingRE  = regexp.MustCompile(`^(\*+)\s+(.*)$`)
-	orgFootnoteRE = regexp.MustCompile(`^\[fn:(\S+)\]\s+(.+)$`)
-	mdFootnoteRE  = regexp.MustCompile(`^\[\^(\S+)\]:\s+(.+)$`)
 )
 
 func Parse(format Format, source string, path string) (Document, []string, error) {
@@ -48,14 +41,15 @@ func parseOrg(source string) (Document, error) {
 	inTable := false
 
 	for _, line := range lines {
-		if match := orgKeywordRE.FindStringSubmatch(line); match != nil {
-			key := strings.ToLower(match[1])
-			doc.Metadata[key] = match[2]
-			doc.Events = append(doc.Events, Event{Kind: EventFrontMatter, Key: key, Text: match[2]})
+		token := nativesource.Recognize("org", line)
+		if token.Kind == "keyword" {
+			key := token.Name
+			doc.Metadata[key] = token.Text
+			doc.Events = append(doc.Events, Event{Kind: EventFrontMatter, Key: key, Text: token.Text})
 			continue
 		}
-		if match := orgHeadingRE.FindStringSubmatch(line); match != nil {
-			level, text := len(match[1]), match[2]
+		if token.Kind == "heading" {
+			level, text := token.Level, token.Text
 			if inTable {
 				doc.Events = append(doc.Events, Event{Kind: EventCharacterTableEnd})
 				inTable = false
@@ -116,8 +110,8 @@ func parseOrg(source string) (Document, error) {
 			doc.Events = append(doc.Events, Event{Kind: EventCharacterTableEnd})
 			inTable = false
 		}
-		if match := orgFootnoteRE.FindStringSubmatch(line); match != nil {
-			doc.Events = append(doc.Events, Event{Kind: EventFootnote, Name: match[1], Text: match[2]})
+		if token.Kind == "note" && token.Text != "" {
+			doc.Events = append(doc.Events, Event{Kind: EventFootnote, Name: token.Name, Text: token.Text})
 			continue
 		}
 		trimmed := strings.TrimSpace(line)
@@ -143,8 +137,9 @@ func parseMarkdown(source string) (Document, error) {
 	}
 	seenTitle, expectMetadata, inTable, seenCharacter := false, false, false, false
 	for _, line := range lines {
-		if !seenTitle && strings.HasPrefix(line, "# ") {
-			addMetadata(&doc, "title", strings.TrimPrefix(line, "# "))
+		token := nativesource.Recognize("markdown", line)
+		if !seenTitle && token.Kind == "heading" && token.Level == 1 {
+			addMetadata(&doc, "title", token.Text)
 			seenTitle, expectMetadata = true, true
 			continue
 		}
@@ -167,12 +162,12 @@ func parseMarkdown(source string) (Document, error) {
 		if strings.TrimSpace(line) != "" {
 			expectMetadata = false
 		}
-		if strings.HasPrefix(line, "## ") {
-			doc.Events = append(doc.Events, Event{Kind: EventActHeader, Text: strings.TrimPrefix(line, "## ")})
+		if token.Kind == "heading" && token.Level == 2 {
+			doc.Events = append(doc.Events, Event{Kind: EventActHeader, Text: token.Text})
 			continue
 		}
-		if strings.HasPrefix(line, "### ") {
-			doc.Events = append(doc.Events, Event{Kind: EventSceneHeader, Text: strings.TrimPrefix(line, "### ")})
+		if token.Kind == "heading" && token.Level == 3 {
+			doc.Events = append(doc.Events, Event{Kind: EventSceneHeader, Text: token.Text})
 			continue
 		}
 		if strings.HasPrefix(line, "|") {
@@ -204,8 +199,8 @@ func parseMarkdown(source string) (Document, error) {
 			doc.Events = append(doc.Events, Event{Kind: EventTransition, Text: strings.TrimPrefix(line, "> ")})
 			continue
 		}
-		if match := mdFootnoteRE.FindStringSubmatch(line); match != nil {
-			doc.Events = append(doc.Events, Event{Kind: EventFootnote, Name: match[1], Text: match[2]})
+		if token.Kind == "note" && token.Text != "" {
+			doc.Events = append(doc.Events, Event{Kind: EventFootnote, Name: token.Name, Text: token.Text})
 			continue
 		}
 		if strings.HasPrefix(line, `***"`) && strings.HasSuffix(line, `"***`) {
@@ -425,17 +420,12 @@ func addMetadata(doc *Document, key string, value string) {
 	doc.Events = append(doc.Events, Event{Kind: EventFrontMatter, Key: key, Text: value})
 }
 
-func splitLines(source string) []string {
-	return strings.Split(strings.ReplaceAll(strings.TrimSuffix(source, "\n"), "\r\n", "\n"), "\n")
+func splitLines(text string) []string {
+	return nativesource.Lines(text)
 }
 
 func tableCells(line string) []string {
-	trimmed := strings.Trim(strings.TrimSpace(line), "|")
-	parts := strings.Split(trimmed, "|")
-	for i := range parts {
-		parts[i] = strings.TrimSpace(parts[i])
-	}
-	return parts
+	return nativesource.Cells(line)
 }
 
 func isTableHeader(value string) bool {

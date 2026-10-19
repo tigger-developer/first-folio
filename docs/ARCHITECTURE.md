@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.18"
+version: "0.19"
 last-updated: 2026-10-19
 ---
 
@@ -28,6 +28,7 @@ Typst and Pandoc remain explicit external tools where their documented features 
 | `internal/app/` | Public CLI dispatch, conversion orchestration, script rendering, and process-level integration tests |
 | `internal/config/` | Shared embedded-preset and YAML configuration loading |
 | `internal/play/` | Typed stage-play model plus Org, Markdown, and Fountain parsers/emitters |
+| `internal/source/` | Shared Org/Markdown source recognition, literal/inline parsing and bounded structured prose |
 | `internal/letter/` | Cover-letter model, Org parser, Typst renderer, and compiler |
 | `internal/manuscript/` | Manuscript input, parser, canonicalization, rendering, and compilation |
 | `internal/office/` | Shared native DOCX and configured ODT writers, bounded manuscript interchange, layout, packages and fonts |
@@ -59,7 +60,7 @@ Stage plays and manuscripts intentionally retain separate semantic models.
 
 Stage-play parsers produce typed events for metadata, acts, scenes, directions, speakers, dialogue, character tables, transitions, props, intro material, and footnotes. Text emitters consume that model, while script PDF rendering prepares escaped template data from it.
 
-Manuscripts use metadata plus prose blocks such as parts, chapters, sections, paragraphs, lists, tables, code, blockquotes, links, scene breaks, and footnotes. Source-document images are not yet part of the manuscript contract; generated ISBN barcode SVGs are a separate copyright-page facility. Markdown remains the canonical shared manuscript contract for the current implementation; Org is canonicalized through that contract before rendering.
+Manuscripts use metadata plus prose blocks such as parts, chapters, sections, paragraphs, lists, tables, code, blockquotes, links, scene breaks, and footnotes. Source-document images are not yet part of the manuscript contract; generated ISBN barcode SVGs are a separate copyright-page facility. The PDF/Typst route retains Org canonicalization through Markdown. Office output parses both source forms natively through `internal/source`, retaining the same documented manuscript semantics.
 
 Letters have a smaller recipient-oriented model because their sender, recipient, substitution, and signoff semantics do not map cleanly onto either stage plays or manuscripts.
 
@@ -91,7 +92,7 @@ For manuscript mode, the shared loader records each external YAML file successfu
 DOCX is a sibling output route after script parsing, configuration and filtering.
 The `docx_*.go` adapter builds native WordprocessingML with `encoding/xml`,
 packages it with `archive/zip`, and publishes through a same-directory staged
-rename. No Pandoc or Typst process runs for script DOCX. Letter DOCX is also native; manuscript DOCX retains Pandoc only for canonical source parsing. British scene tables, font
+rename. No Pandoc or Typst process runs at any stage of script, manuscript or letter DOCX, including source parsing and dry-run. British scene tables, font
 mapping, resource bounds and approximations are described in [DOCX export](format-docx.md).
 The conversion entry point passes the source format into the shared office inline renderer, so Org single-asterisk bold also applies to DOCX and ODT, including footnotes. The existing Typst route retains its independent source-aware renderer.
 
@@ -104,8 +105,12 @@ validated before the existing atomic publication helper runs. DOCX serialization
 is unchanged. See [ODT export](format-odt.md) for compatibility and limits.
 
 Manuscript and letter office output use separate mode adapters into
-`internal/office.Prose`. Manuscripts read canonical structured Pandoc content
-before Typst rendering; letters compose the existing parsed recipient model.
+`internal/office.Prose`. Manuscripts extend the convert parser's native source
+recognition into structured prose; letters compose the existing recipient model
+and use the same inline parser. Convert's script events retain mode-specific
+classification. The shared source node shape also supplies JSON to ODT, but
+constructing or validating it requires no Pandoc process. Contiguous text stays
+in one span rather than expanding into per-word nodes.
 All three modes use the existing native WordprocessingML serializer and DOCX
 packager. Manuscript and letter adapters add structured prose content, while
 script events retain their existing layout. ODT uses the same bounded Pandoc
@@ -157,6 +162,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.19 (2026-10-19): Share native source recognition across convert and office prose, retaining distinct mode semantics and PDF configuration cascades.
 
 - 2026-10-19: Extend the shared native DOCX and configured ODT writers to manuscript and letter adapters.
 

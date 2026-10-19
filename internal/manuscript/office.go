@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/tigger-developer/first-folio/internal/office"
+	"github.com/tigger-developer/first-folio/internal/source"
 )
 
 func runOffice(inputs InputSet, opts Options, stdout, stderr io.Writer) error {
@@ -97,22 +98,23 @@ func parseOffice(format, text string) (office.Document, Metadata, error) {
 	var err error
 	if format == "org" {
 		meta = parseOrgMetadataBlock(text)
-		text = replaceOrgSectionBreaksWithSentinel(removeOrgPrivateSections(text))
-		raw, _, e := office.Pandoc([]byte(text), "--from=org", "--to=gfm")
-		if e != nil {
-			return office.Document{}, meta, e
-		}
-		text = normalizePandocMarkdownEscapes(restoreSectionBreakSentinel(stripRawOrgBlocks(string(raw))))
+		text = removeOrgPrivateSections(text)
 	}
-	text, err = parseMarkdownFrontmatter(&meta, text)
+	if format == "markdown" {
+		text, err = parseMarkdownFrontmatter(&meta, text)
+		if err != nil {
+			return office.Document{}, meta, err
+		}
+		if err = rejectUnsupportedMarkdown(text); err != nil {
+			return office.Document{}, meta, err
+		}
+		text = promoteStandaloneMarkdownCodeSpans(removeMarkdownPrivateSections(text))
+	}
+	blocks, err := source.Prose(format, text)
 	if err != nil {
 		return office.Document{}, meta, err
 	}
-	if err = rejectUnsupportedMarkdown(text); err != nil {
-		return office.Document{}, meta, err
-	}
-	text = promoteStandaloneMarkdownCodeSpans(removeMarkdownPrivateSections(text))
-	raw, _, err := office.Pandoc([]byte(text), "--from=markdown-raw_html", "--to=json")
+	raw, err := json.Marshal(office.Document{API: []int{1, 23, 1, 1}, Meta: map[string]any{}, Blocks: blocks})
 	if err != nil {
 		return office.Document{}, meta, err
 	}

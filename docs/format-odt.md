@@ -1,6 +1,6 @@
 ---
 title: ODT Script Export
-version: "1.6"
+version: "1.7"
 last-updated: 2026-10-19
 ---
 
@@ -13,7 +13,7 @@ folio convert play.org play.odt
 ```
 
 ODT uses Pandoc's JSON writer with a generated ODT reference containing the
-resolved `script.yaml` typography and page settings. It does not convert a DOCX
+resolved YAML cascade's typography and page settings. It does not convert a DOCX
 file. DOCX retains its existing native writer; PDF retains its Typst renderer.
 
 Pandoc must be installed and available on `PATH`. This route was verified with
@@ -63,7 +63,10 @@ and letter adapters. DOCX remains native and does not pass through Pandoc.
 
 Use `folio manuscript manuscript.org manuscript.odt` or
 `folio letter letters.org --format odt`. Both use existing mode-specific YAML
-and require Pandoc without Typst. They write ODT directly from structured prose;
+and require Pandoc without Typst. Manuscript Markdown/Org and letter Org are parsed natively and
+follow their PDF renderer's YAML cascade, including applicable manuscript source
+frontmatter. Pandoc receives only structured JSON and the generated reference;
+it does not read source Markdown or Org. They write ODT directly from structured prose;
 no DOCX intermediate is created. The script approximations above do not define
 the prose feature contract.
 
@@ -120,6 +123,8 @@ staged beside the destination and published by rename with mode 0600. A failed
 conversion leaves an existing destination unchanged.
 
 ## History
+
+- 1.7 (2026-10-19): Use native office source parsing and the PDF YAML cascade.
 
 - 2026-10-19: Extend the shared native DOCX and configured ODT writers to manuscript and letter adapters.
 

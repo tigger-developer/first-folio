@@ -1,7 +1,7 @@
 ---
 title: Markdown Manuscript Format
-version: "0.8"
-last-updated: 2026-10-16
+version: "0.9"
+last-updated: 2026-10-19
 ---
 
 # Markdown Manuscript Format
@@ -10,7 +10,7 @@ Markdown manuscript input is a limited prose contract, separate from the Markdow
 
 ## Metadata Contract
 
-Examples declare `schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md` in YAML frontmatter. The existing Markdown serializer emits that declaration even with empty metadata. The public manuscript command writes Typst, PDF, DOCX or ODT, selected by the target extension, without a schema declaration in those outputs. Office export uses the same source contract and requires Pandoc.
+Examples declare `schema: https://github.com/tigger-developer/first-folio/blob/master/schema/manuscript.md` in YAML frontmatter. The existing Markdown serializer emits that declaration even with empty metadata. The public manuscript command writes Typst, PDF, DOCX or ODT, selected by the target extension, without a schema declaration in those outputs. Office export uses the same source contract and PDF YAML cascade. Its source parsing is native; only ODT output invokes Pandoc. The PDF/Typst route retains its existing Pandoc dependency.
 
 All YAML frontmatter values are treated as manuscript strings. Quote values when that keeps the intent clearest, but the parser also accepts YAML scalars and converts them to strings, so `wordcount: about 90,000 words`, `wordcount: approx 100k words`, `wordcount: 20.000 mots`, and `wordcount: 90000` are all valid. Dates should be written as ISO strings such as `2026-07-06`; rendered output uses `folio.manuscript.date-format`.
 
@@ -94,6 +94,8 @@ The previous example also included a private Notes section containing the text
 described in the table; the example no longer embeds HTML-comment syntax.
 
 ## Revision History
+
+- 0.9 (2026-10-19): Describe native office parsing and unchanged PDF configuration precedence.
 
 - 0.8 (2026-10-16): Document manuscript and letter office output.
 

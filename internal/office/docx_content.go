@@ -4,95 +4,63 @@ package office
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/tigger-developer/first-folio/internal/play"
+	"github.com/tigger-developer/first-folio/internal/source"
 )
-
-type docxInline struct{ text, kind string }
-
-var docxNoteRE = regexp.MustCompile(`\[(?:fn:|\^)([^\]\n]+)\]`)
 
 func (w *docxWriter) inlines(text string, notes bool) ([]docxNode, error) {
 	w.textBytes += len(text)
 	if w.textBytes > docxSourceLimit {
 		return nil, fmt.Errorf("DOCX expanded text exceeds 32 MiB")
 	}
-	segments := []docxInline{{text: text}}
-	starKind := "italic"
-	if w.sourceFormat == play.FormatOrg {
-		starKind = "bold"
-	}
-	rules := []struct {
-		re   *regexp.Regexp
-		kind string
-	}{
-		{boldItalicRE, "bolditalic"}, {boldRE, "bold"}, {codeTickRE, "code"}, {codeOrgRE, "code"}, {orgItalicRE, "italic"}, {underlineRE, "underline"}, {starPairRE, starKind},
-	}
+	known := map[string]string{}
 	if notes {
-		rules = append([]struct {
-			re   *regexp.Regexp
-			kind string
-		}{{docxNoteRE, "note"}}, rules...)
+		known = w.notes
 	}
-	for _, rule := range rules {
-		var next []docxInline
-		for _, s := range segments {
-			if s.kind != "" {
-				next = append(next, s)
-				continue
-			}
-			pos := 0
-			for _, m := range rule.re.FindAllStringSubmatchIndex(s.text, 100001) {
-				if rule.kind == "note" {
-					if _, ok := w.notes[s.text[m[2]:m[3]]]; !ok {
-						continue
-					}
-				}
-				if m[0] > pos {
-					next = append(next, docxInline{text: s.text[pos:m[0]]})
-				}
-				next = append(next, docxInline{text: s.text[m[2]:m[3]], kind: rule.kind})
-				pos = m[1]
-			}
-			if pos < len(s.text) {
-				next = append(next, docxInline{text: s.text[pos:]})
-			}
-		}
-		if len(next) > 100000 {
-			return nil, fmt.Errorf("DOCX exceeds 100000 inline segments")
-		}
-		segments = next
+	parsed, err := source.ScriptInline(string(w.sourceFormat), text, known)
+	if err != nil {
+		return nil, fmt.Errorf("DOCX source parsing: %w", err)
 	}
-	w.inlineCount += len(segments)
-	if w.inlineCount > 100000 {
-		return nil, fmt.Errorf("DOCX exceeds 100000 inline segments")
+	return w.sourceRuns(parsed, dx("rPr"), 0)
+}
+
+func (w *docxWriter) sourceRuns(nodes []source.Node, properties docxNode, depth int) ([]docxNode, error) {
+	if depth > 128 {
+		return nil, fmt.Errorf("DOCX inline nesting exceeds limit")
 	}
 	var out []docxNode
-	for _, s := range segments {
-		if s.kind == "note" {
-			node, err := w.note(s.text)
+	for _, n := range nodes {
+		w.inlineCount++
+		if w.inlineCount > 100000 {
+			return nil, fmt.Errorf("DOCX exceeds 100000 inline segments")
+		}
+		props := dx("rPr", append([]docxNode(nil), properties.children...)...)
+		switch n.Type {
+		case "Str":
+			out = append(out, docxRun(n.Content.(string), props))
+		case "Code":
+			c := n.Content.([]any)
+			props.children = append(props.children, dx("rFonts").attr("w:ascii", "Courier New").attr("w:hAnsi", "Courier New"))
+			out = append(out, docxRun(c[1].(string), props))
+		case "NoteReference":
+			ref, err := w.note(n.Content.(string))
 			if err != nil {
 				return nil, err
 			}
-			out = append(out, node)
-			continue
+			out = append(out, ref)
+		case "Strong", "Emph", "Underline":
+			property := map[string]docxNode{"Strong": dx("b"), "Emph": dx("i"), "Underline": dxVal("u", "single")}[n.Type]
+			props.children = append(props.children, property)
+			children, err := w.sourceRuns(n.Content.([]source.Node), props, depth+1)
+			if err != nil {
+				return nil, err
+			}
+			out = append(out, children...)
+		default:
+			return nil, fmt.Errorf("unsupported script inline %q", n.Type)
 		}
-		props := dx("rPr")
-		switch s.kind {
-		case "bold":
-			props.children = append(props.children, dx("b"))
-		case "bolditalic":
-			props.children = append(props.children, dx("b"), dx("i"))
-		case "italic":
-			props.children = append(props.children, dx("i"))
-		case "underline":
-			props.children = append(props.children, dxVal("u", "single"))
-		case "code":
-			props.children = append(props.children, dx("rFonts").attr("w:ascii", "Courier New").attr("w:hAnsi", "Courier New"))
-		}
-		out = append(out, docxRun(s.text, props))
 	}
 	return out, nil
 }

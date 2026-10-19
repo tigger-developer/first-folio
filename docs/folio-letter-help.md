@@ -32,7 +32,8 @@ Config:
   walking from the source directory towards HOME.
 
 Editable office output:
-  DOCX is generated natively. ODT requires Pandoc on PATH. Neither uses Typst. Both use the existing
+  DOCX is parsed and generated natively. ODT uses the configured Pandoc writer
+  after native parsing. Neither uses Typst. Both follow the PDF YAML cascade and use the existing
   folio.letter font, margin, spacing and subject settings. Letters do not inherit
   manuscript headers or footers. Available permitted full fonts are embedded.
   Org emphasis and =verbatim= spans remain editable; use verbatim for literal URLs.

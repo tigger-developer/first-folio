@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.32"
-last-updated: 2026-10-18
+version: "0.33"
+last-updated: 2026-10-19
 ---
 
 # Configuration
@@ -14,7 +14,10 @@ See [examples/script.yaml.example](../examples/script.yaml.example) for an annot
 
 Manuscript DOCX/ODT exports consume the existing `folio.manuscript` settings and
 shared running matter. Letter DOCX/ODT exports consume `folio.letter`, without
-headers or footers. Select these outputs through the manuscript target extension
+headers or footers. Office output follows the same mode-specific YAML cascade
+as PDF, including the first Markdown manuscript input's `folio:` and `render:`
+frontmatter mappings. Selecting an output format does not reload configuration
+with different precedence. Select these outputs through the manuscript target extension
 or `folio letter --format docx|odt`; no extra YAML output schema is introduced.
 Native office editors control final pagination and field refresh. ODT starts a
 new page when the frontmatter/body number format changes, a reset is requested
@@ -801,6 +804,7 @@ At non-100% stretch, First Folio supplies English discretionary break points fro
 
 ## Changelog
 
+- 0.33 (2026-10-19): Name the PDF YAML cascade shared by manuscript and letter office output, including Markdown source frontmatter.
 - 0.32 (2026-10-18): Clarify accepted native office page-boundary and opening-page limits.
 
 - 0.30 (2026-10-16): Documented manuscript stderr warnings for each loaded external YAML file.

@@ -5,11 +5,11 @@ package letter
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/tigger-developer/first-folio/internal/config"
 	"github.com/tigger-developer/first-folio/internal/office"
+	"github.com/tigger-developer/first-folio/internal/source"
 )
 
 // Office builds native prose without first rendering or parsing Typst.
@@ -58,7 +58,11 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 			style.After += extra
 		}
 		plan.Styles[role] = style
-		plan.Document.Blocks = append(plan.Document.Blocks, office.Paragraph(role, officeInlines(value)))
+		inlines, err := officeInlines(value)
+		if err != nil {
+			return err
+		}
+		plan.Document.Blocks = append(plan.Document.Blocks, office.Paragraph(role, inlines))
 		return nil
 	}
 	sender := strings.ReplaceAll(item.Sender, " / ", "\n")
@@ -103,54 +107,22 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 	return plan, nil
 }
 
-func officeInlines(value string) []office.Node {
-	var tokens []office.Node
-	for _, rule := range []struct {
-		re   *regexp.Regexp
-		kind string
-	}{{letterCodeRE, "Code"}, {letterBoldRE, "Strong"}, {letterItalicRE, "Emph"}, {letterUnderlineRE, "Underline"}} {
-		value = rule.re.ReplaceAllStringFunc(value, func(match string) string {
-			text := rule.re.FindStringSubmatch(match)[1]
-			var n office.Node
-			if rule.kind == "Code" {
-				n = office.Span("FolioLiteral", office.Text(text))
-			} else {
-				n = office.N(rule.kind, office.Text(text))
+func officeInlines(value string) ([]office.Node, error) {
+	nodes, err := source.LetterInline(value)
+	if err != nil {
+		return nil, err
+	}
+	var mapLiterals func([]office.Node) []office.Node
+	mapLiterals = func(nodes []office.Node) []office.Node {
+		for i := range nodes {
+			if nodes[i].Type == "Code" {
+				c := nodes[i].Content.([]any)
+				nodes[i] = office.Span("FolioLiteral", office.Text(c[1].(string)))
+			} else if children, ok := nodes[i].Content.([]source.Node); ok {
+				nodes[i].Content = mapLiterals(children)
 			}
-			tokens = append(tokens, n)
-			return "\x00" + strconv.Itoa(len(tokens)-1) + "\x00"
-		})
+		}
+		return nodes
 	}
-	var result []office.Node
-	for len(value) > 0 {
-		at := strings.IndexByte(value, 0)
-		if at < 0 {
-			result = append(result, literalOfficeInlines(value)...)
-			break
-		}
-		result = append(result, literalOfficeInlines(value[:at])...)
-		value = value[at+1:]
-		end := strings.IndexByte(value, 0)
-		if end < 0 {
-			break
-		}
-		index, err := strconv.Atoi(value[:end])
-		if err == nil && index < len(tokens) {
-			result = append(result, tokens[index])
-		}
-		value = value[end+1:]
-	}
-	return result
-}
-func literalOfficeInlines(value string) []office.Node {
-	var result []office.Node
-	for i, line := range strings.Split(value, "\n") {
-		if i > 0 {
-			result = append(result, office.N("LineBreak", nil))
-		}
-		if line != "" {
-			result = append(result, office.N("Str", line))
-		}
-	}
-	return result
+	return mapLiterals(nodes), nil
 }

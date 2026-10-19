@@ -1,6 +1,6 @@
 ---
 title: DOCX Script Export
-version: "1.7"
+version: "1.8"
 last-updated: 2026-10-19
 ---
 
@@ -50,8 +50,11 @@ published by rename. Existing destination permissions are replaced by mode 0600.
 
 Use `folio manuscript chapter.md manuscript.docx` or
 `folio letter letters.org --format docx`. Both extend the existing native
-DOCX writer with manuscript or letter configuration. Manuscripts use Pandoc
-only for source parsing; letters need no Pandoc. They do not invoke Typst. Manuscript source syntax and letter recipient
+DOCX writer with manuscript or letter configuration. Both use shared native
+source parsing and require neither Pandoc nor Typst, including manuscript
+dry-run and metadata extraction. Both follow their PDF renderer's YAML cascade,
+including the first Markdown manuscript input's configuration frontmatter.
+Manuscript source syntax and letter recipient
 selection remain unchanged.
 
 Manuscripts retain editable headings, paragraphs, lists, tables, links and
@@ -98,9 +101,11 @@ The selection of an Extended face remains reader-dependent; its cause has
 not been established. Microsoft Word behaviour remains unverified. Inspect the
 result in the intended editor before relying on exact typography or pagination.
 
-Input is limited to 32 MiB across manuscript files; Pandoc JSON and output are
-bounded at 128 MiB. Pandoc calls have a 120-second deadline and 64 KiB diagnostic
-limit. Package and font limits above also apply. Destination aliases, symlinks
+Input is limited to 32 MiB across manuscript files. Native structured content
+is bounded to 50,000 blocks, 100,000 inline nodes and depth 128; contiguous prose
+is not split into one node per word. Intermediate data and output are bounded
+at 128 MiB. DOCX conversion starts no external writer or source reader.
+Package and font limits above also apply. Destination aliases, symlinks
 and nonregular files are rejected before publication. A manuscript barcode
 sidecar publishes after the document. Letter files publish individually; later
 failure reports previously published paths rather than rolling them back.
@@ -113,6 +118,8 @@ title composition, page settings and spacing. That generic conversion is not
 the product ODT route. The native DOCX writer serves scripts, manuscripts and letters.
 
 ## History
+
+- 1.8 (2026-10-19): Remove every DOCX dependency on Pandoc and document shared native parsing.
 
 - 2026-10-19: Extend the shared native DOCX and configured ODT writers to manuscript and letter adapters.
 

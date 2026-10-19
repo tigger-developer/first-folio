@@ -1,7 +1,7 @@
 #+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/letter.org
 #+TITLE: First Folio Org Letter Schema
-#+VERSION: 0.4
-#+DATE: 2026-10-16
+#+VERSION: 0.5
+#+DATE: 2026-10-19
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
 
@@ -9,8 +9,9 @@
 
 Letters are an *Org-only* document type. =folio letter= reads tagged Org
 sections and generates recipient-specific PDF, DOCX or ODT files. PDF remains
-the default; =--format docx= or =--format odt= selects editable output through
-Pandoc, using the same source grammar. There is *no Markdown letter
+the default; =--format docx= selects native editable output and =--format odt=
+uses the configured Pandoc writer after native parsing. Both follow the same
+YAML cascade as letter PDF, using the same source grammar. There is *no Markdown letter
 format* and no Markdown letter conversion.
 
 An Org file may contain both a play and cover letters. It declares the
@@ -82,6 +83,8 @@ by [[file:../docs/work.org::#w-040][W040 - Exclude cover-letter sections from do
 It does not make letters part of any other source format.
 
 * Reference and revision history
+
+- 0.5, 2026-10-19 :: Distinguish native DOCX parsing from the configured ODT writer and retain the PDF YAML cascade.
 
 - [[file:../docs/folio-letter-help.md][Letter command reference]].
 - 0.3, 2026-09-10 :: Rewrite as an exclusively Org letter contract.
