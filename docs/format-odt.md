@@ -1,6 +1,6 @@
 ---
 title: ODT Script Export
-version: "1.7"
+version: "1.8"
 last-updated: 2026-10-19
 ---
 
@@ -70,6 +70,12 @@ it does not read source Markdown or Org. They write ODT directly from structured
 no DOCX intermediate is created. The script approximations above do not define
 the prose feature contract.
 
+Ordinary prose uses the editor's natural character baseline. Native paragraph
+line boxes control leading and spacing, keeping the caret and selection aligned
+with body text. Footnote anchors retain genuine superscripts. Repeated headings
+and contents entries share formatting styles by semantic level and effective
+properties; bookmarks and page-boundary data remain specific to each instance.
+
 Manuscripts use native paragraphs, lists, tables, footnotes, heading bookmarks,
 editable positioned groups and contents page references. Update fields in the
 editor before printing. An ODT frontmatter/body change of page-number format
@@ -123,6 +129,8 @@ staged beside the destination and published by rename with mode 0600. A failed
 conversion leaves an existing destination unchanged.
 
 ## History
+
+- 1.8 (2026-10-19): Preserve natural editable text baselines and reuse equivalent role styles.
 
 - 1.7 (2026-10-19): Use native office source parsing and the PDF YAML cascade.
 

@@ -46,6 +46,17 @@ the affected tests only. Fresh production/reader verification and a delivery-cod
 review are required; human editor behaviour cannot be inferred from package XML.
 The earlier delivery-code PASS below is superseded for the correction candidate.
 
+Final affected-test review also preserves the genuine note superscript while
+rejecting inheritance of legacy body offsets: the updated stable-anchor unit
+test fails at 73 percent before correction and passes at its ordinary 33 percent
+semantic offset after correction. The entire office package passes in
+=editing-office-final.log= (0.858s). A public footnote test previously demanded
+one explicit zero-position element; it now accepts the native absent/default
+zero too, while retaining the strict superscript assertion and rejecting every
+nonzero position. Its focused follow-up passes in 0.846s. These are corrections
+to representation-coupled assertions, not waivers of editing or font behaviour.
+
+
 Affected-test reassessment before final remediation: expanded the scaling fixture
 to include part headings and their positioned ODT frames. Actual intended RED in
 =editing-parts-red-actual.log= shows ODT named heading/frame/contents styles grow

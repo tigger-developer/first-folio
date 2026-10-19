@@ -1,6 +1,6 @@
 ---
 title: Prose office fixture expectations
-version: 3
+version: 4
 last-updated: 2026-10-18
 ---
 
@@ -402,3 +402,9 @@ Version 3 adds these delivery regressions to the existing key-to-test mapping:
 - Running-band font roles: `TestRT063_11_OfficeRenderedPageFieldTypography` proves that refreshed page and page-count fields retain the header/footer family, size, style and baseline.
 
 - Table `space-before` and `space-after`: `TestRT063_4_OfficeParagraphBetweenTables` proves both independent clearances survive when one paragraph lies between two tables.
+
+Version 4 adds W063 editing-remediation checks:
+
+- Ordinary body paragraphs retain native baselines in both formats, for Markdown and Org manuscripts and letters. `TestRT063_4_OfficeNaturalBodyBaseline` rejects nonzero inherited/direct character-position shifts. Human caret, typing, selection and editing-view clipping checks remain UT063.1/2.
+- `TestRT063_13_OfficeStylesDoNotGrowWithChapters` compares four versus forty chapters, including parts and their positioned frames. Equivalent role/level formatting is shared; every heading retains its own contents target. ODT per-page overrides are automatic styles.
+- Exact native margins and line intervals remain asserted. The first visible glyph lies within its native first line box; it is not raised to force its ink edge onto the margin. Running-header baseline measurements remain strict.

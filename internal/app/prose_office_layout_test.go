@@ -246,7 +246,7 @@ func TestRT063_3_OfficeFootnoteTypography(t *testing.T) {
 				for _, run := range officeBody(t, pkg, format).all("r") {
 					if len(run.all("footnoteReference")) > 0 {
 						officeAssertAttr(t, run, "vertAlign", "val", "superscript")
-						if positions := run.all("position"); len(positions) != 1 || positions[0].attr("val") != "0" {
+						if positions := run.all("position"); len(positions) > 1 || len(positions) == 1 && positions[0].attr("val") != "0" {
 							t.Error("footnote reference must share the unshifted paragraph baseline")
 						}
 					}

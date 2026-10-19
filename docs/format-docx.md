@@ -1,6 +1,6 @@
 ---
 title: DOCX Script Export
-version: "1.8"
+version: "1.9"
 last-updated: 2026-10-19
 ---
 
@@ -56,6 +56,12 @@ dry-run and metadata extraction. Both follow their PDF renderer's YAML cascade,
 including the first Markdown manuscript input's configuration frontmatter.
 Manuscript source syntax and letter recipient
 selection remain unchanged.
+
+Ordinary prose uses the editor's natural character baseline. Native paragraph
+line boxes control leading and spacing, keeping the caret and selection aligned
+with body text. Footnote anchors retain genuine superscripts. Repeated headings
+and contents entries share formatting styles by semantic level and effective
+properties; bookmarks and page-boundary data remain specific to each instance.
 
 Manuscripts retain editable headings, paragraphs, lists, tables, links and
 footnotes, with generated title, contents and copyright matter. Contents use
@@ -118,6 +124,8 @@ title composition, page settings and spacing. That generic conversion is not
 the product ODT route. The native DOCX writer serves scripts, manuscripts and letters.
 
 ## History
+
+- 1.9 (2026-10-19): Preserve natural editable text baselines and reuse equivalent role styles.
 
 - 1.8 (2026-10-19): Remove every DOCX dependency on Pandoc and document shared native parsing.
 

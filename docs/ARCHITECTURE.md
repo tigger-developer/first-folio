@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.19"
+version: "0.20"
 last-updated: 2026-10-19
 ---
 
@@ -111,6 +111,13 @@ and use the same inline parser. Convert's script events retain mode-specific
 classification. The shared source node shape also supplies JSON to ODT, but
 constructing or validating it requires no Pandoc process. Contiguous text stays
 in one span rather than expanding into per-word nodes.
+Prose layout keeps normal characters on their native baseline; paragraph boxes
+own leading and the running-header edge offset. Temporary instance identities
+carry bookmarks, fields and page transitions through layout. Final serialization
+reuses exact formatting definitions within each semantic level/role, rewrites
+style references and keeps ODT page overrides in automatic styles. Sharing
+formatting never merges the instance's content, anchors or numbering.
+
 All three modes use the existing native WordprocessingML serializer and DOCX
 packager. Manuscript and letter adapters add structured prose content, while
 script events retain their existing layout. ODT uses the same bounded Pandoc
@@ -162,6 +169,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.20 (2026-10-19): Separate editable natural baselines and shared formatting from per-instance layout.
 
 - 0.19 (2026-10-19): Share native source recognition across convert and office prose, retaining distinct mode semantics and PDF configuration cascades.
 

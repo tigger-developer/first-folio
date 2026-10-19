@@ -1,10 +1,44 @@
 ---
 title: W063 operator validation handoff
-version: 1
+version: 2
 last-updated: 2026-10-19
 ---
 
 # W063 operator validation
+
+## Current editor-remediation candidate
+
+W063 remains unaccepted. Ordinary body characters now use the natural baseline;
+formatting styles are shared by semantic level/role and exact properties while
+anchors, fields and page boundaries stay distinct. Automated baseline/style
+regressions and the four-case novel reader acceptance pass. Full regression and
+the fresh internal delivery-code review are being settled before handback.
+The earlier handoff and its files below are historical evidence for the reported
+editor defects, not the current retest candidate.
+
+| Source | Fresh DOCX | Fresh ODT |
+|---|---|---|
+| Markdown | [Novel for retest](/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-editor-novels-final.r5TPd2jF0z/md-docx-3761308049/novel.docx) | [Novel for retest](/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-editor-novels-final.r5TPd2jF0z/md-odt-614836670/novel.odt) |
+| Org | [Novel for retest](/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-editor-novels-final.r5TPd2jF0z/org-docx-40061999/novel.docx) | [Novel for retest](/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-editor-novels-final.r5TPd2jF0z/org-odt-732247428/novel.odt) |
+
+[Fresh small-fixture comparison and editable profiles](/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-editor-profiles.MdVvnfyZWJ/comparison.html).
+All four novels render to 654 pages and have three heading/contents definitions
+in the relevant named-style families. The richer part/chapter regression uses a
+constant five relevant styles in DOCX and six in ODT at both tested sizes.
+
+Start the human retest with ordinary body text on physical page 5, then repeat
+in the middle and final chapter: place the caret, type accented text, select
+across lines and scroll. Caret, selection and visible text must coincide, with
+no editing-view clipping. Check that genuine footnote anchors remain raised.
+Confirm that editing a shared chapter style affects equivalent chapter headings
+and that their distinct contents links and page references still work after
+refresh. Save to a new file and reopen under the existing UT procedure.
+
+All twelve named user tests below remain AMBER; the failed observation on the
+old candidate is retained in validation. Headless printing does not establish
+interactive editor usability. The live executable remains unchanged.
+
+## Historical handoff before editor findings
 
 The feature branch is `feature/W063-prose-office-export`. Internal delivery-code
 review is PASS against `ec5113f`, by current-session author self-review without
