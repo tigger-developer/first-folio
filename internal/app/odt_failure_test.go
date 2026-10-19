@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/tigger-developer/first-folio/internal/office"
 	"io"
 	"os"
 	"os/exec"
@@ -92,7 +93,7 @@ func TestRT058_3ODTPandocFailures(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
 	start := time.Now()
-	raw, _, err := odtPandoc(ctx, nil, "--from=json", "--to=odt")
+	raw, _, err := office.RunODT(ctx, nil, "--from=json", "--to=odt")
 	if err == nil || !strings.Contains(err.Error(), "deadline") || len(raw) != 0 || time.Since(start) > 3*time.Second {
 		t.Fatalf("deadline: %v", err)
 	}
@@ -179,7 +180,7 @@ func TestRT058_3ODTRejectsInvalidPackages(t *testing.T) {
 			if err := z.Close(); err != nil {
 				t.Fatal(err)
 			}
-			if err := odtValidate(b.Bytes()); err == nil {
+			if err := office.ValidateODT(b.Bytes()); err == nil {
 				t.Fatalf("accepted %s", mode)
 			}
 		})

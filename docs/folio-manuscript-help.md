@@ -1,6 +1,6 @@
 Usage: folio manuscript <input>... <target> [options]
 
-Render Markdown or org-mode prose manuscript chapters to .typ or .pdf.
+Render Markdown or org-mode prose manuscript chapters to .typ, .pdf, .docx or .odt.
 
 Options:
   --style british|us          Manuscript preset, default british
@@ -34,6 +34,18 @@ Source configuration:
   Properties merge recursively: presets < global files < source < local files
   < explicit CLI options. A local font size preserves the source font family.
   Later input files cannot supply another configuration layer.
+
+Editable office output:
+  The target extension selects DOCX or ODT. Both use Pandoc for source parsing;
+  DOCX generation is native, and ODT uses the configured Pandoc writer. Neither\n  requires Typst. Existing manuscript YAML controls the document.
+  Available permitted full font faces are embedded. Missing fonts warn.
+  Update contents and page fields in the editor before printing. Pagination
+  can differ between editors. ODT starts a new page for frontmatter/body
+  number-format changes, requested resets or changed page-field structure.
+  DOCX special opening pages may retain odd-page running matter on an even
+  page. See the format guides for these accepted fidelity limitations.
+  Output is published by rename after validation. An ISBN sidecar is published
+  afterwards; a sidecar failure reports that the manuscript was already written.
 
 Hyphenation:
   Set folio.manuscript.hyphenation to auto (follow justify), true (allow),

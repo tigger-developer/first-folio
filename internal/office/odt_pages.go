@@ -1,6 +1,6 @@
 // ABOUTME: Generates ODT page masters, running matter and live page fields.
 // ABOUTME: Maintains first and facing page variants without resetting numbering.
-package app
+package office
 
 import "strings"
 

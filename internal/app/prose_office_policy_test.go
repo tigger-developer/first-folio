@@ -65,6 +65,9 @@ func TestRT063_4_OfficeParagraphPolicy(t *testing.T) {
 					}
 				}
 				if strings.HasPrefix(tc.name, "hyphenation-") {
+					if format == "docx" {
+						officeAssertAttr(t, pkg["word/settings.xml"], "autoHyphenation", "val", tc.odtValue)
+					}
 					code := officeEffective(t, pkg, format, officeParagraph(t, officeBody(t, pkg, format), "CODE-EXCLUDED"))
 					if format == "odt" {
 						officeAssertEffective(t, code, "text-properties", "hyphenate", "false")

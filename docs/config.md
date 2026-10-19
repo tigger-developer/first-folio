@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.29"
-last-updated: 2026-10-12
+version: "0.32"
+last-updated: 2026-10-18
 ---
 
 # Configuration
@@ -11,6 +11,16 @@ First Folio reads configuration from YAML files named `script.yaml`. It never cr
 First Folio owns the `folio:` namespace. A project may also contain a top-level `yapper:` block, which belongs exclusively to Yapper and is ignored by First Folio. Only the documented top-level metadata and `render` keys form a shared contract between the applications.
 
 See [examples/script.yaml.example](../examples/script.yaml.example) for an annotated example.
+
+Manuscript DOCX/ODT exports consume the existing `folio.manuscript` settings and
+shared running matter. Letter DOCX/ODT exports consume `folio.letter`, without
+headers or footers. Select these outputs through the manuscript target extension
+or `folio letter --format docx|odt`; no extra YAML output schema is introduced.
+Native office editors control final pagination and field refresh. ODT starts a
+new page when the frontmatter/body number format changes, a reset is requested
+or the running-band page-field structure changes. See the
+[ODT boundary limitation](format-odt.md#frontmatterbody-page-break-limitation) and
+[DOCX opening-page limitation](format-docx.md#opening-page-headerfooter-fidelity-limitation).
 
 ## File locations
 
@@ -37,6 +47,8 @@ All config sources are read and merged. Each layer overrides individual keys fro
 | 8 (lowest) | British built-in base preset |
 
 **Example:** Global config sets `folio.font.family: "EB Garamond"` and `folio.page: a4`. A local config sets only `folio.font.size: 11pt`. The merged root font uses EB Garamond at 11pt and the page remains a4. Font properties merge at the same role path, with the frontmatter paragraph fallback described below.
+
+For `folio manuscript`, each external YAML file loaded into this cascade produces one warning on stderr with its resolved path, in merge order. This includes global and selected local base and style-specific files, even when a file changes no effective setting. Missing and unselected files, built-in presets, source frontmatter, and CLI values produce no load warning. The warning names no settings or values and does not alter precedence or manuscript output.
 
 ## Manuscript source configuration
 
@@ -789,6 +801,9 @@ At non-100% stretch, First Folio supplies English discretionary break points fro
 
 ## Changelog
 
+- 0.32 (2026-10-18): Clarify accepted native office page-boundary and opening-page limits.
+
+- 0.30 (2026-10-16): Documented manuscript stderr warnings for each loaded external YAML file.
 - 0.29 (2026-10-12): Documented independent script frontmatter paragraph fonts and body-font fallback.
 
 - 0.28 (2026-10-12): Document configuration-driven delivery-instruction placement.
@@ -797,7 +812,7 @@ At non-100% stretch, First Folio supplies English discretionary break points fro
 
 - 0.26 (2026-10-11): Document resolved configuration for DOCX and ODT export.
 
-- 0.25 (2026-10-08): Document automatic cast-name capitalisation, aliases and hidden-table lookup.
+- 0.25 (2026-10-08): Document automatic cast-name capitalization, aliases and hidden-table lookup.
 - 0.24 (2026-10-07): Added compact script first-page titles for page-limited submissions and default-on title/first-page running-matter suppression; documented untitled scripts, mode isolation, validation and numbering.
 
 - 0.23 (2026-10-07): Promoted running headers and footers to shared Folio settings for scripts and manuscripts; retained layered manuscript-local compatibility with deprecation diagnostics and excluded letters.

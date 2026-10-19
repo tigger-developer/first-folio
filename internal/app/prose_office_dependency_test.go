@@ -29,7 +29,7 @@ func init() {
 		if mode == "reader-only" {
 			allowed := false
 			for _, arg := range os.Args[1:] {
-				if arg == "--to=json" || arg == "--to=markdown" {
+				if arg == "--to=json" || arg == "--to=markdown" || arg == "--to=gfm" {
 					allowed = true
 				}
 				if strings.Contains(arg, "docx") || strings.Contains(arg, "reference") {
@@ -78,7 +78,7 @@ func TestRT063_1_LetterDOCXWithoutPandoc(t *testing.T) {
 	proseDependencies(t, []string{"docx"}, []string{"letter"}, []string{"missing", "incompatible"})
 }
 func TestRT063_1_ManuscriptDOCXReaderOnly(t *testing.T) {
-	proseDependencies(t, []string{"docx"}, []string{"manuscript"}, []string{"reader-only"})
+	proseDependencies(t, []string{"docx"}, []string{"manuscript", "manuscript-org"}, []string{"reader-only"})
 }
 func TestRT063_1_OfficeDependencyIsolation(t *testing.T) {
 	proseDependencies(t, []string{"docx", "odt"}, []string{"manuscript", "letter"}, []string{"available", "missing", "incompatible"})
@@ -113,6 +113,9 @@ func proseDependencies(t *testing.T, formats, documents, modes []string) {
 					}
 					src := proseSource(t, dir, "source.md", "DEPENDENCY-BODY\n")
 					target := proseSource(t, dir, "output."+format, "PRIOR")
+					if document == "manuscript-org" {
+						src = proseSource(t, dir, "source.org", "DEPENDENCY-BODY\n")
+					}
 					args := []string{"manuscript", src, target}
 					if document == "letter" {
 						src = proseSource(t, dir, "letters.org", "* Letters :letter:\n** Subject :subject:\nDEPENDENCY-BODY\n*** Recipient :to:\n**** Theatre :org:\n")

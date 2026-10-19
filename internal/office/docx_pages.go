@@ -1,6 +1,6 @@
 // ABOUTME: Builds native DOCX title paragraphs, running matter and page properties.
 // ABOUTME: Uses a single section with documented title and frontmatter compromises.
-package app
+package office
 
 import "strings"
 
@@ -134,7 +134,12 @@ func (w *docxWriter) parts() ([]docxPart, error) {
 	if err != nil {
 		return nil, err
 	}
-	body = append(body, w.section(refs))
+	return append(w.contentParts(body, w.section(refs)), running...), nil
+}
+
+// contentParts assembles editable native content for every source mode.
+func (w *docxWriter) contentParts(body []docxNode, section docxNode) []docxPart {
+	body = append(body, section)
 	parts := []docxPart{
 		{name: "word/document.xml", contentType: "document.main", root: dxRoot("document", dx("body", body...))},
 		{name: "word/styles.xml", contentType: "styles", relationship: "styles", root: dxRoot("styles", w.styles...)},
@@ -148,5 +153,5 @@ func (w *docxWriter) parts() ([]docxPart, error) {
 		notes = append(notes, w.footnotes...)
 		parts = append(parts, docxPart{name: "word/footnotes.xml", contentType: "footnotes", relationship: "footnotes", root: dxRoot("footnotes", notes...)})
 	}
-	return append(parts, running...), nil
+	return parts
 }

@@ -1,6 +1,6 @@
 // ABOUTME: Serializes a small, fixed subset of WordprocessingML using encoding/xml.
 // ABOUTME: Bounds generated XML and rejects characters that XML cannot preserve.
-package app
+package office
 
 import (
 	"bytes"
@@ -45,6 +45,9 @@ func dxText(text string) docxNode {
 func (n docxNode) MarshalXML(e *xml.Encoder, _ xml.StartElement) error {
 	if err := docxValidText(n.text); err != nil {
 		return err
+	}
+	if n.name == "" {
+		return e.EncodeToken(xml.CharData(n.text))
 	}
 	for _, a := range n.attrs {
 		if err := docxValidText(a.Value); err != nil {
@@ -106,4 +109,115 @@ func docxEncode(root docxNode, limit int) ([]byte, error) {
 		return nil, err
 	}
 	return b.Bytes(), nil
+}
+
+type nativeBuffer struct {
+	buffer bytes.Buffer
+	limit  int
+}
+
+func (b *nativeBuffer) Write(p []byte) (int, error) {
+	if len(p) > b.limit-b.buffer.Len() {
+		return 0, fmt.Errorf("native office data exceeds %d bytes", b.limit)
+	}
+	return b.buffer.Write(p)
+}
+func (b *nativeBuffer) Bytes() []byte { return b.buffer.Bytes() }
+
+// parseXML retains prefixes and mixed-content order for bounded native postprocessing.
+func parseXML(raw []byte) (*docxNode, error) {
+	d := xml.NewDecoder(bytes.NewReader(raw))
+	var root *docxNode
+	var stack []*docxNode
+	qualified := func(name xml.Name) string {
+		if name.Space != "" {
+			return name.Space + ":" + name.Local
+		}
+		return name.Local
+	}
+	for {
+		token, err := d.RawToken()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		switch v := token.(type) {
+		case xml.StartElement:
+			n := docxNode{name: qualified(v.Name)}
+			for _, a := range v.Attr {
+				n.attrs = append(n.attrs, xml.Attr{Name: xml.Name{Local: qualified(a.Name)}, Value: a.Value})
+			}
+			if len(stack) == 0 {
+				root = &n
+				stack = append(stack, root)
+			} else {
+				parent := stack[len(stack)-1]
+				parent.children = append(parent.children, n)
+				stack = append(stack, &parent.children[len(parent.children)-1])
+			}
+		case xml.EndElement:
+			if len(stack) == 0 {
+				return nil, fmt.Errorf("unbalanced XML")
+			}
+			stack = stack[:len(stack)-1]
+		case xml.CharData:
+			if len(stack) > 0 {
+				parent := stack[len(stack)-1]
+				parent.children = append(parent.children, docxNode{text: string(v)})
+			}
+		}
+	}
+	if root == nil {
+		return nil, fmt.Errorf("empty XML")
+	}
+	return root, nil
+}
+func (n *docxNode) get(key string) string {
+	for _, a := range n.attrs {
+		if a.Name.Local == key {
+			return a.Value
+		}
+	}
+	return ""
+}
+func (n *docxNode) set(key, value string) {
+	for i := range n.attrs {
+		if n.attrs[i].Name.Local == key {
+			n.attrs[i].Value = value
+			return
+		}
+	}
+	n.attrs = append(n.attrs, xml.Attr{Name: xml.Name{Local: key}, Value: value})
+}
+func (n *docxNode) child(name string) *docxNode {
+	for i := range n.children {
+		if n.children[i].name == name {
+			return &n.children[i]
+		}
+	}
+	return nil
+}
+func (n *docxNode) ensure(name string) *docxNode {
+	if c := n.child(name); c != nil {
+		return c
+	}
+	n.children = append(n.children, ox(name))
+	return &n.children[len(n.children)-1]
+}
+func (n *docxNode) remove(name string) {
+	out := n.children[:0]
+	for _, c := range n.children {
+		if c.name != name {
+			out = append(out, c)
+		}
+	}
+	n.children = out
+}
+func (n *docxNode) visit(fn func(*docxNode)) {
+	fn(n)
+	for i := range n.children {
+		n.children[i].visit(fn)
+	}
 }

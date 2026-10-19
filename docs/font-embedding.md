@@ -1,7 +1,7 @@
 ---
 title: Fonts in Editable Office Exports
-version: "1.0"
-last-updated: 2026-10-12
+version: "1.1"
+last-updated: 2026-10-16
 ---
 
 # Fonts in editable office exports
@@ -10,6 +10,12 @@ DOCX and ODT conversions embed complete font files for the families referenced
 by the generated styles. Available regular, bold, italic and bold italic faces
 are included, allowing text to be added without a glyph subset restriction.
 Font selection remains in YAML; no embedding option is required.
+
+This also applies to manuscript and letter DOCX/ODT output. Their font roles
+remain `folio.manuscript.*.font` and `folio.letter.font`; script role settings
+do not replace those mode-specific roles. An office reader may still substitute
+a face despite its presence in the package. The rendered prose regression
+checks the PDF's actual font names separately from embedded-file assertions.
 
 The bundled Iosevka Publish and Iosevka Publish Extended families are available
 without a host installation. Other families are discovered in `TYPST_FONT_PATHS`
@@ -33,6 +39,20 @@ may then use an installed font or substitute another. Embedding permission flags
 do not replace the font licence. The bundled customized Iosevka faces retain
 their [SIL Open Font Licence](../fonts/iosevka-publish/LICENSE.md).
 
+## Prose weight fidelity
+
+Family selection and percentage stretch are independent of font weight. Current
+DOCX prose styles express weight through regular/bold flags. ODT prose styles
+retain thin through black as numeric weights in steps of 100; explicit generated
+heading bold overrides take precedence. Intermediate numeric values, such as
+643, still use the regular/bold fallback. These are accepted conversion limits; they do not imply that every configured
+weight is faithfully reproduced.
+
+Embedding still includes supported regular/bold/italic faces only. A numeric
+ODT style therefore does not prove that a distinct light or semibold face was
+embedded or selected by the reader. The ordinary-family rendering checks do
+not establish that separate weight claim.
+
 ## Limits and portability
 
 Each font is limited to 32 MiB, with 64 MiB of font data per document. Discovery
@@ -52,5 +72,7 @@ Standalone `.typ` files still require the selected fonts on the compiling host.
 PDF generation continues through the existing Typst font path.
 
 ## History
+
+- 1.1 (2026-10-16): Document manuscript and letter office output.
 
 - 1.0 (2026-10-12): Add full-face embedding to DOCX and ODT exports.

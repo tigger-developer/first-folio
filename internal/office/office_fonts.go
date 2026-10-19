@@ -1,6 +1,6 @@
 // ABOUTME: Resolves complete, editable TrueType/OpenType faces for office exports.
 // ABOUTME: Reads bundled and local fonts without installing or downloading anything.
-package app
+package office
 
 import (
 	"bytes"
@@ -21,26 +21,28 @@ import (
 const officeFontLimit = 32 << 20
 const officeFontsLimit = 64 << 20
 
-type officeFont struct {
+// FontFace retains a permitted full font face for native office packaging.
+type FontFace struct {
 	family string
 	face   int // regular, bold, italic, bold italic
 	ext    string
-	raw    []byte
+	Raw    []byte
 	rights uint16
 }
 
+// ParseFont reads one complete static font face.
 // SFNT offsets are checked before slicing. Collections and variable fonts are
 // deliberately excluded: their faces need extraction/instantiation first.
-func parseOfficeFont(raw []byte) (officeFont, error) {
+func ParseFont(raw []byte) (FontFace, error) {
 	f, err := readOfficeFontInfo(bytes.NewReader(raw), int64(len(raw)))
 	if err == nil {
-		f.raw = raw
+		f.Raw = raw
 	}
 	return f, err
 }
 
-func readOfficeFontInfo(reader io.ReaderAt, length int64) (officeFont, error) {
-	f := officeFont{ext: "ttf"}
+func readOfficeFontInfo(reader io.ReaderAt, length int64) (FontFace, error) {
+	f := FontFace{ext: "ttf"}
 	if length < 12 || length > officeFontLimit {
 		return f, fmt.Errorf("invalid font size")
 	}
@@ -128,7 +130,7 @@ func readOfficeFontInfo(reader io.ReaderAt, length int64) (officeFont, error) {
 	return f, nil
 }
 
-func (f officeFont) editable() bool {
+func (f FontFace) editable() bool {
 	// OS/2 fsType: installable (0) or editable (8), never restricted,
 	// preview/print-only or bitmap-only. Full faces also honour no-subsetting.
 	return f.rights&0x202 == 0 && (f.rights&0xC == 0 || f.rights&8 != 0)
@@ -152,16 +154,17 @@ func officeFontDirs() []string {
 	return dirs
 }
 
-func resolveOfficeFonts(families []string, dirs []string) ([]officeFont, []string) {
+// ResolveFonts selects supported editable faces from bundled and local fonts.
+func ResolveFonts(families []string, dirs []string) ([]FontFace, []string) {
 	wanted := map[string]bool{}
 	for _, name := range families {
 		wanted[name] = true
 	}
-	selected := map[string]map[int]officeFont{}
+	selected := map[string]map[int]FontFace{}
 	issues := map[string]string{}
 	total := 0
 	accept := func(raw []byte) {
-		f, err := parseOfficeFont(raw)
+		f, err := ParseFont(raw)
 		if err != nil || !wanted[f.family] {
 			return
 		}
@@ -173,7 +176,7 @@ func resolveOfficeFonts(families []string, dirs []string) ([]officeFont, []strin
 			return
 		}
 		if selected[f.family] == nil {
-			selected[f.family] = map[int]officeFont{}
+			selected[f.family] = map[int]FontFace{}
 		}
 		if len(raw) > officeFontsLimit-total {
 			issues[f.family] = "64 MiB font budget exceeded"
@@ -243,7 +246,7 @@ func resolveOfficeFonts(families []string, dirs []string) ([]officeFont, []strin
 			return nil
 		})
 	}
-	var fonts []officeFont
+	var fonts []FontFace
 	var warnings []string
 	sort.Strings(families)
 	for _, family := range families {

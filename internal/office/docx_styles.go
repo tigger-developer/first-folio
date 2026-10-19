@@ -1,6 +1,6 @@
 // ABOUTME: Maps resolved script font roles and geometry to editable DOCX styles.
 // ABOUTME: Validates native limits and confines approximations to documented spike policy.
-package app
+package office
 
 import (
 	"fmt"
@@ -224,7 +224,7 @@ func (w *docxWriter) style(role string) (string, error) {
 
 func (w *docxWriter) paragraphProperties(role, path string, size float64) (docxNode, error) {
 	before, after, left, right := 0, 0, 0, 0
-	align := "left"
+
 	var err error
 	extent := w.width - 2*w.margin
 	before, err = w.length(path+".space-before", "0", size, w.height-w.top-w.bottom)
@@ -235,7 +235,7 @@ func (w *docxWriter) paragraphProperties(role, path string, size float64) (docxN
 	if err != nil {
 		return docxNode{}, err
 	}
-	align = w.cfg.String(path+".align", "left")
+	align := w.cfg.String(path+".align", "left")
 	switch role {
 	case "Body", "Footnote", "Cast", "FrontmatterParagraph":
 		before = 0

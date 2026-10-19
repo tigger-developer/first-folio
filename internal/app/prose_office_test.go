@@ -411,6 +411,10 @@ func TestRT063_3_OfficeManuscriptStructuredContent(t *testing.T) {
 					officeAssertEffective(t, proseInlineLayers(t, pkg, format, "BOLD-SAMPLE"), "text-properties", "font-weight", "bold")
 					officeAssertEffective(t, proseInlineLayers(t, pkg, format, "ITALIC-SAMPLE"), "text-properties", "font-style", "italic")
 				} else {
+					heading := officeParagraph(t, body, "HEADING-SAMPLE")
+					officeAssertAttr(t, heading, "outlineLvl", "val", "1")
+					nested := officeParagraph(t, body, "LIST-NESTED")
+					officeAssertAttr(t, nested, "ilvl", "val", "1")
 					rels := pkg["word/_rels/document.xml.rels"]
 					if rels == nil {
 						t.Fatal("DOCX relationships absent")
@@ -521,5 +525,31 @@ func TestRT063_9_OfficeInvalidTextPreservesDestination(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestRT063_3_DOCXFootnoteLinksRemainEditable(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	dir := t.TempDir()
+	proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page: {enabled: false}\n    toc: {enabled: false}\n")
+	source := proseSource(t, dir, "source.md", "Body[^note].\n\n[^note]: Note with [NOTE-LINK](https://example.invalid/note).\n")
+	pkg := proseConvert(t, source, filepath.Join(dir, "output.docx"))
+	note := officeParagraph(t, pkg["word/footnotes.xml"], "NOTE-LINK")
+	links := note.all("hyperlink")
+	if len(links) != 1 {
+		t.Fatalf("note has %d native links", len(links))
+	}
+	rels := pkg["word/_rels/footnotes.xml.rels"]
+	if rels == nil {
+		t.Fatal("footnote hyperlink relationship part missing")
+	}
+	found := false
+	for _, rel := range rels.all("Relationship") {
+		if rel.attr("Id") == links[0].attr("id") && rel.attr("Target") == "https://example.invalid/note" && rel.attr("TargetMode") == "External" {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("footnote link does not resolve from its owning part")
 	}
 }

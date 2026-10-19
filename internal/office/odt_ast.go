@@ -1,6 +1,6 @@
 // ABOUTME: Projects the existing office layout into Pandoc JSON for ODT only.
 // ABOUTME: Preserves scene tables and inline content without parsing a DOCX package.
-package app
+package office
 
 import (
 	"encoding/json"

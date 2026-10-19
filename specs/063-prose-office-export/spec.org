@@ -770,3 +770,15 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Regression :: =TestRT063_4_OfficeParagraphBetweenTables= compares zero and non-zero table clearances in both formats. DOCX retained both edges; ODT lost the first table's after-clearance when applying the second table's before-clearance.
 - Correction :: Retain the resolved generated ODT paragraph style so later block-edge adjustments add to its existing properties. This preserves the existing additive spacing contract.
 - Verification :: Use the full-suite result at =02a89f7= together with the affected additive/table groups after the ODT correction. TESTING permits unaffected results to remain current after scoped remediation. The seven visual profiles contain no inter-table paragraph, so their retained comparisons remain applicable; the new native regression exercises the affected composition.
+
+** 2026-10-19 - Shared exporter implementation :hands-off:review:
+
+*** Native generation and retained mode semantics
+
+- Implementation :: Extract the existing script DOCX XML, content, styles, package and font machinery into =internal/office=. Script and prose use the same native content-part and package assembly. Add structured prose blocks/runs without converting manuscripts to play events. Letter DOCX creates its plan locally; manuscript DOCX invokes only canonical source readers.
+- ODT :: Retain the native ODF reference-package generator and configured Pandoc ODT writer. Prose supplies its own resolved roles and page-master policy. No default reference is requested from Pandoc, and no DOCX intermediate is used.
+- Resource boundary :: The shared ODT subprocess now uses the tested cancellation-on-overflow boundary, with the existing timeout and byte limits. Validate prose packages before native postprocessing and after font embedding. Existing script failure tests exercise the extracted process boundary.
+- Test corrections :: Preserve the fixture and YAML assertions. Add native outline-level and nested-list-level assertions, and a named footnote hyperlink ownership regression. Each reproduced a defect before remediation. Extend reader-only dependency proof to both Markdown and Org manuscripts.
+- Typography :: Native inline code uses the manuscript mono role; native footnotes use its existing derived note role. Generated SVG dimensions determine the barcode aspect ratio. Each is checked by the retained regressions.
+- Hyphenation :: Enable or disable document-level Word automatic hyphenation as well as paragraph exclusions. Microsoft documents that omission disables automatic hyphenation; paragraph opt-in alone is insufficient. The four on/off/auto assertions reproduced the missing setting before remediation. Source: https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.autohyphenation
+- Evidence boundary :: Full regression, fresh seven-profile comparison, packaged CLI checks and final internal delivery review remain separate checks. Historical delivery acceptance does not validate this replacement. No installation, release, push or closure is included.

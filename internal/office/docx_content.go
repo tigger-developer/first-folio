@@ -1,6 +1,6 @@
 // ABOUTME: Converts script events into native DOCX paragraphs, tables and footnotes.
 // ABOUTME: Interprets source-aware inline emphasis without executable markup.
-package app
+package office
 
 import (
 	"fmt"

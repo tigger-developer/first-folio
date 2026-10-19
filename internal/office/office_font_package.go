@@ -1,6 +1,6 @@
 // ABOUTME: Embeds full font faces into native DOCX and ODT package structures.
 // ABOUTME: Preserves existing XML namespaces and bounds the repackaged document.
-package app
+package office
 
 import (
 	"archive/zip"
@@ -51,7 +51,7 @@ func embedOfficeFonts(raw []byte, format string) ([]byte, []string, error) {
 	for name := range families {
 		names = append(names, name)
 	}
-	fonts, warnings := resolveOfficeFonts(names, officeFontDirs())
+	fonts, warnings := ResolveFonts(names, officeFontDirs())
 	if len(fonts) == 0 {
 		return raw, warnings, nil
 	}
@@ -214,7 +214,7 @@ func officeAppendXML(files map[string][]byte, path, parent string, nodes ...docx
 	return err
 }
 
-func embedDOCXFonts(files map[string][]byte, fonts []officeFont) error {
+func embedDOCXFonts(files map[string][]byte, fonts []FontFace) error {
 	table := dxRoot("fonts")
 	rels := ox("Relationships").attr("xmlns", docxPackageRelNS)
 	for i := 0; i < len(fonts); {
@@ -224,9 +224,9 @@ func embedDOCXFonts(files map[string][]byte, fonts []officeFont) error {
 			f := fonts[i]
 			id := fmt.Sprintf("folioFont%d", i+1)
 			path := "fonts/" + id + ".odttf"
-			hash := sha256.Sum256(f.raw)
+			hash := sha256.Sum256(f.Raw)
 			key := fmt.Sprintf("{%X-%X-%X-%X-%X}", hash[:4], hash[4:6], hash[6:8], hash[8:10], hash[10:16])
-			data := bytes.Clone(f.raw)
+			data := bytes.Clone(f.Raw)
 			for j := 0; j < 32; j++ {
 				data[j] ^= hash[15-j%16]
 			}
@@ -262,12 +262,12 @@ func embedDOCXFonts(files map[string][]byte, fonts []officeFont) error {
 	return err
 }
 
-func embedODTFonts(files map[string][]byte, fonts []officeFont) error {
+func embedODTFonts(files map[string][]byte, fonts []FontFace) error {
 	sources := map[string]docxNode{}
 	var manifest []docxNode
 	for i, f := range fonts {
 		path := fmt.Sprintf("Fonts/folioFont%d.%s", i+1, f.ext)
-		files[path] = f.raw
+		files[path] = f.Raw
 		manifest = append(manifest, ox("manifest:file-entry").attr("manifest:full-path", path).attr("manifest:media-type", "font/"+f.ext))
 		src, ok := sources[f.family]
 		if !ok {

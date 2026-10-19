@@ -1,14 +1,16 @@
 #+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/letter.org
 #+TITLE: First Folio Org Letter Schema
-#+VERSION: 0.3
-#+DATE: 2026-09-10
+#+VERSION: 0.4
+#+DATE: 2026-10-16
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
 
 * Scope
 
 Letters are an *Org-only* document type. =folio letter= reads tagged Org
-sections and generates recipient-specific PDFs. There is *no Markdown letter
+sections and generates recipient-specific PDF, DOCX or ODT files. PDF remains
+the default; =--format docx= or =--format odt= selects editable output through
+Pandoc, using the same source grammar. There is *no Markdown letter
 format* and no Markdown letter conversion.
 
 An Org file may contain both a play and cover letters. It declares the
@@ -26,7 +28,7 @@ A letter-only Org source declares:
 #+TITLE: A Short Play
 #+end_src
 
-The PDF output does not receive a schema declaration.
+PDF, DOCX and ODT outputs do not receive a schema declaration.
 
 * Section grammar
 

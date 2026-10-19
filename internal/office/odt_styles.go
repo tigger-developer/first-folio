@@ -1,6 +1,6 @@
 // ABOUTME: Builds a local ODF reference with resolved Folio typography and page masters.
 // ABOUTME: Supplies Pandoc custom styles without accepting arbitrary templates or markup.
-package app
+package office
 
 import (
 	"archive/zip"
