@@ -152,11 +152,14 @@
 
 * Automated regression
 
-** AMBER RT063.1 - Output selection and dependencies :testdef:
+** RED RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REASON: Revised parser/dependency contract has not been implemented or executed. Earlier reader-only evidence is superseded for this case.
+:REVISION: e29559d plus the written parser/dependency test package
+:COMMAND: go test ./internal/app -run '^TestRT063_(1_|13_)' -count=1
+:EVIDENCE: Executed intended failure: manuscript DOCX invokes trapped Pandoc source readers and fails without Pandoc; ODT calls source readers instead of writer-only. .agent/logs/parser-red-final.log retains the 5.683s run.
 :END:
+- Previous reason, retained :: Revised parser/dependency contract had not been implemented or executed; earlier reader-only evidence was superseded.
 
 *** Historical shared-exporter result before parser correction
 
@@ -270,11 +273,14 @@
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.4 - Configuration and role geometry :testdef:
+** GREEN RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
-:REASON: Expanded PDF/DOCX/ODT cascade-parity cases require implementation and execution; earlier configuration checks do not establish these new comparisons.
+:REVISION: e29559d plus the written cascade-parity test package
+:COMMAND: go test ./internal/app -run '^TestRT063_4_PDFCascadeParity$' -count=1
+:EVIDENCE: Initially GREEN preservation: PDF/DOCX/ODT retain global, style, source and local font-size winners for manuscript and letter; 4.976s. .agent/logs/cascade-baseline-valid.log. Earlier unchanged geometry evidence remains below; rerun the full group after parser implementation.
 :END:
+- Previous reason, retained :: Expanded cross-format comparison had required implementation and execution; its initial retired-key fixture error is not RED evidence and remains in .agent/logs/cascade-baseline.log.
 
 *** Historical result before explicit PDF cascade comparison
 
@@ -771,20 +777,24 @@
 - Scope :: Record DOCX opening-page header/footer selection and the separate ODT frontmatter/body page-break limitation. Preserve earlier failures as historical evidence; no test status changes follow from documentation alone.
 - ODT focused follow-up :: Native page policy and the three ODT continuous/reset/changed-field rendered cases passed: office 0.354s and application 68.654s in =.agent/w063-approved-boundary-green.log=. Additional native sequence checks passed in 0.834s in =.agent/w063-boundary-sequences.log=. These results do not establish a passing full suite.
 
-** AMBER RT063.13 - Shared parser and mode semantics :testdef:
+** RED RT063.13 - Shared parser and mode semantics :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-13-result
-:REASON: Parser-reuse, mode-semantics and the expanded four-case novel-scale conversion matrix await implementation and execution after revised specification sign-off.
+:REVISION: e29559d plus the written parser/novel test package
+:COMMAND: go test ./internal/app -run '^TestRT063_(1_|13_)' -count=1
+:EVIDENCE: All four novel source/output combinations fail at forbidden Pandoc source readers. The real-reader control separately reproduces semantic-node overflow for both formats and sources. Mode semantics are preservation cases. Logs: .agent/logs/parser-red-final.log and parser-red-valid-fixture.log.
 :END:
 - Definition :: [[file:spec.org::#rt-063-13][RT063.13 - Shared parser and mode semantics]].
 - Previous reason, retained :: Newly defined parser-reuse, mode-semantics and novel-scale cases await implementation and execution after revised specification sign-off.
 
 * Ticket-scoped automated validation
 
-** AMBER AT063.1 - Novel-scale rendered manuscripts :testdef:
+** RED AT063.1 - Novel-scale rendered manuscripts :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at063-1-result
-:REASON: Newly defined ticket-scoped rendering test is unwritten and unexecuted; all four novel-scale source/output cases await revised specification sign-off and delivery.
+:REVISION: e29559d plus the written ticket-scoped novel-rendering test package
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_' -count=1 -timeout=150m
+:EVIDENCE: All four built-binary conversion cases fail at the intended semantic-node limit before reader rendering; 7.966s, .agent/logs/acceptance-red-final.log. The downstream reader/content/field/geometry assertions are written but their conformance is not established by this RED run.
 :END:
 - Definition :: [[file:spec.org::#at-063-1][AT063.1 - Novel-scale rendered manuscripts]].
 - Required records :: Separate intended RED and final GREEN evidence for Markdown to DOCX, Org to DOCX, Markdown to ODT and Org to ODT, including complete-content checks, refreshed contents references, role measurements, commands, versions, hashes, durations and artefact paths.

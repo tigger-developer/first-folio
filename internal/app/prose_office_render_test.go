@@ -37,12 +37,16 @@ func (b *proseDiagnostic) Write(p []byte) (int, error) {
 func (b *proseDiagnostic) String() string { return b.buffer.String() }
 
 func proseTool(t *testing.T, name string, args ...string) string {
+	return proseToolDeadline(t, 120*time.Second, name, args...)
+}
+
+func proseToolDeadline(t *testing.T, timeout time.Duration, name string, args ...string) string {
 	t.Helper()
 	path, err := exec.LookPath(name)
 	if err != nil {
 		t.Fatalf("rendered prose regression requires %s on PATH: %v", name, err)
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, path, args...)
 	var output proseDiagnostic
@@ -99,6 +103,10 @@ End Sub
 `
 
 func proseRenderPDF(t *testing.T, source string) string {
+	return proseRenderPDFDeadline(t, source, 120*time.Second)
+}
+
+func proseRenderPDFDeadline(t *testing.T, source string, timeout time.Duration) string {
 	t.Helper()
 	dir, err := os.MkdirTemp(filepath.Dir(source), "render-")
 	if err != nil {
@@ -107,7 +115,7 @@ func proseRenderPDF(t *testing.T, source string) string {
 	profile := filepath.Join(dir, "profile")
 	// LibreOffice initializes its Basic library on first use. Complete that
 	// initialization before installing the test-owned refresh helper.
-	proseTool(t, "soffice", "-env:UserInstallation="+proseFileURL(profile), "--headless", "--terminate_after_init")
+	proseToolDeadline(t, timeout, "soffice", "-env:UserInstallation="+proseFileURL(profile), "--headless", "--terminate_after_init")
 	basic := filepath.Join(profile, "user", "basic")
 	if err := os.MkdirAll(filepath.Join(basic, "Standard"), 0700); err != nil {
 		t.Fatal(err)
@@ -132,7 +140,7 @@ func proseRenderPDF(t *testing.T, source string) string {
 			t.Fatal(err)
 		}
 	}
-	proseTool(t, "soffice", "-env:UserInstallation="+proseFileURL(profile), "--headless", "macro:///Standard.Module1.RefreshFixture")
+	proseToolDeadline(t, timeout, "soffice", "-env:UserInstallation="+proseFileURL(profile), "--headless", "macro:///Standard.Module1.RefreshFixture")
 	if raw, err := os.ReadFile(errorPath); err == nil {
 		t.Fatalf("LibreOffice refresh failed: %s", raw)
 	} else if !os.IsNotExist(err) {

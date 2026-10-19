@@ -451,3 +451,40 @@ and AT063.1 - Novel-scale rendered manuscripts. This is expected before the
 test-writing stage and does not block definition sign-off. Sanitization and
 whitespace checks pass. No product tests were executed; operator sign-off remains
 pending, and implementation has not started in this workflow.
+
+# 2026-10-19: Shared native parser test-code review
+
+Review method: internal (current session; not independent)
+
+Gate: test-code
+
+Mode: SDLC
+
+Revision: `e29559d` (delivery admission) plus the parser/dependency, novel fixture,
+cascade-parity and tagged acceptance tests; production code is unchanged.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+Applied the signed-off specification and AUDITS, TESTING, CODING, ARCHITECTURE,
+SECURITY, GO and Org evidence standards. Reviewed the changed test package and
+existing helpers in this session. The validator reports valid schema and
+test-code readiness for all 28 specified records. The new dependency/scale RTs
+and AT have intended observed RED; cross-format cascade and mode semantics
+are initially GREEN preservation checks (4.976s and 2.567s respectively).
+
+The traps operate only in child executable paths. DOCX asserts no Pandoc call,
+ODT delegates permitted writer calls to the real tool, and the independent novel
+generator supplies all 10,000 expected paragraphs, fifty chapters and distributed
+structured specimens. Native package checks and the tagged reader acceptance
+test use public commands; the latter stays outside make test. Full reader
+assertions are written but not claimed exercised by a pre-render RED failure.
+
+Review corrected fixture setup errors (copyright body type, retired font key,
+Org cast heading and optional native bold flags) rather than counting them as
+product RED. The AT font check now rejects arbitrary fallback families. The
+complete package has no target-production scaffolding. Existing requirement
+groups retain their baseline tests and history; new affected results will be
+rerun after implementation. Parser sharing still requires implementation call-
+path review, not matching output alone. No independent audit is claimed.
