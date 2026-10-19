@@ -1,7 +1,7 @@
 ---
 title: Prose office fixture expectations
 version: 4
-last-updated: 2026-10-18
+last-updated: 2026-10-19
 ---
 
 # Prose office fixture expectations
