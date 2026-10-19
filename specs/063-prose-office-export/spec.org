@@ -3,7 +3,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: APPROVED 2026-10-16
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-19
 
 * Synopsis
 :PROPERTIES:
@@ -30,7 +30,7 @@
 
 ** Changes
 
-- New prose adapters preserve structured content before Typst rendering and generate configured office packages through Pandoc plus native package processing.
+- New prose adapters preserve structured content before Typst rendering and extend the existing native DOCX and configured Pandoc ODT exporters.
 - *Office output is bounded and published atomically per file*; office-only collision preflight prevents two letters from replacing each other. PDF letter path behaviour is unchanged.
 
 ** Unchanged
@@ -89,7 +89,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 :CUSTOM_ID: constraints-and-dependencies
 :END:
 
-- Runtime :: *Pandoc is required for both new prose office formats*. Typst and a desktop office application are not runtime dependencies of those routes. Existing script DOCX remains independent of Pandoc.
+- Runtime :: *DOCX generation is native for all three modes*. Manuscripts retain Pandoc for source parsing only; letter and script DOCX require no Pandoc. ODT retains the existing configured Pandoc writer for all modes. Typst and a desktop office application are not runtime dependencies of office output.
 - Fidelity :: Preserve *all applicable YAML typography and document features*. Native length rounding and editor-dependent line/page breaks are acceptable. Hyphenation positions can differ while the configured policy remains effective. The operator approved one additional ODT exception on 2026-10-16: start a new page at the frontmatter/body boundary when the page-number format changes. Preserve configured displayed numbering and physical page-side rules at that boundary; PDF behaviour is unchanged. The operator subsequently approved extending that ODT new-page exception to a requested body-number reset or a change in running-band page-field structure, and accepted the weight mapping documented below. The approved DOCX opening-page exception is defined below.
 - DOCX opening-page exception :: Approved 2026-10-17. Special first-page handling may use the odd variant of a retained header/footer on an even physical opening page. Suppression, displayed page counters and subsequent-page parity remain required. Ordinary chapter/part openings retaining both bands are unaffected. The observed ODT parity case passes; this exception does not weaken ODT parity requirements.
 - Fonts :: The existing permission, discovery and supported-font-file policy remains applicable. Referenced unavailable or non-embeddable faces warn and retain their family references. This exception does not permit dropping configured size, style, stretch or tracking. The approved weight mapping is regular below 600 and bold from 600 upwards in DOCX; ODT retains standard weights in steps of 100 and uses that same binary fallback for intermediate values. Embedding retains the existing regular/bold/italic face policy; numeric ODT weights do not guarantee a distinct embedded face.
@@ -222,7 +222,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 :CUSTOM_ID: rt-063-1
 :END:
 - Covers :: [[#ac-063-1][AC063.1 - Manuscript selection]].
-- Action :: Export minimal Markdown and Org manuscripts to each office extension; repeat with uppercase extension, spaces in paths and =--dry-run=. Try missing target and unknown suffix. Exercise missing Pandoc and an incompatible JSON API response.
+- Action :: Export minimal Markdown and Org manuscripts to each office extension; repeat with uppercase extension, spaces in paths and =--dry-run=. Try missing target and unknown suffix. Exercise missing Pandoc and an incompatible JSON API response where parsing or ODT output requires it. Verify native letter DOCX with Pandoc absent and manuscript DOCX with real source-reader calls permitted but writer/reference calls rejected.
 - Expected :: Correct package MIME/type and body text; case-insensitive suffix selection; no output or sidecar during dry-run; non-zero actionable errors for invalid invocations/dependencies; no destination replacement. Typst is never called.
 
 ** RT063.2 - Recipient batches and CLI errors :testdef:
@@ -485,20 +485,20 @@ Manuscript and letter users need *editable office documents without rebuilding t
 | =folio letter letters.org --format=odt --to Theatre --dir output --prefix submission= | Existing case-insensitive recipient/organization regex and filename algorithm; chosen suffix replaces =.pdf=. |
 
 - Error contract :: Unknown/missing format values fail with accepted values. Existing public exit conventions remain. Diagnostics go to stderr, generated-file reports to stdout; neither command adds binary stdout output.
-- Dependencies :: New office exports invoke Pandoc directly with fixed arguments. No user filters, templates or extra argument pass-through. No fallback from one output format to another.
+- Dependencies :: Manuscript source readers and the shared ODT writer invoke Pandoc directly with fixed arguments. DOCX output never invokes a Pandoc writer or requests a Pandoc DOCX reference. No user filters, templates or extra argument pass-through. No fallback from one output format to another.
 
 ** Structured prose route
 
 1. *Resolve inputs, metadata and configuration through existing mode-specific code*. For manuscripts, reuse canonicalization, source-layer extraction, private-section removal, standalone-code promotion and heading numbering decisions.
 2. Obtain *Pandoc JSON before conversion to Typst*. Preserve native rich nodes and annotate semantic roles, chapter openings and section boundaries. Do not reverse-parse Typst, use the play event model or round-trip through DOCX to obtain ODT.
 3. Project the existing typed letter model after substitution into equivalent paragraph/inline nodes and mode-specific layout data. Protect literal Org spans before interpreting emphasis. Keep date, address and closing composition shared with the existing letter contract.
-4. Supply a *generated reference document with resolved named styles* to the selected Pandoc writer. The same content adapter feeds both prose formats; DOCX and ODT serializers express their own native layout structures.
-5. Apply native ZIP/XML processing for section/master transitions, page fields, contents, generated frontmatter and properties the writer cannot carry directly. Reuse font embedding and package validation, then publish atomically.
+4. Extend the existing native paragraph, table, style and package machinery used by =folio convert=. DOCX uses that native serializer directly. ODT uses its configured Pandoc projection and generated reference; it does not convert an intermediate DOCX file. Add richer native content support for manuscript lists, links, notes and generated matter at that shared boundary.
+5. Apply mode-specific native section/master transitions, page fields, contents and generated frontmatter within the shared export machinery. Reuse font embedding and package validation, then publish atomically.
 
 - Ownership :: Add a cohesive =internal/office= package for bounded process execution, native package utilities, font packaging and prose export contracts. It depends on shared config/font value types, not =app=, =manuscript= or =letter=. Mode adapters remain with their semantic owners; the app orchestrates letters and manuscript orchestration calls the lower-level package.
-- Reuse :: Extract only genuinely shared existing office infrastructure into that package and leave thin script call sites. Do not move script layout policy or change its native DOCX serializer to Pandoc. Reuse existing manuscript heading/date/barcode helpers rather than duplicating rules.
-- Rationale :: Pandoc already owns rich manuscript parsing and can write both formats; native processing is needed for the resolved layout contract. This avoids a second rich-text parser or a new universal document framework. There is no new runtime library or desktop office dependency.
-- Verification :: RT063.3 - Structured content proves the semantic route; RT063.10 - Preservation protects existing callers. Implementation review checks dependency direction, absence of duplicated mode rules and confinement of script changes to shared infrastructure extraction.
+- Reuse :: Extract the existing DOCX serializer and configured ODT exporter into the shared package, retaining script-specific layout methods separately from manuscript and letter adapters. All modes use the same native XML, package, font and ODT writer boundaries. Do not copy these into a second prose exporter. Reuse existing manuscript heading/date/barcode helpers rather than duplicating rules. Previously authored mode-specific helpers may be retained only after review against this corrected design; their prior verdicts are not acceptance evidence.
+- Rationale :: Pandoc already owns rich manuscript parsing; the existing exporters own output generation. Reusing both boundaries preserves source semantics and the established dependency split. This avoids a second rich-text parser or a new universal document framework. There is no new runtime library or desktop office dependency.
+- Verification :: RT063.3 - Structured content proves the semantic route; RT063.10 - Preservation protects existing callers. Implementation review checks dependency direction, absence of duplicated mode rules and use of the same exporter mechanics by script, manuscript and letter callers.
 
 ** Feature mapping and fidelity boundary
 :PROPERTIES:
@@ -559,7 +559,7 @@ The following inventory covers *all settings consumed by the current manuscript 
 *** Maintainability and portability
 
 - Keep *mode semantics separate from package mechanics*. Shared extraction must preserve script behaviour, and successful package tests must be supplemented by actual reader evidence.
-- Document tested Pandoc and reader versions during delivery. Use the reader-produced JSON API version for manuscript ASTs; validate a compatible version for constructed letter ASTs rather than assuming all installations accept one hard-coded version.
+- Document tested Pandoc and reader versions during delivery. Use the reader-produced JSON API version for manuscript ASTs; validate a compatible version for the shared ODT projection rather than assuming all installations accept one hard-coded version. Native letter DOCX has no JSON-version probe.
 - No speculative plugin interface, service, new shell helper or Rust component is required. File names, private helper signatures and test organization remain routine implementation details within these boundaries.
 
 * Delivery Handoff
@@ -588,6 +588,11 @@ must not be implemented by selecting an Extended face. The previously observed
 Extended substitution remains documented, but is not a delivery requirement.
 Historical failed runs and the earlier accepted-fallback decision below are
 retained as history; strict ordinary-family assertions supersede that fallback.
+
+* Architecture correction history
+
+- Approved 2026-10-19 :: Extend the existing =folio convert= native DOCX and configured Pandoc ODT exporters to manuscript and letter modes. Selectively revert the rejected separate prose pipeline before rebuilding. The 2026-10-16 design requested Pandoc writers for both formats; that decision is superseded. Prior delivery verdicts and executions remain historical evidence only. All feature acceptance criteria and named user tests remain required.
+- Verification delta :: RT063.1 - Output dependencies additionally requires =TestRT063_1_LetterDOCXWithoutPandoc= and =TestRT063_1_ManuscriptDOCXReaderOnly=. The first runs with neither Pandoc nor Typst available. The second permits real Pandoc source-reader calls but rejects every DOCX writer/reference request. Both inspect native editable output. RT063.10 - Existing route preservation protects the extracted script callers.
 
 * Hands-off mode decision log
 

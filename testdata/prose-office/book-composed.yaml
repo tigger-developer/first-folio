@@ -1,0 +1,161 @@
+title: "TITLE-SAMPLE: 20pt bold Iosevka Publish"
+subtitle: "SUBTITLE-SAMPLE: 14pt italic Iosevka Publish"
+author: "AUTHOR-SAMPLE: 12pt Iosevka Publish"
+author-attribution: Written by
+date: '2026-10-16'
+wordcount: "WORDCOUNT-SAMPLE: approximately 1200 words"
+version: "VERSION-SAMPLE: review copy"
+contact-name: "CONTACT-SAMPLE: 10pt Iosevka Publish"
+address: "ADDRESS-SAMPLE: Dublin, Ireland"
+phone: "PHONE-SAMPLE: 000 0000"
+email: author@example.invalid
+website: https://example.invalid/book
+folio:
+  page-header:
+    enabled: true
+    font: {family: Iosevka Publish, size: 10pt, weight: regular, style: italic, stretch: 95%, letter-spacing: 0.2pt}
+    format: "EVEN [title] / [part] / [page] of [total-pages]"
+    alt-format: "ODD [author] / [chapter] / [page] of [total-pages]"
+    frontmatter-format: "FRONT-EVEN [page]"
+    alt-frontmatter-format: "FRONT-ODD [page]"
+    align: left-right
+    distance-from-edge: 20mm
+    content-padding-after: 5mm
+  page-footer:
+    enabled: true
+    font: {family: Iosevka Publish, size: 9pt, weight: bold, style: regular, stretch: 100%, letter-spacing: 0pt}
+    format: "FOOT-EVEN [page]"
+    alt-format: "FOOT-ODD [page]"
+    frontmatter-format: "FRONT-FOOT [page]"
+    alt-frontmatter-format: "FRONT-FOOT-ODD [page]"
+    align: right-left
+    distance-from-edge: 18mm
+    content-padding-after: 6mm
+  manuscript:
+    style: british
+    page: 6x9in
+    margin: 18mm
+    gutter: 4mm
+    date-format: 02/01/2006
+    font: {family: Iosevka Publish, size: 12pt, weight: regular, style: regular, stretch: 100%, letter-spacing: 0pt}
+    title-page:
+      enabled: true
+      page-number: true
+      include-title: true
+      include-subtitle: true
+      include-author: true
+      include-date: true
+      include-wordcount: true
+      include-contact-name: true
+      include-address: true
+      include-phone: true
+      include-email: true
+      include-website: true
+      include-version: true
+      title-block-align: center-left
+      footer-align: bottom-right
+      title:
+        align: group
+        font: {family: Iosevka Publish, size: 20pt, weight: bold, style: regular, stretch: 100%, letter-spacing: 0pt}
+      subtitle:
+        align: group
+        font: {family: Iosevka Publish, size: 14pt, weight: regular, style: italic, stretch: 100%, letter-spacing: 0pt}
+      author:
+        align: group
+        font: {family: Iosevka Publish, size: 12pt, weight: regular, style: regular, stretch: 100%, letter-spacing: 0pt}
+      date:
+        align: bottom-left
+        font: {family: Iosevka Publish, size: 10pt, weight: regular, style: regular, stretch: 100%, letter-spacing: 0pt}
+      wordcount:
+        align: top-right
+        font: {family: Iosevka Publish, size: 10pt, weight: regular, style: regular, stretch: 100%, letter-spacing: 0pt}
+      version:
+        align: group
+        font: {family: Iosevka Publish, size: 10pt, weight: regular, style: regular, stretch: 100%, letter-spacing: 0pt}
+      contact:
+        align: top-left
+        font: {family: Iosevka Publish, size: 10pt, weight: regular, style: regular, stretch: 100%, letter-spacing: 0pt}
+    toc:
+      enabled: true
+      title: "CONTENTS-COMPOSED: 16pt bold Iosevka Publish"
+      font: {family: Iosevka Publish, size: 11pt, weight: regular, style: regular, stretch: 100%, letter-spacing: 0pt}
+      heading:
+        font: {family: Iosevka Publish, size: 16pt, weight: bold, style: regular, stretch: 100%, letter-spacing: 0pt}
+      include-parts: true
+      include-chapters: true
+      include-sections: true
+      links: true
+      dot-leaders: true
+      page-numbers: true
+      page-break-before: true
+      blank-page-before: enforce-right
+      blank-page-after: false
+      line-spacing: 1.25
+      part-gap-before: 8mm
+      continuation-padding-before: 12mm
+      part-bold: true
+    part:
+      page-break-before: true
+      blank-page-before: enforce-right
+      blank-page-after: true
+      skip-header: true
+      skip-footer: true
+      vertical-align: center
+      align: center
+      case-transform: as-written
+      explicit-numbering: derived
+      name-case: upper
+      number-format: I
+      prefix: 'Part '
+      separator: ': '
+      suffix: ' END'
+      show-name: true
+      show-number: true
+      number-reset: never
+    chapter:
+      page-break-before: true
+      blank-page-before: false
+      blank-page-after: false
+      skip-header: true
+      skip-footer: false
+      position: 15mm
+      align: left
+      space-after: 8mm
+      case-transform: as-written
+      explicit-numbering: derived
+      name-case: lower
+      number-format: I.1
+      number-reset: per-part
+      prefix: 'Chapter '
+      separator: ': '
+      suffix: ' END'
+      show-name: true
+      show-number: true
+    copyright:
+      enabled: true
+      position: after-title
+      skip-header: true
+      skip-footer: false
+      blank-page-before: enforce-left
+      blank-page-after: false
+      align: left
+      credits: ["CREDIT-SAMPLE: 11pt Iosevka Publish; 4mm block spacing"]
+      body: ["LEGAL-SAMPLE: **bold credit** and *italic credit*, independent of source syntax."]
+      separator: COPYRIGHT-SEPARATOR
+      separator-space-before: 6mm
+      separator-space-after: 7mm
+      publication: ["PUBLICATION-SAMPLE: bottom group", "Second publication line"]
+      publisher: PUBLISHER-SAMPLE
+      publisher-preposition: Published by
+      isbn: '978-0-000000-00-2'
+      isbn-label: BOOK-NUMBER
+      isbn-barcode: render-and-file
+      font: {family: Iosevka Publish, size: 11pt, weight: regular, style: regular, stretch: 100%, letter-spacing: 0pt}
+      label:
+        font: {family: Iosevka Publish, size: 11pt, weight: bold, style: italic, stretch: 95%, letter-spacing: 0.2pt}
+      line-spacing: 1.4
+      block-spacing: 4mm
+    page-numbering:
+      frontmatter-format: I
+      body-format: '1'
+      body-reset: first-part-or-chapter

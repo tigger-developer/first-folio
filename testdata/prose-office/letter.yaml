@@ -1,0 +1,26 @@
+folio:
+  letter:
+    page: a4
+    font:
+      family: Iosevka Publish
+      size: 11pt
+      weight: regular
+      style: regular
+      stretch: 100%
+      letter-spacing: 0pt
+    margin-top: 25mm
+    margin-bottom: 25mm
+    margin-left: 30mm
+    margin-right: 25mm
+    space-after-sender: 8mm
+    space-after-recipient: 6mm
+    space-after-date: 5mm
+    space-after-subject: 4mm
+    space-before-closing: 7mm
+    space-before-signoff: 9mm
+  page-header:
+    enabled: true
+    format: LETTER-MUST-NOT-HAVE-THIS-HEADER
+  page-footer:
+    enabled: true
+    format: LETTER-MUST-NOT-HAVE-THIS-FOOTER

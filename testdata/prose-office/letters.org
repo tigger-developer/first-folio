@@ -1,0 +1,23 @@
+#+TITLE: Labelled letter fixtures
+#+AUTHOR: Example Author
+#+EMAIL: author@example.invalid
+#+CONTACT: CONTACT-SAMPLE
+* Cover letters :letter:
+** SENDER-SAMPLE / Dublin / Ireland :sender:
+** SUBJECT-SAMPLE: bold subject :subject:
+Dear [moniker],
+
+LETTER-BODY-SAMPLE: this text should be 11pt Iosevka Publish. This copy is for [org]. The body begins at the 30mm left margin and leaves 25mm on the right.
+
+SECOND-PARAGRAPH: *BOLD-SAMPLE*, /ITALIC-SAMPLE/ and _UNDERLINE-SAMPLE_ demonstrate Org source syntax. This literal URL must retain every slash: =https://example.invalid/submissions/letter=.
+
+UNKNOWN-TOKEN-SAMPLE: [unresolved] remains visible.
+*** CLOSING-SAMPLE :closing:
+*** SIGNOFF-SAMPLE :signoff:
+*** [2026-10-16 Fri]
+*** RECIPIENT-ONE / Cork :to:
+**** First Theatre :org:
+**** Alex :moniker:
+*** RECIPIENT-TWO / Galway :to:
+**** Second Theatre :org:
+**** Sam :moniker:

@@ -123,3 +123,51 @@ Use the [fixture checklist](../../testdata/prose-office/EXPECTATIONS.md) and
 [validation inventory](validation.org) for the operator checks. The work item
 remains ACTIVE. No installation, release, implementation push or closure is
 included in this handoff.
+
+# 2026-10-19: Corrected definition and test-code review
+
+Review method: internal (current session; not independent)
+
+Gates: definition; test-code
+
+Mode: SDLC
+
+Revision: `d1ed1b9` plus the corrected specification, restored public-boundary
+fixtures/tests, revised dependency tests and declaration-only resource scaffolding.
+External review: suspended by standing policy.
+
+The architecture correction requires shared native DOCX generation and the
+existing configured ODT writer. Manuscript source parsing may still use Pandoc;
+letter DOCX may not. Existing layout, safety and fixture requirements remain.
+The correction is approved on 2026-10-19; historical delivery results are superseded.
+
+Reviewed the corrected design against the project architecture, separate semantic
+models, native script writers and scoped rollback. Reviewed public command tests,
+ZIP/XML property oracles, configuration matrices, rendered measurements, publication
+fault injection and resource-boundary tests against the retained acceptance criteria.
+Applied coding, Go, architecture, testing, security, documentation and internal-review
+standards. No external reviewer or harness was invoked.
+
+Findings and remediation:
+
+- The old dependency matrix incorrectly required Pandoc for letter DOCX. Corrected
+  it and added named absent-Pandoc and manuscript-reader-only cases. The latter
+  executes the real source reader while rejecting DOCX writer/reference calls.
+- Historical GREEN results could imply acceptance of the replacement. Current RT
+  states now record observed RED, with a separately qualified preservation subset;
+  OTs and UTs remain pending.
+- Low-level safety coverage was removed with the rejected implementation. Restored
+  the reviewed tests and declaration-only placeholders; no production caller uses
+  those placeholders. They fail on missing validation/publication behaviour.
+
+Checks: public prose regressions executed and failed at absent output selection;
+resource tests failed on no-op boundaries; the selected existing application and
+manuscript preservation tests passed. See `validation.org` for commands and scope.
+The shared-exporter requirement also needs implementation inspection; dependency
+checks alone cannot establish code reuse. Full regressions and fresh rendered
+comparison remain delivery prerequisites.
+
+INTERNAL REVIEW: PASS
+
+This result permits corrective implementation within the approved architecture.
+It is not delivery acceptance, independent review, or operator closure.

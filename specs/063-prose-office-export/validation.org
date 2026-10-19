@@ -7,6 +7,8 @@
 * Current correction status
 
 - 2026-10-19 :: The previous implementation and delivery acceptance were rejected because prose DOCX used a separate Pandoc writer instead of extending the existing native exporter. Earlier results below are historical evidence only and do not validate the replacement. All RT and OT groups require fresh execution; UTs remain pending.
+- Current RED :: At =d1ed1b9= plus restored tests and declaration-only boundary scaffolding, all prose RT groups executed in =.agent/w063-native-rt-red.log= (22.788s). Office target selection is absent; the two new native-dependency tests fail as intended. Boundary tests execute in =.agent/w063-native-boundary-red.log= and reject the no-op placeholders. Passing invalid-input cases are preservation evidence, not proof of export.
+- Preservation subset :: Existing application and manuscript tests selected by =TestRT058_1|TestRT054_1|TestLetter|TestManuscript= passed in 7.723s and 14.369s. The letter package had no matching tests; no letter-package pass is inferred. RT063.10 - Existing route preservation is initially GREEN for that subset only; the full suite remains required after extraction.
 - Recovery :: Selective restoration to =161a071= preserves unrelated W064 configuration diagnostics, edited presets and historical specification/review records.
 
 * Historical delivery observations (superseded)
@@ -113,7 +115,7 @@
 
 * Automated regression
 
-** AMBER RT063.1 - Output selection and dependencies :testdef:
+** RED RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -143,7 +145,7 @@
 - Coverage follow-up, 2026-10-16 :: Dependency isolation now exercises both prose modes and formats with real Pandoc, missing Pandoc, incompatible API responses and a forbidden-Typst marker. All compiled; exports remain blocked by the absent routes, so dependency guards are not yet reached.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.2 - Recipient batches and CLI errors :testdef:
+** RED RT063.2 - Recipient batches and CLI errors :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-2-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -172,7 +174,7 @@
 - Definition :: [[file:spec.org::#rt-063-2][RT063.2 - Recipient batches and CLI errors]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.3 - Structured manuscript content :testdef:
+** RED RT063.3 - Structured manuscript content :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-3-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -202,7 +204,7 @@
 - Partial execution, 2026-10-16 :: Source-boundary follow-up: TestRT063_3_OfficeRejectsMixedInputFormats passed for both office target extensions, preserving the existing rejection before publication. TestRT063_3_OfficeSortedDeduplicatedInputs fails at the absent export route for both source formats; emitted ordering remains unverified.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.4 - Configuration and role geometry :testdef:
+** RED RT063.4 - Configuration and role geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-4-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -235,7 +237,7 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.5 - Generated matter and heading controls :testdef:
+** RED RT063.5 - Generated matter and heading controls :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-5-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -267,7 +269,7 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.6 - Sections and page fields :testdef:
+** RED RT063.6 - Sections and page fields :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-6-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -299,7 +301,7 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.7 - Letter content and geometry :testdef:
+** RED RT063.7 - Letter content and geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-7-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -328,7 +330,7 @@
 - Definition :: [[file:spec.org::#rt-063-7][RT063.7 - Letter content and geometry]].
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.8 - Font packaging :testdef:
+** RED RT063.8 - Font packaging :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-8-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -358,7 +360,7 @@
 - Expanded execution, 2026-10-16 :: Public cases now cover all four bundled faces in both modes/formats, a permitted local metadata fixture, restricted/missing families with retained family references and warnings, duplicate payload rejection, and a selected font one byte above 32 MiB. =go test ./internal/app -run '^TestRT063_8_' -count=1= compiled and failed at the missing office routes. Internal selected-font budget tests separately exercise exact 32/64 MiB thresholds and overflow against a declaration-only placeholder. Full font-policy coverage is not yet established.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.9 - Resource and publication failures :testdef:
+** RED RT063.9 - Resource and publication failures :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-9-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -390,7 +392,7 @@
 
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.10 - Existing route preservation :testdef:
+** GREEN RT063.10 - Existing route preservation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-10-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -414,7 +416,7 @@
 - Coverage follow-up, 2026-10-16 :: After the shared test-helper paragraph-selection change, existing TestOfficeEmbeddedFonts and TestOfficeLocalFontOverride passed together in 2.551s; TestRT054_2OfficeActiveRoleFonts passed in 1.029s. This is focused preservation evidence, not a new full-suite run.
 - Initial preservation evidence, 2026-10-16 :: At =ec9955e= with only new test/fixture files in the working tree, =go test ./... -skip '^TestRT063_' -count=1= passed all existing packages. Go build/module caches were scoped to ignored =.agent/cache/=. The application package took 172.702 seconds; manuscript took 112.050 seconds. No production code had changed. This is the pre-change baseline, not post-implementation verification.
 
-** AMBER RT063.11 - Rendered font and geometry conformance :testdef:
+** RED RT063.11 - Rendered font and geometry conformance :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-11-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
@@ -444,7 +446,7 @@
 - Coverage follow-up, 2026-10-16 :: The temporary TestW063BaselineMeasurements overlay passed against independently generated existing typography and letter PDFs (0.409s, then 0.511s). It validates fractional font-size inference, line/paragraph intervals, header/body reference coordinates, sender placement and all six letter gaps. Office RTs still fail before rendering. The seven-profile checklist now includes concrete measurements and reproduction commands.
 - Initial execution, 2026-10-16 :: The current partial package in =internal/app/prose_office*_test.go= compiles and was executed with =go test ./internal/app -run '^TestRT063_' -count=1=. Office success cases fail at the unimplemented command route; manuscript dry-run also lacks an explicit output-format report. Failure-path cases have not reached their intended guards yet and are not meaningful RED evidence for those guards. Matrix coverage is still incomplete, so this record remains AMBER and is not ready for test-code review.
 
-** AMBER RT063.12 - Rendered page policy and contents references :testdef:
+** RED RT063.12 - Rendered page policy and contents references :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-12-result
 :REVISION: 1079f63; full suite at 02a89f7 plus affected ODT spacing follow-up
