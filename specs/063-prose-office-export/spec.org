@@ -64,7 +64,7 @@
 ** Next step
 
 - Review this definition and obtain sign-off before delivery as described in [[#delivery-handoff][Delivery Handoff]].
-- Current delivery :: The definition-stage step above was satisfied by approval dated 2026-10-19. Delivery is admitted on the isolated feature branch; current results and the pending AT-budget exception are recorded in =validation.org= and the hands-off decision log.
+- Current delivery :: The definition-stage step above was satisfied by approval dated 2026-10-19. Delivery is admitted on the isolated feature branch; current results and the operator-approved AT-count exception are recorded in =validation.org= and the hands-off decision log.
 
 -----
 
@@ -394,7 +394,7 @@ Manuscript and letter users need *editable office documents without rebuilding t
 - Action :: Generate each office file, open it headlessly in a private LibreOffice profile with source-document macros disabled, explicitly refresh fields/indexes and export every page to PDF. Reuse the verified refresh mechanism from RT063.12 - Rendered page policy. Extract page-associated body text and geometry with the existing Poppler tools. Check the entire content inventory and all contents references, then measure labelled role specimens near the beginning, middle and end.
 - Expected :: All four cases convert and render successfully with nonempty PDFs. The complete ordered body inventory is present without missing/duplicate text or private markers; the final paragraph remains visible. Every contents entry agrees with the resulting heading page after refresh. Configured numbering, physical parity and running matter satisfy the existing exceptions. Sampled font sizes, insets and clearances use RT063.11 - Rendered geometry's independent expectations and tolerances. Native editable structures remain present in the office packages; PDF text alone is insufficient.
 - Interpretation :: Normalize only documented line-wrap, hyphenation and extraction differences while retaining word order and content. Distinguish body text from generated contents/running matter. An ambiguous extraction or missing renderer is missing evidence, never GREEN. Repair warnings, field-refresh failures, timeout, truncation or absent final content fail the case. Do not infer Word behaviour or visual acceptance from LibreOffice or extraction.
-- Operational bounds :: One expected pass comprises four CLI conversions and four office-to-PDF renders. Allow at most *16 conversions and 16 renders* across RED, remediation and GREEN for one delivery candidate, with no automatic retries. Every CLI conversion retains the product's 120-second Pandoc bounds and has a 120-second test deadline; each reader render/refresh has a 300-second deadline. Extraction processes have 120-second deadlines. Stop at 150 minutes aggregate execution or 512 MiB retained artefacts, with 64 KiB diagnostics per process. Render at most 24 selected PNG pages across the final four cases, covering opening, middle, final and contents regions. These test-only reader limits do not relax product limits or the smaller existing comparisons.
+- Operational bounds :: One expected pass comprises four CLI conversions and four office-to-PDF renders. For this delivery, repeat local conversions and reader renders as needed under the operator's 2026-10-19 authorization ("run as many as you like"), retaining explicit commands and results rather than an automatic retry loop. The earlier sixteen-conversion/sixteen-render allowance is superseded for this run and preserved in the decision log. Every CLI conversion retains the product's 120-second Pandoc bounds and has a 120-second test deadline; each reader render/refresh has a 300-second deadline. Extraction processes have 120-second deadlines. Stop at 150 minutes aggregate execution or 512 MiB retained artefacts, with 64 KiB diagnostics per process. Render at most 24 selected PNG pages across the final four cases, covering opening, middle, final and contents regions. These test-only reader limits do not relax product limits or the smaller existing comparisons.
 - Evidence and sequence :: Preserve intended assertion RED before target implementation and GREEN for every matrix row afterwards, with logs, counts, output hashes and labelled artefact paths in =validation.org=. Setup failure is AMBER. Run after the scale RT and before UT063.1 - Editing manuscripts. Retain the on-demand test recipe for reproducibility; do not add it to the persistent regression pack. No network, metered service, installation or UI automation is involved.
 
 ** OT063.1 - Rendered feature comparison :testdef:
@@ -711,6 +711,16 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Superseded verification delta :: RT063.1 - Output dependencies additionally requires =TestRT063_1_LetterDOCXWithoutPandoc= and =TestRT063_1_ManuscriptDOCXReaderOnly=. The first runs with neither Pandoc nor Typst available. The second permits real Pandoc source-reader calls but rejects every DOCX writer/reference request. Both inspect native editable output. RT063.10 - Existing route preservation protects the extracted script callers.
 
 * Hands-off mode decision log
+
+** 2026-10-19T20:45:21Z :hands-off:review:
+
+*** Operator removes the local acceptance execution-count cap
+
+- Authority :: In response to the request for two further ODT acceptance conversions, the operator said: "run as many as you like".
+- Decision :: Local AT conversions and reader renders may repeat as needed to obtain the specified evidence. No further count approval is required for this hands-off delivery. Retain the existing 120-second CLI, 300-second reader, 150-minute per-execution, 512 MiB storage and diagnostic limits. No metered service, installation, release or merge is authorized.
+- History :: The original AT allowance was sixteen conversions and sixteen renders across RED, remediation and GREEN. Twenty conversion attempts and twelve reader renders had executed before this authorization. The earlier four-attempt overrun remains a recorded tracking error; the new authorization does not rewrite that history.
+- Continuation :: Execute the two corrected-fixture ODT cases, reconcile the four-case matrix and run the internal delivery-code review. Human UTs remain pending. The goal API still reports the previous blocked state and exposes no resume operation; continue in-session without claiming native continuation has been reactivated.
+
 
 ** 2026-10-19T15:14:00Z :hands-off:review:
 

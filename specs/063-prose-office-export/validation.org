@@ -6,7 +6,7 @@
 
 * Current correction status
 
-** 2026-10-19 - Native parser delivery candidate; final AT decision pending
+** 2026-10-19 - Native parser delivery candidate; automated verification settled
 
 - Candidate :: =723734d= on =feature/W063-prose-office-export=, isolated under =.agent/worktrees/w063=. All results below distinguish the full-suite candidate from subsequent affected checks. Older entries retain their state at the time; they are not current parser-correction acceptance.
 - Full regression :: =make test= passed: application 565.617s, manuscript 203.391s, configuration 1.521s, letter 1.103s and play 0.654s, with remaining packages passing or cached. Log: =.agent/logs/full-suite-final.log=. Its earlier failed run exposed an ODT error that lost format context; =input-limit-followup.log= passes in 5.046s after correction. Preserve =full-suite.log= as failed evidence.
@@ -21,7 +21,8 @@
 - Tools :: Go 1.27.2 darwin/arm64; Pandoc 3.9.0.2; Typst 0.14.2; LibreOffice 26.2.3.2; Poppler 26.09.0. All conversions, rendering and inspection are local; no UI automation or metered service was used.
 - AT historical GREEN :: The narrower ASCII recipe passes all four built-binary reader cases in =acceptance-first-native.log= (93.273s) and =acceptance-retained.log= (120.540s); the ODT note follow-up passes both affected rows in =acceptance-final-odt.log= (70.359s). These do not establish the corrected fixture's full matrix.
 - AT correction :: =novel-inventory-red.log= proves missing Unicode and uniform lengths; =novel-inventory-green.log= verifies the amended independent recipe. Both corrected DOCX reader cases pass in =acceptance-diverse-docx.log= (43.193s). The current page-policy assertions also pass against the retained completed outputs (=novel-policy-settled.log=), verifying sequential body counters, physical header parity and refreshed contents. The first post-hoc probe raced a still-writing extraction file; preserve its failure in =novel-policy-followup.log= without presenting it as a product failure.
-- AT budget :: Twenty CLI conversion attempts and twelve reader renders have executed. The sixteen-conversion bound was exceeded through an agent tracking error: an earlier four-case RED repetition was omitted from the initial count. This is not retrospectively authorized. Further AT conversions are stopped pending the requested allowance of twenty-two, needed for the two corrected-fixture ODT cases. Sixteen renders, 150 minutes, 512 MiB and per-process limits remain unchanged. AT063.1 is AMBER; no delivery-code PASS is claimed.
+- AT budget checkpoint before operator authorization (historical) :: Twenty CLI conversion attempts and twelve reader renders have executed. The sixteen-conversion bound was exceeded through an agent tracking error: an earlier four-case RED repetition was omitted from the initial count. This is not retrospectively authorized. Further AT conversions are stopped pending the requested allowance of twenty-two, needed for the two corrected-fixture ODT cases. Sixteen renders, 150 minutes, 512 MiB and per-process limits remain unchanged. AT063.1 is AMBER; no delivery-code PASS is claimed.
+- AT authorization and final result :: The operator authorized further local runs with "run as many as you like" on 2026-10-19. Both corrected ODT reader cases pass in =acceptance-diverse-odt.log= (39.795s; Markdown 19.66s, Org 19.37s). Together with the corrected DOCX run, AT063.1 is GREEN for all four combinations. Totals are twenty-two CLI attempts and fourteen reader exports; the earlier counting error remains recorded above. Per-process, storage and wall-time bounds remain. Final corrected artefacts total 42,814,234 bytes, with twenty-four selected PNGs, below 512 MiB. No automatic retries or metered operations were introduced.
 - Human boundary :: All twelve named UTs remain AMBER, including four novel editing/save/reopen cases. LibreOffice rendering and PNG inspection do not establish Word or ordinary editor interaction. No installation, release, merge or ticket closure has occurred. The live binary checksum still matches =6d4143b9764cd7716c33df6b18ea5dc56d03b35d1dc5d172e719772ecea236f2=; recheck at handback.
 
 *** Corrected novel fixture matrix and handoff evidence
@@ -37,8 +38,8 @@ Source/output hashes and absolute temporary paths are also retained in
 |------+-------------------------+---------------+---------------|
 | Markdown to DOCX | GREEN, 21.54s | =5ff5ea4e7391c1279858d1fb08fe0c7757ed15700aa402b064b731d64ca45fd4= | =f83e815dcb21f69b48109fb09c70e6f67e7bcbdede44765d6aec51c826927b36= |
 | Org to DOCX | GREEN, 20.74s | =ac22e0d295249e921855d63abf71f2450b85dc3ce06eac936e0b5b66fcb6c03e= | =1e4631e16f01b108b671a722a2a156b882cb554df9fc639216c8c0b218d39a6e= |
-| Markdown to ODT | AMBER, conversion-budget decision pending | Same Markdown recipe | Not generated for this corrected AT fixture |
-| Org to ODT | AMBER, conversion-budget decision pending | Same Org recipe | Not generated for this corrected AT fixture |
+| Markdown to ODT | GREEN, 19.66s | Same Markdown recipe | =a9e925ab0a3d870f7f94fddc0e6d35c9e82ccbc3bef2d33d17e290f5c7524d4c= |
+| Org to ODT | GREEN, 19.37s | Same Org recipe | =d0940a554a8656b3a7600ea14679571a7fffd2cde060846e5d86ce27f89bffcb= |
 
 The current corrected DOCX files are
 =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-diverse-novels.gmhc35S551/md-docx-3786990111/novel.docx=
@@ -46,7 +47,18 @@ and
 =/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-diverse-novels.gmhc35S551/org-docx-293426489/novel.docx=.
 These are automated-reader artefacts, not human editing passes. All four
 corrected source/output combinations already pass the retained structural conversion regression;
-that does not replace the two missing ODT reader cases.
+all four corrected reader cases now pass as well. The corrected ODT files are
+=/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-diverse-novels.gmhc35S551/md-odt-3877756069/novel.odt=
+and
+=/var/folders/wn/zk3zl2050rd7qkfgkfzn6rwr0000gp/T/folio-w063-diverse-novels.gmhc35S551/org-odt-654992727/novel.odt=.
+
+Reproduction uses the tagged acceptance test, with an OS-allocated
+=FOLIO_W063_ACCEPTANCE_DIR= to retain outputs. The two settled invocations were:
+
+#+begin_src sh
+go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_NovelScaleRenderedManuscripts/(md|org)/docx$' -count=1 -timeout=150m -v
+go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_NovelScaleRenderedManuscripts/(md|org)/odt$' -count=1 -timeout=150m -v
+#+end_src
 
 The final small-fixture comparison contains 72,459,602 bytes, below 100 MiB.
 Its =comparison.html= and editable files remain in
@@ -955,11 +967,17 @@ Its =comparison.html= and editable files remain in
 
 * Ticket-scoped automated validation
 
-** AMBER AT063.1 - Novel-scale rendered manuscripts :testdef:
+** GREEN AT063.1 - Novel-scale rendered manuscripts :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at063-1-result
-:REASON: Corrected varied-length Unicode fixture passes both DOCX cases; its two ODT renders await explicit approval of the AT conversion-budget exception. Earlier four-case GREEN used the narrower ASCII fixture and remains historical evidence.
+:REVISION: 723734d; approval/evidence checkpoint following 28a7b7e
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT063_1_NovelScaleRenderedManuscripts/(md|org)/docx$' -count=1 -timeout=150m -v; repeat with odt suffix
+:EVIDENCE: Corrected Unicode/varied-length fixture passes all four native-package and refreshed-reader cases; DOCX 43.193s and ODT 39.795s. Complete paragraph inventory, all fifty contents references, page counters/parity and measured start/middle/end font/margins pass. Final artefacts 42,814,234 bytes and twenty-four selected PNGs; see corrected matrix above.
 :END:
+
+*** Historical checkpoint before operator authorization
+
+- State :: AMBER; corrected varied-length Unicode fixture passed both DOCX cases; its two ODT renders awaited explicit approval of the AT conversion-budget exception. Earlier four-case GREEN used the narrower ASCII fixture and remains historical evidence.
 
 *** Historical record before the 2026-10-19 shared-parser verification
 
