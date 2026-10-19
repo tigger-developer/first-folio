@@ -3,7 +3,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-19
 
 
 * Synopsis
@@ -710,6 +710,16 @@ retained as history; strict ordinary-family assertions supersede that fallback.
 - Superseded verification delta :: RT063.1 - Output dependencies additionally requires =TestRT063_1_LetterDOCXWithoutPandoc= and =TestRT063_1_ManuscriptDOCXReaderOnly=. The first runs with neither Pandoc nor Typst available. The second permits real Pandoc source-reader calls but rejects every DOCX writer/reference request. Both inspect native editable output. RT063.10 - Existing route preservation protects the extracted script callers.
 
 * Hands-off mode decision log
+
+** 2026-10-19T15:14:00Z :hands-off:review:
+
+*** Isolated feature-branch delivery and live binary protection
+
+- Mode :: HANDS-OFF through internal delivery-code review and handback for the defined user tests. Explicit proceed and delivery instructions approve the current definition. Human editing checks remain pending until all executable delivery work is settled.
+- Branch :: The explicit feature-branch selection overrides the global current-branch default for this delivery. Use =feature/W063-prose-office-export= in =.agent/worktrees/w063=, preserving the primary checkout and its =dist/folio= build.
+- Live baseline :: =/Users/tigger/.local/bin/folio= resolves to =/Users/tigger/code/tigoss/first-folio/dist/folio=; starting SHA-256 is =6d4143b9764cd7716c33df6b18ea5dc56d03b35d1dc5d172e719772ecea236f2=. Do not run installation, release or a build targeting that path. Compare the link target and checksum at handback.
+- Native continuation :: Goal activation was verified with the configured 2,000,000-token budget. The objective ends at operator-validation readiness, not closure.
+- Verification budget :: All specified automated checks and bounded OTs use local synthetic data and existing local tools. No metered external operation is required; no monetary budget is needed. Existing AT/OT process, count and storage limits remain.
 
 ** 2026-10-16T19:34:17+01:00 :hands-off:review:
 
