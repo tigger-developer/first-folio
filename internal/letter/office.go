@@ -47,6 +47,7 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 	literal.Font.Family = "Libertinus Mono"
 	literal.Character = true
 	plan.Styles["FolioLiteral"] = literal
+	inlineParser := source.NewLetterParser()
 	add := func(role, value string, bold bool, gap string, fallback string) error {
 		style := base
 		style.Bold = bold || base.Bold
@@ -58,7 +59,7 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 			style.After += extra
 		}
 		plan.Styles[role] = style
-		inlines, err := officeInlines(value)
+		inlines, err := officeInlines(inlineParser, value)
 		if err != nil {
 			return err
 		}
@@ -107,8 +108,8 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 	return plan, nil
 }
 
-func officeInlines(value string) ([]office.Node, error) {
-	nodes, err := source.LetterInline(value)
+func officeInlines(parser *source.LetterParser, value string) ([]office.Node, error) {
+	nodes, err := parser.Parse(value)
 	if err != nil {
 		return nil, err
 	}

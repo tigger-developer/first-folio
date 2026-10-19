@@ -32,12 +32,6 @@ func ScriptInline(format, text string, notes map[string]string) ([]Node, error) 
 	return p.inline(text, 0)
 }
 
-// LetterInline preserves the letter renderer's text and explicit composition breaks.
-func LetterInline(text string) ([]Node, error) {
-	p := parser{format: "org", literalTypography: true, breaks: true, notes: map[string]string{}, resolving: map[string]bool{}}
-	return p.inline(text, 0)
-}
-
 func (p *parser) inline(text string, depth int) ([]Node, error) {
 	if depth > 128 {
 		return nil, fmt.Errorf("native inline nesting exceeds 128")
