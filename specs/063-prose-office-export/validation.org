@@ -6,6 +6,12 @@
 
 * Current correction status
 
+** 2026-10-19 - Parser reuse correction awaiting implementation
+
+- Evidence boundary :: Earlier shared-exporter checks below allowed manuscript Pandoc readers. They do not prove AC063.11 - Parser reuse, AC063.12 - DOCX without Pandoc, or AC063.13 - Configured ODT writer route. The new/changed test definitions have not been implemented or executed. No fresh GREEN is claimed.
+- Current requirement :: Native convert parsing is extended for office prose; DOCX invokes no Pandoc at any stage. ODT alone invokes the configured writer after native parsing. Specification sign-off is pending; historical results remain preserved.
+
+
 ** 2026-10-19 - Shared exporter replacement verification
 
 - Candidate :: =91ad009= extends the established native DOCX and configured Pandoc ODT serializers. The old separate Pandoc DOCX implementation remains superseded.
@@ -129,13 +135,18 @@
 
 * Automated regression
 
-** GREEN RT063.1 - Output selection and dependencies :testdef:
+** AMBER RT063.1 - Output selection and dependencies :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt063-1-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
-:EVIDENCE: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
+:REASON: Revised parser/dependency contract has not been implemented or executed. Earlier reader-only evidence is superseded for this case.
 :END:
+
+*** Historical shared-exporter result before parser correction
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: make test; all RT063 coverage run; affected RT063.3/4/11 follow-up
+- EVIDENCE :: Full suite and all RT063 groups passed; final affected RT063.3/4/11 follow-up passed. See 2026-10-19 verification and .agent/w063-native-final-followup.log.
 
 *** Superseded record before shared-exporter verification
 
@@ -621,13 +632,18 @@
 - Explicit refresh follow-up :: A temporary LibreOffice Basic helper, invoked headlessly from the private profile, loads the DOCX with document macros disabled, calls =TextFields.refresh()= and =getDocumentIndexes().getByIndex(i).update()=, refreshes layout and exports PDF. The resulting contents spans three pages. All 80 extracted contents references match their actual physical heading pages. This establishes a local test mechanism, not a new exporter runtime dependency. Configured contents typography, continuation padding and body-number offsets remain separate checks.
 - Temporary evidence :: Source packages, extracted XML, PDF outputs and the short PDF baseline are retained in the OS-allocated =folio-w063-layout-20261016-26948-z7f315= directory for the active experiment. A reproducible retained helper and final measurements are still required before this OT can be GREEN.
 
-** GREEN OT063.2 - Installed-layout CLI and documentation :testdef:
+** AMBER OT063.2 - Installed-layout CLI and documentation :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot063-2-result
-:REVISION: 91ad009; full-suite extraction candidate plus recorded affected checks
-:COMMAND: Packaged CLI help and manuscript/letter exports outside checkout
-:EVIDENCE: Four help commands and four public conversions passed outside checkout; six valid office files. Final native manuscript regeneration passed. See .agent/w063-native-ot2-followup.log.
+:REASON: Revised parser/dependency contract has not been implemented or executed. Earlier reader-only evidence is superseded for this case.
 :END:
+
+*** Historical shared-exporter result before parser correction
+
+- State :: GREEN
+- REVISION :: 91ad009; full-suite extraction candidate plus recorded affected checks
+- COMMAND :: Packaged CLI help and manuscript/letter exports outside checkout
+- EVIDENCE :: Four help commands and four public conversions passed outside checkout; six valid office files. Final native manuscript regeneration passed. See .agent/w063-native-ot2-followup.log.
 
 *** Superseded record before shared-exporter verification
 
@@ -730,3 +746,9 @@
 
 - Scope :: Record DOCX opening-page header/footer selection and the separate ODT frontmatter/body page-break limitation. Preserve earlier failures as historical evidence; no test status changes follow from documentation alone.
 - ODT focused follow-up :: Native page policy and the three ODT continuous/reset/changed-field rendered cases passed: office 0.354s and application 68.654s in =.agent/w063-approved-boundary-green.log=. Additional native sequence checks passed in 0.834s in =.agent/w063-boundary-sequences.log=. These results do not establish a passing full suite.
+
+** AMBER RT063.13 - Shared parser and mode semantics :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt063-13-result
+:REASON: Newly defined parser-reuse, mode-semantics and novel-scale cases await implementation and execution after revised specification sign-off.
+:END:

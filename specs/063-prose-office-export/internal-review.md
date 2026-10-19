@@ -1,8 +1,63 @@
 ---
 title: W063 internal delivery review
-version: 3
+version: 4
 last-updated: 2026-10-19
 ---
+
+# 2026-10-19: Native parser correction definition review
+
+Review method: internal (current session; not independent)
+
+Gate: definition
+
+Revision: `aa5def7` plus this specification, ledger and validation amendment.
+Production and executable tests are unchanged.
+
+External review: suspended by standing policy
+
+INTERNAL REVIEW: PASS
+
+This result concerns the revised definition only. Operator sign-off is pending.
+The earlier delivery PASS below does not establish parser reuse or end-to-end
+DOCX independence from Pandoc. Historical evidence remains preserved.
+
+## Reviewed scope and findings
+
+Reviewed the specification, its test definitions and solution design against the
+operator's explicit requirement to extend the `convert` parser. Applied the
+project profile and named architecture/requirements authorities, MAIN, ISSUES,
+ARCHITECTURE, TESTING, CODING, SECURITY, AUDITS and the applicable Go and
+Org/documentation standards, reusing prior full readings from this session.
+Inspected `internal/app/convert.go`, `internal/play/parser.go`, manuscript office
+routing and the typed letter adapter to distinguish current behaviour from the
+required design. Historical definition feedback and accepted layout limitations
+remain in force except where expressly superseded by this correction.
+
+| Finding | Amendment and reassessment |
+|---|---|
+| Manuscript DOCX explicitly allowed Pandoc readers | AC063.12 prohibits every invocation, including metadata, canonicalization, dry-run and probes; RT063.1 now requires absent-Pandoc and executable-trap cases. |
+| Exporter reuse did not require parser reuse | AC063.11 names native convert parsing; design extends its source recognition with distinct mode adapters. RT063.13 covers shared parsing and mode semantics; implementation review must trace actual callers and reject nominal wrapper reuse. |
+| ODT source parsing and output generation were conflated | AC063.13 and the five-step ODT design separate native parsing, JSON projection, generated reference, configured writer, native postprocessing, fonts and publication. Recording-wrapper tests reject source-reader and DOCX intermediate calls. |
+| Tiny cases missed novel-scale token expansion | Named synthetic 120,000-word/10,000-paragraph DOCX test retains native span/count limits and checks ordered content with Pandoc unavailable. It does not claim the real manuscript has passed. |
+| Old approvals and GREEN states could imply current acceptance | Renewed sign-off is PENDING, ledger is REVIEW, changed dependency/CLI tests and new parser group are AMBER; earlier results are retained as history. |
+| Synopsis and handoff retained an obsolete external-review requirement | Current review references now follow the standing internal-only policy; harness-owned evidence remains untouched. |
+
+The existing YAML fidelity criteria, twelve named user tests, font policy,
+publication safeguards and accepted page/weight limitations remain. PDF/Typst
+parsing and dependencies are preserved. Shared parsing for ODT is explicit in
+this proposed revision; Pandoc remains its configured output writer.
+
+## Checks and evidence boundary
+
+Reviewed the full specification for remaining current reader-only allowances,
+AC-to-test links, distinct mode semantics and agreement between Synopsis and
+design. Historical reader-only statements are labelled superseded. Added AC and
+RT identifiers were checked against current files and Git history before use.
+Authored text was processed through `sanitize`; whitespace and Org schema checks
+passed for this amendment: schema valid, 13 ACs, 13 RTs, two OTs and twelve UTs. Test-code readiness correctly remains false because revised RT063.1 and new RT063.13 are AMBER, not executed evidence. Executable test results are not required for
+this definition review and none are claimed. Current source still invokes
+Pandoc when parsing manuscripts; implementation and fresh test-code/delivery
+reviews remain outstanding. There is no independent audit or operator approval.
 
 # 2026-10-19: Superseded delivery review
 
