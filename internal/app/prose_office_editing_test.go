@@ -65,6 +65,7 @@ func TestRT063_13_OfficeStylesDoNotGrowWithChapters(t *testing.T) {
 			t.Run(input+"/"+format, func(t *testing.T) {
 				t.Setenv("HOME", t.TempDir())
 				counts := []int{}
+				allNamedCounts := []int{}
 				for _, chapters := range []int{4, 40} {
 					dir := t.TempDir()
 					proseSource(t, dir, "script.yaml", "folio:\n  manuscript:\n    title-page:\n      enabled: false\n    toc:\n      enabled: true\n      include-parts: true\n      include-chapters: true\n      page-numbers: true\n      links: true\n")
@@ -89,6 +90,7 @@ func TestRT063_13_OfficeStylesDoNotGrowWithChapters(t *testing.T) {
 					if format == "odt" {
 						styles = pkg["styles.xml"].all("styles")[0]
 					}
+					allNamedCounts = append(allNamedCounts, len(styles.all("style")))
 					count := 0
 					for _, style := range styles.all("style") {
 						name := style.attr("styleId")
@@ -125,6 +127,9 @@ func TestRT063_13_OfficeStylesDoNotGrowWithChapters(t *testing.T) {
 							t.Errorf("lost chapter %d", i)
 						}
 					}
+				}
+				if allNamedCounts[0] != allNamedCounts[1] {
+					t.Errorf("all named style definitions grow with equivalent instances: %v", allNamedCounts)
 				}
 				if counts[0] != counts[1] || counts[1] > 6 {
 					t.Errorf("heading/contents styles grow with instances: %v; want bounded role styles", counts)

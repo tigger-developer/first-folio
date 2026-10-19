@@ -46,6 +46,15 @@ the affected tests only. Fresh production/reader verification and a delivery-cod
 review are required; human editor behaviour cannot be inferred from package XML.
 The earlier delivery-code PASS below is superseded for the correction candidate.
 
+The final style-inventory assertion compares all common named style definitions
+at four and forty chapters, in addition to counting the known heading/contents
+families. This prevents a prefix rename from hiding per-instance growth. Its
+initial GREEN is justified preservation after the already-observed RED/fix, not
+a fresh implementation claim: both growth cases and accepted deep Org cases
+pass together in 2.316s (=editing-style-inventory-final.log=). This final
+affected-test refinement is internally PASS for test-code review.
+
+
 Final source-boundary reassessment before remediation: the accepted Org parser
 allows positive heading levels beyond Markdown's six. A new public-command
 level-seven preservation test reproduces twenty-one named styles for twenty
