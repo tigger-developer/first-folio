@@ -87,12 +87,14 @@ classification; it is provenance, not current state.
 - Scope :: Report each external user YAML file loaded into the manuscript
   configuration cascade on stderr, preserving existing precedence and output.
 
-** REVIEW W063 - Editable DOCX and ODT manuscripts and letters :feature:
+** DONE W063 - Editable DOCX and ODT manuscripts and letters :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-063
 :CREATED: 2026-10-16
+:CLOSED: 2026-10-20
 :END:
 - Specification :: [[file:../specs/063-prose-office-export/spec.org][W063 - Prose office export definition]].
+- Closure 2026-10-20 :: Accepted for use and explicitly closed with known residual heading clipping and slight FolioBody caret/text offset. Their causes remain unverified. Remaining formal user-test procedures are waived for this closure, not recorded as passed; all twelve UT records retain AMBER. Closure evidence and documentation reconciliation are in [[file:../specs/063-prose-office-export/validation.org][the validation record]]. No further refinement is scheduled under this ticket.
 - Integration for user testing 2026-10-20 :: Approved for merge to =master= without acceptance or closure. Feature candidate =8141a63= is integrated in the primary project checkout. User validation reports substantially improved editing, with a remaining FolioBody offset; a font-specific cause is unverified. W063 remains REVIEW and the twelve UTs remain AMBER pending manuscript testing. No installation or release accompanies this integration.
 - Delivery admission 2026-10-19 :: Current definition approved for hands-off delivery on an isolated feature branch. Preserve the live primary-checkout binary; return for the defined user tests after automated delivery and internal review.
 - Editor retest handoff 2026-10-19 :: Internal delivery-code PASS for native baselines and shared formatting at =623af4e=, current-session self-review without independence. Required AT/RT/OT evidence and readiness are GREEN; twelve UTs remain AMBER. Fresh editable files and exact retest steps are in [[file:../specs/063-prose-office-export/handoff.md][the W063 handoff]]. W063 remains unaccepted. The live binary/symlink are unchanged; no merge, installation, release or closure.

@@ -1,12 +1,23 @@
 ---
 title: W063 operator validation handoff
-version: 2
-last-updated: 2026-10-19
+version: 3
+last-updated: 2026-10-20
 ---
 
 # W063 operator validation
 
-## Current editor-remediation candidate
+## Accepted closure
+
+Accepted for use and closed on 2026-10-20, with residual heading clipping and a
+slight FolioBody caret/text offset retained as known limitations. Their causes
+remain unverified. The implementation is integrated into master. All twelve
+formal user tests remain AMBER; their remaining procedures are waived for this
+closure, not recorded as passed. See [the closure evidence](validation.org).
+
+Version 3 records acceptance and closure. The earlier retest instructions and
+candidate-specific claims below are preserved as historical evidence.
+
+## Historical editor-remediation candidate
 
 W063 remains unaccepted. Ordinary body characters now use the natural baseline;
 formatting styles are shared by semantic level/role and exact properties while

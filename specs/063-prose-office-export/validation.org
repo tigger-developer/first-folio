@@ -4,7 +4,18 @@
 #+OPTIONS: toc:2 num:nil
 #+TODO: AMBER RED | GREEN
 
-* Current correction status
+* Operator acceptance and closure
+
+** 2026-10-20 - Accepted with known limitations
+
+- Decision :: Explicitly accepted for practical use and closed with the remaining heading clipping and slight FolioBody caret/text offset. This is acceptance with known limitations, not a claim that those defects have been resolved or that every acceptance criterion has been demonstrated.
+- Candidate :: Feature implementation =8141a63= was integrated into =master=; =b292c7c= records the integration for manuscript testing. Exact installed build provenance and editor version for the final manuscript observation were not captured.
+- User validation :: The current outputs were reported substantially improved and usable. The two screenshots dated 2026-10-20 at 00:08:24 and 00:08:36 show a 427-page manuscript DOCX in LibreOffice at 80 percent zoom. Part/chapter headings show residual clipping; slight FolioBody offset is reported separately. The second screenshot selects FolioOpening in XCharter, so it does not independently demonstrate FolioBody caret alignment. A font-specific cause is unverified.
+- Test disposition :: All twelve formal UT records remain AMBER. Their full procedures, including the complete source/output matrix, Word checks and save/reopen checks, have not been established. Remaining procedures are waived for this explicitly accepted closure; the earlier awaiting-validation reasons below are historical, not outstanding closure conditions. No unperformed test is promoted to GREEN.
+- Verification :: Existing AT/RT/OT and internal self-review evidence is retained for its recorded candidates. Closure changes only lifecycle and documentation; it introduces no executable change and requires no new product test run.
+- Documentation reconciliation :: The work ledger records closure, and the handoff now identifies its retest instructions as historical. The signed-off specification remains the original requirement authority; this record owns the accepted residual limitations and incomplete verification. Product usage, configuration and architecture are unchanged by closure. No installation or release is performed as part of closure.
+
+* Historical correction status
 
 ** 2026-10-19 - Editor remediation verification
 
