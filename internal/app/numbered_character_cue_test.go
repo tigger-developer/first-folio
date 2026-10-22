@@ -13,7 +13,7 @@ func TestRT066_1NumberedOrgCharacterCues(t *testing.T) {
 	dir := t.TempDir()
 	t.Setenv("HOME", t.TempDir())
 	source := filepath.Join(dir, "play.org")
-	writeAppFile(t, source, "* CHARACTERS\n| PARENT 2 | A parent |\n| PARENT 3 | Another parent |\n| PARENT 27 | A third parent |\n* ACT ONE\n**** PARENT 2\n14 minutes late.\n**** PARENT 3 (to Fiona)\nWhere is she?\n**** PARENT 27\nHere.\n**** JACK softly\nQuiet now.\n")
+	writeAppFile(t, source, "* CHARACTERS\n| PARENT 2 | A parent |\n| PARENT 3 | Another parent |\n| PARENT 27 | A third parent |\n| MARY | A neighbour |\n* ACT ONE\n**** PARENT 2\n14 minutes late.\n**** PARENT 3 (to Fiona)\nWhere is she?\n**** PARENT 27\nHere.\n**** MARY (IGNORING the question)\nNot himself anyhow.\n**** PARENT 3 (ASKING the question)\nWhere is he?\n**** JACK softly\nQuiet now.\n")
 
 	for _, format := range []string{"typ", "docx"} {
 		t.Run(format, func(t *testing.T) {
@@ -28,6 +28,8 @@ func TestRT066_1NumberedOrgCharacterCues(t *testing.T) {
 					`#dialogue("PARENT 2")`,
 					`#dialogue("PARENT 3", direction: "to Fiona")`,
 					`#dialogue("PARENT 27")`,
+					`#dialogue("MARY", direction: "IGNORING the question")`,
+					`#dialogue("PARENT 3", direction: "ASKING the question")`,
 					`#dialogue("JACK", direction: "softly")`,
 				} {
 					if !strings.Contains(visible, want) {
@@ -41,12 +43,12 @@ func TestRT066_1NumberedOrgCharacterCues(t *testing.T) {
 				t.Fatal(err)
 			}
 			body := officeBody(t, officePackage(t, raw), "docx")
-			for _, want := range []string{"PARENT 2:", "PARENT 3:", "PARENT 27:", "(to Fiona)", "14 minutes late.", "Where is she?", "Here."} {
+			for _, want := range []string{"PARENT 2:", "PARENT 3:", "PARENT 27:", "MARY:", "(to Fiona)", "(IGNORING the question)", "(ASKING the question)", "14 minutes late.", "Where is she?", "Here.", "Not himself anyhow."} {
 				if !strings.Contains(body.text(), want) {
 					t.Errorf("missing %q in DOCX body", want)
 				}
 			}
-			for _, unwanted := range []string{"(2)", "(3 (to Fiona)", "(27)"} {
+			for _, unwanted := range []string{"(2)", "(3 (to Fiona)", "(27)", "MARY (IGNORING:", "PARENT 3 (ASKING:"} {
 				if strings.Contains(body.text(), unwanted) {
 					t.Errorf("spurious direction %q in DOCX body", unwanted)
 				}

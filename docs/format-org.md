@@ -1,6 +1,6 @@
 ---
 title: Org-mode Play Format
-version: "0.8"
+version: "0.9"
 last-updated: "2026-10-22"
 ---
 
@@ -82,6 +82,7 @@ All of the following direction formats are normalized to the same internal repre
 | `**** BOB` | BOB | (none) |
 
 Character names support Unicode and numeral components: `CÁIT`, `MAIRÉAD`, `SÉAN`, `PARENT 3`. A following delivery instruction remains separate, for example `**** PARENT 3 (to Fiona)` has the name `PARENT 3` and direction `to Fiona`.
+An opening parenthesis starts a direction even when its first word is uppercase: `**** MARY (IGNORING the question)` has the name `MARY` and direction `IGNORING the question`.
 
 ### Dialogue
 

@@ -442,7 +442,7 @@ func parseCharacterLine(text string) (string, string) {
 	nameEnd := len(fields)
 	for i, field := range fields {
 		r, _ := utf8.DecodeRuneInString(strings.TrimLeft(field, "(:,"))
-		if i > 0 && !unicode.IsUpper(r) && !unicode.IsDigit(r) {
+		if i > 0 && (strings.HasPrefix(field, "(") || (!unicode.IsUpper(r) && !unicode.IsDigit(r))) {
 			nameEnd = i
 			break
 		}

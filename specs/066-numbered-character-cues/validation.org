@@ -1,4 +1,4 @@
-#+TITLE: W066 - Numbered Org character cue validation
+#+TITLE: W066 - Org character cue boundary validation
 #+SCHEMA: 2
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
@@ -6,29 +6,31 @@
 
 * Automated regression
 
-** GREEN RT066.1 - Numbered cues through public conversion :testdef:
+** GREEN RT066.1 - Org cues through public conversion :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-066-1-result
-:REVISION: f8073c1 plus W066 parser and regression working-tree changes
+:REVISION: 03773ec plus W066 uppercase-parenthetical parser and regression working-tree changes
 :COMMAND: go test ./internal/app -run '^TestRT066_1NumberedOrgCharacterCues$' -count=1
-:EVIDENCE: Typst and DOCX cases failed on missing complete numbered cues before the parser change and passed after it; the baseline DOCX also showed numeric directions.
+:EVIDENCE: Typst and DOCX cases failed on numbered cues before the original parser change; the amended cases failed on uppercase-leading parenthesized directions before the correction. All cases pass on the current candidate.
 :END:
 - Date :: 2026-10-22.
 - RED :: Both public-command output cases failed for =PARENT 2=, =PARENT 3 (to Fiona)= and =PARENT 27=. DOCX showed =(2)=, =(3 (to Fiona)= and =(27)= as spurious directions. A test-only compile error was corrected before the observed RED run.
 - GREEN :: Both output cases passed after allowing numeral tokens in the name. Focused existing speaker/parser regressions also passed.
+- Amendment RED :: Both cases failed for =MARY (IGNORING the question)= and =PARENT 3 (ASKING the question)=. Typst lacked the required name/direction pairs; DOCX put uppercase instruction text in the speaker names.
+- Amendment GREEN :: Both cases passed after making an opening parenthesis an explicit direction boundary. The earlier numbered cues and existing lowercase instruction checks remain in the same regression.
 
 * Bounded one-off verification
 
 ** GREEN OT066.1 - PDF and ODT output probe :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot-066-1-result
-:REVISION: f8073c1 plus W066 parser working-tree change
-:EVIDENCE: An isolated build converted a synthetic Org play; extracted PDF and ODT content showed PARENT 3, to Fiona and dialogue without a separate (3) instruction.
+:REVISION: 03773ec plus W066 uppercase-parenthetical parser working-tree change
+:EVIDENCE: An isolated build converted a synthetic Org play; extracted PDF and ODT content showed MARY and PARENT 3 as speakers, their uppercase-leading instructions separately, and their dialogue.
 :END:
 - Date :: 2026-10-22.
-- Environment :: macOS; isolated =.agent/w066-bin/folio=; temporary fixture under =folio-w066-check.XXXXXXXX.SVCZmGsIjz=.
+- Environment :: macOS; isolated =.agent/w066-parenthetical-bin/folio=; temporary fixture under =folio-w066-parenthetical.XXXXXXXX.yN99cH2k5V=.
 - Boundary :: Generated output was inspected; interactive office editing and a private manuscript were not tested. No installed binary was changed.
 
 * Additional checks
 - =make lint=, =git diff --check= and =gofmt -l= passed.
-- =make test= passed all packages; application 396.769s, manuscript 115.954s. Log: =.agent/w066-make-test.log=.
+- =make test= passed all packages for the amended candidate; application 398.801s and manuscript 111.757s. Log: =.agent/w066-parenthetical-make-test.log=.

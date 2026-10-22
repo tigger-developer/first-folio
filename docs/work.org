@@ -96,13 +96,14 @@ classification; it is provenance, not current state.
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-22 for the observed PDF and DOCX defect. When =render.footnotes: false=, references to defined notes must not appear as literal =[fn:id]= or =[^id]= text.
 - Evidence :: [[file:../specs/065-disabled-script-footnote-references/validation.org][Regression and bounded output checks]]. Definition and delivery reviews are internal-only; operator closure remains pending.
 
-** ACTIVE W066 - Preserve numerals in Org character cues :defect:
+** ACTIVE W066 - Preserve Org character cue boundaries :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-066
 :CREATED: 2026-10-22
 :END:
-- Specification :: [[file:../specs/066-numbered-character-cues/spec.org][W066 - Numbered Org character cues]].
+- Specification :: [[file:../specs/066-numbered-character-cues/spec.org][W066 - Org character cue boundaries]].
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-22 for the reported =PARENT 3= cue split. Numerals in a character name must not become a speech direction.
+- Amendment 2026-10-22 :: The operator invoked =BYPASS-GATE-7= again after a screenshot showed =MARY (IGNORING:= and =(the question)=. An opening parenthesis must begin a direction regardless of the following word's capitalization. This correction remains under W066.
 - Evidence :: [[file:../specs/066-numbered-character-cues/validation.org][Regression and output checks]]. Internal reviews and operator closure decision remain separate.
 
 ** DONE W063 - Editable DOCX and ODT manuscripts and letters :feature:
