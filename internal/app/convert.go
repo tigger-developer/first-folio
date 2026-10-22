@@ -205,6 +205,15 @@ func applyScriptConfig(doc *play.Document, cfg config.Config) {
 			doc.Metadata[key] = value
 		}
 	}
+	showFootnotes := cfg.Bool("render.footnotes", true)
+	knownFootnotes := map[string]bool{}
+	if !showFootnotes {
+		for _, event := range doc.Events {
+			if event.Kind == play.EventFootnote {
+				knownFootnotes[event.Name] = true
+			}
+		}
+	}
 	filtered := doc.Events[:0]
 	for _, event := range doc.Events {
 		keep := true
@@ -214,15 +223,60 @@ func applyScriptConfig(doc *play.Document, cfg config.Config) {
 		case play.EventCharacterTableStart, play.EventCharacterTableRow, play.EventCharacterTableEnd:
 			keep = cfg.Bool("render.character-table", true)
 		case play.EventFootnote:
-			keep = cfg.Bool("render.footnotes", true)
+			keep = showFootnotes
 		case play.EventTransition:
 			keep = cfg.Bool("render.transitions", true)
 		case play.EventIntroHeader, play.EventIntroText:
 			keep = cfg.Bool("render.frontmatter", true)
 		}
 		if keep {
+			if !showFootnotes {
+				event.Text = stripFootnoteReferences(event.Text, knownFootnotes)
+				event.Direction = stripFootnoteReferences(event.Direction, knownFootnotes)
+				event.Name = stripFootnoteReferences(event.Name, knownFootnotes)
+			}
 			filtered = append(filtered, event)
 		}
 	}
 	doc.Events = filtered
+}
+
+func stripFootnoteReferences(text string, known map[string]bool) string {
+	if len(known) == 0 || !strings.Contains(text, "[") {
+		return text
+	}
+	var result strings.Builder
+	start := 0
+	for i := 0; i < len(text); i++ {
+		if text[i] != '[' {
+			continue
+		}
+		labelStart := i + 1
+		if strings.HasPrefix(text[labelStart:], "fn:") {
+			labelStart += 3
+		} else if strings.HasPrefix(text[labelStart:], "^") {
+			labelStart++
+		} else {
+			continue
+		}
+		close := strings.IndexByte(text[labelStart:], ']')
+		if close < 0 || !known[text[labelStart:labelStart+close]] {
+			continue
+		}
+		backslashes := 0
+		for j := i - 1; j >= 0 && text[j] == '\\'; j-- {
+			backslashes++
+		}
+		if backslashes%2 != 0 {
+			continue
+		}
+		result.WriteString(text[start:i])
+		i = labelStart + close
+		start = i + 1
+	}
+	if start == 0 {
+		return text
+	}
+	result.WriteString(text[start:])
+	return result.String()
 }

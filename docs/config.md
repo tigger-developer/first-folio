@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.33"
-last-updated: 2026-10-19
+version: "0.34"
+last-updated: 2026-10-22
 ---
 
 # Configuration
@@ -90,7 +90,7 @@ Control which elements appear in output. Read by both First Folio and yapper.
 |-----|------|---------|-------------|
 | `render.stage-directions` | bool | `true` | Include stage directions |
 | `render.frontmatter` | bool | `true` | Include introductory sections before the play proper |
-| `render.footnotes` | bool | `true` | Include footnotes |
+| `render.footnotes` | bool | `true` | Include footnotes; when false, omit defined note references as well as their text |
 | `render.character-table` | bool | `true` | Include the cast list; hiding it does not disable character-name lookup |
 | `render.transitions` | bool | `true` | Include transitions |
 

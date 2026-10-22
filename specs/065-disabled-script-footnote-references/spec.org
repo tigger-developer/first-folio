@@ -1,0 +1,85 @@
+#+TITLE: W065 - Hide disabled script footnote references
+#+SCHEMA: 8
+#+SUBTITLE: Emergency reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+- Script exports *omit references to defined footnotes* when footnotes are disabled.
+** Before
+- =render.footnotes: false= *drops definitions* but leaves their inline markers visible in PDF and DOCX.
+** After
+- *Defined references and their note text are hidden* in script outputs; adjacent text remains.
+** Changes
+- The shared script conversion filter *removes defined references* before output writers run.
+** Unchanged
+- *Enabled footnotes remain native*; manuscript and letter modes do not use this filter.
+** Edge cases
+- *Unresolved or escaped reference text remains literal*; repeated defined references are all hidden.
+** Decisions
+- The filter applies to the shared script event stream so output formats *agree*.
+** Next step
+- Retain internal reviews and hand the candidate back for the *operator closure decision*.
+
+* Context
+
+** Authority and baseline
+- Authority :: The 2026-10-22 =BYPASS-GATE-7= request corrects the observed literal =[fn:id]= when footnotes are disabled in PDF and DOCX. This is the temporary specification; this durable record was written after the emergency code change.
+- Baseline :: [[file:../../docs/config.md][Configuration reference]] promises that =render.footnotes= controls inclusion. [[file:../../docs/formats.md][Format overview]] documents the shared event filter. At =3a0984e= the filter dropped only =EventFootnote=; the Typst and DOCX writers then received unresolved inline text. The same filtering code existed before W063 - Editable DOCX and ODT manuscripts and letters.
+- Scope :: Org and Markdown script conversion; the shared filter affects script text, Typst/PDF, DOCX and ODT outputs. No source file or YAML is modified.
+- Exclusions :: Manuscript and letter rendering, footnote syntax expansion, page layout, parser redesign and W063 closure.
+
+* Acceptance Criteria
+
+** AC065.1 - Disabled script footnotes leave no defined reference text :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-065-1
+:END:
+- Criterion :: With =render.footnotes: false=, references to defined Org or Markdown script footnotes and their bodies *do not appear* in rendered script output. Text surrounding each reference *remains*, including when a note is referenced more than once.
+- Boundary :: Unresolved or explicitly escaped reference syntax *remains literal*. With footnotes enabled, existing native notes and their references remain available.
+- Proven by :: [[#rt-065-1][RT065.1 - Public script conversion suppresses defined references]] and [[#ot-065-1][OT065.1 - PDF and ODT output probe]].
+
+* Test Definitions
+
+** RT065.1 - Public script conversion suppresses defined references :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-065-1
+:END:
+- Covers :: [[#ac-065-1][AC065.1 - Disabled script footnotes leave no defined reference text]].
+- Setup :: Synthetic Org and Markdown plays each contain two references to one defined note, an escaped literal reference, adjacent text and an unresolved reference; local YAML disables footnotes.
+- Action :: Convert each through the public command to Typst and DOCX.
+- Expected :: Both active references and the note body are absent; surrounding text, one escaped literal marker and the unresolved reference remain. Existing enabled-note regressions protect the positive path.
+
+** OT065.1 - PDF and ODT output probe :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-065-1
+:END:
+- Covers :: [[#ac-065-1][AC065.1 - Disabled script footnotes leave no defined reference text]].
+- Setup :: A small synthetic Org script and local =render.footnotes: false= file in an OS temporary directory.
+- Action :: Convert with the isolated binary to PDF and ODT; extract visible PDF text and ODT content.
+- Expected :: The defined marker and body are absent; adjacent text and the unresolved marker remain. No private manuscript or installed binary is altered.
+
+* Edge Cases
+- An escaped note marker is literal source text, so the filter *does not remove it*.
+- A marker without a matching parsed definition *remains ordinary text*.
+- Only script conversion is affected; other document modes *retain their own note semantics*.
+
+* Solution Design
+
+** Shared script event filter
+- Collect defined note names before =applyScriptConfig= removes =EventFootnote= events. When footnotes are disabled, remove matching, unescaped Org/Markdown reference tokens from retained event text, names and directions. Preserve all other characters and the existing output writers.
+- This filter is upstream of Typst/PDF, native DOCX and configured ODT writing. Text-format emitters also consume the filtered model. Enabled footnotes keep the previous path.
+
+** Security and operational impact
+- No new dependency, data source, external service or access is introduced. The filter operates on already parsed, bounded source strings. Existing output publication and error handling remain.
+
+* Delivery Handoff
+- Emergency ordering :: RED public conversion regression, bounded shared-filter change, GREEN/full suite and PDF/ODT probes preceded this retrospective specification. Do not present it as pre-implementation approval.
+- Documentation :: [[file:../../docs/config.md][Configuration reference]] and [[file:../../docs/formats.md][Format overview]] describe the completed toggle behaviour. Architecture and README interfaces are unchanged.
+- Evidence :: [[file:validation.org][Validation record]] and [[file:internal-review.md][Current-session internal reviews]]. Operator closure is separate from emergency authorization.

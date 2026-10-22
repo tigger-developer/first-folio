@@ -1,7 +1,7 @@
 ---
 title: Format Overview
-version: "0.5"
-last-updated: "2026-10-11"
+version: "0.6"
+last-updated: "2026-10-22"
 ---
 
 # Format Overview
@@ -87,7 +87,7 @@ Individual event types can be suppressed via [configuration](config.md). Keys be
 |------------|-------------------------------|
 | `render.stage-directions` | `stage_direction` |
 | `render.frontmatter` | Introductory headers and text before the play proper |
-| `render.footnotes` | `footnote` |
+| `render.footnotes` | Defined `footnote` events and their inline references; unresolved or escaped reference text remains literal |
 | `render.character-table` | `character_table_start`, `character_table_row`, `character_table_end` |
 | `render.transitions` | `transition` |
 

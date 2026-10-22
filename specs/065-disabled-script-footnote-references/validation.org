@@ -1,0 +1,34 @@
+#+TITLE: W065 - Disabled script footnote reference validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** GREEN RT065.1 - Public script conversion suppresses defined references :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-065-1-result
+:REVISION: 3a0984e plus the W065 test and shared-filter working-tree changes
+:COMMAND: go test ./internal/app -run '^TestRT065_1DisabledFootnotesRemoveReferences$' -count=1
+:EVIDENCE: Four Org/Markdown by Typst/DOCX public-command cases fail on visible defined references before the filter change and pass after it; two active references disappear while escaped and unresolved markers remain.
+:END:
+- Date :: 2026-10-22.
+- RED :: All four cases failed on a visible defined note marker. An initial test-oracle adjustment for Typst escaping was a test correction, not a product failure.
+- GREEN :: Focused regression passed. The complete =make test= run passed before the later test-only escaped/repeated-reference refinement; that final refinement passed in a focused rerun. Existing enabled-note coverage was included in the full suite. Log: =.agent/w065-make-test.log=.
+
+* Bounded one-off verification
+
+** GREEN OT065.1 - PDF and ODT output probe :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-065-1-result
+:REVISION: 3a0984e plus the W065 shared-filter working-tree change
+:EVIDENCE: Isolated binary converts a synthetic Org play with disabled footnotes: extracted PDF and ODT content contain "Before after" and the unresolved marker, with no defined marker or note body.
+:END:
+- Date :: 2026-10-22.
+- Environment :: macOS; isolated =.agent/w065-bin/folio=; Typst, Pandoc and Poppler; OS temporary outputs at =folio-w065-check.uItVXh3vTL=.
+- Boundary :: This checks generated content, not interactive office editing. No source or configuration file outside the temporary fixture was modified.
+
+* Additional checks
+- =make lint= passed; =git diff --check= passed.
+- =make test= passed all packages; application 399.979s and manuscript 117.003s. No new third-party dependency was added.

@@ -87,6 +87,15 @@ classification; it is provenance, not current state.
 - Scope :: Report each external user YAML file loaded into the manuscript
   configuration cascade on stderr, preserving existing precedence and output.
 
+** ACTIVE W065 - Hide disabled script footnote references :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-065
+:CREATED: 2026-10-22
+:END:
+- Specification :: [[file:../specs/065-disabled-script-footnote-references/spec.org][W065 - Disabled script footnote references]].
+- Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-22 for the observed PDF and DOCX defect. When =render.footnotes: false=, references to defined notes must not appear as literal =[fn:id]= or =[^id]= text.
+- Evidence :: [[file:../specs/065-disabled-script-footnote-references/validation.org][Regression and bounded output checks]]. Definition and delivery reviews are internal-only; operator closure remains pending.
+
 ** DONE W063 - Editable DOCX and ODT manuscripts and letters :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-063
