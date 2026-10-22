@@ -1,7 +1,7 @@
 ---
 title: Org-mode Play Format
-version: "0.7"
-last-updated: "2026-10-12"
+version: "0.8"
+last-updated: "2026-10-22"
 ---
 
 # Org-mode Play Format
@@ -81,7 +81,7 @@ All of the following direction formats are normalized to the same internal repre
 | `**** BOB, (softly)` | BOB | softly |
 | `**** BOB` | BOB | (none) |
 
-Character names support Unicode: `CÁIT`, `MAIRÉAD`, `SÉAN`.
+Character names support Unicode and numeral components: `CÁIT`, `MAIRÉAD`, `SÉAN`, `PARENT 3`. A following delivery instruction remains separate, for example `**** PARENT 3 (to Fiona)` has the name `PARENT 3` and direction `to Fiona`.
 
 ### Dialogue
 
@@ -112,12 +112,12 @@ Separator rows (`|---+---|`) are ignored. Each data row emits a `character_table
 
 The name cell accepts comma-separated aliases in a trailing parenthesis, for
 example `ALISON (NURSE ALISON)` or `MARGARET (MAGS, MARG.)`. Primary names and
-aliases are equal matches for automatic capitalisation in stage directions;
+aliases are equal matches for automatic capitalization in stage directions;
 dialogue is untouched. Hidden tables still supply the lookup. PDF/Typst cast
 lists show only primary names; Org and Markdown conversions retain declarations.
 See the [cast-table schema](../schema/script.org) for matching rules.
 
-Document revision 0.6 adds cast-name aliases and automatic capitalisation.
+Document revision 0.6 adds cast-name aliases and automatic capitalization.
 
 ### Prop Text
 

@@ -1,0 +1,84 @@
+#+TITLE: W066 - Preserve numerals in Org character cues
+#+SCHEMA: 8
+#+SUBTITLE: Emergency reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+- Org script exports *retain numeral components in character names*.
+** Before
+- =**** PARENT 3= *split the 3 into a direction* and malformed the output cue.
+** After
+- =PARENT 3= and other numbered names *render as complete cues*; a following parenthetical remains a direction.
+** Changes
+- The shared Org speaker parser *accepts numeral tokens within a name*.
+** Unchanged
+- Lowercase delivery instructions *remain directions*; other document modes and output writers are unchanged.
+** Edge cases
+- *Multiple digits* remain in the name; =PARENT 3 (to Fiona)= keeps =to Fiona= separate.
+** Decisions
+- The change belongs in the *shared event parser*, before PDF, DOCX and ODT rendering.
+** Next step
+- Hand the checked candidate to the operator for the *closure decision*.
+
+* Context
+
+** Authority and baseline
+- Authority :: The 2026-10-22 =BYPASS-GATE-7= request identifies =PARENT 3= as an example of any numeral-bearing character name. The preceding report gave =PARENT 2= and =PARENT 3 (to Fiona)= as incorrect DOCX outputs. This retrospective record was created after the emergency code change.
+- Baseline :: [[file:../../docs/format-org.md][Org format reference]] defines level-four headings as character names with optional directions. [[file:../../docs/formats.md][Format overview]] describes shared character events and output fidelity. At =f8073c1=, =parseCharacterLine= stopped a name at the first later token whose initial rune was not uppercase; this treated numerals as directions.
+- Scope :: Org script speaker cues and outputs consuming the shared event stream. Source files, cast entries and export styles are not changed.
+- Exclusions :: Manuscript and letter modes, Markdown/Fountain speaker syntax, output layout and unrelated cue grammar.
+
+* Acceptance Criteria
+
+** AC066.1 - Numeral-bearing Org speaker names remain intact :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-066-1
+:END:
+- Criterion :: An Org speaker heading whose character name contains a numeral token *retains the complete name* in script exports, including multi-digit numerals.
+- Boundary :: A following parenthetical or lowercase delivery instruction *remains a direction*. Existing unnumbered speaker cues remain unchanged.
+- Proven by :: [[#rt-066-1][RT066.1 - Numbered cues through public conversion]] and [[#ot-066-1][OT066.1 - PDF and ODT output probe]].
+
+* Test Definitions
+
+** RT066.1 - Numbered cues through public conversion :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-066-1
+:END:
+- Covers :: [[#ac-066-1][AC066.1 - Numeral-bearing Org speaker names remain intact]].
+- Setup :: A synthetic Org play declares =PARENT 2=, =PARENT 3= and =PARENT 27= in its cast, then gives them speech. =PARENT 3= has a real =(to Fiona)= direction; an unnumbered =JACK softly= cue checks the existing grammar.
+- Action :: Convert through the public command to Typst and DOCX; inspect generated dialogue calls and DOCX body text.
+- Expected :: All numbered names remain complete; =to Fiona= and =softly= remain directions; dialogue stays present; no numeric speech instruction appears.
+
+** OT066.1 - PDF and ODT output probe :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-066-1
+:END:
+- Covers :: [[#ac-066-1][AC066.1 - Numeral-bearing Org speaker names remain intact]].
+- Setup :: A small synthetic Org play has a =PARENT 3= cast entry, =**** PARENT 3 (to Fiona)= cue and dialogue.
+- Action :: Convert with an isolated build to PDF and ODT; extract visible PDF text and ODT content.
+- Expected :: Both show =PARENT 3= as the speaker, retain =to Fiona= as instruction and keep the dialogue. Neither shows =(3)= as a separate instruction.
+
+* Edge Cases
+- A *multi-digit numeral* remains one part of the character name.
+- A *parenthesized lowercase phrase* still starts a direction after a numbered name.
+- An *ordinary lowercase instruction* still starts a direction after an unnumbered name.
+
+* Solution Design
+
+** Shared Org speaker parser
+- In =parseCharacterLine=, continue the name across tokens whose initial rune is uppercase or a Unicode digit. The first later token with neither property begins the direction as before. The existing event and renderer interfaces do not change.
+
+** Security and operational impact
+- No new dependency, external access, persistence, or unbounded parsing step is introduced. Existing conversion and output error handling remain.
+
+* Delivery Handoff
+- Emergency ordering :: The public conversion regression failed before the one-condition parser change and passed afterwards. The retrospective definition does not claim advance sign-off.
+- Documentation :: [[file:../../docs/format-org.md][Org format reference]] now states numeral-bearing name semantics.
+- Evidence :: [[file:validation.org][Validation record]] and [[file:internal-review.md][Current-session internal reviews]]. Operator closure is separate from emergency authorization.
