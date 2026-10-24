@@ -341,7 +341,7 @@ func renderPlayBody(doc play.Document, cfg config.Config, format play.Format) st
 			lines = append(lines, "#scene-header["+inlineTypst(event.Text, footnotes, format)+"]")
 		case play.EventIntroHeader:
 			lines = append(lines, "#frontmatter-header["+inlineTypst(event.Text, footnotes, format)+"]")
-		case play.EventIntroText:
+		case play.EventIntroText, play.EventSceneIntro:
 			lines = append(lines, "#frontmatter-paragraph["+inlineTypst(event.Text, footnotes, format)+"]", "")
 		case play.EventStageDirection:
 			lines = append(lines, "#stage-direction["+inlineTypst(event.Text, footnotes, format)+"]")

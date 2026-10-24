@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.36"
+version: "0.37"
 last-updated: 2026-10-24
 ---
 
@@ -89,7 +89,7 @@ Control which elements appear in output. Read by both First Folio and yapper.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `render.stage-directions` | bool | `true` | Include stage directions |
-| `render.frontmatter` | bool | `true` | Include introductory sections before the play proper |
+| `render.frontmatter` | bool | `true` | In PDF, DOCX and ODT, include introductory sections and plain paragraphs directly beneath scene headings; semantic text conversions retain them |
 | `render.footnotes` | bool | `true` | Include footnotes; when false, omit defined note references as well as their text |
 | `render.character-table` | bool | `true` | Include the cast list; hiding it does not disable character-name lookup |
 | `render.transitions` | bool | `true` | Include transitions |
@@ -805,6 +805,7 @@ At non-100% stretch, First Folio supplies English discretionary break points fro
 
 ## Changelog
 
+- 0.37 (2026-10-24): Apply rendered frontmatter visibility to direct scene introductory paragraphs while retaining them in semantic text conversions.
 - 0.36 (2026-10-24): Promote monospace typography to shared `folio.mono.font`, retain the manuscript path with a deprecation warning, and apply geometric PDF stretch to every script, letter and manuscript font role.
 - 0.35 (2026-10-23): Define script PDF and Typst stretch as proportional geometric scaling for every typography role.
 

@@ -19,6 +19,7 @@ const (
 	EventTransition          EventKind = "transition"
 	EventIntroHeader         EventKind = "intro_header"
 	EventIntroText           EventKind = "intro_text"
+	EventSceneIntro          EventKind = "scene_intro"
 )
 
 type Event struct {

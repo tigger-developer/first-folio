@@ -1,7 +1,7 @@
 ---
 title: Markdown Play Format
-version: "0.6"
-last-updated: "2026-10-08"
+version: "0.7"
+last-updated: "2026-10-24"
 ---
 
 # Markdown Play Format
@@ -50,6 +50,11 @@ Level-3 headings represent scenes.
 ### Scene 1
 ### Scene 2 — The Garden
 ```
+
+Plain paragraphs directly beneath a scene heading are scene introductory
+material. PDF, DOCX and ODT omit them when `render.frontmatter` is false;
+Org, Markdown and Fountain conversion retain them. A nested direction, cue,
+prop, transition or structural heading ends the direct scene-introduction context.
 
 ### Stage Directions
 
@@ -173,5 +178,6 @@ Just boiled.
 
 ## Revision History
 
+- 0.7 (2026-10-24): Define scene introductory paragraphs and their rendered visibility boundary.
 - 0.5, 2026-09-10: Add schema frontmatter, move document-version metadata to YAML, and remove general Markdown-standard references that did not define First Folio's supported subset.
 - 0.4, 2026-08-10: Previous format-reference revision.

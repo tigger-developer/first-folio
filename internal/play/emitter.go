@@ -40,7 +40,7 @@ func emitOrg(doc Document) Output {
 				line += " " + event.Direction
 			}
 			lines = append(lines, line)
-		case EventDialogue, EventIntroText:
+		case EventDialogue, EventIntroText, EventSceneIntro:
 			lines = append(lines, event.Text)
 		case EventCharacterTableStart:
 			lines = append(lines, "", "* "+defaultText(event.Text, "CHARACTERS"))
@@ -96,7 +96,7 @@ func emitMarkdown(doc Document) Output {
 				line += " *(" + event.Direction + ")*"
 			}
 			appendSeparated(&lines, line)
-		case EventDialogue, EventIntroText:
+		case EventDialogue, EventIntroText, EventSceneIntro:
 			lines = append(lines, event.Text)
 		case EventCharacterTableStart:
 			appendSeparated(&lines, "| Character | Description |")
@@ -165,7 +165,7 @@ func emitFountain(doc Document) Output {
 			}
 		case EventDialogue:
 			lines = append(lines, event.Text)
-		case EventIntroText:
+		case EventIntroText, EventSceneIntro:
 			lines = append(lines, strings.TrimPrefix(event.Text, "- "))
 		case EventCharacterTableStart:
 			warnings = append(warnings, "warning: character table has no Fountain equivalent, rendering as Action text")

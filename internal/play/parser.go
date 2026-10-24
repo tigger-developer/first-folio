@@ -39,6 +39,7 @@ func parseOrg(source string) (Document, error) {
 	inNoExport := false
 	noExportLevel := 0
 	inTable := false
+	currentHeadingLevel := 0
 
 	for _, line := range lines {
 		token := nativesource.Recognize("org", line)
@@ -64,6 +65,7 @@ func parseOrg(source string) (Document, error) {
 				}
 				inNoExport = false
 			}
+			currentHeadingLevel = level
 			switch level {
 			case 1:
 				if strings.EqualFold(strings.TrimSpace(text), "CHARACTER") || strings.EqualFold(strings.TrimSpace(text), "CHARACTERS") {
@@ -120,7 +122,11 @@ func parseOrg(source string) (Document, error) {
 			continue
 		}
 		if trimmed != "" {
-			doc.Events = append(doc.Events, Event{Kind: EventDialogue, Text: line})
+			kind := EventDialogue
+			if currentHeadingLevel == 2 {
+				kind = EventSceneIntro
+			}
+			doc.Events = append(doc.Events, Event{Kind: kind, Text: line})
 		}
 	}
 	if inTable {
@@ -135,7 +141,7 @@ func parseMarkdown(source string) (Document, error) {
 	if err != nil {
 		return Document{}, err
 	}
-	seenTitle, expectMetadata, inTable, seenCharacter := false, false, false, false
+	seenTitle, expectMetadata, inTable, seenCharacter, inSceneIntro := false, false, false, false, false
 	for _, line := range lines {
 		token := nativesource.Recognize("markdown", line)
 		if !seenTitle && token.Kind == "heading" && token.Level == 1 {
@@ -164,10 +170,12 @@ func parseMarkdown(source string) (Document, error) {
 		}
 		if token.Kind == "heading" && token.Level == 2 {
 			doc.Events = append(doc.Events, Event{Kind: EventActHeader, Text: token.Text})
+			inSceneIntro = false
 			continue
 		}
 		if token.Kind == "heading" && token.Level == 3 {
 			doc.Events = append(doc.Events, Event{Kind: EventSceneHeader, Text: token.Text})
+			inSceneIntro = true
 			continue
 		}
 		if strings.HasPrefix(line, "|") {
@@ -197,6 +205,7 @@ func parseMarkdown(source string) (Document, error) {
 		}
 		if strings.HasPrefix(line, "> ") {
 			doc.Events = append(doc.Events, Event{Kind: EventTransition, Text: strings.TrimPrefix(line, "> ")})
+			inSceneIntro = false
 			continue
 		}
 		if token.Kind == "note" && token.Text != "" {
@@ -205,6 +214,7 @@ func parseMarkdown(source string) (Document, error) {
 		}
 		if strings.HasPrefix(line, `***"`) && strings.HasSuffix(line, `"***`) {
 			doc.Events = append(doc.Events, Event{Kind: EventPropText, Text: strings.TrimSuffix(strings.TrimPrefix(line, `***"`), `"***`)})
+			inSceneIntro = false
 			continue
 		}
 		if strings.HasPrefix(line, "**") {
@@ -217,14 +227,20 @@ func parseMarkdown(source string) (Document, error) {
 				}
 				doc.Events = append(doc.Events, Event{Kind: EventCharacter, Name: name, Direction: direction})
 				seenCharacter = true
+				inSceneIntro = false
 				continue
 			}
 		}
 		if strings.HasPrefix(line, "*") && strings.HasSuffix(line, "*") && !strings.HasPrefix(line, "**") {
 			doc.Events = append(doc.Events, Event{Kind: EventStageDirection, Text: strings.TrimSuffix(strings.TrimPrefix(line, "*"), "*")})
+			inSceneIntro = false
 			continue
 		}
-		doc.Events = append(doc.Events, Event{Kind: EventDialogue, Text: line})
+		kind := EventDialogue
+		if inSceneIntro {
+			kind = EventSceneIntro
+		}
+		doc.Events = append(doc.Events, Event{Kind: kind, Text: line})
 	}
 	if inTable {
 		doc.Events = append(doc.Events, Event{Kind: EventCharacterTableEnd})

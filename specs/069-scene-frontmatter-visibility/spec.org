@@ -1,0 +1,90 @@
+#+TITLE: W069 - Apply frontmatter visibility to scene introductory paragraphs
+#+SCHEMA: 8
+#+SUBTITLE: Emergency reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: BYPASS-GATE-7 2026-10-24
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+- Scene-level introductory paragraphs obey =render.frontmatter= in PDF, DOCX and ODT without being discarded by semantic text conversion.
+** Before
+- Plain paragraphs directly beneath an Org or Markdown scene heading were classified as dialogue, so =render.frontmatter: false= left them visible in rendered documents.
+** After
+- Those paragraphs are scene-frontmatter events. Rendered documents omit them when frontmatter is disabled; Markdown and Fountain conversions retain them.
+** Unchanged
+- Scene headings, stage directions, speaker cues and dialogue retain their existing visibility and semantics.
+
+* Context
+
+- Authority :: =BYPASS-GATE-7= was invoked on 2026-10-24 for the reported scene-paragraph visibility defect.
+- Scope :: Org and Markdown stage-play parsing plus PDF, DOCX, ODT, Markdown and Fountain conversion behaviour.
+- Boundary :: A scene introductory paragraph is plain text whose nearest structural heading remains the scene heading. Entering a nested direction, cue, prop, transition or another structural heading ends that direct scene-introduction context.
+- Exclusions :: Fountain-input action classification, manuscript frontmatter, letter content and general dialogue inference.
+
+* Acceptance Criteria
+
+** AC069.1 - Rendered outputs obey scene frontmatter visibility :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-069-1
+:END:
+- Criterion :: With =render.frontmatter: false=, PDF, DOCX and ODT omit direct scene introductory paragraphs from Org and Markdown sources while retaining the scene heading, directions, cues and dialogue.
+- Default :: With frontmatter enabled or omitted, the paragraph remains visible and uses the existing frontmatter-paragraph role.
+- Proven by :: [[#rt-069-1][RT069.1 - Disabled frontmatter hides scene paragraphs from rendered outputs]] and [[#ut-069-1][UT069.1 - Project document omits scene paragraphs]].
+
+** AC069.2 - Semantic text conversions retain scene paragraphs :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-069-2
+:END:
+- Criterion :: Markdown and Fountain conversion retain scene introductory paragraphs even when =render.frontmatter: false= because the visibility setting governs rendered documents rather than semantic source conversion.
+- Proven by :: [[#rt-069-2][RT069.2 - Text conversions retain scene paragraphs]].
+
+* Test Definitions
+
+** RT069.1 - Disabled frontmatter hides scene paragraphs from rendered outputs :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-069-1
+:END:
+- Covers :: [[#ac-069-1][AC069.1 - Rendered outputs obey scene frontmatter visibility]].
+- Setup :: Equivalent Org and Markdown plays contain a labelled plain paragraph directly beneath a scene heading, followed by a labelled direction and dialogue. Configuration disables frontmatter.
+- Action :: Invoke =folio convert= to PDF, DOCX and ODT and inspect extracted or effective document text.
+- Expected :: The scene paragraph marker is absent in all six documents. Scene heading, direction and dialogue markers remain.
+
+** RT069.2 - Text conversions retain scene paragraphs :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-069-2
+:END:
+- Covers :: [[#ac-069-2][AC069.2 - Semantic text conversions retain scene paragraphs]].
+- Setup :: Use the same Org and Markdown plays with frontmatter disabled.
+- Action :: Invoke =folio convert= to Markdown and Fountain.
+- Expected :: Every output retains the scene paragraph marker.
+
+** UT069.1 - Project document omits scene paragraphs :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-069-1
+:END:
+- Covers :: [[#ac-069-1][AC069.1 - Rendered outputs obey scene frontmatter visibility]].
+- Setup :: Install or invoke the audited candidate with the project configuration containing =render.frontmatter: false=.
+- Action :: Regenerate the project PDF, DOCX or ODT and inspect each scene opening.
+- Expected :: Direct scene introductory paragraphs are absent while the scene content required for performance remains present.
+
+* Solution Design
+
+** Semantic event
+- Add a scene-introduction event distinct from dialogue and global introductory text. Org tracks the current heading level; Markdown tracks the scene context until a nested dramatic construct begins.
+
+** Output policy
+- PDF and office renderers map the event to the existing frontmatter-paragraph role. Render filtering applies =render.frontmatter= to this event only for PDF, DOCX and ODT targets.
+- Org, Markdown and Fountain emitters preserve the event as source content. Existing global introductory-material behaviour remains unchanged.
+
+** Security and operational impact
+- No new dependency, subprocess, input size, persistence or access boundary is introduced. Existing parsing and output bounds remain authoritative.
+
+* Delivery Handoff
+- Emergency ordering :: RT069.1 failed at all three rendered output boundaries before implementation and passed after semantic classification and target-scoped filtering. RT069.2 was a preservation GREEN before and after the change.
+- Documentation :: Source schemas, format references and configuration guidance describe the scene-frontmatter boundary.
+- Closure :: Automated and internal-review evidence does not replace UT069.1 or operator closure.

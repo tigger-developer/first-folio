@@ -1,7 +1,7 @@
 #+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
 #+TITLE: First Folio Org Script Schema
-#+VERSION: 0.4
-#+DATE: 2026-10-08
+#+VERSION: 0.5
+#+DATE: 2026-10-24
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
 
@@ -98,6 +98,11 @@ Major sections before the first act containing a speaker cue are introductory
 material, for example Synopsis or Setting. The =render.frontmatter=
 configuration setting controls their inclusion in rendered output.
 
+Plain paragraphs directly beneath a scene heading are scene introductory
+material until a nested direction, cue, prop, transition or structural heading
+begins. =render.frontmatter: false= omits these paragraphs from PDF, DOCX and ODT.
+Org, Markdown and Fountain conversions retain them as semantic source content.
+
 ** Footnotes and inline text
 
 An inline =[fn:note]= refers to a definition of the form
@@ -140,6 +145,7 @@ itself resolve that defect.
 
 * Revision history
 
+- 0.5, 2026-10-24 :: Define direct scene paragraphs as rendered frontmatter while preserving semantic text conversion.
 - 0.4, 2026-10-08 :: Define cast-name aliases and automatic stage-direction capitalisation.
 - 0.3, 2026-09-10 :: Rewrite around First Folio's source grammar, with direct
   keyword examples and a separate Org letter contract.

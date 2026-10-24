@@ -82,7 +82,7 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	for _, warning := range parseWarnings {
 		fmt.Fprintln(stderr, warning)
 	}
-	applyScriptConfig(&doc, cfg)
+	applyScriptConfig(&doc, cfg, targetFormat)
 	if targetFormat == play.FormatODT {
 		return exportODT(doc, cfg, sourceFormat, opts, toStdout, stdout, stderr)
 	}
@@ -203,7 +203,7 @@ func convertTarget(opts convertOptions, cfg config.Config) (play.Format, bool, e
 	return format, true, err
 }
 
-func applyScriptConfig(doc *play.Document, cfg config.Config) {
+func applyScriptConfig(doc *play.Document, cfg config.Config, targetFormat play.Format) {
 	play.CapitalizeStageNames(doc)
 	for _, key := range []string{"title", "subtitle", "author", "date", "version"} {
 		if value := cfg.String(key, ""); value != "" {
@@ -233,6 +233,10 @@ func applyScriptConfig(doc *play.Document, cfg config.Config) {
 			keep = cfg.Bool("render.transitions", true)
 		case play.EventIntroHeader, play.EventIntroText:
 			keep = cfg.Bool("render.frontmatter", true)
+		case play.EventSceneIntro:
+			if targetFormat == play.FormatPDF || targetFormat == play.FormatDOCX || targetFormat == play.FormatODT {
+				keep = cfg.Bool("render.frontmatter", true)
+			}
 		}
 		if keep {
 			if !showFootnotes {

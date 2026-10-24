@@ -1,7 +1,7 @@
 ---
 title: DOCX Script Export
-version: "1.9"
-last-updated: 2026-10-19
+version: "1.10"
+last-updated: 2026-10-24
 ---
 
 # DOCX script export
@@ -29,7 +29,7 @@ bundled Iosevka Publish. Unsupported, missing or restricted fonts produce warnin
 | US and screenplay | Separate cue and dialogue paragraphs using resolved style geometry. |
 | Typography | Role fonts, sizes, regular/bold weights, italic, tracking and integer stretch. Oblique uses italic; unsupported weights fail. |
 | British spacing | Single line spacing; speech, direction, prop and transition vertical gaps are half the resolved spacing. Cast entries have no trailing paragraph gap. |
-| Introduction paragraphs | All six font properties at `folio.positioning.frontmatter.paragraph.font`; omitted properties inherit `folio.font`. Headings and speech keep their own roles. |
+| Introduction paragraphs | Global and direct scene introductory paragraphs use all six font properties at `folio.positioning.frontmatter.paragraph.font`; omitted properties inherit `folio.font`. `render.frontmatter: false` hides both. Headings and speech keep their own roles. |
 | Content | Ordered text, inline formatting, cast tables and native footnotes; configured visibility switches apply. |
 | Pages | Configured paper, margins and act breaks. Pagination depends on the reading application. Long rows can split across pages. |
 | Title | Dedicated or compact title. Vertical positioning is approximate; date/version are in-flow rather than bottom-of-page slots. |
@@ -125,6 +125,7 @@ the product ODT route. The native DOCX writer serves scripts, manuscripts and le
 
 ## History
 
+- 1.10 (2026-10-24): Apply frontmatter visibility and typography to direct scene introductory paragraphs.
 - 1.9 (2026-10-19): Preserve natural editable text baselines and reuse equivalent role styles.
 
 - 1.8 (2026-10-19): Remove every DOCX dependency on Pandoc and document shared native parsing.

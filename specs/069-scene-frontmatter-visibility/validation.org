@@ -1,0 +1,44 @@
+#+TITLE: W069 - Scene frontmatter visibility validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** GREEN RT069.1 - Disabled frontmatter hides scene paragraphs from rendered outputs :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-069-1-result
+:REVISION: bcd3023 plus W069 scene-frontmatter working-tree delta
+:COMMAND: go test ./internal/app -run '^TestRT069_1DisabledFrontmatterHidesSceneParagraphFromRenderedOutputs$' -count=1
+:EVIDENCE: Before implementation the marker remained visible in extracted PDF text and effective DOCX and ODT bodies. After classification and filtering, all Org/Markdown by PDF/DOCX/ODT cases omit it while retaining scene, direction and dialogue markers.
+:END:
+- Date :: 2026-10-24.
+- RED :: All three Org rendered outputs contained =SCENE-INTRO-MARKER=.
+- GREEN :: The expanded six-document Org and Markdown matrix passed.
+
+** GREEN RT069.2 - Text conversions retain scene paragraphs :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-069-2-result
+:REVISION: bcd3023 plus W069 scene-frontmatter working-tree delta
+:COMMAND: go test ./internal/app -run '^TestRT069_2TextConversionsRetainSceneParagraph$' -count=1
+:EVIDENCE: Markdown and Fountain conversion outputs retain the marker from both Org and Markdown sources with frontmatter disabled.
+:END:
+- Date :: 2026-10-24.
+- Preservation :: This test was GREEN before implementation and remains GREEN after target-scoped filtering.
+
+* User validation
+
+** AMBER UT069.1 - Project document omits scene paragraphs :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-069-1-result
+:REASON: Requires operator inspection of a regenerated project document using the installed candidate.
+:END:
+- Date :: 2026-10-24.
+
+* Additional checks
+- Full regression :: GREEN. =make test= exited 0 on 2026-10-24; =internal/app= passed in 426.596 seconds, =internal/manuscript= passed in 125.129 seconds and every other package passed or reported no test files.
+- Formatting and lint :: GREEN. =git diff --check= and =gofmt -l internal= produced no findings; =make lint= exited 0.
+- Vulnerability scan :: GREEN. =make vulncheck= reported no vulnerabilities.
+- Documentation :: GREEN for the W069 additions. =sanitize= proposed no change to the new W069 text; unrelated pre-existing historical wording and symbols were preserved.
+- Readiness :: GREEN. The installed =sdlc-validate= delivery-code readiness check reported =ready: true= with no schema or readiness errors; RT069.1 and RT069.2 were GREEN and UT069.1 remained AMBER.

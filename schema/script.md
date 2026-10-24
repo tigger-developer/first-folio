@@ -1,8 +1,8 @@
 ---
 schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
 title: First Folio Markdown Script Schema
-version: "0.4"
-last-updated: "2026-10-08"
+version: "0.5"
+last-updated: "2026-10-24"
 ---
 
 # Markdown Script Schema
@@ -83,6 +83,11 @@ Major sections before the first act containing a speaker cue are introductory
 material, for example Synopsis or Setting. They use `##` headings and plain
 text. Their rendering is controlled by `render.frontmatter`.
 
+Plain paragraphs directly beneath a scene heading are scene introductory
+material until a nested direction, cue, prop, transition or structural heading
+begins. `render.frontmatter: false` omits these paragraphs from PDF, DOCX and ODT.
+Org, Markdown and Fountain conversions retain them as semantic source content.
+
 ### Character-name aliases
 
 The name cell accepts a trailing comma-separated alias list:
@@ -136,6 +141,7 @@ Fountain, Typst, and PDF receive none.
 
 ## Revision history
 
+- 0.5, 2026-10-24: Define direct scene paragraphs as rendered frontmatter while preserving semantic text conversion.
 - 0.4, 2026-10-08: Define cast-name aliases and automatic stage-direction capitalisation.
 - 0.3, 2026-09-10: Define only First Folio's limited script grammar; use YAML
   document-version metadata. General Markdown references and the misplaced

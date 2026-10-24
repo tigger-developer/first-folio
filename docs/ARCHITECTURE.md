@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.21"
+version: "0.22"
 last-updated: 2026-10-24
 ---
 
@@ -58,7 +58,7 @@ same-line dialogue keeps its existing grid layout.
 
 Stage plays and manuscripts intentionally retain separate semantic models.
 
-Stage-play parsers produce typed events for metadata, acts, scenes, directions, speakers, dialogue, character tables, transitions, props, intro material, and footnotes. Text emitters consume that model, while script PDF rendering prepares escaped template data from it.
+Stage-play parsers produce typed events for metadata, acts, scenes, direct scene-introduction paragraphs, directions, speakers, dialogue, character tables, transitions, props, global intro material, and footnotes. Text emitters preserve scene introductions as semantic source content. PDF, DOCX and ODT apply `render.frontmatter` to them at the rendered-output boundary, while script PDF rendering prepares escaped template data from the event stream.
 
 Manuscripts use metadata plus prose blocks such as parts, chapters, sections, paragraphs, lists, tables, code, blockquotes, links, scene breaks, and footnotes. Source-document images are not yet part of the manuscript contract; generated ISBN barcode SVGs are a separate copyright-page facility. The PDF/Typst route retains Org canonicalization through Markdown. Office output parses both source forms natively through `internal/source`, retaining the same documented manuscript semantics.
 
@@ -176,6 +176,7 @@ Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/em
 
 ## Document History
 
+- 0.22 (2026-10-24): Add scene-introduction semantics and target-scoped rendered frontmatter filtering.
 - 0.21 (2026-10-24): Share monospace typography across modes and define geometric stretch as the application-wide PDF contract.
 
 - 0.20 (2026-10-19): Separate editable natural baselines and shared formatting from per-instance layout.

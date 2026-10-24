@@ -1,7 +1,7 @@
 ---
 title: Org-mode Play Format
-version: "0.9"
-last-updated: "2026-10-22"
+version: "0.10"
+last-updated: "2026-10-24"
 ---
 
 # Org-mode Play Format
@@ -48,6 +48,11 @@ Level-2 headings represent scenes within an act.
 ** Scene 1
 ** Scene 2 — The Garden
 ```
+
+Plain paragraphs directly beneath a scene heading are scene introductory
+material. PDF, DOCX and ODT omit them when `render.frontmatter` is false;
+Markdown and Fountain conversion retain them. A nested heading ends the direct
+scene-introduction context.
 
 ### Stage Directions (H3)
 
@@ -190,6 +195,7 @@ Just boiled.
 
 ## Revision History
 
+- 0.10 (2026-10-24): Define scene introductory paragraphs and their rendered visibility boundary.
 - 0.7 (2026-10-12): Extend source-aware Org emphasis to DOCX and ODT.
 
 - 0.5, 2026-09-10: Document automatic destination-schema emission and use YAML document-version metadata.
