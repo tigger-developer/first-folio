@@ -69,7 +69,8 @@ func TestRT039_1ManuscriptFontBlockEmitsAllPropertiesForSelectedRole(t *testing.
 		"",
 	}, "\n"))
 	header := extractHeaderBlock(t, typst)
-	assertContains(t, header, `font: "W039 Header", size: 13.5pt, weight: 650, stretch: 117.5%, style: "oblique", tracking: -0.03em`)
+	assertContains(t, header, `font: "W039 Header", size: 13.5pt, weight: 650, stretch: 100%, spacing: 100%, style: "oblique", tracking: -0.03em`)
+	assertContains(t, typst, `#folio-font-stretch(117.5%)[`)
 	assertContains(t, typst, `font: "Libertinus Serif", size: 12pt, weight: "regular"`)
 	assertNotContains(t, header, `font: "Libertinus Serif"`)
 }

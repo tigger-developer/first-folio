@@ -70,7 +70,7 @@ func TestRT039_1LetterFontBlockEmitsAllProperties(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := `#set text(font: "W039 Letter", size: 13.5pt, weight: 650, stretch: 117.5%, style: "oblique", tracking: -0.03em)`
+	want := `#set text(font: "W039 Letter", size: 13.5pt, weight: 650, stretch: 100%, style: "oblique", tracking: -0.03em)`
 	if !strings.Contains(typst, want) {
 		t.Fatalf("missing %q in:\n%s", want, typst)
 	}

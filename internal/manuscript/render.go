@@ -236,7 +236,8 @@ func RenderTypst(doc Document, cfg Config) (string, error) {
 		return "", fmt.Errorf("loading Typst template: %w", err)
 	}
 	tmpl, err := template.New("manuscript.typ").Funcs(template.FuncMap{
-		"fontArgs": manuscriptFontArgs,
+		"fontArgs":       manuscriptFontArgs,
+		"normalFontArgs": manuscriptNormalFontArgs,
 	}).Parse(string(raw))
 	if err != nil {
 		return "", fmt.Errorf("parsing Typst template: %w", err)
@@ -968,9 +969,14 @@ func typstFontWeight(value string) string {
 }
 
 func manuscriptFontArgs(font FontConfig) string {
-	return fmt.Sprintf(`font: "%s", size: %s, weight: %s, stretch: %s, style: "%s", tracking: %s,`,
+	return fmt.Sprintf(`font: "%s", size: %s, weight: %s, stretch: 100%%, spacing: %s, style: "%s", tracking: %s,`,
 		typstutil.EscapeString(font.Family), font.Size, typstFontWeight(font.Weight),
 		font.Stretch, typstFontStyle(font.Style), font.LetterSpacing)
+}
+
+func manuscriptNormalFontArgs(font FontConfig) string {
+	font.Stretch = "100%"
+	return manuscriptFontArgs(font)
 }
 
 func escapeTypst(text string) string {

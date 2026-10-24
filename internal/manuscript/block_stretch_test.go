@@ -156,7 +156,7 @@ func TestRT043_3BlockFontPropertiesReachContent(t *testing.T) {
 		`font: "New Computer Modern"`,
 		"size: 13.5pt",
 		"weight: 650",
-		"stretch: 75%",
+		"stretch: 100%",
 		`style: "italic"`,
 		"tracking: -0.03em",
 	}
@@ -172,6 +172,7 @@ func TestRT043_3BlockFontPropertiesReachContent(t *testing.T) {
 			for _, arg := range want {
 				assertContains(t, rule, arg)
 			}
+			assertContains(t, output, "x: 75%")
 			compileFontPDF(t, dir)
 		})
 	}

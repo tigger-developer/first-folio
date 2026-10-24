@@ -67,6 +67,25 @@ func TestManuscriptProportionalRoleStretch(t *testing.T) {
 	}
 }
 
+func TestNestedRolesWithEqualStretchScaleExactlyOnce(t *testing.T) {
+	binary := buildFontCLI(t)
+	cfg := proseStretchConfig()
+	source := "Plainword `Inlineword`.\n\n> Quoteword `Quotecode`\n"
+	baseline := renderStretchWords(t, binary, "md", cfg, source)
+	for _, path := range []string{"font.stretch", "quoted-block.font.stretch", "mono.font.stretch"} {
+		setFontTestPath(cfg, "folio.manuscript."+path, "130%")
+	}
+	stretched := renderStretchWords(t, binary, "md", cfg, source)
+	for _, marker := range []string{"Plainword", "Inlineword", "Quoteword", "Quotecode"} {
+		base := baseline[marker]
+		got := stretched[marker]
+		want := (base.XMax - base.XMin) * 1.3
+		if math.Abs(got.XMax-got.XMin-want) > 0.03 {
+			t.Errorf("%s width %.3fpt, want %.3fpt", marker, got.XMax-got.XMin, want)
+		}
+	}
+}
+
 func proseStretchConfig() map[string]any {
 	cfg := fontFixtureConfig()
 	for path, value := range map[string]any{

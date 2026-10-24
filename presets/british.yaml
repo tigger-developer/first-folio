@@ -42,6 +42,15 @@ folio:
     style: regular
     letter-spacing: 0em
 
+  mono:
+    font:
+      family: Iosevka Publish
+      size: 9pt
+      weight: regular
+      stretch: 100%
+      style: regular
+      letter-spacing: 0em
+
   heading:
     font:
       family: Libertinus Serif

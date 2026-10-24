@@ -274,7 +274,7 @@ func TestRT063_7_OfficeLetterLiterals(t *testing.T) {
 			}
 			literal := proseInlineLayers(t, pkg, format, "https://example.invalid/submissions/letter")
 			if format == "docx" {
-				officeAssertEffective(t, literal, "rFonts", "ascii", "Libertinus Mono")
+				officeAssertEffective(t, literal, "rFonts", "ascii", "Iosevka Publish")
 			} else {
 				name, _ := officeEffectiveAttr(literal, "text-properties", "font-name")
 				family := ""
@@ -285,8 +285,8 @@ func TestRT063_7_OfficeLetterLiterals(t *testing.T) {
 						}
 					}
 				}
-				if family != "Libertinus Mono" {
-					t.Errorf("letter literal family=%q; want existing fixed Libertinus Mono contract", family)
+				if family != "Iosevka Publish" {
+					t.Errorf("letter literal family=%q; want shared folio.mono.font default", family)
 				}
 			}
 			for _, emphasis := range []struct{ marker, word, attribute, value string }{

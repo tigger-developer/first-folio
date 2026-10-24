@@ -54,6 +54,11 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
+	for _, warning := range cfg.Warnings() {
+		if _, err := fmt.Fprintln(stderr, "Warning:", warning); err != nil {
+			return err
+		}
+	}
 
 	targetFormat, toStdout, err := convertTarget(opts, cfg)
 	if err != nil {

@@ -74,7 +74,7 @@ Nurse Alison greets Tom, Mags and Marg. Mairéad enters.
 				if strings.Contains(output, "#table(columns:") != visible {
 					t.Fatal("table visibility not respected")
 				}
-				if visible && !strings.Contains(output, "[ALISON], [A nurse],") {
+				if visible && !strings.Contains(output, "[#root-text[ALISON]], [#root-text[A nurse]],") {
 					t.Fatal("primary name missing from cast")
 				}
 			})

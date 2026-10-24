@@ -77,8 +77,8 @@ func TestRT039_1EveryScriptFontPropertyReachesOnlyItsRole(t *testing.T) {
 				typst := readAppFile(t, target)
 				want := 1
 				if path == "folio.font" {
-					want = 2
-				} // Root plus inheriting frontmatter paragraph font.
+					want = 3
+				} // Page default, root wrapper, and inheriting frontmatter paragraph wrapper.
 				if count := strings.Count(typst, property.marker); count != want {
 					t.Fatalf("%s marker %q occurs %d times, want %d", path, property.marker, count, want)
 				}
@@ -109,7 +109,7 @@ func TestRT039_1ScriptFontBlockEmitsAllPropertiesForSelectedRole(t *testing.T) {
 		t.Fatal(stderr)
 	}
 	typst := readAppFile(t, target)
-	assertAppContains(t, typst, `#text(font: "W039 Act", size: 13.5pt, weight: 650, stretch: 117.5%, style: "oblique", tracking: -0.03em)`)
+	assertAppContains(t, typst, `#text(font: "W039 Act", size: 13.5pt, weight: 650, stretch: 100%, style: "oblique", tracking: -0.03em)[#folio-font-stretch(117.5%)`)
 	assertAppContains(t, typst, `font: "Libertinus Serif", size: 12pt, weight: "bold"`)
 }
 
@@ -225,7 +225,8 @@ func TestRT039_3ManuscriptFontMergesSameRoleAcrossPublicLayers(t *testing.T) {
 		t.Fatal(stderr)
 	}
 	typst := readAppFile(t, target)
-	assertAppContains(t, typst, `font: "W039 Layered Header", size: 13.5pt, weight: 643, stretch: 117.5%, style: "normal", tracking: 0.1em`)
+	assertAppContains(t, typst, `font: "W039 Layered Header", size: 13.5pt, weight: 643, stretch: 100%, spacing: 100%, style: "normal", tracking: 0.1em`)
+	assertAppContains(t, typst, `#folio-font-stretch(117.5%)`)
 	assertAppContains(t, typst, `font: "W039 Body Must Not Leak", size: 10pt`)
 	if strings.Contains(typst, `font: "W039 Body Must Not Leak", size: 13.5pt`) {
 		t.Fatal("manuscript body font leaked into the page-header role")

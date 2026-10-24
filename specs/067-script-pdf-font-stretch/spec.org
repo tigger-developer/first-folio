@@ -1,0 +1,117 @@
+#+TITLE: W067 - Apply font stretch geometrically in PDF
+#+SCHEMA: 8
+#+SUBTITLE: Emergency reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-24
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+- Script, letter and manuscript PDF and Typst output *apply configured font stretch as visible horizontal scaling*.
+** Before
+- Script Typst contained the configured percentages, but fonts without matching width faces *rendered every tested role at normal width*.
+** After
+- Every applicable font role *renders at its configured width ratio* while retaining height, baseline and word wrapping.
+** Changes
+- The script, letter and manuscript templates *geometrically scale words and spaces* from the normal-width face.
+** Unchanged
+- *DOCX and ODT remain native and editable* and retain their format-native text scaling.
+** Edge cases
+- =100%= stays at normal width; compression and expansion work independently for adjacent roles.
+** Decisions
+- Each Typst template uses the same geometric contract across all of its explicit typography roles; configured percentages never select a width face.
+** Next step
+- Return the audited candidate for the *operator's PDF comparison and closure decision*.
+
+* Context
+
+** Authority and baseline
+- Authority :: On 2026-10-23 the operator reported that non-default stretch values in =~/notes/gp/subs/script.yaml= were visible in DOCX but not PDF and invoked =BYPASS-GATE-7=. During diagnosis the file was actively adjusted through speaker, instruction and dialogue examples; the defect is independent of the chosen percentages.
+- Baseline :: [[file:../../docs/config.md][Configuration reference]] previously described non-manuscript Typst stretch as width-face selection. At =151dcf7=, generated Typst carried the configured percentages, but a rendered public-command regression measured all three PDF width ratios as exactly =1.000=. Generated DOCX contained native =50=, =200= and =75= text-scale properties and remains outside the correction.
+- Scope :: Script conversion, letters and manuscripts rendered to Typst or PDF, including body, running matter, title matter, headings, speech roles, quoted prose and monospace content. The operator's source and YAML files are read-only evidence.
+- Expansion :: On 2026-10-24 the operator required the no-width-face rule to apply reliably across the application, as with every font attribute. This extends the original script emergency correction to letter and manuscript PDF paths while preserving the original evidence above.
+- Exclusions :: DOCX and ODT serialization, font-family substitution, content parsing and installed binaries.
+
+* Acceptance Criteria
+
+** AC067.1 - PDF font roles use configured width ratios :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-067-1
+:END:
+- Criterion :: In script, letter and manuscript PDF output, configured =font.stretch= values *scale rendered glyph and word-space widths proportionally* from the normal-width face without changing glyph height.
+- Boundary :: Distinct and nested roles may use different or identical ratios without compounding. Text retains its baseline and remains available for normal word wrapping. =100%= retains normal width. DOCX and ODT behaviour does not change.
+- Proven by :: [[#rt-067-1][RT067.1 - Rendered script speech widths follow configuration]], [[#rt-067-2][RT067.2 - Letter and manuscript roles preserve geometric ratios]], [[#rt-067-3][RT067.3 - Every PDF role rejects native width-face selection]], [[#ot-067-1][OT067.1 - Project configuration reaches corrected PDF path]] and [[#ut-067-1][UT067.1 - Operator compares project PDF]].
+
+* Test Definitions
+
+** RT067.1 - Rendered script speech widths follow configuration :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-067-1
+:END:
+- Covers :: [[#ac-067-1][AC067.1 - Script PDF font roles use configured width ratios]].
+- Setup :: A synthetic Org play uses the bundled Iosevka Publish family. One PDF uses =100%= for speaker, instruction and dialogue; another uses =50%=, =200%= and =75%= respectively.
+- Action :: Convert both through the public command, extract rendered PDF word bounds and divide each configured width by its =100%= baseline.
+- Expected :: Ratios measure =0.50=, =2.00= and =0.75= within bounded rendering tolerances. The same words remain extractable.
+
+** RT067.2 - Letter and manuscript roles preserve geometric ratios :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-067-2
+:END:
+- Covers :: [[#ac-067-1][AC067.1 - PDF font roles use configured width ratios]].
+- Setup :: Synthetic letter and manuscript inputs configure non-default stretch for body, nested monospace and representative explicit roles, including equal outer and nested ratios.
+- Action :: Render PDFs and compare extracted word bounds with =100%= baselines.
+- Expected :: Each role measures its configured ratio once. Nested roles do not inherit an additional scale from the containing role.
+
+** RT067.3 - Every PDF role rejects native width-face selection :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-067-3
+:END:
+- Covers :: [[#ac-067-1][AC067.1 - PDF font roles use configured width ratios]].
+- Setup :: Give every public font role a distinctive non-default stretch value.
+- Action :: Generate Typst for script, letter and manuscript and inspect every role application.
+- Expected :: Each configured value reaches a geometric helper while the corresponding Typst =text= face is normalized to =stretch: 100%=; no configured percentage is emitted as native face selection.
+
+** OT067.1 - Project configuration reaches corrected PDF path :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-067-1
+:END:
+- Covers :: [[#ac-067-1][AC067.1 - Script PDF font roles use configured width ratios]].
+- Setup :: The named project Org source and its actively edited adjacent =script.yaml= contain at least one non-=100%= script role at probe time.
+- Action :: Build an isolated candidate, generate Typst and PDF into an OS temporary directory, and inspect the generated role calls plus extracted PDF content.
+- Expected :: Generated Typst routes each effective role percentage through the geometric helper, PDF compilation succeeds and expected script content remains extractable. No project source, YAML or installed binary changes.
+
+** UT067.1 - Operator compares project PDF :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-067-1
+:END:
+- Covers :: [[#ac-067-1][AC067.1 - Script PDF font roles use configured width ratios]].
+- Setup :: Install or invoke the audited candidate against the operator's project source and YAML.
+- Action :: Open the new PDF and compare speaker, instruction and dialogue widths with the working DOCX and prior PDF.
+- Expected :: Non-default roles visibly follow their configured percentages without unacceptable baseline or wrapping artefacts.
+
+* Edge Cases
+- *Compression and expansion coexist* within a single dialogue block.
+- *Spaces scale with words*, so multiword instructions and dialogue retain proportional spacing.
+- *Word-level scaling preserves wrapping opportunities* instead of scaling one already-laid-out paragraph box.
+- *Normal width is an identity path* and does not introduce a new box around each word.
+
+* Solution Design
+
+** Geometric Typst helpers
+- Each template normalizes the selected face to =100%= stretch, scales each non-space token horizontally by the configured ratio with reflow, preserves its measured descent as the box baseline, and scales inter-word spacing by the same ratio.
+- Explicit typography roles retain configured family, size, weight, style and tracking. Role state prevents an enclosing body rule from scaling nested monospace or another explicit role a second time, including when both ratios are numerically equal.
+
+** Output boundaries
+- The existing PDF YAML cascade and validated font values remain authoritative. PDF compilation, content escaping and error propagation do not change. DOCX and ODT writers retain their native editable stretch properties.
+
+** Security and operational impact
+- No dependency, external service, persistence or new input surface is introduced. Scaling operates on already escaped template content with the existing input and compilation bounds.
+
+* Delivery Handoff
+- Emergency ordering :: The rendered PDF regression failed with three =1.000= ratios before the template change and passed afterwards. This durable definition records the authorized and observed result retrospectively.
+- Documentation :: [[file:../../docs/config.md][Configuration reference]] distinguishes geometric script PDF stretch from editable office properties and letter face selection.
+- Evidence :: [[file:validation.org][Validation record]] and [[file:internal-review.md][Current-session internal reviews]]. UT067.1 remains for the operator; closure is separate from emergency authorization.

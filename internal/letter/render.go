@@ -19,6 +19,7 @@ import (
 
 type templateData struct {
 	Page, Font, FontSize, Weight, Stretch, Style, LetterSpacing              string
+	MonoFont, MonoFontSize, MonoWeight, MonoStretch, MonoStyle, MonoSpacing  string
 	MarginTop, MarginBottom, MarginLeft, MarginRight                         string
 	SpaceBeforeClosing, SpaceBeforeSignoff                                   string
 	SpaceAfterSender, SpaceAfterRecipient, SpaceAfterDate, SpaceAfterSubject string
@@ -37,9 +38,14 @@ func RenderTypst(letter Letter, cfg config.Config) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	mono, err := cfg.Font("folio.mono.font")
+	if err != nil {
+		return "", err
+	}
 	data := templateData{
 		Page: cfg.String("folio.letter.page", "a4"), Font: escapeString(font.Family), FontSize: font.Size,
 		Weight: letterWeight(font.Weight), Stretch: font.Stretch, Style: letterStyle(font.Style), LetterSpacing: font.LetterSpacing,
+		MonoFont: escapeString(mono.Family), MonoFontSize: mono.Size, MonoWeight: letterWeight(mono.Weight), MonoStretch: mono.Stretch, MonoStyle: letterStyle(mono.Style), MonoSpacing: mono.LetterSpacing,
 		MarginTop: cfg.String("folio.letter.margin-top", "25mm"), MarginBottom: cfg.String("folio.letter.margin-bottom", "25mm"), MarginLeft: cfg.String("folio.letter.margin-left", "30mm"), MarginRight: cfg.String("folio.letter.margin-right", "25mm"),
 		SpaceBeforeClosing: cfg.String("folio.letter.space-before-closing", "1.2em"), SpaceBeforeSignoff: cfg.String("folio.letter.space-before-signoff", "1.5em"),
 		SpaceAfterSender: cfg.String("folio.letter.space-after-sender", "2em"), SpaceAfterRecipient: cfg.String("folio.letter.space-after-recipient", "1em"), SpaceAfterDate: cfg.String("folio.letter.space-after-date", "1em"), SpaceAfterSubject: cfg.String("folio.letter.space-after-subject", "0.5em"),
@@ -113,7 +119,7 @@ func inlineOrg(value string) string {
 		re *regexp.Regexp
 		fn func(string) string
 	}{
-		{letterCodeRE, func(s string) string { return `#text(font: "Libertinus Mono")[` + escapeContent(s) + `]` }},
+		{letterCodeRE, func(s string) string { return `#mono-text[` + escapeContent(s) + `]` }},
 		{letterBoldRE, func(s string) string { return "*" + escapeContent(s) + "*" }},
 		{letterItalicRE, func(s string) string { return "_" + escapeContent(s) + "_" }},
 		{letterUnderlineRE, func(s string) string { return "#underline[" + escapeContent(s) + "]" }},

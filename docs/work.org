@@ -106,6 +106,25 @@ classification; it is provenance, not current state.
 - Amendment 2026-10-22 :: The operator invoked =BYPASS-GATE-7= again after a screenshot showed =MARY (IGNORING:= and =(the question)=. An opening parenthesis must begin a direction regardless of the following word's capitalization. This correction remains under W066.
 - Evidence :: [[file:../specs/066-numbered-character-cues/validation.org][Regression and output checks]]. Internal reviews and operator closure decision remain separate.
 
+** ACTIVE W067 - Apply font stretch geometrically in PDF :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-067
+:CREATED: 2026-10-23
+:END:
+- Specification :: [[file:../specs/067-script-pdf-font-stretch/spec.org][W067 - Application PDF font stretch]].
+- Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-23 after configured script speaker, instruction and dialogue stretch values rendered at unchanged width in PDF while DOCX applied them.
+- Scope expansion :: On 2026-10-24 the operator required the geometric, non-width-face contract for every applicable font object across script, letter and manuscript PDF rendering.
+- Evidence :: [[file:../specs/067-script-pdf-font-stretch/validation.org][Rendered-width regression and project output probe]]. Internal reviews and operator closure remain separate.
+
+** ACTIVE W068 - Share monospace typography across the application :feature:migration:
+:PROPERTIES:
+:CUSTOM_ID: w-068
+:CREATED: 2026-10-23
+:END:
+- Specification :: [[file:../specs/068-shared-monospace-font/spec.org][W068 - Shared monospace typography]].
+- Scope :: Add top-level =folio.mono.font= configuration for every applicable command, preserve =folio.manuscript.mono.font= as a deprecated compatible path, and report migration guidance on stderr when the deprecated path is supplied.
+- Boundary :: This remains a separate configuration migration. Its PDF consumers use W067's application-wide geometric stretch contract.
+
 ** DONE W063 - Editable DOCX and ODT manuscripts and letters :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-063

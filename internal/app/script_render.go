@@ -106,7 +106,7 @@ func scriptRunningFormat(format string, doc play.Document) string {
 type scriptTemplateData struct {
 	RunningHeader, RunningFooter                       scriptRunningMatter
 	Page, Margin                                       string
-	RootFont, HeadingFont                              typstFontData
+	RootFont, HeadingFont, MonoFont                    typstFontData
 	DialogueSameLine                                   bool
 	SpeechSpace, DialogueIndent, DialogueWrap          string
 	SpeakerFont                                        typstFontData
@@ -208,6 +208,7 @@ func newScriptTemplateData(doc play.Document, cfg config.Config, format play.For
 		Page:          cfg.String("folio.page", "a4"), Margin: cfg.String("folio.margin", "25mm"),
 		RootFont:                 font("folio.font"),
 		HeadingFont:              font("folio.heading.font"),
+		MonoFont:                 font("folio.mono.font"),
 		SpeechSpace:              cfg.String("folio.positioning.speech.space-before", "1.6em"),
 		DialogueIndent:           typstDimension(cfg.String("folio.positioning.speech.dialogue.indent", "0")),
 		DialogueWrap:             cfg.String("folio.positioning.speech.dialogue.wrap-indent", "7em"),
@@ -357,7 +358,7 @@ func renderPlayBody(doc play.Document, cfg config.Config, format play.Format) st
 			}
 			lines = append(lines, "#dialogue(\""+name+"\""+direction+")["+strings.Join(dialogue, " \\\n")+"]")
 		case play.EventDialogue:
-			lines = append(lines, inlineTypst(event.Text, footnotes, format), "")
+			lines = append(lines, "#root-text["+inlineTypst(event.Text, footnotes, format)+"]", "")
 		case play.EventPropText:
 			lines = append(lines, "#prop-text["+inlineTypst(event.Text, footnotes, format)+"]")
 		case play.EventTransition:
@@ -369,7 +370,7 @@ func renderPlayBody(doc play.Document, cfg config.Config, format play.Format) st
 				i++
 				row := doc.Events[i]
 				primary, _ := play.ParseCastName(row.Name)
-				rows = append(rows, "["+inlineTypst(primary, footnotes, format)+"], ["+inlineTypst(row.Text, footnotes, format)+"],")
+				rows = append(rows, "[#root-text["+inlineTypst(primary, footnotes, format)+"]], [#root-text["+inlineTypst(row.Text, footnotes, format)+"]],")
 			}
 			lines = append(lines, "#frontmatter-header["+inlineTypst(defaultString(event.Text, "Characters"), footnotes, format)+"]", "#table(columns: (30%, 1fr), stroke: none,", strings.Join(rows, "\n"), ")")
 		}
@@ -395,8 +396,8 @@ func inlineTypst(text string, footnotes map[string]string, format play.Format) s
 	}
 	text = replaceMarkup(text, boldItalicRE, func(s string) string { return "*_" + escapeTypstContent(s) + "_*" }, protect)
 	text = replaceMarkup(text, boldRE, func(s string) string { return "*" + escapeTypstContent(s) + "*" }, protect)
-	text = replaceMarkup(text, codeTickRE, func(s string) string { return `#raw("` + escapeTypstString(s) + `")` }, protect)
-	text = replaceMarkup(text, codeOrgRE, func(s string) string { return `#raw("` + escapeTypstString(s) + `")` }, protect)
+	text = replaceMarkup(text, codeTickRE, func(s string) string { return `#mono-text[#raw("` + escapeTypstString(s) + `")]` }, protect)
+	text = replaceMarkup(text, codeOrgRE, func(s string) string { return `#mono-text[#raw("` + escapeTypstString(s) + `")]` }, protect)
 	text = replaceMarkup(text, orgItalicRE, func(s string) string { return "_" + escapeTypstContent(s) + "_" }, protect)
 	text = replaceMarkup(text, underlineRE, func(s string) string { return "#underline[" + escapeTypstContent(s) + "]" }, protect)
 	// A single-asterisk span means bold in Org sources and italic in Markdown and
@@ -505,15 +506,15 @@ func titleFooter(doc play.Document, cfg config.Config, dateFont, versionFont typ
 		{doc.Metadata["date"], cfg.String("folio.title-page.date.position", "bottom-left"), dateFont},
 	} {
 		if item.value != "" {
-			slots[item.position] = append(slots[item.position], "#text("+item.font.Args()+")["+escapeTypstContent(item.value)+"]")
+			slots[item.position] = append(slots[item.position], "#text("+item.font.Args()+")[#folio-font-stretch("+item.font.Stretch+")["+escapeTypstContent(item.value)+"]]")
 		}
 	}
 	return strings.Join(slots["bottom-left"], " #linebreak() "), strings.Join(slots["bottom-right"], " #linebreak() ")
 }
 
 func (font typstFontData) Args() string {
-	return fmt.Sprintf(`font: "%s", size: %s, weight: %s, stretch: %s, style: "%s", tracking: %s`,
-		font.Family, font.Size, font.Weight, font.Stretch, font.Style, font.LetterSpacing)
+	return fmt.Sprintf(`font: "%s", size: %s, weight: %s, stretch: 100%%, style: "%s", tracking: %s`,
+		font.Family, font.Size, font.Weight, font.Style, font.LetterSpacing)
 }
 
 func typstWeight(value string) string {

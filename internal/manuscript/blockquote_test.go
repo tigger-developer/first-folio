@@ -54,7 +54,7 @@ func TestManuscriptBlockSpacingAndQuoteFontCanBeConfigured(t *testing.T) {
 		"#show quote.where(block: true): it => {",
 		"above: par.spacing + 1.25em", "below: par.spacing + 1.25em", "#pad(left: 2em)[#text(",
 		`font: "Libertinus \"Serif\""`, "size: 11pt", `weight: "semibold"`,
-		"stretch: 125%", `style: "italic"`, "tracking: 0.03em",
+		"stretch: 100%", "spacing: 125%", `style: "italic"`, "tracking: 0.03em",
 	} {
 		assertContains(t, typst, fragment)
 	}
@@ -205,7 +205,7 @@ func TestQuotedBlockFontPropertiesInheritIndependently(t *testing.T) {
 			assertContains(t, typst, `font: "`+want["family"]+`",`)
 			assertContains(t, typst, "size: "+want["size"]+",")
 			assertContains(t, typst, `weight: "`+want["weight"]+`",`)
-			assertContains(t, typst, "stretch: "+want["stretch"]+",")
+			assertContains(t, typst, "stretch: 100%, spacing: "+want["stretch"]+",")
 			assertContains(t, typst, `style: "`+want["style"]+`",`)
 			assertContains(t, typst, "tracking: "+want["letter-spacing"]+",")
 		})
@@ -267,7 +267,7 @@ func TestQuotedBlockFontAcceptsNumericWeightAndPlainStretch(t *testing.T) {
 	}, "\n"))
 
 	assertContains(t, typst, "weight: 250,")
-	assertContains(t, typst, "stretch: 125%,")
+	assertContains(t, typst, "stretch: 100%, spacing: 125%,")
 }
 
 func TestPreciseCodeBlockSpacingOverridesEqualSpacing(t *testing.T) {

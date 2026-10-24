@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.20"
-last-updated: 2026-10-19
+version: "0.21"
+last-updated: 2026-10-24
 ---
 
 # Architecture
@@ -85,6 +85,8 @@ The loader deep-merges ordinary keys and partial font blocks, validates every ef
 
 Running matter is configured at `folio.page-header` and `folio.page-footer` for scripts and manuscripts. Deprecated manuscript-local blocks are normalized within each configuration layer, before merging, so same-layer manuscript overrides do not bypass higher-layer shared settings. Manuscript command diagnostics report their use on stderr. Letter rendering ignores running-matter settings because letters are supplementary correspondence, not manuscript pages.
 
+Monospace typography is configured once at `folio.mono.font` for script, letter and manuscript inline code and supported code blocks. The deprecated `folio.manuscript.mono.font` path is normalized into that shared role within each layer, with explicit top-level properties winning overlaps. Public commands report legacy use on stderr. The effective role then follows the ordinary PDF YAML cascade and is projected into Typst, DOCX and ODT renderers.
+
 For manuscript mode, the shared loader records each external YAML file successfully loaded as a layer. The existing warning channel passes one resolved-path diagnostic per file, in cascade order, to both Typst/PDF and office command routes for stderr emission. Built-in presets, source frontmatter, CLI values, and other command modes do not produce load diagnostics. Warning collection does not change the merged configuration.
 
 ## Rendering
@@ -149,8 +151,12 @@ Templates own page composition. Product Go code does not contain generated-langu
 
 Script title composition uses one shared title block for a dedicated title page or a compact heading above first-page content. `folio.title-page.enabled` selects between them; manuscript title-page settings remain independent. Script-only Boolean validation covers this switch and `skip-header`/`skip-footer`. Running-matter suppression uses the physical page counter and applies to the dedicated title page or compact page 1, without resetting numbering or removing title metadata. The renderer suppresses only the first act's explicit break in compact mode; later act breaks and natural pagination remain. See [script title configuration](config.md#compact-script-title-block) for defaults and untitled-script handling.
 
-Manuscript body, quote and monospace stretch use geometric horizontal scaling in
-the template. For stretched prose, `internal/manuscript` embeds English patterns
+Script, letter and manuscript Typst templates apply every configured font stretch
+as geometric horizontal scaling from a normal-width face. Explicit role wrappers
+preserve baselines and word-level reflow, and role state prevents an enclosing
+body role from scaling nested monospace a second time. DOCX and ODT retain their
+native editable text-scaling properties. For stretched manuscript prose,
+`internal/manuscript` embeds English patterns
 and exceptions, applies the pinned Go hyphenation library, and supplies a
 document-specific dictionary of discretionary break points. The template
 preserves shaping-sensitive boundaries and leaves final line and page breaking
@@ -169,6 +175,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.21 (2026-10-24): Share monospace typography across modes and define geometric stretch as the application-wide PDF contract.
 
 - 0.20 (2026-10-19): Separate editable natural baselines and shared formatting from per-instance layout.
 

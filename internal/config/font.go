@@ -26,6 +26,7 @@ var FontRolePaths = []string{
 	"folio.page-header.font",
 	"folio.page-footer.font",
 	"folio.font",
+	"folio.mono.font",
 	"folio.heading.font",
 	"folio.title-page.title.font",
 	"folio.title-page.subtitle.font",

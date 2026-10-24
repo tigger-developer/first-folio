@@ -104,6 +104,7 @@ type Folio struct {
 	Style      string           `yaml:"style"`
 	Font       FontConfig       `yaml:"font"`
 	Heading    FontContainer    `yaml:"heading"`
+	Mono       FontContainer    `yaml:"mono"`
 	Page       string           `yaml:"page"`
 	Margin     string           `yaml:"margin"`
 	Manuscript ManuscriptConfig `yaml:"manuscript"`

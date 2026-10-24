@@ -42,7 +42,11 @@ func (w *docxWriter) sourceRuns(nodes []source.Node, properties docxNode, depth 
 			out = append(out, docxRun(n.Content.(string), props))
 		case "Code":
 			c := n.Content.([]any)
-			props.children = append(props.children, dx("rFonts").attr("w:ascii", "Courier New").attr("w:hAnsi", "Courier New"))
+			mono, _, err := w.font("folio.mono.font")
+			if err != nil {
+				return nil, err
+			}
+			props.children = append(props.children, mono.children...)
 			out = append(out, docxRun(c[1].(string), props))
 		case "NoteReference":
 			ref, err := w.note(n.Content.(string))

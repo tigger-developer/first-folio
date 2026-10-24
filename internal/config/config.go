@@ -79,7 +79,7 @@ func Load(opts Options) (Config, error) {
 		deepMerge(base, override)
 	}
 
-	base = runningMatterLayer(base, opts.Mode)
+	base = monospaceLayer(runningMatterLayer(base, opts.Mode), opts.Mode)
 	warnings := []string{}
 	warningSeen := map[string]bool{}
 	warnLoadedFile := func(path string, loaded bool) {
@@ -93,6 +93,12 @@ func Load(opts Options) (Config, error) {
 		warnings = append(warnings, fmt.Sprintf("loaded YAML file %q into manuscript configuration cascade.", resolved))
 	}
 	mergeLayer := func(layer map[string]any) {
+		for _, warning := range legacyMonospaceWarnings(layer) {
+			if !warningSeen[warning] {
+				warnings = append(warnings, warning)
+				warningSeen[warning] = true
+			}
+		}
 		if opts.Mode == ModeManuscript {
 			for _, warning := range legacyRunningMatterWarnings(layer) {
 				if !warningSeen[warning] {
@@ -101,7 +107,7 @@ func Load(opts Options) (Config, error) {
 				}
 			}
 		}
-		deepMerge(base, runningMatterLayer(layer, opts.Mode))
+		deepMerge(base, monospaceLayer(runningMatterLayer(layer, opts.Mode), opts.Mode))
 	}
 	mergeFile := func(path string) error {
 		layer, loaded, err := readOptional(path)

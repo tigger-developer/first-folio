@@ -99,6 +99,10 @@ func (p *odtProjection) reference() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	monoFont, _, err := w.font("folio.mono.font")
+	if err != nil {
+		return nil, err
+	}
 	styles := ox("office:styles", ox("style:default-style", ox("style:paragraph-properties").attr("fo:margin-top", "0pt").attr("fo:margin-bottom", "0pt"), odtTextProperties(bodyFont)).attr("style:family", "paragraph"), ox("style:style").attr("style:name", "Standard").attr("style:family", "paragraph"))
 	faces := ox("office:font-face-decls")
 	seen := map[string]bool{}
@@ -112,7 +116,12 @@ func (p *odtProjection) reference() ([]byte, error) {
 		styles.children = append(styles.children, ox("style:style", odtParagraphProperties(odtChild(s, "pPr")), odtTextProperties(font)).attr("style:name", odtValue(s, "styleId")).attr("style:display-name", odtValue(odtChild(s, "name"), "val")).attr("style:family", "paragraph").attr("style:parent-style-name", "Standard"))
 	}
 	styles.children = append(styles.children, p.styles...)
-	styles.children = append(styles.children, ox("style:style", ox("style:text-properties").attr("fo:font-family", "Courier New")).attr("style:name", "FolioCode").attr("style:family", "text"))
+	monoFamily := odtValue(odtChild(monoFont, "w:rFonts"), "ascii")
+	if !seen[monoFamily] {
+		faces.children = append(faces.children, ox("style:font-face").attr("style:name", monoFamily).attr("svg:font-family", monoFamily))
+		seen[monoFamily] = true
+	}
+	styles.children = append(styles.children, ox("style:style", odtTextProperties(monoFont)).attr("style:name", "FolioCode").attr("style:family", "text"))
 	for _, pair := range []struct{ name, parent string }{{"Text_20_body", "FolioBody"}, {"Footnote", "FolioFootnote"}} {
 		styles.children = append(styles.children, ox("style:style").attr("style:name", pair.name).attr("style:family", "paragraph").attr("style:parent-style-name", pair.parent))
 	}

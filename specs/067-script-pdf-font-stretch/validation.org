@@ -1,0 +1,66 @@
+#+TITLE: W067 - Application PDF font stretch validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** GREEN RT067.1 - Rendered script speech widths follow configuration :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-067-1-result
+:REVISION: 151dcf7 plus W067 rendered regression and script-template working-tree changes
+:COMMAND: go test ./internal/app -run '^TestRT067_1ScriptPDFAppliesGeometricFontStretch$' -count=1
+:EVIDENCE: Before implementation all three rendered width ratios were 1.000 instead of 0.50, 2.00 and 0.75. The same public-command PDF cases pass after geometric scaling.
+:END:
+- Date :: 2026-10-23.
+- RED :: Speaker, instruction and dialogue widths were unchanged even though generated Typst contained =50%=, =200%= and =75%=.
+- GREEN :: The rendered-PDF regression passed after word-level geometric scaling. Existing speaker instruction placement and frontmatter font checks also passed.
+
+** GREEN RT067.2 - Letter and manuscript roles preserve geometric ratios :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-067-2-result
+:REVISION: 151dcf7 plus W067 application-wide geometric-stretch working-tree delta
+:COMMAND: go test ./internal/letter -run 'TestRT067LetterAndNestedMonoStretchGeometrically' -count=1; go test ./internal/manuscript -run 'TestManuscriptProportionalRoleStretch|TestNestedRolesWithEqualStretchScaleExactlyOnce' -count=1
+:EVIDENCE: Rendered letter body and nested monospace measured 1.5 times their normal widths without compounding. Manuscript body, quoted, monospace and equal-ratio nested roles measured their configured ratios exactly once.
+:END:
+- Date :: 2026-10-24.
+- Boundary :: The tests compile PDFs and inspect rendered word bounds; generated Typst markers alone are not treated as geometric evidence.
+
+** GREEN RT067.3 - Every PDF role rejects native width-face selection :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-067-3-result
+:REVISION: 151dcf7 plus W067 application-wide geometric-stretch working-tree delta
+:COMMAND: go test ./internal/app ./internal/config ./internal/letter ./internal/manuscript -count=1
+:EVIDENCE: Role-inventory, template-generation and rendered regressions passed for script, letter and manuscript. Configured percentages reach geometric helpers while emitted font faces remain at native stretch 100%.
+:END:
+- Date :: 2026-10-24.
+- Preservation :: The full repository suite passed, including searchable-text, cast-table, running-matter, pagination and editable-output regressions.
+
+* Bounded one-off verification
+
+** GREEN OT067.1 - Project configuration reaches corrected PDF path :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-067-1-result
+:REVISION: 151dcf7 plus W067 script-template working-tree change
+:EVIDENCE: An isolated candidate generated Typst and PDF from the named project source; the effective 95% speaker role passed through folio-font-stretch, PDF compilation succeeded and expected character names remained extractable.
+:END:
+- Date :: 2026-10-23.
+- Environment :: macOS; isolated =.agent/w067-bin/folio=; OS temporary output =folio-w067-verify.XXXXXXXX.I1JkfMEHm9=.
+- Boundary :: The operator's source and YAML remain unchanged; outputs use an OS temporary directory and an isolated project-local build.
+
+* User validation
+
+** AMBER UT067.1 - Operator compares project PDF :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-067-1-result
+:REASON: Requires the operator's visual comparison of the candidate PDF with the working DOCX and prior PDF.
+:END:
+- Date :: 2026-10-23.
+- Boundary :: This is visual acceptance evidence and remains separate from rendered-width automation.
+
+* Additional checks
+- Focused script, letter and manuscript geometric-stretch checks passed.
+- =make test= passed every package on 2026-10-24: application rendering took 411.724 seconds and manuscript rendering took 117.841 seconds.
+- =make lint=, =make vulncheck=, =git diff --check= and =gofmt -l internal= passed; the vulnerability scan reported no findings.
+- Product documentation was checked with =sanitize=; no change-specific correction was reported.

@@ -6,7 +6,7 @@ VERSION ?= $(patsubst v%,%,$(CURRENT_VERSION))
 RELEASE_VERSION ?= $(basename $(CURRENT_VERSION)).$(shell expr $(patsubst .%,%,$(suffix $(CURRENT_VERSION))) + 1)
 LDFLAGS := -X github.com/tigger-developer/first-folio/internal/app.Version=$(VERSION)
 
-.PHONY: build install uninstall test lint check-test-deps check-release-deps release sync
+.PHONY: build install uninstall test lint vulncheck check-test-deps check-release-deps release sync
 
 build:
 	@mkdir -p "$(BUILD_DIR)"
@@ -24,6 +24,10 @@ uninstall:
 lint:
 	@go vet ./...
 
+vulncheck:
+	@command -v govulncheck >/dev/null || { echo "make vulncheck requires govulncheck on PATH" >&2; exit 1; }
+	@govulncheck ./...
+
 test: check-test-deps
 	@go test -timeout=20m ./...
 
@@ -38,6 +42,7 @@ check-release-deps:
 	@command -v go >/dev/null
 	@command -v typst >/dev/null
 	@command -v pandoc >/dev/null
+	@command -v govulncheck >/dev/null
 
 sync:
 	@git add --all
@@ -46,6 +51,7 @@ sync:
 	@git push
 
 release: check-release-deps
+	@$(MAKE) vulncheck
 ifneq ($(SKIP_TESTS),1)
 	@$(MAKE) test
 else

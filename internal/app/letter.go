@@ -58,6 +58,11 @@ func runLetter(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
+	for _, warning := range cfg.Warnings() {
+		if _, err := fmt.Fprintln(stderr, "Warning:", warning); err != nil {
+			return err
+		}
+	}
 	var filter *regexp.Regexp
 	if to != "" {
 		filter, err = regexp.Compile("(?i)" + to)

@@ -1,7 +1,7 @@
 ---
 title: First Folio
-version: "1.12"
-last-updated: 2026-10-19
+version: "1.13"
+last-updated: 2026-10-24
 ---
 
 # First Folio
@@ -66,7 +66,7 @@ brew install tigger-developer/tap/first-folio
 From a committed checkout, `make release` runs the regression suite, creates the
 next patch tag, pushes the branch and that tag, then updates and pushes the
 Homebrew formula with the archive URL and SHA-256 checksum. Go, Typst and Pandoc
-and the contributor prerequisites below must be installed for the release checks. The tap checkout must be clean, current
+and the contributor prerequisites below, including `govulncheck`, must be installed for the release checks. The tap checkout must be clean, current
 and configured with an authenticated, writable upstream. SSH remotes can use
 the same GitHub access as the source repository; an HTTPS clone needs separate
 HTTPS credentials.
@@ -150,10 +150,16 @@ folio:
   font:
     family: EB Garamond
     size: 11pt
+  mono:
+    font:
+      family: Iosevka Publish
+      size: 9pt
   page: a4
 ```
 
 Configuration is merged by key. Every typography role uses the same six-property `font` block; partial blocks inherit from the same role in lower layers. Script introduction paragraphs also inherit omitted properties from `folio.font`; override them independently with `folio.positioning.frontmatter.paragraph.font`. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the first Markdown manuscript input's `folio:`/`render:` frontmatter, the global style-specific file, global `script.yaml`, the selected built-in style overlay, and the shared British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
+
+Inline code and supported code blocks use shared `folio.mono.font` typography in scripts, letters and manuscripts. The former `folio.manuscript.mono.font` path remains compatible but emits a deprecation warning. PDF output applies configured stretch geometrically from the normal-width face for every font role; DOCX and ODT retain native editable scaling.
 
 See [docs/config.md](docs/config.md) for the configuration reference and [examples/script.yaml.example](examples/script.yaml.example) for an annotated example.
 
@@ -210,6 +216,7 @@ Word and LibreOffice editing, save and reopen remain human validation.
 ```bash
 make test   # Go unit, integration, Typst, and PDF regression suite
 make lint   # Go static analysis
+make vulncheck # Go dependency and reachable-code vulnerability gate
 ```
 
 ## Documentation
@@ -226,6 +233,8 @@ make lint   # Go static analysis
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.13 (2026-10-24): Document shared monospace typography and application-wide geometric PDF stretch.
 
 - 1.12 (2026-10-19): Document native office source parsing and separate novel-scale acceptance.
 

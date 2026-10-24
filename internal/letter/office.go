@@ -23,6 +23,14 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 	if err != nil {
 		return office.Prose{}, err
 	}
+	monoFont, err := cfg.Font("folio.mono.font")
+	if err != nil {
+		return office.Prose{}, err
+	}
+	monoStyle, err := office.ResolveStyle(monoFont, base.Size)
+	if err != nil {
+		return office.Prose{}, err
+	}
 	cap := office.CapHeight(base)
 	base.Line = cap + base.Size*0.8
 	base.After = base.Size * 0.4
@@ -43,8 +51,7 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 		}
 	}
 	plan.Styles["FolioBody"] = base
-	literal := base
-	literal.Font.Family = "Libertinus Mono"
+	literal := monoStyle
 	literal.Character = true
 	plan.Styles["FolioLiteral"] = literal
 	inlineParser := source.NewLetterParser()

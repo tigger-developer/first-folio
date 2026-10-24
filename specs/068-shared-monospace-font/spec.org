@@ -1,0 +1,122 @@
+#+TITLE: W068 - Share monospace typography across the application
+#+SCHEMA: 8
+#+SUBTITLE: Application-wide configuration migration
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-24
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+- Every applicable command uses *one top-level monospace font definition*.
+** Before
+- Manuscripts expose =folio.manuscript.mono.font=, while script conversion has *no corresponding configurable monospace role*.
+** After
+- =folio.mono.font= configures monospaced inline and block content across the application.
+- Existing =folio.manuscript.mono.font= input remains effective as a compatibility input for the shared role and emits a migration warning.
+** Changes
+- Move the public monospace font authority to the top-level =folio= object and project it into format-specific renderers.
+** Unchanged
+- Existing configuration precedence, non-monospace font roles, document parsing and output selection remain unchanged.
+** Edge cases
+- When both paths are present, the top-level path wins at the same configuration layer; higher-precedence layers continue to win normally.
+** Decisions
+- The legacy manuscript path is deprecated, not removed.
+** Next step
+- Audit and obtain operator sign-off before delivery.
+
+* Context
+
+** Authority and baseline
+- Authority :: On 2026-10-23 the operator requested an application-level monospace definition modelled on the shared page-header and page-footer migration.
+- Baseline :: =folio.manuscript.mono.font= configures manuscript inline and block code. Script conversion has no public monospace font role.
+- Scope :: Configuration loading, validation, warnings, documentation and applicable PDF, Typst, DOCX and ODT renderers for manuscript, script conversion and letters.
+- Exclusions :: Changing source syntax, converting ordinary text to monospace, removing the legacy path or changing unrelated typography defaults.
+
+* Acceptance Criteria
+
+** AC068.1 - Top-level monospace configuration is shared :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-068-1
+:END:
+- Criterion :: =folio.mono.font= supplies every supported font attribute to monospaced inline and block content in each applicable command and output format.
+- Boundary :: Family, size, weight, stretch, style and letter spacing follow the normal YAML cascade and same-path partial inheritance rules.
+- Proven by :: [[#rt-068-1][RT068.1 - Shared monospace font reaches applicable renderers]] and [[#at-068-1][AT068.1 - Public commands preserve monospace typography]].
+
+** AC068.2 - The manuscript path remains compatible and deprecated :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-068-2
+:END:
+- Criterion :: Existing =folio.manuscript.mono.font= configuration remains effective for every applicable command and emits one stderr warning directing the user to =folio.mono.font=.
+- Boundary :: The warning never appears on stdout. Configurations using only the top-level path remain quiet.
+- Proven by :: [[#rt-068-2][RT068.2 - Legacy configuration warns without breaking output]].
+
+** AC068.3 - Shared precedence is deterministic :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-068-3
+:END:
+- Criterion :: The established YAML cascade applies before monospace configuration is projected into renderers. Within one layer, explicit =folio.mono.font= values take precedence over the corresponding deprecated manuscript values.
+- Proven by :: [[#rt-068-3][RT068.3 - Shared and legacy paths preserve cascade precedence]].
+
+* Test Definitions
+
+** RT068.1 - Shared monospace font reaches applicable renderers :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-068-1
+:END:
+- Covers :: [[#ac-068-1][AC068.1 - Top-level monospace configuration is shared]].
+- Setup :: Temporary sources contain both inline monospace and monospaced blocks where the input format supports them. Top-level configuration supplies distinctive values for every font attribute.
+- Action :: Generate inspectable output through each applicable renderer.
+- Expected :: Every supported monospaced construct carries the effective family, size, weight, geometric stretch, style and letter spacing; ordinary text retains its own role.
+
+** RT068.2 - Legacy configuration warns without breaking output :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-068-2
+:END:
+- Covers :: [[#ac-068-2][AC068.2 - The manuscript path remains compatible and deprecated]].
+- Setup :: Configure only =folio.manuscript.mono.font= in one user YAML layer.
+- Action :: Run the public convert, letter and manuscript commands across their supported output routes and capture stdout, stderr, status and output.
+- Expected :: Output retains the legacy monospace values, the command succeeds, stderr contains one migration warning naming both paths, and stdout contains no warning.
+
+** RT068.3 - Shared and legacy paths preserve cascade precedence :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-068-3
+:END:
+- Covers :: [[#ac-068-3][AC068.3 - Shared precedence is deterministic]].
+- Setup :: Distribute partial shared and legacy definitions across successive YAML cascade layers, including one layer containing both paths.
+- Action :: Resolve the effective configuration and generate inspectable output.
+- Expected :: Later layers win normally; within one layer the shared path wins for overlapping attributes, non-overlapping legacy attributes remain compatible, and the effective font is identical across applicable renderers.
+
+** AT068.1 - Public commands preserve monospace typography :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-068-1
+:END:
+- Covers :: [[#ac-068-1][AC068.1 - Top-level monospace configuration is shared]].
+- Setup :: Representative manuscript, play and letter sources exercise every supported monospaced construct with one top-level font definition.
+- Action :: Invoke the public commands for PDF and editable office outputs and inspect the produced documents.
+- Expected :: Supported monospaced content uses the shared typography in every output, remains selectable or editable as appropriate, and ordinary text is unaffected.
+
+* Solution Design
+
+** Configuration normalization
+- Add =folio.mono.font= to the shared font-role schema with the full font attribute contract.
+- Normalize each loaded layer before recursive merge, following the established shared running-matter pattern. Project legacy manuscript values into the shared role first, then let explicit shared values in the same layer override them.
+- Retain the manuscript renderer's typed field as an internal compatibility projection until the deprecated public path is retired.
+
+** Diagnostics
+- Detect only user-supplied legacy paths and collect one migration warning per supplied layer using the existing configuration warning channel.
+- Public commands write collected warnings to stderr without changing successful output or stdout.
+
+** Renderer integration
+- Route monospaced inline and block content through the shared effective font in each applicable renderer.
+- Preserve the output-specific implementation of each attribute. In PDF and Typst paths, stretch uses the application geometric-scaling contract rather than Typst width-face selection.
+
+** Security and operational impact
+- No new dependency, service, persistence or input surface is introduced. Existing validation and bounded rendering rules apply to the shared values.
+
+* Delivery Handoff
+- Required sequence :: Definition audit, operator sign-off, test-first delivery, internal test-code review, implementation, full validation and internal delivery-code review.
+- Closure :: Automated evidence does not replace operator acceptance or the documented closure decision.

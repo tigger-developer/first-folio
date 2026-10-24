@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.34"
-last-updated: 2026-10-22
+version: "0.36"
+last-updated: 2026-10-24
 ---
 
 # Configuration
@@ -114,6 +114,7 @@ All First Folio-specific settings live under the `folio:` key.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `font` | font block | British root font | Body typography |
+| `mono.font` | font block | Iosevka Publish, 9pt | Shared inline-code and code-block typography |
 | `heading.font` | font block | British heading font | Shared heading typography |
 | `margin` | string | `25mm` | Page margins |
 | `page` | string | `a4` | Page size |
@@ -206,7 +207,7 @@ The six properties are:
 | `style` | `regular`, `italic`, or `oblique` |
 | `letter-spacing` | Signed decimal with `pt`, `mm`, `cm`, `in`, or `em`; zero is valid |
 
-For roles other than manuscript body, quoted blocks and monospace, `stretch` selects an available width within the chosen font family. If that width is unavailable, Typst selects the nearest available face; it does not geometrically compress or expand the text. `letter-spacing` separately adjusts the space between characters.
+For **PDF and Typst output**, every script, letter and manuscript role's `stretch` scales glyphs and word spaces horizontally from the normal-width face: 50% is half width and 200% is twice the width, with unchanged glyph height. Scaling works independently of the width faces available in the selected family, and words remain available to normal line wrapping. Nested roles are scaled once, not again by their container. DOCX and ODT retain their native editable stretch properties. `letter-spacing` separately adjusts the space between characters.
 
 For **manuscript body and quoted blocks**, `font.stretch` and `quoted-block.font.stretch` scale glyphs horizontally from the normal-width face: 160% means 1.6 times the width, with unchanged glyph height. Bold and italic retain their styles. Each role has its own ratio; code inside prose or a quote still uses `mono.font.stretch`. Word spaces scale too, and justification remains active. The `hyphenation` setting controls automatic word splitting at normal and stretched widths. At 100%, prose keeps native Typst line breaking.
 
@@ -214,7 +215,7 @@ For **manuscript monospace**, `mono.font.stretch` instead specifies proportional
 
 Paragraph inline monospace and fenced code blocks receive the same treatment: they are one font role, so a given `mono.font` configuration renders identically wherever monospace appears. Scaling applied to inline code from version 0.12 was extended to code blocks in version 0.13.
 
-Manuscript monospace text uses the complete `folio.manuscript.mono.font` block. Ordinary manuscript headings use `folio.manuscript.heading.font`, including its configured size and weight without implicit heading-level scaling or bold. Table-of-contents entries, running headers and footers retain their own font roles. Existing source emphasis and title casing still apply.
+Monospace text uses the complete top-level `folio.mono.font` block in script conversion, letters and manuscripts, including inline code and fenced code blocks where the source format supports them. The former `folio.manuscript.mono.font` path remains a compatibility input but is deprecated; commands that encounter it emit one warning on stderr directing users to `folio.mono.font`. When both paths occur in one YAML layer, the top-level path wins for overlapping properties. The effective shared role follows the same YAML cascade as the PDF renderer, named in [Precedence - layered merge](#precedence---layered-merge), including input-file frontmatter YAML where that input mode supports it. Ordinary manuscript headings use `folio.manuscript.heading.font`, including its configured size and weight without implicit heading-level scaling or bold. Table-of-contents entries, running headers and footers retain their own font roles. Existing source emphasis and title casing still apply.
 
 Code within headings and their table-of-contents entries is outside the manuscript font-rendering repair's acceptance scope. The earlier documentation included those cases; that inclusion was withdrawn on 2026-09-12. This scope change does not disable existing syntax.
 
@@ -301,7 +302,7 @@ Common manuscript keys:
 | `margin` | string | `20mm` | `25mm` |
 | `font` | font block | Libertinus Serif, 12pt | Menlo, 10pt |
 | `heading.font` | font block | Libertinus Sans, 14pt | Menlo, 10pt |
-| `mono.font` | font block | Iosevka Publish, 9pt | Iosevka Publish, 9pt bold |
+| `mono.font` | deprecated compatibility font block | Inherits top-level `folio.mono.font` | Supplies the shared role only when the top-level path is absent at that layer |
 
 | `line-spacing` | number | `1.5` | `2` |
 | `justify` | bool | `true` | inherited (`true`) |
@@ -328,7 +329,7 @@ The built-in [British base](../presets/british.yaml) is the canonical default an
 | Core | `style`, `page`, `margin`, `gutter`, `line-spacing`, `justify`, `hyphenation`, `widow-orphan-control`, `paragraph-indent`, `paragraph-spacing` |
 | Body typography | `font` |
 | Heading typography | `heading.font` |
-| Monospace typography | `mono.font` |
+| Monospace typography | `mono.font` (deprecated compatibility path; prefer top-level `folio.mono.font`) |
 | Title-page typography | `title-page.<item>.font`, where `<item>` is `title`, `subtitle`, `author`, `date`, `wordcount`, `version`, or `contact` |
 
 | Nested block | Accepted child keys |
@@ -343,7 +344,7 @@ The built-in [British base](../presets/british.yaml) is the canonical default an
 | `list`, `table`, `code-block` | `space-before`, `space-after`; code-block values override `code-block-spacing` on their respective side |
 | `page-numbering` | `frontmatter-format`, `body-format`, `body-reset` |
 
-`code-block` controls layout only and accepts no font block. Fenced-code typography comes from `folio.manuscript.mono.font`, the same role as inline code. Quoted blocks differ: they carry their own `quoted-block.font`.
+`code-block` controls layout only and accepts no font block. Fenced-code typography comes from top-level `folio.mono.font`, the same shared role as inline code. The deprecated `folio.manuscript.mono.font` path remains compatible. Quoted blocks differ: they carry their own `quoted-block.font`.
 
 Quoted-block clearance also adds to normal body paragraph separation. `quote-block-indent` is the entire left inset from the body text edge: `6mm` means exactly 6mm, with no native quote inset or prose first-line indent added. Every paragraph in the quote uses that same inset. Quote clearance and indentation in `em` resolve against the body font size, independently of `quoted-block.font`.
 
@@ -803,6 +804,9 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.36 (2026-10-24): Promote monospace typography to shared `folio.mono.font`, retain the manuscript path with a deprecation warning, and apply geometric PDF stretch to every script, letter and manuscript font role.
+- 0.35 (2026-10-23): Define script PDF and Typst stretch as proportional geometric scaling for every typography role.
 
 - 0.33 (2026-10-19): Name the PDF YAML cascade shared by manuscript and letter office output, including Markdown source frontmatter.
 - 0.32 (2026-10-18): Clarify accepted native office page-boundary and opening-page limits.

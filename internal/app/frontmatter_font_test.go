@@ -31,7 +31,7 @@ func TestFrontmatterParagraphExports(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				for _, fragment := range []string{`font: "Iosevka Publish", size: 9pt, weight: "bold", stretch: 110%, style: "italic", tracking: 0.1pt`, `#frontmatter-paragraph[Detailed introduction text.]`, `#frontmatter-paragraph[Another introduction paragraph.]`} {
+				for _, fragment := range []string{`font: "Iosevka Publish", size: 9pt, weight: "bold", stretch: 100%, style: "italic", tracking: 0.1pt`, `#let frontmatter-paragraph(body)`, `#folio-font-stretch(110%, body)`, `#frontmatter-paragraph[Detailed introduction text.]`, `#frontmatter-paragraph[Another introduction paragraph.]`} {
 					if !strings.Contains(string(raw), fragment) {
 						t.Errorf("missing %s", fragment)
 					}

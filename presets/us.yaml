@@ -2,6 +2,10 @@
 # Every omitted value comes from the shared British base.
 
 folio:
+  mono:
+    font:
+      weight: bold
+
   page: us-letter
   margin: 1in
   font:

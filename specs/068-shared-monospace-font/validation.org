@@ -1,0 +1,52 @@
+#+TITLE: W068 - Shared monospace typography validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** GREEN RT068.1 - Shared monospace font reaches applicable renderers :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-068-1-result
+:REVISION: 151dcf7 plus W068 shared-monospace working-tree delta
+:COMMAND: go test ./internal/config ./internal/letter ./internal/manuscript ./internal/office -count=1; go test ./internal/app -run 'TestRT068_1SharedMonospaceFontReachesEditableOutputs' -count=1
+:EVIDENCE: The top-level six-property font resolves in all three modes. Script and letter DOCX and ODT packages carry the configured family, size and stretch; manuscript inline and block code retain the shared projected role.
+:END:
+- Date :: 2026-10-24.
+- Boundary :: Ordinary text retains its independent font role.
+
+** GREEN RT068.2 - Legacy configuration warns without breaking output :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-068-2-result
+:REVISION: 151dcf7 plus W068 shared-monospace working-tree delta
+:COMMAND: go test ./internal/config -run 'TestRT068_2LegacyMonospaceFontWarnsAndRemainsEffective' -count=1; go test ./internal/app -run 'TestRT068_2LegacyMonospaceWarningUsesPublicCommandStderr' -count=1
+:EVIDENCE: The deprecated manuscript path remains effective and each public convert, letter and manuscript invocation emits one migration warning on stderr without warning text on stdout.
+:END:
+- Date :: 2026-10-24.
+
+** GREEN RT068.3 - Shared and legacy paths preserve cascade precedence :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-068-3-result
+:REVISION: 151dcf7 plus W068 shared-monospace working-tree delta
+:COMMAND: go test ./internal/config -run 'TestRT068_3SharedMonospaceValuesWinWithinLayerAndLaterLayersWinNormally' -count=1
+:EVIDENCE: Later YAML layers win normally; within one layer the shared path wins overlapping properties and retains non-overlapping legacy compatibility values.
+:END:
+- Date :: 2026-10-24.
+
+* Acceptance boundary
+
+** GREEN AT068.1 - Public commands preserve monospace typography :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-068-1-result
+:REVISION: 151dcf7 plus W068 shared-monospace working-tree delta
+:COMMAND: make test
+:EVIDENCE: The complete public-command render suite passed for PDF, Typst, DOCX and ODT routes, including shared inline-code and supported code-block consumers.
+:END:
+- Date :: 2026-10-24.
+- Editability :: DOCX and ODT assertions inspect effective package styles rather than generated source alone.
+
+* Additional checks
+- =make test= passed every package on 2026-10-24.
+- =make lint=, =make vulncheck=, =git diff --check= and =gofmt -l internal= passed; the vulnerability scan reported no findings.
+- Product documentation was checked with =sanitize=; no change-specific correction was reported.

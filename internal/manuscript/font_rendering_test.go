@@ -25,13 +25,13 @@ func TestRT042_1InlineFontPropertiesReachContent(t *testing.T) {
 		{"size", map[string]any{"size": "13.5pt"}, []string{"size: 13.5pt"}},
 		{"numeric-weight", map[string]any{"weight": 650}, []string{"weight: 650"}},
 		{"named-weight", map[string]any{"weight": "bold"}, []string{`weight: "bold"`}},
-		{"stretch", map[string]any{"stretch": "75%"}, []string{"stretch: 75%"}},
+		{"stretch", map[string]any{"stretch": "75%"}, []string{"stretch: 100%"}},
 		{"regular-style", map[string]any{"style": "regular"}, []string{`style: "normal"`}},
 		{"italic-style", map[string]any{"style": "italic"}, []string{`style: "italic"`}},
 		{"oblique-style", map[string]any{"style": "oblique"}, []string{`style: "oblique"`}},
 		{"negative-spacing", map[string]any{"letter-spacing": "-0.03em"}, []string{"tracking: -0.03em"}},
 		{"positive-spacing", map[string]any{"letter-spacing": "0.1pt"}, []string{"tracking: 0.1pt"}},
-		{"combined", map[string]any{"family": "New Computer Modern", "size": "13.5pt", "weight": 650, "stretch": "75%", "style": "italic", "letter-spacing": "-0.03em"}, []string{`font: "New Computer Modern"`, "size: 13.5pt", "weight: 650", "stretch: 75%", `style: "italic"`, "tracking: -0.03em"}},
+		{"combined", map[string]any{"family": "New Computer Modern", "size": "13.5pt", "weight": 650, "stretch": "75%", "style": "italic", "letter-spacing": "-0.03em"}, []string{`font: "New Computer Modern"`, "size: 13.5pt", "weight: 650", "stretch: 100%", `style: "italic"`, "tracking: -0.03em"}},
 	}
 	for _, format := range []string{"md", "org"} {
 		for _, tc := range cases {
@@ -55,6 +55,9 @@ func TestRT042_1InlineFontPropertiesReachContent(t *testing.T) {
 				rule := fontOutputRule(t, output, "#show raw.where(block: false):")
 				for _, arg := range tc.args {
 					assertContains(t, rule, arg)
+				}
+				if stretch, changed := tc.overrides["stretch"]; changed {
+					assertContains(t, output, "x: "+stretch.(string))
 				}
 				// Partial overrides inherit the same role's lower layers, including an embedded font family.
 				defaults := map[string]string{"family": `font: "DejaVu Sans Mono"`, "size": "size: 9pt", "weight": `weight: "regular"`, "stretch": "stretch: 100%", "style": `style: "normal"`, "letter-spacing": "tracking: 0em"}
@@ -157,9 +160,10 @@ func TestRT042_3HeadingFontAndOutlineIsolation(t *testing.T) {
 					}
 				}
 				rule := fontOutputRule(t, output, "#show heading: set text(")
-				for _, arg := range []string{`font: "Libertinus Serif"`, "size: 13.5pt", "stretch: 117.5%", `style: "oblique"`, "tracking: 0.03em"} {
+				for _, arg := range []string{`font: "Libertinus Serif"`, "size: 13.5pt", "stretch: 100%", `style: "oblique"`, "tracking: 0.03em"} {
 					assertContains(t, rule, arg)
 				}
+				assertContains(t, output, "#folio-font-stretch(117.5%, body)")
 				if weight == "regular" {
 					assertContains(t, rule, `weight: "regular"`)
 				} else {

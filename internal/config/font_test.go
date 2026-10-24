@@ -18,6 +18,7 @@ var fontRolePaths = []string{
 	"folio.page-header.font",
 	"folio.page-footer.font",
 	"folio.font",
+	"folio.mono.font",
 	"folio.heading.font",
 	"folio.title-page.title.font",
 	"folio.title-page.subtitle.font",
@@ -144,6 +145,10 @@ func TestRT039_1EveryPublicFontPropertyCanBeConfiguredIndependently(t *testing.T
 					}
 					if otherPath == path || otherPath == strings.Replace(path, "folio.page-", "folio.manuscript.page-", 1) {
 						continue
+					}
+					if (path == "folio.mono.font" && otherPath == "folio.manuscript.mono.font") ||
+						(path == "folio.manuscript.mono.font" && otherPath == "folio.mono.font") {
+						continue // The legacy manuscript path is an intentional compatibility alias.
 					}
 					otherRoles[otherPath], _ = baseline.Get(otherPath)
 				}
@@ -355,5 +360,5 @@ func leafValues(node map[string]any, prefix string) map[string]any {
 
 func ExampleFont() {
 	fmt.Println(len(FontRolePaths) * len(fontPropertyNames))
-	// Output: 216
+	// Output: 222
 }

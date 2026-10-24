@@ -48,7 +48,7 @@ func TestManuscriptSharedRunningMatterUsesInjectedWarnings(t *testing.T) {
 	}
 	rendered := readFile(t, output)
 	assertContains(t, rendered, `Shared \[unknown-token\]`)
-	assertContains(t, rendered, `font: "Shared Family", size: 10pt, weight: "regular", stretch: 100%, style: "italic"`)
+	assertContains(t, rendered, `font: "Shared Family", size: 10pt, weight: "regular", stretch: 100%, spacing: 100%, style: "italic"`)
 	assertContains(t, rendered, "Legacy footer")
 	stdout.Reset()
 	stderr.Reset()

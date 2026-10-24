@@ -49,7 +49,8 @@ func renderCopyrightPage(meta Metadata, cfg Config) string {
 	}
 
 	// Content wrapper: font + alignment + block layout.
-	b.WriteString(fmt.Sprintf("#text(%s)[\n", manuscriptFontArgs(c.Font)))
+	b.WriteString(fmt.Sprintf("#text(%s)[\n", manuscriptNormalFontArgs(c.Font)))
+	b.WriteString(fmt.Sprintf("#folio-font-stretch(%s, role: \"copyright\")[\n", c.Font.Stretch))
 	b.WriteString(fmt.Sprintf("#set par(leading: %s)\n", copyrightLeading(c.LineSpacing)))
 	b.WriteString(fmt.Sprintf("#align(%s)[\n", copyrightAlignExpr(c.Align)))
 
@@ -77,6 +78,7 @@ func renderCopyrightPage(meta Metadata, cfg Config) string {
 	}
 
 	b.WriteString("]\n") // close align
+	b.WriteString("]\n") // close stretch
 	b.WriteString("]\n") // close text
 
 	// Blank-page-after directive.
@@ -138,15 +140,15 @@ func composeCopyrightBlocks(meta Metadata, cfg Config, c CopyrightConfig) (top, 
 		}
 	}
 	if c.Publisher != "" {
-		bottom = append(bottom, fmt.Sprintf("%s #text(%s)[%s]",
+		bottom = append(bottom, fmt.Sprintf("%s #text(%s)[#folio-font-stretch(%s, role: \"copyright-label\")[%s]]",
 			escapeTypst(c.PublisherPreposition),
-			manuscriptFontArgs(c.Label.Font),
+			manuscriptNormalFontArgs(c.Label.Font), c.Label.Font.Stretch,
 			escapeTypst(c.Publisher),
 		))
 	}
 	if c.ISBN != "" {
-		bottom = append(bottom, fmt.Sprintf("#text(%s)[%s]: %s",
-			manuscriptFontArgs(c.Label.Font),
+		bottom = append(bottom, fmt.Sprintf("#text(%s)[#folio-font-stretch(%s, role: \"copyright-label\")[%s]]: %s",
+			manuscriptNormalFontArgs(c.Label.Font), c.Label.Font.Stretch,
 			escapeTypst(c.ISBNLabel),
 			escapeTypst(c.ISBN),
 		))
