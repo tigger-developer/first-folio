@@ -4,6 +4,15 @@
 #+OPTIONS: toc:2 num:nil
 #+TODO: AMBER RED | GREEN
 
+* Operator acceptance and closure
+
+** 2026-10-25 - Accepted with user test outstanding
+
+- Decision :: The operator explicitly accepted W070 after the delivery handoff identified the implemented source/output boundaries, synchronized commits, passing automated and one-off checks, internal audit status, and UT070.1 as AMBER.
+- User-test disposition :: UT070.1 remains AMBER. The operator did not report completing its PDF, DOCX and ODT reader/editor procedure, so acceptance is not recorded as an observation or promoted to GREEN. The outstanding procedure is waived for this closure.
+- Candidate :: Product commit =f5b5fc8= and release-fixture/evidence commit =9dfef18= were synchronized to =origin/master= before acceptance. The installed binary was not changed by delivery or closure.
+- Closure effect :: This record and the work ledger capture the lifecycle decision only. No executable behaviour, installation or release is changed, and the earlier delivery-code self-audit remains evidence for its reviewed candidate.
+
 * Automated regression
 
 ** GREEN RT070.1 - Typst receives source-aware strike markup :testdef:

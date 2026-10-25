@@ -134,12 +134,14 @@ classification; it is provenance, not current state.
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-24 after direct scene paragraphs remained visible in PDF, DOCX and ODT with =render.frontmatter: false=.
 - Boundary :: Rendered documents suppress direct scene paragraphs; Markdown and Fountain semantic conversions retain them.
 
-** ACTIVE W070 - Render script strikethrough across document outputs :defect:
+** DONE W070 - Render script strikethrough across document outputs :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-070
 :CREATED: 2026-10-25
+:CLOSED: 2026-10-25
 :END:
 - Specification :: [[file:../specs/070-script-strikethrough/spec.org][W070 - Script strikethrough rendering]].
+- Closure 2026-10-25 :: Explicitly accepted after the delivery handoff. UT070.1 remains AMBER because the representative PDF, DOCX and ODT reader/editor procedure was not reported; it is waived rather than promoted to GREEN. Product commit =f5b5fc8= and evidence commit =9dfef18= were synchronized to =origin/master=. No installation or release accompanies closure.
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-25 after Org and Markdown strikethrough markers remained literal in rendered script output.
 - Boundary :: Org =+text+= and Markdown =~~text~~= render as strikethrough in PDF, DOCX and ODT; Markdown =~text~= remains literal.
 
