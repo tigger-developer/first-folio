@@ -134,6 +134,15 @@ classification; it is provenance, not current state.
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-24 after direct scene paragraphs remained visible in PDF, DOCX and ODT with =render.frontmatter: false=.
 - Boundary :: Rendered documents suppress direct scene paragraphs; Markdown and Fountain semantic conversions retain them.
 
+** ACTIVE W070 - Render script strikethrough across document outputs :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-070
+:CREATED: 2026-10-25
+:END:
+- Specification :: [[file:../specs/070-script-strikethrough/spec.org][W070 - Script strikethrough rendering]].
+- Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-25 after Org and Markdown strikethrough markers remained literal in rendered script output.
+- Boundary :: Org =+text+= and Markdown =~~text~~= render as strikethrough in PDF, DOCX and ODT; Markdown =~text~= remains literal.
+
 ** DONE W063 - Editable DOCX and ODT manuscripts and letters :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-063

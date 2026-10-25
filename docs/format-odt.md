@@ -1,7 +1,7 @@
 ---
 title: ODT Script Export
-version: "1.9"
-last-updated: 2026-10-24
+version: "1.10"
+last-updated: 2026-10-25
 ---
 
 # ODT script export
@@ -45,9 +45,10 @@ mode adapters to the shared configured ODT writer described below.
 | Running matter | First/odd/even page masters, title/author substitution and live page-number/page-count fields. Frontmatter uses body running matter, with a warning for configured frontmatter overrides. Header/footer clearance smaller than the font height is expanded with a warning. |
 
 Inline emphasis follows the source format: Org `*bold*` is bold and `/italic/`
-is italic; Markdown and Fountain retain `**bold**` and `*italic*`. These rules
-also apply inside footnotes. Existing `**bold**`, `***bold italic***`, underline
-and literal-code handling remain supported.
+is italic; Markdown and Fountain retain `**bold**` and `*italic*`. Org
+`+deleted+` and Markdown `~~deleted~~` use native strikethrough. These rules also
+apply inside footnotes. Markdown single tildes remain literal. Existing
+`**bold**`, `***bold italic***`, underline and literal-code handling remain supported.
 
 The shared inline parser can interpret slash pairs inside URLs as italic markers;
 ODT also collapses repeated spaces in ordinary text. Use literal code spans where
@@ -130,6 +131,7 @@ conversion leaves an existing destination unchanged.
 
 ## History
 
+- 1.10 (2026-10-25): Add native Org and Markdown strikethrough to script spans and footnotes.
 - 1.9 (2026-10-24): Apply frontmatter visibility and typography to direct scene introductory paragraphs.
 - 1.8 (2026-10-19): Preserve natural editable text baselines and reuse equivalent role styles.
 

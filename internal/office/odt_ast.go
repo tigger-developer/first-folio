@@ -134,7 +134,7 @@ func (p *odtProjection) inlines(nodes []docxNode) []odtASTNode {
 				}
 			}
 		}
-		for _, property := range []struct{ word, pandoc string }{{"b", "Strong"}, {"i", "Emph"}, {"u", "Underline"}} {
+		for _, property := range []struct{ word, pandoc string }{{"b", "Strong"}, {"i", "Emph"}, {"u", "Underline"}, {"strike", "Strikeout"}} {
 			if odtChild(props, property.word).name != "" {
 				parts = []odtASTNode{oa(property.pandoc, parts)}
 			}

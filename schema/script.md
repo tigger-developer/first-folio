@@ -1,8 +1,8 @@
 ---
 schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
 title: First Folio Markdown Script Schema
-version: "0.5"
-last-updated: "2026-10-24"
+version: "0.6"
+last-updated: "2026-10-25"
 ---
 
 # Markdown Script Schema
@@ -125,6 +125,10 @@ That was the ninth bell.[^bell]
 
 ## Conversion limits
 
+Double-tilde spans such as `~~deleted~~` render as strikethrough in PDF, DOCX
+and ODT event text and footnote definitions. Single-tilde spans are not part of
+this script syntax and remain literal.
+
 Org and Markdown have different heading and cue forms. The converter maps
 the dramatic structure between them. It does not translate every inline
 emphasis marker between formats, so identical inline styling is not guaranteed.
@@ -141,6 +145,7 @@ Fountain, Typst, and PDF receive none.
 
 ## Revision history
 
+- 0.6, 2026-10-25: Define Markdown script strikethrough and the literal single-tilde boundary.
 - 0.5, 2026-10-24: Define direct scene paragraphs as rendered frontmatter while preserving semantic text conversion.
 - 0.4, 2026-10-08: Define cast-name aliases and automatic stage-direction capitalisation.
 - 0.3, 2026-09-10: Define only First Folio's limited script grammar; use YAML

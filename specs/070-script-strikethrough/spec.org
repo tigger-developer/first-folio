@@ -1,0 +1,186 @@
+#+TITLE: W070 - Render script strikethrough across document outputs
+#+SCHEMA: 8
+#+SUBTITLE: Emergency reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: BYPASS-GATE-7 2026-10-25
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+- *Script strikethrough renders* in PDF, DOCX and ODT from the supported Org and Markdown markers.
+** Before
+- The markers *remained literal* because the script-specific inline paths omitted strikethrough.
+** After
+- Org =+text+= and Markdown =~~text~~= *produce strikethrough* in body text and footnotes.
+** Changes
+- PDF uses Typst strike markup; DOCX and ODT use their *native strike properties*.
+** Unchanged
+- Existing emphasis, literal/code and text-conversion behaviour *remains unchanged*.
+** Edge cases
+- Markdown =~text~= *remains literal* because single tilde is outside the supported script syntax.
+** Decisions
+- The existing source-aware inline parser and output serializers are *extended without a new parser*.
+** Next step
+- Operator validation of representative PDF and office output remains required before closure.
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+- Rendered scripts expose Org and Markdown strikethrough delimiters instead of styling their enclosed text.
+
+** Outcome
+- Supported strikethrough markers render consistently across script PDF, DOCX and ODT output.
+
+** Scope
+*** In scope
+- Org =+text+= and Markdown =~~text~~= in script event text and footnote definitions.
+- PDF/Typst, DOCX and ODT rendered-output paths.
+*** Out of scope
+- Single-tilde Markdown strikethrough, Fountain syntax, text-format marker translation, manuscripts and letters.
+*** Unchanged
+- Bold, italic, underline, literal/code and footnote-reference semantics.
+
+** Authority and starting point
+- Project profile :: [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]].
+- Product authority :: [[file:../../docs/format-org.md][Org play format]] and [[file:../../docs/format-markdown.md][Markdown play format]].
+- Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Project architecture]].
+- Historical evidence :: [[file:../055-org-script-emphasis/spec.org][W055 - PDF Org emphasis]] and [[file:../062-office-org-emphasis/spec.org][W062 - office Org emphasis]].
+- Current implementation fact :: Script PDF translation is owned by =internal/app/script_render.go=; office source parsing and native projection are owned by =internal/source= and =internal/office=.
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+- Retain the existing inline nesting and expansion limits.
+- Add no dependency, external source reader or new rendering process.
+
+** Decisions
+- Markdown strikethrough requires two tildes; one tilde remains literal.
+
+** Unresolved blockers
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC070.1 - Supported script strikethrough renders :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-070-1
+:END:
+- Criterion :: Given Org =+text+= or Markdown =~~text~~= in script body text or a footnote definition, PDF, DOCX and ODT *render the enclosed text with strikethrough* and do not expose its delimiters.
+- Proven by :: [[#rt-070-1][RT070.1 - Typst receives source-aware strike markup]], [[#rt-070-2][RT070.2 - Office outputs contain native strike properties]], [[#ot-070-1][OT070.1 - Compiled PDF displays strikethrough]] and [[#ut-070-1][UT070.1 - Representative documents display strikethrough]].
+
+** AC070.2 - Unsupported single tilde remains literal :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-070-2
+:END:
+- Criterion :: Given Markdown =~text~=, rendered outputs *retain the tildes as literal text* without applying strikethrough.
+- Proven by :: [[#rt-070-1][RT070.1 - Typst receives source-aware strike markup]] and [[#rt-070-2][RT070.2 - Office outputs contain native strike properties]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT070.1 - Typst receives source-aware strike markup :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-070-1
+:END:
+- Covers :: [[#ac-070-1][AC070.1 - Supported script strikethrough renders]] and [[#ac-070-2][AC070.2 - Unsupported single tilde remains literal]].
+- Boundary :: =folio convert= to the supported Typst output.
+- Setup :: Equivalent Org and Markdown scripts contain strikethrough in dialogue and footnotes; Markdown also contains a single-tilde sample.
+- Action :: Convert both scripts to Typst.
+- Expected :: Supported samples become =#strike= content without delimiters; the single-tilde sample remains literal.
+- Retention :: Persistent regression suite under =make test=.
+
+** RT070.2 - Office outputs contain native strike properties :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-070-2
+:END:
+- Covers :: [[#ac-070-1][AC070.1 - Supported script strikethrough renders]] and [[#ac-070-2][AC070.2 - Unsupported single tilde remains literal]].
+- Boundary :: =folio convert= to DOCX and ODT, inspected through their native XML packages.
+- Setup :: Use the RT070.1 source matrix.
+- Action :: Convert both sources to both office formats.
+- Expected :: Dialogue and footnote text use native strike properties; the Markdown single-tilde sample remains literal.
+- Retention :: Persistent regression suite under =make test=.
+
+** OT070.1 - Compiled PDF displays strikethrough :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-070-1
+:END:
+- Covers :: [[#ac-070-1][AC070.1 - Supported script strikethrough renders]].
+- Boundary :: A PDF compiled by the local candidate and rendered to an image.
+- Procedure :: Convert one synthetic Org and one synthetic Markdown script to PDF, render each first page locally and inspect the marked words.
+- Expected :: Each supported sample has a visible line through the glyphs and no source delimiters.
+- Bounds :: Two local conversions and two local renders; no network, user data, installation or retained temporary files.
+- Record :: Write the dated result to =validation.org=.
+
+** UT070.1 - Representative documents display strikethrough :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-070-1
+:END:
+- Covers :: [[#ac-070-1][AC070.1 - Supported script strikethrough renders]].
+- Validation method :: User validation.
+- Procedure :: Regenerate a representative PDF, DOCX and ODT containing source strikethrough and inspect them in the normal readers or editors.
+- Expected :: Strikethrough is visible on the intended text, delimiters are absent and nearby text remains editable and normally positioned.
+- Record :: Write the dated result to =validation.org=.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+** Literal single tilde
+- Condition :: Markdown contains =~text~=.
+- Required behaviour :: The source markers remain literal and no strike property is applied.
+- Covered by :: [[#ac-070-2][AC070.2 - Unsupported single tilde remains literal]], [[#rt-070-1][RT070.1 - Typst receives source-aware strike markup]] and [[#rt-070-2][RT070.2 - Office outputs contain native strike properties]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+- Relevant components :: The script Typst translator maps source markers to escaped Typst content; the shared source parser produces typed inline nodes; DOCX serializes those nodes and ODT projects the same native properties through structured Pandoc JSON.
+- Existing pattern :: Extend the source-aware emphasis dispatch and existing =Strikeout= inline node.
+
+** High-level design
+- PDF/Typst recognizes Org plus pairs only for Org input and double-tilde pairs only for Markdown input, emitting escaped =#strike= content.
+- The script inline parser produces the existing =Strikeout= node for the same source-specific markers.
+- DOCX maps =Strikeout= to =w:strike=; ODT projects that property to Pandoc =Strikeout= and the resulting native ODF style.
+- Fountain and Markdown single tildes do not enter these branches.
+
+** Design decisions and verification
+*** Reuse the established inline model
+- Decision :: Reuse =Strikeout= rather than adding a script-only node or parser.
+- Verification :: [[#rt-070-2][RT070.2 - Office outputs contain native strike properties]] checks both office projections at their native output boundary.
+
+** Routine details left to implementation
+- Regular-expression names and local test-helper structure may follow existing conventions.
+
+** Architecture impact
+*** Security impact
+- Threat boundary :: Unchanged; source text remains bounded untrusted input.
+- Data and secrets :: No new storage, logging or external transmission.
+- Access :: No new file, process or network access.
+- Conclusion :: Existing escaping, nesting, expansion and package limits remain applicable.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+- Emergency ordering :: The RTs were written and observed RED before production changes; this durable record reconciles the authorized outcome afterwards.
+- Required reading :: [[file:../../docs/format-org.md][Org play format]], [[file:../../docs/format-markdown.md][Markdown play format]] and the existing inline implementations named above.
+- Validation evidence :: [[file:validation.org][W070 validation record]].
+- Documentation impact :: Script source schemas and Org, Markdown, DOCX and ODT format references require the supported markers and single-tilde boundary.

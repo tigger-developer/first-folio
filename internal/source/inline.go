@@ -182,6 +182,11 @@ func (p *parser) inline(text string, depth int) ([]Node, error) {
 				star = "Strong"
 			}
 			delimiters = []struct{ mark, kind string }{{"***", "StrongEmph"}, {"**", "Strong"}, {"/", "Emph"}, {"_", "Underline"}, {"*", star}}
+			if p.format == "org" {
+				delimiters = append([]struct{ mark, kind string }{{"+", "Strikeout"}}, delimiters...)
+			} else if p.format == "markdown" {
+				delimiters = append([]struct{ mark, kind string }{{"~~", "Strikeout"}}, delimiters...)
+			}
 		}
 		matched := false
 		for _, d := range delimiters {

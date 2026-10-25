@@ -1,7 +1,7 @@
 #+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org
 #+TITLE: First Folio Org Script Schema
-#+VERSION: 0.5
-#+DATE: 2026-10-24
+#+VERSION: 0.6
+#+DATE: 2026-10-25
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
 
@@ -110,6 +110,7 @@ An inline =[fn:note]= refers to a definition of the form
 play body.
 
 Org inline markup is interpreted by the source-aware PDF, DOCX and ODT renderers.
+=+deleted+= renders as strikethrough in event text and footnote definitions.
 Text conversion
 does not translate every inline marker into the destination syntax; equivalent
 inline appearance across Org, Markdown, and Fountain is not guaranteed.
@@ -145,6 +146,7 @@ itself resolve that defect.
 
 * Revision history
 
+- 0.6, 2026-10-25 :: Define Org script strikethrough in rendered outputs.
 - 0.5, 2026-10-24 :: Define direct scene paragraphs as rendered frontmatter while preserving semantic text conversion.
 - 0.4, 2026-10-08 :: Define cast-name aliases and automatic stage-direction capitalisation.
 - 0.3, 2026-09-10 :: Rewrite around First Folio's source grammar, with direct

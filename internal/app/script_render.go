@@ -30,6 +30,8 @@ var (
 	codeOrgRE    = regexp.MustCompile(`=([^=\n]+)=`)
 	orgItalicRE  = regexp.MustCompile(`/([^/\n]+?)/`)
 	underlineRE  = regexp.MustCompile(`_([^_\n]+)_`)
+	orgStrikeRE  = regexp.MustCompile(`\+([^+\n]+)\+`)
+	mdStrikeRE   = regexp.MustCompile(`~~([^~\n]+)~~`)
 	starPairRE   = regexp.MustCompile(`\*([^*\n]+)\*`)
 )
 
@@ -400,6 +402,11 @@ func inlineTypst(text string, footnotes map[string]string, format play.Format) s
 	text = replaceMarkup(text, codeOrgRE, func(s string) string { return `#mono-text[#raw("` + escapeTypstString(s) + `")]` }, protect)
 	text = replaceMarkup(text, orgItalicRE, func(s string) string { return "_" + escapeTypstContent(s) + "_" }, protect)
 	text = replaceMarkup(text, underlineRE, func(s string) string { return "#underline[" + escapeTypstContent(s) + "]" }, protect)
+	if format == play.FormatOrg {
+		text = replaceMarkup(text, orgStrikeRE, func(s string) string { return "#strike[" + escapeTypstContent(s) + "]" }, protect)
+	} else if format == play.FormatMarkdown {
+		text = replaceMarkup(text, mdStrikeRE, func(s string) string { return "#strike[" + escapeTypstContent(s) + "]" }, protect)
+	}
 	// A single-asterisk span means bold in Org sources and italic in Markdown and
 	// Fountain sources, so the Typst replacement depends on the parsed format.
 	if format == play.FormatOrg {

@@ -1,7 +1,7 @@
 ---
 title: DOCX Script Export
-version: "1.10"
-last-updated: 2026-10-24
+version: "1.11"
+last-updated: 2026-10-25
 ---
 
 # DOCX script export
@@ -36,9 +36,10 @@ bundled Iosevka Publish. Unsupported, missing or restricted fonts produce warnin
 | Running matter | First/odd/even parts and native page fields. A single section uses body running matter for intro pages, with a warning for frontmatter overrides. |
 
 Inline emphasis follows the source format: Org `*bold*` is bold and `/italic/`
-is italic; Markdown and Fountain retain `**bold**` and `*italic*`. These rules
-also apply inside footnotes. Existing `**bold**`, `***bold italic***`, underline
-and literal-code handling remain supported.
+is italic; Markdown and Fountain retain `**bold**` and `*italic*`. Org
+`+deleted+` and Markdown `~~deleted~~` use native strikethrough. These rules also
+apply inside footnotes. Markdown single tildes remain literal. Existing
+`**bold**`, `***bold italic***`, underline and literal-code handling remain supported.
 
 The writer rejects source/destination identity, destination symlinks and invalid
 XML text. Source size is limited to 32 MiB; generated XML and package sizes are
@@ -125,6 +126,7 @@ the product ODT route. The native DOCX writer serves scripts, manuscripts and le
 
 ## History
 
+- 1.11 (2026-10-25): Add native Org and Markdown strikethrough to script runs and footnotes.
 - 1.10 (2026-10-24): Apply frontmatter visibility and typography to direct scene introductory paragraphs.
 - 1.9 (2026-10-19): Preserve natural editable text baselines and reuse equivalent role styles.
 

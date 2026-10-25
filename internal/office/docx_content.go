@@ -54,8 +54,8 @@ func (w *docxWriter) sourceRuns(nodes []source.Node, properties docxNode, depth 
 				return nil, err
 			}
 			out = append(out, ref)
-		case "Strong", "Emph", "Underline":
-			property := map[string]docxNode{"Strong": dx("b"), "Emph": dx("i"), "Underline": dxVal("u", "single")}[n.Type]
+		case "Strong", "Emph", "Underline", "Strikeout":
+			property := map[string]docxNode{"Strong": dx("b"), "Emph": dx("i"), "Underline": dxVal("u", "single"), "Strikeout": dx("strike")}[n.Type]
 			props.children = append(props.children, property)
 			children, err := w.sourceRuns(n.Content.([]source.Node), props, depth+1)
 			if err != nil {

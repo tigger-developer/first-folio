@@ -1,7 +1,7 @@
 ---
 title: Markdown Play Format
-version: "0.7"
-last-updated: "2026-10-24"
+version: "0.8"
+last-updated: "2026-10-25"
 ---
 
 # Markdown Play Format
@@ -92,6 +92,10 @@ of you and Miss Fairfax being united.
 
 A blank line after dialogue separates it from the next element.
 
+Inline `~~deleted~~` text renders as strikethrough in PDF, DOCX and ODT,
+including inside footnotes. A single pair of tildes, such as `~literal~`, has
+no strikethrough meaning in this supported subset and remains literal text.
+
 ### Character Table
 
 A standard Markdown table with "Character" and "Description" headers (or similar).
@@ -178,6 +182,7 @@ Just boiled.
 
 ## Revision History
 
+- 0.8 (2026-10-25): Define double-tilde script strikethrough and the literal single-tilde boundary.
 - 0.7 (2026-10-24): Define scene introductory paragraphs and their rendered visibility boundary.
 - 0.5, 2026-09-10: Add schema frontmatter, move document-version metadata to YAML, and remove general Markdown-standard references that did not define First Folio's supported subset.
 - 0.4, 2026-08-10: Previous format-reference revision.

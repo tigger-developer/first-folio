@@ -1,7 +1,7 @@
 ---
 title: Org-mode Play Format
-version: "0.10"
-last-updated: "2026-10-24"
+version: "0.11"
+last-updated: "2026-10-25"
 ---
 
 # Org-mode Play Format
@@ -63,7 +63,7 @@ Level-3 headings represent stage directions (also called action text or narrativ
 *** JACK enters through the French windows.
 ```
 
-Org-mode inline markup is retained in event text and interpreted by the source-aware PDF, DOCX and ODT renderers: `*bold*` becomes bold and `/italic/` becomes italic, including in footnotes. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
+Org-mode inline markup is retained in event text and interpreted by the source-aware PDF, DOCX and ODT renderers: `*bold*` becomes bold, `/italic/` becomes italic and `+deleted+` becomes strikethrough, including in footnotes. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
 
 ### Characters (H4)
 
@@ -195,6 +195,7 @@ Just boiled.
 
 ## Revision History
 
+- 0.11 (2026-10-25): Render Org plus-delimited strikethrough in PDF, DOCX and ODT scripts.
 - 0.10 (2026-10-24): Define scene introductory paragraphs and their rendered visibility boundary.
 - 0.7 (2026-10-12): Extend source-aware Org emphasis to DOCX and ODT.
 
