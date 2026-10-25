@@ -50,3 +50,10 @@
 - =make test= passed every package on 2026-10-24.
 - =make lint=, =make vulncheck=, =git diff --check= and =gofmt -l internal= passed; the vulnerability scan reported no findings.
 - Product documentation was checked with =sanitize=; no change-specific correction was reported.
+
+** Fresh-cache release-fixture correction, 2026-10-25
+
+- Discovery :: A fresh Go build cache invalidated the earlier cached =cmd/update-homebrew= result and exposed that =TestReleaseGateAndTap= did not provide the =govulncheck= fake required by W068's =check-release-deps= change.
+- RED :: =make test= failed only =TestReleaseGateAndTap/publish= at =check-release-deps=; all other packages passed.
+- Correction :: The isolated fixture now provides a recording =govulncheck= executable alongside its other fake release tools. Product release behaviour is unchanged.
+- GREEN :: =go test ./cmd/update-homebrew -run '^TestReleaseGateAndTap$' -count=1= passed in 0.160 seconds. A fresh-cache =make test= then exited 0, including =cmd/update-homebrew= in 0.342 seconds.

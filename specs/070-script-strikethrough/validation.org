@@ -9,7 +9,7 @@
 ** GREEN RT070.1 - Typst receives source-aware strike markup :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-070-1-result
-:REVISION: ef5ccbb plus W070 working-tree delta
+:REVISION: f5b5fc8
 :COMMAND: go test ./internal/app -run '^TestRT070_' -count=1
 :EVIDENCE: Before implementation, Org plus pairs and Markdown double tildes remained literal in dialogue and footnotes. After the change, both source forms produce Typst strike markup while Markdown single tildes remain literal.
 :END:
@@ -20,7 +20,7 @@
 ** GREEN RT070.2 - Office outputs contain native strike properties :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-070-2-result
-:REVISION: ef5ccbb plus W070 working-tree delta
+:REVISION: f5b5fc8
 :COMMAND: go test ./internal/app -run '^TestRT070_' -count=1
 :EVIDENCE: Before implementation, all four Org/Markdown by DOCX/ODT cases exposed literal delimiters. After the change, body and footnote runs carry native strike properties and Markdown single tildes remain literal.
 :END:
@@ -33,7 +33,7 @@
 ** GREEN OT070.1 - Compiled PDF displays strikethrough :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot-070-1-result
-:REVISION: ef5ccbb plus W070 working-tree delta
+:REVISION: f5b5fc8
 :EVIDENCE: Local candidate conversions produced Org and Markdown PDFs. Page-two PNG renders at 240 DPI visibly strike STRIKEORG and STRIKEMD without source delimiters; the Markdown SINGLELITERAL sample retains its single tildes.
 :END:
 - Date :: 2026-10-25.
@@ -54,4 +54,4 @@
 - Vulnerability scan :: GREEN. =make vulncheck= reported no vulnerabilities.
 - Documentation :: GREEN for W070 additions. =sanitize= proposed no change to the new material; unrelated historical wording and symbols were preserved.
 - Readiness :: GREEN. The installed validator reported a valid schema and delivery-code =ready: true= with two GREEN RTs, one GREEN OT and one AMBER UT.
-- Full regression :: AMBER. =make test= passed every package except =cmd/update-homebrew=. Its =TestReleaseGateAndTap/publish= fixture supplies a private =PATH= without the =govulncheck= executable now required by =check-release-deps=, so the nested release command exits before exercising publication. Commit =bcd3023= added the prerequisite without updating this pre-existing fixture. This unrelated failure must be resolved or explicitly scoped before delivery-code review.
+- Full regression :: GREEN. The first fresh-cache =make test= run exposed that =TestReleaseGateAndTap= omitted the =govulncheck= fixture required since =bcd3023=. After the separately authorized fixture correction, the focused release test passed and a second fresh-cache =make test= exited 0: =cmd/update-homebrew= passed in 0.342 seconds, =internal/app= in 386.739 seconds, =internal/manuscript= in 96.189 seconds and every other package passed or reported no test files.
