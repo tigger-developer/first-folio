@@ -4,6 +4,16 @@
 #+OPTIONS: toc:2 num:nil
 #+TODO: AMBER RED | GREEN
 
+* Operator acceptance and closure
+
+** 2026-11-01 - Accepted after all user tests passed
+
+- Decision :: The operator explicitly accepted W071 for closure with every defined automated, regression, one-off and user test GREEN.
+- User validation :: Operator user validation reported all UT071.1 outcomes PASS against the integrated candidate. Exact reader/editor versions and viewing conditions were not captured.
+- Candidate :: Implementation and evidence were merged to =master= at =aacdcd3= before closure. The installed binary was not changed by delivery or closure.
+- Documentation reconciliation :: =README.md=, command help and the Org, manuscript Org, DOCX and ODT format guides describe the delivered syntax and structured-note behaviour. No architecture document became inaccurate.
+- Closure effect :: This record and the work ledger capture operator acceptance and lifecycle closure. They introduce no executable change, installation or release.
+
 * Automated tests
 
 ** GREEN AT071.1 - Public command and format matrix :testdef:
@@ -50,7 +60,7 @@
 :PROPERTIES:
 :CUSTOM_ID: ut-071-1-result
 :REVISION: d659d6853c493d93640baba07ea78c26715f4850
-:EVIDENCE: On 2026-11-01, the operator confirmed that all user tests passed after being asked to inspect, edit, save and reopen the representative PDF, DOCX and ODT outputs and the DOCX comments.
+:EVIDENCE: On 2026-11-01, operator user validation reported every defined UT071.1 outcome PASS for the integrated candidate.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-2][AC071.2]] and [[file:spec.org::#ac-071-3][AC071.3]].

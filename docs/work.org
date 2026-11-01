@@ -78,25 +78,29 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** ACTIVE W072 - Convert attributed DOCX footnotes to comments :feature:
+** DONE W072 - Convert attributed DOCX footnotes to comments :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-072
 :SOURCE: operator
 :CREATED: 2026-11-01
+:CLOSED: 2026-11-01
 :END:
 - Specification :: [[file:../tickets/072-docx-footnotes-as-comments/spec.org][W072 - Attributed DOCX footnotes as comments]].
+- Closure 2026-11-01 :: All defined ATs, RTs and UT072.1 are GREEN. The operator explicitly accepted the ticket for closure after integration at =aacdcd3=. Product and command documentation were reconciled during delivery. No installation or release accompanies closure.
 - Scope :: Convert only footnotes beginning =[Name] wrote: ...= or =[Name] wrote
   (YYYY-MM-DD HH:MM:SSZ): ...= to native comments by default for DOCX output
   from =convert=, =manuscript= and =letter=. Retain ordinary notes, retain every
   ODT note, and add =--preserve-footnotes= to keep all DOCX notes as footnotes.
 
-** ACTIVE W071 - Normalize Org inline syntax and multi-paragraph footnotes :defect:
+** DONE W071 - Normalize Org inline syntax and multi-paragraph footnotes :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-071
 :SOURCE: operator
 :CREATED: 2026-11-01
+:CLOSED: 2026-11-01
 :END:
 - Specification :: [[file:../tickets/071-org-inline-and-footnote-parsing/spec.org][W071 - Org inline syntax and multi-paragraph footnotes]].
+- Closure 2026-11-01 :: All defined ATs, RTs, OT071.1 and UT071.1 are GREEN. The operator explicitly accepted the ticket for closure after integration at =aacdcd3=. Product and format documentation were reconciled during delivery. No installation or release accompanies closure.
 - Scope :: Normalize supported Org dashes, ellipses, soft hyphens and literal/code
   spans before rendering, and retain complete multi-paragraph Org footnotes across
   PDF, DOCX and ODT without leaking continuation paragraphs into body text.

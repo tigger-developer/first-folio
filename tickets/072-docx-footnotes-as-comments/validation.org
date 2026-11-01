@@ -4,6 +4,16 @@
 #+OPTIONS: toc:2 num:nil
 #+TODO: AMBER RED | GREEN
 
+* Operator acceptance and closure
+
+** 2026-11-01 - Accepted after all user tests passed
+
+- Decision :: The operator explicitly accepted W072 for closure with every defined automated, regression and user test GREEN.
+- User validation :: Operator user validation reported all UT072.1 outcomes PASS against the integrated candidate. Exact Word-compatible editor version and viewing conditions were not captured.
+- Candidate :: Implementation and evidence were merged to =master= at =aacdcd3= before closure. The installed binary was not changed by delivery or closure.
+- Documentation reconciliation :: =README.md=, command help and the DOCX and ODT format guides describe default selective comment conversion, exact attribution forms, =--preserve-footnotes= and the non-DOCX boundary. No architecture document became inaccurate.
+- Closure effect :: This record and the work ledger capture operator acceptance and lifecycle closure. They introduce no executable change, installation or release.
+
 * Automated tests
 
 ** GREEN AT072.1 - All DOCX commands apply the same policy :testdef:
@@ -62,7 +72,7 @@
 :PROPERTIES:
 :CUSTOM_ID: ut-072-1-result
 :REVISION: d659d6853c493d93640baba07ea78c26715f4850
-:EVIDENCE: On 2026-11-01, the operator confirmed that all user tests passed after being asked to inspect, edit, save and reopen representative default and preserved DOCX outputs and their comments, footnotes and metadata.
+:EVIDENCE: On 2026-11-01, operator user validation reported every defined UT072.1 outcome PASS for the integrated candidate.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]] and [[file:spec.org::#ac-072-2][AC072.2]].
