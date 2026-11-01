@@ -1,0 +1,48 @@
+#+TITLE: W072 - Validation Evidence
+#+SCHEMA: 2
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated tests
+
+** AT072.1 - All DOCX commands apply the same policy :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-072-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-072-1][AC072.1]], [[file:spec.org::#ac-072-2][AC072.2]], [[file:spec.org::#ac-072-3][AC072.3]] and [[file:spec.org::#ac-072-4][AC072.4]].
+
+** AT072.2 - Invalid conversion is atomic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-072-2-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-072-5][AC072.5]].
+
+* Automated regression
+
+** RT072.1 - DOCX package conversion is selective and complete :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-072-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-072-1][AC072.1]], [[file:spec.org::#ac-072-2][AC072.2]], [[file:spec.org::#ac-072-3][AC072.3]] and [[file:spec.org::#ac-072-5][AC072.5]].
+
+** RT072.2 - ODT and PDF remain outside comment conversion :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-072-2-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-072-4][AC072.4]].
+
+* User tests
+
+** AMBER UT072.1 - Comments work in the document editor :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-072-1-result
+:REASON: Human inspection, editing, save and reopen are deferred until the implementation candidate and representative DOCX outputs are ready.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-072-1][AC072.1]] and [[file:spec.org::#ac-072-2][AC072.2]].
+- Method :: User validation.

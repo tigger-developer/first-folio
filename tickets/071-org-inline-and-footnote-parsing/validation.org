@@ -1,0 +1,52 @@
+#+TITLE: W071 - Validation Evidence
+#+SCHEMA: 2
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated tests
+
+** AT071.1 - Public command and format matrix :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-071-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-071-1][AC071.1]], [[file:spec.org::#ac-071-2][AC071.2]], [[file:spec.org::#ac-071-3][AC071.3]] and [[file:spec.org::#ac-071-4][AC071.4]].
+
+* Automated regression
+
+** RT071.1 - Org inline semantics are parsed once :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-071-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-071-1][AC071.1]], [[file:spec.org::#ac-071-2][AC071.2]] and [[file:spec.org::#ac-071-4][AC071.4]].
+
+** RT071.2 - Structured footnotes survive native serialization :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-071-2-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-071-3][AC071.3]].
+
+* User tests
+
+** AMBER UT071.1 - Representative documents remain readable and editable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-071-1-result
+:REASON: Human inspection, editing, save and reopen are deferred until the implementation candidate and representative outputs are ready.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-071-2][AC071.2]] and [[file:spec.org::#ac-071-3][AC071.3]].
+- Method :: User validation.
+
+* One-off tests
+
+** AMBER OT071.1 - Soft hyphen breaks only when required :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-071-1-result
+:REASON: The bounded six-document rendered comparison follows implementation and automated test-code review.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-071-1][AC071.1]].
+- Boundary :: Six local synthetic documents; no network, private data or installation.
