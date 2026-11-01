@@ -33,9 +33,9 @@
 ** RED RT071.2 - Structured footnotes survive native serialization :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-071-2-result
-:REVISION: 25adcda088a097cce19569e861f37917d53f7206
+:REVISION: 120875ff382bdf54d4f6377faf2133e1dfc35459
 :COMMAND: go test ./internal/play ./internal/app -run '^TestRT071_2_' -count=1 -timeout=10m
-:EVIDENCE: The parser stored no note paragraphs, failed the next-definition/headline/two-blank termination matrix, classified continuations as dialogue, and both DOCX and ODT emitted a one-paragraph note with continuation text in the main body.
+:EVIDENCE: The parser stored no note paragraphs, failed the next-definition/headline/two-blank termination matrix, classified continuations as dialogue, and both DOCX and ODT emitted a one-paragraph note with continuation text in the main body. The strengthened matrix separately proves that the following definition, headline or body text must survive its boundary.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-3][AC071.3]].
