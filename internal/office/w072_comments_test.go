@@ -98,8 +98,18 @@ func TestRT072_1_DOCXPackageConversionIsSelectiveAndComplete(t *testing.T) {
 	if !anchored {
 		t.Error("two comments are not anchored within their shared source paragraph")
 	}
-	if extended := string(files["word/commentsExtended.xml"]); strings.Count(extended, "commentEx") != 3 {
-		t.Errorf("extended comment entries incomplete: %s", extended)
+	extendedRoot, err := parseXML(files["word/commentsExtended.xml"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	extendedEntries := 0
+	extendedRoot.visit(func(n *docxNode) {
+		if n.name == "w15:commentEx" {
+			extendedEntries++
+		}
+	})
+	if extendedEntries != 3 {
+		t.Errorf("extended comment entries = %d, want 3", extendedEntries)
 	}
 	for name, want := range map[string]string{
 		"[Content_Types].xml":          "/word/commentsExtended.xml",
@@ -132,8 +142,8 @@ func TestRT072_1_DOCXPackageConversionRejectsInvalidCandidates(t *testing.T) {
 
 func TestRT072_1_DOCXPackageConversionLeavesNoCandidatesUnchanged(t *testing.T) {
 	raw := w072RewritePackage(t, w072Package(t, false, false), func(files map[string][]byte) {
-		files["word/footnotes.xml"] = bytes.ReplaceAll(files["word/footnotes.xml"], []byte("[Aoife Example] wrote: "), []byte("Ordinary "))
-		files["word/footnotes.xml"] = bytes.ReplaceAll(files["word/footnotes.xml"], []byte("[Siobhan Example] wrote (2026-10-31 17:59:22Z): "), []byte("Ordinary "))
+		files["word/footnotes.xml"] = bytes.ReplaceAll(files["word/footnotes.xml"], []byte("[Aoife Example] wrote: "), []byte("[Aoife Example] wrote "))
+		files["word/footnotes.xml"] = bytes.ReplaceAll(files["word/footnotes.xml"], []byte("[Siobhan Example] wrote (2026-10-31 17:59:22Z): "), []byte("[Siobhan Example] wrote [2026-10-31 17:59:22Z]: "))
 	})
 	converted, count, err := ConvertAttributedFootnotes(raw, time.Unix(0, 0).UTC())
 	if err != nil {

@@ -46,12 +46,15 @@ func TestRT071_2_OrgFootnoteParagraphsStayStructured(t *testing.T) {
 
 func TestRT071_2_OrgFootnoteTerminationBoundaries(t *testing.T) {
 	for _, tc := range []struct {
-		name   string
-		suffix string
+		name          string
+		suffix        string
+		followingKind EventKind
+		followingName string
+		followingText string
 	}{
-		{"next definition", "\n[fn:other] Other note.\n"},
-		{"headline", "\n*** Direction\n"},
-		{"two blank lines", "\n\nAfter note.\n"},
+		{"next definition", "\n[fn:other] Other note.\n", EventFootnote, "other", "Other note."},
+		{"headline", "\n*** Direction\n", EventStageDirection, "", "Direction"},
+		{"two blank lines", "\n\nAfter note.\n", EventDialogue, "", "After note."},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			source := "* ACT ONE\n** SCENE ONE\n**** CÁIT\nLine.[fn:note]\n\n[fn:note] First paragraph.\n\nSecond paragraph.\n" + tc.suffix
@@ -59,16 +62,25 @@ func TestRT071_2_OrgFootnoteTerminationBoundaries(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			foundNote, foundFollowing := false, false
 			for _, event := range doc.Events {
 				if event.Kind == EventFootnote && event.Name == "note" {
 					want := []string{"First paragraph.", "Second paragraph."}
 					if !slices.Equal(event.Paragraphs, want) {
 						t.Fatalf("paragraphs = %#v, want %#v", event.Paragraphs, want)
 					}
-					return
+					foundNote = true
+				}
+				if event.Kind == tc.followingKind && event.Name == tc.followingName && event.Text == tc.followingText {
+					foundFollowing = true
 				}
 			}
-			t.Fatal("primary note missing")
+			if !foundNote {
+				t.Error("primary note missing")
+			}
+			if !foundFollowing {
+				t.Errorf("content after boundary was lost: want kind=%s name=%q text=%q in %#v", tc.followingKind, tc.followingName, tc.followingText, doc.Events)
+			}
 		})
 	}
 }
