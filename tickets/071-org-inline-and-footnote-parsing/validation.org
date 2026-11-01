@@ -6,28 +6,40 @@
 
 * Automated tests
 
-** AT071.1 - Public command and format matrix :testdef:
+** RED AT071.1 - Public command and format matrix :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-071-1-result
+:REVISION: a6c5cd3df846c5ddf3c0da5e0e28a222af0ad337
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT071_1_' -count=1 -timeout=10m
+:EVIDENCE: The nine-case built-command matrix failed at intended W071 boundaries: script and letter punctuation remained renderer-specific, code contents were transformed in PDF, and DOCX/ODT notes retained one paragraph while continuations leaked into body content. The manuscript PDF preservation case was already GREEN.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-1][AC071.1]], [[file:spec.org::#ac-071-2][AC071.2]], [[file:spec.org::#ac-071-3][AC071.3]] and [[file:spec.org::#ac-071-4][AC071.4]].
+- Runs :: 2026-11-01: intended RED at the committed tests-first candidate.
 
 * Automated regression
 
-** RT071.1 - Org inline semantics are parsed once :testdef:
+** RED RT071.1 - Org inline semantics are parsed once :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-071-1-result
+:REVISION: a6c5cd3df846c5ddf3c0da5e0e28a222af0ad337
+:COMMAND: go test ./internal/source -run '^TestRT071_1_' -count=1
+:EVIDENCE: Prose reduced Org soft hyphen to an ordinary hyphen; script and letter nodes retained ASCII dash/ellipsis sequences; script did not recognize tilde code. Literal contents and the pre-change quote policy remained protected.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-1][AC071.1]], [[file:spec.org::#ac-071-2][AC071.2]] and [[file:spec.org::#ac-071-4][AC071.4]].
+- Runs :: 2026-11-01: intended RED at the shared semantic boundary.
 
-** RT071.2 - Structured footnotes survive native serialization :testdef:
+** RED RT071.2 - Structured footnotes survive native serialization :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-071-2-result
+:REVISION: a6c5cd3df846c5ddf3c0da5e0e28a222af0ad337
+:COMMAND: go test ./internal/play ./internal/app -run '^TestRT071_2_' -count=1 -timeout=10m
+:EVIDENCE: The parser stored no note paragraphs, classified the second and third paragraphs as dialogue, and both DOCX and ODT emitted a one-paragraph note with continuation text in the main body.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-3][AC071.3]].
+- Runs :: 2026-11-01: intended RED through semantic round-trip and native office packages.
 
 * User tests
 
