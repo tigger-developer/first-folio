@@ -34,3 +34,37 @@ reviews:
     limitations:
       - "Same-context author self-review; this is not independent assurance."
       - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
+  - id: test-code-c1-r1
+    timestamp: "2026-11-01T17:09:14Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "bb0b87c4a3921486fd2bf613d3050d10f0803a38"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "TESTING.md, TEST-CODE-AUDIT.md, REVIEW.md and AUDIT-RECORD.md as deployed on 2026-11-01"
+      - "W071 signed-off acceptance criteria and test definitions"
+      - "Public CLI, shared semantic parser, structured event, Typst and native office boundaries"
+    evidence:
+      - "sdlc-validate test-code readiness passed with 4 ACs, 1 AT, 2 RTs, 1 OT and 1 UT"
+      - "RT071.1 is intentionally RED at shared Org prose, script and letter semantics and both Typst projections"
+      - "RT071.2 is intentionally RED at structured parsing, round-trip, all three termination boundaries and DOCX/ODT serialization"
+      - "AT071.1 is intentionally RED across convert, manuscript and letter in PDF, DOCX and ODT"
+      - "The review corrected the termination test to prove content after each boundary survives before freezing this candidate"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "OT071.1 and UT071.1 correctly remain AMBER until rendered and human validation."
+      - "Tool-dependent PDF assertions skip only when Typst or pdftotext is unavailable; both were available for the recorded RED run."

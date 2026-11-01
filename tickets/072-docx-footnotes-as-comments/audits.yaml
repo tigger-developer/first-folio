@@ -36,3 +36,37 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
       - "End-to-end multi-paragraph comment delivery remains conditional on W071 structured-note support, as recorded in the specification."
+  - id: test-code-c1-r1
+    timestamp: "2026-11-01T17:09:14Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "bb0b87c4a3921486fd2bf613d3050d10f0803a38"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "TESTING.md, TEST-CODE-AUDIT.md, REVIEW.md and AUDIT-RECORD.md as deployed on 2026-11-01"
+      - "W072 signed-off acceptance criteria and test definitions"
+      - "All three public DOCX commands, package transformation, preservation, failure atomicity and non-DOCX boundaries"
+    evidence:
+      - "sdlc-validate test-code readiness passed with 5 ACs, 2 ATs, 2 RTs and 1 UT"
+      - "RT072.1 is intentionally RED for conversion, exact metadata, multi-paragraph comments, anchors, package relationships and malformed/conflicting inputs; the exact-pattern near-miss preservation case is GREEN"
+      - "RT072.2 is intentionally RED because all three PDF/ODT commands reject the new flag before exercising their preserved output paths"
+      - "AT072.1 and AT072.2 are intentionally RED across all three real command and publication boundaries"
+      - "The review corrected commentsExtended entry counting and strengthened exact-pattern near-miss coverage before freezing this candidate"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT072.1 correctly remains AMBER until editor validation."
+      - "End-to-end W072 success remains dependent on W071 structured-note delivery."
