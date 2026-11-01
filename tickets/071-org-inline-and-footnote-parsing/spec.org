@@ -197,7 +197,7 @@ The supported Org subset has deterministic source semantics that all three rende
 - Covers :: [[#ac-071-1][AC071.1 - Org special strings are consistent]].
 - Boundary :: Local PDF, DOCX and ODT renderers using bounded synthetic text.
 - Procedure :: Render one long word containing Org =\-= in a narrow line and the same word in a wide line, then inspect the resulting pages.
-- Expected :: The narrow case may break at the soft hyphen and show a hyphen; the wide case remains unbroken without a visible hyphen in all three formats.
+- Expected :: The narrow case breaks at the soft hyphen and shows a hyphen; the wide case remains unbroken without a visible hyphen in all three formats.
 - Bounds :: Six local documents, no network, private data, installation or retained temporary output.
 - Record :: Write the dated result to =validation.org=; do not add this check to automated regression, CI, build or scheduled execution.
 
