@@ -78,7 +78,7 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** TODO W072 - Convert attributed DOCX footnotes to comments :feature:
+** REVIEW W072 - Convert attributed DOCX footnotes to comments :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-072
 :SOURCE: operator
@@ -90,7 +90,7 @@ classification; it is provenance, not current state.
   from =convert=, =manuscript= and =letter=. Retain ordinary notes, retain every
   ODT note, and add =--preserve-footnotes= to keep all DOCX notes as footnotes.
 
-** TODO W071 - Normalize Org inline syntax and multi-paragraph footnotes :defect:
+** REVIEW W071 - Normalize Org inline syntax and multi-paragraph footnotes :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-071
 :SOURCE: operator
