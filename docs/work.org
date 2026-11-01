@@ -78,6 +78,16 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** TODO W072 - Convert attributed DOCX footnotes to comments :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-072
+:SOURCE: operator
+:CREATED: 2026-11-01
+:END:
+- Specification :: [[file:../tickets/072-docx-footnotes-as-comments/spec.org][W072 - Attributed DOCX footnotes as comments]].
+- Reservation :: Definition pending. DOCX conversions turn supported attributed
+  footnotes into comments by default while =--preserve-footnotes= retains them.
+
 ** TODO W071 - Normalize Org inline syntax and multi-paragraph footnotes :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-071
