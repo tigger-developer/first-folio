@@ -9,7 +9,7 @@
 ** RED AT072.1 - All DOCX commands apply the same policy :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-072-1-result
-:REVISION: a6c5cd3df846c5ddf3c0da5e0e28a222af0ad337
+:REVISION: 25adcda088a097cce19569e861f37917d53f7206
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT072_1_' -count=1 -timeout=10m
 :EVIDENCE: Built convert, manuscript and letter DOCX commands produced no comments part for attributed notes, which is the intended pre-implementation failure.
 :END:
@@ -20,9 +20,9 @@
 ** RED AT072.2 - Invalid conversion is atomic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-072-2-result
-:REVISION: a6c5cd3df846c5ddf3c0da5e0e28a222af0ad337
+:REVISION: 25adcda088a097cce19569e861f37917d53f7206
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT072_2_' -count=1 -timeout=10m
-:EVIDENCE: All three file commands succeeded and replaced sentinel targets despite malformed attributed timestamps; convert stdout likewise emitted a DOCX instead of failing before publication.
+:EVIDENCE: All three file commands succeeded and replaced sentinel targets despite malformed attributed timestamps; the newly covered absent-target paths created outputs, and convert stdout likewise emitted a DOCX instead of failing before publication.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-5][AC072.5]].
@@ -33,9 +33,9 @@
 ** RED RT072.1 - DOCX package conversion is selective and complete :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-072-1-result
-:REVISION: a6c5cd3df846c5ddf3c0da5e0e28a222af0ad337
+:REVISION: 25adcda088a097cce19569e861f37917d53f7206
 :COMMAND: go test ./internal/office -run '^TestRT072_1_' -count=1
-:EVIDENCE: The compile scaffold converted zero attributed notes and accepted malformed packages, invalid timestamps and missing or duplicate references. The no-candidate unchanged-package preservation case was already GREEN.
+:EVIDENCE: The compile scaffold converted zero attributed notes and accepted malformed packages, invalid timestamps, relationship conflicts and missing or duplicate references. The no-candidate unchanged-package preservation case was already GREEN.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]], [[file:spec.org::#ac-072-2][AC072.2]], [[file:spec.org::#ac-072-3][AC072.3]] and [[file:spec.org::#ac-072-5][AC072.5]].
@@ -44,7 +44,7 @@
 ** RED RT072.2 - ODT and PDF remain outside comment conversion :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-072-2-result
-:REVISION: a6c5cd3df846c5ddf3c0da5e0e28a222af0ad337
+:REVISION: 25adcda088a097cce19569e861f37917d53f7206
 :COMMAND: go test ./internal/app -run '^TestRT072_2_' -count=1 -timeout=10m
 :EVIDENCE: Every convert, manuscript and letter PDF/ODT case rejected the new boolean option as a missing valued option before reaching the preserved non-DOCX path.
 :END:
