@@ -20,7 +20,7 @@
 ** RED AT072.2 - Invalid conversion is atomic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-072-2-result
-:REVISION: c0e5caada090a665b60b477dbf6a9fd72e513cb7
+:REVISION: 25adcda088a097cce19569e861f37917d53f7206
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT072_2_' -count=1 -timeout=10m
 :EVIDENCE: All three file commands succeeded and replaced sentinel targets despite malformed attributed timestamps; the newly covered absent-target paths created outputs, and convert stdout likewise emitted a DOCX instead of failing before publication.
 :END:
@@ -33,7 +33,7 @@
 ** RED RT072.1 - DOCX package conversion is selective and complete :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-072-1-result
-:REVISION: 25adcda088a097cce19569e861f37917d53f7206
+:REVISION: c0e5caada090a665b60b477dbf6a9fd72e513cb7
 :COMMAND: go test ./internal/office -run '^TestRT072_1_' -count=1
 :EVIDENCE: The compile scaffold converted zero attributed notes and accepted malformed packages, invalid timestamps, relationship and content-type conflicts, and missing or duplicate references. The strengthened success-path assertions cover exact comment identifiers, authors, initials, UTC dates, multi-paragraph comment structure, shared-paragraph anchors, commentsExtended metadata, ordinary-footnote retention and unrelated-part preservation, but the no-op scaffold fails before those assertions are reached. The no-candidate unchanged-package preservation case was already GREEN.
 :END:
