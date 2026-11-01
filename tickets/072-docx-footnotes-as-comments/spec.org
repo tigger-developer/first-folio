@@ -3,7 +3,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-11-01
 
 * Synopsis
 :PROPERTIES:
@@ -359,3 +359,23 @@ Every DOCX command applies the same selective comment policy while preserving ge
 - Definition evidence :: [[file:audits.yaml][=audits.yaml=]]
 - Validation evidence :: [[file:validation.org][=validation.org=]]; one tagged result heading per defined test, including RTs, following =ORG-SCHEMA.md=.
 - Documentation impact :: Update command help, =README.md=, =docs/format-docx.md= and =docs/format-odt.md= with the default selective conversion, exact patterns, =--preserve-footnotes= scope and ODT boundary.
+
+* Hands-off mode decision log
+:PROPERTIES:
+:CUSTOM_ID: hands-off-mode-decision-log
+:VISIBILITY: folded
+:END:
+
+** 2026-11-01T17:01:21Z - Combined W071 and W072 delivery :hands-off:review:
+
+*** Dependency ordering
+
+- Original design reference :: [[#constraints-and-dependencies][Constraints and dependencies]].
+- Decision :: Begin W072 implementation only after W071 has delivered structured multi-paragraph note output and current delivery evidence.
+- Consequence :: Core package-transformer tests may be written independently, but end-to-end comment evidence cannot bypass W071.
+- Verification :: [[#at-072-1][AT072.1 - All DOCX commands apply the same policy]] must exercise the delivered structured-note path.
+
+*** Validation boundary
+
+- Decision :: Automated and local package/render verification continue hands-off; [[#ut-072-1][UT072.1 - Comments work in the document editor]] remains AMBER for operator validation.
+- Cumulative assessment :: No product, architecture, security or external-service departure is authorized or required.

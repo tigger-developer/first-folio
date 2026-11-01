@@ -3,7 +3,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-11-01
 
 * Synopsis
 :PROPERTIES:
@@ -332,3 +332,25 @@ The supported Org subset has deterministic source semantics that all three rende
 - Definition evidence :: [[file:audits.yaml][=audits.yaml=]]
 - Validation evidence :: [[file:validation.org][=validation.org=]]; one tagged result heading per defined test, including RTs, following =ORG-SCHEMA.md=.
 - Documentation impact :: Update =README.md=, =docs/format-org.md=, =docs/format-manuscript-org.md=, =docs/format-docx.md= and =docs/format-odt.md= with the supported special strings, literal/code protection and multi-paragraph footnote contract.
+
+* Hands-off mode decision log
+:PROPERTIES:
+:CUSTOM_ID: hands-off-mode-decision-log
+:VISIBILITY: folded
+:END:
+
+** 2026-11-01T17:01:21Z - Combined W071 and W072 delivery :hands-off:review:
+
+*** Delivery order
+
+- Original design reference :: [[#constraints-and-dependencies][Constraints and dependencies]].
+- Decision :: Deliver W071 before W072 because W072's multi-paragraph comment case depends on W071's structured-note representation.
+- Consequence :: Both tickets share one implementation branch, but retain separate tests, validation and audit gates.
+- Verification :: W071's delivery-code evidence must be current before the W072 end-to-end comment matrix can be treated as GREEN.
+
+*** One-off test bounds
+
+- Original design reference :: [[#ot-071-1][OT071.1 - Soft hyphen breaks only when required]].
+- Decision :: Use the specified six local documents only; no network, metered service, installation or private source document.
+- Conservative expenditure estimate :: Six local conversions and six local renders, with zero external cost.
+- Cumulative assessment :: Within the approved local verification boundary.
