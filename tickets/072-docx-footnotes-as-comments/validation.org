@@ -58,11 +58,14 @@
 
 * User tests
 
-** AMBER UT072.1 - Comments work in the document editor :testdef:
+** GREEN UT072.1 - Comments work in the document editor :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-072-1-result
-:REASON: Human inspection, editing, save and reopen are deferred until the implementation candidate and representative DOCX outputs are ready.
+:REVISION: d659d6853c493d93640baba07ea78c26715f4850
+:EVIDENCE: On 2026-11-01, the operator confirmed that all user tests passed after being asked to inspect, edit, save and reopen representative default and preserved DOCX outputs and their comments, footnotes and metadata.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]] and [[file:spec.org::#ac-072-2][AC072.2]].
 - Method :: User validation.
+- Prior state :: AMBER while human inspection, editing, save and reopen were deferred until the implementation candidate and representative DOCX outputs were ready.
+- Runs :: 2026-11-01: operator reported PASS for all defined user tests.

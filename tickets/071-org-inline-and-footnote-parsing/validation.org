@@ -46,14 +46,17 @@
 
 * User tests
 
-** AMBER UT071.1 - Representative documents remain readable and editable :testdef:
+** GREEN UT071.1 - Representative documents remain readable and editable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-071-1-result
-:REASON: Human inspection, editing, save and reopen are deferred until the implementation candidate and representative outputs are ready.
+:REVISION: d659d6853c493d93640baba07ea78c26715f4850
+:EVIDENCE: On 2026-11-01, the operator confirmed that all user tests passed after being asked to inspect, edit, save and reopen the representative PDF, DOCX and ODT outputs and the DOCX comments.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-2][AC071.2]] and [[file:spec.org::#ac-071-3][AC071.3]].
 - Method :: User validation.
+- Prior state :: AMBER while human inspection, editing, save and reopen were deferred until the implementation candidate and representative outputs were ready.
+- Runs :: 2026-11-01: operator reported PASS for all defined user tests.
 
 * One-off tests
 
