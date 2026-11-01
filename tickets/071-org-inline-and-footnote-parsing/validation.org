@@ -9,9 +9,9 @@
 ** GREEN AT071.1 - Public command and format matrix :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-071-1-result
-:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
+:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT071_1_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, the nine-case matrix failed at the intended parser, literal and note boundaries. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, the built convert, manuscript and letter commands passed for PDF, DOCX and ODT: punctuation and protected code were exact, and every applicable note retained its three ordered paragraphs without body leakage.
+:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, the nine-case matrix failed at the intended parser, literal and note boundaries. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, the built convert, manuscript and letter commands passed for PDF, DOCX and ODT: punctuation and protected code were exact, and every applicable note retained its three ordered paragraphs without body leakage.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-1][AC071.1]], [[file:spec.org::#ac-071-2][AC071.2]], [[file:spec.org::#ac-071-3][AC071.3]] and [[file:spec.org::#ac-071-4][AC071.4]].
@@ -23,9 +23,9 @@
 ** GREEN RT071.1 - Org inline semantics are parsed once :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-071-1-result
-:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
+:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
 :COMMAND: go test ./internal/source ./internal/app ./internal/letter -run '^TestRT071_1_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, prose, script, letter and Typst projections failed the new soft-hyphen, special-string and tilde-code cases while existing protected constructs remained intact. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, all three semantic consumers and both Typst projections passed, including literal contents, source blocks, backslash paths and the unchanged quote policy.
+:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, prose, script, letter and Typst projections failed the new soft-hyphen, special-string and tilde-code cases while existing protected constructs remained intact. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, all three semantic consumers and both Typst projections passed, including literal contents, source blocks, backslash paths and the unchanged quote policy.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-1][AC071.1]], [[file:spec.org::#ac-071-2][AC071.2]] and [[file:spec.org::#ac-071-4][AC071.4]].
@@ -35,9 +35,9 @@
 ** GREEN RT071.2 - Structured footnotes survive native serialization :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-071-2-result
-:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
+:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
 :COMMAND: go test ./internal/play ./internal/app -run '^TestRT071_2_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 120875ff382bdf54d4f6377faf2133e1dfc35459, the parser stored no structured paragraphs and DOCX/ODT displaced continuation text. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, parsing, Org round-trip, all three termination boundaries and native DOCX/ODT serialization passed with three ordered paragraphs and preserved following content.
+:EVIDENCE: At tests-first revision 120875ff382bdf54d4f6377faf2133e1dfc35459, the parser stored no structured paragraphs and DOCX/ODT displaced continuation text. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, parsing, Org round-trip, all three termination boundaries and native DOCX/ODT serialization passed with three ordered paragraphs and preserved following content.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-3][AC071.3]].
@@ -60,7 +60,7 @@
 ** GREEN OT071.1 - Soft hyphen breaks only when required :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot-071-1-result
-:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
+:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
 :COMMAND: six local folio convert commands for narrow and wide Org fixtures to PDF, DOCX and ODT; soffice headless office-to-PDF renders; pdftotext and pdftoppm page inspection
 :EVIDENCE: On 2026-11-01, all three narrow renders broke extraordinary-circumstances at the source soft hyphen and displayed a hyphen. All three wide renders kept the word on one line without a visible hyphen. The six source documents and rendered inspection artefacts were bounded to one operating-system temporary directory with no network, private data, installation or retained output.
 :END:

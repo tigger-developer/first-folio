@@ -388,3 +388,10 @@ Every DOCX command applies the same selective comment policy while preserving ge
 - Consequence :: The observable product requirement is unchanged; the test now addresses every real publication boundary.
 - Reversibility :: Documentation-only test clarification.
 - Verification :: AT072.2 must retain sentinels for all three file paths and capture zero stdout bytes from the failed =convert= invocation.
+
+** 2026-11-01T17:26:16Z - Delivery-code evidence :hands-off:review:
+
+- Decision :: Exact attributed Org notes are converted to OOXML comments for convert, manuscript and letter DOCX output, while =--preserve-footnotes= retains them and non-DOCX formats remain outside conversion.
+- Evidence :: RT072.1, RT072.2, AT072.1 and AT072.2 passed at =d16af962ec6c5989547795ede46ee18c011cfa2f=; exact-pattern near misses, conflicting packages and atomic-publication failures are covered; =go vet ./...= passed.
+- Boundary :: [[#ut-072-1][UT072.1 - Comments work in the document editor]] remains AMBER for the planned operator session. No merge, installation or deployment is authorized by this evidence.
+- Cumulative assessment :: Delivery-code self-review is PASS with no findings; repository-wide tests retain unrelated default-font expectation failures recorded as a limitation.

@@ -354,3 +354,10 @@ The supported Org subset has deterministic source semantics that all three rende
 - Decision :: Use the specified six local documents only; no network, metered service, installation or private source document.
 - Conservative expenditure estimate :: Six local conversions and six local renders, with zero external cost.
 - Cumulative assessment :: Within the approved local verification boundary.
+
+** 2026-11-01T17:26:16Z - Delivery-code evidence :hands-off:review:
+
+- Decision :: Shared Org inline interpretation and structured multi-paragraph notes are implemented across convert, manuscript and letter output paths.
+- Evidence :: RT071.1, RT071.2 and AT071.1 passed at =d16af962ec6c5989547795ede46ee18c011cfa2f=; OT071.1 passed the bounded six-document render comparison; =go vet ./...= passed.
+- Boundary :: [[#ut-071-1][UT071.1 - Existing Org sources remain semantically stable]] remains AMBER for the planned operator session. No merge, installation or deployment is authorized by this evidence.
+- Cumulative assessment :: Delivery-code self-review is PASS with no findings; repository-wide tests retain unrelated default-font expectation failures recorded as a limitation.

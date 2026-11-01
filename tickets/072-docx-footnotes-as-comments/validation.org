@@ -9,9 +9,9 @@
 ** GREEN AT072.1 - All DOCX commands apply the same policy :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-072-1-result
-:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
+:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT072_1_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, all three commands produced no comments part. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, built convert, manuscript and letter commands converted both exact attribution forms by default, retained the ordinary note, retained all notes under --preserve-footnotes, preserved multi-paragraph comment text and left each ODT control as native notes.
+:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, all three commands produced no comments part. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, built convert, manuscript and letter commands converted both exact attribution forms by default, retained the ordinary note, retained all notes under --preserve-footnotes, preserved multi-paragraph comment text and left each ODT control as native notes.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]], [[file:spec.org::#ac-072-2][AC072.2]], [[file:spec.org::#ac-072-3][AC072.3]] and [[file:spec.org::#ac-072-4][AC072.4]].
@@ -21,9 +21,9 @@
 ** GREEN AT072.2 - Invalid conversion is atomic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-072-2-result
-:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
+:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT072_2_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, malformed timestamps replaced or created file targets and emitted convert stdout. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, convert, manuscript and letter each rejected the malformed timestamp before changing an existing sentinel or creating an absent target, and convert emitted zero stdout bytes.
+:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, malformed timestamps replaced or created file targets and emitted convert stdout. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, convert, manuscript and letter each rejected the malformed timestamp before changing an existing sentinel or creating an absent target, and convert emitted zero stdout bytes.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-5][AC072.5]].
@@ -35,9 +35,9 @@
 ** GREEN RT072.1 - DOCX package conversion is selective and complete :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-072-1-result
-:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
+:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
 :COMMAND: go test ./internal/office -run '^TestRT072_1_' -count=1
-:EVIDENCE: At tests-first revision 120875ff382bdf54d4f6377faf2133e1dfc35459, the scaffold converted nothing and accepted invalid packages and conflicts while exact-pattern near misses remained byte-identical. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, exact identifiers, authors, initials, UTC dates, multi-paragraph comments, shared-paragraph anchors, commentsExtended entries, ordinary-note and unrelated-part preservation all passed; malformed packages, timestamps, references, relationships and content types were rejected; near misses remained byte-identical.
+:EVIDENCE: At tests-first revision 120875ff382bdf54d4f6377faf2133e1dfc35459, the scaffold converted nothing and accepted invalid packages and conflicts while exact-pattern near misses remained byte-identical. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, exact identifiers, authors, initials, UTC dates, multi-paragraph comments, shared-paragraph anchors, commentsExtended entries, ordinary-note and unrelated-part preservation all passed; malformed packages, timestamps, references, relationships and content types were rejected; near misses remained byte-identical.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]], [[file:spec.org::#ac-072-2][AC072.2]], [[file:spec.org::#ac-072-3][AC072.3]] and [[file:spec.org::#ac-072-5][AC072.5]].
@@ -47,9 +47,9 @@
 ** GREEN RT072.2 - ODT and PDF remain outside comment conversion :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-072-2-result
-:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
+:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
 :COMMAND: go test ./internal/app -run '^TestRT072_2_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, every PDF/ODT command rejected the boolean option. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, convert, manuscript and letter accepted the flag for both PDF and ODT; PDF retained its existing note text and ODT retained one native attributed note without invoking DOCX comment conversion.
+:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, every PDF/ODT command rejected the boolean option. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, convert, manuscript and letter accepted the flag for both PDF and ODT; PDF retained its existing note text and ODT retained one native attributed note without invoking DOCX comment conversion.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-4][AC072.4]].
