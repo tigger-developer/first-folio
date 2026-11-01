@@ -35,6 +35,23 @@ func TestRT072_1_DOCXPackageConversionIsSelectiveAndComplete(t *testing.T) {
 	if got := strings.Count(comments, "Second paragraph"); got != 1 {
 		t.Errorf("multi-paragraph comment occurrence count = %d", got)
 	}
+	commentRoot, err := parseXML(files["word/comments.xml"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	paragraphs := 0
+	commentRoot.visit(func(n *docxNode) {
+		if n.name == "w:comment" && n.get("w:author") == "Aoife Example" {
+			for _, child := range n.children {
+				if child.name == "w:p" {
+					paragraphs++
+				}
+			}
+		}
+	})
+	if paragraphs != 2 {
+		t.Errorf("multi-paragraph comment has %d paragraphs, want 2", paragraphs)
+	}
 	footnotes := string(files["word/footnotes.xml"])
 	if strings.Contains(footnotes, "First comment") || strings.Contains(footnotes, "Timestamped comment") {
 		t.Error("converted note remains in footnotes")
@@ -51,6 +68,35 @@ func TestRT072_1_DOCXPackageConversionIsSelectiveAndComplete(t *testing.T) {
 	}
 	if strings.Count(document, "footnoteReference") != 1 {
 		t.Errorf("ordinary footnote reference not retained: %s", document)
+	}
+	documentRoot, err := parseXML(files["word/document.xml"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	anchored := false
+	documentRoot.visit(func(n *docxNode) {
+		if n.name != "w:p" {
+			return
+		}
+		starts, ends, references := 0, 0, 0
+		for _, child := range n.children {
+			switch child.name {
+			case "w:commentRangeStart":
+				starts++
+			case "w:commentRangeEnd":
+				ends++
+			case "w:r":
+				if child.child("w:commentReference") != nil {
+					references++
+				}
+			}
+		}
+		if starts == 2 && ends == 2 && references == 2 {
+			anchored = true
+		}
+	})
+	if !anchored {
+		t.Error("two comments are not anchored within their shared source paragraph")
 	}
 	if extended := string(files["word/commentsExtended.xml"]); strings.Count(extended, "commentEx") != 3 {
 		t.Errorf("extended comment entries incomplete: %s", extended)
@@ -121,6 +167,16 @@ func TestRT072_1_DOCXPackageConversionRejectsRelationshipConflict(t *testing.T) 
 	_, _, err := ConvertAttributedFootnotes(raw, time.Unix(0, 0).UTC())
 	if err == nil || !strings.Contains(err.Error(), "comments") {
 		t.Fatalf("error = %v, want comments relationship conflict", err)
+	}
+}
+
+func TestRT072_1_DOCXPackageConversionRejectsContentTypeConflict(t *testing.T) {
+	raw := w072RewritePackage(t, w072Package(t, false, false), func(files map[string][]byte) {
+		files["[Content_Types].xml"] = bytes.Replace(files["[Content_Types].xml"], []byte(`application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml`), []byte(`application/x-wrong-comments`), 1)
+	})
+	_, _, err := ConvertAttributedFootnotes(raw, time.Unix(0, 0).UTC())
+	if err == nil || !strings.Contains(err.Error(), "content type") {
+		t.Fatalf("error = %v, want comments content-type conflict", err)
 	}
 }
 
