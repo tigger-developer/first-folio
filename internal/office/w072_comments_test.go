@@ -114,6 +114,16 @@ func TestRT072_1_DOCXPackageConversionRejectsMissingReference(t *testing.T) {
 	}
 }
 
+func TestRT072_1_DOCXPackageConversionRejectsRelationshipConflict(t *testing.T) {
+	raw := w072RewritePackage(t, w072Package(t, false, false), func(files map[string][]byte) {
+		files["word/_rels/document.xml.rels"] = bytes.Replace(files["word/_rels/document.xml.rels"], []byte(`Target="comments.xml"`), []byte(`Target="wrong-comments.xml"`), 1)
+	})
+	_, _, err := ConvertAttributedFootnotes(raw, time.Unix(0, 0).UTC())
+	if err == nil || !strings.Contains(err.Error(), "comments") {
+		t.Fatalf("error = %v, want comments relationship conflict", err)
+	}
+}
+
 func w072Package(t *testing.T, duplicate, badDate bool) []byte {
 	t.Helper()
 	date := "2026-10-31 17:59:22Z"

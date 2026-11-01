@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestAT071_1_PublicCommandAndFormatMatrix(t *testing.T) {
@@ -27,6 +28,14 @@ func TestAT071_1_PublicCommandAndFormatMatrix(t *testing.T) {
 				for _, want := range []string{"Prose – em — dots …", "literal--...", "code---..."} {
 					if !strings.Contains(text, want) {
 						t.Errorf("%s/%s output missing %q: %s", command, format, want, text)
+					}
+				}
+				if command != "letter" && format == "pdf" {
+					first := strings.Index(text, "First note paragraph")
+					second := strings.Index(text, "Second note paragraph")
+					third := strings.Index(text, "Third note paragraph")
+					if first < 0 || first >= second || second >= third || strings.Count(text, "note paragraph") != 3 {
+						t.Errorf("%s PDF note paragraphs are not one ordered note: %s", command, text)
 					}
 				}
 				if command != "letter" && format != "pdf" {
@@ -59,7 +68,9 @@ func TestAT072_1_AllDOCXCommandsApplySamePolicy(t *testing.T) {
 	binary := officeBuild(t)
 	for _, command := range []string{"convert", "manuscript", "letter"} {
 		t.Run(command, func(t *testing.T) {
+			before := time.Now().UTC().Add(-time.Second)
 			defaultTarget := w072AcceptanceOutput(t, binary, command, "docx", false, false)
+			after := time.Now().UTC().Add(time.Second)
 			defaultPackage := w07AcceptancePackage(t, defaultTarget)
 			comments := defaultPackage["word/comments.xml"]
 			if comments == nil || len(comments.all("comment")) != 2 {
@@ -67,6 +78,19 @@ func TestAT072_1_AllDOCXCommandsApplySamePolicy(t *testing.T) {
 			}
 			if !strings.Contains(comments.text(), "Second comment paragraph") {
 				t.Errorf("%s lost multi-paragraph comment: %s", command, comments.text())
+			}
+			for _, comment := range comments.all("comment") {
+				switch comment.attr("author") {
+				case "Aoife Example":
+					date, err := time.Parse(time.RFC3339, comment.attr("date"))
+					if err != nil || date.Before(before) || date.After(after) {
+						t.Errorf("%s fallback comment date = %q", command, comment.attr("date"))
+					}
+				case "Siobhan Example":
+					if comment.attr("date") != "2026-10-31T17:59:22Z" {
+						t.Errorf("%s explicit comment date = %q", command, comment.attr("date"))
+					}
+				}
 			}
 			if notes := defaultPackage["word/footnotes.xml"]; notes == nil || !strings.Contains(notes.text(), "Ordinary note") || strings.Contains(notes.text(), "Timestamped comment") {
 				t.Errorf("%s selective footnotes incorrect", command)
@@ -112,6 +136,23 @@ func TestAT072_2_InvalidConversionIsAtomic(t *testing.T) {
 			raw, readErr := os.ReadFile(target)
 			if readErr != nil || string(raw) != sentinel {
 				t.Fatalf("%s replaced existing target: %v %q", command, readErr, raw)
+			}
+
+			absentDir := t.TempDir()
+			absentSource := filepath.Join(absentDir, "source.org")
+			writeAppFile(t, absentSource, w072AcceptanceSource(command, true))
+			absentTarget := filepath.Join(absentDir, "absent.docx")
+			absentArgs := []string{command, absentSource, absentTarget}
+			if command == "letter" {
+				absentTarget = filepath.Join(absentDir, "absent-example-theatre.docx")
+				absentArgs = []string{"letter", absentSource, "--format", "docx", "--dir", absentDir, "--prefix", "absent"}
+			}
+			_, absentDiagnostic, absentErr := officeRun(t, binary, absentDir, officeEnv(t, t.TempDir(), nil), absentArgs...)
+			if absentErr == nil || !strings.Contains(absentDiagnostic, "invalid UTC timestamp") {
+				t.Fatalf("%s absent-target error = %v, diagnostic = %s", command, absentErr, absentDiagnostic)
+			}
+			if _, statErr := os.Stat(absentTarget); !os.IsNotExist(statErr) {
+				t.Fatalf("%s created failed target: %v", command, statErr)
 			}
 		})
 	}
