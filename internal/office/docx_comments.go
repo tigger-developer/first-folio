@@ -21,8 +21,8 @@ const (
 )
 
 var (
-	attributedWithoutTime = regexp.MustCompile(`^\[([^\]\r\n]+)\] wrote: ?(.*)$`)
-	attributedWithTime    = regexp.MustCompile(`^\[([^\]\r\n]+)\] wrote \(([^)\r\n]+)\): ?(.*)$`)
+	attributedWithoutTime = regexp.MustCompile(`^\[([^\]\r\n]+)\] wrote: (.*)$`)
+	attributedWithTime    = regexp.MustCompile(`^\[([^\]\r\n]+)\] wrote \(([^)\r\n]+)\): (.*)$`)
 )
 
 type attributedComment struct {
@@ -309,6 +309,7 @@ func parseRequiredXML(files map[string][]byte, name string) (*docxNode, error) {
 }
 
 func ensureRelationship(root *docxNode, relationshipType, target string) error {
+	matches := 0
 	for i := range root.children {
 		rel := &root.children[i]
 		if rel.name != "Relationship" {
@@ -319,8 +320,14 @@ func ensureRelationship(root *docxNode, relationshipType, target string) error {
 			if typ != relationshipType || gotTarget != target {
 				return fmt.Errorf("DOCX comments relationship conflict for %s", target)
 			}
-			return nil
+			matches++
 		}
+	}
+	if matches > 1 {
+		return fmt.Errorf("duplicate DOCX comments relationship for %s", target)
+	}
+	if matches == 1 {
+		return nil
 	}
 	root.children = append(root.children, docxNode{name: "Relationship"}.attr("Id", nextRelationshipID(root)).attr("Type", relationshipType).attr("Target", target))
 	return nil
@@ -342,6 +349,7 @@ func nextRelationshipID(root *docxNode) string {
 }
 
 func ensureContentType(root *docxNode, partName, contentType string) error {
+	matches := 0
 	for i := range root.children {
 		override := &root.children[i]
 		if override.name != "Override" || override.get("PartName") != partName {
@@ -350,6 +358,12 @@ func ensureContentType(root *docxNode, partName, contentType string) error {
 		if override.get("ContentType") != contentType {
 			return fmt.Errorf("DOCX comments content type conflict for %s", partName)
 		}
+		matches++
+	}
+	if matches > 1 {
+		return fmt.Errorf("duplicate DOCX comments content type for %s", partName)
+	}
+	if matches == 1 {
 		return nil
 	}
 	root.children = append(root.children, docxNode{name: "Override"}.attr("PartName", partName).attr("ContentType", contentType))

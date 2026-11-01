@@ -6,51 +6,55 @@
 
 * Automated tests
 
-** RED AT072.1 - All DOCX commands apply the same policy :testdef:
+** GREEN AT072.1 - All DOCX commands apply the same policy :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-072-1-result
-:REVISION: 25adcda088a097cce19569e861f37917d53f7206
+:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT072_1_' -count=1 -timeout=10m
-:EVIDENCE: Built convert, manuscript and letter DOCX commands produced no comments part for attributed notes, which is the intended pre-implementation failure.
+:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, all three commands produced no comments part. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, built convert, manuscript and letter commands converted both exact attribution forms by default, retained the ordinary note, retained all notes under --preserve-footnotes, preserved multi-paragraph comment text and left each ODT control as native notes.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]], [[file:spec.org::#ac-072-2][AC072.2]], [[file:spec.org::#ac-072-3][AC072.3]] and [[file:spec.org::#ac-072-4][AC072.4]].
 - Runs :: 2026-11-01: intended RED for all three public DOCX commands.
+- Runs :: 2026-11-01: GREEN for default, preserved and ODT control output from all three commands.
 
-** RED AT072.2 - Invalid conversion is atomic :testdef:
+** GREEN AT072.2 - Invalid conversion is atomic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-072-2-result
-:REVISION: 25adcda088a097cce19569e861f37917d53f7206
+:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT072_2_' -count=1 -timeout=10m
-:EVIDENCE: All three file commands succeeded and replaced sentinel targets despite malformed attributed timestamps; the newly covered absent-target paths created outputs, and convert stdout likewise emitted a DOCX instead of failing before publication.
+:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, malformed timestamps replaced or created file targets and emitted convert stdout. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, convert, manuscript and letter each rejected the malformed timestamp before changing an existing sentinel or creating an absent target, and convert emitted zero stdout bytes.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-5][AC072.5]].
 - Runs :: 2026-11-01: intended RED at every real publication boundary.
+- Runs :: 2026-11-01: GREEN at all three file boundaries and convert stdout.
 
 * Automated regression
 
-** RED RT072.1 - DOCX package conversion is selective and complete :testdef:
+** GREEN RT072.1 - DOCX package conversion is selective and complete :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-072-1-result
-:REVISION: 120875ff382bdf54d4f6377faf2133e1dfc35459
+:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
 :COMMAND: go test ./internal/office -run '^TestRT072_1_' -count=1
-:EVIDENCE: The compile scaffold converted zero attributed notes and accepted malformed packages, invalid timestamps, relationship and content-type conflicts, and missing or duplicate references. The strengthened success-path assertions cover exact comment identifiers, authors, initials, UTC dates, multi-paragraph comment structure, shared-paragraph anchors, parsed commentsExtended entries, ordinary-footnote retention and unrelated-part preservation, but the no-op scaffold fails before those assertions are reached. The exact-pattern near-miss package remained byte-identical, which is the justified preservation-GREEN case.
+:EVIDENCE: At tests-first revision 120875ff382bdf54d4f6377faf2133e1dfc35459, the scaffold converted nothing and accepted invalid packages and conflicts while exact-pattern near misses remained byte-identical. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, exact identifiers, authors, initials, UTC dates, multi-paragraph comments, shared-paragraph anchors, commentsExtended entries, ordinary-note and unrelated-part preservation all passed; malformed packages, timestamps, references, relationships and content types were rejected; near misses remained byte-identical.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]], [[file:spec.org::#ac-072-2][AC072.2]], [[file:spec.org::#ac-072-3][AC072.3]] and [[file:spec.org::#ac-072-5][AC072.5]].
 - Runs :: 2026-11-01: intended RED with one justified preservation-GREEN case.
+- Runs :: 2026-11-01: GREEN for conversion, preservation and every bounded failure case.
 
-** RED RT072.2 - ODT and PDF remain outside comment conversion :testdef:
+** GREEN RT072.2 - ODT and PDF remain outside comment conversion :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-072-2-result
-:REVISION: 25adcda088a097cce19569e861f37917d53f7206
+:REVISION: 9558708125b4d78999a10bad835fe0289efc6ecf
 :COMMAND: go test ./internal/app -run '^TestRT072_2_' -count=1 -timeout=10m
-:EVIDENCE: Every convert, manuscript and letter PDF/ODT case rejected the new boolean option as a missing valued option before reaching the preserved non-DOCX path.
+:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, every PDF/ODT command rejected the boolean option. At revision 9558708125b4d78999a10bad835fe0289efc6ecf, convert, manuscript and letter accepted the flag for both PDF and ODT; PDF retained its existing note text and ODT retained one native attributed note without invoking DOCX comment conversion.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-4][AC072.4]].
 - Runs :: 2026-11-01: intended RED for option routing; existing non-DOCX rendering was not reclassified as failed behaviour.
+- Runs :: 2026-11-01: GREEN for all six non-DOCX command/format cases.
 
 * User tests
 

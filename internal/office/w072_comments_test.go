@@ -155,6 +155,7 @@ func TestRT072_1_DOCXPackageConversionLeavesNoCandidatesUnchanged(t *testing.T) 
 	raw := w072RewritePackage(t, w072Package(t, false, false), func(files map[string][]byte) {
 		files["word/footnotes.xml"] = bytes.ReplaceAll(files["word/footnotes.xml"], []byte("[Aoife Example] wrote: "), []byte("[Aoife Example] wrote "))
 		files["word/footnotes.xml"] = bytes.ReplaceAll(files["word/footnotes.xml"], []byte("[Siobhan Example] wrote (2026-10-31 17:59:22Z): "), []byte("[Siobhan Example] wrote [2026-10-31 17:59:22Z]: "))
+		files["word/footnotes.xml"] = bytes.ReplaceAll(files["word/footnotes.xml"], []byte("Ordinary note"), []byte("[Third Example] wrote:No separating space"))
 	})
 	converted, count, err := ConvertAttributedFootnotes(raw, time.Unix(0, 0).UTC())
 	if err != nil {
