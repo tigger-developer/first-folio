@@ -78,6 +78,16 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** TODO W071 - Normalize Org inline syntax and multi-paragraph footnotes :defect:
+:PROPERTIES:
+:CUSTOM_ID: w-071
+:SOURCE: operator
+:CREATED: 2026-11-01
+:END:
+- Specification :: [[file:../tickets/071-org-inline-and-footnote-parsing/spec.org][W071 - Org inline syntax and multi-paragraph footnotes]].
+- Reservation :: Definition pending. Normalize supported Org inline semantics
+  across PDF, DOCX and ODT, and retain paragraph structure in Org footnotes.
+
 ** ACTIVE W064 - Report YAML files in manuscript configuration cascade :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-064
