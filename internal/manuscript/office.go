@@ -8,6 +8,7 @@ import (
 	"io"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/tigger-developer/first-folio/internal/office"
 	"github.com/tigger-developer/first-folio/internal/source"
@@ -84,6 +85,12 @@ func runOffice(inputs InputSet, opts Options, stdout, stderr io.Writer) error {
 	raw, warnings, err := plan.Export(format)
 	if err != nil {
 		return err
+	}
+	if format == "docx" && !opts.PreserveFootnotes {
+		raw, _, err = office.ConvertAttributedFootnotes(raw, time.Now().UTC())
+		if err != nil {
+			return err
+		}
 	}
 	for _, warning := range warnings {
 		if _, err = fmt.Fprintln(stderr, "Warning:", warning); err != nil {

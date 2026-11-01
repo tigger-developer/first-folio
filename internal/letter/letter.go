@@ -6,12 +6,16 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	nativesource "github.com/tigger-developer/first-folio/internal/source"
 )
 
 type Letter struct {
 	Sender       string
 	Subject      string
 	Body         string
+	OfficeBody   string
+	Footnotes    map[string][]string
 	Closing      string
 	Signoff      string
 	Recipient    string
@@ -60,6 +64,7 @@ func ParseOrg(source string) ([]Letter, error) {
 				}
 				return match
 			})
+			officeBody, footnotes := nativesource.ExtractOrgFootnotes(resolved)
 			letterClosing := closing
 			if letterClosing == "" {
 				letterClosing = "Yours sincerely"
@@ -73,7 +78,7 @@ func ParseOrg(source string) ([]Letter, error) {
 				letterSender = metadata["author"]
 			}
 			letters = append(letters, Letter{
-				Sender: letterSender, Subject: subject, Body: resolved, Closing: letterClosing, Signoff: letterSignoff,
+				Sender: letterSender, Subject: subject, Body: resolved, OfficeBody: officeBody, Footnotes: footnotes, Closing: letterClosing, Signoff: letterSignoff,
 				Recipient: recipient["address"], Organization: recipient["org"], Moniker: recipient["moniker"], Date: date,
 				Author: metadata["author"], Email: metadata["email"], Contact: metadata["contact"],
 			})

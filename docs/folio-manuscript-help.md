@@ -14,6 +14,7 @@ Options:
   --wordcount WORDS           Override manuscript word count
   --contact-name NAME         Override title-page contact name
   --dry-run                   Validate inputs and print the render plan
+  --preserve-footnotes        Keep attributed notes as DOCX footnotes
   -h, --help                  Show this help message
 
 Set manuscript version metadata in source frontmatter or script.yaml.
@@ -47,6 +48,9 @@ Editable office output:
   number-format changes, requested resets or changed page-field structure.
   DOCX special opening pages may retain odd-page running matter on an even
   page. See the format guides for these accepted fidelity limitations.
+  Exact [Name] wrote: footnotes, including the documented UTC timestamp form,
+  become DOCX comments by default. --preserve-footnotes retains every note.
+  PDF is unchanged and ODT always retains native footnotes.
   Output is published by rename after validation. An ISBN sidecar is published
   afterwards; a sidecar failure reports that the manuscript was already written.
 

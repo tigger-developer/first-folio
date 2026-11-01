@@ -37,7 +37,7 @@ func Novel(format string) (string, []string) {
 		out.WriteString(paragraphs[i] + "\n\n")
 		if i == 0 || i == 5000 || i == 9999 {
 			if format == "org" {
-				fmt.Fprintf(&out, "*BOLD%05d* /ITALIC%05d/ =CODE%05d= [[https://example.invalid/novel][LINK%05d]] [fn:n%d]\n\n#+begin_quote\nQUOTE%05d\n#+end_quote\n\n- LIST%05d\n  - NESTED%05d\n\n| Column | Value |\n|--------+-------|\n| TABLE%05d | CELL%05d |\n\n[fn:n%d] NOTE%05d\n\n", i, i, i, i, i, i, i, i, i, i, i, i)
+				fmt.Fprintf(&out, "*BOLD%05d* /ITALIC%05d/ =CODE%05d= [[https://example.invalid/novel][LINK%05d]] [fn:n%d]\n\n#+begin_quote\nQUOTE%05d\n#+end_quote\n\n- LIST%05d\n  - NESTED%05d\n\n| Column | Value |\n|--------+-------|\n| TABLE%05d | CELL%05d |\n\n[fn:n%d] NOTE%05d\n\n\n", i, i, i, i, i, i, i, i, i, i, i, i)
 			} else {
 				fmt.Fprintf(&out, "**BOLD%05d** *ITALIC%05d* `CODE%05d` [LINK%05d](https://example.invalid/novel) [^n%d]\n\n> QUOTE%05d\n\n- LIST%05d\n  - NESTED%05d\n\n| Column | Value |\n|--------|-------|\n| TABLE%05d | CELL%05d |\n\n[^n%d]: NOTE%05d\n\n", i, i, i, i, i, i, i, i, i, i, i, i)
 			}

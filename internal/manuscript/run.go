@@ -178,6 +178,10 @@ func parseArgs(args []string) (Options, []string, error) {
 			opts.DryRun = true
 			continue
 		}
+		if arg == "--preserve-footnotes" {
+			opts.PreserveFootnotes = true
+			continue
+		}
 		if !strings.HasPrefix(arg, "--") {
 			positional = append(positional, arg)
 			continue

@@ -207,10 +207,10 @@ Every DOCX command applies the same selective comment policy while preserving ge
 :END:
 
 - Covers :: [[#ac-072-5][AC072.5 - Existing package content and publication safety are preserved]].
-- Boundary :: Public file and stdout output paths for each DOCX-producing command.
+- Boundary :: Public file output paths for all three DOCX-producing commands and the =convert --to docx= stdout path.
 - Setup :: A malformed attributed timestamp exercises failure after native DOCX generation; file targets contain known sentinel bytes and stdout is captured.
-- Action :: Run all three commands against file targets and stdout.
-- Expected :: Each command reports the attribution error; *existing targets retain their sentinel bytes*; absent targets remain absent; *stdout contains no partial DOCX bytes*.
+- Action :: Run all three commands against file targets, then run =convert= against captured stdout.
+- Expected :: Each command reports the attribution error; *existing targets retain their sentinel bytes*; absent targets remain absent; the captured =convert= *stdout contains no partial DOCX bytes*.
 - Retention :: Ticket-specific evidence; not part of the persistent regression suite.
 
 ** UT072.1 - Comments work in the document editor :testdef:
@@ -379,3 +379,19 @@ Every DOCX command applies the same selective comment policy while preserving ge
 
 - Decision :: Automated and local package/render verification continue hands-off; [[#ut-072-1][UT072.1 - Comments work in the document editor]] remains AMBER for operator validation.
 - Cumulative assessment :: No product, architecture, security or external-service departure is authorized or required.
+
+*** Atomic-output test correction
+
+- Original design reference :: [[#at-072-2][AT072.2 - Invalid conversion is atomic]].
+- Evidence :: =manuscript= and =letter= publish named files only; only =convert --to docx= exposes DOCX bytes on stdout.
+- Decision :: Exercise file atomicity for all three commands and stdout atomicity through =convert=, without inventing unsupported manuscript or letter interfaces.
+- Consequence :: The observable product requirement is unchanged; the test now addresses every real publication boundary.
+- Reversibility :: Documentation-only test clarification.
+- Verification :: AT072.2 must retain sentinels for all three file paths and capture zero stdout bytes from the failed =convert= invocation.
+
+** 2026-11-01T17:26:16Z - Delivery-code evidence :hands-off:review:
+
+- Decision :: Exact attributed Org notes are converted to OOXML comments for convert, manuscript and letter DOCX output, while =--preserve-footnotes= retains them and non-DOCX formats remain outside conversion.
+- Evidence :: RT072.1, RT072.2, AT072.1 and AT072.2 passed at =d16af962ec6c5989547795ede46ee18c011cfa2f=; exact-pattern near misses, conflicting packages and atomic-publication failures are covered; =go vet ./...= passed.
+- Boundary :: [[#ut-072-1][UT072.1 - Comments work in the document editor]] remains AMBER for the planned operator session. No merge, installation or deployment is authorized by this evidence.
+- Cumulative assessment :: Delivery-code self-review is PASS with no findings; repository-wide tests retain unrelated default-font expectation failures recorded as a limitation.

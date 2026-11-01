@@ -8,6 +8,8 @@ Options:
   --to RECIPIENT     Generate only for matching recipients, using a regex substring
   --dir DIR          Output directory, default same as source file
   --prefix PREFIX    Output filename prefix, default "letter"
+  --preserve-footnotes
+                      Keep attributed notes as DOCX footnotes
   -h, --help         Show this help message
   --version          Show application version
 
@@ -40,3 +42,5 @@ Editable office output:
   Duplicate output names and source/output aliases fail before publication.
   Each recipient file is validated and published separately. If a later file
   fails, the command reports the recipient files already written.
+  By default, exact [Name] wrote: footnotes, including the documented UTC
+  timestamp form, become DOCX comments. PDF and ODT retain their existing notes.

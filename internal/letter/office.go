@@ -54,7 +54,7 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 	literal := monoStyle
 	literal.Character = true
 	plan.Styles["FolioLiteral"] = literal
-	inlineParser := source.NewLetterParser()
+	inlineParser := source.NewLetterParser(item.Footnotes)
 	add := func(role, value string, bold bool, gap string, fallback string) error {
 		style := base
 		style.Bold = bold || base.Bold
@@ -95,7 +95,11 @@ func Office(item Letter, cfg config.Config) (office.Prose, error) {
 	if err = add("FolioSubject", item.Subject, true, "space-after-subject", "0.5em"); err != nil {
 		return plan, err
 	}
-	paragraphs := regexp.MustCompile(`\n\n+`).Split(strings.TrimSpace(item.Body), -1)
+	body := item.OfficeBody
+	if body == "" && len(item.Footnotes) == 0 {
+		body = item.Body
+	}
+	paragraphs := regexp.MustCompile(`\n\n+`).Split(strings.TrimSpace(body), -1)
 	for i, paragraph := range paragraphs {
 		role := fmt.Sprintf("FolioLetterBody%d", i)
 		gap, fallback := "", ""

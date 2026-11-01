@@ -23,11 +23,12 @@ const (
 )
 
 type Event struct {
-	Kind      EventKind
-	Key       string
-	Name      string
-	Text      string
-	Direction string
+	Kind       EventKind
+	Key        string
+	Name       string
+	Text       string
+	Paragraphs []string
+	Direction  string
 }
 
 type Document struct {

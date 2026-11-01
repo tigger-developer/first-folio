@@ -8,7 +8,6 @@ import (
 	"io"
 	"os"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 	"text/template"
@@ -16,6 +15,7 @@ import (
 	folio "github.com/tigger-developer/first-folio"
 	"github.com/tigger-developer/first-folio/internal/config"
 	"github.com/tigger-developer/first-folio/internal/play"
+	"github.com/tigger-developer/first-folio/internal/source"
 	typstutil "github.com/tigger-developer/first-folio/internal/typst"
 )
 
@@ -310,10 +310,14 @@ func typstDimension(value string) string {
 }
 
 func renderPlayBody(doc play.Document, cfg config.Config, format play.Format) string {
-	footnotes := map[string]string{}
+	footnotes := map[string][]string{}
 	for _, event := range doc.Events {
 		if event.Kind == play.EventFootnote {
-			footnotes[event.Name] = event.Text
+			paragraphs := event.Paragraphs
+			if len(paragraphs) == 0 {
+				paragraphs = []string{event.Text}
+			}
+			footnotes[event.Name] = paragraphs
 		}
 	}
 	var lines []string
@@ -380,45 +384,16 @@ func renderPlayBody(doc play.Document, cfg config.Config, format play.Format) st
 	return strings.Join(lines, "\n")
 }
 
-func inlineTypst(text string, footnotes map[string]string, format play.Format) string {
-	tokens := []string{}
-	protect := func(value string) string {
-		tokens = append(tokens, value)
-		return fmt.Sprintf("\x00%d\x00", len(tokens)-1)
+func inlineTypst(text string, footnotes map[string][]string, format play.Format) string {
+	nodes, err := source.ScriptInline(string(format), text, footnotes)
+	if err != nil {
+		return escapeTypstContent(text)
 	}
-	keys := make([]string, 0, len(footnotes))
-	for key := range footnotes {
-		keys = append(keys, key)
+	rendered, err := source.TypstInline(nodes, footnotes, string(format))
+	if err != nil {
+		return escapeTypstContent(text)
 	}
-	sort.Strings(keys)
-	for _, key := range keys {
-		note := "#footnote[" + inlineTypst(footnotes[key], nil, format) + "]"
-		text = strings.ReplaceAll(text, "[fn:"+key+"]", protect(note))
-		text = strings.ReplaceAll(text, "[^"+key+"]", protect(note))
-	}
-	text = replaceMarkup(text, boldItalicRE, func(s string) string { return "*_" + escapeTypstContent(s) + "_*" }, protect)
-	text = replaceMarkup(text, boldRE, func(s string) string { return "*" + escapeTypstContent(s) + "*" }, protect)
-	text = replaceMarkup(text, codeTickRE, func(s string) string { return `#mono-text[#raw("` + escapeTypstString(s) + `")]` }, protect)
-	text = replaceMarkup(text, codeOrgRE, func(s string) string { return `#mono-text[#raw("` + escapeTypstString(s) + `")]` }, protect)
-	text = replaceMarkup(text, orgItalicRE, func(s string) string { return "_" + escapeTypstContent(s) + "_" }, protect)
-	text = replaceMarkup(text, underlineRE, func(s string) string { return "#underline[" + escapeTypstContent(s) + "]" }, protect)
-	if format == play.FormatOrg {
-		text = replaceMarkup(text, orgStrikeRE, func(s string) string { return "#strike[" + escapeTypstContent(s) + "]" }, protect)
-	} else if format == play.FormatMarkdown {
-		text = replaceMarkup(text, mdStrikeRE, func(s string) string { return "#strike[" + escapeTypstContent(s) + "]" }, protect)
-	}
-	// A single-asterisk span means bold in Org sources and italic in Markdown and
-	// Fountain sources, so the Typst replacement depends on the parsed format.
-	if format == play.FormatOrg {
-		text = replaceMarkup(text, starPairRE, func(s string) string { return "*" + escapeTypstContent(s) + "*" }, protect)
-	} else {
-		text = replaceMarkup(text, starPairRE, func(s string) string { return "_" + escapeTypstContent(s) + "_" }, protect)
-	}
-	text = escapeTypstContent(text)
-	for i, token := range tokens {
-		text = strings.ReplaceAll(text, fmt.Sprintf("\x00%d\x00", i), token)
-	}
-	return text
+	return rendered
 }
 
 func replaceMarkup(text string, expression *regexp.Regexp, render func(string) string, protect func(string) string) string {

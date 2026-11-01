@@ -41,7 +41,8 @@ func parseOrg(source string) (Document, error) {
 	inTable := false
 	currentHeadingLevel := 0
 
-	for _, line := range lines {
+	for i := 0; i < len(lines); i++ {
+		line := lines[i]
 		token := nativesource.Recognize("org", line)
 		if token.Kind == "keyword" {
 			key := token.Name
@@ -112,8 +113,21 @@ func parseOrg(source string) (Document, error) {
 			doc.Events = append(doc.Events, Event{Kind: EventCharacterTableEnd})
 			inTable = false
 		}
-		if token.Kind == "note" && token.Text != "" {
-			doc.Events = append(doc.Events, Event{Kind: EventFootnote, Name: token.Name, Text: token.Text})
+		if token.Kind == "note" {
+			note, ok := nativesource.CollectOrgFootnote(lines, i)
+			if !ok {
+				continue
+			}
+			text := ""
+			if len(note.Paragraphs) > 0 {
+				text = note.Paragraphs[0]
+			}
+			paragraphs := note.Paragraphs
+			if len(paragraphs) <= 1 {
+				paragraphs = nil
+			}
+			doc.Events = append(doc.Events, Event{Kind: EventFootnote, Name: note.Name, Text: text, Paragraphs: paragraphs})
+			i = note.End - 1
 			continue
 		}
 		trimmed := strings.TrimSpace(line)

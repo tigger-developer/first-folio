@@ -12,7 +12,7 @@ import (
 type parser struct {
 	format                            string
 	script, literalTypography, breaks bool
-	notes                             map[string]string
+	notes                             map[string][]string
 	resolving                         map[string]bool
 	blocks, inlines                   int
 }
@@ -27,7 +27,7 @@ func (p *parser) addInline(out *[]Node, n Node) error {
 }
 
 // ScriptInline shares native recognition while retaining script typography and syntax.
-func ScriptInline(format, text string, notes map[string]string) ([]Node, error) {
+func ScriptInline(format, text string, notes map[string][]string) ([]Node, error) {
 	p := parser{format: format, script: true, literalTypography: true, notes: notes, resolving: map[string]bool{}}
 	return p.inline(text, 0)
 }
@@ -44,8 +44,14 @@ func (p *parser) inline(text string, depth int) ([]Node, error) {
 		}
 		value := plain.String()
 		plain.Reset()
+		if p.format == "org" {
+			value = orgSpecialStrings(value)
+		}
 		if !p.literalTypography {
-			value = smart(value)
+			if p.format != "org" {
+				value = specialStrings(value)
+			}
+			value = smartQuotes(value)
 		}
 		return p.addInline(&out, node("Str", value))
 	}
@@ -61,11 +67,22 @@ func (p *parser) inline(text string, depth int) ([]Node, error) {
 			continue
 		}
 		if text[i] == '\\' && i+1 < len(text) {
+			if p.format == "org" && text[i+1] == '-' {
+				plain.WriteRune('\u00ad')
+				i += 2
+				continue
+			}
+			if p.format == "org" && !strings.ContainsRune(`\\*/_+=~[]`, rune(text[i+1])) {
+				plain.WriteByte('\\')
+				plain.WriteByte(text[i+1])
+				i += 2
+				continue
+			}
 			plain.WriteByte(text[i+1])
 			i += 2
 			continue
 		}
-		if text[i] == '`' || (p.format == "org" || p.script) && (text[i] == '=' || text[i] == '~' && !p.script) {
+		if text[i] == '`' || p.format == "org" && (text[i] == '=' || text[i] == '~') || p.script && text[i] == '=' {
 			mark := string(text[i])
 			end := i + 1
 			if text[i] == '`' {
@@ -119,7 +136,7 @@ func (p *parser) inline(text string, depth int) ([]Node, error) {
 				if (p.format != "org" || p.script) && strings.HasPrefix(label, "^") {
 					id = strings.TrimPrefix(label, "^")
 				}
-				if note, ok := p.notes[id]; ok && id != "" {
+				if paragraphs, ok := p.notes[id]; ok && id != "" {
 					if p.script {
 						if err := flush(); err != nil {
 							return nil, err
@@ -137,15 +154,19 @@ func (p *parser) inline(text string, depth int) ([]Node, error) {
 						return nil, err
 					}
 					p.resolving[id] = true
-					children, err := p.inline(note, depth+1)
-					delete(p.resolving, id)
-					if err != nil {
-						return nil, err
-					}
 					noteBlocks := []Node{}
-					if err := p.appendBlock(&noteBlocks, node("Para", children)); err != nil {
-						return nil, err
+					for _, paragraph := range paragraphs {
+						children, err := p.inline(paragraph, depth+1)
+						if err != nil {
+							delete(p.resolving, id)
+							return nil, err
+						}
+						if err := p.appendBlock(&noteBlocks, node("Para", children)); err != nil {
+							delete(p.resolving, id)
+							return nil, err
+						}
 					}
+					delete(p.resolving, id)
 					if err := p.addInline(&out, node("Note", noteBlocks)); err != nil {
 						return nil, err
 					}
@@ -252,8 +273,15 @@ func findClosing(text string, start int, mark string) int {
 	return -1
 }
 
-func smart(text string) string {
-	text = strings.NewReplacer("---", "—", "--", "–", "...", "…").Replace(text)
+func specialStrings(text string) string {
+	return strings.NewReplacer("---", "—", "--", "–", "...", "…").Replace(text)
+}
+
+func orgSpecialStrings(text string) string {
+	return specialStrings(text)
+}
+
+func smartQuotes(text string) string {
 	var out strings.Builder
 	for i, r := range text {
 		if r == '\'' || r == '"' {

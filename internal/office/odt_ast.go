@@ -127,10 +127,17 @@ func (p *odtProjection) inlines(nodes []docxNode) []odtASTNode {
 			case "w:footnoteReference":
 				id := odtNumber(c, "id")
 				if id > 0 && id <= len(p.layout.footnotes) {
-					note := p.layout.footnotes[id-1].children[0]
-					// ODF supplies the citation: omit Word's anchor but retain its text separator.
-					note.children = append([]docxNode{note.children[0]}, note.children[2:]...)
-					parts = append(parts, oa("Note", p.blocks([]docxNode{note})))
+					note := p.layout.footnotes[id-1]
+					paragraphs := append([]docxNode(nil), note.children...)
+					if len(paragraphs) > 0 {
+						first := paragraphs[0]
+						// ODF supplies the citation: omit Word's anchor but retain its text separator.
+						if len(first.children) >= 2 {
+							first.children = append([]docxNode{first.children[0]}, first.children[2:]...)
+						}
+						paragraphs[0] = first
+					}
+					parts = append(parts, oa("Note", p.blocks(paragraphs)))
 				}
 			}
 		}

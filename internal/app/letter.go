@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/tigger-developer/first-folio/internal/config"
 	"github.com/tigger-developer/first-folio/internal/letter"
@@ -20,7 +21,7 @@ func runLetter(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	to, outputDir, prefix, source, err := parseLetterOptions(args)
+	to, outputDir, prefix, source, preserveFootnotes, err := parseLetterOptions(args)
 	if err != nil {
 		return err
 	}
@@ -71,7 +72,7 @@ func runLetter(args []string, stdout, stderr io.Writer) error {
 		}
 	}
 	if format != "pdf" {
-		return exportOfficeLetters(letters, cfg, filter, source, outputDir, prefix, format, stdout, stderr)
+		return exportOfficeLetters(letters, cfg, filter, source, outputDir, prefix, format, preserveFootnotes, stdout, stderr)
 	}
 	count := 0
 	for _, item := range letters {
@@ -126,7 +127,7 @@ func letterOutputFormat(args []string) ([]string, string, error) {
 	return remaining, format, nil
 }
 
-func exportOfficeLetters(letters []letter.Letter, cfg config.Config, filter *regexp.Regexp, source, dir, prefix, format string, stdout, stderr io.Writer) error {
+func exportOfficeLetters(letters []letter.Letter, cfg config.Config, filter *regexp.Regexp, source, dir, prefix, format string, preserveFootnotes bool, stdout, stderr io.Writer) error {
 	if strings.ContainsAny(prefix, `/\`) || prefix == "." || prefix == ".." {
 		return fmt.Errorf("office letter prefix must not contain path separators or traversal")
 	}
@@ -170,6 +171,12 @@ func exportOfficeLetters(letters []letter.Letter, cfg config.Config, filter *reg
 		if err != nil {
 			return fmt.Errorf("converting %s: %w", target.path, err)
 		}
+		if format == "docx" && !preserveFootnotes {
+			raw, _, err = office.ConvertAttributedFootnotes(raw, time.Now().UTC())
+			if err != nil {
+				return fmt.Errorf("converting %s: %w", target.path, err)
+			}
+		}
 		for _, warning := range warnings {
 			if _, err := fmt.Fprintln(stderr, "Warning:", warning); err != nil {
 				return err
@@ -189,18 +196,23 @@ func exportOfficeLetters(letters []letter.Letter, cfg config.Config, filter *reg
 	return nil
 }
 
-func parseLetterOptions(args []string) (string, string, string, string, error) {
+func parseLetterOptions(args []string) (string, string, string, string, bool, error) {
 	values := map[string]string{}
 	var positional []string
+	preserveFootnotes := false
 	for i := 0; i < len(args); i++ {
+		if args[i] == "--preserve-footnotes" {
+			preserveFootnotes = true
+			continue
+		}
 		if strings.HasPrefix(args[i], "--") {
 			key, value, consumed, err := optionValue(args, i)
 			if err != nil {
-				return "", "", "", "", err
+				return "", "", "", "", false, err
 			}
 			i += consumed
 			if key != "to" && key != "dir" && key != "prefix" {
-				return "", "", "", "", fmt.Errorf("unknown letter option --%s", key)
+				return "", "", "", "", false, fmt.Errorf("unknown letter option --%s", key)
 			}
 			values[key] = value
 		} else {
@@ -208,10 +220,10 @@ func parseLetterOptions(args []string) (string, string, string, string, error) {
 		}
 	}
 	if len(positional) == 0 {
-		return "", "", "", "", fmt.Errorf("no source file specified\nUsage: folio letter <source.org> [--to RECIPIENT]")
+		return "", "", "", "", false, fmt.Errorf("no source file specified\nUsage: folio letter <source.org> [--to RECIPIENT]")
 	}
 	if len(positional) > 1 {
-		return "", "", "", "", fmt.Errorf("too many letter source files")
+		return "", "", "", "", false, fmt.Errorf("too many letter source files")
 	}
-	return values["to"], values["dir"], values["prefix"], positional[0], nil
+	return values["to"], values["dir"], values["prefix"], positional[0], preserveFootnotes, nil
 }

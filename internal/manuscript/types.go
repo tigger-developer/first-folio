@@ -53,6 +53,7 @@ type Options struct {
 	DryRun            bool
 	ShowHelp          bool
 	ShowVersion       bool
+	PreserveFootnotes bool
 	Title             string
 	Subtitle          string
 	Author            string

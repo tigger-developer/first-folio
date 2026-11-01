@@ -1,7 +1,7 @@
 ---
 title: Org-mode Manuscript Format
-version: "0.7"
-last-updated: 2026-09-27
+version: "0.8"
+last-updated: 2026-11-01
 ---
 
 # Org-mode Manuscript Format
@@ -40,13 +40,19 @@ Supported front matter fields are `TITLE`, `SUBTITLE`, `AUTHOR`, `ATTRIBUTION`, 
 | `*bold*` | Bold text |
 | `/italic/` | Italic text |
 | `+deleted+` | Strikethrough text |
-| `=code=` and source blocks | Monospace text |
-| `--` and `---` | En dash and em dash |
+| `=code=`, `~code~` and source blocks | Monospace literal text |
+| `--`, `---`, `...` and `\-` | En dash, em dash, ellipsis and discretionary soft hyphen |
 | `[fn:name]` and `[fn:name] Text` | Footnote reference and definition |
 | Quotes, links, lists, and tables | Standard org-mode document elements |
 | Heading tagged `:noexport:` | Private section excluded with children |
 
 Fountain is not accepted by manuscript mode. Source-document images are not supported.
+
+Named footnote definitions may contain paragraphs separated by one blank line.
+The next definition, an Org headline, two consecutive blank lines or end of
+file ends the note. PDF, DOCX and ODT keep those paragraphs within one note;
+literal and code spans protect their contents from the prose substitutions
+listed above.
 
 Section breaks default to a centred `#` marker in rendered manuscripts. Override `folio.manuscript.scene-break.marker` in YAML config to use another marker.
 
@@ -91,6 +97,7 @@ This planning note is excluded.
 
 ## Revision History
 
+- 0.8, 2026-11-01: Define protected literal spans, ellipsis and soft-hyphen substitutions, and structured multi-paragraph footnotes.
 - 0.7, 2026-09-27: Linked stretch and hyphenation controls and reconciled current block-clearance defaults.
 - 0.6, 2026-09-26: Document exact quote indentation and additive quote clearance.
 - 0.5, 2026-09-25: Clarified additive code-block clearance and complete-line code spans.

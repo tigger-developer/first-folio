@@ -3,6 +3,7 @@
 package play
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -158,7 +159,7 @@ func assertEvents(t *testing.T, got []Event, want []Event) {
 		t.Fatalf("event count = %d, want %d\ngot: %#v", len(got), len(want), got)
 	}
 	for i := range want {
-		if got[i] != want[i] {
+		if !reflect.DeepEqual(got[i], want[i]) {
 			t.Errorf("event %d = %#v, want %#v", i, got[i], want[i])
 		}
 	}
@@ -167,7 +168,7 @@ func assertEvents(t *testing.T, got []Event, want []Event) {
 func assertHasEvent(t *testing.T, events []Event, want Event) {
 	t.Helper()
 	for _, event := range events {
-		if event == want {
+		if reflect.DeepEqual(event, want) {
 			return
 		}
 	}
