@@ -1,0 +1,383 @@
+#+TITLE: W064 - Report YAML files in manuscript configuration cascade
+#+SCHEMA: 8
+#+SUBTITLE: Configuration diagnostics
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: APPROVED 2026-10-16
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- Manuscript generation reports *which user YAML files enter the configuration
+  cascade*.
+
+** Before
+
+- Configuration layers merge by precedence, but diagnostics currently cover
+  *deprecated manuscript settings only*.
+
+** After
+
+- Each user-supplied YAML file loaded into the manuscript configuration cascade
+  *produces a stderr warning that says it joined the cascade*.
+- Warnings identify the loaded file, without listing individual settings.
+
+** Changes
+
+- Diagnostics apply to file-based YAML configuration sources on every
+  manuscript output route.
+
+** Unchanged
+
+- Existing precedence, recursive merge, selected output, and successful exit
+  *remain unchanged*.
+- Built-in preset composition and non-manuscript commands *produce no new
+  load warnings*.
+
+** Edge cases
+
+- A loaded file produces one warning *regardless of how many settings it
+  supplies or replaces*.
+
+** Decisions
+
+- Diagnostics identify *the particular YAML file loaded into the cascade* and
+  do not enumerate its settings or values.
+
+** Next step
+
+- Review this definition, then authorize delivery as described in
+  [[#delivery-handoff][Delivery Handoff]].
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+
+Configuration precedence is intentional: later sources can replace earlier
+values. During manuscript generation, source-frontmatter settings can be
+replaced by a discovered local =script.yaml=. The current configuration
+reference documents the precedence, but the application does not report which
+external YAML files were loaded into the cascade.
+
+** Outcome
+
+The manuscript command reports each external user YAML configuration file
+loaded into the cascade on stderr, without enumerating settings or changing
+which values are used.
+
+** Scope
+
+*** In scope
+
+- =folio manuscript= across its supported output routes.
+- Each external user-supplied YAML file that the manuscript loader actually
+  loads: global =script.yaml=, global style-specific YAML, nearest local
+  =script.yaml=, and local style-specific YAML.
+- One warning per loaded file per manuscript invocation, whether it supplies
+  new settings, repeats existing settings, or replaces lower-precedence values.
+
+*** Out of scope
+
+- Changing configuration precedence, merge semantics, validation, or output.
+- Warnings for YAML files that are absent, not selected, or not loaded, or for
+  built-in base and style preset composition.
+- Per-setting or per-metadata override diagnostics, and warnings for embedded
+  source-frontmatter YAML or CLI values (neither is a loaded external YAML
+  configuration file).
+- New warning controls, logging frameworks, configuration files, or changes to
+  script, letter, conversion, or other non-manuscript command behaviour.
+- Printing individual setting names or values.
+
+*** Unchanged
+
+- W037 - Manuscript source configuration with recursive layout overrides
+  remains the authority for source-versus-local precedence and validation.
+- W002 - Unified YAML configuration with precedence chain remains the authority
+  for shared metadata and established configuration precedence.
+- Existing deprecation and export warnings remain in place.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]]
+- Product authority :: [[file:../../README.md][Configuration overview]] and
+  [[file:../../docs/config.md][configuration precedence and manuscript source configuration]].
+- Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Configuration ownership and manuscript orchestration]].
+- Historical requirement :: [[file:../../docs/work.org][W002 - YAML precedence and source metadata overrides]] and
+  [[file:../../tickets/037-source-frontmatter/spec.org][W037 - Manuscript source configuration with recursive layout overrides]].
+- Current implementation :: [[file:../../internal/config/config.go][Layered configuration merge and warning collection]],
+  [[file:../../internal/config/running_matter.go][Existing migration warnings]],
+  [[file:../../internal/manuscript/run.go][Typst/PDF warning output]], and
+  [[file:../../internal/manuscript/office.go][DOCX/ODT warning output]].
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+
+- Warnings go to stderr, as do current manuscript configuration diagnostics.
+- The project owns configuration loading and warning wording. No external
+  service, dependency, or persistent state is required.
+- Delivery must preserve human changes in the active W063 - Editable DOCX and
+  ODT manuscripts and letters worktree; its in-progress files are not part of
+  this change's implementation scope.
+
+** Decisions
+
+- A load event occurs when the manuscript command successfully loads an
+  external user YAML file as a configuration layer.
+- A diagnostic identifies the loaded file sufficiently to distinguish it from
+  the other loaded YAML layers. It does not list keys or values.
+- Each loaded file produces one diagnostic, independent of how many settings it
+  supplies or whether those settings replace earlier values.
+- Built-in preset values establish defaults and are excluded from load
+  warnings, avoiding diagnostics for normal preset composition.
+
+** Unresolved blockers
+
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC064.1 - Loaded user YAML files are reported :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-064-1
+:END:
+
+- Criterion :: During =folio manuscript=, each external user YAML file actually
+  loaded into the configuration cascade produces one stderr warning stating
+  that the file was loaded into the cascade and identifying that file. The
+  warning does not enumerate settings.
+- Proven by :: [[#rt-064-1][RT064.1 - Loaded YAML files are reported once]] and
+  [[#rt-064-2][RT064.2 - Diagnostics cover manuscript output routes]].
+
+** AC064.2 - Diagnostics preserve output and omit setting details :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-064-2
+:END:
+
+- Criterion :: Load warnings do not change the effective configuration,
+  generated output, or successful exit. They do not appear on stdout or list
+  individual setting names or values.
+- Proven by :: [[#rt-064-1][RT064.1 - Loaded YAML files are reported once]] and
+  [[#rt-064-2][RT064.2 - Diagnostics cover manuscript output routes]].
+
+** AC064.3 - Unloaded files and other commands stay quiet :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-064-3
+:END:
+
+- Criterion :: Missing or unselected YAML files, built-in preset composition,
+  and non-manuscript commands do not produce new load warnings. Existing
+  diagnostics remain unchanged.
+- Proven by :: [[#rt-064-1][RT064.1 - Loaded YAML files are reported once]] and
+  [[#rt-064-2][RT064.2 - Diagnostics cover manuscript output routes]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT064.1 - Loaded YAML files are reported once :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-064-1
+:END:
+
+- Covers :: [[#ac-064-1][AC064.1 - Loaded user YAML files are reported]],
+  [[#ac-064-2][AC064.2 - Diagnostics preserve output and omit setting details]],
+  and [[#ac-064-3][AC064.3 - Unloaded files and other commands stay quiet]].
+- Boundary :: Public =folio manuscript= CLI with temporary manuscript and YAML
+  files; inspect stderr, stdout, exit status, and generated output.
+- Setup :: In a temporary home and project, provide global =script.yaml=,
+  global style-specific YAML, nearest local =script.yaml=, and local
+  style-specific YAML. Use values that include repeated and successively
+  replaced settings so the test proves diagnostics do not enumerate keys.
+- Action :: Run =folio manuscript= to a Typst target with the matching style
+  selected, then run a non-manuscript command with the same configuration.
+- Expected :: Stderr contains exactly one warning identifying each external
+  YAML file actually loaded, whether or not it changes the effective settings.
+  No warning lists setting names or values. Stdout contains no load warnings;
+  manuscript generation succeeds and preserves the existing winning settings.
+  Missing or unselected files, built-in preset composition, source frontmatter,
+  CLI values, and the non-manuscript command produce no new load warning.
+- Retention :: Persistent regression suite under =make test=.
+
+** RT064.2 - Diagnostics cover manuscript output routes :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-064-2
+:END:
+
+- Covers :: [[#ac-064-1][AC064.1 - Loaded user YAML files are reported]] and
+  [[#ac-064-2][AC064.2 - Diagnostics preserve output and omit setting details]].
+- Boundary :: Public =folio manuscript= CLI on each supported output route:
+  Typst, PDF, DOCX, and ODT.
+- Setup :: Supply a local YAML file using synthetic configuration.
+- Action :: Generate each output format.
+- Expected :: Each successful route reports one warning identifying the loaded
+  YAML file on stderr, preserves its existing winning values, and produces its
+  requested output. No warning is written to stdout.
+- Retention :: Persistent regression suite under =make test=.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+- A loaded YAML file produces one warning even when *many settings* are
+  repeated or replaced ([[#ac-064-1][AC064.1 - Loaded user YAML files are reported]]).
+- A YAML file that is absent or not selected produces *no load warning*
+  ([[#ac-064-3][AC064.3 - Unloaded files and other commands stay quiet]]).
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+
+- Relevant components :: =internal/config= loads and deep-merges the ordered
+  YAML layers. =internal/manuscript= applies document metadata and emits the
+  collected configuration warnings on stderr for Typst/PDF and office exports.
+- Existing pattern :: =Config.Warnings()= carries manuscript migration
+  diagnostics to both manuscript command routes; the command owns stream writes.
+- Ownership boundary :: First Folio owns precedence tracking and diagnostics.
+  The invoking environment owns the configuration files.
+
+** High-level design
+
+*** Components and responsibilities
+
+- Extend the existing configuration load path to record each external YAML
+  file as it enters the manuscript cascade. Reuse the ordered layer sequence
+  and warning collection; do not add a second configuration loader.
+- Report loaded external YAML files independently of which settings or metadata
+  they supply.
+- Keep stderr emission in the existing manuscript command boundaries for all
+  supported output formats.
+
+*** Flow
+
+1. Load built-in base and style values without treating them as user YAML files.
+2. When the existing loader successfully reads an external user YAML file into
+   the manuscript cascade, record one diagnostic identifying that file.
+3. Resolve settings and metadata using the unchanged precedence.
+4. Validate and render using the unchanged effective configuration; write the
+   collected load warnings to stderr through the existing manuscript paths.
+
+*** Essential mechanisms
+
+- Identify each loaded YAML file by its resolved path so files with the same
+  basename remain distinguishable. Do not include setting names or values.
+- Preserve deterministic cascade order and emit one warning for each external
+  user YAML file loaded. Built-in base and style values do not create warnings.
+
+*** Failure behaviour
+
+- Existing YAML parsing, validation, precedence, and output failures retain
+  their current exit and diagnostic behaviour.
+- If writing a required warning to stderr fails, manuscript generation returns
+  the existing stream-write error path before publishing output.
+
+*** Simplicity and proportionality
+
+- Loaded-file diagnostics are collected during the existing load and returned
+  through the existing warning channel. No new configuration syntax, runtime
+  option, dependency, or output format is introduced.
+
+** Design decisions and verification
+
+*** Report loaded YAML files, not individual settings
+
+- Decision :: Emit one diagnostic for each external user YAML file successfully
+  loaded into the manuscript cascade, regardless of its effective settings.
+- Rationale :: The operator needs to know which file participates in precedence;
+  enumerating keys is unnecessary detail.
+- Verification :: RT064.1 covers each configured file, repeated and replaced
+  settings, absent files, style selection, and preset-only composition.
+
+*** Identify the particular YAML file
+
+- Decision :: Warnings identify the resolved path of the loaded YAML file and
+  omit individual setting names and values.
+- Rationale :: The resolved path identifies which file participates in the
+  cascade, including when several files share a basename.
+- Verification :: RT064.1 checks one path-identifying warning per loaded file
+  and confirms setting names and values are absent.
+
+*** Architecture impact
+
+**** Security impact
+
+- Threat boundary :: Existing local configuration inputs and CLI values remain
+  within the current configuration boundary.
+- Data and secrets :: Diagnostics include the resolved path of each loaded
+  YAML file, which may disclose local directory names, but omit setting names
+  and values. No new data is persisted or transmitted.
+- Access :: No permissions, file discovery, or external access are added.
+- Conclusion :: No new trust boundary; output minimization is required by
+  AC064.2.
+
+**** Other relevant qualities
+
+- Operability :: Warnings remain visible on stderr in interactive and scripted
+  use without contaminating generated manuscript content or stdout.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: =.sdlc/project.yaml=, [[file:../../docs/config.md][configuration reference]],
+  [[file:../../docs/ARCHITECTURE.md][configuration architecture]],
+  [[file:../../tickets/037-source-frontmatter/spec.org][W037 - source configuration contract]],
+  and [[file:../../tickets/063-prose-office-export/spec.org][W063 - manuscript office export contract]].
+- Entry conditions :: Explicit operator approval of this definition and current
+  definition-gate evidence in =audits.yaml=.
+- First implementation step :: Add public CLI regression coverage for one
+  loaded-file warning, its resolved path, precedence preservation, and no-warning
+  cases in [[#rt-064-1][RT064.1 - Loaded YAML files are reported once]].
+- Definition evidence :: [[file:audits.yaml][=audits.yaml=]]
+- Validation evidence :: [[file:validation.org][=validation.org=]]; delivery creates
+  the record headings and records current results for both RTs.
+- Documentation impact :: Update =docs/config.md= and
+  =docs/ARCHITECTURE.md= to describe the diagnostic contract. No README change
+  is required because its summary does not define warning behaviour.
+
+* Hands-off mode decision log
+
+** 2026-10-16T16:13:06Z :hands-off:review:
+
+*** Delivery mode and continuation
+
+- The operator invoked =deliver-change= without selecting ATTENDED, so this
+  invocation proceeds in HANDS-OFF mode. Pausing or reopening a decision
+  changes the mode to ATTENDED until the operator invokes =HANDS-OFF= again.
+
+*** Test and OT scope
+
+- The signed-off definition specifies two automated regression tests and no
+  OT or UT. No live external operation or cost-incurring test is required, so
+  no per-ticket OT budget applies.
+
+*** Branch strategy
+
+- The global delivery strategy is =current=; retain the operator-selected
+  =master= branch for this change.
+
+*** Diagnostic path disclosure
+
+- Follow the signed-off requirement to identify each loaded YAML file by its
+  resolved path. The definition records the possible disclosure of local
+  directory names on stderr; do not add setting names or values.
+

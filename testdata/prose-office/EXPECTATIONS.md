@@ -384,7 +384,7 @@ env HOME="$specimen_dir" "$specimen_dir/folio" letter "$specimen_dir/letters.org
 env HOME="$specimen_dir" "$specimen_dir/folio" letter "$specimen_dir/letters.org" --format odt --dir "$specimen_dir"
 ```
 
-Office commands now produce editable output. Rendering and conformance remain under validation; current results are recorded in [W063 validation](../../specs/063-prose-office-export/validation.org). The retained rendered RT helper performs explicit field/index refresh in a private LibreOffice profile; plain `--convert-to` does not establish refreshed contents.
+Office commands now produce editable output. Rendering and conformance remain under validation; current results are recorded in [W063 validation](../../tickets/063-prose-office-export/validation.org). The retained rendered RT helper performs explicit field/index refresh in a private LibreOffice profile; plain `--convert-to` does not establish refreshed contents.
 
 ## Checklist revision
 

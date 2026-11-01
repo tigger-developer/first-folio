@@ -69,7 +69,7 @@ provides a durable cross-cutting category that the standard tags cannot express.
 :CREATED: YYYY-MM-DD
 :END:
 
-- *Specification:* [[file:../specs/NNN-concise-descriptor/spec.org][WNNN - Concise descriptor]]
+- *Specification:* [[file:../tickets/NNN-concise-descriptor/spec.org][WNNN - Concise descriptor]]
 #+end_example
 
 Use =OWNER= and =BRANCH= properties only when concurrent work needs explicit
@@ -83,7 +83,7 @@ classification; it is provenance, not current state.
 :CUSTOM_ID: w-064
 :CREATED: 2026-10-16
 :END:
-- Specification :: [[file:../specs/064-config-override-warnings/spec.org][W064 - Manuscript YAML cascade load diagnostics]].
+- Specification :: [[file:../tickets/064-config-override-warnings/spec.org][W064 - Manuscript YAML cascade load diagnostics]].
 - Scope :: Report each external user YAML file loaded into the manuscript
   configuration cascade on stderr, preserving existing precedence and output.
 
@@ -92,36 +92,36 @@ classification; it is provenance, not current state.
 :CUSTOM_ID: w-065
 :CREATED: 2026-10-22
 :END:
-- Specification :: [[file:../specs/065-disabled-script-footnote-references/spec.org][W065 - Disabled script footnote references]].
+- Specification :: [[file:../tickets/065-disabled-script-footnote-references/spec.org][W065 - Disabled script footnote references]].
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-22 for the observed PDF and DOCX defect. When =render.footnotes: false=, references to defined notes must not appear as literal =[fn:id]= or =[^id]= text.
-- Evidence :: [[file:../specs/065-disabled-script-footnote-references/validation.org][Regression and bounded output checks]]. Definition and delivery reviews are internal-only; operator closure remains pending.
+- Evidence :: [[file:../tickets/065-disabled-script-footnote-references/validation.org][Regression and bounded output checks]]. Definition and delivery reviews are internal-only; operator closure remains pending.
 
 ** ACTIVE W066 - Preserve Org character cue boundaries :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-066
 :CREATED: 2026-10-22
 :END:
-- Specification :: [[file:../specs/066-numbered-character-cues/spec.org][W066 - Org character cue boundaries]].
+- Specification :: [[file:../tickets/066-numbered-character-cues/spec.org][W066 - Org character cue boundaries]].
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-22 for the reported =PARENT 3= cue split. Numerals in a character name must not become a speech direction.
 - Amendment 2026-10-22 :: The operator invoked =BYPASS-GATE-7= again after a screenshot showed =MARY (IGNORING:= and =(the question)=. An opening parenthesis must begin a direction regardless of the following word's capitalization. This correction remains under W066.
-- Evidence :: [[file:../specs/066-numbered-character-cues/validation.org][Regression and output checks]]. Internal reviews and operator closure decision remain separate.
+- Evidence :: [[file:../tickets/066-numbered-character-cues/validation.org][Regression and output checks]]. Internal reviews and operator closure decision remain separate.
 
 ** ACTIVE W067 - Apply font stretch geometrically in PDF :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-067
 :CREATED: 2026-10-23
 :END:
-- Specification :: [[file:../specs/067-script-pdf-font-stretch/spec.org][W067 - Application PDF font stretch]].
+- Specification :: [[file:../tickets/067-script-pdf-font-stretch/spec.org][W067 - Application PDF font stretch]].
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-23 after configured script speaker, instruction and dialogue stretch values rendered at unchanged width in PDF while DOCX applied them.
 - Scope expansion :: On 2026-10-24 the operator required the geometric, non-width-face contract for every applicable font object across script, letter and manuscript PDF rendering.
-- Evidence :: [[file:../specs/067-script-pdf-font-stretch/validation.org][Rendered-width regression and project output probe]]. Internal reviews and operator closure remain separate.
+- Evidence :: [[file:../tickets/067-script-pdf-font-stretch/validation.org][Rendered-width regression and project output probe]]. Internal reviews and operator closure remain separate.
 
 ** ACTIVE W068 - Share monospace typography across the application :feature:migration:
 :PROPERTIES:
 :CUSTOM_ID: w-068
 :CREATED: 2026-10-23
 :END:
-- Specification :: [[file:../specs/068-shared-monospace-font/spec.org][W068 - Shared monospace typography]].
+- Specification :: [[file:../tickets/068-shared-monospace-font/spec.org][W068 - Shared monospace typography]].
 - Scope :: Add top-level =folio.mono.font= configuration for every applicable command, preserve =folio.manuscript.mono.font= as a deprecated compatible path, and report migration guidance on stderr when the deprecated path is supplied.
 - Boundary :: This remains a separate configuration migration. Its PDF consumers use W067's application-wide geometric stretch contract.
 
@@ -130,7 +130,7 @@ classification; it is provenance, not current state.
 :CUSTOM_ID: w-069
 :CREATED: 2026-10-24
 :END:
-- Specification :: [[file:../specs/069-scene-frontmatter-visibility/spec.org][W069 - Scene frontmatter visibility]].
+- Specification :: [[file:../tickets/069-scene-frontmatter-visibility/spec.org][W069 - Scene frontmatter visibility]].
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-24 after direct scene paragraphs remained visible in PDF, DOCX and ODT with =render.frontmatter: false=.
 - Boundary :: Rendered documents suppress direct scene paragraphs; Markdown and Fountain semantic conversions retain them.
 
@@ -140,7 +140,7 @@ classification; it is provenance, not current state.
 :CREATED: 2026-10-25
 :CLOSED: 2026-10-25
 :END:
-- Specification :: [[file:../specs/070-script-strikethrough/spec.org][W070 - Script strikethrough rendering]].
+- Specification :: [[file:../tickets/070-script-strikethrough/spec.org][W070 - Script strikethrough rendering]].
 - Closure 2026-10-25 :: Explicitly accepted after the delivery handoff. UT070.1 remains AMBER because the representative PDF, DOCX and ODT reader/editor procedure was not reported; it is waived rather than promoted to GREEN. Product commit =f5b5fc8= and evidence commit =9dfef18= were synchronized to =origin/master=. No installation or release accompanies closure.
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-25 after Org and Markdown strikethrough markers remained literal in rendered script output.
 - Boundary :: Org =+text+= and Markdown =~~text~~= render as strikethrough in PDF, DOCX and ODT; Markdown =~text~= remains literal.
@@ -151,54 +151,54 @@ classification; it is provenance, not current state.
 :CREATED: 2026-10-16
 :CLOSED: 2026-10-20
 :END:
-- Specification :: [[file:../specs/063-prose-office-export/spec.org][W063 - Prose office export definition]].
-- Closure 2026-10-20 :: Accepted for use and explicitly closed with known residual heading clipping and slight FolioBody caret/text offset. Their causes remain unverified. Remaining formal user-test procedures are waived for this closure, not recorded as passed; all twelve UT records retain AMBER. Closure evidence and documentation reconciliation are in [[file:../specs/063-prose-office-export/validation.org][the validation record]]. No further refinement is scheduled under this ticket.
+- Specification :: [[file:../tickets/063-prose-office-export/spec.org][W063 - Prose office export definition]].
+- Closure 2026-10-20 :: Accepted for use and explicitly closed with known residual heading clipping and slight FolioBody caret/text offset. Their causes remain unverified. Remaining formal user-test procedures are waived for this closure, not recorded as passed; all twelve UT records retain AMBER. Closure evidence and documentation reconciliation are in [[file:../tickets/063-prose-office-export/validation.org][the validation record]]. No further refinement is scheduled under this ticket.
 - Integration for user testing 2026-10-20 :: Approved for merge to =master= without acceptance or closure. Feature candidate =8141a63= is integrated in the primary project checkout. User validation reports substantially improved editing, with a remaining FolioBody offset; a font-specific cause is unverified. W063 remains REVIEW and the twelve UTs remain AMBER pending manuscript testing. No installation or release accompanies this integration.
 - Delivery admission 2026-10-19 :: Current definition approved for hands-off delivery on an isolated feature branch. Preserve the live primary-checkout binary; return for the defined user tests after automated delivery and internal review.
-- Editor retest handoff 2026-10-19 :: Internal delivery-code PASS for native baselines and shared formatting at =623af4e=, current-session self-review without independence. Required AT/RT/OT evidence and readiness are GREEN; twelve UTs remain AMBER. Fresh editable files and exact retest steps are in [[file:../specs/063-prose-office-export/handoff.md][the W063 handoff]]. W063 remains unaccepted. The live binary/symlink are unchanged; no merge, installation, release or closure.
+- Editor retest handoff 2026-10-19 :: Internal delivery-code PASS for native baselines and shared formatting at =623af4e=, current-session self-review without independence. Required AT/RT/OT evidence and readiness are GREEN; twelve UTs remain AMBER. Fresh editable files and exact retest steps are in [[file:../tickets/063-prose-office-export/handoff.md][the W063 handoff]]. W063 remains unaccepted. The live binary/symlink are unchanged; no merge, installation, release or closure.
 - Editor correction 2026-10-19 :: Operator reports raised ordinary body text with displaced cursor and editing-view clipping, plus per-instance heading/contents styles, across Markdown/Org and DOCX/ODT. These remain corrections under unaccepted W063. Resume delivery in the isolated feature branch; previous handoff evidence is historical for its candidate.
 - Operator-validation handoff 2026-10-19 (historical) :: Internal delivery-code PASS at =ec5113f= (current-session author self-review, not independent). All required AT/RT/OT records are GREEN and delivery-code readiness passes. Twelve UTs remain AMBER for the agreed joint validation. The live symlink/checksum are unchanged; no merge, installation, release or closure.
 - Automated verification 2026-10-19 (before internal review) :: The operator removed the local AT execution-count cap. Corrected Unicode/varied-length novel reader acceptance now passes all four DOCX/ODT combinations, supplementing the passing RTs and OTs. Internal delivery-code review is next; all twelve UTs remain AMBER.
 - Delivery checkpoint 2026-10-19 (historical, before further-run authorization) :: Native shared-parser candidate =723734d= is on =feature/W063-prose-office-export=. Full regression, affected RTs and both OTs pass; corrected-fixture DOCX acceptance passes. Two corrected-fixture ODT acceptance cases await the explicit AT conversion-budget exception after an agent counting error. Delivery-code review has no current verdict; all twelve UTs remain AMBER and the live binary is unchanged.
 - Parser correction 2026-10-19 (historical definition stage) :: Specification review now requires reuse of the convert parser and zero Pandoc calls throughout DOCX. Revised sign-off is pending. Earlier reader-only tests and internal delivery PASS do not establish these requirements; implementation and fresh evidence remain outstanding.
 - Correction 2026-10-19 (historical exporter verification) :: Previous delivery acceptance is superseded. Existing native DOCX and configured Pandoc ODT exporters now serve manuscript and letter adapters; selective rollback preserved unrelated work. Initially pending fresh checks now pass: full regression plus affected follow-ups, seven-profile comparison, outside-checkout CLI and internal delivery-code review. Twelve operator UTs remain pending; this is not closure.
-- Delivery evidence :: [[file:../specs/063-prose-office-export/validation.org][Regression, comparison and operator checks]]; [[file:../specs/063-prose-office-export/internal-review.md][Current-session internal delivery review]]. The standing internal-only policy applies to the delivery review; the historical definition record below is retained.
+- Delivery evidence :: [[file:../tickets/063-prose-office-export/validation.org][Regression, comparison and operator checks]]; [[file:../tickets/063-prose-office-export/internal-review.md][Current-session internal delivery review]]. The standing internal-only policy applies to the delivery review; the historical definition record below is retained.
 - Operator validation :: [[file:../testdata/prose-office/EXPECTATIONS.md][Labelled profiles, YAML expectations and reproduction commands]]. Twelve user tests remain operator-owned; installation, release and closure are separate.
 
 - Scope :: *Full applicable YAML typography and document features*, with editor-dependent pagination; one editable file per selected letter recipient.
-- Review route :: External definition review reinstated 2026-10-16, superseding the earlier self-review-only exception for this definition. See [[file:../specs/063-prose-office-export/audits.yaml][Independent definition review]]. Definition approved 2026-10-16 with the bounded clarifications; no repeat definition review required.
+- Review route :: External definition review reinstated 2026-10-16, superseding the earlier self-review-only exception for this definition. See [[file:../tickets/063-prose-office-export/audits.yaml][Independent definition review]]. Definition approved 2026-10-16 with the bounded clarifications; no repeat definition review required.
 
 ** REVIEW W062 - Source-aware Org emphasis in office exports :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-062
 :CREATED: 2026-10-12
 :END:
-- Specification :: [[file:../specs/062-office-org-emphasis/spec.org][W062 - DOCX/ODT emphasis correction]].
-- Evidence :: [[file:../specs/062-office-org-emphasis/validation.org][Native, rendered and regression checks]].
+- Specification :: [[file:../tickets/062-office-org-emphasis/spec.org][W062 - DOCX/ODT emphasis correction]].
+- Evidence :: [[file:../tickets/062-office-org-emphasis/validation.org][Native, rendered and regression checks]].
 
 ** REVIEW W061 - Independent frontmatter paragraph fonts :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-061
 :CREATED: 2026-10-12
 :END:
-- Specification :: [[file:../specs/061-frontmatter-paragraph-font/spec.org][W061 - Six-property introduction font]].
-- Evidence :: [[file:../specs/061-frontmatter-paragraph-font/validation.org][Export, inheritance and preservation checks]].
+- Specification :: [[file:../tickets/061-frontmatter-paragraph-font/spec.org][W061 - Six-property introduction font]].
+- Evidence :: [[file:../tickets/061-frontmatter-paragraph-font/validation.org][Export, inheritance and preservation checks]].
 
 ** REVIEW W060 - Embed fonts in DOCX and ODT exports :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-060
 :CREATED: 2026-10-12
 :END:
-- Specification :: [[file:../specs/060-office-font-embedding/spec.org][W060 - Complete editable font embedding]].
-- Evidence :: [[file:../specs/060-office-font-embedding/validation.org][Package, portability and preservation checks]].
+- Specification :: [[file:../tickets/060-office-font-embedding/spec.org][W060 - Complete editable font embedding]].
+- Evidence :: [[file:../tickets/060-office-font-embedding/validation.org][Package, portability and preservation checks]].
 
 ** REVIEW W059 - Restore the Homebrew release path :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-059
 :CREATED: 2026-10-11
 :END:
-- Specification :: [[file:../specs/059-homebrew-release/spec.org][W059 - Emergency release repair and publication]].
-- Evidence :: [[file:../specs/059-homebrew-release/validation.org][Regression, publication and self-review records]].
+- Specification :: [[file:../tickets/059-homebrew-release/spec.org][W059 - Emergency release repair and publication]].
+- Evidence :: [[file:../tickets/059-homebrew-release/validation.org][Regression, publication and self-review records]].
 
 ** DONE W055 - Org script emphasis renders bold as italic in PDF :defect:
 :PROPERTIES:
@@ -207,26 +207,26 @@ classification; it is provenance, not current state.
 :CREATED: 2026-10-11
 :END:
 
-- Specification :: [[file:../specs/055-org-script-emphasis/spec.org][W055 - Render Org script emphasis with Org semantics in PDF]].
+- Specification :: [[file:../tickets/055-org-script-emphasis/spec.org][W055 - Render Org script emphasis with Org semantics in PDF]].
 - Scope :: *Script PDF/Typst rendering from Org sources only*; inline =*bold*=
   renders bold and =/italic/= renders italic. Markdown, Fountain, manuscript,
   letter and office routes are *unchanged*.
 - Validation :: Emergency route with *operator user test* and a maintained
   regression-suite sweep; no new automated RT by operator decision.
 - Review record :: Self-review recorded in validation; external harness excluded under the session exception. No independent audit verdict.
-- Current evidence :: [[file:../specs/055-org-script-emphasis/validation.org][UT and full regression suite pass; conditional closure recorded 2026-10-11]].
+- Current evidence :: [[file:../tickets/055-org-script-emphasis/validation.org][UT and full regression suite pass; conditional closure recorded 2026-10-11]].
 ** ACTIVE W058 - Configured Pandoc ODT export :feature:
 :PROPERTIES:
 :WORK_ID: W058
 :END:
-- Specification :: [[file:../specs/058-odt-export/spec.org][W058 - ODT export alongside native DOCX]].
+- Specification :: [[file:../tickets/058-odt-export/spec.org][W058 - ODT export alongside native DOCX]].
 - Authority :: Operator requested ODT adoption following W057 experiment; retain
   native DOCX and existing PDF paths. Existing self-review exception applies.
 - Predecessor :: W057 - Pandoc AST experiment, retained on unmerged branch
   spike/W057-odt-ast at 96ba6d5. Its identifier remains reserved.
-- Validation :: [[file:../specs/058-odt-export/validation.org][W058 - tests, rendered comparison and self-review]].
+- Validation :: [[file:../tickets/058-odt-export/validation.org][W058 - tests, rendered comparison and self-review]].
   ODT/DOCX scoped tests pass. The earlier full-suite RED is superseded by
-  [[file:../specs/059-homebrew-release/validation.org][W059 - reconciled regression suite and publication evidence]].
+  [[file:../tickets/059-homebrew-release/validation.org][W059 - reconciled regression suite and publication evidence]].
 
 
 ** ACTIVE W056 - Adopt DOCX-first script export :feature:
@@ -234,8 +234,8 @@ classification; it is provenance, not current state.
 :CUSTOM_ID: w-056
 :CREATED: 2026-10-11
 :END:
-- Specification :: [[file:../specs/056-docx-first-adoption/spec.org][W056 - DOCX-first adoption and ODT evaluation]].
-- Historical brief :: [[file:../specs/055-docx-first-spike/spike.org][Original W055 - DOCX-first exploration]].
+- Specification :: [[file:../tickets/056-docx-first-adoption/spec.org][W056 - DOCX-first adoption and ODT evaluation]].
+- Historical brief :: [[file:../tickets/055-docx-first-spike/spike.org][Original W055 - DOCX-first exploration]].
 - Allocation history :: The parallel spike independently allocated W055,
   colliding with W055 - Org emphasis. W056 is the adoption successor, not a
   renumbering of historical spike artifacts or test evidence.
@@ -249,26 +249,26 @@ classification; it is provenance, not current state.
 :CREATED: 2026-10-10
 :END:
 
-- Specification :: [[file:../specs/054-script-office-export/spec.org][W054 - Formatted script office exports]].
+- Specification :: [[file:../tickets/054-script-office-export/spec.org][W054 - Formatted script office exports]].
 - Scope :: *Export only* from existing script sources, preserving British,
   US stage-play and screenplay formatting through the existing event model
   and resolved configuration. *PDF and Typst rendering remain untouched*.
-- Review record :: [[file:../specs/054-script-office-export/audits.yaml][Independent definition review]].
+- Review record :: [[file:../tickets/054-script-office-export/audits.yaml][Independent definition review]].
 
 ** ABANDONED W036 - Unified Font Configuration :feature:migration:
 :PROPERTIES:
 :CUSTOM_ID: w-036
 :LEGACY_ID: 001
 :PRIORITY: P1
-:SOURCE: docs/archive/sdlc-v2/specs/001-unified-font-config/spec.md
+:SOURCE: docs/archive/sdlc-v2/tickets/001-unified-font-config/spec.md
 :CREATED: 2026-09-04
 :MIGRATION_DISPOSITION: unresolved
 :END:
 
-- *Specification:* [[file:archive/sdlc-v2/specs/001-unified-font-config/spec.md][Unified Font Configuration]]
+- *Specification:* [[file:archive/sdlc-v2/tickets/001-unified-font-config/spec.md][Unified Font Configuration]]
 - *Migration evidence:* The specification remained Draft and its final audit verdict was NONE.
 - *Operator disposition:* Abandoned on 2026-09-06. The archived specification
-  remains provenance only; [[file:../specs/039-unified-font-configuration/spec.org][W039 - Unified Font Configuration]]
+  remains provenance only; [[file:../tickets/039-unified-font-configuration/spec.org][W039 - Unified Font Configuration]]
   is the fresh SDLC v3 definition.
 
 ** DONE W037 - Source Frontmatter Configuration :feature:migration:
@@ -276,18 +276,18 @@ classification; it is provenance, not current state.
 :CUSTOM_ID: w-037
 :LEGACY_ID: 002
 :PRIORITY: P1
-:SOURCE: docs/archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md
+:SOURCE: docs/archive/sdlc-v2/tickets/002-source-frontmatter-config/spec.md
 :CREATED: 2026-09-05
 :MIGRATION_DISPOSITION: unresolved
 :END:
 
 - Closure :: Accepted and closed 2026-09-26.
 
-- *Archived specification:* [[file:archive/sdlc-v2/specs/002-source-frontmatter-config/spec.md][Source Frontmatter Configuration]]
+- *Archived specification:* [[file:archive/sdlc-v2/tickets/002-source-frontmatter-config/spec.md][Source Frontmatter Configuration]]
 - *Migration evidence:* The specification remains Draft; although an audit PASS is recorded, planning and delivery remain conditional on approval and no explicit operator approval is recorded.
 
-- Current specification :: [[file:../specs/037-source-frontmatter/spec.org][W037 - Manuscript source configuration with recursive layout overrides]].
-- Validation :: [[file:../specs/037-source-frontmatter/validation.org][W037 - Source configuration verification]].
+- Current specification :: [[file:../tickets/037-source-frontmatter/spec.org][W037 - Manuscript source configuration with recursive layout overrides]].
+- Validation :: [[file:../tickets/037-source-frontmatter/validation.org][W037 - Source configuration verification]].
 - Delivery route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-25.
 - Supersession :: Current source-below-local precedence replaces the archived
   ordering; historical definition and migration evidence remain retained.
@@ -301,12 +301,12 @@ classification; it is provenance, not current state.
 :CUSTOM_ID: w-038
 :LEGACY_ID: 003
 :PRIORITY: P1
-:SOURCE: docs/archive/sdlc-v2/specs/003-manuscript-block-layout/spec.md
+:SOURCE: docs/archive/sdlc-v2/tickets/003-manuscript-block-layout/spec.md
 :CREATED: 2026-09-05
 :MIGRATION_DISPOSITION: delivered
 :END:
 
-- *Specification:* [[file:archive/sdlc-v2/specs/003-manuscript-block-layout/spec.md][Manuscript Block Layout]]
+- *Specification:* [[file:archive/sdlc-v2/tickets/003-manuscript-block-layout/spec.md][Manuscript Block Layout]]
 - *Migration evidence:* The project owner explicitly authorized immediate delivery with BYPASS-GATE-7, and post-implementation validation is recorded.
 
 ** DONE W039 - Unified Font Configuration :feature:
@@ -317,7 +317,7 @@ classification; it is provenance, not current state.
 :CREATED: 2026-09-06
 :END:
 
-- *Specification:* [[file:../specs/039-unified-font-configuration/spec.org][W039 - Unified Font Configuration]]
+- *Specification:* [[file:../tickets/039-unified-font-configuration/spec.org][W039 - Unified Font Configuration]]
 - *History:* Replaces the abandoned W036 definition without adopting its
   specification or audit state.
 
@@ -348,7 +348,7 @@ classification; it is provenance, not current state.
   The initial skeleton recorded requirements during iteration. The paired
   additions are now consolidated in the specification below; operator review
   remains part of closure.
-- Specification :: [[file:../specs/041-document-schemas/spec.org][W041 - Document schemas and conversion frontmatter]].
+- Specification :: [[file:../tickets/041-document-schemas/spec.org][W041 - Document schemas and conversion frontmatter]].
 - Outcome :: Org and Markdown documents *identify their script or manuscript
   schema* through frontmatter.
 
@@ -390,7 +390,7 @@ classification; it is provenance, not current state.
   combinations, file/stdout output, repeated conversion, empty metadata,
   malformed Markdown frontmatter, and absence of schema text from other output.
   Example and documentation checks are one-off checks.
-- Validation record :: [[file:../specs/041-document-schemas/validation.org][W041 - Schema conversion validation]].
+- Validation record :: [[file:../tickets/041-document-schemas/validation.org][W041 - Schema conversion validation]].
 - Schema review correction :: The operator rejected the initial schema prose.
   The rewrite describes *First Folio's limited syntax*, uses *YAML version
   frontmatter* in Markdown schema documents, and keeps *letters exclusively
@@ -450,7 +450,7 @@ classification; it is provenance, not current state.
 
 - Report :: The operator reports that
   =folio.manuscript.mono.font.stretch= *is not implemented*.
-- Existing requirement :: [[file:../specs/039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]]
+- Existing requirement :: [[file:../tickets/039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]]
   requires each of the six font properties to *affect its configured role*;
   the specification explicitly includes =folio.manuscript.mono.font=.
 - Source evidence :: In [[file:../internal/manuscript/render.go][the manuscript renderer]],
@@ -473,14 +473,14 @@ classification; it is provenance, not current state.
   reproduction or regression execution was performed for this report.
 - Intake scope :: Remediation was not defined when the bug was raised;
   implementation was not authorized by that report.
-- Specification :: [[file:../specs/042-manuscript-monospace-stretch/spec.org][W042 - Apply configured manuscript font attributes consistently]].
+- Specification :: [[file:../tickets/042-manuscript-monospace-stretch/spec.org][W042 - Apply configured manuscript font attributes consistently]].
 - Analysis follow-up :: On 2026-09-11, the operator requested analysis and a
   proposed solution. The linked specification records *CLI and PDF reproduction*
   in Markdown and Org, narrowing the confirmed omission to section-heading
   inline code. It supersedes the intake-only evidence limit above.
 - Scope clarification :: On 2026-09-12 the operator constrained the repair to
   existing common font attributes and requested checking every font object.
-  [[file:../specs/042-manuscript-monospace-stretch/font-rendering-check.org][The 33-object diagnostic]]
+  [[file:../tickets/042-manuscript-monospace-stretch/font-rendering-check.org][The 33-object diagnostic]]
   extends the earlier analysis: title code has an empty-font path, manuscript
   headings override size/weight, and the shared script heading rule is unused.
   The proposed repair preserves casing, parsing, and the configuration schema.
@@ -492,11 +492,11 @@ classification; it is provenance, not current state.
   headings use the configured heading font. The source findings above describe
   the intake baseline; the canonical YAML and source transformations remain
   unchanged.
-- Candidate validation :: [[file:../specs/042-manuscript-monospace-stretch/validation.org][Regression and rendered evidence]]
+- Candidate validation :: [[file:../tickets/042-manuscript-monospace-stretch/validation.org][Regression and rendered evidence]]
   records the tests and 16 PDF comparisons, including section-code stretch
   changing its measured width from 66.00pt to 45.76pt. Operator visual acceptance
   and closure remain pending.
-- Audit evidence :: [[file:../specs/042-manuscript-monospace-stretch/audits.yaml][Retained audit record]].
+- Audit evidence :: [[file:../tickets/042-manuscript-monospace-stretch/audits.yaml][Retained audit record]].
 - Later scope correction :: On 2026-09-12 the operator excluded code inside
   part, chapter, section and other headings, including corresponding TOC text.
   The earlier heading-code requirements and results above are superseded as
@@ -541,27 +541,27 @@ classification; it is provenance, not current state.
   a plain Typst face-width selection while paragraph inline monospace scaled
   proportionally. One configuration unit produced *two different rendered
   results*; in a single-width family the block setting had no effect at all.
-- Origin :: [[file:../specs/042-manuscript-monospace-stretch/spec.org][W042 - Restore configured stretch for inline monospace text]]
+- Origin :: [[file:../tickets/042-manuscript-monospace-stretch/spec.org][W042 - Restore configured stretch for inline monospace text]]
   listed code-block rendering under its *Unchanged* heading, so the divergence
   is a known consequence of that change's narrow scope rather than a fault it
   introduced.
-- Governing requirement :: [[file:../specs/039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]]
+- Governing requirement :: [[file:../tickets/039-unified-font-configuration/spec.org::#ac-039-1][AC039.1 - One uniform font block]]
   requires each of the six font properties to affect its configured role.
 - Confirmed correct :: =folio.manuscript.code-block= accepts no font block.
   The operator confirmed that code blocks legitimately take their typography
   from =folio.manuscript.mono.font=, so only the stretch *interpretation* was
   at fault; all six properties already reached the block rule.
-- Definition :: [[file:../specs/043-code-block-monospace-stretch/spec.org][Reconciled specification and solution design]].
+- Definition :: [[file:../tickets/043-code-block-monospace-stretch/spec.org][Reconciled specification and solution design]].
 - Delivery :: One template helper, =folio-mono-stretch=, now owns the
   proportional scaling and is applied by every monospace consumer. Per-word
   scaling was retained over scaling each block as a unit because an atomically
   scaled block cannot break across pages; a measured probe of the rejected
   alternative *discarded twenty-two of thirty lines*.
-- Evidence :: [[file:../specs/043-code-block-monospace-stretch/validation.org][Regression and rendered validation]]
+- Evidence :: [[file:../tickets/043-code-block-monospace-stretch/validation.org][Regression and rendered validation]]
   records RT043.1 RED before the change and GREEN after it, two retained
   preservation tests, and the full suite and lint passing at =92d5826=.
-- Audit evidence :: [[file:../specs/043-code-block-monospace-stretch/audits.yaml][Retained audit record]].
-- User test :: [[file:../specs/043-code-block-monospace-stretch/spec.org::#ut-043-1][UT043.1 - Compare rendered code-block and inline widths]]
+- Audit evidence :: [[file:../tickets/043-code-block-monospace-stretch/audits.yaml][Retained audit record]].
+- User test :: [[file:../tickets/043-code-block-monospace-stretch/spec.org::#ut-043-1][UT043.1 - Compare rendered code-block and inline widths]]
   passed on 2026-09-18 against revision =92d5826=. Four rendered manuscripts at
   100%, 150%, 200% and 50% showed code blocks and paragraph inline monospace
   receiving the same treatment. This supersedes the earlier pending status.
@@ -783,9 +783,9 @@ release note is a decision for definition.
 - Delivery mode :: Initially paired; BYPASS-GATE-7 emergency iteration authorized 2026-10-12.
 - Objective :: Copy *Iosevka Publish from the local system into the project*
   and ship it as the *default monospace font*.
-- Specification :: [[file:../specs/047-bundled-iosevka-publish/spec.org][W047 - Bundle Iosevka Publish as the default monospace font]].
+- Specification :: [[file:../tickets/047-bundled-iosevka-publish/spec.org][W047 - Bundle Iosevka Publish as the default monospace font]].
 
-- Current evidence :: Local customized fonts embedded, US cue alignment corrected through YAML and the generic template. See [[file:../specs/047-bundled-iosevka-publish/validation.org][validation and pending visual review]].
+- Current evidence :: Local customized fonts embedded, US cue alignment corrected through YAML and the generic template. See [[file:../tickets/047-bundled-iosevka-publish/validation.org][validation and pending visual review]].
 
 ** DONE W048 - Font-relative manuscript line spacing :defect:
 :PROPERTIES:
@@ -794,8 +794,8 @@ release note is a decision for definition.
 :CREATED: 2026-09-24
 :END:
 
-- Specification :: [[file:../specs/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]].
-- Validation :: [[file:../specs/048-font-relative-line-spacing/validation.org][W048 - Spacing verification]].
+- Specification :: [[file:../tickets/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]].
+- Validation :: [[file:../tickets/048-font-relative-line-spacing/validation.org][W048 - Spacing verification]].
 - Delivery route :: *Emergency*, authorized with =BYPASS-GATE-7= on 2026-09-24.
 - Closure :: Accepted and closed 2026-09-24.
 - Outcome :: Body spacing uses *numeric multipliers of the font's normal line
@@ -810,8 +810,8 @@ release note is a decision for definition.
 
 - Closure :: Accepted and closed 2026-09-26.
 
-- Specification :: [[file:../specs/049-explicit-alignment/spec.org][W049 - Explicit alignment defaults and validation]].
-- Validation :: [[file:../specs/049-explicit-alignment/validation.org][W049 - Alignment verification]].
+- Specification :: [[file:../tickets/049-explicit-alignment/spec.org][W049 - Explicit alignment defaults and validation]].
+- Validation :: [[file:../tickets/049-explicit-alignment/validation.org][W049 - Alignment verification]].
 - Delivery route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-24.
 - Scope :: Explicit title-page group defaults and strict resolved alignment
   validation; optional empty content remains valid.
@@ -827,9 +827,9 @@ release note is a decision for definition.
 - Route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-25.
 - Scope :: Code-block clearances add to normal body paragraph separation;
   complete-line spans retain their existing block classification.
-- Specification :: [[file:../specs/050-code-block-clearance/spec.org][W050 - Code block paragraph separation]].
-- Validation :: [[file:../specs/050-code-block-clearance/validation.org][W050 - Rendered clearance verification]].
-- Review :: [[file:../specs/050-code-block-clearance/audits.yaml][Independent review record]].
+- Specification :: [[file:../tickets/050-code-block-clearance/spec.org][W050 - Code block paragraph separation]].
+- Validation :: [[file:../tickets/050-code-block-clearance/validation.org][W050 - Rendered clearance verification]].
+- Review :: [[file:../tickets/050-code-block-clearance/audits.yaml][Independent review record]].
 
 ** REVIEW W051 - Exact quote indentation and additive paragraph clearance :defect:
 :PROPERTIES:
@@ -840,9 +840,9 @@ release note is a decision for definition.
 - Route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-26.
 - Scope :: Quotes use their configured complete inset and add clearance to
   normal body paragraph separation; quote em units use the body font size.
-- Specification :: [[file:../specs/051-quote-layout/spec.org][W051 - Exact quote indentation and clearance]].
-- Validation :: [[file:../specs/051-quote-layout/validation.org][W051 - Rendered quote geometry]].
-- Review :: [[file:../specs/051-quote-layout/audits.yaml][Independent review record]].
+- Specification :: [[file:../tickets/051-quote-layout/spec.org][W051 - Exact quote indentation and clearance]].
+- Validation :: [[file:../tickets/051-quote-layout/validation.org][W051 - Rendered quote geometry]].
+- Review :: [[file:../tickets/051-quote-layout/audits.yaml][Independent review record]].
 
 ** DONE W052 - Manuscript stretch and configurable hyphenation :defect:
 :PROPERTIES:
@@ -854,13 +854,13 @@ release note is a decision for definition.
 - Scope :: Body and quoted text use proportional glyph widths; inline and
   block code retain their independent monospace scaling. Add true/false/auto
   hyphenation for prose, including stretched text, under the same emergency.
-- Definition :: [[file:../specs/052-manuscript-prose-stretch/spec.org][Body and quote stretch specification]].
-- Evidence :: [[file:../specs/052-manuscript-prose-stretch/validation.org][Geometry and layout validation]].
+- Definition :: [[file:../tickets/052-manuscript-prose-stretch/spec.org][Body and quote stretch specification]].
+- Evidence :: [[file:../tickets/052-manuscript-prose-stretch/validation.org][Geometry and layout validation]].
 - Relationship :: A bounded portion of [[#w-046][W046 - Stretch across every
   font role]]; other roles and modes remain outside this delivery.
 - History :: The initial whole-word hyphenation limitation was not accepted.
   The operator requested a configuration setting and its completion here.
-- Reviews :: [[file:../specs/052-manuscript-prose-stretch/audits.yaml][Independent review record]].
+- Reviews :: [[file:../tickets/052-manuscript-prose-stretch/audits.yaml][Independent review record]].
 - Closure :: Accepted and closed 2026-09-27; stretched-prose user validation PASS.
 
 ** REVIEW W053 - Preserve stretched chapter paragraphs and restore regression coverage :defect:
@@ -872,9 +872,9 @@ release note is a decision for definition.
 
 - Scope :: Correct the paragraph corruption introduced by W052 - Manuscript
   body/quote stretch, and restore the full regression suite with current presets.
-- Definition :: [[file:../specs/053-stretch-paragraph-regression/spec.org][Corrective specification]].
-- Evidence :: [[file:../specs/053-stretch-paragraph-regression/validation.org][Paragraph geometry and full-suite results]].
-- Reviews :: [[file:../specs/053-stretch-paragraph-regression/audits.yaml][Independent review record]].
+- Definition :: [[file:../tickets/053-stretch-paragraph-regression/spec.org][Corrective specification]].
+- Evidence :: [[file:../tickets/053-stretch-paragraph-regression/validation.org][Paragraph geometry and full-suite results]].
+- Reviews :: [[file:../tickets/053-stretch-paragraph-regression/audits.yaml][Independent review record]].
 - Boundary :: Hyphenation was pending at this corrective handoff; it is now\n  delivered and accepted in [[#w-052][W052 - Manuscript stretch and hyphenation]].
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
@@ -3091,14 +3091,14 @@ Given manuscript paragraph layout configuration, First Folio applies configurabl
 
 - *Type:* Automated regression test
 - *Status:* SUPERSEDED
-- *Superseded by:* [[file:../specs/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]], which rejects body lengths. The prior result below remains historical evidence.
+- *Superseded by:* [[file:../tickets/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]], which rejects body lengths. The prior result below remains historical evidence.
 - *Evidence:* Archived ticket #30 - Correct manuscript body and TOC line-spacing rendering records the generated Typst check; current =make test= passed the maintained RT definition.
 
 ***** RT-30.2 - Numeric body =line-spacing: 2= retains double-spacing multiplier behaviour
 
 - *Type:* Automated regression test
 - *Status:* SUPERSEDED
-- *Superseded by:* [[file:../specs/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]], which measures font-relative baseline intervals. The prior result below remains historical evidence.
+- *Superseded by:* [[file:../tickets/048-font-relative-line-spacing/spec.org][W048 - Font-relative manuscript line spacing]], which measures font-relative baseline intervals. The prior result below remains historical evidence.
 - *Evidence:* Archived ticket #30 - Correct manuscript body and TOC line-spacing rendering records the numeric spacing check; current =make test= passed the maintained RT definition.
 
 **** Notes
