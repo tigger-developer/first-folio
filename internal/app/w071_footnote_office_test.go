@@ -64,11 +64,23 @@ func w071BodyParagraphs(node *officeXML, inNote bool) []string {
 	}
 	var out []string
 	if node.Name.Local == "p" && !inNote {
-		out = append(out, node.text())
+		out = append(out, w071TextOutsideNotes(node))
 		return out
 	}
 	for _, child := range node.Children {
 		out = append(out, w071BodyParagraphs(child, inNote)...)
 	}
 	return out
+}
+
+func w071TextOutsideNotes(node *officeXML) string {
+	if node.Name.Local == "note-body" {
+		return ""
+	}
+	var out strings.Builder
+	out.WriteString(node.Text)
+	for _, child := range node.Children {
+		out.WriteString(w071TextOutsideNotes(child))
+	}
+	return out.String()
 }

@@ -21,14 +21,14 @@ type docxWriter struct {
 	sameLine                                                           bool
 	styles                                                             []docxNode
 	styleIDs                                                           map[string]bool
-	notes                                                              map[string]string
+	notes                                                              map[string][]string
 	footnotes                                                          []docxNode
 	warnings                                                           []string
 	textBytes, inlineCount                                             int
 }
 
 func newDOCXWriter(doc play.Document, cfg config.Config, sourceFormat play.Format) (*docxWriter, error) {
-	w := &docxWriter{sourceFormat: sourceFormat, cfg: cfg, doc: doc, styleIDs: map[string]bool{}, notes: map[string]string{}}
+	w := &docxWriter{sourceFormat: sourceFormat, cfg: cfg, doc: doc, styleIDs: map[string]bool{}, notes: map[string][]string{}}
 	if len(doc.Events) > 50000 {
 		return nil, fmt.Errorf("DOCX exceeds 50000 script events")
 	}
@@ -86,7 +86,11 @@ func newDOCXWriter(doc play.Document, cfg config.Config, sourceFormat play.Forma
 	w.sameLine = cfg.String("folio.positioning.speech.dialogue.placement", "same-line") == "same-line"
 	for _, event := range doc.Events {
 		if event.Kind == play.EventFootnote {
-			w.notes[event.Name] = event.Text
+			paragraphs := event.Paragraphs
+			if len(paragraphs) == 0 {
+				paragraphs = []string{event.Text}
+			}
+			w.notes[event.Name] = append([]string(nil), paragraphs...)
 		}
 	}
 	return w, nil

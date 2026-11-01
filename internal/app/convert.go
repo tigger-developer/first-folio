@@ -15,11 +15,12 @@ import (
 )
 
 type convertOptions struct {
-	to     string
-	force  bool
-	cli    map[string]any
-	source string
-	target string
+	to                string
+	force             bool
+	preserveFootnotes bool
+	cli               map[string]any
+	source            string
+	target            string
 }
 
 func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
@@ -117,6 +118,8 @@ func parseConvertOptions(args []string) (convertOptions, error) {
 		switch arg {
 		case "--force":
 			opts.force = true
+		case "--preserve-footnotes":
+			opts.preserveFootnotes = true
 		case "--direction-italic":
 			opts.cli["direction-italic"] = true
 		case "--no-direction-italic":

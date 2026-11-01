@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/tigger-developer/first-folio/internal/config"
 	"github.com/tigger-developer/first-folio/internal/office"
@@ -52,6 +53,12 @@ func exportDOCX(doc play.Document, cfg config.Config, sourceFormat play.Format, 
 	raw, warnings, err := office.ExportScript(doc, cfg, sourceFormat, "docx")
 	if err != nil {
 		return err
+	}
+	if !opts.preserveFootnotes {
+		raw, _, err = office.ConvertAttributedFootnotes(raw, time.Now().UTC())
+		if err != nil {
+			return err
+		}
 	}
 	for _, warning := range warnings {
 		if _, err := fmt.Fprintln(stderr, "DOCX limitation:", warning); err != nil {

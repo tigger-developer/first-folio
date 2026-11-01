@@ -1,7 +1,7 @@
 ---
 title: First Folio
-version: "1.13"
-last-updated: 2026-10-24
+version: "1.14"
+last-updated: 2026-11-01
 ---
 
 # First Folio
@@ -47,6 +47,18 @@ folio manuscript manuscript.org manuscript.odt
 folio letter letters.org --format docx
 folio letter letters.org --format odt
 ```
+
+Org prose uses `--` for an en dash, `---` for an em dash, `...` for an
+ellipsis and `\-` for a discretionary soft hyphen. Text inside `=verbatim=` or
+`~code~` spans stays literal. Named Org footnotes may contain paragraphs
+separated by one blank line; a new definition, a headline, two consecutive
+blank lines or end of file ends the note.
+
+DOCX export converts a footnote beginning exactly `[Name] wrote: ...` or
+`[Name] wrote (YYYY-MM-DD HH:MM:SSZ): ...` into a Word comment. Ordinary notes
+remain footnotes. Pass `--preserve-footnotes` to `convert`, `manuscript` or
+`letter` to retain every DOCX note. PDF behaviour is unchanged and ODT always
+retains native footnotes.
 
 ## Installation
 

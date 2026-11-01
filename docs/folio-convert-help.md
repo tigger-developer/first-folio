@@ -10,6 +10,7 @@ Options:
   --to FORMAT              Output format (org, md, fountain, pdf, docx, odt)
   --style STYLE            Layout style: british (default), us, or screenplay
   --force                  Force binary output to terminal
+  --preserve-footnotes     Keep attributed notes as DOCX footnotes
 
 Layout options for PDF/Typst, DOCX and ODT output:
   --font FONT              Body font family
@@ -25,6 +26,8 @@ are approximate; British vertical spacing is compacted. ODT is export-only and
 uses Pandoc with generated styles from script.yaml. See docs/format-odt.md.
 PDF, DOCX and ODT interpret Org *bold* and /italic/ according to the source format;
 Markdown and Fountain retain **bold** and *italic*. Footnotes use the same rules.
+DOCX converts exact [Name] wrote: and timestamped attribution forms to comments
+unless --preserve-footnotes is set. PDF is unchanged; ODT always keeps footnotes.
 
 Config: ~/.config/first-folio/script.yaml plus the nearest script.yaml found by
 walking from the source directory towards HOME. Style-specific sibling files

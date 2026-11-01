@@ -24,7 +24,7 @@ func Emit(doc Document, format Format) (Output, error) {
 func emitOrg(doc Document) Output {
 	lines := []string{"#+SCHEMA: https://github.com/tigger-developer/first-folio/blob/master/schema/script.org"}
 	appendOrgMetadata(&lines, doc.Metadata)
-	footnotes := map[string]string{}
+	footnotes := map[string][]string{}
 	for _, event := range doc.Events {
 		switch event.Kind {
 		case EventFrontMatter:
@@ -51,10 +51,10 @@ func emitOrg(doc Document) Output {
 		case EventTransition:
 			lines = append(lines, "*** "+event.Text+strings.Repeat(" ", 40)+":transition:")
 		case EventFootnote:
-			footnotes[event.Name] = event.Text
+			footnotes[event.Name] = eventParagraphs(event)
 		}
 	}
-	appendFootnotes(&lines, footnotes, func(name, text string) string { return "[fn:" + name + "] " + text })
+	appendFootnotes(&lines, footnotes, func(name, text string) string { return "[fn:" + name + "] " + text }, func(text string) string { return text })
 	return Output{Text: strings.Join(lines, "\n") + "\n"}
 }
 
@@ -80,7 +80,7 @@ func emitMarkdown(doc Document) Output {
 		}
 		lines = append(lines, "")
 	}
-	footnotes := map[string]string{}
+	footnotes := map[string][]string{}
 	for _, event := range doc.Events {
 		switch event.Kind {
 		case EventFrontMatter, EventCharacterTableEnd:
@@ -108,7 +108,7 @@ func emitMarkdown(doc Document) Output {
 		case EventTransition:
 			appendSeparated(&lines, "> "+event.Text)
 		case EventFootnote:
-			footnotes[event.Name] = event.Text
+			footnotes[event.Name] = eventParagraphs(event)
 		}
 	}
 	for i := range lines {
@@ -116,7 +116,7 @@ func emitMarkdown(doc Document) Output {
 			lines[i] = strings.ReplaceAll(lines[i], "[fn:"+name+"]", "[^"+name+"]")
 		}
 	}
-	appendFootnotes(&lines, footnotes, func(name, text string) string { return "[^" + name + "]: " + text })
+	appendFootnotes(&lines, footnotes, func(name, text string) string { return "[^" + name + "]: " + text }, func(text string) string { return "    " + text })
 	return Output{Text: strings.Join(lines, "\n") + "\n"}
 }
 
@@ -141,7 +141,7 @@ func emitFountain(doc Document) Output {
 	if len(lines) > 0 {
 		lines = append(lines, "")
 	}
-	footnotes := map[string]string{}
+	footnotes := map[string][]string{}
 	var warnings []string
 	for _, event := range doc.Events {
 		switch event.Kind {
@@ -178,10 +178,10 @@ func emitFountain(doc Document) Output {
 		case EventTransition:
 			appendSeparated(&lines, strings.ToUpper(event.Text))
 		case EventFootnote:
-			footnotes[event.Name] = event.Text
+			footnotes[event.Name] = eventParagraphs(event)
 		}
 	}
-	appendFootnotes(&lines, footnotes, func(_ string, text string) string { return "[[" + text + "]]" })
+	appendFootnotes(&lines, footnotes, func(_ string, text string) string { return "[[" + text + "]]" }, func(text string) string { return "[[" + text + "]]" })
 	return Output{Text: strings.Join(lines, "\n") + "\n", Warnings: warnings}
 }
 
@@ -193,7 +193,7 @@ func appendOrgMetadata(lines *[]string, metadata map[string]string) {
 	}
 }
 
-func appendFootnotes(lines *[]string, footnotes map[string]string, format func(string, string) string) {
+func appendFootnotes(lines *[]string, footnotes map[string][]string, first func(string, string) string, continuation func(string) string) {
 	if len(footnotes) == 0 {
 		return
 	}
@@ -204,8 +204,22 @@ func appendFootnotes(lines *[]string, footnotes map[string]string, format func(s
 	}
 	sort.Strings(keys)
 	for _, key := range keys {
-		*lines = append(*lines, format(key, footnotes[key]))
+		paragraphs := footnotes[key]
+		if len(paragraphs) == 0 {
+			continue
+		}
+		*lines = append(*lines, first(key, paragraphs[0]))
+		for _, paragraph := range paragraphs[1:] {
+			*lines = append(*lines, "", continuation(paragraph))
+		}
 	}
+}
+
+func eventParagraphs(event Event) []string {
+	if len(event.Paragraphs) > 0 {
+		return append([]string(nil), event.Paragraphs...)
+	}
+	return []string{event.Text}
 }
 
 func appendSeparated(lines *[]string, values ...string) {

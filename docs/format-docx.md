@@ -1,7 +1,7 @@
 ---
 title: DOCX Script Export
-version: "1.11"
-last-updated: 2026-10-25
+version: "1.12"
+last-updated: 2026-11-01
 ---
 
 # DOCX script export
@@ -40,6 +40,27 @@ is italic; Markdown and Fountain retain `**bold**` and `*italic*`. Org
 `+deleted+` and Markdown `~~deleted~~` use native strikethrough. These rules also
 apply inside footnotes. Markdown single tildes remain literal. Existing
 `**bold**`, `***bold italic***`, underline and literal-code handling remain supported.
+Org prose also converts `--`, `---`, `...` and `\-` to an en dash, em dash,
+ellipsis and discretionary soft hyphen. `=verbatim=` and `~code~` contents are
+not transformed. Blank-separated Org footnote paragraphs remain separate
+paragraphs within one native note.
+
+## Attributed footnotes as comments
+
+By default, all three DOCX commands convert a footnote only when its first
+paragraph starts with one of these exact forms:
+
+```text
+[Name] wrote: Comment text
+[Name] wrote (YYYY-MM-DD HH:MM:SSZ): Comment text
+```
+
+The name becomes the Word comment author and the timestamp, when supplied, is
+used as an exact UTC comment date. Later footnote paragraphs become later
+paragraphs in the same comment. Ordinary notes remain native footnotes. Use
+`--preserve-footnotes` with `folio convert`, `folio manuscript` or
+`folio letter` to disable comment conversion and retain every note. The option
+is accepted for PDF and ODT but changes only DOCX output.
 
 The writer rejects source/destination identity, destination symlinks and invalid
 XML text. Source size is limited to 32 MiB; generated XML and package sizes are
@@ -126,6 +147,7 @@ the product ODT route. The native DOCX writer serves scripts, manuscripts and le
 
 ## History
 
+- 1.12 (2026-11-01): Add structured Org notes, exact attributed-note comment conversion and `--preserve-footnotes` across all DOCX commands.
 - 1.11 (2026-10-25): Add native Org and Markdown strikethrough to script runs and footnotes.
 - 1.10 (2026-10-24): Apply frontmatter visibility and typography to direct scene introductory paragraphs.
 - 1.9 (2026-10-19): Preserve natural editable text baselines and reuse equivalent role styles.

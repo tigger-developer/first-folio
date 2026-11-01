@@ -1,7 +1,7 @@
 ---
 title: ODT Script Export
-version: "1.10"
-last-updated: 2026-10-25
+version: "1.11"
+last-updated: 2026-11-01
 ---
 
 # ODT script export
@@ -49,6 +49,15 @@ is italic; Markdown and Fountain retain `**bold**` and `*italic*`. Org
 `+deleted+` and Markdown `~~deleted~~` use native strikethrough. These rules also
 apply inside footnotes. Markdown single tildes remain literal. Existing
 `**bold**`, `***bold italic***`, underline and literal-code handling remain supported.
+Org prose also converts `--`, `---`, `...` and `\-` to an en dash, em dash,
+ellipsis and discretionary soft hyphen. `=verbatim=` and `~code~` contents are
+not transformed. Blank-separated Org footnote paragraphs remain separate
+paragraphs within one native ODT note.
+
+ODT never converts attributed footnotes into comments. Notes beginning
+`[Name] wrote: ...` or `[Name] wrote (YYYY-MM-DD HH:MM:SSZ): ...` remain native
+footnotes, as do ordinary notes. `--preserve-footnotes` is accepted consistently
+by `convert`, `manuscript` and `letter`, but it does not change ODT output.
 
 The shared inline parser can interpret slash pairs inside URLs as italic markers;
 ODT also collapses repeated spaces in ordinary text. Use literal code spans where
@@ -131,6 +140,7 @@ conversion leaves an existing destination unchanged.
 
 ## History
 
+- 1.11 (2026-11-01): Retain structured Org notes and document the DOCX-only comment-conversion boundary.
 - 1.10 (2026-10-25): Add native Org and Markdown strikethrough to script spans and footnotes.
 - 1.9 (2026-10-24): Apply frontmatter visibility and typography to direct scene introductory paragraphs.
 - 1.8 (2026-10-19): Preserve natural editable text baselines and reuse equivalent role styles.

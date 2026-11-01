@@ -14,6 +14,7 @@ import (
 
 	folio "github.com/tigger-developer/first-folio"
 	"github.com/tigger-developer/first-folio/internal/config"
+	"github.com/tigger-developer/first-folio/internal/source"
 	typstutil "github.com/tigger-developer/first-folio/internal/typst"
 )
 
@@ -110,29 +111,15 @@ func bodyMarkup(body string) string {
 }
 
 func inlineOrg(value string) string {
-	tokens := []string{}
-	protect := func(markup string) string {
-		tokens = append(tokens, markup)
-		return fmt.Sprintf("\x00%d\x00", len(tokens)-1)
+	nodes, err := source.NewLetterParser().Parse(value)
+	if err != nil {
+		return escapeContent(value)
 	}
-	for _, item := range []struct {
-		re *regexp.Regexp
-		fn func(string) string
-	}{
-		{letterCodeRE, func(s string) string { return `#mono-text[` + escapeContent(s) + `]` }},
-		{letterBoldRE, func(s string) string { return "*" + escapeContent(s) + "*" }},
-		{letterItalicRE, func(s string) string { return "_" + escapeContent(s) + "_" }},
-		{letterUnderlineRE, func(s string) string { return "#underline[" + escapeContent(s) + "]" }},
-	} {
-		value = item.re.ReplaceAllStringFunc(value, func(match string) string {
-			return protect(item.fn(item.re.FindStringSubmatch(match)[1]))
-		})
+	rendered, err := source.TypstInline(nodes, nil, "org")
+	if err != nil {
+		return escapeContent(value)
 	}
-	value = escapeContent(value)
-	for i, token := range tokens {
-		value = strings.ReplaceAll(value, fmt.Sprintf("\x00%d\x00", i), token)
-	}
-	return value
+	return rendered
 }
 
 func formatDate(value string) string {

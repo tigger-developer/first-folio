@@ -15,7 +15,7 @@ func (w *docxWriter) inlines(text string, notes bool) ([]docxNode, error) {
 	if w.textBytes > docxSourceLimit {
 		return nil, fmt.Errorf("DOCX expanded text exceeds 32 MiB")
 	}
-	known := map[string]string{}
+	known := map[string][]string{}
 	if notes {
 		known = w.notes
 	}
@@ -94,17 +94,28 @@ func docxRun(text string, props docxNode) docxNode {
 
 func (w *docxWriter) note(key string) (docxNode, error) {
 	id := len(w.footnotes) + 1
-	content, err := w.inlines(w.notes[key], false)
-	if err != nil {
-		return docxNode{}, err
-	}
 	style, err := w.style("Footnote")
 	if err != nil {
 		return docxNode{}, err
 	}
-	p := dx("p", dx("pPr", dxVal("pStyle", style)), dx("r", dx("rPr", dxVal("vertAlign", "superscript")), dx("footnoteRef")), docxRun(" ", dx("rPr")))
-	p.children = append(p.children, content...)
-	w.footnotes = append(w.footnotes, dx("footnote", p).attr("w:id", dxInt(id)))
+	paragraphs := w.notes[key]
+	if len(paragraphs) == 0 {
+		paragraphs = []string{""}
+	}
+	note := dx("footnote").attr("w:id", dxInt(id))
+	for i, paragraph := range paragraphs {
+		content, err := w.inlines(paragraph, false)
+		if err != nil {
+			return docxNode{}, err
+		}
+		p := dx("p", dx("pPr", dxVal("pStyle", style)))
+		if i == 0 {
+			p.children = append(p.children, dx("r", dx("rPr", dxVal("vertAlign", "superscript")), dx("footnoteRef")), docxRun(" ", dx("rPr")))
+		}
+		p.children = append(p.children, content...)
+		note.children = append(note.children, p)
+	}
+	w.footnotes = append(w.footnotes, note)
 	return dx("r", dx("rPr", dxVal("vertAlign", "superscript")), dx("footnoteReference").attr("w:id", dxInt(id))), nil
 }
 

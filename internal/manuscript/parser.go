@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/tigger-developer/first-folio/internal/source"
 	"gopkg.in/yaml.v3"
 )
 
@@ -73,6 +74,7 @@ func parseMarkdown(text string) (Document, error) {
 	if err != nil {
 		return Document{}, err
 	}
+	typst = normalizeTypstFootnoteParagraphs(typst)
 	blocks, err := pandocTypstBlocks(typst)
 	if err != nil {
 		return Document{}, err
@@ -82,6 +84,48 @@ func parseMarkdown(text string) (Document, error) {
 	}
 	doc.Blocks = blocks
 	return doc, nil
+}
+
+var typstParagraphBreak = regexp.MustCompile(`\n[ \t]*\n+`)
+
+func normalizeTypstFootnoteParagraphs(text string) string {
+	const marker = "#footnote["
+	var out strings.Builder
+	for {
+		at := strings.Index(text, marker)
+		if at < 0 {
+			out.WriteString(text)
+			return out.String()
+		}
+		out.WriteString(text[:at+len(marker)])
+		text = text[at+len(marker):]
+		depth, end := 1, -1
+		for i := 0; i < len(text); i++ {
+			if text[i] == '\\' && i+1 < len(text) {
+				i++
+				continue
+			}
+			switch text[i] {
+			case '[':
+				depth++
+			case ']':
+				depth--
+				if depth == 0 {
+					end = i
+				}
+			}
+			if end >= 0 {
+				break
+			}
+		}
+		if end < 0 {
+			out.WriteString(text)
+			return out.String()
+		}
+		out.WriteString(typstParagraphBreak.ReplaceAllString(text[:end], "#parbreak()"))
+		out.WriteByte(']')
+		text = text[end+1:]
+	}
 }
 
 type pandocDocument struct {
@@ -274,6 +318,7 @@ func parseOrg(text string) (Document, error) {
 	meta := parseOrgMetadataBlock(text)
 	text = removeOrgPrivateSections(text)
 	text = replaceOrgSectionBreaksWithSentinel(text)
+	text = source.NormalizeOrgFootnotes(text)
 	markdown, err := runPandoc("org", "gfm", text)
 	if err != nil {
 		return Document{}, err

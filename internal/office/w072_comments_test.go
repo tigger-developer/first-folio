@@ -63,15 +63,26 @@ func TestRT072_1_DOCXPackageConversionIsSelectiveAndComplete(t *testing.T) {
 		t.Error("unrelated part changed")
 	}
 	document := string(files["word/document.xml"])
-	if strings.Count(document, "commentRangeStart") != 2 || strings.Count(document, "commentReference") != 2 {
-		t.Errorf("comment anchors incomplete: %s", document)
-	}
-	if strings.Count(document, "footnoteReference") != 1 {
-		t.Errorf("ordinary footnote reference not retained: %s", document)
-	}
 	documentRoot, err := parseXML(files["word/document.xml"])
 	if err != nil {
 		t.Fatal(err)
+	}
+	starts, commentReferences, footnoteReferences := 0, 0, 0
+	documentRoot.visit(func(n *docxNode) {
+		switch n.name {
+		case "w:commentRangeStart":
+			starts++
+		case "w:commentReference":
+			commentReferences++
+		case "w:footnoteReference":
+			footnoteReferences++
+		}
+	})
+	if starts != 2 || commentReferences != 2 {
+		t.Errorf("comment anchors incomplete: starts=%d references=%d: %s", starts, commentReferences, document)
+	}
+	if footnoteReferences != 1 {
+		t.Errorf("ordinary footnote references = %d, want 1: %s", footnoteReferences, document)
 	}
 	anchored := false
 	documentRoot.visit(func(n *docxNode) {

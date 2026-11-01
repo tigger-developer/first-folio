@@ -1,7 +1,7 @@
 ---
 title: Org-mode Play Format
-version: "0.11"
-last-updated: "2026-10-25"
+version: "0.12"
+last-updated: "2026-11-01"
 ---
 
 # Org-mode Play Format
@@ -63,7 +63,7 @@ Level-3 headings represent stage directions (also called action text or narrativ
 *** JACK enters through the French windows.
 ```
 
-Org-mode inline markup is retained in event text and interpreted by the source-aware PDF, DOCX and ODT renderers: `*bold*` becomes bold, `/italic/` becomes italic and `+deleted+` becomes strikethrough, including in footnotes. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
+Org-mode inline markup is retained in event text and interpreted by the source-aware PDF, DOCX and ODT renderers: `*bold*` becomes bold, `/italic/` becomes italic and `+deleted+` becomes strikethrough, including in footnotes. In prose, `--` becomes an en dash, `---` an em dash, `...` an ellipsis and `\-` a discretionary soft hyphen. The contents of `=verbatim=` and `~code~` spans remain literal, including those character sequences. Smart-quote policy is unchanged. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
 
 ### Characters (H4)
 
@@ -153,6 +153,21 @@ Org-mode footnote definitions. The reference `[fn:name]` appears inline in dialo
 [fn:verse] From Tennyson's "In Memoriam", Canto 27.
 ```
 
+A definition may contain multiple paragraphs separated by one blank line:
+
+```org
+[fn:note] First paragraph.
+
+Second paragraph.
+
+Third paragraph.
+```
+
+The next footnote definition, an Org headline, two consecutive blank lines or
+end of file ends the definition. PDF, DOCX and ODT retain the paragraphs as one
+structured note. Org emission retains the same structure on a parse/emit round
+trip.
+
 ### Noexport Sections
 
 Any heading tagged `:noexport:` is excluded from output, along with all its children.
@@ -195,6 +210,7 @@ Just boiled.
 
 ## Revision History
 
+- 0.12 (2026-11-01): Define Org special strings, protected literal spans and structured multi-paragraph footnotes.
 - 0.11 (2026-10-25): Render Org plus-delimited strikethrough in PDF, DOCX and ODT scripts.
 - 0.10 (2026-10-24): Define scene introductory paragraphs and their rendered visibility boundary.
 - 0.7 (2026-10-12): Extend source-aware Org emphasis to DOCX and ODT.

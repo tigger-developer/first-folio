@@ -19,7 +19,7 @@ func Prose(format, text string) ([]Node, error) {
 	if len(text) > 32<<20 {
 		return nil, fmt.Errorf("native source exceeds 32 MiB")
 	}
-	p := parser{format: format, notes: map[string]string{}, resolving: map[string]bool{}}
+	p := parser{format: format, notes: map[string][]string{}, resolving: map[string]bool{}}
 	lines := Lines(text)
 	inCode := false
 	for i := 0; i < len(lines); i++ {
@@ -35,6 +35,18 @@ func Prose(format, text string) ([]Node, error) {
 		if token.Kind != "note" {
 			continue
 		}
+		if format == "org" {
+			note, ok := CollectOrgFootnote(lines, i)
+			if !ok {
+				continue
+			}
+			p.notes[note.Name] = note.Paragraphs
+			for j := i; j < note.End; j++ {
+				lines[j] = ""
+			}
+			i = note.End - 1
+			continue
+		}
 		value := token.Text
 		lines[i] = ""
 		for i+1 < len(lines) && strings.TrimSpace(lines[i+1]) != "" && len(lines[i+1]) > 0 && (lines[i+1][0] == ' ' || lines[i+1][0] == '\t') {
@@ -42,7 +54,7 @@ func Prose(format, text string) ([]Node, error) {
 			value += " " + strings.TrimSpace(lines[i])
 			lines[i] = ""
 		}
-		p.notes[token.Name] = value
+		p.notes[token.Name] = []string{value}
 	}
 	return p.parseBlocks(lines, 0)
 }

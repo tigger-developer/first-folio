@@ -10,8 +10,12 @@ type LetterParser struct {
 	bytes int
 }
 
-func NewLetterParser() *LetterParser {
-	return &LetterParser{state: parser{format: "org", literalTypography: true, breaks: true, notes: map[string]string{}, resolving: map[string]bool{}}}
+func NewLetterParser(notes ...map[string][]string) *LetterParser {
+	known := map[string][]string{}
+	if len(notes) > 0 && notes[0] != nil {
+		known = notes[0]
+	}
+	return &LetterParser{state: parser{format: "org", literalTypography: true, breaks: true, notes: known, resolving: map[string]bool{}}}
 }
 
 // Parse consumes one composed paragraph without resetting the letter's budget.

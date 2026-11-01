@@ -58,7 +58,7 @@ func TestRenderTypstInlineOrgMarkup(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, fragment := range []string{
-		`#mono-text[inline code]`,
+		`#mono-text[#raw("inline code")]`,
 		`*bold*`,
 		`_italic_`,
 		`#underline[underline]`,
