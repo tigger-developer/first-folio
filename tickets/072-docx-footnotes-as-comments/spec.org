@@ -1,0 +1,361 @@
+#+TITLE: W072 - Convert attributed DOCX footnotes to comments
+#+SCHEMA: 11
+#+SUBTITLE: Unified change specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- DOCX conversion turns supported attributed footnotes into *native Word comments by default* across all three public document commands.
+
+** Before
+
+- Attributed editorial notes remain footnotes and require a separate post-processing step.
+
+** After
+
+- A note beginning =[Name] wrote: ...= or =[Name] wrote (YYYY-MM-DD HH:MM:SSZ): ...= becomes a paragraph-anchored Word comment.
+- Ordinary notes remain footnotes, and =--preserve-footnotes= retains *all* DOCX notes as footnotes.
+
+** Changes
+
+- =folio convert=, =folio manuscript= and =folio letter= accept =--preserve-footnotes= for DOCX output.
+- The letter Org path gains the footnote-definition and reference support needed to apply the same DOCX rule.
+
+** Unchanged
+
+- PDF output is unchanged, and ODT conversion always retains native footnotes regardless of the flag.
+
+** Edge cases
+:PROPERTIES:
+:CUSTOM_ID: synopsis-edge-cases
+:END:
+
+- Multiple attributed notes may anchor to the same paragraph; existing comments and unrelated package parts remain intact.
+- Invalid attributed timestamps or inconsistent references fail before an output is published.
+
+** Decisions
+
+- One bounded DOCX package transformation runs after native generation and before stdout or atomic publication; no external executable is invoked.
+
+** Next step
+
+- Definition review, then operator sign-off as described in [[#delivery-handoff][Delivery Handoff]].
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+
+Editorial feedback encoded as attributed Org footnotes currently becomes a document footnote. A separate tool can convert it to a Word comment, but First Folio does not perform that operation and therefore exposes different behaviour across its DOCX-producing commands.
+
+** Outcome
+
+Every DOCX command applies the same selective comment policy while preserving genuine footnotes and offering an explicit all-footnotes opt-out.
+
+** Scope
+
+*** In scope
+
+- DOCX output from =folio convert=, =folio manuscript= and =folio letter=.
+- Exactly two attribution forms at the start of the first footnote paragraph:
+  - =[Name] wrote: comment text=
+  - =[Name] wrote (YYYY-MM-DD HH:MM:SSZ): comment text=
+- Multi-paragraph comment bodies, author, initials, comment date, paragraph anchoring and overlapping comments.
+- =--preserve-footnotes= on all three commands.
+- Org footnote parsing for letter bodies sufficient to produce native DOCX footnotes or comments.
+
+*** Out of scope
+
+- ODT comments; ODT footnotes remain footnotes.
+- PDF annotations or changes to PDF rendering.
+- Other attribution wording, inline comments, comment replies, resolved-state input or arbitrary timestamp formats.
+- Converting an existing third-party DOCX file as a standalone command.
+
+*** Unchanged
+
+- Unattributed footnotes, source files, document layout and existing output-path safety rules.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]]
+- Product authority :: [[file:../../README.md][README]], [[file:../../docs/format-docx.md][DOCX format]] and [[file:../../docs/format-odt.md][ODT format]].
+- Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Project architecture]].
+- Dependency :: [[file:../071-org-inline-and-footnote-parsing/spec.org][W071]] owns complete multi-paragraph Org footnote parsing and structured note output.
+- Current implementation fact :: Script, manuscript and letter DOCX paths all produce bytes before publication, but their generation entry points differ; the letter model currently has no footnote-bearing body representation.
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+
+- Deliver W071 first, or establish equivalent current structured-note evidence, before the end-to-end multi-paragraph cases can pass.
+- Reuse First Folio's bounded package reader, XML model, validator and atomic publication flow where they preserve the required WordprocessingML.
+- Add no runtime call to an external postprocessor and no Pandoc DOCX shortcut.
+- Preserve the existing package expansion and XML limits; any new allocation is bounded by them.
+
+** Decisions
+
+- Only a complete match at the start of the first note paragraph is convertible; all other footnotes remain footnotes.
+- The timestamp form accepts the exact UTC layout =YYYY-MM-DD HH:MM:SSZ=. Without a timestamp, the comment date is the conversion time in UTC, truncated to seconds.
+- The comment author is =Name=, initials derive from its whitespace-separated words, and the attribution prefix is removed from comment text.
+- The comment range covers the paragraph containing the original footnote reference.
+
+** Unresolved blockers
+
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC072.1 - Attributed DOCX notes become comments :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-072-1
+:END:
+
+- Criterion :: Given either supported attribution form in a referenced footnote, default DOCX conversion through =convert=, =manuscript= or =letter= *replaces that footnote with one native Word comment* anchored to the reference paragraph with the parsed author, initials, date and comment text.
+- Proven by :: [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]], [[#at-072-1][AT072.1 - All DOCX commands apply the same policy]] and [[#ut-072-1][UT072.1 - Comments work in the document editor]].
+
+** AC072.2 - Multi-paragraph comment structure is preserved :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-072-2
+:END:
+
+- Criterion :: Given a supported attributed footnote with multiple paragraphs, the resulting Word comment *contains the same ordered paragraphs* and *none appears as body text or a residual footnote*.
+- Proven by :: [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]], [[#at-072-1][AT072.1 - All DOCX commands apply the same policy]] and [[#ut-072-1][UT072.1 - Comments work in the document editor]].
+
+** AC072.3 - Ordinary and explicitly preserved notes remain footnotes :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-072-3
+:END:
+
+- Criterion :: Given an unattributed footnote, default DOCX conversion *retains it as a native footnote*; given any footnote and =--preserve-footnotes=, DOCX conversion *retains every note and creates no new comments* from them.
+- Proven by :: [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]] and [[#at-072-1][AT072.1 - All DOCX commands apply the same policy]].
+
+** AC072.4 - Non-DOCX output is unchanged :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-072-4
+:END:
+
+- Criterion :: Given the same attributed source, *PDF behaviour is unchanged* and *ODT retains native footnotes*; =--preserve-footnotes= causes no comment conversion outside DOCX.
+- Proven by :: [[#rt-072-2][RT072.2 - ODT and PDF remain outside comment conversion]] and [[#at-072-1][AT072.1 - All DOCX commands apply the same policy]].
+
+** AC072.5 - Existing package content and publication safety are preserved :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-072-5
+:END:
+
+- Criterion :: Given existing comments, unrelated package parts, multiple comments on one paragraph or a conversion error, successful conversion *preserves unrelated content* and allocates non-conflicting identifiers, while failure *publishes no partial or replacement output*.
+- Proven by :: [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]] and [[#at-072-2][AT072.2 - Invalid conversion is atomic]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT072.1 - DOCX package conversion is selective and complete :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-072-1
+:END:
+
+- Covers :: [[#ac-072-1][AC072.1 - Attributed DOCX notes become comments]], [[#ac-072-2][AC072.2 - Multi-paragraph comment structure is preserved]], [[#ac-072-3][AC072.3 - Ordinary and explicitly preserved notes remain footnotes]] and [[#ac-072-5][AC072.5 - Existing package content and publication safety are preserved]].
+- Boundary :: Shared DOCX byte transformation over bounded synthetic WordprocessingML packages.
+- Setup :: Packages cover both attribution forms, no timestamp, a three-paragraph comment, an ordinary footnote, two references in one paragraph, existing comments and relationships, unrelated parts, identifier collisions, no candidates, malformed timestamps, missing or duplicate references and malformed package parts.
+- Action :: Transform each package with conversion enabled and disabled, then parse all affected XML parts.
+- Expected :: Enabled valid cases contain *matching comment ranges and parts*; author, initials, dates and paragraphs are exact; *only converted footnotes are removed*; existing and unrelated content remains; disabled and no-candidate packages gain no comment conversion; invalid cases return a bounded error without publishable output bytes.
+- Retention :: Persistent regression suite under =make test=.
+
+** RT072.2 - ODT and PDF remain outside comment conversion :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-072-2
+:END:
+
+- Covers :: [[#ac-072-4][AC072.4 - Non-DOCX output is unchanged]].
+- Boundary :: Existing PDF and ODT command dispatch and ODT native package output.
+- Setup :: Each public command receives an attributed footnote source it supports, with and without =--preserve-footnotes= where the flag is accepted.
+- Action :: Produce ODT and existing PDF/Typst outputs.
+- Expected :: ODT contains native note elements and no Word comment artefacts; PDF/Typst behaviour matches its pre-change contract; the DOCX-only option does not invoke the transformer for either format.
+- Retention :: Persistent regression suite under =make test=.
+
+** AT072.1 - All DOCX commands apply the same policy :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-072-1
+:END:
+
+- Covers :: [[#ac-072-1][AC072.1 - Attributed DOCX notes become comments]], [[#ac-072-2][AC072.2 - Multi-paragraph comment structure is preserved]], [[#ac-072-3][AC072.3 - Ordinary and explicitly preserved notes remain footnotes]] and [[#ac-072-4][AC072.4 - Non-DOCX output is unchanged]].
+- Boundary :: Built =folio= executable through =convert=, =manuscript= and =letter=.
+- Setup :: Minimal valid Org fixtures for all three commands contain one ordinary note, both attribution patterns and a multi-paragraph attributed note; expected author, timestamp and paragraphs are fixture-owned.
+- Action :: Generate default and =--preserve-footnotes= DOCX files from every command, plus one ODT control per command, and inspect their native package parts.
+- Expected :: *All default DOCX outputs convert only attributed notes*; every preserved DOCX and ODT control *retains all notes and introduces no comments*; the three-paragraph note remains structurally complete.
+- Retention :: Ticket-specific evidence; not part of the persistent regression suite.
+
+** AT072.2 - Invalid conversion is atomic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-072-2
+:END:
+
+- Covers :: [[#ac-072-5][AC072.5 - Existing package content and publication safety are preserved]].
+- Boundary :: Public file and stdout output paths for each DOCX-producing command.
+- Setup :: A malformed attributed timestamp exercises failure after native DOCX generation; file targets contain known sentinel bytes and stdout is captured.
+- Action :: Run all three commands against file targets and stdout.
+- Expected :: Each command reports the attribution error; *existing targets retain their sentinel bytes*; absent targets remain absent; *stdout contains no partial DOCX bytes*.
+- Retention :: Ticket-specific evidence; not part of the persistent regression suite.
+
+** UT072.1 - Comments work in the document editor :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-072-1
+:END:
+
+- Covers :: [[#ac-072-1][AC072.1 - Attributed DOCX notes become comments]] and [[#ac-072-2][AC072.2 - Multi-paragraph comment structure is preserved]].
+- Validation method :: User validation.
+- Procedure :: Open representative default and =--preserve-footnotes= DOCX outputs from all three commands in the normal Word-compatible editor; inspect comment anchors, author/date metadata, multi-paragraph text and retained ordinary footnotes; edit, save and reopen each document.
+- Expected :: Default documents expose usable comments at the intended paragraphs and genuine footnotes at the page foot; preserved documents expose only footnotes from the source; all remain editable after save and reopen.
+- Record :: Write the dated result to =validation.org=.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+** Attribution near-misses
+
+- Condition :: A note does not start with either exact attribution form, or =Name= is empty.
+- Required behaviour :: It remains a footnote; substring matches and later-paragraph matches do not convert it.
+- Covered by :: [[#ac-072-3][AC072.3 - Ordinary and explicitly preserved notes remain footnotes]] and [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]].
+
+** Invalid attributed timestamp
+
+- Condition :: The timestamp form matches structurally but its value is not a valid exact UTC timestamp.
+- Required behaviour :: Conversion fails before stdout or file publication; the note is not silently treated as ordinary.
+- Covered by :: [[#ac-072-5][AC072.5 - Existing package content and publication safety are preserved]] and [[#at-072-2][AT072.2 - Invalid conversion is atomic]].
+
+** Repeated reference
+
+- Condition :: A convertible attributed footnote has zero or more than one document reference.
+- Required behaviour :: Conversion fails rather than deleting shared content or creating an ambiguous comment range.
+- Covered by :: [[#ac-072-5][AC072.5 - Existing package content and publication safety are preserved]] and [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+
+- Relevant components :: The application and manuscript packages own CLI options and publication; native office writers own DOCX generation; =internal/office= owns bounded package and XML handling.
+- Ownership boundary :: First Folio owns conversion of the DOCX bytes it generates; Word-compatible editors own interactive comment presentation.
+- Existing pattern :: Every office path produces a complete byte slice before an atomic publisher or stdout writes it.
+
+** High-level design
+
+*** Components and responsibilities
+
+- Add one =internal/office= DOCX comment transformer that accepts generated bytes plus a conversion policy and returns complete validated bytes or an error.
+- Route the boolean =--preserve-footnotes= option through the three CLI models; invert it only at the shared transformer boundary.
+- Extend the letter source/body model to collect referenced Org footnotes and feed them to its existing PDF and native office projections; only DOCX applies comment conversion.
+- Keep attribution recognition and comment metadata construction inside the shared transformer so command paths cannot diverge.
+
+*** Reuse, shared behaviour and variation
+
+- Shared operation :: Package reading, candidate selection, relationship/content-type management, comment creation, identifier allocation and final validation execute once in =internal/office=.
+- Variation :: Each command retains its own source and layout pipeline; the flag merely controls the common post-generation DOCX step.
+
+*** Boundaries and dependencies
+
+- The transformer consumes and returns bytes; it does not read or publish user paths.
+- Use the repository's current bounded ZIP/XML infrastructure. A new XML dependency requires delivery-time evidence that the existing model cannot preserve required package content and renewed design approval.
+- ODT and PDF paths must not call the transformer.
+
+*** Flow
+
+1. The command parses source footnotes, builds its native document and generates validated DOCX bytes.
+2. Unless =--preserve-footnotes= is set, the shared transformer selects only exact attributed footnotes and replaces each single reference with a paragraph comment range/reference.
+3. It updates footnotes, comments, extended comments, relationships and content types, validates the complete package and returns bytes.
+4. The existing stdout or atomic publisher writes only the successful final bytes.
+
+*** Essential mechanisms
+
+- Match the first footnote paragraph against =^\[([^]\r\n]+)\] wrote(?: \(([^)]+)\))?: (.*)$= and reject an empty trimmed author.
+- Parse explicit dates with the exact UTC layout; otherwise inject a controllable UTC clock value truncated to seconds.
+- Preserve every comment paragraph after stripping attribution only from the first; generate initials from the first Unicode rune of each whitespace-separated author word.
+- Allocate comment and paragraph identifiers above all identifiers already present. Retain existing comment parts and relationships when valid; add missing parts only when at least one note converts.
+- Require exactly one document reference per convertible note. Remove only that note definition and reference run, retaining separator notes and every ordinary note.
+
+*** Interfaces and configuration
+
+- Interface :: =folio convert ... --preserve-footnotes=, =folio manuscript ... --preserve-footnotes= and =folio letter ... --preserve-footnotes=.
+- Compatibility :: Omitting the flag changes only DOCX attributed-note handling. Existing invocations, ODT/PDF behaviour and ordinary DOCX footnotes remain compatible.
+
+*** Data and state
+
+- Generated DOCX gains or updates =word/comments.xml=, =word/commentsExtended.xml=, document relationships and content-type overrides only when a conversion occurs.
+- Source files and persistent application state are unchanged.
+
+*** Failure behaviour
+
+- Invalid timestamps, malformed XML, unsafe or oversized package parts, relationship conflicts, exhausted identifiers and missing/duplicate references return contextual errors.
+- Transformation and package validation finish before file replacement or any stdout write, preserving existing atomicity.
+
+*** Simplicity and proportionality
+
+- A single byte-level transformer reuses the common point already present in all three pipelines and avoids three comment writers or a process-level postprocessor dependency.
+
+** Design decisions and verification
+
+*** Transform generated DOCX once
+
+- Decision :: Perform selective conversion after native DOCX generation and before publication.
+- Rationale :: Comment mechanics are package-wide and independent of script, manuscript or letter layout.
+- Verification :: [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]] and [[#at-072-1][AT072.1 - All DOCX commands apply the same policy]].
+
+*** Preserve footnotes by content rule and explicit flag
+
+- Decision :: Exact attribution selects default conversion; =--preserve-footnotes= disables selection altogether.
+- Verification :: [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]], [[#at-072-1][AT072.1 - All DOCX commands apply the same policy]] and [[#ut-072-1][UT072.1 - Comments work in the document editor]].
+
+*** Keep ODT native footnotes
+
+- Decision :: Do not convert ODT notes to annotations or expose a separate ODT comment mode.
+- Verification :: [[#rt-072-2][RT072.2 - ODT and PDF remain outside comment conversion]].
+
+** Routine details left to implementation
+
+- Internal function/type names and test-fixture builders may follow existing package conventions.
+
+** Architecture impact
+
+*** Security impact
+
+- Threat boundary :: Unchanged; generated packages and source text remain bounded untrusted local data.
+- Data and secrets :: Comment author, timestamp and text already exist in the source note and are copied only into the requested local DOCX; no new logging or transmission is introduced.
+- Access :: No network or new process access. File publication remains under the existing target checks and atomic replacement boundary.
+- Conclusion :: Apply existing ZIP part-name, expansion, XML-size and output atomicity controls to the transformer and reject conflicting package metadata.
+
+*** Other relevant qualities
+
+- Reliability :: A controllable clock makes no-timestamp metadata testable, while final validation and atomic publication prevent partial documents.
+- Maintainability :: All commands share one exact attribution parser and WordprocessingML implementation.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: [[file:../071-org-inline-and-footnote-parsing/spec.org][W071]], the product and architecture authorities named under [[#context][Context]], all three DOCX call paths, =internal/office= package validation/publication and current WordprocessingML footnote writers.
+- Entry conditions :: Explicit delivery authority, operator sign-off in this file, an effective definition PASS in [[file:audits.yaml][=audits.yaml=]], and the structured-note prerequisite under [[#constraints-and-dependencies][Constraints and dependencies]].
+- First implementation step :: Write [[#rt-072-1][RT072.1]], [[#rt-072-2][RT072.2]], [[#at-072-1][AT072.1]] and [[#at-072-2][AT072.2]], then observe meaningful RED for new behaviour before production changes.
+- Definition evidence :: [[file:audits.yaml][=audits.yaml=]]
+- Validation evidence :: [[file:validation.org][=validation.org=]]; one tagged result heading per defined test, including RTs, following =ORG-SCHEMA.md=.
+- Documentation impact :: Update command help, =README.md=, =docs/format-docx.md= and =docs/format-odt.md= with the default selective conversion, exact patterns, =--preserve-footnotes= scope and ODT boundary.

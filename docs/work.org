@@ -85,8 +85,10 @@ classification; it is provenance, not current state.
 :CREATED: 2026-11-01
 :END:
 - Specification :: [[file:../tickets/072-docx-footnotes-as-comments/spec.org][W072 - Attributed DOCX footnotes as comments]].
-- Reservation :: Definition pending. DOCX conversions turn supported attributed
-  footnotes into comments by default while =--preserve-footnotes= retains them.
+- Scope :: Convert only footnotes beginning =[Name] wrote: ...= or =[Name] wrote
+  (YYYY-MM-DD HH:MM:SSZ): ...= to native comments by default for DOCX output
+  from =convert=, =manuscript= and =letter=. Retain ordinary notes, retain every
+  ODT note, and add =--preserve-footnotes= to keep all DOCX notes as footnotes.
 
 ** TODO W071 - Normalize Org inline syntax and multi-paragraph footnotes :defect:
 :PROPERTIES:
@@ -95,8 +97,9 @@ classification; it is provenance, not current state.
 :CREATED: 2026-11-01
 :END:
 - Specification :: [[file:../tickets/071-org-inline-and-footnote-parsing/spec.org][W071 - Org inline syntax and multi-paragraph footnotes]].
-- Reservation :: Definition pending. Normalize supported Org inline semantics
-  across PDF, DOCX and ODT, and retain paragraph structure in Org footnotes.
+- Scope :: Normalize supported Org dashes, ellipses, soft hyphens and literal/code
+  spans before rendering, and retain complete multi-paragraph Org footnotes across
+  PDF, DOCX and ODT without leaking continuation paragraphs into body text.
 
 ** ACTIVE W064 - Report YAML files in manuscript configuration cascade :feature:
 :PROPERTIES:

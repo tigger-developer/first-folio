@@ -1,0 +1,334 @@
+#+TITLE: W071 - Normalize Org inline syntax and multi-paragraph footnotes
+#+SCHEMA: 11
+#+SUBTITLE: Unified change specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- Supported Org punctuation, literal/code spans and footnotes have *one semantic interpretation* across PDF, DOCX and ODT conversion.
+
+** Before
+
+- Renderer-specific handling changes dashes and ellipses inconsistently, exposes or loses soft hyphens, and allows punctuation inside literal/code spans to be transformed.
+- A multi-paragraph Org footnote keeps only its first paragraph; later paragraphs can leak into ordinary body text.
+
+** After
+
+- Org =--=, =---=, =...= and =\-= become an en dash, em dash, ellipsis and soft hyphen respectively in rendered prose.
+- Org =~code~= and ==verbatim== remain monospaced literal content whose characters are *not typographically rewritten*.
+- A supported multi-paragraph definition remains *one structured footnote* with its paragraph order and inline formatting preserved.
+
+** Changes
+
+- Source parsing owns these semantics before PDF, DOCX or ODT serialization; renderers project typed content instead of applying competing typography rules.
+
+** Unchanged
+
+- Existing smart-quote behaviour and Markdown semantics remain unchanged.
+
+** Edge cases
+:PROPERTIES:
+:CUSTOM_ID: synopsis-edge-cases
+:END:
+
+- Structural dashes, Org blocks, escaped characters and literal/code contents are protected from prose punctuation conversion.
+- A footnote ends at the next footnote definition, headline, two consecutive blank lines or end of input, following the supported Org boundary.
+
+** Decisions
+
+- Footnote bodies are represented as ordered blocks, not flattened text with encoded separators.
+
+** Next step
+
+- Definition review, then operator sign-off as described in [[#delivery-handoff][Delivery Handoff]].
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+
+First Folio currently divides Org interpretation between source parsers and output-specific renderers. This produces inconsistent special-symbol behaviour and loses paragraph structure when an Org footnote contains a blank-separated continuation.
+
+** Outcome
+
+The supported Org subset has deterministic source semantics that all three rendered document formats can preserve.
+
+** Scope
+
+*** In scope
+
+- Org prose punctuation =--=, =---= and =...=, plus Org soft hyphen =\-=.
+- Org ==verbatim== and =~code~= spans in supported inline-content positions.
+- Multi-paragraph named Org footnote definitions and references.
+- PDF, DOCX and ODT output from =folio convert=, =folio manuscript= and =folio letter= wherever the command supports the applicable Org construct.
+- Org text emission where a structured footnote must be written back without losing its paragraphs.
+
+*** Out of scope
+
+- New smart-quote rules, general Org entity expansion, subscript or superscript syntax, inline anonymous footnotes, forced line breaks and broader link syntax.
+- Changes to Markdown or Fountain parsing.
+- DOCX comment conversion, which is specified separately by W072.
+
+*** Unchanged
+
+- Configuration cascade, output layout, formatting roles, source budgets and existing security boundaries.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]]
+- Product authority :: [[file:../../docs/format-org.md][Org play format]], [[file:../../docs/format-manuscript-org.md][Org manuscript format]] and the command references in [[file:../../README.md][README]].
+- Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Project architecture]].
+- External syntax contract :: [[https://orgmode.org/manual/Special-Symbols.html][Org special symbols]], [[https://orgmode.org/manual/Emphasis-and-Monospace.html][Org emphasis and monospace]] and [[https://orgmode.org/manual/Creating-Footnotes.html][Org footnotes]].
+- Current implementation fact :: Inline recognition is split across =internal/source/inline.go= and PDF renderers; script footnotes use =internal/play= events, while native manuscript footnotes use =internal/source/prose.go=.
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+
+- Retain the existing input-size, block-count, inline-count and nesting limits.
+- Do not add Pandoc or another external parser to the native document workflow.
+- W072 may rely on the structured note output introduced here for its end-to-end multi-paragraph comment case.
+
+** Decisions
+
+- Normalize supported special strings only in parsed prose text, after structural and literal/code recognition.
+- Represent soft hyphen semantically as U+00AD; its visible appearance remains line-break dependent.
+- Preserve the current quote policy separately from Org special-string normalization.
+
+** Unresolved blockers
+
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC071.1 - Org special strings are consistent :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-071-1
+:END:
+
+- Criterion :: Given supported Org prose containing =--=, =---=, =...= or =\-=, every applicable PDF, DOCX and ODT conversion represents the *intended punctuation character* without exposing the source sequence.
+- Proven by :: [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]], [[#at-071-1][AT071.1 - Public command and format matrix]] and [[#ot-071-1][OT071.1 - Soft hyphen breaks only when required]].
+
+** AC071.2 - Literal and code content is protected :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-071-2
+:END:
+
+- Criterion :: Given Org ==verbatim== or =~code~= containing punctuation-like sequences, rendered output uses the configured monospaced role, removes the delimiters and *preserves the enclosed characters literally*.
+- Proven by :: [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]], [[#at-071-1][AT071.1 - Public command and format matrix]] and [[#ut-071-1][UT071.1 - Representative documents remain readable and editable]].
+
+** AC071.3 - Multi-paragraph footnotes retain structure :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-071-3
+:END:
+
+- Criterion :: Given a named Org footnote containing blank-separated paragraphs before its defined termination boundary, conversion produces *one footnote with the same ordered paragraphs* and inline formatting, and *none appears as body content*.
+- Proven by :: [[#rt-071-2][RT071.2 - Structured footnotes survive native serialization]], [[#at-071-1][AT071.1 - Public command and format matrix]] and [[#ut-071-1][UT071.1 - Representative documents remain readable and editable]].
+
+** AC071.4 - Structure and existing quote policy are preserved :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-071-4
+:END:
+
+- Criterion :: Given Org headings, horizontal rules, source or example blocks, escapes and existing quote samples adjacent to the new cases, conversion *changes only supported prose constructs* and *retains current smart-quote behaviour*.
+- Proven by :: [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]] and [[#at-071-1][AT071.1 - Public command and format matrix]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT071.1 - Org inline semantics are parsed once :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-071-1
+:END:
+
+- Covers :: [[#ac-071-1][AC071.1 - Org special strings are consistent]], [[#ac-071-2][AC071.2 - Literal and code content is protected]] and [[#ac-071-4][AC071.4 - Structure and existing quote policy are preserved]].
+- Boundary :: Shared source parsing and each typed renderer adapter.
+- Setup :: A table-driven Org fixture places all four special strings in prose, emphasis and footnote text; repeats them inside ==verbatim==, =~code~=, source/example blocks and structural lines; and includes existing straight-quote cases.
+- Action :: Parse the fixture and project its inline nodes through the Typst, DOCX and ODT adapters.
+- Expected :: Prose nodes contain the *intended Unicode characters*; literal/code nodes *retain exact enclosed bytes* and their semantic role; structural samples are not rewritten; quote results match the pre-change contract.
+- Retention :: Persistent regression suite under =make test=.
+
+** RT071.2 - Structured footnotes survive native serialization :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-071-2
+:END:
+
+- Covers :: [[#ac-071-3][AC071.3 - Multi-paragraph footnotes retain structure]].
+- Boundary :: Org footnote collection, script and prose semantic models, Org emission, and native DOCX/ODT package serialization.
+- Setup :: A named note has three paragraphs, inline emphasis and a single internal blank line; neighbouring notes, a headline and two consecutive blank lines exercise every termination boundary.
+- Action :: Parse and emit the semantic note, then serialize it through the supported script and manuscript office writers.
+- Expected :: The semantic body and emitted Org contain *exactly three ordered paragraphs*; DOCX and ODT retain all three within the note; *none is emitted in the main body*; neighbouring structures remain separate.
+- Retention :: Persistent regression suite under =make test=.
+
+** AT071.1 - Public command and format matrix :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-071-1
+:END:
+
+- Covers :: [[#ac-071-1][AC071.1 - Org special strings are consistent]], [[#ac-071-2][AC071.2 - Literal and code content is protected]], [[#ac-071-3][AC071.3 - Multi-paragraph footnotes retain structure]] and [[#ac-071-4][AC071.4 - Structure and existing quote policy are preserved]].
+- Boundary :: Built =folio= executable and the public =convert=, =manuscript= and =letter= interfaces.
+- Setup :: Minimal valid Org fixtures for each command contain every construct that command supports; the convert and manuscript fixtures include the three-paragraph footnote.
+- Action :: Produce PDF, DOCX and ODT outputs, inspect extracted text and native package structure, and render the PDFs locally.
+- Expected :: *Every applicable output matches* the semantic expectations; unsupported command/construct combinations are omitted rather than simulated; *no footnote continuation leaks* into body text.
+- Retention :: Ticket-specific evidence; not part of the persistent regression suite.
+
+** OT071.1 - Soft hyphen breaks only when required :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-071-1
+:END:
+
+- Covers :: [[#ac-071-1][AC071.1 - Org special strings are consistent]].
+- Boundary :: Local PDF, DOCX and ODT renderers using bounded synthetic text.
+- Procedure :: Render one long word containing Org =\-= in a narrow line and the same word in a wide line, then inspect the resulting pages.
+- Expected :: The narrow case may break at the soft hyphen and show a hyphen; the wide case remains unbroken without a visible hyphen in all three formats.
+- Bounds :: Six local documents, no network, private data, installation or retained temporary output.
+- Record :: Write the dated result to =validation.org=; do not add this check to automated regression, CI, build or scheduled execution.
+
+** UT071.1 - Representative documents remain readable and editable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-071-1
+:END:
+
+- Covers :: [[#ac-071-2][AC071.2 - Literal and code content is protected]] and [[#ac-071-3][AC071.3 - Multi-paragraph footnotes retain structure]].
+- Validation method :: User validation.
+- Procedure :: Open representative PDF, DOCX and ODT outputs in the normal readers or editors; inspect prose punctuation, literal/code styling and the complete multi-paragraph footnote; edit and save the office documents.
+- Expected :: The intended characters and monospaced spans are visible, all note paragraphs remain within one footnote, body text contains no displaced note text, and DOCX/ODT remain editable after save and reopen.
+- Record :: Write the dated result to =validation.org=.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+** Footnote termination
+
+- Condition :: A definition is followed by another footnote definition, a headline, two consecutive blank lines or end of input.
+- Required behaviour :: The note ends at that boundary; one blank line within it separates paragraphs without ending the note.
+- Covered by :: [[#ac-071-3][AC071.3 - Multi-paragraph footnotes retain structure]] and [[#rt-071-2][RT071.2 - Structured footnotes survive native serialization]].
+
+** Literal and structural lookalikes
+
+- Condition :: A punctuation sequence occurs inside a literal/code span, source/example block, horizontal rule or other recognized structure.
+- Required behaviour :: It is not treated as prose typography.
+- Covered by :: [[#ac-071-2][AC071.2 - Literal and code content is protected]], [[#ac-071-4][AC071.4 - Structure and existing quote policy are preserved]] and [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+
+- Relevant components :: =internal/source= recognizes source semantics; =internal/play= retains script events; manuscript parsing builds structured office nodes; application and office packages render PDF, DOCX and ODT.
+- Ownership boundary :: First Folio owns the supported Org subset and every output projection; reader applications own final pagination and soft-hyphen line breaking.
+- Existing pattern :: Source-aware inline nodes already protect code and carry emphasis to native writers.
+
+** High-level design
+
+*** Components and responsibilities
+
+- A shared Org inline recognizer emits typed text, literal/code and soft-hyphen semantics before output-specific escaping.
+- A shared Org footnote collector consumes complete definition bodies into ordered paragraph/block data under the documented termination rules.
+- Script, manuscript and letter paths reuse those source semantics where their public input model supports the construct; renderers only project them.
+- Script Org emission writes the first note paragraph on the definition line and subsequent paragraphs as valid continuation content, preserving a blank line between paragraphs.
+
+*** Reuse, shared behaviour and variation
+
+- Shared operation :: Special-string recognition, literal protection and footnote-body collection live in =internal/source= rather than in each renderer.
+- Variation :: Typst, WordprocessingML and ODF express the same typed semantics using their native representation; commands without a footnote-bearing content model do not invent one under W071.
+
+*** Boundaries and dependencies
+
+- The semantic layer must not depend on the DOCX, ODT or Typst serializer.
+- Existing native package writers and Typst compilation remain in place; no external parser or runtime dependency is added.
+
+*** Flow
+
+1. Structural parsing separates Org blocks, definitions and inline literal/code spans from prose.
+2. The source layer normalizes supported prose special strings and retains note paragraphs as ordered blocks.
+3. Each renderer serializes the typed content without repeating source typography rules.
+
+*** Essential mechanisms
+
+- Special-string matching is longest first: =---= before =--=, with =...= and =\-= recognized only in prose text nodes.
+- Literal/code contents bypass special-string and smart-quote transforms.
+- The footnote collector ends on the next definition, headline, two consecutive blank lines or end of input; a single blank line creates another paragraph in the same body.
+
+*** Interfaces and configuration
+
+- Interface :: Public commands and flags are unchanged.
+- Compatibility :: Existing valid single-paragraph footnotes produce the same visible result; existing smart-quote behaviour is retained.
+
+*** Data and state
+
+- Footnote storage changes from a flat string to ordered semantic blocks wherever a renderer currently loses paragraph boundaries.
+- No persistent state, schema migration or user data store is introduced.
+
+*** Failure behaviour
+
+- Existing size, nesting and expansion errors remain deterministic. Malformed or unsupported Org remains literal or follows the currently documented rejection policy; it is not silently reclassified as a different structure.
+
+*** Simplicity and proportionality
+
+- One source interpretation removes three sets of output-specific exceptions and uses the existing typed-inline and native-package architecture.
+
+** Design decisions and verification
+
+*** Separate source semantics from smart quotes
+
+- Decision :: Split Org special-string normalization from optional quote conversion, while preserving the existing quote policy at each public boundary.
+- Rationale :: Punctuation consistency must not silently broaden the ticket into a quote-policy change.
+- Verification :: [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]] checks both new semantics and preserved quote cases.
+
+*** Preserve footnote blocks rather than separators
+
+- Decision :: Carry ordered note blocks through the semantic model; do not encode paragraph boundaries into a flat string.
+- Rationale :: DOCX, ODT and Typst all support structured note content, and an encoded separator would recreate renderer-specific parsing.
+- Verification :: [[#rt-071-2][RT071.2 - Structured footnotes survive native serialization]] and [[#ut-071-1][UT071.1 - Representative documents remain readable and editable]].
+
+** Routine details left to implementation
+
+- Internal type names and helper placement may follow existing package conventions provided the source/renderer dependency direction is preserved.
+
+** Architecture impact
+
+*** Security impact
+
+- Threat boundary :: Unchanged; Org remains bounded untrusted local input.
+- Data and secrets :: No new storage, logging, network transmission or secret handling.
+- Access :: No new file, process or network access.
+- Conclusion :: Existing parsing, expansion and package limits apply to the structured note representation and every serializer.
+
+*** Other relevant qualities
+
+- Maintainability :: One semantic interpretation replaces renderer-specific punctuation shortcuts.
+- Reliability :: Explicit note termination and block structure prevent content from escaping into the main document flow.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: The product, architecture and official Org authorities named under [[#context][Context]], plus =internal/source/inline.go=, =internal/source/prose.go=, =internal/play/parser.go= and the three output adapters affected by the defined tests.
+- Entry conditions :: Explicit delivery authority, operator sign-off in this file and an effective definition PASS in [[file:audits.yaml][=audits.yaml=]].
+- First implementation step :: Write [[#rt-071-1][RT071.1]], [[#rt-071-2][RT071.2]] and [[#at-071-1][AT071.1]], then observe meaningful RED for the defined defects before production changes.
+- Definition evidence :: [[file:audits.yaml][=audits.yaml=]]
+- Validation evidence :: [[file:validation.org][=validation.org=]]; one tagged result heading per defined test, including RTs, following =ORG-SCHEMA.md=.
+- Documentation impact :: Update =README.md=, =docs/format-org.md=, =docs/format-manuscript-org.md=, =docs/format-docx.md= and =docs/format-odt.md= with the supported special strings, literal/code protection and multi-paragraph footnote contract.
