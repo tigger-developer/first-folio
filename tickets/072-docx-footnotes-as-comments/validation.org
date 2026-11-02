@@ -80,3 +80,11 @@
 - Prior state :: AMBER while human inspection, editing, save and reopen were deferred until the implementation candidate and representative DOCX outputs were ready.
 - Runs :: 2026-11-01: operator reported PASS for all defined user tests.
 - Runs :: 2026-11-02: operator report exposed one-character anchors; prior GREEN is superseded for the current candidate.
+
+* Emergency correction checks
+
+- Candidate :: =201d4d6=, synchronized unchanged from the tested working-tree candidate while checks were running.
+- Focused GREEN :: =go test ./internal/office -run 'TestRT072_' -count=1=; =go test -tags folio_acceptance ./internal/app -run '^TestAT072_' -count=1 -timeout=10m=; =go test ./internal/app -run '^TestRT072_2_' -count=1 -timeout=10m=.
+- Package GREEN :: =go test ./internal/office -count=1= and =go vet ./...=.
+- Static and security GREEN :: =make lint=, =make vulncheck= and =git diff --check=; the vulnerability scan reported no findings.
+- Repository limitation :: =make test= reran on 2026-11-02. W072 and =internal/office= passed. The command remains red only where maintained tests expect the former Libertinus Serif British default while the current preset emits Libertinus Sans, the same unrelated limitation recorded before this emergency correction.

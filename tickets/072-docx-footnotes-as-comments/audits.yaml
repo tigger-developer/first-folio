@@ -135,3 +135,71 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "UT072.1 remains AMBER and no merge, installation or deployment was performed."
       - "The repository-wide test command still reports unrelated default-font expectation failures outside the changed configuration and rendering paths."
+  - id: delivery-code-c1-r2
+    timestamp: "2026-11-02T19:13:00Z"
+    profile: emergency
+    gate: delivery-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "201d4d6"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "BYPASS-GATE-7 request of 2026-11-02 and W072 reconciled acceptance criteria and solution design"
+      - "REVIEW.md delivery-code criteria, current coding, testing, security and documentation standards"
+      - "Authorized example postprocessor paragraph-range behaviour"
+    evidence:
+      - "TestRT072_1_DOCXPackageConversionIsSelectiveAndComplete reproduced empty comment ranges before implementation and passed after the correction with complete multi-run sentence text for both comments in one paragraph"
+      - "All RT072 tests, both tagged AT072 tests, the complete internal/office package and go vet ./... passed for the candidate"
+      - "make lint, make vulncheck, git diff --check and sanitize checks passed; the vulnerability scan reported no findings"
+      - "sdlc-validate delivery-code readiness passed with 2 ATs and 2 RTs GREEN and UT072.1 AMBER"
+      - "README, DOCX format guidance, architecture, specification, validation and work ledger describe the same paragraph-range boundary"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context emergency self-review; this is not independent assurance."
+      - "UT072.1 is AMBER pending editor confirmation that regenerated documents highlight the complete source sentence or line and remain editable after save and reopen."
+      - "The repository-wide make test command remains red only for the separately recorded Libertinus Serif versus Libertinus Sans default-expectation mismatch; W072, internal/office and all affected checks pass."
+      - "The candidate was committed and pushed by the repository synchronizer while checks were running; byte content was unchanged and the audit uses immutable revision 201d4d6."
+  - id: definition-c1-r2
+    timestamp: "2026-11-02T19:13:00Z"
+    profile: emergency
+    gate: definition
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "201d4d6"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "BYPASS-GATE-7 request of 2026-11-02"
+      - "REVIEW.md retrospective emergency definition criteria"
+      - "ISSUES.md, TESTING.md, ARCHITECTURE.md, DOCUMENTATION.md and ORG-SCHEMA.md"
+    evidence:
+      - "AC072.1 now requires a range from the paragraph's first content through the original footnote-reference position and excludes one-character or zero-length anchoring"
+      - "RT072.1 defines multi-run sentence content and two comments in one paragraph; UT072.1 requires full-line highlighting and save/reopen editor validation"
+      - "The solution design records marker placement, nested range order, package boundaries and unchanged attribution, preservation, security and publication behaviour"
+      - "sdlc-validate reported valid schema, complete traceability and delivery-code readiness"
+      - "Affected technical documentation is reconciled and sanitize checks passed"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Retrospective same-context emergency definition review; this is not independent assurance and does not invent advance approval."
+      - "UT072.1 remains an operator validation and closure prerequisite."
