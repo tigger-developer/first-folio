@@ -2,6 +2,15 @@
 #+STARTUP: overview
 #+TODO: AMBER RED | GREEN
 
+* Operator acceptance and closure
+
+** 2026-11-02 - Accepted for closure
+
+- Decision :: The operator explicitly accepted W053 for closure with RT053.1, RT053.2 and OT053.1 GREEN.
+- Boundary :: This closure covers the corrective paragraph repair. W052 separately owns and has accepted the later hyphenation outcome.
+- Documentation outcome :: The specification and validation record describe the delivered correction. Closure changes no product interface or documentation requirement.
+- Closure effect :: This record and the work ledger capture the lifecycle decision only. No executable behaviour, installation or release changes.
+
 * Environment
 - Date :: 2026-09-26; macOS arm64, Go, Typst 0.14.2, Pandoc and Poppler.
 - Candidate :: =80c85c5= plus wrapper-order correction, chapter PDF regression,

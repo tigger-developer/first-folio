@@ -69,10 +69,13 @@ The isolated tap clone is clean and has no SDLC profile or local AGENTS.md.
 
 ** AMBER UT059.1 - Homebrew installation :testdef:
 :PROPERTIES:
-:REASON: Global package-manager writes require operator execution outside the agent write boundary.
+:REASON: The 2026-11-02 operator run used tigger-developer/first-folio rather than the defined tigger-developer/tap/first-folio formula name, so installation, version and conversion remain untested.
+:EVIDENCE: Homebrew reported no formula named tigger-developer/first-folio and suggested brew install tigger-developer/tap/first-folio. The attempted run stopped before installation.
 :END:
 Pending installation or upgrade through Homebrew, version check and conversion.
 Archive build verification is GREEN separately under the live-release OT.
+- Prior state :: AMBER because global package-manager writes require operator execution outside the agent write boundary.
+- Run 2026-11-02 :: AMBER setup result; the command did not address the defined formula and therefore is not a product RED.
 
 * Author review
 - Scope :: Conversion production files and PDF/Typst templates are unchanged.

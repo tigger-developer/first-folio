@@ -3,7 +3,7 @@
 #+SUBTITLE: Emergency reconciliation
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-11-02, closure acceptance
 
 * Synopsis
 :PROPERTIES:
@@ -25,7 +25,7 @@
 ** Decisions
 - The filter applies to the shared script event stream so output formats *agree*.
 ** Next step
-- Retain internal reviews and hand the candidate back for the *operator closure decision*.
+- Fulfilled 2026-11-02 :: Internal reviews were retained, and the operator accepted the candidate for closure.
 
 * Context
 

@@ -4,6 +4,14 @@
 #+OPTIONS: toc:2 num:nil
 #+TODO: AMBER RED | GREEN
 
+* Operator acceptance and closure
+
+** 2026-11-02 - Accepted for closure
+
+- Decision :: The operator explicitly accepted W066 and its uppercase-parenthetical amendment for closure with RT066.1 and OT066.1 GREEN.
+- Documentation outcome :: The specification and validation record describe numbered character names and parenthetical boundaries. Closure changes no product interface or documentation requirement.
+- Closure effect :: This record and the work ledger capture the lifecycle decision only. No executable behaviour, installation or release changes.
+
 * Automated regression
 
 ** GREEN RT066.1 - Org cues through public conversion :testdef:

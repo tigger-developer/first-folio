@@ -2,7 +2,7 @@
 #+SCHEMA: 8
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-11-02, closure acceptance
 
 * Synopsis
 :PROPERTIES:
@@ -30,7 +30,7 @@
 ** Decisions
 - Correct the wrapper order; no new parser, dependency or configuration key.
 ** Next step
-- Review the corrective implementation and retained evidence for operator closure.
+- Fulfilled 2026-11-02 :: The corrective implementation and retained evidence were accepted for closure.
 
 * Context
 ** Authority and starting point
@@ -145,4 +145,4 @@
 - Product documentation :: Add the paragraph-preservation correction to the configuration changelog.
 - Evidence :: [[file:validation.org][Regression and rendering evidence]] and
   [[file:audits.yaml][Independent review record]].
-- Closure :: Operator decision for this corrective work only; W052 remains open.
+- Closure :: Operator acceptance of this corrective work was recorded on 2026-11-02. W052 retains its separate historical lifecycle.

@@ -114,24 +114,28 @@ classification; it is provenance, not current state.
 - Scope :: Report each external user YAML file loaded into the manuscript
   configuration cascade on stderr, preserving existing precedence and output.
 
-** ACTIVE W065 - Hide disabled script footnote references :defect:
+** DONE W065 - Hide disabled script footnote references :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-065
 :CREATED: 2026-10-22
+:CLOSED: 2026-11-02
 :END:
 - Specification :: [[file:../tickets/065-disabled-script-footnote-references/spec.org][W065 - Disabled script footnote references]].
+- Closure 2026-11-02 :: The operator explicitly accepted the delivered repair for closure. RT065.1 and OT065.1 remain GREEN; closure adds no product change, installation or release.
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-22 for the observed PDF and DOCX defect. When =render.footnotes: false=, references to defined notes must not appear as literal =[fn:id]= or =[^id]= text.
-- Evidence :: [[file:../tickets/065-disabled-script-footnote-references/validation.org][Regression and bounded output checks]]. Definition and delivery reviews are internal-only; operator closure remains pending.
+- Historical handoff :: [[file:../tickets/065-disabled-script-footnote-references/validation.org][Regression and bounded output checks]] were complete while operator closure remained pending. Closure was accepted on 2026-11-02.
 
-** ACTIVE W066 - Preserve Org character cue boundaries :defect:
+** DONE W066 - Preserve Org character cue boundaries :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-066
 :CREATED: 2026-10-22
+:CLOSED: 2026-11-02
 :END:
 - Specification :: [[file:../tickets/066-numbered-character-cues/spec.org][W066 - Org character cue boundaries]].
+- Closure 2026-11-02 :: The operator explicitly accepted the delivered repair and its amendment for closure. RT066.1 and OT066.1 remain GREEN; closure adds no product change, installation or release.
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-22 for the reported =PARENT 3= cue split. Numerals in a character name must not become a speech direction.
 - Amendment 2026-10-22 :: The operator invoked =BYPASS-GATE-7= again after a screenshot showed =MARY (IGNORING:= and =(the question)=. An opening parenthesis must begin a direction regardless of the following word's capitalization. This correction remains under W066.
-- Evidence :: [[file:../tickets/066-numbered-character-cues/validation.org][Regression and output checks]]. Internal reviews and operator closure decision remain separate.
+- Historical handoff :: [[file:../tickets/066-numbered-character-cues/validation.org][Regression and output checks]] were complete while operator closure remained separate. Closure was accepted on 2026-11-02.
 
 ** ACTIVE W067 - Apply font stretch geometrically in PDF :defect:
 :PROPERTIES:
@@ -142,6 +146,7 @@ classification; it is provenance, not current state.
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-23 after configured script speaker, instruction and dialogue stretch values rendered at unchanged width in PDF while DOCX applied them.
 - Scope expansion :: On 2026-10-24 the operator required the geometric, non-width-face contract for every applicable font object across script, letter and manuscript PDF rendering.
 - Evidence :: [[file:../tickets/067-script-pdf-font-stretch/validation.org][Rendered-width regression and project output probe]]. Internal reviews and operator closure remain separate.
+- User validation 2026-11-02 :: UT067.1 passed by operator report. Closure remains a separate decision.
 
 ** ACTIVE W068 - Share monospace typography across the application :feature:migration:
 :PROPERTIES:
@@ -160,6 +165,7 @@ classification; it is provenance, not current state.
 - Specification :: [[file:../tickets/069-scene-frontmatter-visibility/spec.org][W069 - Scene frontmatter visibility]].
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-10-24 after direct scene paragraphs remained visible in PDF, DOCX and ODT with =render.frontmatter: false=.
 - Boundary :: Rendered documents suppress direct scene paragraphs; Markdown and Fountain semantic conversions retain them.
+- User validation 2026-11-02 :: UT069.1 passed by operator report. Closure remains a separate decision.
 
 ** DONE W070 - Render script strikethrough across document outputs :defect:
 :PROPERTIES:
@@ -858,11 +864,12 @@ release note is a decision for definition.
 - Validation :: [[file:../tickets/050-code-block-clearance/validation.org][W050 - Rendered clearance verification]].
 - Review :: [[file:../tickets/050-code-block-clearance/audits.yaml][Independent review record]].
 
-** REVIEW W051 - Exact quote indentation and additive paragraph clearance :defect:
+** DONE W051 - Exact quote indentation and additive paragraph clearance :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-051
 :PRIORITY: P1
 :CREATED: 2026-09-26
+:CLOSED: 2026-11-02
 :END:
 - Route :: Emergency, authorized with =BYPASS-GATE-7= on 2026-09-26.
 - Scope :: Quotes use their configured complete inset and add clearance to
@@ -870,6 +877,7 @@ release note is a decision for definition.
 - Specification :: [[file:../tickets/051-quote-layout/spec.org][W051 - Exact quote indentation and clearance]].
 - Validation :: [[file:../tickets/051-quote-layout/validation.org][W051 - Rendered quote geometry]].
 - Review :: [[file:../tickets/051-quote-layout/audits.yaml][Independent review record]].
+- Closure 2026-11-02 :: The operator explicitly accepted the delivered quote-layout repair for closure. RT051.1, RT051.2 and OT051.1 remain GREEN; closure adds no product change, installation or release.
 
 ** DONE W052 - Manuscript stretch and configurable hyphenation :defect:
 :PROPERTIES:
@@ -890,11 +898,12 @@ release note is a decision for definition.
 - Reviews :: [[file:../tickets/052-manuscript-prose-stretch/audits.yaml][Independent review record]].
 - Closure :: Accepted and closed 2026-09-27; stretched-prose user validation PASS.
 
-** REVIEW W053 - Preserve stretched chapter paragraphs and restore regression coverage :defect:
+** DONE W053 - Preserve stretched chapter paragraphs and restore regression coverage :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-053
 :SOURCE: operator
 :CREATED: 2026-09-26
+:CLOSED: 2026-11-02
 :END:
 
 - Scope :: Correct the paragraph corruption introduced by W052 - Manuscript
@@ -903,6 +912,7 @@ release note is a decision for definition.
 - Evidence :: [[file:../tickets/053-stretch-paragraph-regression/validation.org][Paragraph geometry and full-suite results]].
 - Reviews :: [[file:../tickets/053-stretch-paragraph-regression/audits.yaml][Independent review record]].
 - Boundary :: Hyphenation was pending at this corrective handoff; it is now\n  delivered and accepted in [[#w-052][W052 - Manuscript stretch and hyphenation]].
+- Closure 2026-11-02 :: The operator explicitly accepted this corrective repair for closure. RT053.1, RT053.2 and OT053.1 remain GREEN; closure adds no product change, installation or release.
 
 * Legacy Acceptance Criteria (SDLC v1) :legacy:
 :PROPERTIES:

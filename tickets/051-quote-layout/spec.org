@@ -3,7 +3,7 @@
 #+SUBTITLE: Emergency quote layout repair
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: PENDING
+#+OPERATOR_SIGNOFF: APPROVED 2026-11-02, closure acceptance
 
 * Synopsis
 :PROPERTIES:
@@ -25,7 +25,7 @@
 ** Decisions
 - Render quote *body content* within the existing configured wrapper.
 ** Next step
-- Retain verification and review evidence for the *closure decision*.
+- Fulfilled 2026-11-02 :: Verification and review evidence was retained, and the operator accepted the delivered repair for closure.
 
 * Context
 ** Authority and scope
@@ -137,4 +137,4 @@
   Architecture, source schema and CLI keys remain unchanged.
 - Evidence :: [[file:validation.org][Quote geometry verification]] and
   [[file:audits.yaml][Independent review record]].
-- Closure :: Requires the operator's acceptance of the delivered repair.
+- Closure :: Operator acceptance of the delivered repair was recorded on 2026-11-02.

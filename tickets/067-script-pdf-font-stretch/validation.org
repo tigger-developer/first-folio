@@ -51,13 +51,16 @@
 
 * User validation
 
-** AMBER UT067.1 - Operator compares project PDF :testdef:
+** GREEN UT067.1 - Operator compares project PDF :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-067-1-result
-:REASON: Requires the operator's visual comparison of the candidate PDF with the working DOCX and prior PDF.
+:REVISION: operator-tested installation; exact revision not captured
+:EVIDENCE: On 2026-11-02, operator user validation reported UT067.1 PASS.
 :END:
 - Date :: 2026-10-23.
 - Boundary :: This is visual acceptance evidence and remains separate from rendered-width automation.
+- Prior state :: AMBER pending the operator's visual comparison of the candidate PDF with the working DOCX and prior PDF.
+- Run :: 2026-11-02: operator reported PASS; exact application version and viewing conditions were not captured.
 
 * Additional checks
 - Focused script, letter and manuscript geometric-stretch checks passed.
