@@ -78,15 +78,17 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** DONE W072 - Convert attributed DOCX footnotes to comments :feature:
+** REVIEW W072 - Convert attributed DOCX footnotes to comments :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-072
 :SOURCE: operator
 :CREATED: 2026-11-01
 :CLOSED: 2026-11-01
+:REOPENED: 2026-11-02
 :END:
 - Specification :: [[file:../tickets/072-docx-footnotes-as-comments/spec.org][W072 - Attributed DOCX footnotes as comments]].
 - Closure 2026-11-01 :: All defined ATs, RTs and UT072.1 are GREEN. The operator explicitly accepted the ticket for closure after integration at =aacdcd3=. Product and command documentation were reconciled during delivery. No installation or release accompanies closure.
+- Emergency amendment 2026-11-02 :: The operator invoked =BYPASS-GATE-7= after reporting that converted comments highlighted one character rather than the complete source sentence or line. W072 is reopened for the bounded range correction. Automated evidence is current; UT072.1 is AMBER pending review of regenerated DOCX output. The original closure remains historical evidence for its candidate.
 - Scope :: Convert only footnotes beginning =[Name] wrote: ...= or =[Name] wrote
   (YYYY-MM-DD HH:MM:SSZ): ...= to native comments by default for DOCX output
   from =convert=, =manuscript= and =letter=. Retain ordinary notes, retain every

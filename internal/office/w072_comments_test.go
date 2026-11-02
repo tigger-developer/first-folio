@@ -109,6 +109,11 @@ func TestRT072_1_DOCXPackageConversionIsSelectiveAndComplete(t *testing.T) {
 	if !anchored {
 		t.Error("two comments are not anchored within their shared source paragraph")
 	}
+	for _, commentID := range []string{"8", "9"} {
+		if got := w072CommentRangeText(documentRoot, commentID); got != "Whole sentence." {
+			t.Errorf("comment %s range text = %q, want whole source sentence", commentID, got)
+		}
+	}
 	extendedRoot, err := parseXML(files["word/commentsExtended.xml"])
 	if err != nil {
 		t.Fatal(err)
@@ -130,6 +135,28 @@ func TestRT072_1_DOCXPackageConversionIsSelectiveAndComplete(t *testing.T) {
 			t.Errorf("%s missing %q", name, want)
 		}
 	}
+}
+
+func w072CommentRangeText(root *docxNode, commentID string) string {
+	var result strings.Builder
+	active := false
+	root.visit(func(n *docxNode) {
+		if n.name != "w:p" {
+			return
+		}
+		for i := range n.children {
+			child := &n.children[i]
+			switch {
+			case child.name == "w:commentRangeStart" && child.get("w:id") == commentID:
+				active = true
+			case child.name == "w:commentRangeEnd" && child.get("w:id") == commentID:
+				active = false
+			case active:
+				result.WriteString(wordText(child))
+			}
+		}
+	})
+	return result.String()
 }
 
 func TestRT072_1_DOCXPackageConversionRejectsInvalidCandidates(t *testing.T) {
@@ -216,7 +243,7 @@ func w072Package(t *testing.T, duplicate, badDate bool) []byte {
 		"[Content_Types].xml":          `<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/footnotes.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml"/><Override PartName="/word/comments.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml"/><Override PartName="/custom/keep.xml" ContentType="application/xml"/></Types>`,
 		"_rels/.rels":                  `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="document" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`,
 		"word/_rels/document.xml.rels": `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="footnotes" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes" Target="footnotes.xml"/><Relationship Id="comments" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="comments.xml"/></Relationships>`,
-		"word/document.xml":            fmt.Sprintf(`<?xml version="1.0"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>One</w:t></w:r><w:r><w:footnoteReference w:id="1"/></w:r>%s<w:r><w:footnoteReference w:id="2"/></w:r></w:p><w:p><w:r><w:t>Ordinary</w:t></w:r><w:r><w:footnoteReference w:id="3"/></w:r></w:p></w:body></w:document>`, ref2),
+		"word/document.xml":            fmt.Sprintf(`<?xml version="1.0"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>Whole </w:t></w:r><w:r><w:t>sentence.</w:t></w:r><w:r><w:footnoteReference w:id="1"/></w:r>%s<w:r><w:footnoteReference w:id="2"/></w:r></w:p><w:p><w:r><w:t>Ordinary</w:t></w:r><w:r><w:footnoteReference w:id="3"/></w:r></w:p></w:body></w:document>`, ref2),
 		"word/footnotes.xml":           fmt.Sprintf(`<?xml version="1.0"?><w:footnotes xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:footnote w:id="-1"><w:p/></w:footnote><w:footnote w:id="0"><w:p/></w:footnote><w:footnote w:id="1"><w:p><w:r><w:footnoteRef/></w:r><w:r><w:t>[Aoife Example] wrote: First comment</w:t></w:r></w:p><w:p><w:r><w:t>Second paragraph</w:t></w:r></w:p></w:footnote><w:footnote w:id="2"><w:p><w:r><w:footnoteRef/></w:r><w:r><w:t>[Siobhan Example] wrote (%s): Timestamped comment</w:t></w:r></w:p></w:footnote><w:footnote w:id="3"><w:p><w:r><w:footnoteRef/></w:r><w:r><w:t>Ordinary note</w:t></w:r></w:p></w:footnote></w:footnotes>`, date),
 		"word/comments.xml":            `<?xml version="1.0"?><w:comments xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:comment w:id="7" w:author="Existing"><w:p><w:r><w:t>Keep me</w:t></w:r></w:p></w:comment></w:comments>`,
 		"custom/keep.xml":              `<keep>unchanged</keep>`,

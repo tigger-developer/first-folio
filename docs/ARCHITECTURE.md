@@ -98,6 +98,8 @@ rename. No Pandoc or Typst process runs at any stage of script, manuscript or le
 mapping, resource bounds and approximations are described in [DOCX export](format-docx.md).
 The conversion entry point passes the source format into the shared office inline renderer, so Org single-asterisk bold also applies to DOCX and ODT, including footnotes. The existing Typst route retains its independent source-aware renderer.
 
+After native DOCX generation, the shared attributed-footnote transformer places each Word comment range start before the reference paragraph's first content and replaces the original footnote-reference run with the range end and comment reference. This preserves complete sentence or line highlighting across multiple Word runs. Multiple ranges in one paragraph are nested in reference order before bounded package validation and atomic publication.
+
 ODT is a separate sibling output route. `odt_*.go` projects the shared office
 layout nodes into Pandoc JSON and generates an ODF reference containing resolved
 role styles and page masters. The layout nodes currently use Word names; no

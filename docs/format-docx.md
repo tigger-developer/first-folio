@@ -57,7 +57,10 @@ paragraph starts with one of these exact forms:
 
 The name becomes the Word comment author and the timestamp, when supplied, is
 used as an exact UTC comment date. Later footnote paragraphs become later
-paragraphs in the same comment. Ordinary notes remain native footnotes. Use
+paragraphs in the same comment. The comment range starts at the paragraph's
+first content and ends where the footnote reference occurred, so the complete
+source sentence or line is highlighted rather than one character. Ordinary
+notes remain native footnotes. Use
 `--preserve-footnotes` with `folio convert`, `folio manuscript` or
 `folio letter` to disable comment conversion and retain every note. The option
 is accepted for PDF and ODT but changes only DOCX output.
@@ -147,6 +150,7 @@ the product ODT route. The native DOCX writer serves scripts, manuscripts and le
 
 ## History
 
+- 1.13 (2026-11-02): Span attributed-note comments across the complete source sentence or line preceding the footnote reference.
 - 1.12 (2026-11-01): Add structured Org notes, exact attributed-note comment conversion and `--preserve-footnotes` across all DOCX commands.
 - 1.11 (2026-10-25): Add native Org and Markdown strikethrough to script runs and footnotes.
 - 1.10 (2026-10-24): Apply frontmatter visibility and typography to direct scene introductory paragraphs.

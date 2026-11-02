@@ -4,6 +4,7 @@
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
 #+OPERATOR_SIGNOFF: APPROVED 2026-11-01
+#+EMERGENCY_AUTHORITY: BYPASS-GATE-7 2026-11-02
 
 * Synopsis
 :PROPERTIES:
@@ -21,6 +22,7 @@
 ** After
 
 - A note beginning =[Name] wrote: ...= or =[Name] wrote (YYYY-MM-DD HH:MM:SSZ): ...= becomes a paragraph-anchored Word comment.
+- The comment range begins at the paragraph's first content and ends where the footnote reference occurred, so Word highlights the complete source sentence or line rather than a single character.
 - Ordinary notes remain footnotes, and =--preserve-footnotes= retains *all* DOCX notes as footnotes.
 
 ** Changes
@@ -46,7 +48,8 @@
 
 ** Next step
 
-- Definition review, then operator sign-off as described in [[#delivery-handoff][Delivery Handoff]].
+- Complete the emergency delivery-code and retrospective definition reviews,
+  then return the regenerated DOCX for [[#ut-072-1][UT072.1]] and operator closure.
 
 -----
 
@@ -93,6 +96,7 @@ Every DOCX command applies the same selective comment policy while preserving ge
 - Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Project architecture]].
 - Dependency :: [[file:../071-org-inline-and-footnote-parsing/spec.org][W071]] owns complete multi-paragraph Org footnote parsing and structured note output.
 - Current implementation fact :: Script, manuscript and letter DOCX paths all produce bytes before publication, but their generation entry points differ; the letter model currently has no footnote-bearing body representation.
+- Emergency correction :: On 2026-11-02 the operator reported that delivered comments highlighted only one character and invoked =BYPASS-GATE-7=. Inspection confirmed that First Folio emitted adjacent range-start and range-end markers, unlike the authorized example postprocessor, which spans paragraph content preceding the original footnote reference.
 
 ** Constraints and dependencies
 :PROPERTIES:
@@ -109,7 +113,7 @@ Every DOCX command applies the same selective comment policy while preserving ge
 - Only a complete match at the start of the first note paragraph is convertible; all other footnotes remain footnotes.
 - The timestamp form accepts the exact UTC layout =YYYY-MM-DD HH:MM:SSZ=. Without a timestamp, the comment date is the conversion time in UTC, truncated to seconds.
 - The comment author is =Name=, initials derive from its whitespace-separated words, and the attribution prefix is removed from comment text.
-- The comment range covers the paragraph containing the original footnote reference.
+- The comment range starts before the paragraph's first content and ends at the original footnote-reference position. It therefore contains all preceding paragraph text across Word runs and is never intentionally emitted as an adjacent zero-length range.
 
 ** Unresolved blockers
 
@@ -125,7 +129,7 @@ Every DOCX command applies the same selective comment policy while preserving ge
 :CUSTOM_ID: ac-072-1
 :END:
 
-- Criterion :: Given either supported attribution form in a referenced footnote, default DOCX conversion through =convert=, =manuscript= or =letter= *replaces that footnote with one native Word comment* anchored to the reference paragraph with the parsed author, initials, date and comment text.
+- Criterion :: Given either supported attribution form in a referenced footnote, default DOCX conversion through =convert=, =manuscript= or =letter= *replaces that footnote with one native Word comment* anchored from the reference paragraph's first content through the original reference position, with the parsed author, initials, date and comment text. Word therefore highlights the complete source sentence or line preceding the reference, not one character.
 - Proven by :: [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]], [[#at-072-1][AT072.1 - All DOCX commands apply the same policy]] and [[#ut-072-1][UT072.1 - Comments work in the document editor]].
 
 ** AC072.2 - Multi-paragraph comment structure is preserved :ac:
@@ -172,9 +176,9 @@ Every DOCX command applies the same selective comment policy while preserving ge
 
 - Covers :: [[#ac-072-1][AC072.1 - Attributed DOCX notes become comments]], [[#ac-072-2][AC072.2 - Multi-paragraph comment structure is preserved]], [[#ac-072-3][AC072.3 - Ordinary and explicitly preserved notes remain footnotes]] and [[#ac-072-5][AC072.5 - Existing package content and publication safety are preserved]].
 - Boundary :: Shared DOCX byte transformation over bounded synthetic WordprocessingML packages.
-- Setup :: Packages cover both attribution forms, no timestamp, a three-paragraph comment, an ordinary footnote, two distinct attributed references in one paragraph, existing comments and relationships, unrelated parts, identifier collisions, no candidates, malformed timestamps, missing or duplicate references and malformed package parts.
+- Setup :: Packages cover both attribution forms, no timestamp, a three-paragraph comment, an ordinary footnote, a source sentence split across multiple Word runs, two distinct attributed references in one paragraph, existing comments and relationships, unrelated parts, identifier collisions, no candidates, malformed timestamps, missing or duplicate references and malformed package parts.
 - Action :: Transform each package with conversion enabled and disabled, then parse all affected XML parts.
-- Expected :: Enabled valid cases contain *matching comment ranges and parts*; author, initials, dates and paragraphs are exact; *only converted footnotes are removed*; existing and unrelated content remains; disabled and no-candidate packages gain no comment conversion; invalid cases return a bounded error without publishable output bytes.
+- Expected :: Enabled valid cases contain *matching comment ranges and parts*. Each range begins before the paragraph content and ends at its original footnote-reference position, containing the complete preceding sentence across Word runs rather than a zero-length anchor. Author, initials, dates and paragraphs are exact; *only converted footnotes are removed*; existing and unrelated content remains; disabled and no-candidate packages gain no comment conversion; invalid cases return a bounded error without publishable output bytes.
 - Retention :: Persistent regression suite under =make test=.
 
 ** RT072.2 - ODT and PDF remain outside comment conversion :testdef:
@@ -221,7 +225,7 @@ Every DOCX command applies the same selective comment policy while preserving ge
 - Covers :: [[#ac-072-1][AC072.1 - Attributed DOCX notes become comments]] and [[#ac-072-2][AC072.2 - Multi-paragraph comment structure is preserved]].
 - Validation method :: User validation.
 - Procedure :: Open representative default and =--preserve-footnotes= DOCX outputs from all three commands in the normal Word-compatible editor; inspect comment anchors, author/date metadata, multi-paragraph text and retained ordinary footnotes; edit, save and reopen each document.
-- Expected :: Default documents expose usable comments at the intended paragraphs and genuine footnotes at the page foot; preserved documents expose only footnotes from the source; all remain editable after save and reopen.
+- Expected :: Default documents highlight the complete source sentence or line for each usable comment, with no one-character anchor, and retain genuine footnotes at the page foot. Preserved documents expose only footnotes from the source; all remain editable after save and reopen.
 - Record :: Write the dated result to =validation.org=.
 
 * Edge Cases
@@ -246,6 +250,12 @@ Every DOCX command applies the same selective comment policy while preserving ge
 - Condition :: A convertible attributed footnote has zero or more than one document reference.
 - Required behaviour :: Conversion fails rather than deleting shared content or creating an ambiguous comment range.
 - Covered by :: [[#ac-072-5][AC072.5 - Existing package content and publication safety are preserved]] and [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]].
+
+** Multiple comments in one paragraph
+
+- Condition :: Two convertible footnote references occur in the same source paragraph.
+- Required behaviour :: Each range starts at the paragraph's first content. Range starts are ordered so the earlier reference closes first, preserving nested WordprocessingML ranges and the complete source text for both comments.
+- Covered by :: [[#ac-072-1][AC072.1 - Attributed DOCX notes become comments]], [[#ac-072-5][AC072.5 - Existing package content and publication safety are preserved]] and [[#rt-072-1][RT072.1 - DOCX package conversion is selective and complete]].
 
 * Solution Design
 :PROPERTIES:
@@ -281,7 +291,7 @@ Every DOCX command applies the same selective comment policy while preserving ge
 *** Flow
 
 1. The command parses source footnotes, builds its native document and generates validated DOCX bytes.
-2. Unless =--preserve-footnotes= is set, the shared transformer selects only exact attributed footnotes and replaces each single reference with a paragraph comment range/reference.
+2. Unless =--preserve-footnotes= is set, the shared transformer selects only exact attributed footnotes. It inserts each range start after paragraph properties and before the first content, then replaces the original footnote-reference run with the matching range end and comment reference.
 3. It updates footnotes, comments, extended comments, relationships and content types, validates the complete package and returns bytes.
 4. The existing stdout or atomic publisher writes only the successful final bytes.
 
@@ -292,6 +302,7 @@ Every DOCX command applies the same selective comment policy while preserving ge
 - Preserve every comment paragraph after stripping attribution only from the first; generate initials from the first Unicode rune of each whitespace-separated author word.
 - Allocate comment and paragraph identifiers above all identifiers already present. Retain existing comment parts and relationships when valid; add missing parts only when at least one note converts.
 - Require exactly one document reference per convertible note. Remove only that note definition and reference run, retaining separator notes and every ordinary note.
+- For multiple converted references in one paragraph, emit range starts in reverse reference order so the resulting ranges nest and close in source order.
 
 *** Interfaces and configuration
 

@@ -19,9 +19,9 @@
 ** GREEN AT072.1 - All DOCX commands apply the same policy :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-072-1-result
-:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
+:REVISION: b755682 plus W072 emergency comment-range delta
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT072_1_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, all three commands produced no comments part. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, built convert, manuscript and letter commands converted both exact attribution forms by default, retained the ordinary note, retained all notes under --preserve-footnotes, preserved multi-paragraph comment text and left each ODT control as native notes.
+:EVIDENCE: Original RED/GREEN history is retained below. On 2026-11-02 the acceptance test passed against the emergency comment-range candidate: built convert, manuscript and letter commands retained the shared default conversion, preserve-footnotes and ODT-control policy.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]], [[file:spec.org::#ac-072-2][AC072.2]], [[file:spec.org::#ac-072-3][AC072.3]] and [[file:spec.org::#ac-072-4][AC072.4]].
@@ -31,9 +31,9 @@
 ** GREEN AT072.2 - Invalid conversion is atomic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-072-2-result
-:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
+:REVISION: b755682 plus W072 emergency comment-range delta
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT072_2_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, malformed timestamps replaced or created file targets and emitted convert stdout. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, convert, manuscript and letter each rejected the malformed timestamp before changing an existing sentinel or creating an absent target, and convert emitted zero stdout bytes.
+:EVIDENCE: Original RED/GREEN history is retained below. On 2026-11-02 the atomic-publication acceptance test passed unchanged against the emergency comment-range candidate.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-5][AC072.5]].
@@ -45,21 +45,22 @@
 ** GREEN RT072.1 - DOCX package conversion is selective and complete :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-072-1-result
-:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
+:REVISION: b755682 plus W072 emergency comment-range delta
 :COMMAND: go test ./internal/office -run '^TestRT072_1_' -count=1
-:EVIDENCE: At tests-first revision 120875ff382bdf54d4f6377faf2133e1dfc35459, the scaffold converted nothing and accepted invalid packages and conflicts while exact-pattern near misses remained byte-identical. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, exact identifiers, authors, initials, UTC dates, multi-paragraph comments, shared-paragraph anchors, commentsExtended entries, ordinary-note and unrelated-part preservation all passed; malformed packages, timestamps, references, relationships and content types were rejected; near misses remained byte-identical.
+:EVIDENCE: On 2026-11-02 the added multi-run sentence assertions failed because both comment ranges contained no text. After the emergency correction, all RT072.1 cases passed and each range contained the complete sentence preceding its reference. Original delivery history is retained below.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]], [[file:spec.org::#ac-072-2][AC072.2]], [[file:spec.org::#ac-072-3][AC072.3]] and [[file:spec.org::#ac-072-5][AC072.5]].
 - Runs :: 2026-11-01: intended RED with one justified preservation-GREEN case.
 - Runs :: 2026-11-01: GREEN for conversion, preservation and every bounded failure case.
+- Runs :: 2026-11-02: intended RED for adjacent zero-length ranges, then GREEN for complete multi-run sentence ranges and all retained package cases.
 
 ** GREEN RT072.2 - ODT and PDF remain outside comment conversion :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-072-2-result
-:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
+:REVISION: b755682 plus W072 emergency comment-range delta
 :COMMAND: go test ./internal/app -run '^TestRT072_2_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, every PDF/ODT command rejected the boolean option. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, convert, manuscript and letter accepted the flag for both PDF and ODT; PDF retained its existing note text and ODT retained one native attributed note without invoking DOCX comment conversion.
+:EVIDENCE: Original RED/GREEN history is retained below. On 2026-11-02 the non-DOCX regression passed unchanged against the emergency comment-range candidate.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-4][AC072.4]].
@@ -68,14 +69,14 @@
 
 * User tests
 
-** GREEN UT072.1 - Comments work in the document editor :testdef:
+** AMBER UT072.1 - Comments work in the document editor :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-072-1-result
-:REVISION: d659d6853c493d93640baba07ea78c26715f4850
-:EVIDENCE: On 2026-11-01, operator user validation reported every defined UT072.1 outcome PASS for the integrated candidate.
+:REASON: The 2026-11-01 GREEN result was invalidated by the reported one-character comment anchor. Regenerated emergency-candidate DOCX files require editor validation of complete sentence or line highlighting, editing and save/reopen.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-072-1][AC072.1]] and [[file:spec.org::#ac-072-2][AC072.2]].
 - Method :: User validation.
 - Prior state :: AMBER while human inspection, editing, save and reopen were deferred until the implementation candidate and representative DOCX outputs were ready.
 - Runs :: 2026-11-01: operator reported PASS for all defined user tests.
+- Runs :: 2026-11-02: operator report exposed one-character anchors; prior GREEN is superseded for the current candidate.

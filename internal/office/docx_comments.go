@@ -463,6 +463,7 @@ func commentExtended(paraID string) docxNode {
 func transformCommentReferences(root *docxNode, candidates map[string]*attributedComment, counts map[string]int) error {
 	if root.name == "w:p" {
 		out := make([]docxNode, 0, len(root.children)+4)
+		starts := make([]docxNode, 0, 1)
 		for _, child := range root.children {
 			if child.name != "w:r" {
 				out = append(out, child)
@@ -493,13 +494,13 @@ func transformCommentReferences(root *docxNode, candidates map[string]*attribute
 			}
 			counts[id]++
 			commentID := strconv.Itoa(candidate.commentID)
+			starts = append(starts, dx("commentRangeStart").attr("w:id", commentID))
 			out = append(out,
-				dx("commentRangeStart").attr("w:id", commentID),
 				dx("commentRangeEnd").attr("w:id", commentID),
 				dx("r", dx("rPr", dxVal("rStyle", "CommentReference")), dx("commentReference").attr("w:id", commentID)),
 			)
 		}
-		root.children = out
+		root.children = insertCommentRangeStarts(out, starts)
 		return nil
 	}
 	for i := range root.children {
@@ -508,4 +509,26 @@ func transformCommentReferences(root *docxNode, candidates map[string]*attribute
 		}
 	}
 	return nil
+}
+
+func insertCommentRangeStarts(children, starts []docxNode) []docxNode {
+	if len(starts) == 0 {
+		return children
+	}
+	index := 0
+	for index < len(children) && children[index].name == "" {
+		index++
+	}
+	if index < len(children) && children[index].name == "w:pPr" {
+		index++
+	}
+	result := make([]docxNode, 0, len(children)+len(starts))
+	result = append(result, children[:index]...)
+	// Reverse encounter order so multiple ranges in one paragraph are nested:
+	// the first footnote range ends first, matching the reference order.
+	for i := len(starts) - 1; i >= 0; i-- {
+		result = append(result, starts[i])
+	}
+	result = append(result, children[index:]...)
+	return result
 }

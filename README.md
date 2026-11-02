@@ -56,7 +56,8 @@ blank lines or end of file ends the note.
 
 DOCX export converts a footnote beginning exactly `[Name] wrote: ...` or
 `[Name] wrote (YYYY-MM-DD HH:MM:SSZ): ...` into a Word comment. Ordinary notes
-remain footnotes. Pass `--preserve-footnotes` to `convert`, `manuscript` or
+remain footnotes. The comment highlights the complete source sentence or line
+preceding its footnote reference. Pass `--preserve-footnotes` to `convert`, `manuscript` or
 `letter` to retain every DOCX note. PDF behaviour is unchanged and ODT always
 retains native footnotes.
 
