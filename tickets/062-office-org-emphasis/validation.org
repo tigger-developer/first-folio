@@ -46,10 +46,16 @@ rendered PDF text spans and font-family references were inspected, independently
 of the native XML tests. The local folio symlink points to dist/folio, rebuilt
 with this change. No source manuscripts or previous user exports were modified.
 
-* AMBER UT062.1 - User script appearance :testdef:
+* GREEN UT062.1 - User script appearance :testdef:
 :PROPERTIES:
-:REASON: User inspection of regenerated scripts in the chosen editor has not yet been reported.
+:REVISION: Operator-reviewed W062 demonstration exports; exact binary revision not reported
+:EVIDENCE: Operator reported bold, italic and underline fine on 2026-11-02. The supplied screenshots visibly confirm Org bold and italic in introduction and dialogue, double-asterisk bold, and triple-asterisk bold italic.
 :END:
+The prior AMBER state recorded that inspection in the chosen editor had not yet
+been reported. The operator subsequently reported this user test passed. The
+screenshots do not independently establish underline behaviour, which is not an
+acceptance criterion in W062. Closure remains a separate decision and is not
+inferred.
 
 * Self-review
 Reviewed the source-format argument from CLI parsing through both exporter entry

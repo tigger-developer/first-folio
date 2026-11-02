@@ -26,7 +26,7 @@
 ** Decisions
 - The legacy manuscript path is deprecated, not removed.
 ** Next step
-- Audit and obtain operator sign-off before delivery.
+- Complete the current delivery-code audit, then present the implementation for operator acceptance and closure.
 
 * Context
 

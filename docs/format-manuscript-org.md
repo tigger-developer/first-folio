@@ -64,7 +64,7 @@ Quoted blocks add `quoted-block-spacing` to normal body paragraph separation. Th
 
 Code-block clearance adds to normal body paragraph separation, including between consecutive blocks. Vertical `em` clearances use the body font size. Complete-line code spans use this same block layout; code embedded within prose remains inline.
 
-Source blocks take their typography from `folio.manuscript.mono.font`, the same role as verbatim spans; `folio.manuscript.code-block` carries layout only. A configured `stretch` scales the block horizontally by that percentage, matching inline verbatim text, while the block keeps its glyph height, its column alignment and its page breaks.
+Source blocks take their typography from top-level `folio.mono.font`, the same shared role as verbatim spans; `folio.manuscript.code-block` carries layout only. The former `folio.manuscript.mono.font` path remains a deprecated compatibility input. A configured `stretch` scales the block horizontally by that percentage, matching inline verbatim text, while the block keeps its glyph height, its column alignment and its page breaks.
 
 ## Example
 

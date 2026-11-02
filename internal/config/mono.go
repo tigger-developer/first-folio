@@ -30,7 +30,9 @@ func monospaceLayer(data map[string]any, mode Mode) map[string]any {
 		setPath(layer, "folio.manuscript.mono", cloneValue(effective))
 	} else if mode != ModeManuscript {
 		if manuscript, ok := cfg.Get("folio.manuscript"); ok {
-			delete(manuscript.(map[string]any), "mono")
+			if block, isMapping := manuscript.(map[string]any); isMapping {
+				delete(block, "mono")
+			}
 		}
 	}
 	return layer

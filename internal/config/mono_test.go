@@ -63,3 +63,17 @@ func TestRT068_3SharedMonospaceValuesWinWithinLayerAndLaterLayersWinNormally(t *
 		t.Fatalf("effective shared mono = %+v", font)
 	}
 }
+
+func TestMonospaceLayerSafelyHandlesNonMappingManuscriptData(t *testing.T) {
+	for _, tc := range []struct {
+		mode    Mode
+		wantErr bool
+	}{{ModeScript, true}, {ModeLetter, true}} {
+		_, err := Load(Options{Mode: tc.mode, Home: t.TempDir(), LocalDir: t.TempDir(), Source: map[string]any{
+			"folio": map[string]any{"manuscript": "not applicable to this mode"},
+		}})
+		if (err != nil) != tc.wantErr {
+			t.Fatalf("%s error = %v; want error %t", tc.mode, err, tc.wantErr)
+		}
+	}
+}

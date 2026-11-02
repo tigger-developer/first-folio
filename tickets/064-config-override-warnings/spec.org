@@ -50,8 +50,9 @@
 
 ** Next step
 
-- Review this definition, then authorize delivery as described in
-  [[#delivery-handoff][Delivery Handoff]].
+- Complete the current delivery-code audit, then present the implementation for
+  operator acceptance and closure. The historical delivery handoff remains
+  recorded in [[#delivery-handoff][Delivery Handoff]].
 
 -----
 

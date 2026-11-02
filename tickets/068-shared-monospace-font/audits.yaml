@@ -1,0 +1,97 @@
+schema: sdlc-audit-record/v1
+ticket: W068
+history:
+  - reference: internal-review.md
+    original_method: self
+    uncertainty: Historical parallel Markdown review retained unchanged. Its delivery-code PASS is treated as cycle 1 round 1 history, not current evidence.
+resets: []
+reviews:
+  - id: delivery-code-c1-r2
+    timestamp: "2026-11-02T05:25:55Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "08aa9857a7b29005ae5798f5ac8364d7f4aa4eaa"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: FAIL
+    criteria:
+      - W068 signed-off specification and solution design
+      - REVIEW.md delivery-code criteria
+      - Current configuration, renderer, documentation and regression behaviour
+    evidence:
+      - "Code inspection identified an unchecked map assertion in monospaceLayer for non-manuscript modes."
+      - "A focused regression reproduced the panic for scalar folio.manuscript input before remediation."
+      - "docs/format-manuscript-markdown.md and docs/format-manuscript-org.md named the deprecated manuscript path as the primary code typography path."
+    findings:
+      - id: F068-DC-C1-R2-1
+        severity: blocking
+        location: internal/config/mono.go:33
+        requirement: Configuration normalization must reject or handle malformed YAML without a process panic.
+        evidence: "TestMonospaceLayerSafelyHandlesNonMappingManuscriptData initially panicked with an interface conversion when folio.manuscript was a scalar."
+        required_correction: Guard the manuscript mapping assertion and retain deterministic validation behaviour with regression coverage.
+      - id: F068-DC-C1-R2-2
+        severity: blocking
+        location: "docs/format-manuscript-markdown.md:53 and docs/format-manuscript-org.md:67"
+        requirement: Public documentation must identify folio.mono.font as the shared authority and the manuscript path as deprecated compatibility input.
+        evidence: Both format guides described folio.manuscript.mono.font as the source of code typography.
+        required_correction: Name folio.mono.font as the primary path and retain an explicit compatibility note.
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - This is a same-context internal audit, not an independent review.
+  - id: delivery-code-c1-r3
+    timestamp: "2026-11-02T05:25:55Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 3
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "08aa9857a7b29005ae5798f5ac8364d7f4aa4eaa"
+      delta: "sha256:cb9128ac1c0ed23507108f9f4b08120afe4ddeb9bebcc6debdcc92cb5f4331cb (W068 code, regression, documentation and specification audit delta)"
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: FAIL
+    criteria:
+      - W068 signed-off specification and solution design
+      - REVIEW.md delivery-code criteria
+      - Current project regression, lint and vulnerability checks
+    evidence:
+      - "The new malformed-mapping regression failed with the intended panic before remediation and passed afterwards."
+      - "Focused W068 configuration, letter, manuscript, office and public-command tests passed on 2026-11-02."
+      - "sdlc-validate reported valid schema and delivery-code readiness with RT068.1 through RT068.3 and AT068.1 GREEN."
+      - "make lint and make vulncheck passed; the vulnerability scan reported no findings."
+      - "make test failed on 2026-11-02 after commit 1eaf05c changed the British default family to Libertinus Sans while maintained tests continued to require Libertinus Serif."
+    findings:
+      - id: F068-DC-C1-R3-1
+        severity: blocking
+        location: "presets/british.yaml:38 and maintained default-font assertions"
+        requirement: AT068.1 and current delivery-code review require the complete make test suite to pass.
+        evidence: "make test failed in internal/app, internal/config and internal/manuscript because current output uses Libertinus Sans while tests expect Libertinus Serif; git blame attributes the preset change to 1eaf05c. Focused W068 tests pass."
+        required_correction: Reconcile the intended British default with its maintained test expectations under the owning change, then rerun the complete suite and W068 audit.
+    prior_finding_dispositions:
+      - finding_id: F068-DC-C1-R2-1
+        disposition: resolved
+        reason: The unchecked type assertion is guarded and malformed input now reaches deterministic validation instead of panicking.
+        evidence: "TestMonospaceLayerSafelyHandlesNonMappingManuscriptData passes after reproducing the pre-change panic."
+      - finding_id: F068-DC-C1-R2-2
+        disposition: resolved
+        reason: Both format guides now name the shared top-level path and mark the manuscript path as deprecated compatibility input.
+        evidence: "sanitize found both changed format guides clean."
+    provisional_conditions: []
+    limitations:
+      - This is a same-context internal audit, not an independent review.
+      - W068 defines no user test; operator acceptance and closure remain separate.

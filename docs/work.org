@@ -111,6 +111,7 @@ classification; it is provenance, not current state.
 :CREATED: 2026-10-16
 :END:
 - Specification :: [[file:../tickets/064-config-override-warnings/spec.org][W064 - Manuscript YAML cascade load diagnostics]].
+- Audit :: [[file:../tickets/064-config-override-warnings/audits.yaml][Canonical audit record]].
 - Scope :: Report each external user YAML file loaded into the manuscript
   configuration cascade on stderr, preserving existing precedence and output.
 
@@ -154,6 +155,7 @@ classification; it is provenance, not current state.
 :CREATED: 2026-10-23
 :END:
 - Specification :: [[file:../tickets/068-shared-monospace-font/spec.org][W068 - Shared monospace typography]].
+- Audit :: [[file:../tickets/068-shared-monospace-font/audits.yaml][Canonical audit record]].
 - Scope :: Add top-level =folio.mono.font= configuration for every applicable command, preserve =folio.manuscript.mono.font= as a deprecated compatible path, and report migration guidance on stderr when the deprecated path is supplied.
 - Boundary :: This remains a separate configuration migration. Its PDF consumers use W067's application-wide geometric stretch contract.
 
@@ -208,6 +210,7 @@ classification; it is provenance, not current state.
 :END:
 - Specification :: [[file:../tickets/062-office-org-emphasis/spec.org][W062 - DOCX/ODT emphasis correction]].
 - Evidence :: [[file:../tickets/062-office-org-emphasis/validation.org][Native, rendered and regression checks]].
+- User validation 2026-11-02 :: UT062.1 passed by operator report and screenshot review. Closure remains a separate decision.
 
 ** REVIEW W061 - Independent frontmatter paragraph fonts :feature:
 :PROPERTIES:
@@ -224,6 +227,7 @@ classification; it is provenance, not current state.
 :END:
 - Specification :: [[file:../tickets/060-office-font-embedding/spec.org][W060 - Complete editable font embedding]].
 - Evidence :: [[file:../tickets/060-office-font-embedding/validation.org][Package, portability and preservation checks]].
+- User validation 2026-11-02 :: UT060.1 passed by operator report. Exact editor versions and tested artefact revisions were not reported. Closure remains a separate decision.
 
 ** REVIEW W059 - Restore the Homebrew release path :defect:
 :PROPERTIES:

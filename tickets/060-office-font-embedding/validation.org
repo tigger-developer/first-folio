@@ -69,12 +69,15 @@ us.docx, us.odt, british.docx and british.odt. The British DOCX font table inclu
 three Libertinus Sans faces and four Libertinus Serif faces. No missing-font
 diagnostic occurred in the final representative host conversions.
 
-* AMBER UT060.1 - Editing and save/reopen :testdef:
+* GREEN UT060.1 - Editing and save/reopen :testdef:
 :PROPERTIES:
-:REASON: Human editing, save/reopen and Microsoft Word validation have not been reported.
+:REVISION: Operator-tested installed build; exact revision not reported
+:EVIDENCE: Operator reported UT060.1 passed on 2026-11-02; exact editor versions and tested artefact revisions were not reported.
 :END:
-The one-off renders prove font availability in LibreOffice, not Word behaviour
-or preservation after an editor saves the files. No user acceptance is inferred.
+The prior AMBER state recorded that the one-off renders proved font availability
+in LibreOffice, but not Word behaviour or preservation after an editor saved the
+files. The operator subsequently reported this user test passed. Closure remains
+a separate decision and is not inferred.
 
 * Self-review
 Reviewed the exporter integration, complete resolver and packaging sources,
