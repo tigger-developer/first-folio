@@ -94,15 +94,17 @@ classification; it is provenance, not current state.
   from =convert=, =manuscript= and =letter=. Retain ordinary notes, retain every
   ODT note, and add =--preserve-footnotes= to keep all DOCX notes as footnotes.
 
-** DONE W071 - Normalize Org inline syntax and multi-paragraph footnotes :defect:
+** REVIEW W071 - Normalize Org inline syntax and multi-paragraph footnotes :defect:
 :PROPERTIES:
 :CUSTOM_ID: w-071
 :SOURCE: operator
 :CREATED: 2026-11-01
 :CLOSED: 2026-11-01
+:REOPENED: 2026-11-03
 :END:
 - Specification :: [[file:../tickets/071-org-inline-and-footnote-parsing/spec.org][W071 - Org inline syntax and multi-paragraph footnotes]].
 - Closure 2026-11-01 :: All defined ATs, RTs, OT071.1 and UT071.1 are GREEN. The operator explicitly accepted the ticket for closure after integration at =aacdcd3=. Product and format documentation were reconciled during delivery. No installation or release accompanies closure.
+- Emergency amendment 2026-11-03 :: The operator invoked =BYPASS-GATE-7= after a valid Org footnote containing separator and word-internal slashes produced malformed Typst. The shared delimiter boundary is corrected and automated plus local format evidence is current; UT071.1 is AMBER for the amended candidate.
 - Scope :: Normalize supported Org dashes, ellipses, soft hyphens and literal/code
   spans before rendering, and retain complete multi-paragraph Org footnotes across
   PDF, DOCX and ODT without leaking continuation paragraphs into body text.

@@ -24,6 +24,7 @@
 - Org =--=, =---=, =...= and =\-= become an en dash, em dash, ellipsis and soft hyphen respectively in rendered prose.
 - Org =~code~= and ==verbatim== remain monospaced literal content whose characters are *not typographically rewritten*.
 - A supported multi-paragraph definition remains *one structured footnote* with its paragraph order and inline formatting preserved.
+- Slash punctuation followed by whitespace and slashes inside words remain *literal*, while a boundary-delimited Org =/italic/= span remains emphasized.
 
 ** Changes
 
@@ -71,6 +72,7 @@ The supported Org subset has deterministic source semantics that all three rende
 - Org prose punctuation =--=, =---= and =...=, plus Org soft hyphen =\-=.
 - Org ==verbatim== and =~code~= spans in supported inline-content positions.
 - Multi-paragraph named Org footnote definitions and references.
+- Org emphasis boundaries in ordinary script text and footnote text, including literal separator and word-internal slashes.
 - PDF, DOCX and ODT output from =folio convert=, =folio manuscript= and =folio letter= wherever the command supports the applicable Org construct.
 - Org text emission where a structured footnote must be written back without losing its paragraphs.
 
@@ -148,6 +150,14 @@ The supported Org subset has deterministic source semantics that all three rende
 - Criterion :: Given Org headings, horizontal rules, source or example blocks, escapes and existing quote samples adjacent to the new cases, conversion *changes only supported prose constructs* and *retains current smart-quote behaviour*.
 - Proven by :: [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]] and [[#at-071-1][AT071.1 - Public command and format matrix]].
 
+** AC071.5 - Literal slashes remain text outside emphasis boundaries :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-071-5
+:END:
+
+- Criterion :: Given supported Org prose or footnote text containing a slash followed by whitespace or a slash inside a word, conversion *retains that slash literally*; boundary-delimited =/italic/= remains emphasized.
+- Proven by :: [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]], [[#ot-071-2][OT071.2 - Reported slash-bearing script converts across formats]] and [[#ut-071-1][UT071.1 - Representative documents remain readable and editable]].
+
 * Test Definitions
 :PROPERTIES:
 :CUSTOM_ID: test-definitions
@@ -158,11 +168,11 @@ The supported Org subset has deterministic source semantics that all three rende
 :CUSTOM_ID: rt-071-1
 :END:
 
-- Covers :: [[#ac-071-1][AC071.1 - Org special strings are consistent]], [[#ac-071-2][AC071.2 - Literal and code content is protected]] and [[#ac-071-4][AC071.4 - Structure and existing quote policy are preserved]].
+- Covers :: [[#ac-071-1][AC071.1 - Org special strings are consistent]], [[#ac-071-2][AC071.2 - Literal and code content is protected]], [[#ac-071-4][AC071.4 - Structure and existing quote policy are preserved]] and [[#ac-071-5][AC071.5 - Literal slashes remain text outside emphasis boundaries]].
 - Boundary :: Shared source parsing and each typed renderer adapter.
-- Setup :: A table-driven Org fixture places all four special strings in prose, emphasis and footnote text; repeats them inside ==verbatim==, =~code~=, source/example blocks and structural lines; and includes existing straight-quote cases.
+- Setup :: A table-driven Org fixture places all four special strings in prose, emphasis and footnote text; repeats them inside ==verbatim==, =~code~=, source/example blocks and structural lines; includes existing straight-quote cases; and places a whitespace-separated slash, =white/why=, =go/slow= and =/genuine emphasis/= in one footnote.
 - Action :: Parse the fixture and project its inline nodes through the Typst, DOCX and ODT adapters.
-- Expected :: Prose nodes contain the *intended Unicode characters*; literal/code nodes *retain exact enclosed bytes* and their semantic role; structural samples are not rewritten; quote results match the pre-change contract.
+- Expected :: Prose nodes contain the *intended Unicode characters*; literal/code nodes *retain exact enclosed bytes* and their semantic role; literal slashes remain text; genuine emphasis remains typed emphasis; structural samples are not rewritten; quote results match the pre-change contract.
 - Retention :: Persistent regression suite under =make test=.
 
 ** RT071.2 - Structured footnotes survive native serialization :testdef:
@@ -201,15 +211,27 @@ The supported Org subset has deterministic source semantics that all three rende
 - Bounds :: Six local documents, no network, private data, installation or retained temporary output.
 - Record :: Write the dated result to =validation.org=; do not add this check to automated regression, CI, build or scheduled execution.
 
+** OT071.2 - Reported slash-bearing script converts across formats :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-071-2
+:END:
+
+- Covers :: [[#ac-071-5][AC071.5 - Literal slashes remain text outside emphasis boundaries]].
+- Boundary :: The reported local Org script and candidate =folio convert= executable.
+- Procedure :: Convert the script to PDF, DOCX and ODT in one operating-system temporary directory; extract the affected note text from PDF and inspect native DOCX/ODT package content.
+- Expected :: All three conversions succeed; the separator slash, =white/why= and =go/slow= remain literal in the complete note; no generated Typst delimiter error occurs.
+- Bounds :: Three local conversions, no network, installation, source modification or retained project output.
+- Record :: Write the dated result to =validation.org=; do not add the private source document to automated tests or project artefacts.
+
 ** UT071.1 - Representative documents remain readable and editable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-071-1
 :END:
 
-- Covers :: [[#ac-071-2][AC071.2 - Literal and code content is protected]] and [[#ac-071-3][AC071.3 - Multi-paragraph footnotes retain structure]].
+- Covers :: [[#ac-071-2][AC071.2 - Literal and code content is protected]], [[#ac-071-3][AC071.3 - Multi-paragraph footnotes retain structure]] and [[#ac-071-5][AC071.5 - Literal slashes remain text outside emphasis boundaries]].
 - Validation method :: User validation.
-- Procedure :: Open representative PDF, DOCX and ODT outputs in the normal readers or editors; inspect prose punctuation, literal/code styling and the complete multi-paragraph footnote; edit and save the office documents.
-- Expected :: The intended characters and monospaced spans are visible, all note paragraphs remain within one footnote, body text contains no displaced note text, and DOCX/ODT remain editable after save and reopen.
+- Procedure :: Open representative PDF, DOCX and ODT outputs in the normal readers or editors; inspect prose punctuation, literal slash text, genuine emphasis, literal/code styling and the complete multi-paragraph footnote; edit and save the office documents.
+- Expected :: The intended characters, literal slashes, genuine emphasis and monospaced spans are visible, all note paragraphs remain within one footnote, body text contains no displaced note text, and DOCX/ODT remain editable after save and reopen.
 - Record :: Write the dated result to =validation.org=.
 
 * Edge Cases
@@ -228,6 +250,12 @@ The supported Org subset has deterministic source semantics that all three rende
 - Condition :: A punctuation sequence occurs inside a literal/code span, source/example block, horizontal rule or other recognized structure.
 - Required behaviour :: It is not treated as prose typography.
 - Covered by :: [[#ac-071-2][AC071.2 - Literal and code content is protected]], [[#ac-071-4][AC071.4 - Structure and existing quote policy are preserved]] and [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]].
+
+** Slash lookalikes
+
+- Condition :: A slash is followed by whitespace or appears after a letter, digit or slash inside ordinary Org text.
+- Required behaviour :: It remains literal text and does not open an emphasis span; a valid boundary-delimited =/italic/= span remains emphasis.
+- Covered by :: [[#ac-071-5][AC071.5 - Literal slashes remain text outside emphasis boundaries]] and [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]].
 
 * Solution Design
 :PROPERTIES:
@@ -269,6 +297,7 @@ The supported Org subset has deterministic source semantics that all three rende
 
 - Special-string matching is longest first: =---= before =--=, with =...= and =\-= recognized only in prose text nodes.
 - Literal/code contents bypass special-string and smart-quote transforms.
+- Org opening delimiters use the same boundary check in script and prose parsing: an opener cannot follow a letter, digit or slash, and its content cannot begin with whitespace.
 - The footnote collector ends on the next definition, headline, two consecutive blank lines or end of input; a single blank line creates another paragraph in the same body.
 
 *** Interfaces and configuration
@@ -284,6 +313,7 @@ The supported Org subset has deterministic source semantics that all three rende
 *** Failure behaviour
 
 - Existing size, nesting and expansion errors remain deterministic. Malformed or unsupported Org remains literal or follows the currently documented rejection policy; it is not silently reclassified as a different structure.
+- Literal slash punctuation is valid Org input and remains text rather than being reported as a source error.
 
 *** Simplicity and proportionality
 
@@ -361,3 +391,11 @@ The supported Org subset has deterministic source semantics that all three rende
 - Evidence :: RT071.1, RT071.2 and AT071.1 passed at =d16af962ec6c5989547795ede46ee18c011cfa2f=; OT071.1 passed the bounded six-document render comparison; =go vet ./...= passed.
 - Boundary :: [[#ut-071-1][UT071.1 - Existing Org sources remain semantically stable]] remains AMBER for the planned operator session. No merge, installation or deployment is authorized by this evidence.
 - Cumulative assessment :: Delivery-code self-review is PASS with no findings; repository-wide tests retain unrelated default-font expectation failures recorded as a limitation.
+
+* Emergency amendment - 2026-11-03
+
+- Authority :: =BYPASS-GATE-7= authorized correction of a valid Org footnote whose literal slashes produced malformed Typst and an =unclosed delimiter= compiler diagnostic.
+- Actual change :: The shared Org inline parser applies its opening-boundary rule to script parsing and rejects an opening delimiter whose content begins with whitespace.
+- Compatibility :: Slash separators and word-internal slashes remain literal; valid =/italic/= spans retain emphasis; Markdown and Fountain parsing are unchanged.
+- Verification :: [[#rt-071-1][RT071.1 - Org inline semantics are parsed once]] records the synthetic regression boundary. [[#ot-071-2][OT071.2 - Reported slash-bearing script converts across formats]] records the reported PDF, DOCX and ODT workflow. [[#ut-071-1][UT071.1 - Representative documents remain readable and editable]] requires renewed operator validation for the amended candidate.
+- Architecture and security :: The existing shared semantic parser remains the owner; no dependency, state, access or trust boundary changes.

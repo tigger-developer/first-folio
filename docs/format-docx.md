@@ -1,7 +1,7 @@
 ---
 title: DOCX Script Export
-version: "1.12"
-last-updated: 2026-11-01
+version: "1.14"
+last-updated: 2026-11-03
 ---
 
 # DOCX script export
@@ -40,6 +40,8 @@ is italic; Markdown and Fountain retain `**bold**` and `*italic*`. Org
 `+deleted+` and Markdown `~~deleted~~` use native strikethrough. These rules also
 apply inside footnotes. Markdown single tildes remain literal. Existing
 `**bold**`, `***bold italic***`, underline and literal-code handling remain supported.
+Org separator slashes and word-internal forms such as `white/why` remain literal
+unless they form a valid boundary-delimited emphasis span.
 Org prose also converts `--`, `---`, `...` and `\-` to an en dash, em dash,
 ellipsis and discretionary soft hyphen. `=verbatim=` and `~code~` contents are
 not transformed. Blank-separated Org footnote paragraphs remain separate
@@ -150,6 +152,7 @@ the product ODT route. The native DOCX writer serves scripts, manuscripts and le
 
 ## History
 
+- 1.14 (2026-11-03): Preserve separator and word-internal slashes outside valid Org emphasis boundaries.
 - 1.13 (2026-11-02): Span attributed-note comments across the complete source sentence or line preceding the footnote reference.
 - 1.12 (2026-11-01): Add structured Org notes, exact attributed-note comment conversion and `--preserve-footnotes` across all DOCX commands.
 - 1.11 (2026-10-25): Add native Org and Markdown strikethrough to script runs and footnotes.

@@ -1,7 +1,7 @@
 ---
 title: Org-mode Play Format
-version: "0.12"
-last-updated: "2026-11-01"
+version: "0.13"
+last-updated: "2026-11-03"
 ---
 
 # Org-mode Play Format
@@ -63,7 +63,7 @@ Level-3 headings represent stage directions (also called action text or narrativ
 *** JACK enters through the French windows.
 ```
 
-Org-mode inline markup is retained in event text and interpreted by the source-aware PDF, DOCX and ODT renderers: `*bold*` becomes bold, `/italic/` becomes italic and `+deleted+` becomes strikethrough, including in footnotes. In prose, `--` becomes an en dash, `---` an em dash, `...` an ellipsis and `\-` a discretionary soft hyphen. The contents of `=verbatim=` and `~code~` spans remain literal, including those character sequences. Smart-quote policy is unchanged. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
+Org-mode inline markup is retained in event text and interpreted by the source-aware PDF, DOCX and ODT renderers: `*bold*` becomes bold, `/italic/` becomes italic and `+deleted+` becomes strikethrough, including in footnotes. An opening emphasis marker cannot follow a letter, digit or slash, and its content cannot begin with whitespace. Separator slashes and word-internal forms such as `white/why` therefore remain literal text. In prose, `--` becomes an en dash, `---` an em dash, `...` an ellipsis and `\-` a discretionary soft hyphen. The contents of `=verbatim=` and `~code~` spans remain literal, including those character sequences. Smart-quote policy is unchanged. Text-format emitters do not translate every inline marker between Org, Markdown, and Fountain, so inline emphasis is not guaranteed to retain identical semantics across a text-format round trip.
 
 ### Characters (H4)
 
@@ -210,6 +210,7 @@ Just boiled.
 
 ## Revision History
 
+- 0.13 (2026-11-03): Preserve separator and word-internal slashes outside valid Org emphasis boundaries.
 - 0.12 (2026-11-01): Define Org special strings, protected literal spans and structured multi-paragraph footnotes.
 - 0.11 (2026-10-25): Render Org plus-delimited strikethrough in PDF, DOCX and ODT scripts.
 - 0.10 (2026-10-24): Define scene introductory paragraphs and their rendered visibility boundary.

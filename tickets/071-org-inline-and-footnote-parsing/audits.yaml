@@ -132,3 +132,43 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "UT071.1 remains AMBER and no merge, installation or deployment was performed."
       - "The repository-wide test command still reports unrelated default-font expectation failures outside the changed configuration and rendering paths."
+  - id: delivery-code-c1-r2
+    timestamp: "2026-11-03T01:53:24Z"
+    profile: emergency
+    gate: delivery-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "9dfa767cc5caaa6c4846654bf226d473816c8e8f"
+      delta: "sha256:f5471f695753f23dd5639c098ecfc8f95225e2332e3528f64d24824ff50d1dbe"
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: FAIL
+    criteria:
+      - "W071 emergency amendment, REVIEW.md delivery-code criteria and SELF-AUDIT.md as deployed on 2026-11-03"
+      - "ARCHITECTURE.md, CODING.md, TESTING.md, SECURITY.md, DOCUMENTATION.md, ORGMODE.md, ORG-SCHEMA.md, GIT.md and GO.md as deployed on 2026-11-03"
+      - "Project architecture and Org, DOCX and ODT format authorities at the reviewed candidate"
+    evidence:
+      - "RT071.1 first reproduced mismatched Typst underscores against 4f042f4255da2877e71baf77fdfb756e8e6c8cbb plus the test-only change, then passed at 9dfa767cc5caaa6c4846654bf226d473816c8e8f"
+      - "AT071.1, RT071.2, lint, go vet and make vulncheck passed for the candidate"
+      - "OT071.2 converted the reported source to PDF, DOCX and ODT and preserved the separator slash, white/why and go/slow"
+      - "sdlc-validate delivery-code readiness passed with 5 ACs, 1 AT, 2 RTs and 2 OTs GREEN and 1 UT AMBER"
+      - "make test completed with failures in existing font-default assertions expecting Libertinus Serif where current presets emit Libertinus Sans"
+    findings:
+      - id: F1
+        severity: blocking
+        location: "repository-wide make test"
+        requirement: "TESTING.md complete-suite contract and REVIEW.md delivery-code requirement for finished passing checks"
+        evidence: "The complete suite fails in existing application, configuration and manuscript font tests because their Libertinus Serif expectations disagree with the current Libertinus Sans preset. The changed source package and all W071-focused tests pass."
+        required_correction: "Reconcile the font-default test expectations with their current product authority under separate authorized scope, rerun make test, and reassess the W071 delivery candidate."
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The blocking suite failures are outside the bounded slash-parser emergency and were not modified."
+      - "UT071.1 remains AMBER for operator inspection of regenerated PDF, DOCX and ODT output."

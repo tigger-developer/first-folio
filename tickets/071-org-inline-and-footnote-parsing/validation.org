@@ -19,54 +19,59 @@
 ** GREEN AT071.1 - Public command and format matrix :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-071-1-result
-:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
+:REVISION: 9dfa767cc5caaa6c4846654bf226d473816c8e8f
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT071_1_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, the nine-case matrix failed at the intended parser, literal and note boundaries. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, the built convert, manuscript and letter commands passed for PDF, DOCX and ODT: punctuation and protected code were exact, and every applicable note retained its three ordered paragraphs without body leakage.
+:EVIDENCE: On 2026-11-03, the unchanged nine-case built-command matrix passed at 9dfa767cc5caaa6c4846654bf226d473816c8e8f for convert, manuscript and letter PDF, DOCX and ODT output. The 2026-11-01 tests-first and implementation evidence remains recorded below.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-1][AC071.1]], [[file:spec.org::#ac-071-2][AC071.2]], [[file:spec.org::#ac-071-3][AC071.3]] and [[file:spec.org::#ac-071-4][AC071.4]].
 - Runs :: 2026-11-01: intended RED at the committed tests-first candidate.
 - Runs :: 2026-11-01: GREEN at the implementation candidate across all nine public command/format cases.
+- Runs :: 2026-11-03: GREEN across the same nine public command/format cases for the emergency amendment.
 
 * Automated regression
 
 ** GREEN RT071.1 - Org inline semantics are parsed once :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-071-1-result
-:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
+:REVISION: 9dfa767cc5caaa6c4846654bf226d473816c8e8f
 :COMMAND: go test ./internal/source ./internal/app ./internal/letter -run '^TestRT071_1_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 25adcda088a097cce19569e861f37917d53f7206, prose, script, letter and Typst projections failed the new soft-hyphen, special-string and tilde-code cases while existing protected constructs remained intact. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, all three semantic consumers and both Typst projections passed, including literal contents, source blocks, backslash paths and the unchanged quote policy.
+:EVIDENCE: On 2026-11-03, the added slash-boundary case first failed against 4f042f4255da2877e71baf77fdfb756e8e6c8cbb plus the test-only working-tree change: literal separator and word-internal slashes became mismatched Typst underscores. At 9dfa767cc5caaa6c4846654bf226d473816c8e8f, all RT071.1 source, application and letter cases passed; the new case preserved all literal slashes and retained genuine emphasis.
 :END:
 
-- Criterion :: [[file:spec.org::#ac-071-1][AC071.1]], [[file:spec.org::#ac-071-2][AC071.2]] and [[file:spec.org::#ac-071-4][AC071.4]].
+- Criterion :: [[file:spec.org::#ac-071-1][AC071.1]], [[file:spec.org::#ac-071-2][AC071.2]], [[file:spec.org::#ac-071-4][AC071.4]] and [[file:spec.org::#ac-071-5][AC071.5]].
 - Runs :: 2026-11-01: intended RED at the shared semantic boundary.
 - Runs :: 2026-11-01: GREEN at the shared semantic and Typst projection boundaries.
+- Runs :: 2026-11-03: intended RED for literal slash boundaries, then GREEN after the shared opener-boundary correction.
 
 ** GREEN RT071.2 - Structured footnotes survive native serialization :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-071-2-result
-:REVISION: d16af962ec6c5989547795ede46ee18c011cfa2f
+:REVISION: 9dfa767cc5caaa6c4846654bf226d473816c8e8f
 :COMMAND: go test ./internal/play ./internal/app -run '^TestRT071_2_' -count=1 -timeout=10m
-:EVIDENCE: At tests-first revision 120875ff382bdf54d4f6377faf2133e1dfc35459, the parser stored no structured paragraphs and DOCX/ODT displaced continuation text. At revision d16af962ec6c5989547795ede46ee18c011cfa2f, parsing, Org round-trip, all three termination boundaries and native DOCX/ODT serialization passed with three ordered paragraphs and preserved following content.
+:EVIDENCE: On 2026-11-03, structured parsing, Org round-trip, all three termination boundaries and native DOCX/ODT serialization remained GREEN at 9dfa767cc5caaa6c4846654bf226d473816c8e8f with three ordered paragraphs and preserved following content. The original tests-first evidence remains recorded below.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-071-3][AC071.3]].
 - Runs :: 2026-11-01: intended RED through semantic round-trip and native office packages.
 - Runs :: 2026-11-01: GREEN through semantic round-trip and both native office packages.
+- Runs :: 2026-11-03: GREEN for the emergency amendment candidate.
 
 * User tests
 
-** GREEN UT071.1 - Representative documents remain readable and editable :testdef:
+** AMBER UT071.1 - Representative documents remain readable and editable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-071-1-result
-:REVISION: d659d6853c493d93640baba07ea78c26715f4850
-:EVIDENCE: On 2026-11-01, operator user validation reported every defined UT071.1 outcome PASS for the integrated candidate.
+:REASON: The 2026-11-01 user validation remains historical evidence for the earlier integrated candidate; the 2026-11-03 slash-boundary amendment requires operator inspection of regenerated PDF, DOCX and ODT output.
 :END:
 
-- Criterion :: [[file:spec.org::#ac-071-2][AC071.2]] and [[file:spec.org::#ac-071-3][AC071.3]].
+- Criterion :: [[file:spec.org::#ac-071-2][AC071.2]], [[file:spec.org::#ac-071-3][AC071.3]] and [[file:spec.org::#ac-071-5][AC071.5]].
 - Method :: User validation.
 - Prior state :: AMBER while human inspection, editing, save and reopen were deferred until the implementation candidate and representative outputs were ready.
 - Runs :: 2026-11-01: operator reported PASS for all defined user tests.
+- Prior GREEN candidate :: =d659d6853c493d93640baba07ea78c26715f4850=.
+- Prior GREEN evidence :: On 2026-11-01, operator user validation reported every defined UT071.1 outcome PASS for the integrated candidate.
+- Current run :: 2026-11-03: AMBER pending user validation of the amended candidate.
 
 * One-off tests
 
@@ -80,3 +85,14 @@
 
 - Criterion :: [[file:spec.org::#ac-071-1][AC071.1]].
 - Boundary :: Six local synthetic documents; no network, private data or installation.
+- Current applicability :: The 2026-11-03 change affects Org delimiter opening only, not soft-hyphen recognition or rendering; the recorded OT071.1 result remains applicable.
+
+** GREEN OT071.2 - Reported slash-bearing script converts across formats :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-071-2-result
+:REVISION: 9dfa767cc5caaa6c4846654bf226d473816c8e8f
+:EVIDENCE: On 2026-11-03, the candidate converted the reported Org script to PDF, DOCX and ODT in one operating-system temporary directory. PDF extraction plus native DOCX and ODT package inspection retained the separator slash, white/why and go/slow in the complete note. All three conversions succeeded without a Typst delimiter error; the source and installed binary were unchanged.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-071-5][AC071.5]].
+- Boundary :: Three local conversions of the reported source; no network, installation, source modification or retained project output.
