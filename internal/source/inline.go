@@ -214,9 +214,15 @@ func (p *parser) inline(text string, depth int) ([]Node, error) {
 			if !strings.HasPrefix(text[i:], d.mark) || i+len(d.mark) >= len(text) {
 				continue
 			}
-			if p.format == "org" && !p.script && i > 0 {
-				r, _ := utf8.DecodeLastRuneInString(text[:i])
-				if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '/' {
+			if p.format == "org" {
+				if i > 0 {
+					r, _ := utf8.DecodeLastRuneInString(text[:i])
+					if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '/' {
+						continue
+					}
+				}
+				r, _ := utf8.DecodeRuneInString(text[i+len(d.mark):])
+				if unicode.IsSpace(r) {
 					continue
 				}
 			}

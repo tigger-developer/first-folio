@@ -52,3 +52,31 @@ func TestRT071_1_OrgInlineSemanticsAreParsedOnce(t *testing.T) {
 		t.Fatalf("source block typography changed: %s", raw)
 	}
 }
+
+func TestRT071_1_OrgSlashBoundariesRemainLiteral(t *testing.T) {
+	notes := map[string][]string{
+		"wine-pattern": {`[Editor] wrote: The "white or the house wine" / "your house or mine" misunderstanding did not work. The intervening "white/why" and "go/slow" exchanges are cut. Keep /genuine emphasis/.`},
+	}
+	nodes, err := ScriptInline("org", "Red or white?[fn:wine-pattern]", notes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := TypstInline(nodes, notes, "org")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, want := range []string{
+		`"white or the house wine" / "your house or mine"`,
+		`"white/why"`,
+		`"go/slow"`,
+		`Keep _genuine emphasis_.`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("Typst output %q does not contain %q", got, want)
+		}
+	}
+	if strings.Contains(got, `wine" _ "your`) || strings.Contains(got, `white_why`) {
+		t.Errorf("literal Org slashes became mismatched Typst emphasis: %q", got)
+	}
+}
