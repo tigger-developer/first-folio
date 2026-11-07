@@ -416,6 +416,41 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "The visual user test remains AMBER for operator review."
       - "W074 DOCX and W075 ODT rendering remain out of scope."
+  - id: delivery-code-c1-r5
+    timestamp: "2026-11-07T22:19:38Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 5
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "215fa8ef2fe1d126b4f2e4d31e9fde37de6fe524"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Approved W073 PDF-only requirements, solution design and amended AC073.17 anchored bottom metadata row"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORG-SCHEMA.md, GO.md, REVIEW.md and SELF-AUDIT.md as deployed on 2026-11-07"
+      - "Delivery-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "The implementation validates folio.title-page.author.position, preserves group as the compatibility default and renders bottom-center in a fixed three-column row with date and version. Dodge padding does not move the row; a collision reports the lower layout error before publication."
+      - "Self-review identified missing behavioural coverage for the distinct overlay template branch. Commit e81826b added the overlay case alongside dodge and no-cover cases; the focused RT073 command and aggregate make test passed."
+      - "Self-review also identified two stale design sentences that still grouped date and version with movable dodge metadata. Commit 215fa8e reconciles the solution design and validation record with the anchored-row implementation."
+      - "At e81826b, make test passed with internal/app completing in 415.777s and every remaining package passing or validly cached; make lint passed; make vulncheck reported no vulnerabilities; git diff --check passed."
+      - "The exact i-speak-vladimir.org source and corrected local script.yaml produced a 26-page A4 PDF through a temporary repository build; extracted page-one text placed date left, prefixed author centre and version right on the same bottom row. The installed dist/folio target was not replaced."
+      - "The installed validator reported schema valid and delivery-code ready with three ATs GREEN, three RTs GREEN and UT073.1 AMBER."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT073.1 - Script title images are visually acceptable remains AMBER for operator inspection; the operator observed that the corrected example looked much better but did not close the complete visual test."
+      - "W074 DOCX and W075 ODT cover-image rendering remain out of scope and configured covers are rejected there."
   - id: delivery-code-c1-r3
     timestamp: "2026-11-07T21:08:49Z"
     profile: SDLC
