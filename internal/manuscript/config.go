@@ -370,6 +370,11 @@ func loadConfigWithSource(sourceDir string, opts Options, source map[string]any)
 	if err != nil {
 		return Config{}, err
 	}
+	if _, enabled, err := merged.CoverImage(); err != nil {
+		return Config{}, err
+	} else if enabled {
+		return Config{}, fmt.Errorf("folio.cover-image is not supported by folio manuscript")
+	}
 	var cfg Config
 	if err := merged.Decode(&cfg); err != nil {
 		return Config{}, err

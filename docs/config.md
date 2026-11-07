@@ -160,6 +160,67 @@ The script follows on the same page, without a forced title-page break or a brea
 
 This switch applies to `folio convert` script PDF/Typst output, including British, US and screenplay styles. It does not change text-format conversion or letters. Manuscripts retain their independent `folio.manuscript.title-page.enabled` setting; disabling a manuscript title page does not create this compact script block.
 
+#### Script PDF cover images (`folio.cover-image`)
+
+`folio.cover-image` defines a reusable cover asset, but the current consumer is
+only a dedicated script title page produced by `folio convert` to PDF. The path
+is resolved relative to the source document, independently of the working
+directory or the YAML file location. PNG and JPEG inputs are supported.
+
+```yaml
+folio:
+  cover-image:
+    path: artwork/cover.jpg
+    mode: inset             # background | inset
+    placement: overlay      # overlay | dodge
+    size: 80mm              # required for inset; longest axis
+    image:
+      treatment: light      # light = white backing; dark = black backing
+      opacity: 100%
+    superscale: null        # null | default | "2x" | "4x" | "8x"
+    overlay:
+      blur: 0mm
+      wash:
+        treatment: dark     # light = white wash; dark = black wash
+        opacity: 30%
+      padding: 1em          # one em or mm value on every side
+```
+
+| Key | Values and behaviour |
+|---|---|
+| `path` | Required non-empty local PNG/JPEG path. Absence selects the unchanged no-cover route. |
+| `mode` | Required `background` or `inset`. Background proportionally covers and centre-crops the A4 title page. |
+| `placement` | `overlay` by default, or `dodge` for inset images only. |
+| `size` | Positive `mm` length required for inset and forbidden for background. It sets the longest rendered axis. |
+| `image.treatment` | `light` or `dark`; selects the white or black backing used with `image.opacity`. |
+| `image.opacity` | `0%` through `100%`; defaults to `100%`. |
+| `superscale` | `null`, `default`, `2x`, `4x` or `8x`; defaults to `null`. |
+| `overlay.blur` | Non-negative physical blur radius in `mm`; defaults to `0mm`. |
+| `overlay.wash.treatment` | `light` or `dark`; selects a white or black wash independently of image treatment. |
+| `overlay.wash.opacity` | `0%` through `100%`; defaults to `0%`. |
+| `overlay.padding` | One non-negative `em` or `mm` length applied on all four sides; defaults to `0em`. |
+
+Overlay retains the configured title-page positioning and keeps title metadata
+as live PDF text. Blur and wash are restricted to the populated title,
+date and version regions. Dodge physically centres an inset and places the
+title/subtitle/author group above it and the date/version group below it;
+`center` and `third` are interpreted within those available regions. A region
+that cannot fit is reported by name before the target is replaced.
+
+The `cover-image` block rejects unknown nested keys and invalid combinations.
+It is incompatible with compact script title mode, standalone Typst, DOCX,
+ODT, manuscript and letter output in this release. Original source images are
+limited to 100 MiB, 32,768 pixels on either axis and 100,000,000 pixels in
+total before decode.
+
+When `superscale` is non-null, First Folio invokes `superscale` directly from
+the inherited `PATH`, disables face enhancement and keeps the configured
+physical geometry. `default` leaves the utility's scale unspecified; explicit
+values pass scale 2, 4 or 8. A missing command, non-zero exit or unusable output
+emits one warning and falls back to the original image. First Folio applies no
+process timeout or diagnostic-output ceiling to this trusted local utility and
+removes its temporary output directory after conversion.
+
 #### Script title/first-page running matter
 
 `folio.title-page.skip-header` and `folio.title-page.skip-footer` both default to `true`. They suppress only the corresponding running header or footer on the first physical page:
@@ -804,6 +865,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.38 (2026-11-07): Define the strict `folio.cover-image` contract for dedicated script PDF title pages.
 
 - 0.37 (2026-10-24): Apply rendered frontmatter visibility to direct scene introductory paragraphs while retaining them in semantic text conversions.
 - 0.36 (2026-10-24): Promote monospace typography to shared `folio.mono.font`, retain the manuscript path with a deprecation warning, and apply geometric PDF stretch to every script, letter and manuscript font role.

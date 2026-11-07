@@ -59,6 +59,11 @@ func runLetter(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
+	if _, enabled, err := cfg.CoverImage(); err != nil {
+		return err
+	} else if enabled {
+		return fmt.Errorf("folio.cover-image is not supported by folio letter")
+	}
 	for _, warning := range cfg.Warnings() {
 		if _, err := fmt.Fprintln(stderr, "Warning:", warning); err != nil {
 			return err

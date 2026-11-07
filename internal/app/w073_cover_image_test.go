@@ -543,7 +543,7 @@ func decodeW073PNG(t *testing.T, path string) image.Image {
 
 func w073ColourBounds(img image.Image) (image.Rectangle, bool) {
 	bounds := img.Bounds()
-	box := image.Rect(bounds.Max.X, bounds.Max.Y, bounds.Min.X, bounds.Min.Y)
+	box := image.Rectangle{Min: image.Pt(bounds.Max.X, bounds.Max.Y), Max: image.Pt(bounds.Min.X, bounds.Min.Y)}
 	found := false
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {

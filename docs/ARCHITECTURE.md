@@ -153,6 +153,19 @@ Templates own page composition. Product Go code does not contain generated-langu
 
 Script title composition uses one shared title block for a dedicated title page or a compact heading above first-page content. `folio.title-page.enabled` selects between them; manuscript title-page settings remain independent. Script-only Boolean validation covers this switch and `skip-header`/`skip-footer`. Running-matter suppression uses the physical page counter and applies to the dedicated title page or compact page 1, without resetting numbering or removing title metadata. The renderer suppresses only the first act's explicit break in compact mode; later act breaks and natural pagination remain. See [script title configuration](config.md#compact-script-title-block) for defaults and untitled-script handling.
 
+The renderer-neutral `folio.cover-image` model is validated by the shared
+configuration loader, while W073 adopts it only in the dedicated script PDF
+route. `internal/app` resolves assets from the source document, validates PNG
+or JPEG headers and bounded source dimensions, optionally invokes Superscale
+with literal arguments, and prepares normalized and blurred temporary PNGs.
+The script Typst template owns background cover-crop, inset geometry, localized
+overlay regions and dodge composition. Title metadata remains live text.
+Preparation and layout complete before a PDF is atomically renamed into place;
+warnings fall back to the original image, while invalid configuration, assets
+or measured dodge regions leave the target unchanged. Standalone Typst, DOCX,
+ODT, compact script titles, manuscripts and letters reject configured covers
+until their own adoption tickets are delivered.
+
 Script, letter and manuscript Typst templates apply every configured font stretch
 as geometric horizontal scaling from a normal-width face. Explicit role wrappers
 preserve baselines and word-level reflow, and role state prevents an enclosing
@@ -177,6 +190,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.23 (2026-11-07): Add the renderer-neutral cover-image plan and its dedicated script PDF adoption boundary.
 
 - 0.22 (2026-10-24): Add scene-introduction semantics and target-scoped rendered frontmatter filtering.
 - 0.21 (2026-10-24): Share monospace typography across modes and define geometric stretch as the application-wide PDF contract.

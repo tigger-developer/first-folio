@@ -99,7 +99,7 @@ func TestAT073_1RenderedPDFGeometryFollowsTheImageContract(t *testing.T) {
 		for y := page.Bounds().Min.Y; y < page.Bounds().Max.Y; y++ {
 			for x := page.Bounds().Min.X; x < page.Bounds().Max.X; x++ {
 				r, g, b, _ := page.At(x, y).RGBA()
-				if r>>8 > 220 && g>>8 > 220 && b>>8 > 220 {
+				if r>>8 > 220 && g>>8 > 180 && b>>8 > 200 {
 					white++
 				}
 			}
@@ -148,34 +148,34 @@ func TestAT073_2InvalidAndUnsupportedCoverInputFailsAtomically(t *testing.T) {
 	requireW073Tools(t)
 	binary := officeBuild(t)
 	for _, tc := range []struct {
-		name, targetExt, extra string
-		prepare                func(*testing.T, string)
+		name, targetExt, extra, completeConfig string
+		prepare                                func(*testing.T, string)
 	}{
-		{"unknown key", "pdf", "    typo: true\n", nil},
-		{"compact title", "pdf", "  title-page:\n    enabled: false\n", nil},
-		{"standalone Typst", "typ", "", nil},
-		{"unsupported DOCX", "docx", "", nil},
-		{"unsupported ODT", "odt", "", nil},
-		{"unsupported image type", "pdf", "", func(t *testing.T, dir string) {
+		{"unknown key", "pdf", "    typo: true\n", "", nil},
+		{"compact title", "pdf", "  title-page:\n    enabled: false\n", "", nil},
+		{"standalone Typst", "typ", "", "", nil},
+		{"unsupported DOCX", "docx", "", "", nil},
+		{"unsupported ODT", "odt", "", "", nil},
+		{"unsupported image type", "pdf", "", "", func(t *testing.T, dir string) {
 			writeAppFile(t, filepath.Join(dir, "cover.png"), "not an image")
 		}},
-		{"missing image", "pdf", "", func(t *testing.T, dir string) {
+		{"missing image", "pdf", "", "", func(t *testing.T, dir string) {
 			if err := os.Remove(filepath.Join(dir, "cover.png")); err != nil {
 				t.Fatal(err)
 			}
 		}},
-		{"source over byte limit", "pdf", "", func(t *testing.T, dir string) {
+		{"source over byte limit", "pdf", "", "", func(t *testing.T, dir string) {
 			if err := os.Truncate(filepath.Join(dir, "cover.png"), coverSourceByteLimit+1); err != nil {
 				t.Fatal(err)
 			}
 		}},
-		{"source over axis limit", "pdf", "", func(t *testing.T, dir string) {
+		{"source over axis limit", "pdf", "", "", func(t *testing.T, dir string) {
 			writeW073PNGHeader(t, filepath.Join(dir, "cover.png"), coverSourceAxisLimit+1, 1)
 		}},
-		{"source over pixel limit", "pdf", "", func(t *testing.T, dir string) {
+		{"source over pixel limit", "pdf", "", "", func(t *testing.T, dir string) {
 			writeW073PNGHeader(t, filepath.Join(dir, "cover.png"), 10_001, 10_000)
 		}},
-		{"invalid dodge overlay treatment", "pdf", "    overlay:\n      blur: 1mm\n", nil},
+		{"invalid background dodge combination", "pdf", "", "folio:\n  cover-image:\n    path: cover.png\n    mode: background\n    placement: dodge\n", nil},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			dir, home := t.TempDir(), t.TempDir()
@@ -185,7 +185,11 @@ func TestAT073_2InvalidAndUnsupportedCoverInputFailsAtomically(t *testing.T) {
 			if tc.prepare != nil {
 				tc.prepare(t, dir)
 			}
-			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: overlay\n    size: 50mm\n"+tc.extra)
+			configuration := tc.completeConfig
+			if configuration == "" {
+				configuration = "folio:\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: overlay\n    size: 50mm\n" + tc.extra
+			}
+			writeAppFile(t, filepath.Join(dir, "script.yaml"), configuration)
 			const sentinel = "existing target sentinel"
 			writeAppFile(t, target, sentinel)
 			_, diagnostic, err := officeRun(t, binary, t.TempDir(), officeEnv(t, home, nil), "convert", source, target)

@@ -180,6 +180,15 @@ Running headers and footers for scripts and manuscripts use `folio.page-header` 
 
 For page-limited script submissions, set `folio.title-page.enabled: false` to place the title-page items above the script on its first content page instead of using a separate title page. `folio.title-page.skip-header` and `skip-footer` default to `true`, hiding running matter on that first page while retaining it on later pages. Set either to `false` to allow its enabled shared role on page 1. Manuscript title-page settings remain independent. See [compact script titles and first-page running matter](docs/config.md#compact-script-title-block).
 
+Dedicated script PDF title pages can use a source-relative PNG or JPEG through
+`folio.cover-image`. Background images proportionally cover and centre-crop the
+page; insets use a configured longest-axis size and support live title text as
+an overlay or in bounded regions above and below the image. Optional image
+treatment, localized blur, wash, padding and Superscale preprocessing are
+documented under [script PDF cover images](docs/config.md#script-pdf-cover-images-foliocover-image).
+DOCX, ODT, standalone Typst, compact script titles, manuscripts and letters
+reject this configuration until their separate format work is delivered.
+
 ## Project Structure
 
 | Path | Purpose |
@@ -246,6 +255,8 @@ make vulncheck # Go dependency and reachable-code vulnerability gate
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.14 (2026-11-07): Document source-relative cover images for dedicated script PDF title pages and the deferred output formats.
 
 - 1.13 (2026-10-24): Document shared monospace typography and application-wide geometric PDF stretch.
 

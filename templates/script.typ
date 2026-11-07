@@ -100,9 +100,9 @@
   let pg = counter(page).get().first()
   let first-body = state("folio-script-body-page", 0).final()
   let is-body = first-body > 0 and pg >= first-body
-  {{if and .TitleSkipHeader (or (not .TitlePageEnabled) .HasTitle)}}if pg != 1 { {{end}}
+  {{if and .TitleSkipHeader (or (not .TitlePageEnabled) .HasTitle .Cover)}}if pg != 1 { {{end}}
   align({{.RunningHeader.Align}})[#text({{.RunningHeader.Font.Args}})[#folio-font-stretch({{.RunningHeader.Font.Stretch}})[{{.RunningHeader.Format}}]]]
-  {{if and .TitleSkipHeader (or (not .TitlePageEnabled) .HasTitle)}}}{{end}}
+  {{if and .TitleSkipHeader (or (not .TitlePageEnabled) .HasTitle .Cover)}}}{{end}}
 }
 {{end}}
 {{if .RunningFooter.Enabled}}
@@ -110,15 +110,17 @@
   let pg = counter(page).get().first()
   let first-body = state("folio-script-body-page", 0).final()
   let is-body = first-body > 0 and pg >= first-body
-  {{if and .TitleSkipFooter (or (not .TitlePageEnabled) .HasTitle)}}if pg != 1 { {{end}}
+  {{if and .TitleSkipFooter (or (not .TitlePageEnabled) .HasTitle .Cover)}}if pg != 1 { {{end}}
   align({{.RunningFooter.Align}})[#text({{.RunningFooter.Font.Args}})[#folio-font-stretch({{.RunningFooter.Font.Stretch}})[{{.RunningFooter.Format}}]]]
-  {{if and .TitleSkipFooter (or (not .TitlePageEnabled) .HasTitle)}}}{{end}}
+  {{if and .TitleSkipFooter (or (not .TitlePageEnabled) .HasTitle .Cover)}}}{{end}}
 }
 {{end}}
 
-{{if and .TitlePageEnabled .HasTitle}}
+{{if and .TitlePageEnabled (or .HasTitle .Cover)}}
 #set page(numbering: {{if .TitlePageNumber}}"1"{{else}}none{{end}},
   header: {{if .RunningHeader.Enabled}}running-header{{else}}none{{end}},
+  {{if and .Cover (eq .Cover.Mode "background")}}background: image("{{.Cover.ImagePath}}", width: 100%, height: 100%, fit: "cover"),{{end}}
+  {{if .Cover}}footer: none){{else}}
   {{if and .RunningFooter.Enabled (not .TitleSkipFooter)}}footer-descent: 0pt,{{end}}
   footer: [
 {{if and .RunningFooter.Enabled (not .TitleSkipFooter)}}#running-footer
@@ -128,13 +130,67 @@
   align: (left, right),
   [{{.FooterLeft}}],
   [{{.FooterRight}}],
-)])
+)]){{end}}
+{{if .Cover}}
+#let cover-region(padding, body) = context {
+  let origin = here().position()
+  let padded = pad(left: padding, right: padding, top: padding, bottom: padding)[
+    #set text(fill: {{.Cover.TextFill}})
+    #body
+  ]
+  let bounds = measure(padded)
+  block(width: bounds.width, height: bounds.height, clip: true)[
+    {{if .Cover.HasBlur}}
+    {{if eq .Cover.Mode "background"}}#place(top + left, dx: -origin.x, dy: -origin.y)[#image("{{.Cover.BlurredPath}}", width: {{.Cover.PageWidth}}, height: {{.Cover.PageHeight}}, fit: "cover")]{{else}}#place(top + left, dx: {{.Cover.PageWidth}} / 2 - {{.Cover.Width}} / 2 - origin.x, dy: {{.Cover.PageHeight}} / 2 - {{.Cover.Height}} / 2 - origin.y)[#image("{{.Cover.BlurredPath}}", width: {{.Cover.Width}}, height: {{.Cover.Height}}, fit: "contain")]{{end}}
+    {{end}}
+    #place(top + left)[#rect(width: bounds.width, height: bounds.height, fill: {{.Cover.WashFill}})]
+    #place(top + left)[#padded]
+  ]
+}
+{{if eq .Cover.Placement "dodge"}}
+#layout(size => {
+  let image-width = {{.Cover.Width}}
+  let image-height = {{.Cover.Height}}
+  let image-x = (size.width - image-width) / 2
+  let image-y = (size.height - image-height) / 2
+  place(top + left, dx: image-x, dy: image-y, image("{{.Cover.ImagePath}}", width: image-width, height: image-height, fit: "contain"))
+  {{if .Cover.HasUpper}}
+  let upper = block(width: size.width)[{{template "cover-upper" .}}]
+  let upper-size = measure(upper)
+  if upper-size.height > image-y { panic("folio-cover-upper-overflow") }
+  let upper-y = image-y * ({{.Cover.DodgeFactor}}) - upper-size.height / 2
+  place(top + left, dy: upper-y, upper)
+  {{end}}
+  {{if .Cover.HasLower}}
+  let lower-start = image-y + image-height
+  let lower-height = size.height - lower-start
+  let lower = block(width: size.width)[{{template "cover-lower" .}}]
+  let lower-size = measure(lower)
+  if lower-size.height > lower-height { panic("folio-cover-lower-overflow") }
+  let lower-y = lower-start + lower-height * ({{.Cover.DodgeFactor}}) - lower-size.height / 2
+  place(top + left, dy: lower-y, lower)
+  {{end}}
+})
+{{else}}
+{{if eq .Cover.Mode "inset"}}#place(center + horizon)[#image("{{.Cover.ImagePath}}", width: {{.Cover.Width}}, height: {{.Cover.Height}}, fit: "contain")]{{end}}
+{{if or .Cover.HasUpper .HasAuthor}}
+#align({{.TitleAlign}})[
+  #v({{.TitleOffset}})
+  #cover-region({{.Cover.TitlePadding}})[{{template "cover-overlay-title" .}}]
+]
+{{end}}
+{{if .FooterLeft}}#place(bottom + left)[#cover-region({{.Cover.FooterPadding}})[{{.FooterLeft}}]]{{end}}
+{{if .FooterRight}}#place(bottom + right)[#cover-region({{.Cover.FooterPadding}})[{{.FooterRight}}]]{{end}}
+{{end}}
+{{else}}
 {{template "title-block" .}}
+{{end}}
 #pagebreak()
 {{end}}
 
 #set page(
   numbering: none,
+  background: none,
   margin: (
     top: {{if .RunningHeader.Enabled}}{{.RunningHeader.DistanceFromEdge}} + {{.RunningHeader.ContentPaddingAfter}}{{else}}{{.Margin}}{{end}},
     bottom: {{if .RunningFooter.Enabled}}{{.RunningFooter.DistanceFromEdge}} + {{.RunningFooter.ContentPaddingAfter}}{{else}}{{.Margin}}{{end}},
@@ -180,4 +236,45 @@
   {{end}}
   {{end}}
 ]
+{{end}}
+
+{{define "cover-upper"}}
+#align({{.TitleAlign}})[
+  {{if .HasTitle}}#text({{.TitleFont.Args}})[#folio-font-stretch({{.TitleFont.Stretch}})[{{.Title}}]]{{end}}
+  {{if .HasSubtitle}}
+  #v({{.SubtitleSpace}})
+  #text({{.SubtitleFont.Args}})[#folio-font-stretch({{.SubtitleFont.Stretch}})[{{.Subtitle}}]]
+  {{end}}
+]
+{{end}}
+
+{{define "cover-author"}}
+{{if .HasAuthor}}
+#align({{.TitleAlign}})[
+  {{if .AuthorPrefixLines}}
+  {{range $index, $line := .AuthorPrefixLines}}
+  {{if $index}}#v(0.3em){{end}}
+  #text({{$.AuthorFont.Args}})[#folio-font-stretch({{$.AuthorFont.Stretch}})[{{$line}}]]
+  {{end}}
+  #v(0.3em)
+  #text({{.AuthorFont.Args}})[#folio-font-stretch({{.AuthorFont.Stretch}})[{{.Author}}]]
+  {{else}}
+  #text({{.AuthorFont.Args}})[#folio-font-stretch({{.AuthorFont.Stretch}})[{{.AuthorPrefixInline}}{{.Author}}]]
+  {{end}}
+]
+{{end}}
+{{end}}
+
+{{define "cover-lower"}}
+{{template "cover-author" .}}
+{{if and .HasAuthor (or .FooterLeft .FooterRight)}}#v({{.AuthorSpace}}){{end}}
+{{if or .FooterLeft .FooterRight}}
+#grid(columns: (1fr, 1fr), align: (left, right), [{{.FooterLeft}}], [{{.FooterRight}}])
+{{end}}
+{{end}}
+
+{{define "cover-overlay-title"}}
+{{template "cover-upper" .}}
+{{if .HasAuthor}}#v({{.AuthorSpace}}){{end}}
+{{template "cover-author" .}}
 {{end}}
