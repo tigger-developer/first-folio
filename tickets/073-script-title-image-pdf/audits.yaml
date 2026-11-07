@@ -416,6 +416,41 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "The visual user test remains AMBER for operator review."
       - "W074 DOCX and W075 ODT rendering remain out of scope."
+  - id: delivery-code-c1-r3
+    timestamp: "2026-11-07T21:08:49Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 3
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "22a39614d1cb7b7432e5c0315591ff8b347480d7"
+      delta: "validation.org diff sha256 7eb476d593d1be91cd581ad695d20457085391e7fe2a16ef4329df62448b6584"
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Approved W073 PDF-only requirements, solution design and amended AC073.16 dodge-clearance contract"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORG-SCHEMA.md, GO.md, REVIEW.md and SELF-AUDIT.md as deployed on 2026-11-07"
+      - "Delivery-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "Tests were reviewed before production code. RT073.2 proves that 10mm more padding causes a full one-sided 10mm shift without changing image geometry; AT073.1 exercises the built binary and measures clearance on both image edges."
+      - "The strict configuration loader defaults dodge.padding to 1em, accepts positive em or mm, rejects unknown nested keys, invalid units, non-positive values and non-empty dodge configuration with overlay placement."
+      - "Typst calculates centre or third placement from the unchanged actual-image region, then clamps only a violating group to the configured clearance and reports named upper or lower overflow before atomic publication."
+      - "Self-review identified that the initial em conversion only understood point-sized root fonts. Commit 22a3961 resolves pt, mm, cm, in and root-relative em; the public PDF regression shows 1em with a 10mm root font matches explicit 10mm."
+      - "At 22a3961, focused RT073 and built-binary AT073 commands passed; make test passed all packages with internal/app 410.844s and internal/manuscript 103.794s; make lint passed; make vulncheck reported no vulnerabilities; git diff --check passed."
+      - "README.md, docs/config.md, docs/ARCHITECTURE.md, presets/british.yaml and examples/script.yaml.example document the public field, default, units, ordering and boundary behaviour; sanitize produced no applicable documentation change."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT073.1 - Script title images are visually acceptable remains AMBER for operator inspection."
+      - "W074 DOCX and W075 ODT cover-image rendering remain out of scope and configured covers are rejected there."
   - id: test-code-c1-r5
     timestamp: "2026-11-07T20:07:19Z"
     profile: SDLC
