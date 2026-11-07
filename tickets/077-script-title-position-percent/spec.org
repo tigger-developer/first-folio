@@ -72,9 +72,9 @@
 
 - Covers :: [[#ac-077-1][AC077.1 - A percentage remains the specified percentage]] and [[#ac-077-2][AC077.2 - Unsupported positions fail instead of falling back]].
 - Boundary :: Public script PDF conversion with real Typst compilation and dotted Org configuration.
-- Setup :: Equivalent Org scripts place a marker title at =20%= and =40%= with a background overlay and an inset dodge cover. Invalid cases use an unknown token, a length, =-1%= and =101%=.
+- Setup :: Equivalent Org scripts place a marker title at =20%= and =40%= with a background overlay and an inset dodge cover. Boundary cases use =0%= and =100%=. Invalid cases use an unknown token, a length, =-1%= and =101%=.
 - Action :: Convert every fixture and extract the marker's PDF bounds.
-- Expected :: The =20%= marker is materially above the =40%= marker in both layout branches. Invalid values name the complete field and leave no target.
+- Expected :: The =20%= marker is materially above the =40%= marker in both layout branches; =0%= and =100%= both convert successfully. Invalid values name the complete field and leave no target.
 - Retention :: Persistent regression suite under =make test=.
 
 ** OT077.1 - Aisle Seats uses its effective cascaded percentage :testdef:
@@ -106,7 +106,45 @@
 
 - TDD :: RT077.1 was written first. Before production changes, =20%= and =40%= produced identical coordinates in both layout branches and every invalid value published successfully.
 - Actual change :: One resolver now validates the field and supplies both the literal Typst offset and exact dodge factor.
-- Retrospective design :: Detailed solution-design reconciliation follows the delivery-code review, as required by the emergency workflow.
+- Retrospective design :: Reconciled below after the delivery-code self-audit PASS, as required by the emergency workflow.
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+- Configuration ownership :: =internal/config= continues to select the effective value through the existing cascade. D077 does not change layer precedence.
+- Renderer ownership :: =internal/app/script_render.go= owns validated script title-position projection into the file-backed Typst template.
+- Template ownership :: =templates/script.typ= continues to compose ordinary, overlay and dodge title pages from typed template data; it receives no unvalidated source literal.
+
+** High-level design
+- A single =scriptTitlePosition= resolver trims and normalizes the effective string before any title-page template data is published.
+- =third= produces the established =30%= ordinary/overlay offset and one-third dodge factor.
+- =center= preserves the established =40%= ordinary/overlay offset and one-half dodge factor.
+- A finite numeric percentage from =0%= through =100%= produces the same normalized percentage for ordinary/overlay output and its exact value divided by 100 for dodge multiplication.
+- Every other value returns an error naming =folio.title-page.title.position= before template execution or target publication.
+
+** Placement semantics
+- Ordinary and overlay title pages apply the literal percentage as preceding vertical space within the dedicated title content region.
+- Dodge applies the literal percentage within each unchanged movable region bounded by the actual inset image. Existing clearance clamping still runs afterwards and does not reinterpret the requested position.
+- Title and subtitle remain one measured group. A grouped author follows the existing layout contract; the optional bottom-centre author remains in the anchored metadata row from W073.
+
+** Decisions and boundaries
+- Compatibility :: Keep both named aliases unchanged rather than redefining =center= for ordinary/overlay pages.
+- Validation :: Reject lengths and unknown words instead of retaining the former silent fallback.
+- Cascade :: Preserve the existing effective-value precedence. The separately registered [[file:../D078-script-frontmatter-precedence/defect.org][D078]] owns the operator-requested script frontmatter precedence change.
+- Formats :: PDF title-page projection is the only changed consumer. DOCX, ODT, manuscripts, letters and compact script title blocks remain unchanged.
+
+** Security and reliability
+- Input boundary :: The resolver accepts only two named values or a finite bounded number with a percent suffix; formatted output cannot inject Typst syntax.
+- State and publication :: No new file, process, network, cache or concurrency behaviour is introduced. Invalid input exits before publication; existing atomic PDF output remains authoritative.
+- Dependencies :: No dependency or generated asset is added.
+
+** Verification mapping
+- Literal overlay and dodge geometry, grouped subtitle movement and invalid-value publication are covered by [[#rt-077-1][RT077.1 - Script title percentages control rendered PDF geometry]].
+- The reported document composition and current cascade boundary are covered by [[#ot-077-1][OT077.1 - Aisle Seats uses its effective cascaded percentage]].
+- Reader-level composition remains [[#ut-077-1][UT077.1 - Percentage placement is visually acceptable]].
 
 * Delivery Handoff
 :PROPERTIES:

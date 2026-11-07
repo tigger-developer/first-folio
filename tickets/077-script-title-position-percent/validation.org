@@ -9,13 +9,14 @@
 ** GREEN RT077.1 - Script title percentages control rendered PDF geometry :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-077-1-result
-:REVISION: de864192d22a9dfffe5054a8d95565b6ee0a5408
+:REVISION: fffd24176d751dbaf80ff2ef5918397c0d9d1cc8
 :COMMAND: go test ./internal/app -run '^TestRT077_1' -count=1 -timeout=2m
-:EVIDENCE: Dotted Org 20% and 40% values produced distinct ordered title and subtitle bounds in compiled background-overlay and inset-dodge PDFs; both roles moved by the same delta. Unsupported tokens, lengths and out-of-range percentages named the full field and published no target.
+:EVIDENCE: Dotted Org 20% and 40% values produced distinct ordered title and subtitle bounds in compiled background-overlay and inset-dodge PDFs; both roles moved by the same delta. Inclusive 0% and 100% boundaries converted successfully. Unsupported tokens, lengths and out-of-range percentages named the full field and published no target.
 :END:
 
 - RED 2026-11-07 :: Both =20%= and =40%= produced identical PDF title bounds in both layout branches. =floating=, =10mm=, =-1%= and =101%= all exited successfully and published PDFs.
 - GREEN 2026-11-07 :: The focused regression passed after adding the shared literal-percentage resolver, then passed again at =de86419= after requiring title and subtitle to move by the same delta.
+- GREEN 2026-11-07 :: The focused regression passed at =fffd241= after adding successful public conversions at the exact =0%= and =100%= boundaries.
 - Compatibility :: The complete W073 RT and built-binary AT commands passed after the change.
 
 * One-off verification
