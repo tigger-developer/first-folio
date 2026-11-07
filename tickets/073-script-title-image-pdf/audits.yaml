@@ -180,3 +180,88 @@ reviews:
       - "Independent definition review only; implementation and tests were not executed and no delivery claim was assessed."
       - "W074 and W075 content was not assessed."
       - "The verdict applies only to candidate 7b343937deac0c00579aaefb8a613ae3feb50665 and is not operator approval."
+  - id: definition-c1-r5
+    timestamp: "2026-11-07T15:49:59Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 5
+    method: independent
+    reviewer: fresh isolated native sub-agent
+    recorder: current author session
+    separation: fresh isolated context; bounded original evidence and prior findings supplied; no authoring conversation, reasoning or desired verdict inherited
+    candidate:
+      commit: "2d92474cc8fdbf72fa3ef0efdfb13e01250d91cb"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: FAIL
+    criteria:
+      - "INDEPENDENT-AUDITOR.md, READING.md, REVIEW.md and AUDIT-RECORD.md as deployed on 2026-11-07"
+      - "ISSUES.md, ARCHITECTURE.md, TESTING.md, CODING.md, SECURITY.md, DOCUMENTATION.md, ORG-SCHEMA.md, ORGMODE.md and the selected Go standard as deployed on 2026-11-07"
+      - "Project profile, vision, architecture, configuration, README, current loader, renderer, Typst template, compiler boundary and relevant test interfaces"
+      - "Original operator requirements, Superscale risk acceptance, strict cover-block key decision and prior definition findings"
+    evidence:
+      - "HEAD and candidate both resolved to 2d92474cc8fdbf72fa3ef0efdfb13e01250d91cb; the working tree was clean with no dirty delta"
+      - "tickets/073-script-title-image-pdf/spec.org and audits.yaml at the candidate revision"
+      - "The candidate contains fifteen ACs, three RTs, three ATs and one meaningful visual UT"
+      - "No feedback.yaml, semantic annotation record or annotation block was present"
+      - "No implementation tests were run"
+    findings:
+      - id: F2
+        severity: blocking
+        location: "spec.org:507-513, 557-560; RT073.3 at 282-285; AT073.3 at 318-321"
+        requirement: "The accepted Superscale risk retains user/OS interruption and cleanup as required behaviour; ARCHITECTURE requires the essential mechanism and TESTING requires relevant interruption coverage."
+        evidence: "The design asserts interruption cleanup but defines neither the supported graceful interruption boundary nor child-process and cleanup completion. The tests cover ordinary results, lookup failure and process/output failure, but not interruption."
+        impact: "Delivery would need to invent consequential signal/cancellation behaviour, and the cleanup outcome could remain unverified."
+        required_correction: "Define the supported graceful interruption path, child-process outcome, target-publication result and cleanup mechanism; add a controlled automated interruption case without adding a deadline or output/resource ceiling contrary to the accepted risk."
+      - id: F7
+        severity: blocking
+        location: "spec.org:29-30, 50, 341-348, 359-360, 375-378, 421, 424, 476, 559, 589"
+        requirement: "ISSUES' ABC contract requires every substantive paragraph and bullet to carry selective native-Org bold emphasis whose bold-only reading preserves functional meaning."
+        evidence: "Material Synopsis changes, edge-case conditions/outcomes, flow steps, compatibility consequences and the revisit trigger remain unbolded or omit substantive qualifications; a handoff item bolds bare test-ID ranges."
+        impact: "The bold-only scan omits material behaviour and boundaries, so the approval artefact does not meet its accessibility contract."
+        required_correction: "Apply selective native Org emphasis to the remaining substantive content, including negations and qualifiers, while avoiding whole sentences, generic labels and identifiers."
+      - id: F8
+        severity: blocking
+        location: "spec.org:454, 470; RT073.1 at 258-260"
+        requirement: "The operator requires blur and equal padding in em or mm."
+        evidence: "overlay.blur accepts only a non-negative mm length, while only padding accepts em or mm."
+        impact: "A required valid configuration such as blur: 0.5em would be rejected, and its font-relative interpretation is undefined."
+        required_correction: "Permit non-negative em and mm blur values, define how em resolves for the affected text region, and add valid and invalid unit-boundary cases."
+      - id: F9
+        severity: blocking
+        location: "spec.org:578, 589"
+        requirement: "The operator and selected standards require every human-facing acceptance-criterion or test identifier to have an adjacent descriptor."
+        evidence: "UT073.1 appears bare, and RT073.1-3 / AT073.1-3 are descriptorless ranges."
+        impact: "Those references are opaque without navigation and violate the supplied drafting constraint."
+        required_correction: "Replace each bare identifier or range with individually described test references or descriptive links."
+    prior_finding_dispositions:
+      - id: F1
+        disposition: resolved
+        evidence: "The source-image resource contract defines byte, per-axis, decoded-pixel and zero-dimension limits, exact boundaries, diagnostics and boundary tests."
+      - id: F2
+        disposition: partially_resolved
+        evidence: "Deadline, process-output and generated-image ceilings are explicitly waived by the accepted risk, with consequence and revisit trigger recorded; interruption cleanup remains undefined and untested."
+      - id: F3
+        disposition: resolved
+        evidence: "The design specifies Typst measurement with actual configured typography, exact-fit acceptance, greater-than-fit rejection and fitting/exact/just-over/long-content tests."
+      - id: F4
+        disposition: resolved
+        evidence: "Strict unknown-key validation is confined to folio.cover-image and nested mappings, with a permissive control elsewhere."
+      - id: F5
+        disposition: resolved
+        evidence: "The built public CLI automated test covers absent Superscale, warning, successful fallback, geometry and cleanup."
+      - id: F6
+        disposition: resolved
+        evidence: "Formerly compounded outcomes are separated into addressable criteria with explicit traceability."
+      - id: F7
+        disposition: partially_resolved
+        evidence: "Substantial emphasis was added, but the bold-only accessibility contract remains incomplete."
+    provisional_conditions: []
+    limitations:
+      - "Independent definition review only; implementation and tests were not executed and no delivery claim was assessed."
+      - "W074 and W075 were outside this audit."
+      - "The verdict applies only to candidate 2d92474cc8fdbf72fa3ef0efdfb13e01250d91cb and is not operator approval."
+      - "Cycle 1 definition round 5 is consumed; no further definition round is permitted without an explicit operator-authorized cycle reset recorded under REVIEW.md."
