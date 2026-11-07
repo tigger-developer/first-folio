@@ -1,0 +1,118 @@
+#+TITLE: D077 - Honour script title-position percentages
+#+SCHEMA: 8
+#+SUBTITLE: Emergency delivery reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: BYPASS-GATE-7 2026-11-07
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+- Outcome :: A percentage supplied as =folio.title-page.title.position= is used as that *literal percentage* rather than silently mapped to another position.
+- Before :: Every non-=third= value became =40%= on ordinary or overlay title pages, while every non-=center= value became one-third inside dodge regions.
+- Scope :: Script PDF title pages configured through the normal YAML cascade, including dotted Org frontmatter.
+- Unchanged :: The named =third= and =center= compatibility values retain their established behaviour; compact title pages continue to ignore dedicated-page positioning.
+- Emergency authority :: The operator invoked =BYPASS-GATE-7= after =#+FOLIO.TITLE-PAGE.TITLE.POSITION: 20%= in =aisle-seats.org= rendered at the fallback position.
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+- Script title-position percentages are parsed through the configuration cascade but are not represented faithfully by the renderer.
+
+** Scope
+*** In scope
+- Literal percentages from =0%= through =100%= for ordinary, overlay-cover and dodge-cover script PDF title pages.
+- Full-field validation errors and atomic non-publication for unsupported values.
+- YAML and dotted Org source configuration through the existing cascade.
+*** Out of scope
+- Length units, manuscript chapter positioning, office output, compact script titles, cover background treatments, and changes to the named aliases.
+
+** Authorities
+- Emergency request :: Operator instruction in the active delivery session on 2026-11-07.
+- Architecture :: [[file:../../docs/ARCHITECTURE.md][Project architecture]].
+- Configuration :: [[file:../../docs/config.md][Configuration reference]].
+- Related title-image work :: [[file:../073-script-title-image-pdf/spec.org][W073 - Script title-page images in PDF]].
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC077.1 - A percentage remains the specified percentage :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-077-1
+:END:
+
+- Criterion :: Given =folio.title-page.title.position: N%= where =N= is from =0= through =100=, script PDF conversion uses exactly =N%= of the applicable title-placement region. Ordinary and overlay pages use the dedicated title content region; dodge uses each movable region bounded by the image.
+- Cascade :: The behaviour is identical whether the winning value comes from YAML or dotted Org frontmatter.
+- Proven by :: [[#rt-077-1][RT077.1 - Script title percentages control rendered PDF geometry]], [[#ot-077-1][OT077.1 - Aisle Seats uses its effective cascaded percentage]] and [[#ut-077-1][UT077.1 - Percentage placement is visually acceptable]].
+
+** AC077.2 - Unsupported positions fail instead of falling back :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-077-2
+:END:
+
+- Criterion :: The named =third= and =center= values retain their existing meanings. A length, unknown token, negative percentage or percentage above =100%= reports =folio.title-page.title.position= and publishes no target.
+- Proven by :: [[#rt-077-1][RT077.1 - Script title percentages control rendered PDF geometry]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT077.1 - Script title percentages control rendered PDF geometry :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-077-1
+:END:
+
+- Covers :: [[#ac-077-1][AC077.1 - A percentage remains the specified percentage]] and [[#ac-077-2][AC077.2 - Unsupported positions fail instead of falling back]].
+- Boundary :: Public script PDF conversion with real Typst compilation and dotted Org configuration.
+- Setup :: Equivalent Org scripts place a marker title at =20%= and =40%= with a background overlay and an inset dodge cover. Invalid cases use an unknown token, a length, =-1%= and =101%=.
+- Action :: Convert every fixture and extract the marker's PDF bounds.
+- Expected :: The =20%= marker is materially above the =40%= marker in both layout branches. Invalid values name the complete field and leave no target.
+- Retention :: Persistent regression suite under =make test=.
+
+** OT077.1 - Aisle Seats uses its effective cascaded percentage :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-077-1
+:END:
+
+- Covers :: [[#ac-077-1][AC077.1 - A percentage remains the specified percentage]].
+- Boundary :: The reported =aisle-seats.org= source and its local configuration, converted with a temporary repository build.
+- Procedure :: Convert snapshots outside the project tree with the existing local =10%= value and a temporary local =40%= value, confirm A4 output, and extract title and subtitle bounds from page one.
+- Expected :: Conversion succeeds; current precedence makes local YAML the effective value, and changing that winning percentage from =10%= to =40%= moves title and subtitle by the same amount. The installed binary and source files are not changed by the comparison.
+- Record :: Write the dated result to =validation.org=.
+
+** UT077.1 - Percentage placement is visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-077-1
+:END:
+
+- Covers :: [[#ac-077-1][AC077.1 - A percentage remains the specified percentage]].
+- Validation method :: Operator inspection in the normal PDF reader.
+- Procedure :: Regenerate =aisle-seats.org= with the candidate and inspect the first page.
+- Expected :: The title placement visibly reflects =20%= and remains legible with the configured cover treatment.
+- Record :: Write the dated result to =validation.org=.
+
+* Emergency Delivery Record
+:PROPERTIES:
+:CUSTOM_ID: emergency-delivery-record
+:END:
+
+- TDD :: RT077.1 was written first. Before production changes, =20%= and =40%= produced identical coordinates in both layout branches and every invalid value published successfully.
+- Actual change :: One resolver now validates the field and supplies both the literal Typst offset and exact dodge factor.
+- Retrospective design :: Detailed solution-design reconciliation follows the delivery-code review, as required by the emergency workflow.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Validation evidence :: [[file:validation.org][D077 validation record]].
+- Audit evidence :: [[file:audits.yaml][D077 canonical audit record]].
+- Documentation impact :: Update the script title-position configuration reference, preset example and architecture description.

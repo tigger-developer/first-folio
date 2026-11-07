@@ -1,0 +1,41 @@
+#+TITLE: D077 - Script title-position percentage validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** GREEN RT077.1 - Script title percentages control rendered PDF geometry :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-077-1-result
+:REVISION: de864192d22a9dfffe5054a8d95565b6ee0a5408
+:COMMAND: go test ./internal/app -run '^TestRT077_1' -count=1 -timeout=2m
+:EVIDENCE: Dotted Org 20% and 40% values produced distinct ordered title and subtitle bounds in compiled background-overlay and inset-dodge PDFs; both roles moved by the same delta. Unsupported tokens, lengths and out-of-range percentages named the full field and published no target.
+:END:
+
+- RED 2026-11-07 :: Both =20%= and =40%= produced identical PDF title bounds in both layout branches. =floating=, =10mm=, =-1%= and =101%= all exited successfully and published PDFs.
+- GREEN 2026-11-07 :: The focused regression passed after adding the shared literal-percentage resolver, then passed again at =de86419= after requiring title and subtitle to move by the same delta.
+- Compatibility :: The complete W073 RT and built-binary AT commands passed after the change.
+
+* One-off verification
+
+** GREEN OT077.1 - Aisle Seats uses its effective cascaded percentage :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-077-1-result
+:REVISION: 9c56936851c8e7498cb9e8ddcc05c180b399d701
+:EVIDENCE: Temporary snapshots using effective local 10% and 40% values produced 16-page A4 PDFs. Title y moved from 143.739pt to 370.794pt and subtitle y from 222.631pt to 449.686pt: the same 227.055pt delta. Source and installed binary were unchanged.
+:END:
+
+- Date :: 2026-11-07.
+- Source :: =/Users/tigger/notes/gp/subs/aisle-seats.org= with its existing local =script.yaml= cascade, snapshotted into operating-system temporary directories.
+- Output :: Operating-system temporary directory only; no project or source file was changed.
+- Correction :: The initial one-off conversion was incorrectly attributed to the Org source percentage without isolating the higher-priority local value. The two-snapshot comparison established that local =script.yaml= wins under the documented cascade and that D077 honours the effective percentage literally.
+
+* User validation
+
+** AMBER UT077.1 - Percentage placement is visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-077-1-result
+:REASON: Requires operator inspection of the regenerated Aisle Seats title page in the normal PDF reader.
+:END:

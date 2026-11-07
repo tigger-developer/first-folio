@@ -88,9 +88,9 @@ folio:
         style: regular
         letter-spacing: 0em
       case-transform: as-written
-      # Script title-group position. Use third for ordinary/overlay output;
-      # center is additionally meaningful for inset cover-image dodge placement.
-      # Percentages, lengths and manuscript's one-third spelling are not script values.
+      # Script title-group position. Percentages from 0% through 100% are literal
+      # within the applicable title region. third retains the 30% alias; center
+      # retains its established script behaviour. Lengths and one-third are invalid.
       position: third
       space-before: 0
 

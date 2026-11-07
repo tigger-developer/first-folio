@@ -148,21 +148,21 @@ The effective CLI layout overrides are `--font`, `--font-size`, `--margin`, and 
 
 `folio.title-page.title.position` controls the vertical offset of script title
 metadata on a dedicated title page. With the default author `position: group`,
-ordinary and overlay pages keep title, subtitle and author together. The
-portable script value is `third`, which places that group after 30% preceding
-page space. Compact mode ignores this field because the title group joins the
-first content page.
+ordinary and overlay pages keep title, subtitle and author together. A
+percentage from `0%` through `100%` is literal preceding space within the
+dedicated title content region. `third` remains the 30% compatibility alias.
+Compact mode ignores this field because the title group joins the first content
+page.
 
 For an inset cover image with `placement: dodge`, W073 additionally recognizes
 `center`: the upper title/subtitle group and a grouped lower author are centred
 within their respective available regions. Date, version and an optional
-bottom-centre author remain in their anchored metadata row. `third` places each
-movable group one-third of the way through its available region. Use the exact spelling
-`third` for script output. `one-third`, arbitrary percentages and lengths are
-manuscript chapter-position syntax, not script title-position syntax. Existing
-non-`third` values on an ordinary or overlay script title page retain the
-legacy 40% fallback; they do not express their apparent percentage or named
-position.
+bottom-centre author remain in their anchored metadata row. A percentage is
+applied literally within each unchanged movable region; `third` places each
+group one-third of the way through it. `center` retains its established script
+behaviour: 40% preceding space on ordinary/overlay title pages and true 50%
+centring inside dodge regions. Lengths, `one-third` and unknown tokens are
+invalid and report `folio.title-page.title.position` before publication.
 
 `folio.title-page.title.align` accepts `left`, `center`, or `right` and currently
 aligns the complete title/subtitle/author group in PDF, DOCX and ODT. Although
@@ -233,9 +233,10 @@ folio:
 Overlay retains the configured title-page positioning and keeps title metadata
 as live PDF text. Blur and wash are restricted to the populated title,
 date and version regions. Dodge physically centres an inset and places the
-title/subtitle/author group above it and the date/version group below it;
-`center` and `third` are interpreted within the regions bounded by the actual
-image edge. Dodge padding is applied afterwards as minimum image clearance. It
+title/subtitle group above it and a grouped author below it; date, version and
+an optional bottom-centre author remain in their anchored metadata row. Literal
+percentages, `center` and `third` are interpreted within the movable regions
+bounded by the actual image edge. Dodge padding is applied afterwards as minimum image clearance. It
 does not reduce those regions or change the relative-position calculation; only
 a group that violates the clearance moves, and only by the required distance.
 The adjustment may use title-page margin space. A group that crosses the
