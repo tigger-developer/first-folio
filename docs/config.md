@@ -236,8 +236,9 @@ title/subtitle/author group above it and the date/version group below it;
 image edge. Dodge padding is applied afterwards as minimum image clearance. It
 does not reduce those regions or change the relative-position calculation; only
 a group that violates the clearance moves, and only by the required distance.
-A group that crosses the page content boundary is reported by name before the
-target is replaced. A non-empty `dodge` block is invalid with overlay placement.
+The adjustment may use title-page margin space. A group that crosses the
+physical page edge is reported by name before the target is replaced. A
+non-empty `dodge` block is invalid with overlay placement.
 
 The `cover-image` block rejects unknown nested keys and invalid combinations.
 It is incompatible with compact script title mode, standalone Typst, DOCX,
@@ -897,6 +898,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.42 (2026-11-07): Allow post-placement dodge clearance to use title-page margins up to the physical page edge.
 
 - 0.41 (2026-11-07): Define post-placement dodge image clearance for script PDF title pages.
 

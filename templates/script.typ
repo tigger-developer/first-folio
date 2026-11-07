@@ -153,15 +153,16 @@
   let image-height = {{.Cover.Height}}
   let image-x = (size.width - image-width) / 2
   let image-y = (size.height - image-height) / 2
+  let page-margin-y = ({{.Cover.PageHeight}} - size.height) / 2
   place(top + left, dx: image-x, dy: image-y, image("{{.Cover.ImagePath}}", width: image-width, height: image-height, fit: "contain"))
   {{if .Cover.HasUpper}}
   let upper = block(width: size.width)[{{template "cover-upper" .}}]
   let upper-size = measure(upper)
-  if upper-size.height > image-y { panic("folio-cover-upper-overflow") }
+  if upper-size.height > image-y + page-margin-y { panic("folio-cover-upper-overflow") }
   let upper-y = image-y * ({{.Cover.DodgeFactor}}) - upper-size.height / 2
   let upper-limit = image-y - {{.Cover.DodgePadding}} - upper-size.height
   if upper-y > upper-limit { upper-y = upper-limit }
-  if upper-y < 0pt { panic("folio-cover-upper-overflow") }
+  if upper-y < -page-margin-y { panic("folio-cover-upper-overflow") }
   place(top + left, dy: upper-y, upper)
   {{end}}
   {{if .Cover.HasLower}}
@@ -169,11 +170,11 @@
   let lower-height = size.height - lower-start
   let lower = block(width: size.width)[{{template "cover-lower" .}}]
   let lower-size = measure(lower)
-  if lower-size.height > lower-height { panic("folio-cover-lower-overflow") }
+  if lower-size.height > lower-height + page-margin-y { panic("folio-cover-lower-overflow") }
   let lower-y = lower-start + lower-height * ({{.Cover.DodgeFactor}}) - lower-size.height / 2
   let lower-limit = lower-start + {{.Cover.DodgePadding}}
   if lower-y < lower-limit { lower-y = lower-limit }
-  if lower-y + lower-size.height > size.height { panic("folio-cover-lower-overflow") }
+  if lower-y + lower-size.height > size.height + page-margin-y { panic("folio-cover-lower-overflow") }
   place(top + left, dy: lower-y, lower)
   {{end}}
 })

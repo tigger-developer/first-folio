@@ -406,6 +406,37 @@ func TestRT073_2DodgeEmPaddingUsesTheConfiguredRootFontSize(t *testing.T) {
 	}
 }
 
+func TestRT073_2DodgeClearanceMayUseTitlePageMargins(t *testing.T) {
+	requireW073Tools(t)
+	for _, padding := range []string{"1em", "5mm"} {
+		t.Run(padding, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Setenv("HOME", t.TempDir())
+			source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "page-margin.pdf")
+			writeAppFile(t, source, "#+TITLE: I Speak Vladimir\n#+SUBTITLE: Director: Taḋg Paul\n#+AUTHOR: GP Writers' Room\n#+DATE: 28 October 2026\n#+VERSION: v0.8\n* ACT ONE\n**** CÁIT\nBody.\n")
+			writeW073PNG(t, filepath.Join(dir, "cover.png"), 976, 976, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  margin: 25mm\n  title-page:\n    title:\n      position: third\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 210mm\n    dodge:\n      padding: "+padding+"\n")
+			status, _, stderr := runApp(t, "convert", source, target)
+			if status != 0 {
+				t.Fatalf("padding=%s status=%d stderr=%s", padding, status, stderr)
+			}
+			page := rasterW073Page(t, target, 1)
+			imageBox, ok := w073ColourBounds(page)
+			if !ok {
+				t.Fatal("dodge image absent")
+			}
+			upper := w073WordBounds(t, target, "Vladimir")
+			lower := w073WordBounds(t, target, "v0.8")
+			if upper.yMin < 0 || upper.yMax >= float64(imageBox.Min.Y) {
+				t.Fatalf("upper group did not fit between physical page edge and image: page=%v image=%v upper=%#v", page.Bounds(), imageBox, upper)
+			}
+			if lower.yMin <= float64(imageBox.Max.Y) || lower.yMax >= float64(page.Bounds().Max.Y) {
+				t.Fatalf("lower group did not fit between image and physical page edge: page=%v image=%v lower=%#v", page.Bounds(), imageBox, lower)
+			}
+		})
+	}
+}
+
 func TestRT073_3SuperscaleInvocationAndFallbackAreDeterministic(t *testing.T) {
 	requireW073Tools(t)
 	for _, tc := range []struct {

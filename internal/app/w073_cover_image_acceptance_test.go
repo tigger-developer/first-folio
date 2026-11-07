@@ -166,6 +166,31 @@ func TestAT073_1RenderedPDFGeometryFollowsTheImageContract(t *testing.T) {
 			t.Fatalf("50mm clearance absent: image=%v upper=%#v lower=%#v minimum=%.1fpt", imageBox, upper, lower, minimum)
 		}
 	})
+
+	t.Run("dodge clearance may use title-page margins", func(t *testing.T) {
+		root, home := t.TempDir(), t.TempDir()
+		source, target := filepath.Join(root, "play.org"), filepath.Join(root, "dodge-page-margin.pdf")
+		writeAppFile(t, source, "#+TITLE: I Speak Vladimir\n#+SUBTITLE: Director: Taḋg Paul\n#+AUTHOR: GP Writers' Room\n#+DATE: 28 October 2026\n#+VERSION: v0.8\n* ACT ONE\n**** CÁIT\nBody.\n")
+		writeW073PNG(t, filepath.Join(root, "cover.png"), 976, 976, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+		writeAppFile(t, filepath.Join(root, "script.yaml"), "folio:\n  margin: 25mm\n  title-page:\n    title:\n      position: third\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 210mm\n    dodge:\n      padding: 5mm\n")
+		_, diagnostic, err := officeRun(t, binary, t.TempDir(), officeEnv(t, home, nil), "convert", source, target)
+		if err != nil {
+			t.Fatalf("page-margin dodge conversion: %v: %s", err, diagnostic)
+		}
+		page := rasterW073Page(t, target, 1)
+		imageBox, ok := w073ColourBounds(page)
+		if !ok {
+			t.Fatal("dodge image marker absent")
+		}
+		upper := w073WordBounds(t, target, "Vladimir")
+		lower := w073WordBounds(t, target, "v0.8")
+		if upper.yMin < 0 || upper.yMax >= float64(imageBox.Min.Y) {
+			t.Fatalf("upper group did not use available page-margin space: page=%v image=%v upper=%#v", page.Bounds(), imageBox, upper)
+		}
+		if lower.yMin <= float64(imageBox.Max.Y) || lower.yMax >= float64(page.Bounds().Max.Y) {
+			t.Fatalf("lower group did not use available page-margin space: page=%v image=%v lower=%#v", page.Bounds(), imageBox, lower)
+		}
+	})
 }
 
 func TestAT073_2InvalidAndUnsupportedCoverInputFailsAtomically(t *testing.T) {
