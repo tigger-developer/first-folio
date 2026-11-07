@@ -55,9 +55,9 @@ func TestFrontmatterParagraphExports(t *testing.T) {
 			for _, text := range []string{"Spoken dialogue.", "Introduction"} {
 				layers := officeEffective(t, pkg, format, officeParagraph(t, body, text))
 				if format == "docx" {
-					officeAssertEffective(t, layers, "rFonts", "ascii", "Libertinus Serif")
+					officeAssertEffective(t, layers, "rFonts", "ascii", "Libertinus Sans")
 				} else {
-					officeAssertEffective(t, layers, "text-properties", "font-family", "Libertinus Serif")
+					officeAssertEffective(t, layers, "text-properties", "font-family", "Libertinus Sans")
 				}
 			}
 		})

@@ -98,7 +98,7 @@ func TestFontReturnsCompleteValidatedValue(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := Font{
-		Family: "Libertinus Serif", Size: "12pt", Weight: "regular",
+		Family: "Libertinus Sans", Size: "12pt", Weight: "regular",
 		Stretch: "100%", Style: "regular", LetterSpacing: "0em",
 	}
 	if font != want {
