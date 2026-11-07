@@ -3,6 +3,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"image"
 	"image/color"
@@ -11,6 +12,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -120,7 +122,12 @@ func prepareCoverForRender(cfg config.Config, sourceDocument string, stderr io.W
 	cleanup := func() { _ = os.RemoveAll(tempDir) }
 	selected := plan.SourcePath
 	if plan.Config.Superscale != "" {
-		if output, ok := runCoverSuperscale(plan.Config.Superscale, selected, tempDir, stderr); ok {
+		output, ok, superscaleErr := runCoverSuperscale(plan.Config.Superscale, selected, tempDir, stderr)
+		if superscaleErr != nil {
+			cleanup()
+			return nil, func() {}, superscaleErr
+		}
+		if ok {
 			selected = output
 			width, height, _, decodeErr := coverDecodeConfig(output)
 			if decodeErr != nil {
@@ -140,34 +147,39 @@ func prepareCoverForRender(cfg config.Config, sourceDocument string, stderr io.W
 	return plan, cleanup, nil
 }
 
-func runCoverSuperscale(value, input, tempDir string, stderr io.Writer) (string, bool) {
+func runCoverSuperscale(value, input, tempDir string, stderr io.Writer) (string, bool, error) {
 	executable, err := exec.LookPath("superscale")
 	if err != nil {
 		coverSuperscaleWarning(stderr, "executable was not found in inherited PATH")
-		return "", false
+		return "", false, nil
 	}
 	outputDir := filepath.Join(tempDir, "superscale-output")
 	if err := os.Mkdir(outputDir, 0o700); err != nil {
 		coverSuperscaleWarning(stderr, fmt.Sprintf("temporary output could not be created: %v", err))
-		return "", false
+		return "", false, nil
 	}
 	args := []string{"--no-face-enhance", "-o", outputDir}
 	if value != "default" {
 		args = append(args, "--scale", strings.TrimSuffix(value, "x"))
 	}
 	args = append(args, input)
-	cmd := exec.Command(executable, args...)
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
+	cmd := exec.CommandContext(ctx, executable, args...)
 	cmd.Stdout, cmd.Stderr = stderr, stderr
 	if err := cmd.Run(); err != nil {
+		if ctx.Err() != nil {
+			return "", false, fmt.Errorf("folio.cover-image.superscale was interrupted: %w", ctx.Err())
+		}
 		coverSuperscaleWarning(stderr, fmt.Sprintf("execution failed: %v", err))
-		return "", false
+		return "", false, nil
 	}
 	output, err := usableSuperscaleOutput(outputDir)
 	if err != nil {
 		coverSuperscaleWarning(stderr, err.Error())
-		return "", false
+		return "", false, nil
 	}
-	return output, true
+	return output, true, nil
 }
 
 func coverSuperscaleWarning(stderr io.Writer, reason string) {

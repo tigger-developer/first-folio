@@ -8,6 +8,7 @@ import (
 	"image/color"
 	"image/jpeg"
 	"image/png"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,6 +16,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/tigger-developer/first-folio/internal/config"
 )
@@ -34,6 +36,10 @@ func init() {
 		os.Exit(7)
 	}
 	if mode == "unusable" {
+		os.Exit(0)
+	}
+	if mode == "slow" {
+		time.Sleep(30 * time.Second)
 		os.Exit(0)
 	}
 	var outputDir, input string
@@ -388,6 +394,55 @@ func TestRT073_3SuperscaleInvocationAndFallbackAreDeterministic(t *testing.T) {
 			assertNoW073TemporaryOutput(t, tempRoot)
 		})
 	}
+	t.Run("interrupt cleans temporary output", func(t *testing.T) {
+		dir, home, tempRoot := t.TempDir(), t.TempDir(), t.TempDir()
+		toolDir := controlledW073Tools(t, true)
+		t.Setenv("HOME", home)
+		t.Setenv("TMPDIR", tempRoot)
+		t.Setenv("PATH", toolDir)
+		t.Setenv("FOLIO_TEST_SUPERSCALE_MODE", "slow")
+		marker := filepath.Join(dir, "superscale.marker")
+		t.Setenv("FOLIO_TEST_SUPERSCALE_MARKER", marker)
+		source, cover := filepath.Join(dir, "play.org"), filepath.Join(dir, "cover.png")
+		writeAppFile(t, source, "#+TITLE: Interrupt\n")
+		writeW073PNG(t, cover, 100, 50, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+		cfg, err := config.Load(config.Options{Mode: config.ModeScript, Home: home, LocalDir: dir, Source: map[string]any{"folio": map[string]any{"cover-image": map[string]any{"path": "cover.png", "mode": "inset", "size": "50mm", "superscale": "default"}}}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		result := make(chan error, 1)
+		go func() {
+			_, cleanup, err := prepareCoverForRender(cfg, source, io.Discard)
+			cleanup()
+			result <- err
+		}()
+		deadline := time.Now().Add(2 * time.Second)
+		for {
+			if _, err := os.Stat(marker); err == nil {
+				break
+			}
+			if time.Now().After(deadline) {
+				t.Fatal("Superscale did not start before interrupt")
+			}
+			time.Sleep(10 * time.Millisecond)
+		}
+		process, err := os.FindProcess(os.Getpid())
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := process.Signal(os.Interrupt); err != nil {
+			t.Fatal(err)
+		}
+		select {
+		case err := <-result:
+			if err == nil || !strings.Contains(err.Error(), "folio.cover-image.superscale was interrupted") {
+				t.Fatalf("interrupt error=%v", err)
+			}
+		case <-time.After(2 * time.Second):
+			t.Fatal("Superscale interrupt did not return")
+		}
+		assertNoW073TemporaryOutput(t, tempRoot)
+	})
 }
 
 func writeW073JPEG(t *testing.T, path string, width, height int, fill color.RGBA) {
