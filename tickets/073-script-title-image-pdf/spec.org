@@ -112,7 +112,7 @@ Script title pages cannot include cover artwork. Authors therefore cannot produc
 
 - The public YAML contract is top-level =folio.cover-image= so a later manuscript ticket can adopt it without migrating a script-owned path. W073 defines only script PDF consumption.
 - The exact keys, defaults, accepted values and interactions are defined once under [[#cover-image-yaml-contract][Cover-image YAML contract]].
-- Superscale is optional enhancement. Missing or failed execution warns and falls back to the original image rather than preventing document creation.
+- Superscale is optional enhancement. A missing executable warns and falls back to the original image; a found executable that fails or returns invalid output causes atomic conversion failure.
 
 ** Unresolved blockers
 
@@ -192,7 +192,15 @@ Script title pages cannot include cover artwork. Authors therefore cannot produc
 :CUSTOM_ID: ac-073-9
 :END:
 
-- Criterion :: Given requested Superscale processing when the executable is absent, exits unsuccessfully or produces no valid single image, conversion *warns on stderr and uses the original image*; given a null or omitted value, conversion *does not look up or invoke Superscale*.
+- Criterion :: Given requested Superscale processing when the executable is absent from inherited =PATH=, conversion *warns on stderr and uses the original image*; given a null or omitted value, conversion *does not look up or invoke Superscale*.
+- Proven by :: [[#rt-073-3][RT073.3 - Superscale invocation and fallback are deterministic]].
+
+** AC073.10 - Superscale execution failures are atomic :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-10
+:END:
+
+- Criterion :: Given a located Superscale executable that exits unsuccessfully or does not produce exactly one valid supported image, conversion *reports an operational error and publishes no new or replacement document*.
 - Proven by :: [[#rt-073-3][RT073.3 - Superscale invocation and fallback are deterministic]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
 
 * Test Definitions
@@ -229,11 +237,11 @@ Script title pages cannot include cover artwork. Authors therefore cannot produc
 :CUSTOM_ID: rt-073-3
 :END:
 
-- Covers :: [[#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]] and [[#ac-073-9][AC073.9 - Unavailable Superscale falls back visibly]].
+- Covers :: [[#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]], [[#ac-073-9][AC073.9 - Unavailable Superscale falls back visibly]] and [[#ac-073-10][AC073.10 - Superscale execution failures are atomic]].
 - Boundary :: Cover-image preparation service with injected executable lookup and process runner at the production command boundary.
 - Setup :: The deterministic runner records argv and emits one known valid image; additional cases report lookup absence, return non-zero, emit no image, emit multiple images and use an input path containing spaces and shell metacharacters. Configuration exercises null, =default=, =2x=, =4x= and =8x=.
 - Action :: Prepare each fixture and inspect recorded lookup, argv, warnings, output image markers and temporary-work cleanup.
-- Expected :: Null performs no lookup or invocation; =default= omits =--scale=; explicit values pass =--scale 2=, =4= or =8=; every invocation passes =--no-face-enhance=, one literal input path and a unique output directory without a shell; one valid output becomes the prepared image; missing, failed or ambiguous output emits one bounded warning and uses the source image; temporary output is removed after conversion.
+- Expected :: Null performs no lookup or invocation; =default= omits =--scale=; explicit values pass =--scale 2=, =4= or =8=; every invocation passes =--no-face-enhance=, one literal input path and a unique output directory without a shell; one valid output becomes the prepared image; missing lookup emits one bounded warning and uses the source image; non-zero, absent, ambiguous or invalid output returns an operational error; temporary output is removed after success or failure.
 - Retention :: Persistent regression suite under =make test=.
 
 ** AT073.1 - Rendered PDF geometry follows the image contract :testdef:
@@ -255,7 +263,7 @@ Script title pages cannot include cover artwork. Authors therefore cannot produc
 
 - Covers :: [[#ac-073-6][AC073.6 - Image configuration resolves safely and consistently]] and [[#ac-073-7][AC073.7 - Existing title-page behaviour remains compatible]].
 - Boundary :: Built =folio convert= command writing PDF, standalone Typst, DOCX and ODT targets, plus manuscript and letter commands.
-- Setup :: Cases include missing assets, non-image content, unsupported extensions, invalid Superscale types or values, =background + dodge=, background with =size=, inset without =size=, image configuration with compact title mode, unsupported current consumers/targets, and an image-only dedicated PDF title page. Existing targets contain sentinel bytes.
+- Setup :: Cases include missing assets, non-image content, unsupported extensions, invalid Superscale types or values, located Superscale execution/output failures, =background + dodge=, background with =size=, inset without =size=, image configuration with compact title mode, unsupported current consumers/targets, and an image-only dedicated PDF title page. Existing targets contain sentinel bytes.
 - Action :: Run each conversion and inspect exit status, stderr and target bytes.
 - Expected :: Invalid and not-yet-adopted cases name the offending field or unsupported consumer and leave existing or absent targets unchanged; the image-only PDF case succeeds; no-image controls retain their established output structure.
 - Retention :: Ticket-specific evidence; not part of the persistent regression suite.
@@ -300,11 +308,17 @@ Script title pages cannot include cover artwork. Authors therefore cannot produc
 - Required behaviour :: The configured light or dark image backing is visible through transparent image pixels and opacity within the image rectangle; transparency does not recolour page area outside an inset or expose uninitialized page content.
 - Covered by :: [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]] and [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]].
 
-** Superscale unavailable or unusable
+** Superscale unavailable
 
-- Condition :: Superscale is requested but cannot be found, exits unsuccessfully, or does not create exactly one valid supported image.
-- Required behaviour :: Conversion emits one bounded warning and completes with the original image; it leaves no First Folio temporary output behind.
+- Condition :: Superscale is requested but cannot be found in inherited =PATH=.
+- Required behaviour :: Conversion emits one bounded warning and completes with the original image without creating Superscale temporary output.
 - Covered by :: [[#ac-073-9][AC073.9 - Unavailable Superscale falls back visibly]] and [[#rt-073-3][RT073.3 - Superscale invocation and fallback are deterministic]].
+
+** Superscale execution or output failure
+
+- Condition :: Superscale is found but exits unsuccessfully or does not create exactly one valid supported image.
+- Required behaviour :: Conversion returns an operational error, publishes no target and removes its temporary output directory.
+- Covered by :: [[#ac-073-10][AC073.10 - Superscale execution failures are atomic]], [[#rt-073-3][RT073.3 - Superscale invocation and fallback are deterministic]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
 
 ** Consumer has not adopted cover images
 
@@ -412,7 +426,8 @@ folio:
 - Explicit invocation :: =2x=, =4x= and =8x= add =--scale 2=, =--scale 4= or =--scale 8= respectively. Pass argv directly without a shell. Input is the resolved source image and output is a unique operating-system temporary directory.
 - Face enhancement :: Always pass =--no-face-enhance=. The optional GFPGAN model changes content, has non-commercial licence components and may differ between machines; W073 requests upscaling only.
 - Output :: On exit zero, require exactly one new regular PNG or JPEG output that passes the same dimension and decoded-resource validation as the source. Use that image for later normalization, blur and embedding while retaining the configured physical geometry.
-- Fallback :: If lookup fails, execution returns non-zero, or output is absent, ambiguous or invalid, emit one bounded stderr warning naming =folio.cover-image.superscale= and use the original image. Do not publish Superscale stdout/stderr as document content.
+- Unavailable fallback :: If lookup fails, emit one bounded stderr warning naming =folio.cover-image.superscale= and use the original image.
+- Execution failure :: If a located process returns non-zero or its output is absent, ambiguous or invalid, return an operational error and publish no document. Include bounded diagnostic context without publishing Superscale stdout/stderr as document content.
 - Side effects :: First Folio owns and removes its temporary output directory. Superscale may maintain its documented compiled CoreML model cache; First Folio neither clears nor manages that external cache.
 
 *** Data and state
@@ -425,7 +440,7 @@ folio:
 
 - Validate configuration before decoding, decode metadata before allocating full image storage, and complete preparation before replacing an output target.
 - Errors name the full configuration field or resolved asset path without exposing unrelated file contents. Partial PDF, Typst or prepared-image output is not published.
-- Superscale absence and execution/output failure are non-fatal warnings with original-image fallback; invalid =superscale= configuration remains a fatal field error.
+- Superscale absence is a non-fatal warning with original-image fallback. Invalid configuration and execution/output failure are fatal before target publication.
 
 *** Simplicity and proportionality
 
@@ -456,8 +471,8 @@ folio:
 
 *** Keep Superscale optional and deterministic
 
-- Decision :: Superscale is enabled only by a non-null enum, uses direct argv with face enhancement disabled, and falls back to the original image with a warning for every availability or execution failure.
-- Rationale :: First Folio remains portable when the macOS Apple-Silicon-only tool is absent, while an installed tool can improve source pixels without changing cover geometry or introducing environment-dependent face modification and licensing.
+- Decision :: Superscale is enabled only by a non-null enum and uses direct argv with face enhancement disabled. Only lookup absence falls back with a warning; a found command's failure is an atomic operational error.
+- Rationale :: First Folio remains portable when the macOS Apple-Silicon-only tool is absent, while preserving explicit failure when a requested and available processor does not produce the required asset.
 - Verification :: [[#rt-073-3][RT073.3 - Superscale invocation and fallback are deterministic]] exercises the production lookup/runner boundary, argv, output selection, failure and cleanup; [[#ut-073-1][UT073.1 - Script title images are visually acceptable]] covers the installed command through public conversion.
 
 ** Routine details left to implementation
