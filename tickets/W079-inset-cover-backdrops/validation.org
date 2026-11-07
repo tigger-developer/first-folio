@@ -9,22 +9,24 @@
 ** RED RT079.1 - Backdrop configuration and image preparation remain deterministic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-079-1-result
-:REVISION: 6ee6008eb543d26b305eac1bfe576eac383846ec
+:REVISION: 1c4dab1222781beed052e775e5b1ddd979c6c829
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT079_' -count=1 -timeout=10m
 :EVIDENCE: Intended RED. The strict loader rejects the unimplemented backdrop block, dotted Org leaves are absent, no independent derivative is produced and source switching cannot yet resolve typed backdrop values.
 :END:
 
 - Runs :: 2026-11-07 at =6ee6008=: RED at the typed configuration, image-preparation, source-projection and compiled-PDF boundaries.
+- Runs :: 2026-11-07 at =1c4dab1=: RED after extending the image-preparation boundary to cover explicit disablement, transparent-source treatment and original-source selection.
 
 ** RED RT079.2 - Backdrop and overlay treatments resolve by region :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-079-2-result
-:REVISION: 6ee6008eb543d26b305eac1bfe576eac383846ec
+:REVISION: 1c4dab1222781beed052e775e5b1ddd979c6c829
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT079_' -count=1 -timeout=10m
 :EVIDENCE: Intended RED. Each compiled-PDF fixture stops at the unknown backdrop block before the title, subtitle and footer marker colours can be inspected.
 :END:
 
 - Runs :: 2026-11-07 at =6ee6008=: RED before rendering because the approved typed configuration does not yet exist.
+- Runs :: 2026-11-07 at =1c4dab1=: RED remained isolated at the same unimplemented typed configuration boundary.
 
 * Acceptance tests
 
