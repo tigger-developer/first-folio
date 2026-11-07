@@ -34,3 +34,39 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "No W079 tests or production implementation have been written or executed."
       - "D078 source-precedence full-suite reconciliation remains in progress and is an explicit W079 delivery prerequisite."
+  - id: test-code-c1-r1
+    timestamp: "2026-11-07T23:28:42Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "65abbf8ae247acc0d90ba0be7e172dd6877bed80"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Approved W079 specification and test definitions at 6190f98a63d012a724650bc08c5547308a098c37"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, ORGMODE.md, ORG-SCHEMA.md, SELF-AUDIT.md, REVIEW.md and project-selected Go standards as deployed on 2026-11-07"
+      - "Test-code readiness from the installed sdlc-validate command"
+    evidence:
+      - "The installed validator reported schema valid and test-code ready with six acceptance criteria, two RED regression tests, two RED acceptance tests, no one-off tests and one AMBER user test."
+      - "At 1c4dab1222781beed052e775e5b1ddd979c6c829, go test ./internal/config ./internal/app -run '^TestRT079_' -count=1 -timeout=10m reached meaningful behavioural RED: the strict block and Org leaves are absent, no derivative is produced and compiled-PDF fixtures stop at the unimplemented configuration boundary."
+      - "At 6ee6008eb543d26b305eac1bfe576eac383846ec, go test -tags folio_acceptance ./internal/app -run '^TestAT079_' -count=1 -timeout=10m reached the built executable, Typst, raster and PDF-text boundaries: image mode retained white page edges and black text, YAML mode was rejected and field-specific failures remained unavailable while sentinel targets stayed intact."
+      - "RT079.1 covers typed defaults, exact strict paths, mapping types, active semantic validation, dormant branches, explicit none override through the real cascade, all dotted Org leaves, Org/YAML parity, page-aspect crop, 512-pixel ceiling, no upscale, no solid/none derivative, original-versus-Superscale source selection, transparency and image treatment."
+      - "RT079.2 inspects actual compiled PDF font colours for title, subtitle, author, version and date across dodge light/dark and opposite overlay/backdrop treatments; AT079.1 measures raster page edges, solid RGB and sharp-versus-blurred variation through a newly built binary."
+      - "The only production scaffolding consists of inert typed and plan fields needed for executable tests; it does not recognize, prepare or render backdrop behaviour. Existing W073 focused regressions passed with go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m."
+      - "The pre-verdict self-review identified and corrected missing explicit-none derivative and transparent treated-original coverage, reran the affected RED suite and revalidated readiness before this assessment."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The W079 target implementation does not yet exist; RED results approve the tests for implementation, not product behaviour."
+      - "UT079.1 remains AMBER for operator inspection after delivery-code review."
