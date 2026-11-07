@@ -3,7 +3,7 @@
 #+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: APPROVED 2026-11-07
+#+OPERATOR_SIGNOFF: APPROVED 2026-11-07; JPEG derivative amendment approved 2026-11-07
 
 * Synopsis
 :PROPERTIES:
@@ -25,7 +25,7 @@
 
 ** Changes
 
-- Image mode centre-crops, downsamples, blurs and stretches the same cover image behind the sharp inset.
+- Image mode centre-crops, downsamples, blurs, stores as fixed-quality JPEG and stretches the same cover image behind the sharp inset.
 - Solid mode fills the page with an exact six-digit hexadecimal colour.
 
 ** Unchanged
@@ -121,7 +121,7 @@ A script author can select a coordinated full-page backdrop without replacing th
 :CUSTOM_ID: ac-079-1
 :END:
 
-- Criterion :: Given an inset cover with =backdrop.mode: image=, the PDF title page contains a *sharp, unchanged inset* over a *full-bleed centre-cropped blurred derivative* of the same source image.
+- Criterion :: Given an inset cover with =backdrop.mode: image=, the PDF title page contains a *sharp, unchanged inset* over a *full-bleed centre-cropped blurred JPEG derivative* of the same source image.
 - Proven by :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]], [[#at-079-1][AT079.1 - Rendered inset backdrops follow the PDF contract]] and [[#ut-079-1][UT079.1 - Inset backdrop composition is visually acceptable]].
 
 ** AC079.2 - Solid backdrop uses the configured colour :ac:
@@ -179,7 +179,7 @@ A script author can select a coordinated full-page backdrop without replacing th
 - Boundary :: Typed configuration loading and the Go cover preparation pipeline.
 - Setup :: Equivalent YAML and dotted Org image/solid cases, an absent-backdrop case, and named strict-key, mode, colour, blur and mapping boundary cases.
 - Action :: Load each configuration and prepare variants from a small patterned PNG.
-- Expected :: Every new leaf is present in the recognized dotted Org path inventory, and equivalent source forms resolve the same typed values. Image mode produces one full-page-aspect derivative whose longest pixel axis is at most =512= without upscaling a smaller source; solid mode produces no derivative; inactive mode-specific values may remain from lower layers without affecting output; invalid active values name the full path; absent-backdrop output matches the established plan.
+- Expected :: Every new leaf is present in the recognized dotted Org path inventory, and equivalent source forms resolve the same typed values. Image mode produces one JPEG full-page-aspect derivative whose longest pixel axis is at most =512= without upscaling a smaller source; solid mode produces no derivative; inactive mode-specific values may remain from lower layers without affecting output; invalid active values name the full path; absent-backdrop output matches the established plan.
 - Retention :: Persistent regression suite under =make test=.
 
 ** RT079.2 - Backdrop and overlay treatments resolve by region :testdef:
@@ -268,14 +268,14 @@ A script author can select a coordinated full-page backdrop without replacing th
 *** Components and responsibilities
 
 - Configuration extends =CoverImage= with a typed backdrop value after strict nested validation.
-- Cover preparation derives an optional bounded PNG for image mode and reuses existing cleanup and publication failure paths.
+- Cover preparation derives an optional bounded JPEG for image mode and reuses existing cleanup and publication failure paths.
 - Template data supplies backdrop mode, asset or colour, wash fill and default text fill without exposing source literals as Typst code.
 - The Typst title page paints the backdrop full bleed before placing the existing sharp inset and live text.
 
 *** Reuse, shared behaviour and variation
 
 - Shared operation :: Reuse existing cover decode, image treatment, blur, light/dark-to-text-fill resolver, source limits and atomic conversion.
-- Variation :: Image mode supplies a derived PNG; solid mode supplies a validated colour; none supplies no backdrop.
+- Variation :: Image mode supplies a derived JPEG; solid mode supplies a validated colour; none supplies no backdrop.
 
 *** Boundaries and dependencies
 
@@ -287,7 +287,7 @@ A script author can select a coordinated full-page backdrop without replacing th
 1. Load and validate the effective strict =folio.cover-image= block.
 2. Resolve and bound the original cover source as today.
 3. Prepare the sharp inset through the existing optional Superscale path.
-4. For image backdrop mode, independently treat the original source, centre-crop it to the physical page aspect, downsample it to at most =512= pixels on the longest axis without upscaling, and apply the configured physical blur.
+4. For image backdrop mode, independently treat the original source, centre-crop it to the physical page aspect, downsample it to at most =512= pixels on the longest axis without upscaling, apply the configured physical blur, and encode the opaque result as JPEG at fixed quality =85=.
 5. Render the backdrop full bleed, then the unchanged sharp inset and live text; publish through the existing atomic PDF route.
 
 *** Interfaces and configuration
@@ -324,7 +324,7 @@ folio:
 
 *** Data and state
 
-- The only new state is an optional prepared PNG inside the existing unique temporary cover directory. Existing cleanup removes it on success, failure or interruption.
+- The only new state is an optional prepared JPEG inside the existing unique temporary cover directory. Existing cleanup removes it on success, failure or interruption.
 - Source images, configuration files and the installed application remain unchanged.
 
 *** Failure behaviour
@@ -354,6 +354,12 @@ folio:
 - Decision :: Centre-crop before downsampling, cap the longest axis at =512= pixels and never upscale a smaller source.
 - Rationale :: The derivative is intentionally blurred and stretched; a bounded raster avoids processing and embedding a second full-resolution image without reducing the sharp inset's quality.
 - Verification :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]] checks dimensions, crop aspect and smoothing; [[#at-079-1][AT079.1 - Rendered inset backdrops follow the PDF contract]] checks the rendered distinction between backdrop and inset.
+
+*** Encode the blurred derivative as JPEG
+
+- Decision :: Encode only the opaque blurred full-page derivative as JPEG at fixed quality =85=; retain the sharp inset's existing PNG preparation.
+- Rationale :: The backdrop has no transparency or useful hard-edge fidelity after treatment and blur. Lossless PNG increases temporary and embedded PDF size without preserving a visible property required by this image profile.
+- Verification :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]] checks the derivative format and dimensions; [[#at-079-1][AT079.1 - Rendered inset backdrops follow the PDF contract]] continues to verify the rendered smooth-backdrop/sharp-inset distinction.
 
 ** Routine details left to implementation
 
