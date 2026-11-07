@@ -2,4 +2,37 @@ schema: sdlc-audit-record/v1
 ticket: W075
 history: []
 resets: []
-reviews: []
+reviews:
+  - id: definition-c1-r1
+    timestamp: "2026-11-07T14:44:07Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "618a9108db428dad56c1045fd4d34003e88453c2"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "ISSUES.md, ARCHITECTURE.md, TESTING.md, CODING.md, SECURITY.md, DOCUMENTATION.md, ORG-SCHEMA.md and REVIEW.md as deployed on 2026-11-07"
+      - "Project ODT product and architecture authorities at 618a9108db428dad56c1045fd4d34003e88453c2"
+      - "W073 shared contract, native editable ODT output and PDF-DOCX-ODT delivery sequence"
+    evidence:
+      - "tickets/075-script-title-image-odt/spec.org at 618a9108db428dad56c1045fd4d34003e88453c2"
+      - "Native ODT page, drawing, picture, manifest and layout boundaries inspected before candidate freeze"
+      - "Five ACs trace to two RTs, two ATs and one meaningful editor round-trip UT; all internal anchors resolve"
+      - "Rendered AT uses the established isolated soffice boundary with fixed geometry tolerances; sanitize and git diff --check passed"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
+      - "Delivery depends on W073 and follows W074 so cross-format lessons can be retained."
