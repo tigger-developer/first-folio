@@ -3,6 +3,7 @@
 package app
 
 import (
+	"html"
 	"image"
 	"image/color"
 	"image/jpeg"
@@ -10,6 +11,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -237,6 +240,94 @@ func TestRT073_2DodgeFitAcceptsExactHeightAndRejectsPointOneOver(t *testing.T) {
 	}
 }
 
+func TestRT073_2CoverVariantsApplyImageTreatmentAndPhysicalBlur(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "checker.png")
+	img := image.NewRGBA(image.Rect(0, 0, 21, 21))
+	for y := 0; y < 21; y++ {
+		for x := 0; x < 21; x++ {
+			value := uint8(0)
+			if (x+y)%2 == 0 {
+				value = 255
+			}
+			img.SetRGBA(x, y, color.RGBA{R: value, G: value, B: value, A: 255})
+		}
+	}
+	file, err := os.Create(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := png.Encode(file, img); err != nil || file.Close() != nil {
+		t.Fatalf("writing checker: %v", err)
+	}
+	plan := &coverImagePlan{
+		Config:     config.CoverImage{ImageTreatment: "dark", ImageOpacity: 0.5, OverlayBlur: "2mm"},
+		SourcePath: path, PixelWidth: 21, PixelHeight: 21, RenderedWidthMM: 10, RenderedHeightMM: 10,
+	}
+	prepared, err := prepareCoverVariants(plan, dir)
+	if err != nil {
+		t.Fatalf("preparing variants: %v", err)
+	}
+	treated := decodeW073PNG(t, prepared.ImagePath)
+	blurred := decodeW073PNG(t, prepared.BlurredPath)
+	r, _, _, _ := treated.At(0, 0).RGBA()
+	if r>>8 < 120 || r>>8 > 135 {
+		t.Fatalf("dark treatment pixel=%d, want approximately 128", r>>8)
+	}
+	r, _, _, _ = blurred.At(10, 10).RGBA()
+	if r>>8 < 45 || r>>8 > 90 {
+		t.Fatalf("blurred checker centre=%d, want smoothed treated value", r>>8)
+	}
+}
+
+func TestRT073_2OverlayAndDodgeUseLiveMeasuredText(t *testing.T) {
+	requireW073Tools(t)
+	t.Run("overlay", func(t *testing.T) {
+		dir := t.TempDir()
+		t.Setenv("HOME", t.TempDir())
+		source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "overlay.pdf")
+		writeAppFile(t, source, "#+TITLE: LIVEOVERLAY\n* ACT ONE\n**** CÁIT\nBody.\n")
+		writeW073PNG(t, filepath.Join(dir, "cover.png"), 600, 900, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+		writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  cover-image:\n    path: cover.png\n    mode: background\n    overlay:\n      blur: 2mm\n      padding: 5mm\n      wash:\n        treatment: dark\n        opacity: 80%\n")
+		status, _, stderr := runApp(t, "convert", source, target)
+		if status != 0 {
+			t.Fatalf("status=%d stderr=%s", status, stderr)
+		}
+		if !strings.Contains(w073PDFText(t, target), "LIVEOVERLAY") {
+			t.Fatal("overlay title is not live PDF text")
+		}
+		page := rasterW073Page(t, target, 1)
+		if _, ok := w073ColourBounds(page); !ok {
+			t.Fatal("overlay background image absent")
+		}
+	})
+
+	for _, position := range []string{"center", "third"} {
+		t.Run("dodge "+position, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Setenv("HOME", t.TempDir())
+			source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "dodge.pdf")
+			writeAppFile(t, source, "#+TITLE: UPPERREGRESSION\n#+AUTHOR: LOWERREGRESSION\n* ACT ONE\n**** CÁIT\nBody.\n")
+			writeW073PNG(t, filepath.Join(dir, "cover.png"), 400, 200, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n    title:\n      position: "+position+"\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 100mm\n")
+			status, _, stderr := runApp(t, "convert", source, target)
+			if status != 0 {
+				t.Fatalf("status=%d stderr=%s", status, stderr)
+			}
+			page := rasterW073Page(t, target, 1)
+			imageBox, ok := w073ColourBounds(page)
+			if !ok {
+				t.Fatal("dodge image absent")
+			}
+			upper := w073WordBounds(t, target, "UPPERREGRESSION")
+			lower := w073WordBounds(t, target, "LOWERREGRESSION")
+			if upper.yMax >= float64(imageBox.Min.Y) || lower.yMin <= float64(imageBox.Max.Y) {
+				t.Fatalf("dodge overlap position=%s image=%v upper=%#v lower=%#v", position, imageBox, upper, lower)
+			}
+		})
+	}
+}
+
 func TestRT073_3SuperscaleInvocationAndFallbackAreDeterministic(t *testing.T) {
 	requireW073Tools(t)
 	for _, tc := range []struct {
@@ -436,6 +527,20 @@ func rasterW073Page(t *testing.T, pdf string, page int) image.Image {
 	return img
 }
 
+func decodeW073PNG(t *testing.T, path string) image.Image {
+	t.Helper()
+	file, err := os.Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+	img, err := png.Decode(file)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return img
+}
+
 func w073ColourBounds(img image.Image) (image.Rectangle, bool) {
 	bounds := img.Bounds()
 	box := image.Rect(bounds.Max.X, bounds.Max.Y, bounds.Min.X, bounds.Min.Y)
@@ -522,4 +627,51 @@ func assertNoW073TemporaryOutput(t *testing.T, root string) {
 			t.Fatalf("temporary cover output remains: %s", entry.Name())
 		}
 	}
+}
+
+func w073PDFText(t *testing.T, path string) string {
+	t.Helper()
+	raw, err := exec.Command("pdftotext", path, "-").CombinedOutput()
+	if err != nil {
+		t.Fatalf("extracting PDF text: %v: %s", err, raw)
+	}
+	return string(raw)
+}
+
+type wordBoundsW073 struct {
+	xMin, yMin, xMax, yMax float64
+}
+
+func (b wordBoundsW073) centerY() float64 { return (b.yMin + b.yMax) / 2 }
+
+var wordREW073 = regexp.MustCompile(`<word xMin="([0-9.]+)" yMin="([0-9.]+)" xMax="([0-9.]+)" yMax="([0-9.]+)">([^<]+)</word>`)
+
+func w073WordBounds(t *testing.T, path, marker string) wordBoundsW073 {
+	t.Helper()
+	raw, err := exec.Command("pdftotext", "-bbox", path, "-").CombinedOutput()
+	if err != nil {
+		t.Fatalf("extracting PDF word bounds: %v: %s", err, raw)
+	}
+	for _, match := range wordREW073.FindAllStringSubmatch(string(raw), -1) {
+		if html.UnescapeString(match[5]) != marker {
+			continue
+		}
+		values := [4]float64{}
+		for i := range values {
+			values[i], err = strconv.ParseFloat(match[i+1], 64)
+			if err != nil {
+				t.Fatalf("parsing PDF bound %q: %v", match[i+1], err)
+			}
+		}
+		return wordBoundsW073{xMin: values[0], yMin: values[1], xMax: values[2], yMax: values[3]}
+	}
+	t.Fatalf("word %q not found in PDF bounds", marker)
+	return wordBoundsW073{}
+}
+
+func absoluteFloatW073(value float64) float64 {
+	if value < 0 {
+		return -value
+	}
+	return value
 }

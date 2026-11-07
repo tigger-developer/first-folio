@@ -7,13 +7,9 @@ package app
 import (
 	"encoding/binary"
 	"hash/crc32"
-	"html"
 	"image/color"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"regexp"
-	"strconv"
 	"strings"
 	"testing"
 )
@@ -329,53 +325,6 @@ type imagePointW073 struct{ x, y int }
 func isW073Magenta(value color.Color) bool {
 	r, g, b, _ := value.RGBA()
 	return int(r>>8) >= w073MagentaThreshold && int(g>>8) <= 80 && int(b>>8) >= 100
-}
-
-func w073PDFText(t *testing.T, path string) string {
-	t.Helper()
-	raw, err := exec.Command("pdftotext", path, "-").CombinedOutput()
-	if err != nil {
-		t.Fatalf("extracting PDF text: %v: %s", err, raw)
-	}
-	return string(raw)
-}
-
-type wordBoundsW073 struct {
-	xMin, yMin, xMax, yMax float64
-}
-
-func (b wordBoundsW073) centerY() float64 { return (b.yMin + b.yMax) / 2 }
-
-var wordREW073 = regexp.MustCompile(`<word xMin="([0-9.]+)" yMin="([0-9.]+)" xMax="([0-9.]+)" yMax="([0-9.]+)">([^<]+)</word>`)
-
-func w073WordBounds(t *testing.T, path, marker string) wordBoundsW073 {
-	t.Helper()
-	raw, err := exec.Command("pdftotext", "-bbox", path, "-").CombinedOutput()
-	if err != nil {
-		t.Fatalf("extracting PDF word bounds: %v: %s", err, raw)
-	}
-	for _, match := range wordREW073.FindAllStringSubmatch(string(raw), -1) {
-		if html.UnescapeString(match[5]) != marker {
-			continue
-		}
-		values := [4]float64{}
-		for i := range values {
-			values[i], err = strconv.ParseFloat(match[i+1], 64)
-			if err != nil {
-				t.Fatalf("parsing PDF bound %q: %v", match[i+1], err)
-			}
-		}
-		return wordBoundsW073{xMin: values[0], yMin: values[1], xMax: values[2], yMax: values[3]}
-	}
-	t.Fatalf("word %q not found in PDF bounds", marker)
-	return wordBoundsW073{}
-}
-
-func absoluteFloatW073(value float64) float64 {
-	if value < 0 {
-		return -value
-	}
-	return value
 }
 
 func writeW073PNGHeader(t *testing.T, path string, width, height uint32) {

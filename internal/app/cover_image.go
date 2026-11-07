@@ -32,3 +32,11 @@ func planCoverImage(_ config.Config, _ string) (*coverImagePlan, error) {
 func validateDodgeGroupFit(_ string, _, _ float64) error {
 	return fmt.Errorf("folio.cover-image dodge fit validation is not implemented")
 }
+
+type preparedCoverVariants struct {
+	ImagePath, BlurredPath string
+}
+
+func prepareCoverVariants(_ *coverImagePlan, _ string) (preparedCoverVariants, error) {
+	return preparedCoverVariants{}, fmt.Errorf("folio.cover-image treatment preparation is not implemented")
+}
