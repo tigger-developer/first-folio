@@ -80,10 +80,10 @@
   #       weight: bold
   #       style: regular
   #     case-transform: as-written   # upper | lower | as-written | small-caps
-  #     position: third          # third | top | center | bottom
+  #     position: third          # script group at 30%; center is cover-dodge only
   #     space-before: 0
   #   subtitle:
-  #     align: center
+  #     align: center            # retained; title.align controls the grouped output
   #     font:
   #       size: 14pt
   #       style: italic
@@ -252,7 +252,7 @@
   #     show-number: false
   #   chapter:
   #     page-break-before: true
-  #     position: one-third       # top | one-third | center/middle | 15% | 20mm | 4em
+  #     position: one-third
   #     align: center
   #     number-reset: never         # default; per-part restarts at each part
   #     number-format: "1"          # 1, I, i, or part.chapter such as I.1

@@ -88,10 +88,14 @@ folio:
         style: regular
         letter-spacing: 0em
       case-transform: as-written
+      # Script title-group position. Use third for ordinary/overlay output;
+      # center is additionally meaningful for inset cover-image dodge placement.
+      # Percentages, lengths and manuscript's one-third spelling are not script values.
       position: third
       space-before: 0
 
     subtitle:
+      # Script subtitle/author alignment currently follows title.align as one group.
       align: center
       font:
         family: Libertinus Sans
@@ -564,12 +568,10 @@ folio:
       blank-page-after: false
       skip-header: false
       skip-footer: false
-      # Vertical space before the chapter heading in every rendered format:
-      # one-third = 30%, center (alias middle) = 50%, and top = 0%.
-      # A non-negative length (for example 20mm or 4em) or percentage (for example
-      # 15%) is also accepted. This is preceding flow space, not an absolute
-      # position measured from a page edge. It applies only to chapter.position;
-      # part.vertical-align instead uses top, center/middle/horizon, or bottom.
+      # Vertical space before the chapter heading: one-third (alias third) = 30%,
+      # center (alias middle) = 50%, top = 0%. Other values are passed to Typst's
+      # v() unchanged; use a length such as 20mm or 4em, or a percentage like 15%.
+      # This is preceding space, not an absolute position measured from the edge.
       position: one-third
       align: center
       case-transform: as-written

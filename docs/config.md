@@ -144,6 +144,31 @@ column. US scripts inherit `same-line`; screenplay explicitly uses `new-line`.
 
 The effective CLI layout overrides are `--font`, `--font-size`, `--margin`, and `--page`; `--style` selects the preset layer. Other layout changes belong in `script.yaml`. See `folio convert --help` for the public CLI surface.
 
+#### Script title and subtitle placement
+
+`folio.title-page.title.position` controls the vertical offset of the grouped
+script title, subtitle and author on a dedicated title page. The portable
+script value is `third`, which places the group after 30% preceding page space.
+Compact mode ignores this field because the title group joins the first content
+page.
+
+For an inset cover image with `placement: dodge`, W073 additionally recognizes
+`center`: the upper title/subtitle group and lower author/date/version group are
+centred within their respective available regions. `third` places each group
+one-third of the way through its available region. Use the exact spelling
+`third` for script output. `one-third`, arbitrary percentages and lengths are
+manuscript chapter-position syntax, not script title-position syntax. Existing
+non-`third` values on an ordinary or overlay script title page retain the
+legacy 40% fallback; they do not express their apparent percentage or named
+position.
+
+`folio.title-page.title.align` accepts `left`, `center`, or `right` and currently
+aligns the complete title/subtitle/author group in PDF, DOCX and ODT. Although
+the schema retains `subtitle.align` and `author.align`, the script renderers do
+not independently place those grouped items. Subtitle vertical spacing is
+controlled by `folio.title-page.subtitle.space-before`; its font block controls
+subtitle typography. There is no script `subtitle.position` field.
+
 #### Compact script title block
 
 `folio.title-page.enabled` defaults to `true`, preserving the separate title page when a script has a title. Set it to `false` for page-limited submissions:
@@ -424,21 +449,6 @@ The `part` and `chapter` blocks share this shape:
 | `number-format`, `show-number`, `show-name` | Number/name presentation |
 | `explicit-numbering` | Use `derived` source order or `source` number text |
 | `number-reset` | `never` or, for chapters, `per-part` |
-
-`folio.manuscript.chapter.position` is vertical space inserted before a chapter
-heading. Portable named values are `top` (`0%`), `one-third` (`30%`), and
-`center` or `middle` (`50%`). It also accepts a non-negative `pt`, `mm`, `cm`,
-`in`, or `em` length, or a percentage such as `15%`. Percentages are relative
-to the available page height; lengths are physical or font-relative. These
-values remain flow spacing, so they do not establish an absolute coordinate
-from the page edge.
-
-This value applies only to `chapter.position`. `folio.manuscript.part.vertical-align`
-is a separate placement enum: `top`, `center`/`middle`/`horizon`, or `bottom`.
-It does not accept percentages or lengths. The part and chapter `align` fields
-are horizontal only and accept `left`, `center`, or `right`. The historical
-PDF-only `third` spelling is not portable to DOCX or ODT; use `one-third` for
-consistent conversion across formats.
 
 The `copyright` block accepts:
 
@@ -880,6 +890,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.40 (2026-11-07): Distinguish script title/subtitle grouping and cover-dodge positions from manuscript chapter spacing.
 
 - 0.39 (2026-11-07): Align the documented British body default with Libertinus Sans and add the public cover-image example.
 
