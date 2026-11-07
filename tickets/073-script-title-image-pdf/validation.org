@@ -9,7 +9,7 @@
 ** GREEN AT073.1 - Rendered PDF geometry follows the image contract :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-1-result
-:REVISION: 22a39614d1cb7b7432e5c0315591ff8b347480d7
+:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
 :EVIDENCE: The built CLI produced measured A4 centre crop, both requested longest-axis inset examples, localized treated overlay with live metadata, both dodge positions, explicit two-sided dodge clearance and an unchanged later body page.
 :END:
@@ -19,11 +19,12 @@
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN; all marker raster, live-text, relative-position and unchanged-body assertions passed.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; built-binary geometry included explicit =50mm= upper/lower dodge clearance, with extracted glyph-bound tolerance for font overhang.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; all built-binary AT073 geometry assertions passed.
+- Runs :: 2026-11-07 at =d31304e=: GREEN; the built binary rendered a =210mm= square inset with =5mm= clearance by using title-page margin space while keeping both groups within physical page edges.
 
 ** GREEN AT073.2 - Invalid and unsupported cover input fails atomically :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-2-result
-:REVISION: 22a39614d1cb7b7432e5c0315591ff8b347480d7
+:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
 :EVIDENCE: The built CLI rejected malformed cover input, unsupported consumers, source-limit violations, measured dodge overflow and post-clearance upper/lower boundary overflow with field-specific diagnostics while preserving existing or absent targets; no-cover PDF and Typst controls passed.
 :END:
@@ -33,11 +34,12 @@
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN; every rejection, publication-state and no-cover control passed.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; post-clearance overflow retained named upper/lower diagnostics and atomic publication.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; all invalid-input and atomic-publication assertions passed.
+- Runs :: 2026-11-07 at =d31304e=: GREEN; physical-page overflow remains named and atomic after margin space became available to clearance adjustments.
 
 ** GREEN AT073.3 - Public Superscale fallback preserves PDF output :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-3-result
-:REVISION: 22a39614d1cb7b7432e5c0315591ff8b347480d7
+:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
 :EVIDENCE: Missing, non-zero and unusable Superscale cases each emitted one bounded warning, produced the original-image PDF geometry and left no First Folio temporary output.
 :END:
@@ -47,13 +49,14 @@
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN through the built public command with real Typst and controlled missing or synthetic Superscale.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; unchanged Superscale cases passed after the dodge-clearance amendment.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; all public Superscale fallback assertions passed.
+- Runs :: 2026-11-07 at =d31304e=: GREEN; public Superscale fallback assertions remain unchanged and passing.
 
 * Automated regression
 
 ** GREEN RT073.1 - Cover-image configuration, keys and source limits are validated :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-1-result
-:REVISION: 22a39614d1cb7b7432e5c0315591ff8b347480d7
+:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
 :EVIDENCE: Typed defaults, strict nested keys, dodge-padding defaults and units, Org source-path availability, source-relative PNG/JPEG planning, physical geometry and exact source-resource boundaries all passed.
 :END:
@@ -63,13 +66,14 @@
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN in =internal/config= and =internal/app=.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; =dodge.padding= accepted positive =em=/=mm= values, rejected invalid units and overlay use, and defaulted to =1em=.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; typed configuration and Org source-path assertions passed.
+- Runs :: 2026-11-07 at =d31304e=: GREEN; typed configuration and Org source-path assertions remain unchanged and passing.
 
 ** GREEN RT073.2 - Typst output contains the resolved title-image layout :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-2-result
-:REVISION: 22a39614d1cb7b7432e5c0315591ff8b347480d7
+:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
-:EVIDENCE: Compiled PDFs passed treatment and physical-blur preparation, live overlay, centre/third dodge, post-placement clearance across accepted font units, exact-fit comparison, image-only title, named upper/lower overflow and no-cover preservation assertions.
+:EVIDENCE: Compiled PDFs passed treatment and physical-blur preparation, live overlay, centre/third dodge, post-placement clearance across accepted font units and title-page margins, exact-fit comparison, image-only title, named upper/lower physical-page overflow and no-cover preservation assertions.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]], [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]] and [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
@@ -77,11 +81,12 @@
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN through the real Typst compiler.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; increasing padding from =50mm= to =60mm= moved each clamped group by the full =10mm= while image geometry remained unchanged.
 - Runs :: 2026-11-07 at =22a3961=: GREEN; =1em= with a =10mm= root font matched explicit =10mm= dodge placement after remediation of the self-review finding.
+- Runs :: 2026-11-07 at =d31304e=: GREEN; both =1em= and =5mm= rendered the reported =210mm= square-image geometry using margin space without altering raw centre/third placement.
 
 ** GREEN RT073.3 - Superscale invocation and fallback are deterministic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-3-result
-:REVISION: 22a39614d1cb7b7432e5c0315591ff8b347480d7
+:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
 :EVIDENCE: Null, missing, non-zero, unusable, default, 2x, 4x and 8x cases passed exact argv, selected-pixel, fallback-warning and cleanup assertions; process interruption returned a named error and removed temporary output.
 :END:
@@ -91,12 +96,17 @@
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN, including the added interruption and temporary-directory cleanup case.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; unchanged deterministic Superscale and cleanup cases passed after the amendment.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; deterministic Superscale and cleanup assertions passed.
+- Runs :: 2026-11-07 at =d31304e=: GREEN; deterministic Superscale and cleanup assertions remain unchanged and passing.
 
 * Delivery checks
 
 - 2026-11-07 at =22a3961=: =make test= GREEN; =internal/app= completed in =410.844s= and =internal/manuscript= in =103.794s=; every remaining package passed or was validly cached.
 - 2026-11-07 at =22a3961=: =make lint= GREEN.
 - 2026-11-07 at =22a3961=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
+- 2026-11-07 at =d31304e=: the exact =i-speak-vladimir.org= source and local configuration produced a =26=-page PDF through a temporary repository build; page one was raster-inspected for upper and lower margin placement.
+- 2026-11-07 at =d31304e=: =make test= GREEN; =internal/app= completed in =421.178s= and =internal/manuscript= in =106.398s=; every remaining package passed or was validly cached.
+- 2026-11-07 at =d31304e=: =make lint= GREEN.
+- 2026-11-07 at =d31304e=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
 
 * User tests
 

@@ -451,6 +451,41 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "UT073.1 - Script title images are visually acceptable remains AMBER for operator inspection."
       - "W074 DOCX and W075 ODT cover-image rendering remain out of scope and configured covers are rejected there."
+  - id: delivery-code-c1-r4
+    timestamp: "2026-11-07T21:50:53Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 4
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "d31304e3b969bd485bd1a56169274293b1dfa885"
+      delta: "validation.org diff sha256 5e93b9f7462a7b820d3e045a6be6ebd7b11763bf9b52ba431af0d2e60e9392fa"
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Approved W073 PDF-only requirements, solution design and amended AC073.16 physical-page clearance boundary"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORG-SCHEMA.md, GO.md, REVIEW.md and SELF-AUDIT.md as deployed on 2026-11-07"
+      - "Delivery-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "The reported 976 by 976 source image at 210mm leaves 18.5mm inside a 25mm-margin content rectangle. The former check rejected title/subtitle height plus 1em or 5mm even though the physical top margin remained available."
+      - "RT073.2 reproduces the 210mm square-image composition with both 1em and 5mm and asserts upper and lower live-text bounds remain between the image and physical page edges. AT073.1 exercises the same geometry through the built public binary."
+      - "The Typst template retains its original centre/third calculation against the margin-bounded region, then permits only the post-placement clearance clamp to enter equal page-margin space; upper and lower checks remain symmetric and retain named atomic failure beyond the physical page."
+      - "The exact i-speak-vladimir.org source and local script.yaml produced a 26-page PDF through a temporary repository build; page one was raster-inspected and showed title/subtitle above the image and author/date/version below it. The installed dist/folio target was not replaced."
+      - "At d31304e, focused RT073 and built-binary AT073 commands passed; make test passed all packages with internal/app 421.178s and internal/manuscript 106.398s; make lint passed; make vulncheck reported no vulnerabilities; git diff --check passed."
+      - "The specification, configuration reference and architecture describe the unchanged raw region, margin-using clearance adjustment and physical-page failure boundary; sanitize produced no documentation change."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT073.1 - Script title images are visually acceptable remains AMBER for operator inspection."
+      - "W074 DOCX and W075 ODT cover-image rendering remain out of scope and configured covers are rejected there."
   - id: test-code-c1-r5
     timestamp: "2026-11-07T20:07:19Z"
     profile: SDLC
