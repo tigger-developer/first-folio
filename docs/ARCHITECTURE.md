@@ -165,7 +165,8 @@ The renderer-neutral `folio.cover-image` model is validated by the shared
 configuration loader, while W073 adopts it only in the dedicated script PDF
 route. `internal/app` resolves assets from the source document, validates PNG
 or JPEG headers and bounded source dimensions, optionally invokes Superscale
-with literal arguments, and prepares normalized and blurred temporary PNGs.
+with literal arguments, and prepares normalized sharp PNGs and blurred JPEG
+backdrops.
 The script Typst template owns background cover-crop, inset geometry, localized
 overlay regions and dodge composition. Dodge placement first measures and
 positions each live-text group in the region bounded by the actual image edge,
@@ -179,7 +180,7 @@ clearance collision fails before atomic publication. One validated script-title
 position resolver preserves named compatibility aliases while projecting a
 literal percentage unchanged into ordinary, overlay and dodge geometry.
 For inset backdrops, the Go preparation boundary independently derives a
-page-aspect PNG from the original bounded source, before any optional
+page-aspect JPEG at fixed quality 85 from the original bounded source, before any optional
 Superscale selection for the sharp inset. It applies the shared treatment,
 centre-crops, downsamples to a 512-pixel longest-axis ceiling without upscaling
 and applies the configured physical blur. Solid backdrops remain validated
@@ -217,6 +218,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.30 (2026-11-07): Record the fixed-quality JPEG boundary for generated blurred image backdrops.
 
 - 0.29 (2026-11-07): Add bounded original-source image and solid-colour backdrops to the inset script PDF composition path.
 

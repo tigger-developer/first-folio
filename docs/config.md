@@ -268,8 +268,9 @@ An inset backdrop fills the complete title page behind the unchanged sharp
 inset. Image mode independently derives the backdrop from the original bounded
 cover source, applies the same image treatment, centre-crops to the physical
 page ratio, downsamples to at most 512 pixels on its longest axis without
-upscaling smaller input, then applies `backdrop.image.blur`. Superscale remains
-exclusive to the sharp inset. Solid mode paints the exact configured colour
+upscaling smaller input, then applies `backdrop.image.blur` and encodes the
+result as JPEG at a fixed quality of 85. Superscale remains exclusive to the
+sharp PNG inset. Solid mode paints the exact configured colour
 before the optional wash.
 
 Backdrop treatment controls title-page text outside a localized overlay. When
@@ -957,6 +958,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.45 (2026-11-07): Document fixed-quality JPEG encoding for generated blurred image backdrops.
 
 - 0.44 (2026-11-07): Add full-bleed blurred-image and exact solid-colour backdrops behind sharp inset script PDF covers.
 

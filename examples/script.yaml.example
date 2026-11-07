@@ -114,10 +114,10 @@
   #   superscale: null          # null | default | 2x | 4x | 8x
   #   dodge:
   #     padding: 1em            # positive em/mm clearance after centre/third placement
-  #   backdrop:                 # inset only; full-page layer behind the unchanged sharp image
+  #   backdrop:                 # inset only; full-page JPEG layer behind the sharp PNG
   #     mode: image             # none | image | solid
   #     image:
-  #       blur: 8mm             # positive mm; derived from original, max 512px, no upscaling
+  #       blur: 8mm             # positive mm; max 512px, no upscaling, JPEG quality 85
   #     solid:
   #       color: "#2a2524"      # exact #RRGGBB, required for solid mode
   #     wash:

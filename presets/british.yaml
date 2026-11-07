@@ -162,10 +162,10 @@ folio:
   #   superscale: null          # null disables; default, 2x, 4x or 8x requests Superscale.
   #   dodge:
   #     padding: 1em            # Positive em/mm clearance applied after centre/third placement.
-  #   backdrop:                 # Inset only: optional full-page layer behind the sharp image.
+  #   backdrop:                 # Inset only: optional full-page JPEG layer behind the sharp PNG.
   #     mode: image             # none disables a lower layer; image and solid enable a backdrop.
   #     image:
-  #       blur: 8mm             # Positive mm blur; original source is capped at 512px, never upscaled.
+  #       blur: 8mm             # Positive mm blur; capped at 512px, never upscaled, JPEG quality 85.
   #     solid:
   #       color: "#2a2524"      # Exact #RRGGBB value required only for solid mode.
   #     wash:

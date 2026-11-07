@@ -1,5 +1,5 @@
 // ABOUTME: Resolves, bounds, optionally upscales, and prepares script cover images.
-// ABOUTME: Produces renderer-neutral physical geometry and temporary treated PNG variants.
+// ABOUTME: Produces renderer-neutral physical geometry and temporary treated image variants.
 package app
 
 import (
@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	_ "image/jpeg"
+	"image/jpeg"
 	"image/png"
 	"io"
 	"math"
@@ -22,9 +22,10 @@ import (
 )
 
 const (
-	coverSourceByteLimit  int64  = 100 * 1024 * 1024
-	coverSourceAxisLimit  uint32 = 32768
-	coverSourcePixelLimit uint64 = 100_000_000
+	coverSourceByteLimit     int64  = 100 * 1024 * 1024
+	coverSourceAxisLimit     uint32 = 32768
+	coverSourcePixelLimit    uint64 = 100_000_000
+	coverBackdropJPEGQuality        = 85
 )
 
 type coverImagePlan struct {
@@ -273,8 +274,8 @@ func prepareCoverVariants(plan *coverImagePlan, dir string) (preparedCoverVarian
 		if radius < 1 {
 			radius = 1
 		}
-		backdropPath = filepath.Join(dir, "backdrop.png")
-		if err := writeCoverPNG(backdropPath, boxBlurCoverImage(backdrop, radius)); err != nil {
+		backdropPath = filepath.Join(dir, "backdrop.jpg")
+		if err := writeCoverJPEG(backdropPath, boxBlurCoverImage(backdrop, radius)); err != nil {
 			return preparedCoverVariants{}, err
 		}
 	}
@@ -457,6 +458,21 @@ func writeCoverPNG(path string, img image.Image) error {
 	}
 	if err := file.Close(); err != nil {
 		return fmt.Errorf("closing prepared folio.cover-image: %w", err)
+	}
+	return nil
+}
+
+func writeCoverJPEG(path string, img image.Image) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return fmt.Errorf("creating prepared folio.cover-image backdrop: %w", err)
+	}
+	if err := jpeg.Encode(file, img, &jpeg.Options{Quality: coverBackdropJPEGQuality}); err != nil {
+		_ = file.Close()
+		return fmt.Errorf("encoding prepared folio.cover-image backdrop: %w", err)
+	}
+	if err := file.Close(); err != nil {
+		return fmt.Errorf("closing prepared folio.cover-image backdrop: %w", err)
 	}
 	return nil
 }
