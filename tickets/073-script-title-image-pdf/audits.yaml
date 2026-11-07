@@ -104,3 +104,79 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
       - "Visual contrast remains subject to UT073.1 because source imagery and selected opacity vary."
+  - id: definition-c1-r4
+    timestamp: "2026-11-07T15:24:39Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 4
+    method: independent
+    reviewer: fresh isolated native sub-agent
+    recorder: current author session
+    separation: fresh isolated context; bounded original evidence supplied; no authoring conversation, reasoning or desired verdict inherited
+    candidate:
+      commit: "7b343937deac0c00579aaefb8a613ae3feb50665"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: FAIL
+    criteria:
+      - "INDEPENDENT-AUDITOR.md, READING.md and REVIEW.md as deployed on 2026-11-07"
+      - "ISSUES.md, ARCHITECTURE.md, TESTING.md, CODING.md, SECURITY.md, DOCUMENTATION.md, ORG-SCHEMA.md and selected Go standard as deployed on 2026-11-07"
+      - "Project profile, named product/configuration/architecture authorities, current title-page template, renderer, configuration loader, public conversion route and relevant tests"
+      - "Original operator requirements for the script-PDF cover-image configuration and Superscale integration"
+    evidence:
+      - "tickets/073-script-title-image-pdf/spec.org and audits.yaml at 7b343937deac0c00579aaefb8a613ae3feb50665"
+      - "README.md, docs/vision.md, docs/ARCHITECTURE.md, docs/config.md, templates/script.typ, internal/app/script_render.go and current configuration interfaces at the candidate revision"
+      - "superscale --help independently inspected by the reviewer"
+      - "Candidate contains ten ACs, three RTs, two ATs and one UT; record headings and tags are structurally present, no feedback file exists and no annotation record was found"
+    findings:
+      - id: F1
+        severity: blocking
+        location: "spec.org:354-358, 483-486, 490-495"
+        requirement: "ARCHITECTURE requires important resource and security decisions at definition; CODING requires explicit maximum sizes at untrusted-input boundaries."
+        evidence: "The design requires a bounded decoded size but delegates the pixel ceiling to delivery. No existing image limit is named, and the ceiling determines which valid inputs succeed or fail."
+        required_correction: "Define accepted dimensions, decoded-pixel and relevant byte limits, diagnostics and boundary behaviour; trace minimum, exact-limit and over-limit cases to tests."
+      - id: F2
+        severity: blocking
+        location: "spec.org:342-358, 424-436, 483-495; RT073.3 at 235-245"
+        requirement: "ARCHITECTURE requires material failure and resource bounds; CODING requires explicit failure handling rather than an indefinitely blocked operation."
+        evidence: "Superscale output capture is only called bounded; no process deadline, diagnostic ceiling, cancellation result or stalled-process case is specified. Existing project external writers use explicit deadlines and bounded diagnostics."
+        required_correction: "Define process deadline, stdout/stderr limits, cancellation/error diagnostic and cleanup outcome; add RT cases for a stalled process and output overflow."
+      - id: F3
+        severity: blocking
+        location: "spec.org:299-303, 342-373, 444-448"
+        requirement: "ARCHITECTURE requires significant algorithms and failure decisions to be resolved sufficiently for handoff."
+        evidence: "Oversized inset rejection depends on required text regions, but no component or mechanism measures rendered title groups or turns overflow into a pre-publication error."
+        required_correction: "Specify the measurement and constraint mechanism and failure boundary, with fitting, exact-boundary, just-over-boundary and long-metadata tests."
+      - id: F4
+        severity: blocking
+        location: "spec.org:401-416; docs/config.md:56-66; internal/config/config.go"
+        requirement: "ISSUES requires accurate resolved interface behaviour; ARCHITECTURE requires explicit compatibility decisions."
+        evidence: "The specification says unknown cover-image children fail under the existing policy, while the current loader deep-merges arbitrary mappings and the configuration authority says it is not a strict-schema validator."
+        required_correction: "Decide whether strict rejection is a new rule scoped to folio.cover-image and test an unknown child, or preserve current policy and remove the rejection claim."
+      - id: F5
+        severity: blocking
+        location: "AC073.9 at 190-196; RT073.3 at 235-245; AT073.2 at 259-269; UT073.1 at 271-280"
+        requirement: "TESTING requires user-visible CLI behaviour to be observed through the real public boundary."
+        evidence: "Missing-Superscale fallback is checked only with injected internals; AT073.2 covers located execution/output failure but not lookup absence, and UT073.1 covers only an installed executable."
+        required_correction: "Add a built-CLI automated case verifying successful conversion, one bounded stderr warning, original-image fallback, unchanged target geometry and no Superscale temporary output when PATH lacks Superscale."
+      - id: F6
+        severity: blocking
+        location: "AC073.6 at 166-172 and AC073.7 at 174-180"
+        requirement: "ISSUES requires atomic-enough falsifiable requirements and separate requirements where conditions fail independently."
+        evidence: "AC073.6 combines path resolution, input validation, combinations, unsupported consumers, diagnostics and atomicity. AC073.7 combines no-image compatibility with image-only title creation."
+        required_correction: "Split the independently failing outcomes into narrowly addressable criteria and preserve explicit test traceability for every condition."
+      - id: F7
+        severity: blocking
+        location: "Substantive prose throughout spec.org, notably 69-119, 211-280 and 334-514"
+        requirement: "ISSUES ABC presentation contract requires sparse native Org bold emphasis whose bold-only reading conveys the functional progression."
+        evidence: "Most scope, test definitions, design, security and handoff content has no semantic-spine emphasis."
+        required_correction: "Apply selective native Org bold emphasis across substantive sections without bolding whole sentences, identifiers or generic labels."
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Independent definition review only; implementation and tests were not executed and no delivery claim was assessed."
+      - "W074 and W075 content was not assessed."
+      - "The verdict applies only to candidate 7b343937deac0c00579aaefb8a613ae3feb50665 and is not operator approval."
