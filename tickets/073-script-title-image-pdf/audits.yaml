@@ -416,6 +416,71 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "The visual user test remains AMBER for operator review."
       - "W074 DOCX and W075 ODT rendering remain out of scope."
+  - id: test-code-c1-r5
+    timestamp: "2026-11-07T20:07:19Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 5
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "1bd38c09ac94c0dd61fa2297acf1dc75165e478e"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Approved W073 PDF-only acceptance criteria and test definitions"
+      - "Current British preset defaults and retained adjacent regression intent"
+      - "Test-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "The operator identified the intentional British default change from Libertinus Serif to Libertinus Sans; presets/british.yaml at the candidate confirms Sans for script, letter and manuscript roles."
+      - "Stale exact-default assertions in internal/config, internal/app and internal/manuscript were updated without changing their tested inheritance, role-isolation or output-shape behaviour."
+      - "No W073 RT or AT implementation changed after test-code round 4; the complete make test suite passed at the merged candidate."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT073.1 - Script title images are visually acceptable remains AMBER for operator inspection."
+  - id: delivery-code-c1-r2
+    timestamp: "2026-11-07T20:07:19Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "1bd38c09ac94c0dd61fa2297acf1dc75165e478e"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Approved W073 PDF-only requirements, solution design and test definitions"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORG-SCHEMA.md, GO.md, REVIEW.md and SELF-AUDIT.md as deployed on 2026-11-07"
+      - "Delivery-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "The W073 feature branch was merged to master at ac40dee; current master includes the renderer, tests, validation, README, configuration reference, architecture and canonical preset example."
+      - "make test passed all packages: internal/app 449.415s, internal/config 0.740s, internal/letter 1.115s, internal/manuscript 102.056s, with remaining packages passing or cached."
+      - "make lint passed; make vulncheck reported no vulnerabilities; delivery-code readiness is true; the worktree is clean and master matches origin/master."
+      - "presets/british.yaml now contains a disabled, fully described folio.cover-image example; docs/config.md and examples/script.yaml.example distinguish script title-group placement from manuscript chapter spacing."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "Round 1 incorrectly attributed Sans-versus-Serif failures to environment-sensitive configuration. The operator clarified, and repository inspection verified, that Sans was the intentional British preset default; the failures were stale assertions. This round supersedes that explanation."
+      - "UT073.1 - Script title images are visually acceptable remains AMBER for operator inspection."
+      - "W074 DOCX and W075 ODT cover-image rendering remain out of scope and configured covers are rejected there."
   - id: delivery-code-c1-r1
     timestamp: "2026-11-07T16:57:57Z"
     profile: SDLC
