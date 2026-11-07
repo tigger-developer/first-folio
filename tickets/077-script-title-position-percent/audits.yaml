@@ -37,3 +37,66 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "UT077.1 - Percentage placement is visually acceptable remains AMBER for operator inspection."
       - "D078 script source-versus-local precedence is separately registered and was not changed by D077."
+  - id: delivery-code-c1-r2
+    timestamp: "2026-11-07T22:51:26Z"
+    profile: emergency
+    gate: delivery-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "fd5b798e90e49bb2efa55e9b7fa8c78db615f27c"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D077 BYPASS-GATE-7 scope and reconciled acceptance criteria, test definitions and solution design"
+      - "Delivery-code criteria and standards recorded in delivery-code-c1-r1"
+      - "Delivery-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "Round 1 became stale when the retrospective definition review identified missing exact acceptance-boundary evidence. Commit fffd241 added successful public PDF conversions for 0% and 100%; the focused RT077.1 command passed."
+      - "The production implementation did not change after round 1. The final make test run at b1e3bb1 passed with internal/app completing in 414.539s and every remaining package passing or validly cached; make lint and make vulncheck passed."
+      - "The reconciled design documents shared parsing, ordinary/overlay and dodge projection, alias compatibility, failure timing, security boundaries and the separate D078 precedence defect."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT077.1 - Percentage placement is visually acceptable remains AMBER for operator inspection."
+  - id: definition-c1-r1
+    timestamp: "2026-11-07T22:51:26Z"
+    profile: emergency
+    gate: definition
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "fd5b798e90e49bb2efa55e9b7fa8c78db615f27c"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D077 BYPASS-GATE-7 outcome and the actual delivered behaviour"
+      - "ISSUES.md, ARCHITECTURE.md, TESTING.md, CODING.md, SECURITY.md, DOCUMENTATION.md, ORG-SCHEMA.md, REVIEW.md, SELF-AUDIT.md and EMERGENCY.md as deployed on 2026-11-07"
+    evidence:
+      - "The specification separates literal winning-value rendering from configuration precedence, bounds PDF-only scope, preserves named aliases and traces both acceptance criteria to a real compiled-PDF RT, reported-document OT and meaningful visual UT."
+      - "The retrospective design identifies configuration, renderer and template ownership; exact ordinary/overlay and dodge semantics; validation and atomic failure; compatibility; security; and D078 as the separate precedence authority."
+      - "The initial review identified missing exact 0% and 100% boundary coverage. The test definition and persistent regression were amended, observed GREEN and revalidated before this verdict."
+      - "The installed validator reported schema valid with RT077.1 and OT077.1 GREEN and UT077.1 AMBER. No annotation record is present."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The retrospective definition records delivered emergency behaviour; it is not advance approval or operator closure."
+      - "UT077.1 - Percentage placement is visually acceptable remains AMBER."
