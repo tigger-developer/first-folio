@@ -2,4 +2,69 @@ schema: sdlc-audit-record/v1
 ticket: D078
 history: []
 resets: []
-reviews: []
+reviews:
+  - id: delivery-code-c1-r1
+    timestamp: "2026-11-07T23:21:30Z"
+    profile: emergency
+    gate: delivery-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "a05d17d2893b7f9a5d21afea88dcf4bbba81e0d5"
+      delta: "D078 implementation, tests, product documentation and validation evidence only"
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D078 BYPASS-GATE-7 scope: supported source-document configuration above local YAML, CLI highest, consistent Markdown and Org source handling across downstream consumers"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORGMODE.md, ORG-SCHEMA.md, REVIEW.md, SELF-AUDIT.md, EMERGENCY.md and project-selected Go standards"
+      - "Delivery-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "The shared loader selects style and merges values in the same low-to-high order: built-ins, globals, local base/style, supported source document, then CLI. Focused tests cover script and manuscript modes, both local layers, source style and explicit CLI style/margin."
+      - "Script conversion extracts bounded Markdown YAML folio/render mappings alongside existing dotted Org extraction before loading configuration. LF, CRLF, missing delimiter, mapping type and 1 MiB prefix boundaries are covered without emitting configuration as body content."
+      - "Rendered manuscript and office cascade matrices demonstrate the new winning source values across PDF, DOCX and ODT. The stale W063, W064 and W068 expectations were corrected without removing coverage; letter behaviour remains unchanged."
+      - "Invalid winning source values name the full field and publish no target. The Aisle Seats one-off used source 60% over local 10%, producing title y=522.164pt and subtitle y=601.056pt in a 16-page A4 PDF."
+      - "make test passed with internal/app completing in 407.446s and every remaining package passing or validly cached. make lint, make vulncheck and git diff --check passed; govulncheck reported no vulnerabilities. The operator recorded the visual user test as satisfactory."
+      - "README.md, docs/config.md and docs/ARCHITECTURE.md document the shared order, supported source forms, format-independent resolution and unsupported source-syntax boundaries."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The audit scope excludes the separately defined W079 backdrop feature present in later documentation commits."
+  - id: definition-c1-r1
+    timestamp: "2026-11-07T23:21:30Z"
+    profile: emergency
+    gate: definition
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "a05d17d2893b7f9a5d21afea88dcf4bbba81e0d5"
+      delta: "D078 retrospective specification, test definitions and solution design only"
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D078 emergency outcome and actual delivered behaviour"
+      - "ISSUES.md, TESTING.md, ARCHITECTURE.md, CODING.md, SECURITY.md, DOCUMENTATION.md, ORGMODE.md, ORG-SCHEMA.md, REVIEW.md and SELF-AUDIT.md"
+    evidence:
+      - "The retrospective specification bounds supported source forms to Org and Markdown scripts plus Markdown manuscripts, keeps unsupported Fountain, Org-manuscript and letter syntax out of scope, and distinguishes precedence consistency from renderer feature support."
+      - "Four falsifiable acceptance criteria trace to one persistent regression group, one built-executable acceptance test, one real-document one-off and one operator visual test; all four results are GREEN with revision provenance."
+      - "The design identifies shared-loader, script-orchestration and manuscript responsibilities; exact cascade order; bounded Markdown extraction; Org warning policy; output-route reuse; atomic validation; and security/state boundaries."
+      - "The installed validator reported schema valid and delivery-code ready. No annotation record is present."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "This retrospective definition records delivered emergency behaviour; it is not advance approval or operator closure."
