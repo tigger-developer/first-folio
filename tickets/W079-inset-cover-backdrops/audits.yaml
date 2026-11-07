@@ -108,3 +108,37 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "UT079.1 remains AMBER and requires operator inspection in the normal PDF reader."
       - "The feature branch has not been merged, installed or deployed, and the live dist/folio binary remains outside this delivery."
+  - id: definition-c1-r2
+    timestamp: "2026-11-07T23:51:18Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "5efbe6d1b9dcba64a9501189086db1f6bee25a18"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Operator instruction on 2026-11-07 to store the blurred background derivative as JPEG because PNG adds file size without useful gain"
+      - "ISSUES.md, TESTING.md, ARCHITECTURE.md, CODING.md, SECURITY.md, DOCUMENTATION.md, ORGMODE.md, ORG-SCHEMA.md, SELF-AUDIT.md and REVIEW.md as deployed on 2026-11-07"
+      - "Existing approved W079 PDF-only inset backdrop scope and test definitions"
+    evidence:
+      - "The amendment changes only the internal opaque blurred derivative from PNG to JPEG and retains the sharp inset's existing PNG preparation, public configuration, cascade semantics, PDF composition and format boundary."
+      - "The design fixes JPEG quality at 85 for deterministic standard-library encoding and explicitly traces the format through AC079.1, RT079.1, preparation flow, state, rationale and verification."
+      - "RT079.1 is the correct retained boundary for asserting JPEG format and the existing dimension, crop, treatment and no-upscale contract. AT079.1 continues to verify the rendered smooth-backdrop/sharp-inset distinction without coupling to the temporary filename."
+      - "JPEG is appropriate because image treatment already produces an opaque raster and physical blur removes the hard-edge fidelity for which lossless PNG would be useful. No new configuration, process, dependency, network or persistent state is introduced."
+      - "sanitize oed and git diff --check produced no amendment changes or whitespace diagnostics; no annotation record is present."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The amended test and production encoding have not yet been written or executed."
+      - "The earlier delivery-code PASS applies to the pre-amendment PNG candidate and must not be used for the JPEG revision."
