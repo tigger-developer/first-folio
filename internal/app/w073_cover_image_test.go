@@ -382,6 +382,30 @@ func TestRT073_2DodgePaddingIsPostPlacementClearance(t *testing.T) {
 	}
 }
 
+func TestRT073_2DodgeEmPaddingUsesTheConfiguredRootFontSize(t *testing.T) {
+	requireW073Tools(t)
+	dir := t.TempDir()
+	t.Setenv("HOME", t.TempDir())
+	source := filepath.Join(dir, "play.org")
+	writeAppFile(t, source, "#+AUTHOR: ROOTEMMARKER\n* ACT ONE\n**** CÁIT\nBody.\n")
+	writeW073PNG(t, filepath.Join(dir, "cover.png"), 100, 100, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+	render := func(padding, targetName string) wordBoundsW073 {
+		t.Helper()
+		target := filepath.Join(dir, targetName)
+		writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  font:\n    size: 10mm\n  title-page:\n    title:\n      position: third\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 190mm\n    dodge:\n      padding: "+padding+"\n")
+		status, _, stderr := runApp(t, "convert", source, target)
+		if status != 0 {
+			t.Fatalf("padding=%s status=%d stderr=%s", padding, status, stderr)
+		}
+		return w073WordBounds(t, target, "ROOTEMMARKER")
+	}
+	em := render("1em", "root-em.pdf")
+	mm := render("10mm", "root-mm.pdf")
+	if absoluteFloatW073(em.yMin-mm.yMin) > 0.2 {
+		t.Fatalf("1em padding with 10mm root font placed marker at %.2fpt; explicit 10mm placed it at %.2fpt", em.yMin, mm.yMin)
+	}
+}
+
 func TestRT073_3SuperscaleInvocationAndFallbackAreDeterministic(t *testing.T) {
 	requireW073Tools(t)
 	for _, tc := range []struct {

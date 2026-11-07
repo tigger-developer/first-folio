@@ -338,6 +338,7 @@ func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, cfg 
 	if position == "center" {
 		factor = "1 / 2"
 	}
+	rootFontPoints := typstPoints(data.RootFont.Size, 11)
 	return &scriptCoverData{
 		Mode: plan.Config.Mode, Placement: plan.Config.Placement,
 		ImagePath: escapeTypstString(filepath.Base(plan.SourcePath)), BlurredPath: escapeTypstString(filepath.Base(plan.BlurredPath)),
@@ -346,7 +347,7 @@ func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, cfg 
 		WashFill: fmt.Sprintf(`rgb("#%s%02X")`, base, alpha), TextFill: textFill,
 		TitlePadding:  coverPadding(plan.Config.OverlayPadding, populatedFontSize(data)),
 		FooterPadding: coverPadding(plan.Config.OverlayPadding, footerFontSize(data)), DodgeFactor: factor,
-		DodgePadding: coverPadding(plan.Config.DodgePadding, typstPoints(data.RootFont.Size)),
+		DodgePadding: coverPadding(plan.Config.DodgePadding, rootFontPoints),
 		HasUpper:     data.HasTitle || data.HasSubtitle,
 		HasLower:     data.HasAuthor || data.FooterLeft != "" || data.FooterRight != "",
 		HasBlur:      plan.Config.OverlayBlur != "0mm",
@@ -354,24 +355,26 @@ func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, cfg 
 }
 
 func populatedFontSize(data scriptTemplateData) float64 {
+	root := typstPoints(data.RootFont.Size, 11)
 	maximum := 0.0
 	for _, item := range []struct {
 		present bool
 		size    string
 	}{{data.HasTitle, data.TitleFont.Size}, {data.HasSubtitle, data.SubtitleFont.Size}, {data.HasAuthor, data.AuthorFont.Size}} {
-		if value := typstPoints(item.size); item.present && value > maximum {
+		if value := typstPoints(item.size, root); item.present && value > maximum {
 			maximum = value
 		}
 	}
 	if maximum == 0 {
-		maximum = typstPoints(data.RootFont.Size)
+		maximum = root
 	}
 	return maximum
 }
 
 func footerFontSize(data scriptTemplateData) float64 {
-	maximum := typstPoints(data.DateFont.Size)
-	if value := typstPoints(data.VersionFont.Size); value > maximum {
+	root := typstPoints(data.RootFont.Size, 11)
+	maximum := typstPoints(data.DateFont.Size, root)
+	if value := typstPoints(data.VersionFont.Size, root); value > maximum {
 		maximum = value
 	}
 	return maximum
@@ -389,13 +392,21 @@ func coverPadding(value string, emPoints float64) string {
 	return fmt.Sprintf("%.6gpt", number*emPoints)
 }
 
-func typstPoints(value string) float64 {
+func typstPoints(value string, emPoints float64) float64 {
 	value = strings.TrimSpace(value)
-	if !strings.HasSuffix(value, "pt") {
-		return 0
+	for _, unit := range []struct {
+		suffix string
+		scale  float64
+	}{{"pt", 1}, {"mm", 72 / 25.4}, {"cm", 720 / 25.4}, {"in", 72}, {"em", emPoints}} {
+		if !strings.HasSuffix(value, unit.suffix) {
+			continue
+		}
+		number, err := strconv.ParseFloat(strings.TrimSpace(strings.TrimSuffix(value, unit.suffix)), 64)
+		if err == nil {
+			return number * unit.scale
+		}
 	}
-	number, _ := strconv.ParseFloat(strings.TrimSpace(strings.TrimSuffix(value, "pt")), 64)
-	return number
+	return 0
 }
 
 func authorPrefix(value string) (string, []string) {
