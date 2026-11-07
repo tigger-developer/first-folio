@@ -66,7 +66,7 @@ PDF and DOCX adoption would leave ODT inconsistent with the public script title-
 *** In scope
 
 - Dedicated script title pages produced by =folio convert= to ODT.
-- Background and inset modes, overlay and inset-only dodge placement, tone, opacity, blur, wash and equal-sided padding as defined by W073.
+- Background and inset modes, overlay and inset-only dodge placement, independent image and wash treatments, blur and equal-sided padding as defined by W073.
 - Embedded PNG/JPEG package assets, page-relative positioning, cropping and editable title metadata.
 
 *** Out of scope
@@ -124,7 +124,7 @@ PDF and DOCX adoption would leave ODT inconsistent with the public script title-
 :CUSTOM_ID: ac-075-2
 :END:
 
-- Criterion :: Given =placement: overlay=, ODT title metadata *remains editable text* at its existing configured placement, above localized equal-padded blur and tone wash regions with contrasting text.
+- Criterion :: Given =placement: overlay=, ODT title metadata *remains editable text* at its existing configured placement, above localized equal-padded blur and independently configured lightening or darkening wash regions with the defined contrasting text.
 - Proven by :: [[#rt-075-1][RT075.1 - Native ODT package represents the shared image plan]], [[#at-075-1][AT075.1 - Public ODT conversion preserves title-image semantics]] and [[#ut-075-1][UT075.1 - ODT title images remain editable and stable]].
 
 ** AC075.3 - ODT dodge separates text and inset :ac:
@@ -253,7 +253,7 @@ PDF and DOCX adoption would leave ODT inconsistent with the public script title-
 
 *** Reuse, shared behaviour and variation
 
-- Shared operation :: Asset resolution, validation, proportional geometry, tone and region calculations remain W073 responsibilities.
+- Shared operation :: Asset resolution, validation, proportional geometry, independent image/wash treatment and region calculations remain W073 responsibilities.
 - Variation :: ODT maps physical units directly to ODF lengths and uses drawing frames/text boxes while preserving shared semantics.
 
 *** Boundaries and dependencies
@@ -271,7 +271,7 @@ PDF and DOCX adoption would leave ODT inconsistent with the public script title-
 
 - A background frame is positioned at page origin behind content with page-sized extents and the plan's centred source crop.
 - An inset frame uses explicit page-centred position and longest-axis extents.
-- Overlay regions use positioned editable text boxes. Their background layer clips the aligned blurred image variant to the padded region, adds the tone wash at configured transparency, then places contrasting text above it.
+- Overlay regions use positioned editable text boxes. Their background layer clips the aligned blurred image variant to the padded region, adds the independently configured lightening or darkening wash, then places its defined contrasting text above it.
 - Dodge uses separate upper and lower editable text boxes around the page-centred inset. Region-relative =center= and =third= coordinates come from the shared plan rather than paragraph spacing heuristics.
 
 *** Interfaces and configuration

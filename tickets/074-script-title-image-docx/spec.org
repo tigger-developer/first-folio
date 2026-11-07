@@ -66,7 +66,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 *** In scope
 
 - Dedicated script title pages produced by =folio convert= to DOCX.
-- Background and inset modes, overlay and inset-only dodge placement, tone, opacity, blur, wash and equal-sided padding as defined by W073.
+- Background and inset modes, overlay and inset-only dodge placement, independent image and wash treatments, blur and equal-sided padding as defined by W073.
 - Embedded PNG/JPEG image parts, page-relative positioning, cropping and editable title metadata.
 
 *** Out of scope
@@ -125,7 +125,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 :CUSTOM_ID: ac-074-2
 :END:
 
-- Criterion :: Given =placement: overlay=, DOCX title metadata *remains editable text* at its existing configured placement, above localized equal-padded blur and tone wash regions with contrasting text.
+- Criterion :: Given =placement: overlay=, DOCX title metadata *remains editable text* at its existing configured placement, above localized equal-padded blur and independently configured lightening or darkening wash regions with the defined contrasting text.
 - Proven by :: [[#rt-074-1][RT074.1 - Native DOCX package represents the shared image plan]], [[#at-074-1][AT074.1 - Public DOCX conversion preserves title-image semantics]] and [[#ut-074-1][UT074.1 - DOCX title images remain editable and stable]].
 
 ** AC074.3 - DOCX dodge separates text and inset :ac:
@@ -254,7 +254,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 *** Reuse, shared behaviour and variation
 
-- Shared operation :: Asset resolution, validation, proportional geometry, tone and region calculations remain W073 responsibilities.
+- Shared operation :: Asset resolution, validation, proportional geometry, independent image/wash treatment and region calculations remain W073 responsibilities.
 - Variation :: DOCX maps physical units to EMUs and uses OOXML drawings/text containers while preserving shared semantics.
 
 *** Boundaries and dependencies
@@ -272,7 +272,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 - A background drawing is anchored at page origin behind document text with page-sized extents and the plan's centred source crop.
 - An inset drawing uses explicit page-centred position and longest-axis extents.
-- Overlay regions use positioned editable text containers. Their background layer clips the aligned blurred image variant to the padded region, adds the tone wash at configured transparency, then places contrasting text above it.
+- Overlay regions use positioned editable text containers. Their background layer clips the aligned blurred image variant to the padded region, adds the independently configured lightening or darkening wash, then places its defined contrasting text above it.
 - Dodge uses separate upper and lower text regions around the page-centred inset. Region-relative =center= and =third= coordinates come from the shared plan rather than Word paragraph spacing heuristics.
 
 *** Interfaces and configuration
