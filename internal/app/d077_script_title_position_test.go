@@ -15,12 +15,16 @@ func TestRT077_1OrgPercentageControlsScriptTitlePosition(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
 	writeW073PNG(t, filepath.Join(dir, "cover.png"), 976, 976, color.RGBA{R: 30, G: 40, B: 50, A: 255})
 
-	render := func(name, position string, coverLines []string) wordBoundsW073 {
+	type titleGroup struct {
+		title, subtitle wordBoundsW073
+	}
+	render := func(name, position string, coverLines []string) titleGroup {
 		t.Helper()
 		source := filepath.Join(dir, name+".org")
 		target := filepath.Join(dir, name+".pdf")
 		lines := []string{
 			"#+TITLE: POSITIONMARKER",
+			"#+SUBTITLE: SUBTITLEMARKER",
 			"#+FOLIO.TITLE-PAGE.TITLE.POSITION: " + position,
 			"#+FOLIO.COVER-IMAGE.PATH: cover.png",
 		}
@@ -31,7 +35,10 @@ func TestRT077_1OrgPercentageControlsScriptTitlePosition(t *testing.T) {
 		if status != 0 {
 			t.Fatalf("%s at %s: status=%d stderr=%s", name, position, status, stderr)
 		}
-		return w073WordBounds(t, target, "POSITIONMARKER")
+		return titleGroup{
+			title:    w073WordBounds(t, target, "POSITIONMARKER"),
+			subtitle: w073WordBounds(t, target, "SUBTITLEMARKER"),
+		}
 	}
 
 	for _, tc := range []struct {
@@ -56,8 +63,13 @@ func TestRT077_1OrgPercentageControlsScriptTitlePosition(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			at20 := render(tc.name+"-20", "20%", tc.coverLines)
 			at40 := render(tc.name+"-40", "40%", tc.coverLines)
-			if at20.yMin >= at40.yMin || math.Abs(at40.yMin-at20.yMin) < 20 {
+			if at20.title.yMin >= at40.title.yMin || math.Abs(at40.title.yMin-at20.title.yMin) < 20 {
 				t.Fatalf("percentage did not control title position: 20%%=%#v 40%%=%#v", at20, at40)
+			}
+			titleDelta := at40.title.yMin - at20.title.yMin
+			subtitleDelta := at40.subtitle.yMin - at20.subtitle.yMin
+			if subtitleDelta < 20 || math.Abs(titleDelta-subtitleDelta) > 0.2 {
+				t.Fatalf("subtitle did not move with title group: title delta=%g subtitle delta=%g; 20%%=%#v 40%%=%#v", titleDelta, subtitleDelta, at20, at40)
 			}
 		})
 	}
