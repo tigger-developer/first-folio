@@ -111,7 +111,7 @@ classification; it is provenance, not current state.
 :END:
 - Specification :: [[file:../tickets/073-script-title-image-pdf/spec.org][W073 - Script title-page images in PDF]].
 - Audit :: [[file:../tickets/073-script-title-image-pdf/audits.yaml][Canonical definition audit record]].
-- Scope :: Define the shared script-only title-image contract and deliver it first for PDF, including background and inset images, overlay treatment and inset-only dodge placement.
+- Scope :: Define reusable top-level =folio.cover-image= configuration and its first script-PDF consumer, including optional Superscale processing, background and inset images, overlay treatment and inset-only dodge placement.
 
 ** REVIEW W072 - Convert attributed DOCX footnotes to comments :feature:
 :PROPERTIES:

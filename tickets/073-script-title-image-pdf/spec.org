@@ -26,7 +26,7 @@
 
 ** Changes
 
-- =folio.title-page.image= defines the shared image, sizing, tone, placement and overlay-treatment contract.
+- Top-level =folio.cover-image= defines a reusable cover asset, sizing, tone, optional Superscale processing, placement and overlay treatment; W073 makes script PDF its first consumer.
 - A configured image counts as title-page content, so an image-only dedicated title page can be produced.
 
 ** Unchanged
@@ -68,11 +68,12 @@ Script title pages cannot include cover artwork. Authors therefore cannot produc
 
 *** In scope
 
-- Dedicated script title pages produced by =folio convert= to PDF and Typst.
+- Dedicated script title pages produced by =folio convert= to PDF; the generated Typst remains an internal PDF-rendering intermediate when a cover is configured.
 - Local PNG and JPEG image assets.
 - Full-page background images with proportional cover cropping.
 - Centred inset images sized on their longest axis.
 - Overlay placement with optional blur and wash, and inset-only dodge placement.
+- Optional local Superscale processing at its default scale or explicit =2x=, =4x= or =8x= before title-page composition.
 - The shared script configuration, validation and source-relative path-resolution contract later consumed by W074 and W075.
 
 *** Out of scope
@@ -81,12 +82,13 @@ Script title pages cannot include cover artwork. Authors therefore cannot produc
 - Compact script titles when =folio.title-page.enabled: false=.
 - Source-body images, remote URLs, SVG, animated or multi-frame images, automatic subject detection and automatic tone analysis.
 - DOCX rendering, owned by W074, and ODT rendering, owned by W075.
+- Standalone =.typ= publication with a configured cover image; it requires an asset-publication contract outside W073.
 - Arbitrary image editing beyond the crop, scale, opacity, tone, blur and wash required here.
 
 *** Unchanged
 
 - The existing YAML cascade, title metadata, per-role typography, running-matter suppression, body pagination and page-number semantics.
-- A script with no =folio.title-page.image.path= follows the pre-change title-page route byte-for-byte apart from unavoidable generator metadata.
+- A script with no =folio.cover-image.path= follows the pre-change title-page route byte-for-byte apart from unavoidable generator metadata.
 
 ** Authority and starting point
 
@@ -102,38 +104,15 @@ Script title pages cannot include cover artwork. Authors therefore cannot produc
 :END:
 
 - The image path is resolved against the *source document's directory*, regardless of which YAML cascade layer supplied it.
-- Title-image processing is local and deterministic; it performs *no network access* and invokes no external image editor.
+- Title-image processing performs *no network access*. It invokes only the optional local =superscale= executable when explicitly configured and otherwise uses in-process image preparation.
 - Delivery must preserve the existing no-image path and establish a reusable renderer-neutral configuration/layout model rather than embedding PDF-only semantics in configuration.
 - W074 and W075 depend on the approved contract and shared model from this ticket; this ticket does not implement their output writers.
 
 ** Decisions
 
-- The configuration shape is:
-
-#+begin_src yaml
-folio:
-  title-page:
-    image:
-      path: cover.jpg
-      mode: inset          # background | inset
-      placement: dodge     # overlay | dodge
-      size: 80mm           # required for inset; longest rendered axis
-      opacity: 100%        # image opacity over the tone canvas
-      tone: light          # light | dark
-      overlay:
-        blur: 0mm          # non-negative physical length
-        wash: 0%           # tone-coloured wash opacity
-        padding: 1em       # one em or mm length, applied on all sides
-#+end_src
-
-- =tone: light= uses a white image backing and wash with black overlay text; =tone: dark= uses a black image backing and wash with white overlay text. The backing occupies only the image rectangle: the whole page for =background= and the inset rectangle for =inset=. Dodge text and page area outside an inset retain their existing colours and background.
-- =opacity= and =overlay.wash= accept percentages from =0%= through =100%=. Defaults are =100%= and =0%= respectively. =overlay.blur= defaults to =0mm= and =overlay.padding= defaults to =0em=.
-- =mode= is required when =path= is present. =placement= defaults to =overlay=. =size= is required only for =inset= and must be a positive =mm= length.
-- =background= fills the physical configured title-page size using cover scaling and centred cropping; it does not force A4 when another configured page size is in use. An A4 script therefore fills and crops to A4.
-- =inset= scales the decoded image so its longest axis equals =size= and its other axis is proportional. Thus a =200 x 400= image at =80mm= renders at =40mm x 80mm=, while a =1000 x 250= image at =50mm= renders at =50mm x 12.5mm=.
-- =overlay.padding= accepts one positive or zero =em= or =mm= length and applies it equally horizontally and vertically around each occupied text region. An =em= resolves against the largest configured font size among populated roles in that region. Overlay has one primary region for the existing title/subtitle/author block and separate populated regions for date and version at their existing positions; it never expands those regions into full-width bands.
-- In dodge mode the inset is centred on the physical title page. The upper and lower available regions are bounded by the title-page content margins and the inset rectangle. =folio.title-page.title.position= governs both groups: =center= uses each region's midpoint and =third= uses the point one third down from that region's top. Existing alignment and date/version side settings continue to govern horizontal placement.
-- Non-default =overlay= treatment values with =placement: dodge= are invalid rather than silently ignored.
+- The public YAML contract is top-level =folio.cover-image= so a later manuscript ticket can adopt it without migrating a script-owned path. W073 defines only script PDF consumption.
+- The exact keys, defaults, accepted values and interactions are defined once under [[#cover-image-yaml-contract][Cover-image YAML contract]].
+- Superscale is optional enhancement. Missing or failed execution warns and falls back to the original image rather than preventing document creation.
 
 ** Unresolved blockers
 
@@ -150,7 +129,7 @@ folio:
 :END:
 
 - Criterion :: Given a valid =background= image on a dedicated script title page, PDF output *fills the physical title page*, preserves image aspect ratio and *crops excess content from the centre* without distorting the image.
-- Proven by :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+- Proven by :: [[#rt-073-1][RT073.1 - Cover-image configuration is validated and resolved]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
 
 ** AC073.2 - Insets use longest-axis sizing :ac:
 :PROPERTIES:
@@ -158,7 +137,7 @@ folio:
 :END:
 
 - Criterion :: Given a valid =inset= image and =size=, PDF output *centres the image* and applies =size= to its *longest rendered axis* while preserving its aspect ratio.
-- Proven by :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+- Proven by :: [[#rt-073-1][RT073.1 - Cover-image configuration is validated and resolved]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
 
 ** AC073.3 - Overlay treatment preserves configured text placement :ac:
 :PROPERTIES:
@@ -189,32 +168,48 @@ folio:
 :CUSTOM_ID: ac-073-6
 :END:
 
-- Criterion :: Given image configuration from any applicable YAML layer, a relative =path= is *resolved against the source document directory*; missing files, unsupported formats, malformed values and invalid mode/placement combinations *fail with a field-specific diagnostic before output is published*.
-- Proven by :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
+- Criterion :: Given image configuration from any applicable YAML layer, a relative =path= is *resolved against the source document directory*; missing files, unsupported formats, malformed values, invalid combinations and an output/command that has not adopted =folio.cover-image= *fail with a field-specific diagnostic before output is published*.
+- Proven by :: [[#rt-073-1][RT073.1 - Cover-image configuration is validated and resolved]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
 
 ** AC073.7 - Existing title-page behaviour remains compatible :ac:
 :PROPERTIES:
 :CUSTOM_ID: ac-073-7
 :END:
 
-- Criterion :: Given no image path, script PDF and Typst output *retain existing dedicated and compact title behaviour*; given an image path with a dedicated title page but no textual title, the image *still creates the dedicated title page*.
+- Criterion :: Given no image path, script PDF and standalone Typst output *retain existing dedicated and compact title behaviour*; given an image path with a dedicated PDF title page but no textual title, the image *still creates the dedicated title page*.
 - Proven by :: [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
+
+** AC073.8 - Requested Superscale processing precedes layout :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-8
+:END:
+
+- Criterion :: Given =folio.cover-image.superscale= set to =default=, =2x=, =4x= or =8x= and a usable =superscale= executable in the inherited =PATH=, conversion *invokes it once with the corresponding scale before crop, blur or layout* and uses its valid output without changing the configured physical image size or aspect ratio.
+- Proven by :: [[#rt-073-1][RT073.1 - Cover-image configuration is validated and resolved]], [[#rt-073-3][RT073.3 - Superscale invocation and fallback are deterministic]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+
+** AC073.9 - Unavailable Superscale falls back visibly :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-9
+:END:
+
+- Criterion :: Given requested Superscale processing when the executable is absent, exits unsuccessfully or produces no valid single image, conversion *warns on stderr and uses the original image*; given a null or omitted value, conversion *does not look up or invoke Superscale*.
+- Proven by :: [[#rt-073-3][RT073.3 - Superscale invocation and fallback are deterministic]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
 
 * Test Definitions
 :PROPERTIES:
 :CUSTOM_ID: test-definitions
 :END:
 
-** RT073.1 - Title-image configuration is validated and resolved :testdef:
+** RT073.1 - Cover-image configuration is validated and resolved :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-1
 :END:
 
 - Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]] and [[#ac-073-6][AC073.6 - Image configuration resolves safely and consistently]].
 - Boundary :: Script configuration loading and renderer-neutral title-image planning.
-- Setup :: Table-driven source documents and cascade layers cover PNG and JPEG assets, both modes, both tones, percentages at their bounds, =em= and =mm= padding, portrait and landscape dimensions, source and configuration files in different directories, and every invalid field or combination.
+- Setup :: Table-driven source documents and cascade layers cover PNG and JPEG assets, both modes, both tones, percentages at their bounds, =em= and =mm= padding, all five Superscale states, portrait and landscape dimensions, source and configuration files in different directories, and every invalid field or combination.
 - Action :: Load each script configuration with its source path and build the title-image plan.
-- Expected :: Valid cases produce exact physical geometry, source-relative canonical asset paths and resolved defaults; invalid cases identify the complete =folio.title-page.image= field and produce no plan.
+- Expected :: Valid cases produce exact physical geometry, source-relative canonical asset paths, typed Superscale intent and resolved defaults; invalid cases identify the complete =folio.cover-image= field and produce no plan.
 - Retention :: Persistent regression suite under =make test=.
 
 ** RT073.2 - Typst output contains the resolved title-image layout :testdef:
@@ -223,10 +218,22 @@ folio:
 :END:
 
 - Covers :: [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]] and [[#ac-073-7][AC073.7 - Existing title-page behaviour remains compatible]].
-- Boundary :: =folio convert= to Typst using public script conversion.
+- Boundary :: Script template rendering and compilation through the same internal Typst source used by public PDF conversion.
 - Setup :: Fixtures cover background overlay, portrait and landscape inset overlay, portrait and landscape dodge, =center= and =third= positions, absent metadata roles, image-only title pages, compact title mode and the no-image control.
-- Action :: Convert each fixture to Typst and compile representative valid outputs with the supported local Typst toolchain.
-- Expected :: Generated Typst places image and text regions from the resolved plan, applies localized treatment only to occupied overlay regions, keeps dodge groups outside the image rectangle, preserves the no-image and compact routes, and compiles without external assets beyond the resolved local image.
+- Action :: Render each fixture to the internal Typst source and compile representative valid outputs with the supported local Typst toolchain; separately publish the no-image standalone Typst control.
+- Expected :: Generated PDF-intermediate Typst places image and text regions from the resolved plan, applies localized treatment only to occupied overlay regions, keeps dodge groups outside the image rectangle and compiles with its conversion-scoped asset; the no-image standalone Typst and compact routes remain unchanged.
+- Retention :: Persistent regression suite under =make test=.
+
+** RT073.3 - Superscale invocation and fallback are deterministic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-3
+:END:
+
+- Covers :: [[#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]] and [[#ac-073-9][AC073.9 - Unavailable Superscale falls back visibly]].
+- Boundary :: Cover-image preparation service with injected executable lookup and process runner at the production command boundary.
+- Setup :: The deterministic runner records argv and emits one known valid image; additional cases report lookup absence, return non-zero, emit no image, emit multiple images and use an input path containing spaces and shell metacharacters. Configuration exercises null, =default=, =2x=, =4x= and =8x=.
+- Action :: Prepare each fixture and inspect recorded lookup, argv, warnings, output image markers and temporary-work cleanup.
+- Expected :: Null performs no lookup or invocation; =default= omits =--scale=; explicit values pass =--scale 2=, =4= or =8=; every invocation passes =--no-face-enhance=, one literal input path and a unique output directory without a shell; one valid output becomes the prepared image; missing, failed or ambiguous output emits one bounded warning and uses the source image; temporary output is removed after conversion.
 - Retention :: Persistent regression suite under =make test=.
 
 ** AT073.1 - Rendered PDF geometry follows the image contract :testdef:
@@ -247,10 +254,10 @@ folio:
 :END:
 
 - Covers :: [[#ac-073-6][AC073.6 - Image configuration resolves safely and consistently]] and [[#ac-073-7][AC073.7 - Existing title-page behaviour remains compatible]].
-- Boundary :: Built =folio convert= command writing PDF and Typst targets.
-- Setup :: Cases include missing assets, non-image content, unsupported extensions, =background + dodge=, background with =size=, inset without =size=, image configuration with compact title mode, and an image-only dedicated title page. Existing targets contain sentinel bytes.
+- Boundary :: Built =folio convert= command writing PDF, standalone Typst, DOCX and ODT targets, plus manuscript and letter commands.
+- Setup :: Cases include missing assets, non-image content, unsupported extensions, invalid Superscale types or values, =background + dodge=, background with =size=, inset without =size=, image configuration with compact title mode, unsupported current consumers/targets, and an image-only dedicated PDF title page. Existing targets contain sentinel bytes.
 - Action :: Run each conversion and inspect exit status, stderr and target bytes.
-- Expected :: Invalid cases name the offending field and leave existing or absent targets unchanged; the image-only case succeeds; the no-image control retains its established output structure.
+- Expected :: Invalid and not-yet-adopted cases name the offending field or unsupported consumer and leave existing or absent targets unchanged; the image-only PDF case succeeds; no-image controls retain their established output structure.
 - Retention :: Ticket-specific evidence; not part of the persistent regression suite.
 
 ** UT073.1 - Script title images are visually acceptable :testdef:
@@ -258,10 +265,10 @@ folio:
 :CUSTOM_ID: ut-073-1
 :END:
 
-- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]] and [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]].
+- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]] and [[#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]].
 - Validation method :: User validation in the normal PDF reader.
-- Procedure :: Open representative light and dark background-overlay PDFs and portrait and landscape inset PDFs using overlay and dodge; compare title-page composition, legibility, crop, padding, image proportions and the first body page.
-- Expected :: Images are undistorted and intentionally composed; overlay text remains legible without treatment leaking outside its regions; dodge text is balanced above and below the inset without overlap; later pages are unchanged.
+- Procedure :: Open representative light and dark background-overlay PDFs and portrait and landscape inset PDFs using overlay and dodge; where Superscale is installed, compare the same low-resolution source with =superscale: null=, =default=, =2x=, =4x= and =8x=; compare title-page composition, legibility, crop, padding, image proportions and the first body page.
+- Expected :: Images are undistorted and intentionally composed; requested Superscale changes pixel detail without changing physical geometry; overlay text remains legible without treatment leaking outside its regions; dodge text is balanced above and below the inset without overlap; later pages are unchanged.
 - Record :: Write the dated result to =validation.org=.
 
 * Edge Cases
@@ -284,7 +291,7 @@ folio:
 ** Oversized inset
 
 - Condition :: The requested longest-axis size exceeds the available title-page content area after required text regions and page boundaries.
-- Required behaviour :: Conversion rejects =folio.title-page.image.size= instead of clipping, distorting or overlapping content.
+- Required behaviour :: Conversion rejects =folio.cover-image.size= instead of clipping, distorting or overlapping content.
 - Covered by :: [[#ac-073-6][AC073.6 - Image configuration resolves safely and consistently]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
 
 ** Transparent pixels
@@ -292,6 +299,18 @@ folio:
 - Condition :: A PNG contains transparency or image opacity is below =100%=.
 - Required behaviour :: The configured light or dark image backing is visible through transparent image pixels and opacity within the image rectangle; transparency does not recolour page area outside an inset or expose uninitialized page content.
 - Covered by :: [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]] and [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]].
+
+** Superscale unavailable or unusable
+
+- Condition :: Superscale is requested but cannot be found, exits unsuccessfully, or does not create exactly one valid supported image.
+- Required behaviour :: Conversion emits one bounded warning and completes with the original image; it leaves no First Folio temporary output behind.
+- Covered by :: [[#ac-073-9][AC073.9 - Unavailable Superscale falls back visibly]] and [[#rt-073-3][RT073.3 - Superscale invocation and fallback are deterministic]].
+
+** Consumer has not adopted cover images
+
+- Condition :: =folio.cover-image.path= is present for standalone Typst, DOCX, ODT, manuscript or letter output before its corresponding adoption work is delivered.
+- Required behaviour :: Conversion rejects the unsupported consumer before creating or replacing its target instead of silently omitting the cover.
+- Covered by :: [[#ac-073-6][AC073.6 - Image configuration resolves safely and consistently]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
 
 * Solution Design
 :PROPERTIES:
@@ -308,27 +327,29 @@ folio:
 
 *** Components and responsibilities
 
-- Configuration validation parses =folio.title-page.image= into a typed, renderer-neutral model and reports exact field errors.
+- Configuration validation parses =folio.cover-image= into a typed, renderer-neutral model and reports exact field errors.
 - The application resolves =path= from the source document directory, validates image type and dimensions before output creation, and calculates physical background or inset geometry.
-- A bounded image-preparation component provides any normalized image and blurred derivative needed by renderers without invoking external processes or changing the source asset.
+- A bounded image-preparation component optionally runs the configured Superscale command, validates the selected result, and provides normalized and blurred variants without changing the source asset.
 - The Typst title-page template consumes the resolved plan, composes image layers and retains text as text above them.
 
 *** Reuse, shared behaviour and variation
 
-- Shared operation :: Path resolution, decoding, proportional geometry, tone, opacity, overlay treatment and dodge region calculation are represented once for W073-W075.
+- Shared operation :: Path resolution, optional Superscale processing, decoding, proportional geometry, tone, opacity, overlay treatment and dodge region calculation are represented once for W073-W075 and remain available for later manuscript adoption.
 - Variation :: W073 projects the plan into Typst/PDF. W074 and W075 later map the same plan into their native package models.
 
 *** Boundaries and dependencies
 
 - Image bytes remain local, read-only input. Decoding must inspect dimensions before full allocation and enforce bounded decoded size to prevent unreasonable memory use.
-- A new Go image dependency is permitted only if delivery demonstrates that the standard library and existing Typst capability cannot meet required quality, and records its licence, maintenance and vulnerability evidence. No new runtime executable is permitted.
+- =superscale= is an optional runtime executable discovered only through the inherited =PATH= when =folio.cover-image.superscale= is non-null. First Folio neither installs it nor modifies =PATH=.
+- A new Go image dependency is permitted only if delivery demonstrates that the standard library and existing Typst capability cannot meet required quality, and records its licence, maintenance and vulnerability evidence. No other runtime executable is permitted.
 
 *** Flow
 
 1. Load the normal script YAML cascade and validate the image block as a coherent unit.
-2. Resolve the asset against the source document directory, decode its metadata and build a physical title-page plan.
-3. Prepare normalized and blurred image variants only when required, then pass the plan and assets to the Typst renderer.
-4. Compose the dedicated title page, publish output atomically and retain the existing later-page route.
+2. Resolve the asset against the source document directory and inspect its type and dimensions within resource limits.
+3. When requested, locate and invoke Superscale into a unique operating-system temporary directory; select its sole valid output or warn and retain the original asset.
+4. Decode the selected asset, build the physical title-page plan, and prepare normalized and blurred variants only when required.
+5. Pass the plan and assets to the Typst renderer, compose the dedicated title page, publish output atomically and retain the existing later-page route.
 
 *** Essential mechanisms
 
@@ -339,19 +360,72 @@ folio:
 
 *** Interfaces and configuration
 
-- Interface :: The =folio.title-page.image= contract in [[#context][Context / Decisions]] is the sole public configuration added by this ticket.
-- Compatibility :: Absence of =path= selects the old route. Unknown children remain subject to the existing configuration policy. The image block is valid only in script mode with a dedicated title page.
+**** Cover-image YAML contract
+:PROPERTIES:
+:CUSTOM_ID: cover-image-yaml-contract
+:END:
+
+#+begin_src yaml
+folio:
+  cover-image:
+    path: cover.jpg
+    mode: inset             # background | inset
+    placement: dodge        # overlay | dodge
+    size: 80mm              # required for inset; longest rendered axis
+    opacity: 100%           # image opacity over its tone backing
+    tone: light             # light | dark
+    superscale: null        # null | default | "2x" | "4x" | "8x"
+    overlay:
+      blur: 0mm             # non-negative physical length
+      wash: 0%              # tone-coloured wash opacity
+      padding: 1em          # one em or mm length, applied on all sides
+#+end_src
+
+| Key | Accepted value | Default | Contract |
+|-----+----------------+---------+----------|
+| =path= | non-empty local PNG/JPEG path | none | Enables the cover image; relative paths use the source document directory. |
+| =mode= | =background= or =inset= | none | Required with =path=. |
+| =placement= | =overlay= or =dodge= | =overlay= | =dodge= is valid only with =inset=. |
+| =size= | positive =mm= length | none | Required for =inset=, forbidden for =background=, and applied to the longest axis. |
+| =opacity= | =0%= through =100%= | =100%= | Applies to the image over its tone backing. |
+| =tone= | =light= or =dark= | =light= | Selects white/black backing and wash plus contrasting overlay text. |
+| =superscale= | null, =default=, =2x=, =4x= or =8x= | null | Null disables lookup; non-null requests one optional Superscale pass. |
+| =overlay.blur= | non-negative =mm= length | =0mm= | Blur radius behind each overlay text region. |
+| =overlay.wash= | =0%= through =100%= | =0%= | Opacity of the tone-coloured wash. |
+| =overlay.padding= | non-negative =em= or =mm= length | =0em= | One value applied equally on all four sides. |
+
+- Interface :: Top-level =folio.cover-image= is the sole public configuration added by W073. It is renderer-neutral and may be consumed by a separately defined manuscript change; this ticket consumes it only for a dedicated script PDF title page.
+- Compatibility :: Absence of =path= selects the old route. Unknown children and invalid types fail under the existing configuration policy. W073 permits the block only for a dedicated script PDF title page; standalone Typst, DOCX, ODT, manuscript and letter consumers reject it until separately adopted. The block is invalid for compact script title mode. Non-default overlay treatment with =dodge= is invalid rather than ignored.
 - Path contract :: Relative paths are joined to the directory of the file supplied as the conversion source, then cleaned. A relative path with stdin input fails because no source directory exists. The original source path is retained for diagnostics; image bytes are never written back.
+- Tone contract :: =light= uses a white image backing and wash with black overlay text; =dark= uses a black image backing and wash with white overlay text. The backing occupies only the image rectangle: the whole page for =background= and the inset rectangle for =inset=. Dodge text and page area outside an inset retain their existing colours and background.
+- Sizing contract :: =background= uses proportional cover scaling and centred cropping to the configured physical page. =inset= scales the decoded image so its longest axis equals =size=: =200 x 400= at =80mm= becomes =40mm x 80mm=; =1000 x 250= at =50mm= becomes =50mm x 12.5mm=.
+- Text-region contract :: Overlay has one primary region for the populated title/subtitle/author block and separate populated date and version regions at their existing positions; it never creates a full-width band. An =em= padding resolves against the largest configured font size among populated roles in that region.
+- Dodge contract :: The inset is centred on the physical title page. The upper and lower regions are bounded by the title-page content margins and image rectangle. =folio.title-page.title.position= governs both: =center= uses each midpoint and =third= uses the point one third down from each region's top. Existing horizontal alignment and date/version side settings remain applicable.
+
+**** Superscale process contract
+:PROPERTIES:
+:CUSTOM_ID: superscale-process-contract
+:END:
+
+- Discovery :: For a non-null value, resolve =superscale= with the inherited =PATH=. Do not probe, install, download or modify the environment when the value is null.
+- Default invocation :: Run =superscale --no-face-enhance -o OUTPUT_DIR INPUT=. Omitting =--scale= deliberately delegates the scale level to Superscale; the inspected CLI currently defaults to =4x=.
+- Explicit invocation :: =2x=, =4x= and =8x= add =--scale 2=, =--scale 4= or =--scale 8= respectively. Pass argv directly without a shell. Input is the resolved source image and output is a unique operating-system temporary directory.
+- Face enhancement :: Always pass =--no-face-enhance=. The optional GFPGAN model changes content, has non-commercial licence components and may differ between machines; W073 requests upscaling only.
+- Output :: On exit zero, require exactly one new regular PNG or JPEG output that passes the same dimension and decoded-resource validation as the source. Use that image for later normalization, blur and embedding while retaining the configured physical geometry.
+- Fallback :: If lookup fails, execution returns non-zero, or output is absent, ambiguous or invalid, emit one bounded stderr warning naming =folio.cover-image.superscale= and use the original image. Do not publish Superscale stdout/stderr as document content.
+- Side effects :: First Folio owns and removes its temporary output directory. Superscale may maintain its documented compiled CoreML model cache; First Folio neither clears nor manages that external cache.
 
 *** Data and state
 
 - Image and prepared variants exist only for the conversion lifetime and are not cached beside the source.
+- Superscale output exists only in First Folio's unique temporary directory and is removed after success or fallback.
 - The source image, YAML files and document metadata remain unchanged.
 
 *** Failure behaviour
 
 - Validate configuration before decoding, decode metadata before allocating full image storage, and complete preparation before replacing an output target.
 - Errors name the full configuration field or resolved asset path without exposing unrelated file contents. Partial PDF, Typst or prepared-image output is not published.
+- Superscale absence and execution/output failure are non-fatal warnings with original-image fallback; invalid =superscale= configuration remains a fatal field error.
 
 *** Simplicity and proportionality
 
@@ -373,16 +447,22 @@ folio:
 *** Use source-relative assets
 
 - Decision :: Resolve every relative image path from the source document, not from the YAML file, current directory or installed preset.
-- Verification :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]] uses distinct source, YAML and working directories.
+- Verification :: [[#rt-073-1][RT073.1 - Cover-image configuration is validated and resolved]] uses distinct source, YAML and working directories.
 
 *** Restrict dodge to inset mode
 
 - Decision :: =background + dodge= is invalid because a full-page image leaves no image-free region to dodge.
-- Verification :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
+- Verification :: [[#rt-073-1][RT073.1 - Cover-image configuration is validated and resolved]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
+
+*** Keep Superscale optional and deterministic
+
+- Decision :: Superscale is enabled only by a non-null enum, uses direct argv with face enhancement disabled, and falls back to the original image with a warning for every availability or execution failure.
+- Rationale :: First Folio remains portable when the macOS Apple-Silicon-only tool is absent, while an installed tool can improve source pixels without changing cover geometry or introducing environment-dependent face modification and licensing.
+- Verification :: [[#rt-073-3][RT073.3 - Superscale invocation and fallback are deterministic]] exercises the production lookup/runner boundary, argv, output selection, failure and cleanup; [[#ut-073-1][UT073.1 - Script title images are visually acceptable]] covers the installed command through public conversion.
 
 ** Routine details left to implementation
 
-- Internal type and function names, prepared-image temporary filenames and the exact anti-aliasing kernel may follow project conventions while preserving observable geometry and bounded resource use.
+- Internal type and function names, prepared-image temporary filenames, bounded process-output capture and the exact anti-aliasing kernel may follow project conventions while preserving observable geometry, warnings and resource bounds.
 - The delivery agent may select a safe decoded-pixel ceiling after inspecting existing resource policies, but it must be documented in the user-facing configuration reference and tested at its boundary.
 
 ** Architecture impact
@@ -390,15 +470,15 @@ folio:
 *** Security impact
 
 - Threat boundary :: A new untrusted local binary-image input crosses the conversion boundary.
-- Data and secrets :: Image bytes remain local and are not logged, transmitted or persisted outside the requested document and bounded temporary conversion artefacts.
-- Access :: The converter reads only the configured local asset using its existing user privileges; no URL, shell or external process execution is added.
-- Conclusion :: Validate format and dimensions before full decode, bound decoded pixels and temporary work, reject unsupported data, and preserve atomic publication.
+- Data and secrets :: Image bytes remain local and are not transmitted. Superscale receives only the resolved image path and a unique temporary output directory; First Folio does not log image contents or embed process output.
+- Access :: The converter reads the configured local asset and, only when requested, executes the =superscale= path found in the inherited =PATH= without a shell. Superscale may write its documented compiled model cache under the user's application-support directory.
+- Conclusion :: Validate format and dimensions before full decode, bound decoded pixels, process output and temporary work, pass literal argv, disable optional face enhancement, clean First Folio temporary output, reject unsupported data, and preserve atomic publication.
 
 *** Other relevant qualities
 
 - Reliability :: Deterministic geometry and atomic failure prevent partial documents and format drift.
 - Accessibility :: Overlay tone supplies contrasting text; user validation still checks real-world legibility because image content varies.
-- Portability :: The feature uses physical units and local embedded assets; output does not depend on the source image remaining available after conversion.
+- Portability :: The cover feature uses physical units and local embedded assets; output does not depend on the source image remaining available after conversion. Superscale enhancement degrades with a warning to the original image where its platform-specific executable is unavailable.
 - Maintainability :: A shared plan and sequenced renderer adapters avoid three public contracts.
 
 * Delivery Handoff
@@ -408,7 +488,7 @@ folio:
 
 - Required reading :: [[file:../../docs/config.md][Script configuration reference]], [[file:../../docs/ARCHITECTURE.md][project architecture]], [[file:../../templates/script.typ][script Typst template]], =internal/app/script_render.go= and the current configuration loader.
 - Entry conditions :: Explicit delivery authority for W073, a current definition PASS in [[file:audits.yaml][=audits.yaml=]], and confirmation that W074/W075 remain separate output work.
-- First implementation step :: Write [[#rt-073-1][RT073.1]], [[#rt-073-2][RT073.2]], [[#at-073-1][AT073.1]] and [[#at-073-2][AT073.2]], then observe meaningful RED for image behaviour while existing no-image preservation remains GREEN.
+- First implementation step :: Write [[#rt-073-1][RT073.1]], [[#rt-073-2][RT073.2]], [[#rt-073-3][RT073.3]], [[#at-073-1][AT073.1]] and [[#at-073-2][AT073.2]], then observe meaningful RED for image and Superscale behaviour while existing no-image preservation remains GREEN.
 - Definition evidence :: [[file:audits.yaml][=audits.yaml=]].
 - Validation evidence :: [[file:validation.org][=validation.org=]]; one tagged result heading per defined test, including RTs. Follow =ORG-SCHEMA.md=.
-- Documentation impact :: Update =README.md=, =docs/config.md= and =docs/ARCHITECTURE.md= with the script-only image contract, source-relative path rule, supported formats, resource limit, renderer sequencing and PDF behaviour.
+- Documentation impact :: Update =README.md=, =docs/config.md= and =docs/ARCHITECTURE.md= with top-level =folio.cover-image=, script-PDF consumption, source-relative path and Superscale contracts, supported formats, resource limit, renderer sequencing and PDF behaviour.

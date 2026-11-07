@@ -98,7 +98,7 @@ PDF and DOCX adoption would leave ODT inconsistent with the public script title-
 
 ** Decisions
 
-- W075 consumes =folio.title-page.image= exactly as defined by W073 and introduces no ODT override.
+- W075 consumes top-level =folio.cover-image= exactly as defined by W073 and introduces no ODT override.
 - Background graphics are positioned relative to the physical page and behind text; insets are centred on the physical page with explicit physical extents. Overlay uses one editable primary region for title/subtitle/author and separate populated date and version regions, never full-width wash bands.
 - Overlay and dodge use native editable text frames whose region geometry comes from the shared plan.
 
@@ -247,7 +247,7 @@ PDF and DOCX adoption would leave ODT inconsistent with the public script title-
 
 *** Components and responsibilities
 
-- The application passes the same W073 plan and prepared assets used by prior formats into the ODT writer.
+- The application passes the same W073 plan and selected prepared asset, including requested Superscale output or documented original-image fallback, into the ODT writer without rerunning the external tool.
 - The package layer embeds required image variants under =Pictures/=, registers manifest media types and allocates unique frame/image names.
 - The title-page layout creates page-positioned image layers and editable text frames in the plan's order.
 
@@ -276,7 +276,7 @@ PDF and DOCX adoption would leave ODT inconsistent with the public script title-
 
 *** Interfaces and configuration
 
-- Interface :: No new public interface; consume W073's =folio.title-page.image= model.
+- Interface :: No new public interface; consume W073's top-level =folio.cover-image= model.
 - Compatibility :: The writer selects the image route only when the shared plan is present. Existing title paragraphs remain the no-image route.
 
 *** Data and state

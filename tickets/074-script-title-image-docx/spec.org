@@ -99,7 +99,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 ** Decisions
 
-- W074 consumes =folio.title-page.image= exactly as defined by W073 and introduces no DOCX override.
+- W074 consumes top-level =folio.cover-image= exactly as defined by W073 and introduces no DOCX override.
 - Background drawings are anchored to the physical page, behind text, and cover the configured page rectangle using W073's centred crop.
 - Insets are centred on the physical page with explicit physical extents. Overlay uses one editable primary region for title/subtitle/author and separate populated date and version regions, never full-width wash bands; dodge text remains in editable positioned regions above and below the image.
 
@@ -248,7 +248,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 *** Components and responsibilities
 
-- The application passes the same W073 plan and prepared assets used by PDF into the DOCX writer.
+- The application passes the same W073 plan and selected prepared asset, including requested Superscale output or documented original-image fallback, into the DOCX writer without rerunning the external tool.
 - The package layer embeds original/normalized and blurred image parts, registers content types and relationships, and allocates identifiers through existing package mechanisms.
 - The title-page writer creates page-anchored image layers and positioned editable text regions in the plan's order.
 
@@ -277,7 +277,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 *** Interfaces and configuration
 
-- Interface :: No new public interface; consume W073's =folio.title-page.image= model.
+- Interface :: No new public interface; consume W073's top-level =folio.cover-image= model.
 - Compatibility :: The writer selects the image route only when the shared plan is present. Existing title paragraphs remain the no-image route.
 
 *** Data and state
