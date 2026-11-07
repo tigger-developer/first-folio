@@ -92,3 +92,21 @@ func TestRT077_1UnsupportedScriptTitlePositionFailsAtomically(t *testing.T) {
 		})
 	}
 }
+
+func TestRT077_1PercentageBoundariesAreAccepted(t *testing.T) {
+	for _, position := range []string{"0%", "100%"} {
+		t.Run(position, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Setenv("HOME", t.TempDir())
+			source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.pdf")
+			writeAppFile(t, source, "#+TITLE: Position\n#+FOLIO.TITLE-PAGE.TITLE.POSITION: "+position+"\n* ACT ONE\n**** CÁIT\nBody.\n")
+			status, _, stderr := runApp(t, "convert", source, target)
+			if status != 0 {
+				t.Fatalf("position=%q status=%d stderr=%s", position, status, stderr)
+			}
+			if _, err := os.Stat(target); err != nil {
+				t.Fatalf("position=%q target: %v", position, err)
+			}
+		})
+	}
+}
