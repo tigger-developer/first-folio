@@ -1,0 +1,69 @@
+#+TITLE: D078 - Script frontmatter loses to shared local YAML
+#+SCHEMA: 1
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+
+* Report
+:PROPERTIES:
+:CUSTOM_ID: report
+:END:
+
+- Reported by :: Operator on 2026-11-07.
+- User outcome :: A script cannot override a shared project's =script.yaml= setting through its document-specific dotted Org =FOLIO= or =RENDER= frontmatter.
+- Status :: Reproduced and registered; not yet specified, delivery-approved or corrected.
+
+* Observed Behaviour
+:PROPERTIES:
+:CUSTOM_ID: observed-behaviour
+:END:
+
+- =aisle-seats.org= set =#+FOLIO.TITLE-PAGE.TITLE.POSITION:= first to =15%= and then to =40%=, while the nearest =script.yaml= set =folio.title-page.title.position: 10%=.
+- Two temporary snapshots converted with the installed D077 candidate produced identical page-one bounds in both source cases: title =y=143.739pt= and subtitle =y=222.631pt=.
+- Changing only the temporary local YAML from =10%= to =40%= moved the title to =y=370.794pt= and subtitle to =y=449.686pt=.
+- Repository inspection confirms that the shared loader merges the source layer before the nearest local YAML layer, so the local value wins. This matches the current configuration documentation.
+
+* Expected Behaviour
+:PROPERTIES:
+:CUSTOM_ID: expected-behaviour
+:END:
+
+- Operator requirement :: For scripts, document-specific dotted Org =FOLIO= and =RENDER= frontmatter should override shared local YAML defaults. Explicit CLI overrides remain highest priority.
+- Proposed boundary from the operator discussion :: Apply the precedence correction to script source configuration first; do not silently reverse manuscript precedence, which currently supports output-specific local layout files.
+- Compatibility note :: This changes the currently documented script precedence and may alter scripts that rely on local YAML overriding a source value.
+
+* Reproduction
+:PROPERTIES:
+:CUSTOM_ID: reproduction
+:END:
+
+1. Place =folio.title-page.title.position: 10%= in the nearest =script.yaml=.
+2. Place =#+FOLIO.TITLE-PAGE.TITLE.POSITION: 15%= in an Org script with a dedicated title page.
+3. Convert to PDF and record the title bounds.
+4. Change only the Org value to =40%= and convert again.
+5. Observe identical bounds. Change the local YAML value to =40%= and observe that both title and subtitle move.
+
+* Environment and Evidence
+:PROPERTIES:
+:CUSTOM_ID: environment-and-evidence
+:END:
+
+- Application :: Installed =folio 0.4.16= built from repository revision =9c56936851c8e7498cb9e8ddcc05c180b399d701= with a dirty documentation/test worktree.
+- Platform :: macOS, local Typst PDF conversion.
+- Source :: =/Users/tigger/notes/gp/subs/aisle-seats.org= and its nearest =script.yaml=, read only; reproduction copies and PDFs were confined to an operating-system temporary directory.
+- Related work :: [[file:../../docs/work.org::#w-076][W076 - dotted Org source configuration]] is the source-layer implementation; [[file:../077-script-title-position-percent/spec.org][D077 - literal title-position percentages]] is the renderer repair that exposed the winning-value boundary.
+
+* Impact and Workaround
+:PROPERTIES:
+:CUSTOM_ID: impact-and-workaround
+:END:
+
+- Impact :: Per-document script cover and layout settings cannot take effect when the shared local YAML defines the same field. This defeats the portability and specificity expected from dotted Org configuration.
+- Workaround :: Remove the overlapping key from local =script.yaml=, or change the local YAML value for every document sharing that configuration.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Distinguishing check :: With local =10%= and source =15%= versus =40%=, the corrected script cascade must produce different title/subtitle bounds while preserving CLI as the highest layer.
+- Required decision :: Define the exact script-only layer ordering and compatibility evidence before implementation. Manuscript and letter precedence remain outside this report unless explicitly added.

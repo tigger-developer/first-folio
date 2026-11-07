@@ -78,6 +78,26 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** ACTIVE D078 - Let script frontmatter override shared local YAML :defect:
+:PROPERTIES:
+:CUSTOM_ID: d-078
+:PRIORITY: P1
+:SOURCE: operator
+:CREATED: 2026-11-07
+:END:
+- Defect :: [[file:../tickets/D078-script-frontmatter-precedence/defect.org][D078 - Script frontmatter loses to shared local YAML]].
+
+** ACTIVE D077 - Honour script title-position percentages :defect:
+:PROPERTIES:
+:CUSTOM_ID: d-077
+:PRIORITY: P1
+:SOURCE: operator
+:CREATED: 2026-11-07
+:END:
+- Specification :: [[file:../tickets/077-script-title-position-percent/spec.org][D077 - Script title-position percentages]] (emergency reconciliation in progress).
+- Emergency authority :: =BYPASS-GATE-7= invoked 2026-11-07 after dotted Org =20%= title positioning was read but silently rendered at a fallback position.
+- Scope :: Treat =0%= through =100%= literally in script PDF title-placement regions, retain the named aliases, and reject unsupported values atomically.
+
 ** ACTIVE W076 - Read script configuration from dotted Org frontmatter :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-076
