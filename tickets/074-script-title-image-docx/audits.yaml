@@ -36,3 +36,35 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
       - "Delivery depends on W073's implemented shared plan and unchanged configuration contract."
+  - id: definition-c1-r2
+    timestamp: "2026-11-07T14:52:50Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "3163a1081f6788bf56436034c5fda155497cfa97"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Definition criteria and project authorities recorded for definition-c1-r1, unchanged on 2026-11-07"
+      - "Amended W073 top-level folio.cover-image and selected-asset processing contract"
+      - "PDF-DOCX-ODT delivery sequence and native editable DOCX boundary"
+    evidence:
+      - "tickets/074-script-title-image-docx/spec.org at 3163a1081f6788bf56436034c5fda155497cfa97"
+      - "DOCX consumes the top-level W073 model and selected original or Superscale asset without rerunning the external tool"
+      - "Five ACs remain traced to two RTs, two ATs and one meaningful editor round-trip UT; all internal anchors resolve"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
+      - "Delivery depends on W073's implemented top-level model, process result and unchanged configuration contract."

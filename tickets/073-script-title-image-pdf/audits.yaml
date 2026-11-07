@@ -36,3 +36,38 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
       - "DOCX and ODT adoption remain separate dependent tickets."
+  - id: definition-c1-r2
+    timestamp: "2026-11-07T14:52:50Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "3163a1081f6788bf56436034c5fda155497cfa97"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "ISSUES.md, ARCHITECTURE.md, TESTING.md, CODING.md, SECURITY.md, DOCUMENTATION.md, ORG-SCHEMA.md and REVIEW.md as deployed on 2026-11-07"
+      - "Project product and architecture authorities at 3163a1081f6788bf56436034c5fda155497cfa97"
+      - "Operator amendment requiring an implementation-ready PDF design, reusable top-level cover-image configuration and optional Superscale processing"
+      - "Installed superscale --help contract observed on 2026-11-07"
+    evidence:
+      - "tickets/073-script-title-image-pdf/spec.org at 3163a1081f6788bf56436034c5fda155497cfa97"
+      - "Solution Design contains the complete folio.cover-image YAML table, geometry/text-region rules, PDF-only adoption boundary and Superscale process contract"
+      - "Ten ACs trace to three RTs, two ATs and one meaningful visual UT; all internal anchors resolve"
+      - "Superscale scale mapping, no-face-enhance policy, direct argv, source-relative input, temporary output, missing-tool fallback and atomic process failure are testable at named boundaries"
+      - "sanitize proposed no change to all three amended specifications and git diff --check passed"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests or invoke Superscale."
+      - "Standalone Typst, DOCX, ODT, manuscript and letter adoption remain outside W073 and reject configured covers until separately delivered."
