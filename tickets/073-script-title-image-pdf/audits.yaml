@@ -265,3 +265,65 @@ reviews:
       - "W074 and W075 were outside this audit."
       - "The verdict applies only to candidate 2d92474cc8fdbf72fa3ef0efdfb13e01250d91cb and is not operator approval."
       - "Cycle 1 definition round 5 is consumed; no further definition round is permitted without an explicit operator-authorized cycle reset recorded under REVIEW.md."
+  - id: test-code-c1-r1
+    timestamp: "2026-11-07T16:20:31Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "41a0c7f945e31259ccc086756553db008bfb0659"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: FAIL
+    criteria:
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, ORG-SCHEMA.md, GO.md, REVIEW.md and SELF-AUDIT.md as deployed on 2026-11-07"
+      - "Approved W073 PDF-only acceptance criteria and test definitions at 41a0c7f945e31259ccc086756553db008bfb0659"
+      - "Test-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "internal/config/cover_image_test.go, internal/app/cover_image.go, internal/app/w073_cover_image_test.go and internal/app/w073_cover_image_acceptance_test.go at 41a0c7f945e31259ccc086756553db008bfb0659"
+      - "All three RTs and three ATs compiled and executed with intended behavioural RED; validation.org records the commands and observations"
+      - "No-cover and disabled-Superscale preservation controls remained GREEN within the intended-RED runs"
+    findings:
+      - id: F1
+        severity: blocking
+        location: "internal/config/cover_image_test.go:9-50; internal/app/w073_cover_image_test.go:55-91"
+        requirement: "RT073.1 requires configuration loading and renderer-neutral planning across modes, treatments, defaults, boundaries and separated source/configuration/working directories."
+        evidence: "The candidate validates one populated map, selected invalid values and a limit helper, but does not assert resolved defaults, typed intent, source-relative resolution, physical geometry, both image formats or the stated percentage and length boundaries."
+        required_correction: "Extend the regression table through the real loader and plan boundary to prove resolved defaults, typed intent, source-relative paths, geometry, both supported formats/treatments and value boundaries while preserving strict-local-key and limit cases."
+      - id: F2
+        severity: blocking
+        location: "internal/app/w073_cover_image_test.go:93-157"
+        requirement: "RT073.2 requires background/inset, overlay/dodge, both relative positions, fitting/exact-height/0.1pt-overflow and long upper/lower groups through the real Typst compiler."
+        evidence: "The candidate checks one image-only inset, a no-cover PDF control and one gross dodge-overflow case. It does not observe background crop, overlay treatment localization, live text, dodge group placement, compact/standalone preservation, exact fit, just-over fit or separately named upper and lower failures."
+        required_correction: "Add deterministic compiled-PDF and standalone-Typst cases for every specified layout route and boundary, including measured text/image relationships and named upper/lower failures."
+      - id: F3
+        severity: blocking
+        location: "internal/app/w073_cover_image_test.go:159-207"
+        requirement: "RT073.3 requires null/default/2x/4x/8x argv, selected pixels, literal special-character input and cleanup at the production executable boundary."
+        evidence: "Only the usable 8x case asserts argv; default is exercised only as lookup absence, 2x only as non-zero and 4x only as unusable output. No case proves the default omission or usable 2x/4x mappings, and the selected output is byte-identical to the source so use of the generated image is unobservable."
+        required_correction: "Make each scale state observable with exact argv assertions and a distinguishable valid generated image; retain fallback warning and cleanup checks and prove literal special-character path handling."
+      - id: F4
+        severity: blocking
+        location: "internal/app/w073_cover_image_acceptance_test.go:14-72"
+        requirement: "AT073.1 requires measured public-PDF evidence for A4 centre crop, both inset examples, independent treatments, live overlay text, localized blur/wash, both dodge positions and unchanged later pages."
+        evidence: "The public test uses solid images and checks only four background corner pixels, one 50mm landscape inset and page count. Centre-crop choice, portrait sizing, overlay treatments/text, dodge relationships and later-page preservation are not observed."
+        required_correction: "Add marker-based public fixtures and quantitative raster/text assertions for the complete AT073.1 setup and tolerances."
+      - id: F5
+        severity: blocking
+        location: "internal/app/w073_cover_image_acceptance_test.go:74-109"
+        requirement: "AT073.2 requires public coverage of invalid assets/types/keys/values/combinations, compact mode, all unsupported consumers, all source limits, dodge overflow, no-cover controls and unchanged existing or absent targets."
+        evidence: "The table covers one unknown key, compact mode, standalone Typst, DOCX, missing input and byte overflow with existing targets only. It omits ODT, manuscript and letter consumers, unsupported image/type and most malformed values/combinations, dimension/pixel limits, dodge overflow, absent targets and no-cover preservation."
+        required_correction: "Expand the built-CLI table and controls to cover each specified rejection class and publication state without duplicating every lower-level value case."
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The review assessed the executable test package before production implementation; product behaviour was expected to remain RED."
+      - "W074 DOCX and W075 ODT rendering remain outside W073; unsupported-consumer rejection is within the PDF contract."

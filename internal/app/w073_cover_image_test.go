@@ -5,12 +5,15 @@ package app
 import (
 	"image"
 	"image/color"
+	"image/jpeg"
 	"image/png"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/tigger-developer/first-folio/internal/config"
 )
 
 const w073MagentaThreshold = 180
@@ -32,8 +35,10 @@ func init() {
 	}
 	var outputDir, input string
 	for i := 1; i < len(os.Args); i++ {
-		if os.Args[i] == "-o" && i+1 < len(os.Args) {
-			outputDir = os.Args[i+1]
+		if (os.Args[i] == "-o" || os.Args[i] == "--scale") && i+1 < len(os.Args) {
+			if os.Args[i] == "-o" {
+				outputDir = os.Args[i+1]
+			}
 			i++
 			continue
 		}
@@ -44,8 +49,20 @@ func init() {
 	if outputDir == "" || input == "" {
 		os.Exit(8)
 	}
-	raw, err := os.ReadFile(input)
-	if err != nil || os.MkdirAll(outputDir, 0o700) != nil || os.WriteFile(filepath.Join(outputDir, "upscaled.png"), raw, 0o600) != nil {
+	if _, err := os.Stat(input); err != nil || os.MkdirAll(outputDir, 0o700) != nil {
+		os.Exit(9)
+	}
+	output, err := os.Create(filepath.Join(outputDir, "upscaled.png"))
+	if err != nil {
+		os.Exit(9)
+	}
+	upscaled := image.NewRGBA(image.Rect(0, 0, 200, 100))
+	for y := 0; y < 100; y++ {
+		for x := 0; x < 200; x++ {
+			upscaled.SetRGBA(x, y, color.RGBA{R: 20, G: 190, B: 210, A: 255})
+		}
+	}
+	if err := png.Encode(output, upscaled); err != nil || output.Close() != nil {
 		os.Exit(9)
 	}
 	os.Exit(0)
@@ -86,6 +103,51 @@ func TestRT073_1CoverSourceLimitsUseExactBoundaries(t *testing.T) {
 			err := validateCoverSourceLimits(tc.bytes, tc.width, tc.height)
 			if err == nil || !strings.Contains(err.Error(), tc.want) {
 				t.Fatalf("expected limit %s, got %v", tc.want, err)
+			}
+		})
+	}
+}
+
+func TestRT073_1CoverPlanResolvesSourcePathFormatsAndGeometry(t *testing.T) {
+	root := t.TempDir()
+	sourceDir := filepath.Join(root, "source")
+	configDir := filepath.Join(root, "configuration")
+	workDir := filepath.Join(root, "working")
+	for _, dir := range []string{sourceDir, configDir, workDir} {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	source := filepath.Join(sourceDir, "play.org")
+	writeAppFile(t, source, "* ACT ONE\n**** CÁIT\nBody.\n")
+	writeW073PNG(t, filepath.Join(sourceDir, "portrait.png"), 200, 400, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+	writeW073JPEG(t, filepath.Join(sourceDir, "landscape.jpg"), 1000, 250, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+	for _, tc := range []struct {
+		name, path, size      string
+		wantWidth, wantHeight float64
+	}{
+		{"portrait PNG", "portrait.png", "80mm", 40, 80},
+		{"landscape JPEG", "landscape.jpg", "50mm", 50, 12.5},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg, err := config.Load(config.Options{Mode: config.ModeScript, Home: t.TempDir(), LocalDir: configDir, Source: map[string]any{"folio": map[string]any{"cover-image": map[string]any{"path": tc.path, "mode": "inset", "size": tc.size}}}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			oldWorking, err := os.Getwd()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := os.Chdir(workDir); err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = os.Chdir(oldWorking) })
+			plan, err := planCoverImage(cfg, source)
+			if err != nil {
+				t.Fatalf("planning: %v", err)
+			}
+			if plan.SourcePath != filepath.Join(sourceDir, tc.path) || plan.RenderedWidthMM != tc.wantWidth || plan.RenderedHeightMM != tc.wantHeight {
+				t.Fatalf("plan=%#v, want source-relative %.1fx%.1fmm", plan, tc.wantWidth, tc.wantHeight)
 			}
 		})
 	}
@@ -141,32 +203,54 @@ func TestRT073_2NoCoverControlAndDodgeOverflow(t *testing.T) {
 			t.Fatalf("no-cover control status=%d stderr=%s", status, stderr)
 		}
 	})
-	t.Run("dodge overflow", func(t *testing.T) {
-		dir := t.TempDir()
-		t.Setenv("HOME", t.TempDir())
-		source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.pdf")
-		cover := filepath.Join(dir, "cover.png")
-		writeW073PNG(t, cover, 100, 100, color.RGBA{R: 230, G: 20, B: 150, A: 255})
-		writeAppFile(t, source, "#+TITLE: "+strings.Repeat("Very long title ", 80)+"\n#+AUTHOR: "+strings.Repeat("Long author ", 80)+"\n* ACT ONE\n**** CÁIT\nBody.\n")
-		writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 190mm\n")
-		status, _, stderr := runApp(t, "convert", source, target)
-		if status == 0 || (!strings.Contains(stderr, "upper") && !strings.Contains(stderr, "lower") && !strings.Contains(stderr, "cover")) {
-			t.Fatalf("overflow status=%d stderr=%s", status, stderr)
+	for _, tc := range []struct {
+		name, source, want string
+	}{
+		{"upper dodge overflow", "#+TITLE: " + strings.Repeat("Very long title ", 100) + "\n", "upper"},
+		{"lower dodge overflow", "#+AUTHOR: " + strings.Repeat("Very long author ", 100) + "\n", "lower"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Setenv("HOME", t.TempDir())
+			source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.pdf")
+			cover := filepath.Join(dir, "cover.png")
+			writeW073PNG(t, cover, 100, 100, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+			writeAppFile(t, source, tc.source+"* ACT ONE\n**** CÁIT\nBody.\n")
+			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 190mm\n")
+			status, _, stderr := runApp(t, "convert", source, target)
+			if status == 0 || !strings.Contains(stderr, tc.want) {
+				t.Fatalf("%s overflow status=%d stderr=%s", tc.want, status, stderr)
+			}
+		})
+	}
+}
+
+func TestRT073_2DodgeFitAcceptsExactHeightAndRejectsPointOneOver(t *testing.T) {
+	for _, group := range []string{"upper", "lower"} {
+		if err := validateDodgeGroupFit(group, 72, 72); err != nil {
+			t.Fatalf("%s exact-height group rejected: %v", group, err)
 		}
-	})
+		err := validateDodgeGroupFit(group, 72.1, 72)
+		if err == nil || !strings.Contains(err.Error(), group) {
+			t.Fatalf("%s 0.1pt overflow = %v", group, err)
+		}
+	}
 }
 
 func TestRT073_3SuperscaleInvocationAndFallbackAreDeterministic(t *testing.T) {
 	requireW073Tools(t)
 	for _, tc := range []struct {
-		name, value, mode string
-		fake, warning     bool
+		name, value, mode, scale string
+		fake, warning, generated bool
 	}{
-		{"disabled", "null", "", false, false},
-		{"missing", "default", "", false, true},
-		{"nonzero", "2x", "nonzero", true, true},
-		{"unusable", "4x", "unusable", true, true},
-		{"usable", "8x", "success", true, false},
+		{"disabled", "null", "", "", false, false, false},
+		{"missing", "default", "", "", false, true, false},
+		{"nonzero", "2x", "nonzero", "2", true, true, false},
+		{"unusable", "4x", "unusable", "4", true, true, false},
+		{"usable default", "default", "success", "", true, false, true},
+		{"usable 2x", "2x", "success", "2", true, false, true},
+		{"usable 4x", "4x", "success", "4", true, false, true},
+		{"usable 8x", "8x", "success", "8", true, false, true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			dir := t.TempDir()
@@ -179,10 +263,10 @@ func TestRT073_3SuperscaleInvocationAndFallbackAreDeterministic(t *testing.T) {
 			marker := filepath.Join(dir, "superscale.marker")
 			t.Setenv("FOLIO_TEST_SUPERSCALE_MARKER", marker)
 			source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.pdf")
-			cover := filepath.Join(dir, "cover image.png")
+			cover := filepath.Join(dir, "cover [literal] $ image.png")
 			writeW073PNG(t, cover, 100, 50, color.RGBA{R: 230, G: 20, B: 150, A: 255})
 			writeAppFile(t, source, "#+TITLE: Superscale\n* ACT ONE\n**** CÁIT\nBody.\n")
-			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  cover-image:\n    path: 'cover image.png'\n    mode: inset\n    placement: overlay\n    size: 50mm\n    superscale: "+tc.value+"\n")
+			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  cover-image:\n    path: 'cover [literal] $ image.png'\n    mode: inset\n    placement: overlay\n    size: 50mm\n    superscale: "+tc.value+"\n")
 			status, _, stderr := runApp(t, "convert", source, target)
 			if status != 0 {
 				t.Fatalf("status=%d stderr=%s", status, stderr)
@@ -194,21 +278,90 @@ func TestRT073_3SuperscaleInvocationAndFallbackAreDeterministic(t *testing.T) {
 			if tc.fake != (markerErr == nil) {
 				t.Fatalf("superscale invoked=%t want=%t: %v", markerErr == nil, tc.fake, markerErr)
 			}
-			if tc.fake && tc.mode == "success" {
+			if tc.fake {
 				args := readAppFile(t, marker)
-				if !strings.Contains(args, "--no-face-enhance") || !strings.Contains(args, "--scale\n8") || !strings.Contains(args, "cover image.png") {
+				if !strings.Contains(args, "--no-face-enhance") || !strings.Contains(args, "cover [literal] $ image.png") {
 					t.Fatalf("unexpected superscale argv: %q", args)
 				}
+				if tc.scale == "" && strings.Contains(args, "--scale") {
+					t.Fatalf("default invocation unexpectedly set scale: %q", args)
+				}
+				if tc.scale != "" && !strings.Contains(args, "--scale\n"+tc.scale+"\n") {
+					t.Fatalf("scale %s missing from argv: %q", tc.scale, args)
+				}
+			}
+			page := rasterW073Page(t, target, 1)
+			if tc.generated != w073ContainsCyan(page) {
+				t.Fatalf("generated-image pixels=%t want=%t", w073ContainsCyan(page), tc.generated)
 			}
 			assertNoW073TemporaryOutput(t, tempRoot)
 		})
 	}
 }
 
+func writeW073JPEG(t *testing.T, path string, width, height int, fill color.RGBA) {
+	t.Helper()
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			img.SetRGBA(x, y, fill)
+		}
+	}
+	file, err := os.Create(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := jpeg.Encode(file, img, &jpeg.Options{Quality: 95}); err != nil {
+		_ = file.Close()
+		t.Fatal(err)
+	}
+	if err := file.Close(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func w073ContainsCyan(img image.Image) bool {
+	bounds := img.Bounds()
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			r, g, b, _ := img.At(x, y).RGBA()
+			if r>>8 < 60 && g>>8 > 150 && b>>8 > 170 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func writeW073PNG(t *testing.T, path string, width, height int, fill color.RGBA) {
 	t.Helper()
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			img.SetRGBA(x, y, fill)
+		}
+	}
+	file, err := os.Create(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := png.Encode(file, img); err != nil {
+		_ = file.Close()
+		t.Fatal(err)
+	}
+	if err := file.Close(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func writeW073CropMarkerPNG(t *testing.T, path string, width, height int) {
+	t.Helper()
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	for y := 0; y < height; y++ {
+		fill := color.RGBA{R: 230, G: 20, B: 150, A: 255}
+		if y < height/20 || y >= height-height/20 {
+			fill = color.RGBA{R: 20, G: 200, B: 30, A: 255}
+		}
 		for x := 0; x < width; x++ {
 			img.SetRGBA(x, y, fill)
 		}
