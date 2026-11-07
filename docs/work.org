@@ -78,6 +78,15 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** TODO W079 - Add inset cover title-page backdrops :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-079
+:PRIORITY: P2
+:SOURCE: operator
+:CREATED: 2026-11-07
+:END:
+- Reservation :: Define PDF title-page solid-colour or blurred-image backdrops behind inset cover images.
+
 ** ACTIVE D078 - Let source frontmatter override shared local YAML :defect:
 :PROPERTIES:
 :CUSTOM_ID: d-078
