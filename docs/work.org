@@ -78,7 +78,7 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** REVIEW W079 - Add inset cover title-page backdrops :feature:
+** ACTIVE W079 - Add inset cover title-page backdrops :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-079
 :PRIORITY: P2
