@@ -203,6 +203,8 @@ folio:
       treatment: light      # light = white backing; dark = black backing
       opacity: 100%
     superscale: null        # null | default | "2x" | "4x" | "8x"
+    dodge:
+      padding: 1em          # minimum image clearance after text placement
     overlay:
       blur: 0mm
       wash:
@@ -220,6 +222,7 @@ folio:
 | `image.treatment` | `light` or `dark`; selects the white or black backing used with `image.opacity`. |
 | `image.opacity` | `0%` through `100%`; defaults to `100%`. |
 | `superscale` | `null`, `default`, `2x`, `4x` or `8x`; defaults to `null`. |
+| `dodge.padding` | Positive `em` or `mm` minimum clearance outside a dodged inset; defaults to `1em`. An `em` uses `folio.font.size`. |
 | `overlay.blur` | Non-negative physical blur radius in `mm`; defaults to `0mm`. |
 | `overlay.wash.treatment` | `light` or `dark`; selects a white or black wash independently of image treatment. |
 | `overlay.wash.opacity` | `0%` through `100%`; defaults to `0%`. |
@@ -229,8 +232,12 @@ Overlay retains the configured title-page positioning and keeps title metadata
 as live PDF text. Blur and wash are restricted to the populated title,
 date and version regions. Dodge physically centres an inset and places the
 title/subtitle/author group above it and the date/version group below it;
-`center` and `third` are interpreted within those available regions. A region
-that cannot fit is reported by name before the target is replaced.
+`center` and `third` are interpreted within the regions bounded by the actual
+image edge. Dodge padding is applied afterwards as minimum image clearance. It
+does not reduce those regions or change the relative-position calculation; only
+a group that violates the clearance moves, and only by the required distance.
+A group that crosses the page content boundary is reported by name before the
+target is replaced. A non-empty `dodge` block is invalid with overlay placement.
 
 The `cover-image` block rejects unknown nested keys and invalid combinations.
 It is incompatible with compact script title mode, standalone Typst, DOCX,
@@ -890,6 +897,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.41 (2026-11-07): Define post-placement dodge image clearance for script PDF title pages.
 
 - 0.40 (2026-11-07): Distinguish script title/subtitle grouping and cover-dodge positions from manuscript chapter spacing.
 

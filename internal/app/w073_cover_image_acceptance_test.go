@@ -142,6 +142,30 @@ func TestAT073_1RenderedPDFGeometryFollowsTheImageContract(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("dodge padding clears both image edges", func(t *testing.T) {
+		root, home := t.TempDir(), t.TempDir()
+		source, target := filepath.Join(root, "play.org"), filepath.Join(root, "dodge-padding.pdf")
+		writeAppFile(t, source, "#+TITLE: UPPERPADDING\n#+AUTHOR: LOWERPADDING\n* ACT ONE\n**** CÁIT\nBody.\n")
+		writeW073PNG(t, filepath.Join(root, "cover.png"), 400, 200, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+		writeAppFile(t, filepath.Join(root, "script.yaml"), "folio:\n  title-page:\n    title:\n      position: center\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 100mm\n    dodge:\n      padding: 50mm\n")
+		_, diagnostic, err := officeRun(t, binary, t.TempDir(), officeEnv(t, home, nil), "convert", source, target)
+		if err != nil {
+			t.Fatalf("dodge-padding conversion: %v: %s", err, diagnostic)
+		}
+		imageBox, ok := w073ColourBounds(rasterW073Page(t, target, 1))
+		if !ok {
+			t.Fatal("dodge image marker absent")
+		}
+		upper := w073WordBounds(t, target, "UPPERPADDING")
+		lower := w073WordBounds(t, target, "LOWERPADDING")
+		// pdftotext reports font glyph bounds rather than the Typst block box to
+		// which clearance applies, so allow for glyph overhang within the block.
+		minimum := 50*72/25.4 - 8
+		if float64(imageBox.Min.Y)-upper.yMax < minimum || lower.yMin-float64(imageBox.Max.Y) < minimum {
+			t.Fatalf("50mm clearance absent: image=%v upper=%#v lower=%#v minimum=%.1fpt", imageBox, upper, lower, minimum)
+		}
+	})
 }
 
 func TestAT073_2InvalidAndUnsupportedCoverInputFailsAtomically(t *testing.T) {

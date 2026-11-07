@@ -213,10 +213,12 @@ func TestRT073_2NoCoverControlAndDodgeOverflow(t *testing.T) {
 		}
 	})
 	for _, tc := range []struct {
-		name, source, want string
+		name, source, want, size, padding string
 	}{
-		{"upper dodge overflow", "#+TITLE: " + strings.Repeat("Very long title ", 100) + "\n", "upper"},
-		{"lower dodge overflow", "#+AUTHOR: " + strings.Repeat("Very long author ", 100) + "\n", "lower"},
+		{"upper dodge overflow", "#+TITLE: " + strings.Repeat("Very long title ", 100) + "\n", "upper", "190mm", ""},
+		{"lower dodge overflow", "#+AUTHOR: " + strings.Repeat("Very long author ", 100) + "\n", "lower", "190mm", ""},
+		{"upper dodge padding overflow", "#+TITLE: Title\n", "upper", "100mm", "100mm"},
+		{"lower dodge padding overflow", "#+AUTHOR: Author\n", "lower", "100mm", "100mm"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			dir := t.TempDir()
@@ -225,10 +227,17 @@ func TestRT073_2NoCoverControlAndDodgeOverflow(t *testing.T) {
 			cover := filepath.Join(dir, "cover.png")
 			writeW073PNG(t, cover, 100, 100, color.RGBA{R: 230, G: 20, B: 150, A: 255})
 			writeAppFile(t, source, tc.source+"* ACT ONE\n**** CÁIT\nBody.\n")
-			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 190mm\n")
+			padding := ""
+			if tc.padding != "" {
+				padding = "    dodge:\n      padding: " + tc.padding + "\n"
+			}
+			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: "+tc.size+"\n"+padding)
 			status, _, stderr := runApp(t, "convert", source, target)
 			if status == 0 || !strings.Contains(stderr, tc.want) {
 				t.Fatalf("%s overflow status=%d stderr=%s", tc.want, status, stderr)
+			}
+			if _, err := os.Stat(target); !os.IsNotExist(err) {
+				t.Fatalf("overflow published target: %v", err)
 			}
 		})
 	}
@@ -331,6 +340,45 @@ func TestRT073_2OverlayAndDodgeUseLiveMeasuredText(t *testing.T) {
 				t.Fatalf("dodge overlap position=%s image=%v upper=%#v lower=%#v", position, imageBox, upper, lower)
 			}
 		})
+	}
+}
+
+func TestRT073_2DodgePaddingIsPostPlacementClearance(t *testing.T) {
+	requireW073Tools(t)
+	dir := t.TempDir()
+	t.Setenv("HOME", t.TempDir())
+	source := filepath.Join(dir, "play.org")
+	writeAppFile(t, source, "#+TITLE: UPPERCLEARANCE\n#+AUTHOR: LOWERCLEARANCE\n* ACT ONE\n**** CÁIT\nBody.\n")
+	writeW073PNG(t, filepath.Join(dir, "cover.png"), 400, 200, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+	type result struct {
+		image        image.Rectangle
+		upper, lower wordBoundsW073
+	}
+	render := func(padding string) result {
+		t.Helper()
+		target := filepath.Join(dir, "dodge-padding-"+padding+".pdf")
+		writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n    title:\n      position: center\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 150mm\n    dodge:\n      padding: "+padding+"\n")
+		status, _, stderr := runApp(t, "convert", source, target)
+		if status != 0 {
+			t.Fatalf("padding=%s status=%d stderr=%s", padding, status, stderr)
+		}
+		imageBox, ok := w073ColourBounds(rasterW073Page(t, target, 1))
+		if !ok {
+			t.Fatal("dodge image absent")
+		}
+		return result{image: imageBox, upper: w073WordBounds(t, target, "UPPERCLEARANCE"), lower: w073WordBounds(t, target, "LOWERCLEARANCE")}
+	}
+
+	fifty := render("50mm")
+	sixty := render("60mm")
+	if fifty.image != sixty.image {
+		t.Fatalf("padding changed calculated image region: 50mm=%v 60mm=%v", fifty.image, sixty.image)
+	}
+	wantShift := 10 * 72 / 25.4
+	upperShift := fifty.upper.yMin - sixty.upper.yMin
+	lowerShift := sixty.lower.yMin - fifty.lower.yMin
+	if absoluteFloatW073(upperShift-wantShift) > 2 || absoluteFloatW073(lowerShift-wantShift) > 2 {
+		t.Fatalf("10mm added padding shifted upper %.1fpt and lower %.1fpt; want one-sided %.1fpt shifts", upperShift, lowerShift, wantShift)
 	}
 }
 

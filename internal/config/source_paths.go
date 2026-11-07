@@ -24,6 +24,7 @@ func ScriptSourcePaths() (map[string]struct{}, error) {
 		"folio.cover-image.image.treatment",
 		"folio.cover-image.image.opacity",
 		"folio.cover-image.superscale",
+		"folio.cover-image.dodge.padding",
 		"folio.cover-image.overlay.blur",
 		"folio.cover-image.overlay.wash.treatment",
 		"folio.cover-image.overlay.wash.opacity",

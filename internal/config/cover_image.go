@@ -19,6 +19,7 @@ type CoverImage struct {
 	ImageTreatment       string
 	ImageOpacity         float64
 	Superscale           string
+	DodgePadding         string
 	OverlayBlur          string
 	OverlayWashTreatment string
 	OverlayWashOpacity   float64
@@ -35,7 +36,7 @@ func (c Config) CoverImage() (CoverImage, bool, error) {
 	if !ok {
 		return CoverImage{}, false, fmt.Errorf("folio.cover-image must be a mapping; got %#v", raw)
 	}
-	if err := coverKeys("folio.cover-image", block, "path", "mode", "placement", "size", "image", "superscale", "overlay"); err != nil {
+	if err := coverKeys("folio.cover-image", block, "path", "mode", "placement", "size", "image", "superscale", "dodge", "overlay"); err != nil {
 		return CoverImage{}, false, err
 	}
 	if len(block) == 0 {
@@ -111,6 +112,23 @@ func (c Config) CoverImage() (CoverImage, bool, error) {
 			return CoverImage{}, false, fmt.Errorf("folio.cover-image.superscale must be null, default, 2x, 4x or 8x; got %q", superscale)
 		}
 	}
+	dodge, err := coverMapping(block, "dodge", "folio.cover-image.dodge")
+	if err != nil {
+		return CoverImage{}, false, err
+	}
+	if err := coverKeys("folio.cover-image.dodge", dodge, "padding"); err != nil {
+		return CoverImage{}, false, err
+	}
+	if placement != "dodge" && len(dodge) != 0 {
+		return CoverImage{}, false, fmt.Errorf("folio.cover-image.dodge is supported only when folio.cover-image.placement is dodge")
+	}
+	dodgePadding, err := coverStringDefault(dodge, "padding", "folio.cover-image.dodge.padding", "1em")
+	if err != nil {
+		return CoverImage{}, false, err
+	}
+	if _, err := coverLength(dodgePadding, "folio.cover-image.dodge.padding", "em|mm", true); err != nil {
+		return CoverImage{}, false, err
+	}
 
 	overlay, err := coverMapping(block, "overlay", "folio.cover-image.overlay")
 	if err != nil {
@@ -160,7 +178,8 @@ func (c Config) CoverImage() (CoverImage, bool, error) {
 	return CoverImage{
 		Path: path, Mode: mode, Placement: placement, Size: size,
 		ImageTreatment: imageTreatment, ImageOpacity: imageOpacity, Superscale: superscale,
-		OverlayBlur: blur, OverlayWashTreatment: washTreatment,
+		DodgePadding: dodgePadding,
+		OverlayBlur:  blur, OverlayWashTreatment: washTreatment,
 		OverlayWashOpacity: washOpacity, OverlayPadding: padding,
 	}, true, nil
 }

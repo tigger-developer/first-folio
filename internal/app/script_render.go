@@ -49,7 +49,7 @@ type scriptCoverData struct {
 	Width, Height, PageWidth, PageHeight string
 	WashFill, TextFill                   string
 	TitlePadding, FooterPadding          string
-	DodgeFactor                          string
+	DodgeFactor, DodgePadding            string
 	HasUpper, HasLower, HasBlur          bool
 }
 
@@ -346,9 +346,10 @@ func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, cfg 
 		WashFill: fmt.Sprintf(`rgb("#%s%02X")`, base, alpha), TextFill: textFill,
 		TitlePadding:  coverPadding(plan.Config.OverlayPadding, populatedFontSize(data)),
 		FooterPadding: coverPadding(plan.Config.OverlayPadding, footerFontSize(data)), DodgeFactor: factor,
-		HasUpper: data.HasTitle || data.HasSubtitle,
-		HasLower: data.HasAuthor || data.FooterLeft != "" || data.FooterRight != "",
-		HasBlur:  plan.Config.OverlayBlur != "0mm",
+		DodgePadding: coverPadding(plan.Config.DodgePadding, typstPoints(data.RootFont.Size)),
+		HasUpper:     data.HasTitle || data.HasSubtitle,
+		HasLower:     data.HasAuthor || data.FooterLeft != "" || data.FooterRight != "",
+		HasBlur:      plan.Config.OverlayBlur != "0mm",
 	}
 }
 

@@ -159,6 +159,8 @@ folio:
   #     treatment: light        # light blends towards white; dark blends towards black.
   #     opacity: 100%           # Original-image contribution over that backing, 0%-100%.
   #   superscale: null          # null disables; default, 2x, 4x or 8x requests Superscale.
+  #   dodge:
+  #     padding: 1em            # Positive em/mm clearance applied after centre/third placement.
   #   overlay:
   #     blur: 0mm               # Physical blur radius behind each live text region.
   #     wash:

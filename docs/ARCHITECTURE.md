@@ -159,7 +159,11 @@ route. `internal/app` resolves assets from the source document, validates PNG
 or JPEG headers and bounded source dimensions, optionally invokes Superscale
 with literal arguments, and prepares normalized and blurred temporary PNGs.
 The script Typst template owns background cover-crop, inset geometry, localized
-overlay regions and dodge composition. Title metadata remains live text.
+overlay regions and dodge composition. Dodge placement first measures and
+positions each live-text group in the region bounded by the actual image edge,
+then applies configured image clearance as a one-sided minimum adjustment. The
+clearance does not shrink or recalculate that region. Title metadata remains
+live text.
 Preparation and layout complete before a PDF is atomically renamed into place;
 warnings fall back to the original image, while invalid configuration, assets
 or measured dodge regions leave the target unchanged. Standalone Typst, DOCX,
@@ -190,6 +194,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.24 (2026-11-07): Add post-placement dodge clearance without changing relative-position regions.
 
 - 0.23 (2026-11-07): Add the renderer-neutral cover-image plan and its dedicated script PDF adoption boundary.
 

@@ -111,6 +111,8 @@
   #     treatment: light        # light = white backing; dark = black backing
   #     opacity: 100%
   #   superscale: null          # null | default | 2x | 4x | 8x
+  #   dodge:
+  #     padding: 1em            # positive em/mm clearance after centre/third placement
   #   overlay:
   #     blur: 0mm               # non-negative mm radius
   #     wash:

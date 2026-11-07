@@ -23,6 +23,7 @@ func TestRT073_1CoverImageConfigurationKeysAreValidated(t *testing.T) {
 	}{
 		{"unknown direct key", "folio.cover-image.typo", map[string]any{"path": "cover.png", "mode": "background", "typo": true}},
 		{"unknown image key", "folio.cover-image.image.typo", map[string]any{"path": "cover.png", "mode": "background", "image": map[string]any{"typo": true}}},
+		{"unknown dodge key", "folio.cover-image.dodge.typo", map[string]any{"path": "cover.png", "mode": "inset", "placement": "dodge", "size": "80mm", "dodge": map[string]any{"typo": true}}},
 		{"unknown overlay key", "folio.cover-image.overlay.typo", map[string]any{"path": "cover.png", "mode": "background", "overlay": map[string]any{"typo": true}}},
 		{"unknown wash key", "folio.cover-image.overlay.wash.typo", map[string]any{"path": "cover.png", "mode": "background", "overlay": map[string]any{"wash": map[string]any{"typo": true}}}},
 		{"missing mode", "folio.cover-image.mode", map[string]any{"path": "cover.png"}},
@@ -37,6 +38,10 @@ func TestRT073_1CoverImageConfigurationKeysAreValidated(t *testing.T) {
 		{"negative blur", "folio.cover-image.overlay.blur", map[string]any{"path": "cover.png", "mode": "background", "overlay": map[string]any{"blur": "-0.1mm"}}},
 		{"invalid padding unit", "folio.cover-image.overlay.padding", map[string]any{"path": "cover.png", "mode": "background", "overlay": map[string]any{"padding": "1pt"}}},
 		{"negative padding", "folio.cover-image.overlay.padding", map[string]any{"path": "cover.png", "mode": "background", "overlay": map[string]any{"padding": "-0.1em"}}},
+		{"invalid dodge padding unit", "folio.cover-image.dodge.padding", map[string]any{"path": "cover.png", "mode": "inset", "placement": "dodge", "size": "80mm", "dodge": map[string]any{"padding": "1pt"}}},
+		{"zero dodge padding", "folio.cover-image.dodge.padding", map[string]any{"path": "cover.png", "mode": "inset", "placement": "dodge", "size": "80mm", "dodge": map[string]any{"padding": "0em"}}},
+		{"negative dodge padding", "folio.cover-image.dodge.padding", map[string]any{"path": "cover.png", "mode": "inset", "placement": "dodge", "size": "80mm", "dodge": map[string]any{"padding": "-0.1mm"}}},
+		{"dodge block with overlay placement", "folio.cover-image.dodge", map[string]any{"path": "cover.png", "mode": "inset", "placement": "overlay", "size": "80mm", "dodge": map[string]any{"padding": "1em"}}},
 		{"invalid wash treatment", "folio.cover-image.overlay.wash.treatment", map[string]any{"path": "cover.png", "mode": "background", "overlay": map[string]any{"wash": map[string]any{"treatment": "contrast"}}}},
 		{"invalid wash opacity", "folio.cover-image.overlay.wash.opacity", map[string]any{"path": "cover.png", "mode": "background", "overlay": map[string]any{"wash": map[string]any{"opacity": "101%"}}}},
 		{"dodge treatment", "folio.cover-image.overlay", map[string]any{"path": "cover.png", "mode": "inset", "placement": "dodge", "size": "80mm", "overlay": map[string]any{"blur": "1mm"}}},
@@ -65,14 +70,19 @@ func TestRT073_1CoverImageResolvesTypedDefaultsAndBoundaries(t *testing.T) {
 		{
 			name:  "background defaults and zero boundaries",
 			cover: map[string]any{"path": "cover.png", "mode": "background", "image": map[string]any{"opacity": "0%"}, "overlay": map[string]any{"blur": "0mm", "padding": "0em", "wash": map[string]any{"opacity": "0%"}}},
-			want:  CoverImage{Path: "cover.png", Mode: "background", Placement: "overlay", ImageTreatment: "light", ImageOpacity: 0, Superscale: "", OverlayBlur: "0mm", OverlayWashTreatment: "light", OverlayWashOpacity: 0, OverlayPadding: "0em"},
+			want:  CoverImage{Path: "cover.png", Mode: "background", Placement: "overlay", ImageTreatment: "light", ImageOpacity: 0, Superscale: "", DodgePadding: "1em", OverlayBlur: "0mm", OverlayWashTreatment: "light", OverlayWashOpacity: 0, OverlayPadding: "0em"},
 		},
 		{
 			name: "inset explicit upper boundaries",
 			cover: map[string]any{"path": "cover.jpg", "mode": "inset", "placement": "overlay", "size": "80mm", "superscale": "default",
 				"image":   map[string]any{"treatment": "dark", "opacity": "100%"},
 				"overlay": map[string]any{"blur": "2.5mm", "padding": "1.5mm", "wash": map[string]any{"treatment": "dark", "opacity": "100%"}}},
-			want: CoverImage{Path: "cover.jpg", Mode: "inset", Placement: "overlay", Size: "80mm", ImageTreatment: "dark", ImageOpacity: 1, Superscale: "default", OverlayBlur: "2.5mm", OverlayWashTreatment: "dark", OverlayWashOpacity: 1, OverlayPadding: "1.5mm"},
+			want: CoverImage{Path: "cover.jpg", Mode: "inset", Placement: "overlay", Size: "80mm", ImageTreatment: "dark", ImageOpacity: 1, Superscale: "default", DodgePadding: "1em", OverlayBlur: "2.5mm", OverlayWashTreatment: "dark", OverlayWashOpacity: 1, OverlayPadding: "1.5mm"},
+		},
+		{
+			name:  "dodge explicit millimetre padding",
+			cover: map[string]any{"path": "cover.jpg", "mode": "inset", "placement": "dodge", "size": "80mm", "dodge": map[string]any{"padding": "3.5mm"}},
+			want:  CoverImage{Path: "cover.jpg", Mode: "inset", Placement: "dodge", Size: "80mm", ImageTreatment: "light", ImageOpacity: 1, Superscale: "", DodgePadding: "3.5mm", OverlayBlur: "0mm", OverlayWashTreatment: "light", OverlayWashOpacity: 0, OverlayPadding: "0em"},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -93,5 +103,15 @@ func TestRT073_1CoverImageResolvesTypedDefaultsAndBoundaries(t *testing.T) {
 	}
 	if got, enabled, err := cfg.CoverImage(); err != nil || enabled || got != (CoverImage{}) {
 		t.Fatalf("absent CoverImage() = %#v, %t, %v", got, enabled, err)
+	}
+}
+
+func TestRT073_1DodgePaddingIsAvailableToOrgSourceConfiguration(t *testing.T) {
+	paths, err := ScriptSourcePaths()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := paths["folio.cover-image.dodge.padding"]; !ok {
+		t.Fatal("folio.cover-image.dodge.padding is absent from Org source configuration paths")
 	}
 }
