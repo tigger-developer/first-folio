@@ -47,3 +47,6 @@
 - 2026-11-07 at =89bc5fa=: =make lint= GREEN.
 - 2026-11-07 at =89bc5fa=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
 - 2026-11-07 at =89bc5fa=: =git diff --check= GREEN and the worktree was clean.
+- 2026-11-07 at =b1e3bb1=: =make test= GREEN after adding exact endpoint coverage; =internal/app= completed in =414.539s= and every remaining package passed or was validly cached.
+- 2026-11-07 at =b1e3bb1=: =make lint= GREEN.
+- 2026-11-07 at =b1e3bb1=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
