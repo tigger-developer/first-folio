@@ -9,7 +9,7 @@
 ** RED AT073.1 - Rendered PDF geometry follows the image contract :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-1-result
-:REVISION: bc4421b58ce608ec0e8c857cca9ef1968130d167
+:REVISION: c4d067d5793ca3ad516b1c058f5c072ec45eecf7
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
 :EVIDENCE: The built CLI completed baseline PDFs, but marker rasters had no configured centre-cropped background, portrait or landscape inset, overlay treatment or dodge image; live-text controls exposed the untreated pre-change page.
 :END:
@@ -20,7 +20,7 @@
 ** RED AT073.2 - Invalid and unsupported cover input fails atomically :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-2-result
-:REVISION: bc4421b58ce608ec0e8c857cca9ef1968130d167
+:REVISION: c4d067d5793ca3ad516b1c058f5c072ec45eecf7
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
 :EVIDENCE: The built CLI accepted the configured-cover invalid, unsupported-consumer, source-limit and dodge-overflow cases and replaced existing or created absent targets instead of reporting the cover field before publication; no-cover PDF/Typst controls remained GREEN.
 :END:
@@ -31,7 +31,7 @@
 ** RED AT073.3 - Public Superscale fallback preserves PDF output :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-3-result
-:REVISION: bc4421b58ce608ec0e8c857cca9ef1968130d167
+:REVISION: c4d067d5793ca3ad516b1c058f5c072ec45eecf7
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
 :EVIDENCE: Missing, non-zero and unusable Superscale cases produced no required warning because the built CLI did not yet process the configured cover image.
 :END:
@@ -44,7 +44,7 @@
 ** RED RT073.1 - Cover-image configuration, keys and source limits are validated :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-1-result
-:REVISION: bc4421b58ce608ec0e8c857cca9ef1968130d167
+:REVISION: c4d067d5793ca3ad516b1c058f5c072ec45eecf7
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
 :EVIDENCE: Valid cover maps loaded, but typed defaults and explicit boundaries remained unimplemented, every strict-key and invalid-value case was accepted, source-relative PNG/JPEG planning remained unimplemented and source-limit scaffolding rejected valid boundaries.
 :END:
@@ -55,18 +55,18 @@
 ** RED RT073.2 - Typst output contains the resolved title-image layout :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-2-result
-:REVISION: bc4421b58ce608ec0e8c857cca9ef1968130d167
+:REVISION: c4d067d5793ca3ad516b1c058f5c072ec45eecf7
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
-:EVIDENCE: The no-cover preservation control passed, while the rendered inset contained no cover pixels, image-only input lacked a dedicated page, exact-fit comparison remained unimplemented and long upper/lower dodge groups completed successfully instead of reporting named layout errors.
+:EVIDENCE: The no-cover preservation control passed, while rendered inset/overlay/dodge fixtures contained no cover pixels, treatment/physical-blur preparation and exact-fit comparison remained unimplemented, and long upper/lower groups completed successfully instead of reporting named layout errors.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]] and [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]].
-- Runs :: 2026-11-07: intended RED for new cover layout, exact and 0.1pt-over fit boundaries, and separately named long upper/lower groups; no-cover conversion remained GREEN without manufacturing a failure.
+- Runs :: 2026-11-07: intended RED for image treatment and physical blur, live overlay, centre/third dodge, exact and 0.1pt-over fit boundaries, and separately named long upper/lower groups; no-cover conversion remained GREEN without manufacturing a failure.
 
 ** RED RT073.3 - Superscale invocation and fallback are deterministic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-3-result
-:REVISION: bc4421b58ce608ec0e8c857cca9ef1968130d167
+:REVISION: c4d067d5793ca3ad516b1c058f5c072ec45eecf7
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
 :EVIDENCE: The null control completed without lookup or warning, while requested missing, non-zero and unusable cases lacked warnings and usable default, 2x, 4x and 8x synthetic invocations did not occur or select their distinct output pixels.
 :END:
