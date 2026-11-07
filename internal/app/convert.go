@@ -90,7 +90,7 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	if _, enabled, err := cfg.CoverImage(); err != nil {
+	if cover, enabled, err := cfg.CoverImage(); err != nil {
 		return err
 	} else if enabled {
 		if !cfg.Bool("folio.title-page.enabled", true) {
@@ -100,6 +100,9 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 			return fmt.Errorf("folio.cover-image is not supported for standalone Typst output")
 		}
 		if targetFormat != play.FormatPDF {
+			if cover.BackdropMode != "" {
+				return fmt.Errorf("folio.cover-image.backdrop is not supported for %s conversion", targetFormat)
+			}
 			return fmt.Errorf("folio.cover-image is not supported for %s conversion", targetFormat)
 		}
 	}

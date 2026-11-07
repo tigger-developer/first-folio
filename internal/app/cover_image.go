@@ -10,6 +10,7 @@ import (
 	_ "image/jpeg"
 	"image/png"
 	"io"
+	"math"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -94,7 +95,7 @@ func planCoverImage(cfg config.Config, sourceDocument string) (*coverImagePlan, 
 	if err := validateCoverSourceLimits(info.Size(), width, height); err != nil {
 		return nil, err
 	}
-	plan := &coverImagePlan{Config: cover, SourcePath: path, PixelWidth: width, PixelHeight: height}
+	plan := &coverImagePlan{Config: cover, SourcePath: path, OriginalSourcePath: path, PixelWidth: width, PixelHeight: height}
 	plan.PageWidthMM, plan.PageHeightMM = coverPageDimensionsMM(cfg.String("folio.page", "a4"))
 	if cover.Mode == "inset" {
 		size, err := millimetres(cover.Size)
@@ -143,7 +144,7 @@ func prepareCoverForRender(cfg config.Config, sourceDocument string, stderr io.W
 		cleanup()
 		return nil, func() {}, err
 	}
-	plan.SourcePath, plan.BlurredPath = variants.ImagePath, variants.BlurredPath
+	plan.SourcePath, plan.BlurredPath, plan.BackdropPath = variants.ImagePath, variants.BlurredPath, variants.BackdropPath
 	return plan, cleanup, nil
 }
 
@@ -213,17 +214,9 @@ func usableSuperscaleOutput(dir string) (string, error) {
 }
 
 func prepareCoverVariants(plan *coverImagePlan, dir string) (preparedCoverVariants, error) {
-	file, err := os.Open(plan.SourcePath)
+	decoded, format, err := decodeCoverImage(plan.SourcePath)
 	if err != nil {
-		return preparedCoverVariants{}, fmt.Errorf("opening folio.cover-image.path: %w", err)
-	}
-	decoded, format, err := image.Decode(file)
-	closeErr := file.Close()
-	if err != nil {
-		return preparedCoverVariants{}, fmt.Errorf("decoding folio.cover-image.path: %w", err)
-	}
-	if closeErr != nil {
-		return preparedCoverVariants{}, fmt.Errorf("closing folio.cover-image.path: %w", closeErr)
+		return preparedCoverVariants{}, err
 	}
 	if format != "png" && format != "jpeg" {
 		return preparedCoverVariants{}, fmt.Errorf("folio.cover-image.path has unsupported image format %q", format)
@@ -255,7 +248,113 @@ func prepareCoverVariants(plan *coverImagePlan, dir string) (preparedCoverVarian
 			return preparedCoverVariants{}, err
 		}
 	}
-	return preparedCoverVariants{ImagePath: treatedPath, BlurredPath: blurredPath}, nil
+	backdropPath := ""
+	if plan.Config.BackdropMode == "image" {
+		originalPath := plan.OriginalSourcePath
+		if originalPath == "" {
+			originalPath = plan.SourcePath
+		}
+		original, originalFormat, err := decodeCoverImage(originalPath)
+		if err != nil {
+			return preparedCoverVariants{}, err
+		}
+		if originalFormat != "png" && originalFormat != "jpeg" {
+			return preparedCoverVariants{}, fmt.Errorf("folio.cover-image.path has unsupported image format %q", originalFormat)
+		}
+		backdrop := treatCoverImage(original, plan.Config.ImageTreatment, plan.Config.ImageOpacity)
+		backdrop = centreCropCoverImage(backdrop, plan.PageWidthMM/plan.PageHeightMM)
+		backdrop = resizeCoverImageWithin(backdrop, 512)
+		blurMM, err := millimetres(plan.Config.BackdropImageBlur)
+		if err != nil {
+			return preparedCoverVariants{}, fmt.Errorf("folio.cover-image.backdrop.image.blur: %w", err)
+		}
+		pixelsPerMM := math.Max(float64(backdrop.Bounds().Dx())/plan.PageWidthMM, float64(backdrop.Bounds().Dy())/plan.PageHeightMM)
+		radius := int(blurMM*pixelsPerMM + 0.5)
+		if radius < 1 {
+			radius = 1
+		}
+		backdropPath = filepath.Join(dir, "backdrop.png")
+		if err := writeCoverPNG(backdropPath, boxBlurCoverImage(backdrop, radius)); err != nil {
+			return preparedCoverVariants{}, err
+		}
+	}
+	return preparedCoverVariants{ImagePath: treatedPath, BlurredPath: blurredPath, BackdropPath: backdropPath}, nil
+}
+
+func decodeCoverImage(path string) (image.Image, string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, "", fmt.Errorf("opening folio.cover-image.path: %w", err)
+	}
+	decoded, format, decodeErr := image.Decode(file)
+	closeErr := file.Close()
+	if decodeErr != nil {
+		return nil, "", fmt.Errorf("decoding folio.cover-image.path: %w", decodeErr)
+	}
+	if closeErr != nil {
+		return nil, "", fmt.Errorf("closing folio.cover-image.path: %w", closeErr)
+	}
+	return decoded, format, nil
+}
+
+func centreCropCoverImage(source *image.NRGBA, targetRatio float64) *image.NRGBA {
+	bounds := source.Bounds()
+	width, height := bounds.Dx(), bounds.Dy()
+	cropWidth, cropHeight := width, height
+	if float64(width)/float64(height) > targetRatio {
+		cropWidth = maxInt(1, int(float64(height)*targetRatio+0.5))
+	} else {
+		cropHeight = maxInt(1, int(float64(width)/targetRatio+0.5))
+	}
+	left, top := (width-cropWidth)/2, (height-cropHeight)/2
+	result := image.NewNRGBA(image.Rect(0, 0, cropWidth, cropHeight))
+	for y := 0; y < cropHeight; y++ {
+		copy(result.Pix[y*result.Stride:y*result.Stride+cropWidth*4], source.Pix[(top+y)*source.Stride+left*4:(top+y)*source.Stride+(left+cropWidth)*4])
+	}
+	return result
+}
+
+func resizeCoverImageWithin(source *image.NRGBA, longestLimit int) *image.NRGBA {
+	bounds := source.Bounds()
+	width, height := bounds.Dx(), bounds.Dy()
+	longest := maxInt(width, height)
+	if longest <= longestLimit {
+		return source
+	}
+	scale := float64(longestLimit) / float64(longest)
+	targetWidth := maxInt(1, int(float64(width)*scale+0.5))
+	targetHeight := maxInt(1, int(float64(height)*scale+0.5))
+	result := image.NewNRGBA(image.Rect(0, 0, targetWidth, targetHeight))
+	for y := 0; y < targetHeight; y++ {
+		sourceY := (float64(y)+0.5)*float64(height)/float64(targetHeight) - 0.5
+		for x := 0; x < targetWidth; x++ {
+			sourceX := (float64(x)+0.5)*float64(width)/float64(targetWidth) - 0.5
+			result.SetNRGBA(x, y, bilinearCoverPixel(source, sourceX, sourceY))
+		}
+	}
+	return result
+}
+
+func bilinearCoverPixel(source *image.NRGBA, x, y float64) color.NRGBA {
+	bounds := source.Bounds()
+	x0, y0 := int(math.Floor(x)), int(math.Floor(y))
+	x1, y1 := x0+1, y0+1
+	x0, x1 = minInt(maxInt(x0, 0), bounds.Dx()-1), minInt(maxInt(x1, 0), bounds.Dx()-1)
+	y0, y1 = minInt(maxInt(y0, 0), bounds.Dy()-1), minInt(maxInt(y1, 0), bounds.Dy()-1)
+	xWeight, yWeight := x-math.Floor(x), y-math.Floor(y)
+	p00, p10 := source.NRGBAAt(x0, y0), source.NRGBAAt(x1, y0)
+	p01, p11 := source.NRGBAAt(x0, y1), source.NRGBAAt(x1, y1)
+	interpolate := func(a, b, c, d uint8) uint8 {
+		top := float64(a)*(1-xWeight) + float64(b)*xWeight
+		bottom := float64(c)*(1-xWeight) + float64(d)*xWeight
+		return uint8(top*(1-yWeight) + bottom*yWeight + 0.5)
+	}
+	return color.NRGBA{
+		R: interpolate(p00.R, p10.R, p01.R, p11.R),
+		G: interpolate(p00.G, p10.G, p01.G, p11.G),
+		B: interpolate(p00.B, p10.B, p01.B, p11.B),
+		A: interpolate(p00.A, p10.A, p01.A, p11.A),
+	}
 }
 
 func treatCoverImage(source image.Image, treatment string, opacity float64) *image.NRGBA {
@@ -267,12 +366,12 @@ func treatCoverImage(source image.Image, treatment string, opacity float64) *ima
 	}
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			r, g, b, a := source.At(x, y).RGBA()
-			alpha := float64(a) / 65535 * opacity
-			composite := func(value uint32) uint8 {
-				return uint8((float64(value>>8)*alpha + backing*(1-alpha)) + 0.5)
+			pixel := color.NRGBAModel.Convert(source.At(x, y)).(color.NRGBA)
+			alpha := float64(pixel.A) / 255 * opacity
+			composite := func(value uint8) uint8 {
+				return uint8((float64(value)*alpha + backing*(1-alpha)) + 0.5)
 			}
-			result.SetNRGBA(x-bounds.Min.X, y-bounds.Min.Y, color.NRGBA{R: composite(r), G: composite(g), B: composite(b), A: 255})
+			result.SetNRGBA(x-bounds.Min.X, y-bounds.Min.Y, color.NRGBA{R: composite(pixel.R), G: composite(pixel.G), B: composite(pixel.B), A: 255})
 		}
 	}
 	return result

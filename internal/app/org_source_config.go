@@ -86,7 +86,10 @@ func orgScriptSourceConfig(raw string, path string) (map[string]any, []string, e
 			continue
 		}
 		var value any
-		if err := yaml.Unmarshal([]byte(token.Text), &value); err != nil {
+		text := strings.TrimSpace(token.Text)
+		if field == "folio.cover-image.backdrop.solid.color" && strings.HasPrefix(text, "#") {
+			value = text
+		} else if err := yaml.Unmarshal([]byte(token.Text), &value); err != nil {
 			return nil, nil, fmt.Errorf("%s:%d: parsing Org configuration field %q: %w", path, lineNumber, field, err)
 		}
 		switch value.(type) {

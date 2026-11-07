@@ -130,7 +130,7 @@ func TestRT079_1BackdropDerivativeUsesOriginalRatherThanSelectedSharpAsset(t *te
 	dir := t.TempDir()
 	original := filepath.Join(dir, "original.png")
 	selected := filepath.Join(dir, "superscaled.png")
-	writeW073PNG(t, original, 120, 120, color.RGBA{R: 230, G: 20, B: 140, A: 128})
+	writeW079NRGBAPNG(t, original, 120, 120, color.NRGBA{R: 230, G: 20, B: 140, A: 128})
 	writeW073PNG(t, selected, 240, 120, color.RGBA{R: 20, G: 190, B: 220, A: 255})
 	plan := &coverImagePlan{
 		Config: config.CoverImage{
@@ -232,6 +232,27 @@ func writeW079PatternPNG(t *testing.T, path string, width, height int) {
 			} else {
 				img.SetNRGBA(x, y, color.NRGBA{R: 25, G: 180, B: 220, A: 255})
 			}
+		}
+	}
+	file, err := os.Create(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := png.Encode(file, img); err != nil {
+		_ = file.Close()
+		t.Fatal(err)
+	}
+	if err := file.Close(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func writeW079NRGBAPNG(t *testing.T, path string, width, height int, fill color.NRGBA) {
+	t.Helper()
+	img := image.NewNRGBA(image.Rect(0, 0, width, height))
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			img.SetNRGBA(x, y, fill)
 		}
 	}
 	file, err := os.Create(path)
