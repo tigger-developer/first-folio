@@ -146,6 +146,26 @@ folio:
       prefix: ""
       suffix: ""
 
+  # Optional dedicated script PDF title-page image. This block is commented out
+  # so the British preset retains the no-image default. Paths are resolved from
+  # the source document. DOCX, ODT, standalone Typst, compact script titles,
+  # manuscripts and letters reject this block until separately supported.
+  # cover-image:
+  #   path: artwork/cover.jpg    # Required local PNG/JPEG path; enables the image.
+  #   mode: inset               # background fills/crops the page; inset preserves the full image.
+  #   placement: overlay        # overlay puts live text over it; dodge requires inset.
+  #   size: 80mm                # Inset only: rendered length of the image's longest axis.
+  #   image:
+  #     treatment: light        # light blends towards white; dark blends towards black.
+  #     opacity: 100%           # Original-image contribution over that backing, 0%-100%.
+  #   superscale: null          # null disables; default, 2x, 4x or 8x requests Superscale.
+  #   overlay:
+  #     blur: 0mm               # Physical blur radius behind each live text region.
+  #     wash:
+  #       treatment: dark       # light gives white wash/black text; dark gives the reverse.
+  #       opacity: 30%          # Wash strength within each padded text region, 0%-100%.
+  #     padding: 1em            # Equal padding on all sides; accepts one em or mm length.
+
   positioning:
     speech:
       space-before: 1.6em
