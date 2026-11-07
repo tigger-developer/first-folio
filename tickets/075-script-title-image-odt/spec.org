@@ -1,0 +1,339 @@
+#+TITLE: W075 - Add script title-page images to ODT output
+#+SCHEMA: 11
+#+SUBTITLE: Unified change specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- ODT conversion applies W073's *script title-page image contract* while keeping title metadata editable.
+
+** Before
+
+- Native ODT title pages contain text only and cannot represent configured background or inset artwork.
+
+** After
+
+- Background and inset images are *embedded in the ODT package* with proportional geometry.
+- Overlay uses editable title text over localized blur and wash regions; inset-only dodge places editable metadata above and below the centred image.
+
+** Changes
+
+- The native ODT projection consumes the shared title-image plan and adds page-anchored ODF drawings and editable text regions.
+
+** Unchanged
+
+- The W073 YAML contract, source-relative path rule, non-title content, manuscripts, letters and no-image ODT route *remain unchanged*.
+
+** Edge cases
+:PROPERTIES:
+:CUSTOM_ID: synopsis-edge-cases
+:END:
+
+- Missing or invalid assets and unsupported combinations *fail atomically*; office-reader repair prompts are not acceptable output.
+
+** Decisions
+
+- ODT adds *no format-specific configuration* and does not rasterize title metadata into the image.
+
+** Next step
+
+- Definition review, then operator sign-off as described in [[#delivery-handoff][Delivery Handoff]].
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+
+PDF and DOCX adoption would leave ODT inconsistent with the public script title-image contract. Omitting artwork or flattening text would undermine ODT's role as an editable native output.
+
+** Outcome
+
+=folio convert= produces a self-contained ODT whose dedicated script title page follows W073 geometry and placement semantics and remains usable in an ODF-compatible editor.
+
+** Scope
+
+*** In scope
+
+- Dedicated script title pages produced by =folio convert= to ODT.
+- Background and inset modes, overlay and inset-only dodge placement, tone, opacity, blur, wash and equal-sided padding as defined by W073.
+- Embedded PNG/JPEG package assets, page-relative positioning, cropping and editable title metadata.
+
+*** Out of scope
+
+- New YAML keys or altered W073 semantics.
+- PDF, DOCX, manuscripts, letters, compact script titles and source-body images.
+- Pixel-identical pagination or font metrics across ODF-compatible editors.
+
+*** Unchanged
+
+- The script parser, YAML cascade, image path base, later-page body content, native notes and existing no-image title-page output.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]].
+- Product authority :: [[file:../073-script-title-image-pdf/spec.org][W073 shared script title-image contract]] and [[file:../../docs/format-odt.md][ODT format contract]].
+- Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Project architecture]].
+- Current implementation fact :: =internal/office= owns ODT package projection; =internal/office/odt_pages.go= and =internal/office/odt_layout.go= own script page and drawing layout.
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+
+- W073's shared contract and plan and W074's completed cross-format lessons must be available before W075 implementation begins, preserving the requested PDF, DOCX, ODT sequence.
+- The output must be self-contained and open without an external image path, network fetch, repair prompt or postprocessor.
+- Title, subtitle, author, date and version remain editable text and use their configured typography.
+- ODF-reader layout variation is permitted only within documented physical tolerances; mode, ordering, non-overlap and aspect ratio are not approximations.
+
+** Decisions
+
+- W075 consumes =folio.title-page.image= exactly as defined by W073 and introduces no ODT override.
+- Background graphics are positioned relative to the physical page and behind text; insets are centred on the physical page with explicit physical extents. Overlay uses one editable primary region for title/subtitle/author and separate populated date and version regions, never full-width wash bands.
+- Overlay and dodge use native editable text frames whose region geometry comes from the shared plan.
+
+** Unresolved blockers
+
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC075.1 - ODT embeds proportional title images :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-075-1
+:END:
+
+- Criterion :: Given a valid W073 background or inset configuration, ODT output *embeds the image*, applies the specified physical geometry and aspect-ratio-preserving crop or longest-axis scale, and requires no source asset after conversion.
+- Proven by :: [[#rt-075-1][RT075.1 - Native ODT package represents the shared image plan]], [[#at-075-1][AT075.1 - Public ODT conversion preserves title-image semantics]] and [[#ut-075-1][UT075.1 - ODT title images remain editable and stable]].
+
+** AC075.2 - ODT overlay remains legible and editable :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-075-2
+:END:
+
+- Criterion :: Given =placement: overlay=, ODT title metadata *remains editable text* at its existing configured placement, above localized equal-padded blur and tone wash regions with contrasting text.
+- Proven by :: [[#rt-075-1][RT075.1 - Native ODT package represents the shared image plan]], [[#at-075-1][AT075.1 - Public ODT conversion preserves title-image semantics]] and [[#ut-075-1][UT075.1 - ODT title images remain editable and stable]].
+
+** AC075.3 - ODT dodge separates text and inset :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-075-3
+:END:
+
+- Criterion :: Given an inset with =placement: dodge=, ODT output places title and subtitle *above the centred image* and author, date and version *below it*, applying =center= or =third= within each available region without overlap.
+- Proven by :: [[#rt-075-1][RT075.1 - Native ODT package represents the shared image plan]], [[#at-075-1][AT075.1 - Public ODT conversion preserves title-image semantics]] and [[#ut-075-1][UT075.1 - ODT title images remain editable and stable]].
+
+** AC075.4 - ODT image failures are atomic and compatible :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-075-4
+:END:
+
+- Criterion :: Given invalid image input, ODT conversion *publishes no partial or replacement target* and reports the shared field-specific error; given no image path, existing ODT title and body behaviour *remains unchanged*.
+- Proven by :: [[#rt-075-2][RT075.2 - ODT packaging rejects invalid image state safely]] and [[#at-075-2][AT075.2 - ODT publication is atomic]].
+
+** AC075.5 - ODT packages remain conforming :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-075-5
+:END:
+
+- Criterion :: Given any supported title-image mode, the ODT package has *valid manifest entries, internal image references, frame identifiers and layer order* and opens in an ODF-compatible editor without repair.
+- Proven by :: [[#rt-075-1][RT075.1 - Native ODT package represents the shared image plan]], [[#at-075-1][AT075.1 - Public ODT conversion preserves title-image semantics]] and [[#ut-075-1][UT075.1 - ODT title images remain editable and stable]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT075.1 - Native ODT package represents the shared image plan :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-075-1
+:END:
+
+- Covers :: [[#ac-075-1][AC075.1 - ODT embeds proportional title images]], [[#ac-075-2][AC075.2 - ODT overlay remains legible and editable]], [[#ac-075-3][AC075.3 - ODT dodge separates text and inset]] and [[#ac-075-5][AC075.5 - ODT packages remain conforming]].
+- Boundary :: Native =internal/office= ODT serialization and parsed ODF package parts.
+- Setup :: Shared title-image plans cover background overlay, both inset orientations, overlay with non-zero blur/wash/padding, dodge at =center= and =third=, absent metadata roles and image-only title pages.
+- Action :: Serialize each plan, reopen the ZIP package and parse content, styles, manifest and embedded image parts.
+- Expected :: Each asset is embedded with a valid manifest entry and internal reference; page anchors, extents, crop, layer order, editable text frames, treatment regions and dodge regions match the plan; identifiers are unique and all XML is well formed.
+- Retention :: Persistent regression suite under =make test=.
+
+** RT075.2 - ODT packaging rejects invalid image state safely :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-075-2
+:END:
+
+- Covers :: [[#ac-075-4][AC075.4 - ODT image failures are atomic and compatible]].
+- Boundary :: Native ODT writer called with missing prepared assets, inconsistent geometry and the no-image control.
+- Setup :: Corrupt internal plans exercise each defensive boundary; a no-image document captures existing title structure.
+- Action :: Attempt package serialization and parse any returned bytes.
+- Expected :: Inconsistent plans return a bounded error and no publishable package; the no-image control contains no image part or drawing and retains its established title/body structure.
+- Retention :: Persistent regression suite under =make test=.
+
+** AT075.1 - Public ODT conversion preserves title-image semantics :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-075-1
+:END:
+
+- Covers :: [[#ac-075-1][AC075.1 - ODT embeds proportional title images]], [[#ac-075-2][AC075.2 - ODT overlay remains legible and editable]], [[#ac-075-3][AC075.3 - ODT dodge separates text and inset]] and [[#ac-075-5][AC075.5 - ODT packages remain conforming]].
+- Boundary :: Built =folio convert= command and resulting native ODT packages.
+- Setup :: Use the W073 measured-image fixtures for A4 background cropping, both explicit inset examples, light and dark overlay, and both dodge positions.
+- Action :: Convert each fixture, validate the ODF package with the project's supported package checks, then render title pages with the available local office renderer for measured comparison.
+- Expected :: Public conversion embeds the correct asset and produces the expected physical geometry, text grouping, contrast and non-overlap within documented office tolerance; no package requires repair or the original image file.
+- Retention :: Ticket-specific evidence; not part of the persistent regression suite.
+
+** AT075.2 - ODT publication is atomic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-075-2
+:END:
+
+- Covers :: [[#ac-075-4][AC075.4 - ODT image failures are atomic and compatible]].
+- Boundary :: Built =folio convert= command writing ODT file targets.
+- Setup :: Invalid shared image configurations and assets target both absent paths and files containing sentinel bytes; a no-image fixture is the compatibility control.
+- Action :: Run each conversion and inspect exit status, stderr and target bytes.
+- Expected :: Invalid cases preserve sentinel or absence and name the shared field or asset; the no-image case succeeds with no image parts and retains the established title structure.
+- Retention :: Ticket-specific evidence; not part of the persistent regression suite.
+
+** UT075.1 - ODT title images remain editable and stable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-075-1
+:END:
+
+- Covers :: [[#ac-075-1][AC075.1 - ODT embeds proportional title images]], [[#ac-075-2][AC075.2 - ODT overlay remains legible and editable]], [[#ac-075-3][AC075.3 - ODT dodge separates text and inset]] and [[#ac-075-5][AC075.5 - ODT packages remain conforming]].
+- Validation method :: User validation in the normal ODF-compatible editor.
+- Procedure :: Open representative background-overlay and inset overlay/dodge documents; verify crop, proportions, blur, wash, padding and text placement; edit every title metadata role, save, close and reopen each document.
+- Expected :: The editor shows no repair warning; images and treatments remain stable; metadata edits behave as text rather than image pixels; no title element overlaps unexpectedly; body pagination and content remain usable.
+- Record :: Write the dated result to =validation.org=.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+** Editor reflow
+
+- Condition :: An ODF-compatible editor substitutes a font or applies its own line metrics.
+- Required behaviour :: Text may reflow within its editable region, but image aspect ratio, group ordering, region boundaries and image/text non-overlap remain intact.
+- Covered by :: [[#ac-075-2][AC075.2 - ODT overlay remains legible and editable]], [[#ac-075-3][AC075.3 - ODT dodge separates text and inset]] and [[#ut-075-1][UT075.1 - ODT title images remain editable and stable]].
+
+** Existing package identifiers
+
+- Condition :: The writer already allocated frame names or picture paths for other document content.
+- Required behaviour :: Title-image parts receive non-conflicting identifiers and manifest paths without corrupting existing parts.
+- Covered by :: [[#ac-075-5][AC075.5 - ODT packages remain conforming]] and [[#rt-075-1][RT075.1 - Native ODT package represents the shared image plan]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+
+- Relevant components :: W073 supplies the validated title-image plan and prepared image variants; the native ODT projection owns page styles, frames, drawings, pictures and manifest entries.
+- Ownership boundary :: First Folio creates the complete ODF package. ODF-compatible editors own final layout and editing but must not be required to repair or fetch content.
+- Existing pattern :: Extend the native ODT page/layout projection rather than adding an external converter or post-processing executable.
+
+** High-level design
+
+*** Components and responsibilities
+
+- The application passes the same W073 plan and prepared assets used by prior formats into the ODT writer.
+- The package layer embeds required image variants under =Pictures/=, registers manifest media types and allocates unique frame/image names.
+- The title-page layout creates page-positioned image layers and editable text frames in the plan's order.
+
+*** Reuse, shared behaviour and variation
+
+- Shared operation :: Asset resolution, validation, proportional geometry, tone and region calculations remain W073 responsibilities.
+- Variation :: ODT maps physical units directly to ODF lengths and uses drawing frames/text boxes while preserving shared semantics.
+
+*** Boundaries and dependencies
+
+- Add no new runtime process or network dependency. Use ODF constructs supported by the project's target editors.
+- Prepared assets are package-local and referenced with internal =xlink:href= values only.
+
+*** Flow
+
+1. Public conversion loads W073 configuration and produces the shared plan.
+2. The ODT writer embeds required image variants and constructs the title-page visual layer behind editable text frames.
+3. Existing body and page-style generation follows, then the complete package is validated and atomically published.
+
+*** Essential mechanisms
+
+- A background frame is positioned at page origin behind content with page-sized extents and the plan's centred source crop.
+- An inset frame uses explicit page-centred position and longest-axis extents.
+- Overlay regions use positioned editable text boxes. Their background layer clips the aligned blurred image variant to the padded region, adds the tone wash at configured transparency, then places contrasting text above it.
+- Dodge uses separate upper and lower editable text boxes around the page-centred inset. Region-relative =center= and =third= coordinates come from the shared plan rather than paragraph spacing heuristics.
+
+*** Interfaces and configuration
+
+- Interface :: No new public interface; consume W073's =folio.title-page.image= model.
+- Compatibility :: The writer selects the image route only when the shared plan is present. Existing title paragraphs remain the no-image route.
+
+*** Data and state
+
+- Image parts are embedded below =Pictures/= with manifest entries and package-internal links. No external link or cache survives conversion.
+- Source files and prepared temporary assets remain read-only and conversion-scoped.
+
+*** Failure behaviour
+
+- Missing assets, invalid plan geometry, duplicate identifiers, manifest mismatch or package validation failure abort before target replacement.
+- Errors retain W073 field/path context where the failure originates and otherwise identify the ODT packaging boundary.
+
+*** Simplicity and proportionality
+
+- One native adapter reuses the existing ODT projection and W073 plan. It avoids a second configuration model, external postprocessor and rasterized title text.
+
+** Design decisions and verification
+
+*** Keep title metadata editable
+
+- Decision :: Use native editable text boxes above image/treatment layers; do not bake metadata into PNG/JPEG assets.
+- Verification :: [[#rt-075-1][RT075.1 - Native ODT package represents the shared image plan]] inspects text nodes and [[#ut-075-1][UT075.1 - ODT title images remain editable and stable]] verifies editing and round-trip behaviour.
+
+*** Use page-positioned ODF frames
+
+- Decision :: Position image and overlay frames against the physical page rather than flowing body paragraphs.
+- Rationale :: Flow anchoring cannot reliably express full-page cover crop or region-relative dodge placement.
+- Verification :: [[#at-075-1][AT075.1 - Public ODT conversion preserves title-image semantics]] measures rendered geometry and non-overlap.
+
+** Routine details left to implementation
+
+- ODF style names, frame names, picture filenames and manifest ordering may follow existing package conventions.
+- The exact documented office-renderer tolerance is selected during RED test construction from current no-image layout tolerances; it may not excuse wrong mode, aspect ratio, order or overlap.
+
+** Architecture impact
+
+*** Security impact
+
+- Threat boundary :: Unchanged from W073's local untrusted image input; ODT adds a ZIP/XML serialization boundary.
+- Data and secrets :: Only requested image bytes and derived local variants are embedded. No source path or unrelated file content is added to the package.
+- Access :: No additional file, process, network or privilege access beyond W073 asset loading and target publication.
+- Conclusion :: Reuse W073 resource bounds, escape XML, allocate collision-free parts, validate manifest consistency and preserve atomic publication.
+
+*** Other relevant qualities
+
+- Interoperability :: Native, conforming ODF and editor round-trip validation are required; package-external links are excluded.
+- Accessibility :: Metadata remains selectable text with contrast treatment; background artwork is decorative unless a later accessibility ticket adds alternative text policy.
+- Maintainability :: The ODT adapter consumes shared geometry rather than recalculating policy.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: [[file:../073-script-title-image-pdf/spec.org][W073 specification and delivered validation]], [[file:../074-script-title-image-docx/spec.org][W074 specification and delivery lessons]], [[file:../../docs/format-odt.md][ODT format contract]], =internal/office/odt_pages.go=, =internal/office/odt_layout.go= and current ODT manifest/picture helpers.
+- Entry conditions :: Explicit delivery authority for W075, current definition PASS in [[file:audits.yaml][=audits.yaml=]], W073 delivered with its shared plan unchanged, and W074 delivery evidence available for cross-format consistency.
+- First implementation step :: Write [[#rt-075-1][RT075.1]], [[#rt-075-2][RT075.2]], [[#at-075-1][AT075.1]] and [[#at-075-2][AT075.2]], observing meaningful RED for ODT image projection while the no-image preservation case remains GREEN.
+- Definition evidence :: [[file:audits.yaml][=audits.yaml=]].
+- Validation evidence :: [[file:validation.org][=validation.org=]]; one tagged result heading per defined test, including RTs. Follow =ORG-SCHEMA.md=.
+- Documentation impact :: Update =README.md=, =docs/config.md=, =docs/format-odt.md= and =docs/ARCHITECTURE.md= with ODT support, editability, embedded-asset behaviour and documented layout tolerance.

@@ -85,6 +85,9 @@ classification; it is provenance, not current state.
 :SOURCE: operator
 :CREATED: 2026-11-07
 :END:
+- Specification :: [[file:../tickets/075-script-title-image-odt/spec.org][W075 - Script title-page images in ODT]].
+- Scope :: Project W073's shared script title-image contract into editable native ODT after the PDF and DOCX deliveries.
+- Dependency :: W073 shared configuration and layout delivery, followed by W074 delivery evidence.
 
 ** TODO W074 - Add script title-page images to DOCX output :feature:
 :PROPERTIES:
@@ -93,6 +96,9 @@ classification; it is provenance, not current state.
 :SOURCE: operator
 :CREATED: 2026-11-07
 :END:
+- Specification :: [[file:../tickets/074-script-title-image-docx/spec.org][W074 - Script title-page images in DOCX]].
+- Scope :: Project W073's shared script title-image contract into editable native DOCX after the PDF delivery.
+- Dependency :: W073 shared configuration and layout delivery.
 
 ** TODO W073 - Add script title-page images to PDF output :feature:
 :PROPERTIES:
@@ -101,6 +107,8 @@ classification; it is provenance, not current state.
 :SOURCE: operator
 :CREATED: 2026-11-07
 :END:
+- Specification :: [[file:../tickets/073-script-title-image-pdf/spec.org][W073 - Script title-page images in PDF]].
+- Scope :: Define the shared script-only title-image contract and deliver it first for PDF, including background and inset images, overlay treatment and inset-only dodge placement.
 
 ** REVIEW W072 - Convert attributed DOCX footnotes to comments :feature:
 :PROPERTIES:

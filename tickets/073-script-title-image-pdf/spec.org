@@ -1,0 +1,413 @@
+#+TITLE: W073 - Add script title-page images to PDF output
+#+SCHEMA: 11
+#+SUBTITLE: Unified change specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- A dedicated *script title page* can contain a configured *background or inset image* in PDF output.
+
+** Before
+
+- Script PDF title pages contain text only and expose *no cover-image contract*.
+
+** After
+
+- A source-relative PNG or JPEG can *cover the page with proportional cropping* or appear as a *proportionally sized centred inset*.
+- *Overlay* placement retains existing title-page text positions and can add a padded blur and light or dark wash behind each text region.
+- Inset-only *dodge* placement puts title and subtitle above the centred image and author, date and version below it.
+
+** Changes
+
+- =folio.title-page.image= defines the shared image, sizing, tone, placement and overlay-treatment contract.
+- A configured image counts as title-page content, so an image-only dedicated title page can be produced.
+
+** Unchanged
+
+- Compact first-page titles, manuscripts, letters, script body layout and title pages without an image *retain their existing behaviour*.
+
+** Edge cases
+:PROPERTIES:
+:CUSTOM_ID: synopsis-edge-cases
+:END:
+
+- Invalid combinations, unreadable assets and unsupported image data *fail before output publication* with a field-specific diagnostic.
+
+** Decisions
+
+- The PDF ticket owns the *shared configuration and renderer-neutral layout contract*; DOCX and ODT adoption are separate sequenced tickets.
+- Inset =size= constrains the *longest image axis* and preserves aspect ratio; one =padding= length applies on all four sides of an overlay text region.
+
+** Next step
+
+- Definition review, then operator sign-off as described in [[#delivery-handoff][Delivery Handoff]].
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+
+Script title pages cannot include cover artwork. Authors therefore cannot produce either a full-bleed visual cover or a centred letterbox-style illustration while retaining First Folio's configured title metadata.
+
+** Outcome
+
+=folio convert= produces a PDF whose dedicated script title page applies the configured image mode, proportional sizing and text relationship without changing later pages.
+
+** Scope
+
+*** In scope
+
+- Dedicated script title pages produced by =folio convert= to PDF and Typst.
+- Local PNG and JPEG image assets.
+- Full-page background images with proportional cover cropping.
+- Centred inset images sized on their longest axis.
+- Overlay placement with optional blur and wash, and inset-only dodge placement.
+- The shared script configuration, validation and source-relative path-resolution contract later consumed by W074 and W075.
+
+*** Out of scope
+
+- Manuscript and letter output.
+- Compact script titles when =folio.title-page.enabled: false=.
+- Source-body images, remote URLs, SVG, animated or multi-frame images, automatic subject detection and automatic tone analysis.
+- DOCX rendering, owned by W074, and ODT rendering, owned by W075.
+- Arbitrary image editing beyond the crop, scale, opacity, tone, blur and wash required here.
+
+*** Unchanged
+
+- The existing YAML cascade, title metadata, per-role typography, running-matter suppression, body pagination and page-number semantics.
+- A script with no =folio.title-page.image.path= follows the pre-change title-page route byte-for-byte apart from unavoidable generator metadata.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]].
+- Product authority :: [[file:../../docs/config.md][Configuration reference]], especially the script title-page contract.
+- Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Project architecture]], especially shared script title composition and the Typst/PDF route.
+- Current implementation fact :: [[file:../../templates/script.typ][=templates/script.typ=]] owns script PDF title composition; =internal/app/script_render.go= supplies its validated data.
+- Sequenced adoption :: [[file:../074-script-title-image-docx/spec.org][W074 - DOCX title-page images]] and [[file:../075-script-title-image-odt/spec.org][W075 - ODT title-page images]].
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+
+- The image path is resolved against the *source document's directory*, regardless of which YAML cascade layer supplied it.
+- Title-image processing is local and deterministic; it performs *no network access* and invokes no external image editor.
+- Delivery must preserve the existing no-image path and establish a reusable renderer-neutral configuration/layout model rather than embedding PDF-only semantics in configuration.
+- W074 and W075 depend on the approved contract and shared model from this ticket; this ticket does not implement their output writers.
+
+** Decisions
+
+- The configuration shape is:
+
+#+begin_src yaml
+folio:
+  title-page:
+    image:
+      path: cover.jpg
+      mode: inset          # background | inset
+      placement: dodge     # overlay | dodge
+      size: 80mm           # required for inset; longest rendered axis
+      opacity: 100%        # image opacity over the tone canvas
+      tone: light          # light | dark
+      overlay:
+        blur: 0mm          # non-negative physical length
+        wash: 0%           # tone-coloured wash opacity
+        padding: 1em       # one em or mm length, applied on all sides
+#+end_src
+
+- =tone: light= uses a white canvas and wash with black overlay text; =tone: dark= uses a black canvas and wash with white overlay text. It does not alter typography other than the contrasting text colour required for overlay readability.
+- =opacity= and =overlay.wash= accept percentages from =0%= through =100%=. Defaults are =100%= and =0%= respectively. =overlay.blur= defaults to =0mm= and =overlay.padding= defaults to =0em=.
+- =mode= is required when =path= is present. =placement= defaults to =overlay=. =size= is required only for =inset= and must be a positive =mm= length.
+- =background= fills the physical configured title-page size using cover scaling and centred cropping; it does not force A4 when another configured page size is in use. An A4 script therefore fills and crops to A4.
+- =inset= scales the decoded image so its longest axis equals =size= and its other axis is proportional. Thus a =200 x 400= image at =80mm= renders at =40mm x 80mm=, while a =1000 x 250= image at =50mm= renders at =50mm x 12.5mm=.
+- =overlay.padding= accepts one positive or zero =em= or =mm= length and applies it equally horizontally and vertically around each occupied text region. Overlay has one primary region for the existing title/subtitle/author block and separate populated regions for date and version at their existing positions; it never expands those regions into full-width bands.
+- In dodge mode the inset is centred on the physical title page. The upper and lower available regions are bounded by the title-page content margins and the inset rectangle. =folio.title-page.title.position= governs both groups: =center= uses each region's midpoint and =third= uses the point one third down from that region's top. Existing alignment and date/version side settings continue to govern horizontal placement.
+
+** Unresolved blockers
+
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC073.1 - Background images cover the script title page :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-1
+:END:
+
+- Criterion :: Given a valid =background= image on a dedicated script title page, PDF output *fills the physical title page*, preserves image aspect ratio and *crops excess content from the centre* without distorting the image.
+- Proven by :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+
+** AC073.2 - Insets use longest-axis sizing :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-2
+:END:
+
+- Criterion :: Given a valid =inset= image and =size=, PDF output *centres the image* and applies =size= to its *longest rendered axis* while preserving its aspect ratio.
+- Proven by :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+
+** AC073.3 - Overlay treatment preserves configured text placement :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-3
+:END:
+
+- Criterion :: Given =placement: overlay=, title-page text *retains its existing configured placement*; each occupied text region receives the configured equal-sided padding, localized blur and tone-coloured wash, and its text uses the contrasting tone colour.
+- Proven by :: [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+
+** AC073.4 - Dodge places metadata around a centred inset :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-4
+:END:
+
+- Criterion :: Given an inset with =placement: dodge=, the image is *centred on the physical title page*, title and subtitle occupy the available region above it, and author, date and version occupy the available region below it without overlapping the image.
+- Proven by :: [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+
+** AC073.5 - Dodge honours relative vertical placement :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-5
+:END:
+
+- Criterion :: Given dodge placement and a title role positioned at =center= or =third=, that role is respectively *vertically centred* or placed *one third down* within its available region above or below the inset, rather than relative to the whole page.
+- Proven by :: [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+
+** AC073.6 - Image configuration resolves safely and consistently :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-6
+:END:
+
+- Criterion :: Given image configuration from any applicable YAML layer, a relative =path= is *resolved against the source document directory*; missing files, unsupported formats, malformed values and invalid mode/placement combinations *fail with a field-specific diagnostic before output is published*.
+- Proven by :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
+
+** AC073.7 - Existing title-page behaviour remains compatible :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-7
+:END:
+
+- Criterion :: Given no image path, script PDF and Typst output *retain existing dedicated and compact title behaviour*; given an image path with a dedicated title page but no textual title, the image *still creates the dedicated title page*.
+- Proven by :: [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT073.1 - Title-image configuration is validated and resolved :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-1
+:END:
+
+- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]] and [[#ac-073-6][AC073.6 - Image configuration resolves safely and consistently]].
+- Boundary :: Script configuration loading and renderer-neutral title-image planning.
+- Setup :: Table-driven source documents and cascade layers cover PNG and JPEG assets, both modes, both tones, percentages at their bounds, =em= and =mm= padding, portrait and landscape dimensions, source and configuration files in different directories, and every invalid field or combination.
+- Action :: Load each script configuration with its source path and build the title-image plan.
+- Expected :: Valid cases produce exact physical geometry, source-relative canonical asset paths and resolved defaults; invalid cases identify the complete =folio.title-page.image= field and produce no plan.
+- Retention :: Persistent regression suite under =make test=.
+
+** RT073.2 - Typst output contains the resolved title-image layout :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-2
+:END:
+
+- Covers :: [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]] and [[#ac-073-7][AC073.7 - Existing title-page behaviour remains compatible]].
+- Boundary :: =folio convert= to Typst using public script conversion.
+- Setup :: Fixtures cover background overlay, portrait and landscape inset overlay, portrait and landscape dodge, =center= and =third= positions, absent metadata roles, image-only title pages, compact title mode and the no-image control.
+- Action :: Convert each fixture to Typst and compile representative valid outputs with the supported local Typst toolchain.
+- Expected :: Generated Typst places image and text regions from the resolved plan, applies localized treatment only to occupied overlay regions, keeps dodge groups outside the image rectangle, preserves the no-image and compact routes, and compiles without external assets beyond the resolved local image.
+- Retention :: Persistent regression suite under =make test=.
+
+** AT073.1 - Rendered PDF geometry follows the image contract :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-073-1
+:END:
+
+- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]] and [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]].
+- Boundary :: Built =folio convert= command, compiled PDF and rasterized first page.
+- Setup :: Synthetic images contain measured corner and centre markers; script fixtures exercise A4 background cropping, both inset aspect-ratio examples, light and dark overlay treatment, and dodge at both relative vertical positions.
+- Action :: Produce PDFs, inspect page and image geometry programmatically, rasterize title pages and sample the known image, wash and text-region markers.
+- Expected :: Page coverage, centred crop, inset dimensions, relative placement, non-overlap, contrasting text, padding, blur and wash all match the configured values within documented renderer tolerance; later script pages match their controls.
+- Retention :: Ticket-specific evidence; not part of the persistent regression suite.
+
+** AT073.2 - Public conversion fails atomically for invalid image input :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-073-2
+:END:
+
+- Covers :: [[#ac-073-6][AC073.6 - Image configuration resolves safely and consistently]] and [[#ac-073-7][AC073.7 - Existing title-page behaviour remains compatible]].
+- Boundary :: Built =folio convert= command writing PDF and Typst targets.
+- Setup :: Cases include missing assets, non-image content, unsupported extensions, =background + dodge=, background with =size=, inset without =size=, image configuration with compact title mode, and an image-only dedicated title page. Existing targets contain sentinel bytes.
+- Action :: Run each conversion and inspect exit status, stderr and target bytes.
+- Expected :: Invalid cases name the offending field and leave existing or absent targets unchanged; the image-only case succeeds; the no-image control retains its established output structure.
+- Retention :: Ticket-specific evidence; not part of the persistent regression suite.
+
+** UT073.1 - Script title images are visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-073-1
+:END:
+
+- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]] and [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]].
+- Validation method :: User validation in the normal PDF reader.
+- Procedure :: Open representative light and dark background-overlay PDFs and portrait and landscape inset PDFs using overlay and dodge; compare title-page composition, legibility, crop, padding, image proportions and the first body page.
+- Expected :: Images are undistorted and intentionally composed; overlay text remains legible without treatment leaking outside its regions; dodge text is balanced above and below the inset without overlap; later pages are unchanged.
+- Record :: Write the dated result to =validation.org=.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+** Compact title mode
+
+- Condition :: =folio.title-page.enabled= is =false= while an image path is configured.
+- Required behaviour :: Conversion rejects the incompatible image configuration rather than placing an image in script body flow.
+- Covered by :: [[#ac-073-6][AC073.6 - Image configuration resolves safely and consistently]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
+
+** Missing title text
+
+- Condition :: A dedicated title page has an image but no title metadata.
+- Required behaviour :: The image creates the page; absent text regions create no empty wash, blur or padding boxes.
+- Covered by :: [[#ac-073-7][AC073.7 - Existing title-page behaviour remains compatible]] and [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]].
+
+** Oversized inset
+
+- Condition :: The requested longest-axis size exceeds the available title-page content area after required text regions and page boundaries.
+- Required behaviour :: Conversion rejects =folio.title-page.image.size= instead of clipping, distorting or overlapping content.
+- Covered by :: [[#ac-073-6][AC073.6 - Image configuration resolves safely and consistently]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
+
+** Transparent pixels
+
+- Condition :: A PNG contains transparency or image opacity is below =100%=.
+- Required behaviour :: The configured light or dark tone canvas is visible through transparent image pixels and opacity; transparency does not expose uninitialized page content.
+- Covered by :: [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]] and [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+
+- Relevant components :: The configuration package owns YAML cascade validation; the application script renderer owns source-path context and Typst data; =templates/script.typ= owns PDF page composition.
+- Ownership boundary :: First Folio owns local asset loading, deterministic image planning and output. The PDF reader and Typst compiler render the resulting document but do not resolve application configuration.
+- Existing pattern :: Extend the shared script title-page model and dedicated-page branch; do not add image semantics to manuscript title configuration or compact title flow.
+
+** High-level design
+
+*** Components and responsibilities
+
+- Configuration validation parses =folio.title-page.image= into a typed, renderer-neutral model and reports exact field errors.
+- The application resolves =path= from the source document directory, validates image type and dimensions before output creation, and calculates physical background or inset geometry.
+- A bounded image-preparation component provides any normalized image and blurred derivative needed by renderers without invoking external processes or changing the source asset.
+- The Typst title-page template consumes the resolved plan, composes image layers and retains text as text above them.
+
+*** Reuse, shared behaviour and variation
+
+- Shared operation :: Path resolution, decoding, proportional geometry, tone, opacity, overlay treatment and dodge region calculation are represented once for W073-W075.
+- Variation :: W073 projects the plan into Typst/PDF. W074 and W075 later map the same plan into their native package models.
+
+*** Boundaries and dependencies
+
+- Image bytes remain local, read-only input. Decoding must inspect dimensions before full allocation and enforce bounded decoded size to prevent unreasonable memory use.
+- A new Go image dependency is permitted only if delivery demonstrates that the standard library and existing Typst capability cannot meet required quality, and records its licence, maintenance and vulnerability evidence. No new runtime executable is permitted.
+
+*** Flow
+
+1. Load the normal script YAML cascade and validate the image block as a coherent unit.
+2. Resolve the asset against the source document directory, decode its metadata and build a physical title-page plan.
+3. Prepare normalized and blurred image variants only when required, then pass the plan and assets to the Typst renderer.
+4. Compose the dedicated title page, publish output atomically and retain the existing later-page route.
+
+*** Essential mechanisms
+
+- Background sizing uses =scale = max(pageWidth / imageWidth, pageHeight / imageHeight)= and centred clipping to the physical page rectangle.
+- Inset sizing uses =scale = configuredSize / max(imageWidth, imageHeight)=; both rendered axes use that scale.
+- Overlay treatment is clipped to each occupied text region expanded by the single configured padding. The region first shows the aligned blurred image layer when blur is non-zero, then the tone-coloured wash, then contrasting live text.
+- Dodge centres the inset on the physical title page and divides the content area at its rectangle. Title and subtitle form the upper group; author, date and version form the lower group. =folio.title-page.title.position= applies to both groups: =center= uses each available region's midpoint and =third= uses the point one third from its top. Existing horizontal alignment and date/version side settings remain applicable. Empty groups allocate no text box.
+
+*** Interfaces and configuration
+
+- Interface :: The =folio.title-page.image= contract in [[#context][Context / Decisions]] is the sole public configuration added by this ticket.
+- Compatibility :: Absence of =path= selects the old route. Unknown children remain subject to the existing configuration policy. The image block is valid only in script mode with a dedicated title page.
+- Path contract :: Relative paths are joined to the directory of the file supplied as the conversion source, then cleaned. A relative path with stdin input fails because no source directory exists. The original source path is retained for diagnostics; image bytes are never written back.
+
+*** Data and state
+
+- Image and prepared variants exist only for the conversion lifetime and are not cached beside the source.
+- The source image, YAML files and document metadata remain unchanged.
+
+*** Failure behaviour
+
+- Validate configuration before decoding, decode metadata before allocating full image storage, and complete preparation before replacing an output target.
+- Errors name the full configuration field or resolved asset path without exposing unrelated file contents. Partial PDF, Typst or prepared-image output is not published.
+
+*** Simplicity and proportionality
+
+- One shared plan prevents three formats from inventing different semantics. Separate output tickets keep renderer-specific complexity and user validation bounded while the PDF ticket establishes the public contract first.
+
+** Design decisions and verification
+
+*** Preserve aspect ratio in both modes
+
+- Decision :: Background uses proportional cover-and-crop; inset uses longest-axis sizing. Neither mode stretches axes independently.
+- Verification :: [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] measures both modes and the two explicit inset examples.
+
+*** Keep overlay text live
+
+- Decision :: Blur and wash affect image layers behind the text; title metadata remains renderer text rather than being rasterized into the cover image.
+- Rationale :: This preserves searchable PDF text and gives W074/W075 a viable editable-text contract.
+- Verification :: [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]] and [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]].
+
+*** Use source-relative assets
+
+- Decision :: Resolve every relative image path from the source document, not from the YAML file, current directory or installed preset.
+- Verification :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]] uses distinct source, YAML and working directories.
+
+*** Restrict dodge to inset mode
+
+- Decision :: =background + dodge= is invalid because a full-page image leaves no image-free region to dodge.
+- Verification :: [[#rt-073-1][RT073.1 - Title-image configuration is validated and resolved]] and [[#at-073-2][AT073.2 - Public conversion fails atomically for invalid image input]].
+
+** Routine details left to implementation
+
+- Internal type and function names, prepared-image temporary filenames and the exact anti-aliasing kernel may follow project conventions while preserving observable geometry and bounded resource use.
+- The delivery agent may select a safe decoded-pixel ceiling after inspecting existing resource policies, but it must be documented in the user-facing configuration reference and tested at its boundary.
+
+** Architecture impact
+
+*** Security impact
+
+- Threat boundary :: A new untrusted local binary-image input crosses the conversion boundary.
+- Data and secrets :: Image bytes remain local and are not logged, transmitted or persisted outside the requested document and bounded temporary conversion artefacts.
+- Access :: The converter reads only the configured local asset using its existing user privileges; no URL, shell or external process execution is added.
+- Conclusion :: Validate format and dimensions before full decode, bound decoded pixels and temporary work, reject unsupported data, and preserve atomic publication.
+
+*** Other relevant qualities
+
+- Reliability :: Deterministic geometry and atomic failure prevent partial documents and format drift.
+- Accessibility :: Overlay tone supplies contrasting text; user validation still checks real-world legibility because image content varies.
+- Portability :: The feature uses physical units and local embedded assets; output does not depend on the source image remaining available after conversion.
+- Maintainability :: A shared plan and sequenced renderer adapters avoid three public contracts.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: [[file:../../docs/config.md][Script configuration reference]], [[file:../../docs/ARCHITECTURE.md][project architecture]], [[file:../../templates/script.typ][script Typst template]], =internal/app/script_render.go= and the current configuration loader.
+- Entry conditions :: Explicit delivery authority for W073, a current definition PASS in [[file:audits.yaml][=audits.yaml=]], and confirmation that W074/W075 remain separate output work.
+- First implementation step :: Write [[#rt-073-1][RT073.1]], [[#rt-073-2][RT073.2]], [[#at-073-1][AT073.1]] and [[#at-073-2][AT073.2]], then observe meaningful RED for image behaviour while existing no-image preservation remains GREEN.
+- Definition evidence :: [[file:audits.yaml][=audits.yaml=]].
+- Validation evidence :: [[file:validation.org][=validation.org=]]; one tagged result heading per defined test, including RTs. Follow =ORG-SCHEMA.md=.
+- Documentation impact :: Update =README.md=, =docs/config.md= and =docs/ARCHITECTURE.md= with the script-only image contract, source-relative path rule, supported formats, resource limit, renderer sequencing and PDF behaviour.
