@@ -1,0 +1,41 @@
+#+TITLE: W079 - Inset cover title-page backdrop validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** AMBER RT079.1 - Backdrop configuration and image preparation remain deterministic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-079-1-result
+:REASON: Test-first implementation has not yet been written or executed.
+:END:
+
+** AMBER RT079.2 - Backdrop and overlay treatments resolve by region :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-079-2-result
+:REASON: Test-first implementation has not yet been written or executed.
+:END:
+
+* Acceptance tests
+
+** AMBER AT079.1 - Rendered inset backdrops follow the PDF contract :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-079-1-result
+:REASON: Built-executable rendered acceptance has not yet been written or executed.
+:END:
+
+** AMBER AT079.2 - Invalid backdrop input preserves the target :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-079-2-result
+:REASON: Built-executable atomic-failure acceptance has not yet been written or executed.
+:END:
+
+* User validation
+
+** AMBER UT079.1 - Inset backdrop composition is visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-079-1-result
+:REASON: Requires operator inspection of image and solid backdrop PDFs after delivery-code audit.
+:END:

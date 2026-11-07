@@ -27,15 +27,15 @@ const (
 )
 
 type coverImagePlan struct {
-	Config                            config.CoverImage
-	SourcePath, BlurredPath           string
-	PixelWidth, PixelHeight           uint32
-	RenderedWidthMM, RenderedHeightMM float64
-	PageWidthMM, PageHeightMM         float64
+	Config                                                    config.CoverImage
+	SourcePath, OriginalSourcePath, BlurredPath, BackdropPath string
+	PixelWidth, PixelHeight                                   uint32
+	RenderedWidthMM, RenderedHeightMM                         float64
+	PageWidthMM, PageHeightMM                                 float64
 }
 
 type preparedCoverVariants struct {
-	ImagePath, BlurredPath string
+	ImagePath, BlurredPath, BackdropPath string
 }
 
 func validateCoverSourceLimits(bytes int64, width, height uint32) error {

@@ -12,18 +12,23 @@ import (
 
 // CoverImage is the complete effective cover-image value after cascade merge.
 type CoverImage struct {
-	Path                 string
-	Mode                 string
-	Placement            string
-	Size                 string
-	ImageTreatment       string
-	ImageOpacity         float64
-	Superscale           string
-	DodgePadding         string
-	OverlayBlur          string
-	OverlayWashTreatment string
-	OverlayWashOpacity   float64
-	OverlayPadding       string
+	Path                  string
+	Mode                  string
+	Placement             string
+	Size                  string
+	ImageTreatment        string
+	ImageOpacity          float64
+	Superscale            string
+	DodgePadding          string
+	OverlayBlur           string
+	OverlayWashTreatment  string
+	OverlayWashOpacity    float64
+	OverlayPadding        string
+	BackdropMode          string
+	BackdropImageBlur     string
+	BackdropSolidColor    string
+	BackdropWashTreatment string
+	BackdropWashOpacity   float64
 }
 
 // CoverImage returns the typed effective cover-image configuration when enabled.
