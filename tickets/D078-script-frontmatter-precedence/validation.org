@@ -53,6 +53,7 @@
 ** GREEN UT078.1 - Source-driven placement is visually acceptable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-078-1-result
+:REVISION: 4ada882cc68860e2b43d6d95eeffe6cd0d1d16a0
 :EVIDENCE: Operator reported on 2026-11-07 that the corrected source-driven result was tested and satisfactory.
 :END:
 
