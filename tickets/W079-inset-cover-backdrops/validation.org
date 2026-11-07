@@ -6,49 +6,60 @@
 
 * Automated regression
 
-** RED RT079.1 - Backdrop configuration and image preparation remain deterministic :testdef:
+** GREEN RT079.1 - Backdrop configuration and image preparation remain deterministic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-079-1-result
-:REVISION: 1c4dab1222781beed052e775e5b1ddd979c6c829
+:REVISION: 3dbf3724a6fb7017694cd572c81ec8222caece3f
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT079_' -count=1 -timeout=10m
-:EVIDENCE: Intended RED. The strict loader rejects the unimplemented backdrop block, dotted Org leaves are absent, no independent derivative is produced and source switching cannot yet resolve typed backdrop values.
+:EVIDENCE: Typed defaults, strict complete-path failures, dormant cascade branches, explicit none, every dotted Org leaf, YAML/Org parity, original-source treatment, page-aspect crop, 512-pixel ceiling, no-upscale behaviour and derivative selection all passed.
 :END:
 
 - Runs :: 2026-11-07 at =6ee6008=: RED at the typed configuration, image-preparation, source-projection and compiled-PDF boundaries.
 - Runs :: 2026-11-07 at =1c4dab1=: RED after extending the image-preparation boundary to cover explicit disablement, transparent-source treatment and original-source selection.
+- Runs :: 2026-11-07 at =3dbf372=: GREEN across configuration and application packages.
 
-** RED RT079.2 - Backdrop and overlay treatments resolve by region :testdef:
+** GREEN RT079.2 - Backdrop and overlay treatments resolve by region :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-079-2-result
-:REVISION: 1c4dab1222781beed052e775e5b1ddd979c6c829
+:REVISION: 3dbf3724a6fb7017694cd572c81ec8222caece3f
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT079_' -count=1 -timeout=10m
-:EVIDENCE: Intended RED. Each compiled-PDF fixture stops at the unknown backdrop block before the title, subtitle and footer marker colours can be inspected.
+:EVIDENCE: Compiled PDFs reported black title, subtitle and footer marker text for light dodge treatment, white for dark dodge treatment, and the opposite localized overlay treatment remained authoritative inside overlay regions.
 :END:
 
 - Runs :: 2026-11-07 at =6ee6008=: RED before rendering because the approved typed configuration does not yet exist.
 - Runs :: 2026-11-07 at =1c4dab1=: RED remained isolated at the same unimplemented typed configuration boundary.
+- Runs :: 2026-11-07 at =3dbf372=: GREEN through Typst and extracted page-one PDF font colours.
 
 * Acceptance tests
 
-** RED AT079.1 - Rendered inset backdrops follow the PDF contract :testdef:
+** GREEN AT079.1 - Rendered inset backdrops follow the PDF contract :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-079-1-result
-:REVISION: 6ee6008eb543d26b305eac1bfe576eac383846ec
+:REVISION: 3dbf3724a6fb7017694cd572c81ec8222caece3f
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT079_' -count=1 -timeout=10m
-:EVIDENCE: Intended RED. The built executable leaves white page edges and black title-page text when dotted Org backdrop fields are ignored, while YAML backdrop input is rejected as unknown.
+:EVIDENCE: A freshly built executable rendered dotted Org image and YAML solid backdrops. Rasterized image mode filled all page edges, retained materially sharper inset variation and used white live text; solid corners matched #2a2524 within tolerance and used black live text.
 :END:
 
 - Runs :: 2026-11-07 at =6ee6008=: RED through a freshly built executable, Typst, page-one rasterization and extracted PDF text colours.
+- Runs :: 2026-11-07 at =3dbf372=: GREEN through a freshly built executable, Typst, rasterized page one and extracted PDF text colours.
 
-** RED AT079.2 - Invalid backdrop input preserves the target :testdef:
+** GREEN AT079.2 - Invalid backdrop input preserves the target :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-079-2-result
-:REVISION: 6ee6008eb543d26b305eac1bfe576eac383846ec
+:REVISION: 3dbf3724a6fb7017694cd572c81ec8222caece3f
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT079_' -count=1 -timeout=10m
-:EVIDENCE: Intended RED. The built executable preserves sentinel targets but reports only the unknown parent block instead of the required complete active-field paths.
+:EVIDENCE: Background-cover use, missing and malformed solid colour, invalid active image blur, unknown nested key and unsupported DOCX output each exited non-zero with the required complete path and preserved the sentinel target byte for byte.
 :END:
 
 - Runs :: 2026-11-07 at =6ee6008=: RED for field-specific diagnostics; sentinel publication assertions executed and remained intact.
+- Runs :: 2026-11-07 at =3dbf372=: GREEN through the built public command with atomic target preservation.
+
+* Delivery checks
+
+- 2026-11-07 at =3dbf372=: =make test= GREEN; =internal/app= completed in =413.135s=, =internal/manuscript= in =101.586s= and every remaining package passed or was validly cached.
+- 2026-11-07 at =3dbf372=: =make lint= GREEN.
+- 2026-11-07 at =3dbf372=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
+- 2026-11-07 at =3dbf372=: =git diff --check= GREEN and the working tree contained no uncommitted product or documentation delta before this validation update.
 
 * User validation
 
