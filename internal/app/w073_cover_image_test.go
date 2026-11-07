@@ -492,22 +492,33 @@ func TestRT073_2BottomCenterAuthorSharesAnchoredFooterRow(t *testing.T) {
 	}
 }
 
-func TestRT073_2BottomCenterAuthorWorksWithoutCover(t *testing.T) {
+func TestRT073_2BottomCenterAuthorWorksWithoutCoverAndWithOverlayCover(t *testing.T) {
 	requireW073Tools(t)
 	dir := t.TempDir()
 	t.Setenv("HOME", t.TempDir())
-	source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "no-cover-footer-row.pdf")
+	source := filepath.Join(dir, "play.org")
 	writeAppFile(t, source, "#+TITLE: Footer row\n#+AUTHOR: AUTHORCENTER\n#+DATE: DATELEFT\n#+VERSION: VERSIONRIGHT\n* ACT ONE\n**** CÁIT\nBody.\n")
-	writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n    author:\n      position: bottom-center\n")
-	status, _, stderr := runApp(t, "convert", source, target)
-	if status != 0 {
-		t.Fatalf("status=%d stderr=%s", status, stderr)
-	}
-	date := w073WordBounds(t, target, "DATELEFT")
-	author := w073WordBounds(t, target, "AUTHORCENTER")
-	version := w073WordBounds(t, target, "VERSIONRIGHT")
-	if !(date.xMax < author.xMin && author.xMax < version.xMin) {
-		t.Fatalf("no-cover footer row is not left/centre/right: date=%#v author=%#v version=%#v", date, author, version)
+	writeW073PNG(t, filepath.Join(dir, "cover.png"), 976, 976, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+	for _, tc := range []struct {
+		name, cover string
+	}{
+		{"without cover", ""},
+		{"with overlay cover", "  cover-image:\n    path: cover.png\n    mode: inset\n    placement: overlay\n    size: 80mm\n"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			target := filepath.Join(dir, strings.ReplaceAll(tc.name, " ", "-")+"-footer-row.pdf")
+			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n    author:\n      position: bottom-center\n"+tc.cover)
+			status, _, stderr := runApp(t, "convert", source, target)
+			if status != 0 {
+				t.Fatalf("status=%d stderr=%s", status, stderr)
+			}
+			date := w073WordBounds(t, target, "DATELEFT")
+			author := w073WordBounds(t, target, "AUTHORCENTER")
+			version := w073WordBounds(t, target, "VERSIONRIGHT")
+			if !(date.xMax < author.xMin && author.xMax < version.xMin) {
+				t.Fatalf("footer row is not left/centre/right: date=%#v author=%#v version=%#v", date, author, version)
+			}
+		})
 	}
 }
 
