@@ -382,3 +382,37 @@ reviews:
       - "The test-code gate establishes test quality and intended RED only; it does not claim delivered product behaviour."
       - "The visual user test remains AMBER for operator review after implementation."
       - "W074 DOCX and W075 ODT rendering remain out of scope."
+  - id: test-code-c1-r3
+    timestamp: "2026-11-07T16:50:52Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 3
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "8173da1a3cda7384e72599e625cb6a0a2a09fa29"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, ORG-SCHEMA.md, GO.md, REVIEW.md and SELF-AUDIT.md as deployed on 2026-11-07"
+      - "Approved W073 PDF-only acceptance criteria and test definitions at 8173da1a3cda7384e72599e625cb6a0a2a09fa29"
+      - "Test-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "Round 2 was invalidated after correcting one raster-bounds helper and one invalid-combination fixture in internal/app/w073_cover_image_acceptance_test.go; the corrected candidate was reassessed in full."
+      - "The corrected test-only delta was applied to pre-implementation revision a9c8556 and both focused commands exited 1 with intended behavioural RED: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m; go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m."
+      - "At candidate 8173da1, the same focused RT command passes internal/config and internal/app, and the same focused AT command passes internal/app."
+      - "The raster helper now represents an intentionally empty sampling rectangle without image.Rectangle canonicalization expanding it to the page; the invalid-combination fixture now actually configures dodge with non-default overlay treatment."
+      - "The complete RT and built-command AT package retains typed configuration, physical geometry, publication atomicity, unsupported-consumer and Superscale fallback coverage."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The visual user test remains AMBER for operator review."
+      - "W074 DOCX and W075 ODT rendering remain out of scope."
