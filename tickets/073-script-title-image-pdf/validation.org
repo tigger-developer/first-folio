@@ -1,0 +1,62 @@
+#+TITLE: W073 - Validation Evidence
+#+SCHEMA: 2
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated tests
+
+** AT073.1 - Rendered PDF geometry follows the image contract :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-073-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]] and [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]].
+
+** AT073.2 - Invalid and unsupported cover input fails atomically :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-073-2-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]], [[file:spec.org::#ac-073-12][AC073.12 - Unsupported consumers reject configured covers]], [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]] and [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]].
+
+** AT073.3 - Public Superscale fallback preserves PDF output :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-073-3-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-9][AC073.9 - Disabled or unavailable Superscale is non-blocking]] and [[file:spec.org::#ac-073-10][AC073.10 - Superscale execution failures fall back visibly]].
+
+* Automated regression
+
+** RT073.1 - Cover-image configuration, keys and source limits are validated :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-1-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]] and [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]].
+
+** RT073.2 - Typst output contains the resolved title-image layout :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-2-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]] and [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]].
+
+** RT073.3 - Superscale invocation and fallback are deterministic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-3-result
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]], [[file:spec.org::#ac-073-9][AC073.9 - Disabled or unavailable Superscale is non-blocking]] and [[file:spec.org::#ac-073-10][AC073.10 - Superscale execution failures fall back visibly]].
+
+* User tests
+
+** AMBER UT073.1 - Script title images are visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-073-1-result
+:REASON: Human inspection in the normal PDF reader is deferred until the PDF implementation candidate and representative outputs are ready.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]] and [[file:spec.org::#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]].
+- Method :: User validation in the normal PDF reader.
