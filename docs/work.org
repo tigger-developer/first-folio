@@ -78,6 +78,17 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** ACTIVE W076 - Read script configuration from dotted Org frontmatter :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-076
+:PRIORITY: P1
+:SOURCE: operator
+:CREATED: 2026-11-07
+:END:
+- Specification :: [[file:../tickets/076-org-source-configuration/spec.org][W076 - Dotted Org script configuration]] (emergency reconciliation pending).
+- Emergency authority :: =BYPASS-GATE-7= invoked 2026-11-07 for dotted Org configuration and line-numbered warnings for unrecognized =FOLIO= fields.
+- Scope :: Project =#+FOLIO.<path>:= and =#+RENDER.<path>:= script frontmatter into the existing source configuration layer, without rendering those directives as document content.
+
 ** REVIEW W075 - Add script title-page images to ODT output :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-075
