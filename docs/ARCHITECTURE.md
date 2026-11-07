@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.28"
+version: "0.29"
 last-updated: 2026-11-07
 ---
 
@@ -178,6 +178,15 @@ three-slot metadata row. Dodge displacement never moves that row, and an image
 clearance collision fails before atomic publication. One validated script-title
 position resolver preserves named compatibility aliases while projecting a
 literal percentage unchanged into ordinary, overlay and dodge geometry.
+For inset backdrops, the Go preparation boundary independently derives a
+page-aspect PNG from the original bounded source, before any optional
+Superscale selection for the sharp inset. It applies the shared treatment,
+centre-crops, downsamples to a 512-pixel longest-axis ceiling without upscaling
+and applies the configured physical blur. Solid backdrops remain validated
+colour data. Typed template data supplies the selected asset or colour, a
+page-wide wash and its text treatment; the Typst template paints that full
+bleed before composing the existing sharp inset and live text. Localized
+overlay treatment remains the more specific text and wash rule.
 Preparation and layout complete before a PDF is atomically renamed into place;
 warnings fall back to the original image, while invalid configuration, assets
 or measured dodge regions leave the target unchanged. Standalone Typst, DOCX,
@@ -208,6 +217,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.29 (2026-11-07): Add bounded original-source image and solid-colour backdrops to the inset script PDF composition path.
 
 - 0.28 (2026-11-07): Place supported source-document configuration above local YAML and feed one resolved cascade to every output route.
 

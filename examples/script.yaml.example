@@ -114,6 +114,15 @@
   #   superscale: null          # null | default | 2x | 4x | 8x
   #   dodge:
   #     padding: 1em            # positive em/mm clearance after centre/third placement
+  #   backdrop:                 # inset only; full-page layer behind the unchanged sharp image
+  #     mode: image             # none | image | solid
+  #     image:
+  #       blur: 8mm             # positive mm; derived from original, max 512px, no upscaling
+  #     solid:
+  #       color: "#2a2524"      # exact #RRGGBB, required for solid mode
+  #     wash:
+  #       treatment: dark       # light gives black page text; dark gives white page text
+  #       opacity: 25%          # 0%-100%; defaults to 0%
   #   overlay:
   #     blur: 0mm               # non-negative mm radius
   #     wash:

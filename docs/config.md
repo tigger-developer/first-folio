@@ -1,6 +1,6 @@
 ---
 title: Configuration
-version: "0.43"
+version: "0.44"
 last-updated: 2026-11-07
 ---
 
@@ -214,6 +214,15 @@ folio:
     superscale: null        # null | default | "2x" | "4x" | "8x"
     dodge:
       padding: 1em          # minimum image clearance after text placement
+    backdrop:
+      mode: image           # none | image | solid; inset covers only
+      image:
+        blur: 8mm           # positive physical blur; defaults to 8mm
+      solid:
+        color: "#2a2524"    # required only when mode is solid
+      wash:
+        treatment: dark     # light gives black text; dark gives white text
+        opacity: 25%        # defaults to 0%
     overlay:
       blur: 0mm
       wash:
@@ -232,6 +241,11 @@ folio:
 | `image.opacity` | `0%` through `100%`; defaults to `100%`. |
 | `superscale` | `null`, `default`, `2x`, `4x` or `8x`; defaults to `null`. |
 | `dodge.padding` | Positive `em` or `mm` minimum clearance outside a dodged inset; defaults to `1em`. An `em` uses `folio.font.size`. |
+| `backdrop.mode` | `none`, `image` or `solid`. The block is accepted only for inset covers; absence retains the white-page route. |
+| `backdrop.image.blur` | Positive physical blur radius in `mm`; defaults to `8mm` in image mode. |
+| `backdrop.solid.color` | Exactly six hexadecimal digits prefixed by `#`; required in solid mode. |
+| `backdrop.wash.treatment` | Required in image and solid modes. `light` applies a white wash and black page text; `dark` applies a black wash and white page text. |
+| `backdrop.wash.opacity` | `0%` through `100%`; defaults to `0%`. |
 | `overlay.blur` | Non-negative physical blur radius in `mm`; defaults to `0mm`. |
 | `overlay.wash.treatment` | `light` or `dark`; selects a white or black wash independently of image treatment. |
 | `overlay.wash.opacity` | `0%` through `100%`; defaults to `0%`. |
@@ -249,6 +263,34 @@ a group that violates the clearance moves, and only by the required distance.
 The adjustment may use title-page margin space. A group that crosses the
 physical page edge is reported by name before the target is replaced. A
 non-empty `dodge` block is invalid with overlay placement.
+
+An inset backdrop fills the complete title page behind the unchanged sharp
+inset. Image mode independently derives the backdrop from the original bounded
+cover source, applies the same image treatment, centre-crops to the physical
+page ratio, downsamples to at most 512 pixels on its longest axis without
+upscaling smaller input, then applies `backdrop.image.blur`. Superscale remains
+exclusive to the sharp inset. Solid mode paints the exact configured colour
+before the optional wash.
+
+Backdrop treatment controls title-page text outside a localized overlay. When
+placement is `overlay`, the existing `overlay.wash.treatment` remains more
+specific for the title and footer regions. Folio does not infer image luminance
+or choose contrast automatically.
+
+The backdrop block is strict at every level. A higher-precedence source may set
+`backdrop.mode: none` to disable a lower-layer backdrop without deleting its
+recognized image, solid or wash branches. Dormant branch values are ignored
+semantically, although their containers and keys must remain valid.
+
+Dotted Org frontmatter projects the same leaves through the shared cascade. A
+hex colour may be written without YAML quoting:
+
+```org
+#+FOLIO.COVER-IMAGE.BACKDROP.MODE: solid
+#+FOLIO.COVER-IMAGE.BACKDROP.SOLID.COLOR: #2a2524
+#+FOLIO.COVER-IMAGE.BACKDROP.WASH.TREATMENT: light
+#+FOLIO.COVER-IMAGE.BACKDROP.WASH.OPACITY: 0%
+```
 
 `folio.title-page.author.position` defaults to `group`. Set it to
 `bottom-center` on a dedicated script PDF title page to place the existing
@@ -915,6 +957,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.44 (2026-11-07): Add full-bleed blurred-image and exact solid-colour backdrops behind sharp inset script PDF covers.
 
 - 0.43 (2026-11-07): Add an anchored bottom-centre author slot beside script date and version metadata.
 

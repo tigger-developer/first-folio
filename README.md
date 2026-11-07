@@ -1,6 +1,6 @@
 ---
 title: First Folio
-version: "1.16"
+version: "1.17"
 last-updated: 2026-11-07
 ---
 
@@ -191,6 +191,10 @@ an overlay or in bounded regions above and below the image. Optional image
 treatment, localized blur, wash, overlay padding, post-placement dodge
 clearance, an optional bottom-centre author metadata slot and Superscale preprocessing are
 documented under [script PDF cover images](docs/config.md#script-pdf-cover-images-foliocover-image).
+An inset may also retain its sharp artwork over either a full-bleed blurred
+derivative of the original image or an exact solid colour. Explicit light/dark
+wash treatment selects page-wide text contrast while localized overlay
+treatment remains authoritative inside its own regions.
 DOCX, ODT, standalone Typst, compact script titles, manuscripts and letters
 reject this configuration until their separate format work is delivered.
 
@@ -260,6 +264,8 @@ make vulncheck # Go dependency and reachable-code vulnerability gate
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.17 (2026-11-07): Document full-bleed image and solid backdrops for inset script PDF title covers.
 
 - 1.16 (2026-11-07): Document source-document configuration above local YAML for every applicable output route.
 
