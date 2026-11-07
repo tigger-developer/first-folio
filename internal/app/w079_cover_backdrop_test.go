@@ -76,6 +76,17 @@ func TestRT079_1BackdropImagePreparationBoundsCropAndDoesNotUpscale(t *testing.T
 	if plan.BackdropPath != "" {
 		t.Fatalf("solid backdrop produced image derivative %q", plan.BackdropPath)
 	}
+	noneCfg := loadW079CoverConfig(t, dir, map[string]any{
+		"mode": "none", "image": map[string]any{"blur": "12mm"}, "solid": map[string]any{"color": "#2a2524"}, "wash": map[string]any{"treatment": "dark"},
+	})
+	nonePlan, noneCleanup, err := prepareCoverForRender(noneCfg, source, nil)
+	if err != nil {
+		t.Fatalf("preparing disabled backdrop: %v", err)
+	}
+	defer noneCleanup()
+	if nonePlan.BackdropPath != "" {
+		t.Fatalf("mode none produced image derivative %q", nonePlan.BackdropPath)
+	}
 }
 
 func TestRT079_1OrgAndYAMLBackdropValuesResolveIdentically(t *testing.T) {
@@ -119,11 +130,11 @@ func TestRT079_1BackdropDerivativeUsesOriginalRatherThanSelectedSharpAsset(t *te
 	dir := t.TempDir()
 	original := filepath.Join(dir, "original.png")
 	selected := filepath.Join(dir, "superscaled.png")
-	writeW073PNG(t, original, 120, 120, color.RGBA{R: 230, G: 20, B: 140, A: 255})
+	writeW073PNG(t, original, 120, 120, color.RGBA{R: 230, G: 20, B: 140, A: 128})
 	writeW073PNG(t, selected, 240, 120, color.RGBA{R: 20, G: 190, B: 220, A: 255})
 	plan := &coverImagePlan{
 		Config: config.CoverImage{
-			Mode: "inset", Size: "80mm", ImageTreatment: "light", ImageOpacity: 1,
+			Mode: "inset", Size: "80mm", ImageTreatment: "dark", ImageOpacity: 0.5,
 			OverlayBlur: "0mm", BackdropMode: "image", BackdropImageBlur: "8mm", BackdropWashTreatment: "dark",
 		},
 		SourcePath: selected, OriginalSourcePath: original,
@@ -138,9 +149,9 @@ func TestRT079_1BackdropDerivativeUsesOriginalRatherThanSelectedSharpAsset(t *te
 		t.Fatal("image backdrop derivative was not produced")
 	}
 	img := decodeW073PNG(t, variants.BackdropPath)
-	r, g, b, _ := img.At(img.Bounds().Dx()/2, img.Bounds().Dy()/2).RGBA()
-	if int(r>>8) < 150 || int(b>>8) < 80 || int(g>>8) > 120 {
-		t.Fatalf("backdrop centre rgb(%d,%d,%d) follows selected sharp asset rather than original", r>>8, g>>8, b>>8)
+	r, g, b, a := img.At(img.Bounds().Dx()/2, img.Bounds().Dy()/2).RGBA()
+	if int(r>>8) < 52 || int(r>>8) > 64 || int(g>>8) > 8 || int(b>>8) < 30 || int(b>>8) > 42 || a>>8 != 255 {
+		t.Fatalf("backdrop centre rgba(%d,%d,%d,%d) does not reflect original transparent source with dark 50%% treatment", r>>8, g>>8, b>>8, a>>8)
 	}
 }
 
