@@ -6,49 +6,73 @@
 
 * Automated tests
 
-** AT073.1 - Rendered PDF geometry follows the image contract :testdef:
+** RED AT073.1 - Rendered PDF geometry follows the image contract :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-1-result
+:REVISION: dc159a159972e3b66ef5b612b3a75fca2f5bc18c
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
+:EVIDENCE: The built CLI completed baseline PDFs, but the rasterized title page had no configured background or inset pixels and image-only input did not create the required cover page.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]] and [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]].
+- Runs :: 2026-11-07: intended RED at the built executable, compiled PDF and rasterized page boundary.
 
-** AT073.2 - Invalid and unsupported cover input fails atomically :testdef:
+** RED AT073.2 - Invalid and unsupported cover input fails atomically :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-2-result
+:REVISION: dc159a159972e3b66ef5b612b3a75fca2f5bc18c
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
+:EVIDENCE: The built CLI accepted every configured-cover invalid or unsupported case and replaced the sentinel target instead of reporting the cover field before publication.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]], [[file:spec.org::#ac-073-12][AC073.12 - Unsupported consumers reject configured covers]], [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]] and [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]].
+- Runs :: 2026-11-07: intended RED for unknown keys, compact mode, standalone Typst, DOCX, missing input and byte-limit rejection; sentinel checks are written into every case.
 
-** AT073.3 - Public Superscale fallback preserves PDF output :testdef:
+** RED AT073.3 - Public Superscale fallback preserves PDF output :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-3-result
+:REVISION: dc159a159972e3b66ef5b612b3a75fca2f5bc18c
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
+:EVIDENCE: Missing, non-zero and unusable Superscale cases produced no required warning because the built CLI did not yet process the configured cover image.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-073-9][AC073.9 - Disabled or unavailable Superscale is non-blocking]] and [[file:spec.org::#ac-073-10][AC073.10 - Superscale execution failures fall back visibly]].
+- Runs :: 2026-11-07: intended RED through a controlled child PATH with real Typst and absent or synthetic Superscale.
 
 * Automated regression
 
-** RT073.1 - Cover-image configuration, keys and source limits are validated :testdef:
+** RED RT073.1 - Cover-image configuration, keys and source limits are validated :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-1-result
+:REVISION: dc159a159972e3b66ef5b612b3a75fca2f5bc18c
+:COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
+:EVIDENCE: Valid cover configuration loaded, but every strict-key and invalid-value case was accepted; source-limit execution scaffolding also rejected valid boundaries without applying the specified limits.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]] and [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]].
+- Runs :: 2026-11-07: intended RED for strict nested keys and minimum, exact-limit and over-limit source metadata.
 
-** RT073.2 - Typst output contains the resolved title-image layout :testdef:
+** RED RT073.2 - Typst output contains the resolved title-image layout :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-2-result
+:REVISION: dc159a159972e3b66ef5b612b3a75fca2f5bc18c
+:COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
+:EVIDENCE: The no-cover preservation control passed, while the rendered inset contained no cover pixels, image-only input lacked a dedicated page and dodge overflow completed successfully instead of reporting a layout error.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]] and [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]].
+- Runs :: 2026-11-07: intended RED for new cover layout; no-cover conversion remained GREEN without manufacturing a failure.
 
-** RT073.3 - Superscale invocation and fallback are deterministic :testdef:
+** RED RT073.3 - Superscale invocation and fallback are deterministic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-3-result
+:REVISION: dc159a159972e3b66ef5b612b3a75fca2f5bc18c
+:COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
+:EVIDENCE: The null control completed without lookup or warning, while requested missing, non-zero and unusable cases lacked warnings and the usable synthetic executable was not invoked.
 :END:
 
 - Criterion :: [[file:spec.org::#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]], [[file:spec.org::#ac-073-9][AC073.9 - Disabled or unavailable Superscale is non-blocking]] and [[file:spec.org::#ac-073-10][AC073.10 - Superscale execution failures fall back visibly]].
+- Runs :: 2026-11-07: intended RED for requested processing and fallback; the disabled preservation case remained GREEN.
 
 * User tests
 
