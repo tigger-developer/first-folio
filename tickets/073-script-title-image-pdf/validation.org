@@ -9,37 +9,39 @@
 ** GREEN AT073.1 - Rendered PDF geometry follows the image contract :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-1-result
-:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
+:REVISION: 38ca459f8973a6af4fde1471ae5b41ceeee1ab41
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
 :EVIDENCE: The built CLI produced measured A4 centre crop, both requested longest-axis inset examples, localized treated overlay with live metadata, both dodge positions, explicit two-sided dodge clearance and an unchanged later body page.
 :END:
 
-- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]] and [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
+- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]], [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[file:spec.org::#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
 - Runs :: 2026-11-07: intended RED at the built executable, compiled PDF, extracted live-text and measured raster boundary; both inset examples, overlay treatment, both dodge positions and the unchanged body marker executed.
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN; all marker raster, live-text, relative-position and unchanged-body assertions passed.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; built-binary geometry included explicit =50mm= upper/lower dodge clearance, with extracted glyph-bound tolerance for font overhang.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; all built-binary AT073 geometry assertions passed.
 - Runs :: 2026-11-07 at =d31304e=: GREEN; the built binary rendered a =210mm= square inset with =5mm= clearance by using title-page margin space while keeping both groups within physical page edges.
+- Runs :: 2026-11-07 at =38ca459=: GREEN; date, bottom-centre author and version retained one anchored row when dodge padding changed from =1em= to =15mm=.
 
 ** GREEN AT073.2 - Invalid and unsupported cover input fails atomically :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-2-result
-:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
+:REVISION: 38ca459f8973a6af4fde1471ae5b41ceeee1ab41
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
 :EVIDENCE: The built CLI rejected malformed cover input, unsupported consumers, source-limit violations, measured dodge overflow and post-clearance upper/lower boundary overflow with field-specific diagnostics while preserving existing or absent targets; no-cover PDF and Typst controls passed.
 :END:
 
-- Criterion :: [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]], [[file:spec.org::#ac-073-12][AC073.12 - Unsupported consumers reject configured covers]], [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]], [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]] and [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
+- Criterion :: [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]], [[file:spec.org::#ac-073-12][AC073.12 - Unsupported consumers reject configured covers]], [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]], [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]], [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[file:spec.org::#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
 - Runs :: 2026-11-07: intended RED for unknown keys, malformed combinations/assets, compact mode, standalone Typst, DOCX, ODT, manuscript, letter, missing input, byte/axis/pixel limits and measured dodge overflow; existing and absent publication states executed.
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN; every rejection, publication-state and no-cover control passed.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; post-clearance overflow retained named upper/lower diagnostics and atomic publication.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; all invalid-input and atomic-publication assertions passed.
 - Runs :: 2026-11-07 at =d31304e=: GREEN; physical-page overflow remains named and atomic after margin space became available to clearance adjustments.
+- Runs :: 2026-11-07 at =38ca459=: GREEN; invalid author positions, compact-mode use and fixed-footer collisions were rejected without publishing a target.
 
 ** GREEN AT073.3 - Public Superscale fallback preserves PDF output :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-3-result
-:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
+:REVISION: 38ca459f8973a6af4fde1471ae5b41ceeee1ab41
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
 :EVIDENCE: Missing, non-zero and unusable Superscale cases each emitted one bounded warning, produced the original-image PDF geometry and left no First Folio temporary output.
 :END:
@@ -50,43 +52,48 @@
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; unchanged Superscale cases passed after the dodge-clearance amendment.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; all public Superscale fallback assertions passed.
 - Runs :: 2026-11-07 at =d31304e=: GREEN; public Superscale fallback assertions remain unchanged and passing.
+- Runs :: 2026-11-07 at =38ca459=: GREEN; public Superscale fallback assertions remain unchanged and passing.
 
 * Automated regression
 
 ** GREEN RT073.1 - Cover-image configuration, keys and source limits are validated :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-1-result
-:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
+:REVISION: e81826b464e7f64b2fac03e0bd177c165030758b
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
 :EVIDENCE: Typed defaults, strict nested keys, dodge-padding defaults and units, Org source-path availability, source-relative PNG/JPEG planning, physical geometry and exact source-resource boundaries all passed.
 :END:
 
-- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]], [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]] and [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
+- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]], [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]], [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[file:spec.org::#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
 - Runs :: 2026-11-07: intended RED for typed defaults, modes/treatments/value boundaries, strict nested keys, separated source/configuration/working paths, both supported image formats, both inset examples and minimum/exact/over-limit source metadata.
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN in =internal/config= and =internal/app=.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; =dodge.padding= accepted positive =em=/=mm= values, rejected invalid units and overlay use, and defaulted to =1em=.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; typed configuration and Org source-path assertions passed.
 - Runs :: 2026-11-07 at =d31304e=: GREEN; typed configuration and Org source-path assertions remain unchanged and passing.
+- Runs :: 2026-11-07 at =38ca459=: GREEN; =folio.title-page.author.position= was available to Org source configuration and accepted only =group= or =bottom-center=.
+- Runs :: 2026-11-07 at =e81826b=: GREEN; all configuration assertions remained passing after the overlay-path regression was added.
 
 ** GREEN RT073.2 - Typst output contains the resolved title-image layout :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-2-result
-:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
+:REVISION: e81826b464e7f64b2fac03e0bd177c165030758b
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
 :EVIDENCE: Compiled PDFs passed treatment and physical-blur preparation, live overlay, centre/third dodge, post-placement clearance across accepted font units and title-page margins, exact-fit comparison, image-only title, named upper/lower physical-page overflow and no-cover preservation assertions.
 :END:
 
-- Criterion :: [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]], [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]] and [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
+- Criterion :: [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]], [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]], [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[file:spec.org::#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
 - Runs :: 2026-11-07: intended RED for image treatment and physical blur, live overlay, centre/third dodge, exact and 0.1pt-over fit boundaries, and separately named long upper/lower groups; no-cover conversion remained GREEN without manufacturing a failure.
 - Runs :: 2026-11-07 at =2b9e0b3=: GREEN through the real Typst compiler.
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; increasing padding from =50mm= to =60mm= moved each clamped group by the full =10mm= while image geometry remained unchanged.
 - Runs :: 2026-11-07 at =22a3961=: GREEN; =1em= with a =10mm= root font matched explicit =10mm= dodge placement after remediation of the self-review finding.
 - Runs :: 2026-11-07 at =d31304e=: GREEN; both =1em= and =5mm= rendered the reported =210mm= square-image geometry using margin space without altering raw centre/third placement.
+- Runs :: 2026-11-07 at =38ca459=: GREEN; bottom-centre author worked with and without a cover, stayed aligned with date/version across padding changes, and retained its configured prefix.
+- Runs :: 2026-11-07 at =e81826b=: GREEN; the added overlay-cover path compiled and retained the date/author/version left/centre/right row.
 
 ** GREEN RT073.3 - Superscale invocation and fallback are deterministic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-073-3-result
-:REVISION: d31304e3b969bd485bd1a56169274293b1dfa885
+:REVISION: e81826b464e7f64b2fac03e0bd177c165030758b
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
 :EVIDENCE: Null, missing, non-zero, unusable, default, 2x, 4x and 8x cases passed exact argv, selected-pixel, fallback-warning and cleanup assertions; process interruption returned a named error and removed temporary output.
 :END:
@@ -97,6 +104,8 @@
 - Runs :: 2026-11-07 at =85bb4da=: GREEN; unchanged deterministic Superscale and cleanup cases passed after the amendment.
 - Runs :: 2026-11-07 at =22a3961=: GREEN after cross-unit padding remediation; deterministic Superscale and cleanup assertions passed.
 - Runs :: 2026-11-07 at =d31304e=: GREEN; deterministic Superscale and cleanup assertions remain unchanged and passing.
+- Runs :: 2026-11-07 at =38ca459=: GREEN; deterministic Superscale and cleanup assertions remain unchanged and passing.
+- Runs :: 2026-11-07 at =e81826b=: GREEN; deterministic Superscale and cleanup assertions remain unchanged and passing.
 
 * Delivery checks
 
@@ -107,6 +116,13 @@
 - 2026-11-07 at =d31304e=: =make test= GREEN; =internal/app= completed in =421.178s= and =internal/manuscript= in =106.398s=; every remaining package passed or was validly cached.
 - 2026-11-07 at =d31304e=: =make lint= GREEN.
 - 2026-11-07 at =d31304e=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
+- 2026-11-07 at =38ca459=: the corrected local =script.yaml= resolved =folio.title-page.author.position= to =bottom-center= with no nested =title.author= value; the exact =i-speak-vladimir.org= source produced a =26=-page A4 PDF through a temporary repository build. Extracted page-one text placed =28 October 2026= left, =by GP Writers' Room= centre and =v0.8= right on the same bottom row.
+- 2026-11-07 at =38ca459=: =make test= GREEN; =internal/app= completed in =419.809s= and =internal/manuscript= in =103.036s=; every remaining package passed or was validly cached.
+- 2026-11-07 at =38ca459=: =make lint= GREEN.
+- 2026-11-07 at =38ca459=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
+- 2026-11-07 at =e81826b=: =make test= GREEN; =internal/app= completed in =415.777s= and every remaining package passed or was validly cached.
+- 2026-11-07 at =e81826b=: =make lint= GREEN.
+- 2026-11-07 at =e81826b=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
 
 * User tests
 
@@ -116,5 +132,6 @@
 :REASON: Representative PDF outputs are ready; human inspection in the normal PDF reader remains required before user acceptance.
 :END:
 
-- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]] and [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
+- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]], [[file:spec.org::#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[file:spec.org::#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
 - Method :: User validation in the normal PDF reader.
+- Observation :: 2026-11-07: the operator inspected the corrected =i-speak-vladimir.org= output and reported that the bottom-row result looked much better. Full W073 visual acceptance remains AMBER until the operator accepts the complete UT scope.
