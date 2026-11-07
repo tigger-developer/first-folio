@@ -416,3 +416,36 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "The visual user test remains AMBER for operator review."
       - "W074 DOCX and W075 ODT rendering remain out of scope."
+  - id: test-code-c1-r4
+    timestamp: "2026-11-07T16:56:12Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 4
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "2b9e0b3ab522032c370d846527547bbcdf69fe86"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, ORG-SCHEMA.md, GO.md, REVIEW.md and SELF-AUDIT.md as deployed on 2026-11-07"
+      - "Approved W073 PDF-only acceptance criteria and test definitions at 2b9e0b3ab522032c370d846527547bbcdf69fe86"
+      - "Test-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "Round 3 was invalidated by adding the previously missing interruption and temporary-directory cleanup case to RT073.3 - Superscale invocation and fallback are deterministic."
+      - "The exact new interruption test applied to pre-implementation revision a9c8556 exited 1 with intended RED because prepareCoverForRender did not exist."
+      - "At candidate 2b9e0b3, go test ./internal/app -run '^TestRT073_3' -count=1 -timeout=2m passes and observes process interruption, a named error and removal of folio-cover temporary output."
+      - "The complete focused RT and AT commands pass at the candidate, including all earlier configuration, physical geometry, publication and fallback coverage."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The visual user test remains AMBER for operator review."
+      - "W074 DOCX and W075 ODT rendering remain out of scope."
