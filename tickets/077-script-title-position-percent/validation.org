@@ -39,3 +39,10 @@
 :CUSTOM_ID: ut-077-1-result
 :REASON: Requires operator inspection of the regenerated Aisle Seats title page in the normal PDF reader.
 :END:
+
+* Delivery checks
+
+- 2026-11-07 at =89bc5fa=: =make test= GREEN; =internal/app= completed in =418.613s= and every remaining package passed or was validly cached.
+- 2026-11-07 at =89bc5fa=: =make lint= GREEN.
+- 2026-11-07 at =89bc5fa=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
+- 2026-11-07 at =89bc5fa=: =git diff --check= GREEN and the worktree was clean.
