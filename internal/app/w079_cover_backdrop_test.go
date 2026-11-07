@@ -46,7 +46,18 @@ func TestRT079_1BackdropImagePreparationBoundsCropAndDoesNotUpscale(t *testing.T
 			if plan.OriginalSourcePath != cover {
 				t.Fatalf("original source = %q, want %q", plan.OriginalSourcePath, cover)
 			}
-			backdrop := decodeW073PNG(t, plan.BackdropPath)
+			if filepath.Ext(plan.BackdropPath) != ".jpg" {
+				t.Fatalf("backdrop path = %q, want a .jpg derivative", plan.BackdropPath)
+			}
+			_, _, backdropFormat, err := coverDecodeConfig(plan.BackdropPath)
+			if err != nil || backdropFormat != "jpeg" {
+				t.Fatalf("backdrop format = %q, %v; want jpeg", backdropFormat, err)
+			}
+			_, _, sharpFormat, err := coverDecodeConfig(plan.SourcePath)
+			if err != nil || sharpFormat != "png" {
+				t.Fatalf("sharp inset format = %q, %v; want png", sharpFormat, err)
+			}
+			backdrop := decodeW079Image(t, plan.BackdropPath)
 			bounds := backdrop.Bounds()
 			longest := maxInt(bounds.Dx(), bounds.Dy())
 			if longest > 512 || longest != tc.wantMax {
@@ -148,7 +159,14 @@ func TestRT079_1BackdropDerivativeUsesOriginalRatherThanSelectedSharpAsset(t *te
 	if variants.BackdropPath == "" {
 		t.Fatal("image backdrop derivative was not produced")
 	}
-	img := decodeW073PNG(t, variants.BackdropPath)
+	if filepath.Ext(variants.BackdropPath) != ".jpg" {
+		t.Fatalf("backdrop path = %q, want a .jpg derivative", variants.BackdropPath)
+	}
+	_, _, format, err := coverDecodeConfig(variants.BackdropPath)
+	if err != nil || format != "jpeg" {
+		t.Fatalf("backdrop format = %q, %v; want jpeg", format, err)
+	}
+	img := decodeW079Image(t, variants.BackdropPath)
 	r, g, b, a := img.At(img.Bounds().Dx()/2, img.Bounds().Dy()/2).RGBA()
 	if int(r>>8) < 52 || int(r>>8) > 64 || int(g>>8) > 8 || int(b>>8) < 30 || int(b>>8) > 42 || a>>8 != 255 {
 		t.Fatalf("backdrop centre rgba(%d,%d,%d,%d) does not reflect original transparent source with dark 50%% treatment", r>>8, g>>8, b>>8, a>>8)
@@ -266,6 +284,20 @@ func writeW079NRGBAPNG(t *testing.T, path string, width, height int, fill color.
 	if err := file.Close(); err != nil {
 		t.Fatal(err)
 	}
+}
+
+func decodeW079Image(t *testing.T, path string) image.Image {
+	t.Helper()
+	file, err := os.Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+	img, _, err := image.Decode(file)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return img
 }
 
 func w079PDFTextColour(t *testing.T, pdf, marker string) string {
