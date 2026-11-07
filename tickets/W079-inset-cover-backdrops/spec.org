@@ -1,0 +1,380 @@
+#+TITLE: W079 - Add inset cover title-page backdrops
+#+SCHEMA: 11
+#+SUBTITLE: Unified change specification
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: PENDING
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- A script PDF with an inset cover can place that sharp inset over a *full-bleed solid or blurred-image backdrop*.
+
+** Before
+
+- An inset cover leaves the remaining title page on the default white background, producing a *hard visual edge* around some artwork.
+
+** After
+
+- =folio.cover-image.backdrop.mode= selects *none, image or solid*.
+- A light backdrop treatment uses *black title-page text*; a dark treatment uses *white title-page text*.
+
+** Changes
+
+- Image mode centre-crops, downsamples, blurs and stretches the same cover image behind the sharp inset.
+- Solid mode fills the page with an exact six-digit hexadecimal colour.
+
+** Unchanged
+
+- The *sharp inset, its placement and Superscale path* remain unchanged.
+- Background-cover mode, compact titles, DOCX, ODT, manuscripts and letters remain outside this PDF-first change.
+
+** Edge cases
+:PROPERTIES:
+:CUSTOM_ID: synopsis-edge-cases
+:END:
+
+- Invalid mode-specific fields *name the complete configuration path and publish no target*.
+- The existing overlay wash remains the *more specific text treatment* inside overlay regions.
+
+** Decisions
+
+- Backdrop selection uses an *enum, not a boolean*, because image and solid are distinct mutually exclusive sources.
+- Contrast is *explicit*, not inferred from image luminance or colour.
+
+** Next step
+
+- Definition review, then operator sign-off as described in [[#delivery-handoff][Delivery Handoff]].
+
+-----
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+
+Inset artwork preserves its full aspect ratio, but the white page around it can clash with the image background and make the inset boundary visually abrupt.
+
+** Outcome
+
+A script author can select a coordinated full-page backdrop without replacing the sharp inset or giving up live title-page text.
+
+** Scope
+
+*** In scope
+
+- Dedicated script title pages rendered by =folio convert= to PDF.
+- Blurred full-bleed backdrops derived from the configured inset image.
+- Exact solid-colour backdrops.
+- Explicit light/dark wash treatment and consistent title-page text contrast.
+- YAML and dotted Org configuration through the existing cascade.
+
+*** Out of scope
+
+- Separate backdrop image paths, gradients, automatic colour sampling or luminance detection.
+- Changes to background-cover mode or the sharp inset's sizing, overlay/dodge placement and Superscale behaviour.
+- Standalone Typst, DOCX, ODT, compact script titles, manuscripts and letters.
+
+*** Unchanged
+
+- Existing cover source limits, source-relative path resolution, temporary-file cleanup and atomic PDF publication.
+- Absence of the backdrop block selects the current inset route.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]]
+- Product authority :: [[file:../../docs/config.md::#script-pdf-cover-images-foliocover-image][Script PDF cover images]]
+- Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Project architecture]]
+- Historical requirement :: [[file:../073-script-title-image-pdf/spec.org][W073 - Add script title-page images to PDF output]]
+- Current implementation fact :: =internal/config/cover_image.go= owns the strict typed block; =internal/app/cover_image.go= owns image preparation; =internal/app/script_render.go= and =templates/script.typ= project the plan into PDF.
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+
+- The implementation uses Go's existing image pipeline and Typst projection; it adds *no external image dependency or process*.
+- Delivery requires current D078 source-precedence behaviour so YAML and dotted Org values resolve consistently.
+
+** Decisions
+
+- The backdrop contract is nested under =folio.cover-image= because it reuses the configured cover asset and remains unavailable without an inset cover.
+- =backdrop.wash.treatment= reuses the existing =light=/=dark= semantics rather than adding another contrast vocabulary.
+
+** Unresolved blockers
+
+- None.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC079.1 - Image backdrop softens an inset cover :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-079-1
+:END:
+
+- Criterion :: Given an inset cover with =backdrop.mode: image=, the PDF title page contains a *sharp, unchanged inset* over a *full-bleed centre-cropped blurred derivative* of the same source image.
+- Proven by :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]], [[#at-079-1][AT079.1 - Rendered inset backdrops follow the PDF contract]] and [[#ut-079-1][UT079.1 - Inset backdrop composition is visually acceptable]].
+
+** AC079.2 - Solid backdrop uses the configured colour :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-079-2
+:END:
+
+- Criterion :: Given an inset cover with =backdrop.mode: solid=, a valid colour and =wash.opacity: 0%=, the PDF title page background is *exactly that colour* behind the sharp inset and live text. A non-zero wash modifies it only by the configured light or dark wash.
+- Proven by :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]], [[#at-079-1][AT079.1 - Rendered inset backdrops follow the PDF contract]] and [[#ut-079-1][UT079.1 - Inset backdrop composition is visually acceptable]].
+
+** AC079.3 - Treatment selects predictable text contrast :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-079-3
+:END:
+
+- Criterion :: Given a light backdrop wash, title-page text outside a more specific overlay region is *black*; given a dark backdrop wash, it is *white*.
+- Specificity :: Existing =overlay.wash.treatment= remains authoritative for text inside its padded overlay regions; backdrop treatment controls dodge text and title-page text outside those regions.
+- Proven by :: [[#rt-079-2][RT079.2 - Backdrop and overlay treatments resolve by region]], [[#at-079-1][AT079.1 - Rendered inset backdrops follow the PDF contract]] and [[#ut-079-1][UT079.1 - Inset backdrop composition is visually acceptable]].
+
+** AC079.4 - Invalid backdrop configuration fails atomically :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-079-4
+:END:
+
+- Criterion :: Given an unknown key, invalid colour, unsupported mode, missing required field or field forbidden for the selected mode, conversion *reports the complete =folio.cover-image.backdrop= path and leaves any target absent or unchanged*.
+- Proven by :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]] and [[#at-079-2][AT079.2 - Invalid backdrop input preserves the target]].
+
+** AC079.5 - Existing cover routes remain compatible :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-079-5
+:END:
+
+- Criterion :: Given no backdrop block, existing inset and background-cover PDFs retain their current composition. A backdrop configured for a non-inset or unsupported output remains an explicit error rather than being ignored.
+- Proven by :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]] and [[#at-079-2][AT079.2 - Invalid backdrop input preserves the target]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT079.1 - Backdrop configuration and image preparation remain deterministic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-079-1
+:END:
+
+- Covers :: [[#ac-079-1][AC079.1 - Image backdrop softens an inset cover]], [[#ac-079-2][AC079.2 - Solid backdrop uses the configured colour]], [[#ac-079-4][AC079.4 - Invalid backdrop configuration fails atomically]] and [[#ac-079-5][AC079.5 - Existing cover routes remain compatible]].
+- Boundary :: Typed configuration loading and the Go cover preparation pipeline.
+- Setup :: Valid image, solid and absent-backdrop cases plus named strict-key, mode, colour, blur and mapping boundary cases.
+- Action :: Load each configuration and prepare variants from a small patterned PNG.
+- Expected :: Valid cases resolve the exact contract below. Image mode produces one full-page-aspect derivative whose longest pixel axis is at most =512= without upscaling a smaller source; solid mode produces no derivative; inactive mode-specific values may remain from lower layers without affecting output; invalid active values name the full path; absent-backdrop output matches the established plan.
+- Retention :: Persistent regression suite under =make test=.
+
+** RT079.2 - Backdrop and overlay treatments resolve by region :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-079-2
+:END:
+
+- Covers :: [[#ac-079-3][AC079.3 - Treatment selects predictable text contrast]].
+- Boundary :: Runtime template data and compiled script PDF text colour.
+- Setup :: Dodge and overlay inset fixtures cover light/dark backdrop treatment; overlay fixtures use the opposite overlay treatment.
+- Action :: Render the fixtures and inspect title, subtitle and bottom-row text colour at their actual PDF bounds.
+- Expected :: Backdrop light produces black and backdrop dark produces white outside overlay regions. Inside overlay regions, the existing overlay treatment produces its corresponding opposite result.
+- Retention :: Persistent regression suite under =make test=.
+
+** AT079.1 - Rendered inset backdrops follow the PDF contract :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-079-1
+:END:
+
+- Covers :: [[#ac-079-1][AC079.1 - Image backdrop softens an inset cover]], [[#ac-079-2][AC079.2 - Solid backdrop uses the configured colour]] and [[#ac-079-3][AC079.3 - Treatment selects predictable text contrast]].
+- Boundary :: Temporary built =folio= executable, Typst compilation and rasterized page-one PDF output.
+- Setup :: One sharp patterned inset with image backdrop and one with solid =#2a2524= backdrop at =wash.opacity: 0%=; both retain live title and footer text.
+- Action :: Convert both fixtures, rasterize page one and measure the page corners, inset centre, backdrop variation and text colours.
+- Expected :: Image mode fills every page edge with a visibly smoothed derivative while the inset retains sharp pattern boundaries. Solid corners match the configured RGB value within rasterization tolerance. Light/dark text follows [[#ac-079-3][AC079.3 - Treatment selects predictable text contrast]].
+- Retention :: Ticket-specific evidence; not part of the persistent regression suite.
+
+** AT079.2 - Invalid backdrop input preserves the target :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-079-2
+:END:
+
+- Covers :: [[#ac-079-4][AC079.4 - Invalid backdrop configuration fails atomically]] and [[#ac-079-5][AC079.5 - Existing cover routes remain compatible]].
+- Boundary :: Public =folio convert= command and target publication.
+- Setup :: A sentinel target and cases for backdrop on background-cover mode, solid without colour, malformed active colour, invalid active image blur, unknown nested key and unsupported output.
+- Action :: Invoke conversion once per case.
+- Expected :: Every invocation exits non-zero, names the complete offending field and preserves the sentinel target byte for byte.
+- Retention :: Ticket-specific evidence; not part of the persistent regression suite.
+
+** UT079.1 - Inset backdrop composition is visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-079-1
+:END:
+
+- Covers :: [[#ac-079-1][AC079.1 - Image backdrop softens an inset cover]], [[#ac-079-2][AC079.2 - Solid backdrop uses the configured colour]] and [[#ac-079-3][AC079.3 - Treatment selects predictable text contrast]].
+- Validation method :: User validation in the normal PDF reader.
+- Procedure :: Render one real inset cover with an image backdrop and one with a solid backdrop; inspect the full page, inset boundary, title group and bottom metadata row at normal and enlarged view.
+- Expected :: The backdrop reduces the hard inset edge without making the inset look soft; live text remains readable and uses the selected light/dark contrast.
+- Record :: Write the dated result to =validation.org=.
+
+* Edge Cases
+:PROPERTIES:
+:CUSTOM_ID: edge-cases
+:END:
+
+** Transparent or treated source image
+
+- Condition :: The inset source contains transparency or uses =image.opacity= and =image.treatment=.
+- Required behaviour :: The sharp inset retains its existing treatment. Image backdrop derivation uses the original bounded cover pixels, applies the same image treatment, then crops, downsamples and blurs independently; no transparent page area or uninitialized pixels remain.
+- Covered by :: [[#ac-079-1][AC079.1 - Image backdrop softens an inset cover]] and [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]].
+
+** Small source image
+
+- Condition :: The centre-cropped source is already below the =512=-pixel longest-axis ceiling.
+- Required behaviour :: Backdrop preparation does not upscale it; the renderer stretches the blurred derivative full bleed. Superscale remains available only to the sharp inset path.
+- Covered by :: [[#ac-079-1][AC079.1 - Image backdrop softens an inset cover]] and [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]].
+
+** Overlay and backdrop treatments disagree
+
+- Condition :: An overlay inset uses a backdrop treatment and the opposite existing overlay wash treatment.
+- Required behaviour :: Overlay title/footer regions use the overlay treatment; all other title-page text uses the backdrop treatment.
+- Covered by :: [[#ac-079-3][AC079.3 - Treatment selects predictable text contrast]] and [[#rt-079-2][RT079.2 - Backdrop and overlay treatments resolve by region]].
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+
+- Relevant components :: =internal/config/cover_image.go= validates the strict public block; =internal/app/cover_image.go= plans and prepares image variants; =internal/app/script_render.go= creates escaped typed template data; =templates/script.typ= owns title-page composition.
+- Ownership boundary :: First Folio owns local preparation and PDF composition. Typst compiles the supplied assets; no external image service is involved.
+- Existing pattern :: Extend W073's typed plan and temporary variant directory rather than adding another renderer path.
+
+** High-level design
+
+*** Components and responsibilities
+
+- Configuration extends =CoverImage= with a typed backdrop value after strict nested validation.
+- Cover preparation derives an optional bounded PNG for image mode and reuses existing cleanup and publication failure paths.
+- Template data supplies backdrop mode, asset or colour, wash fill and default text fill without exposing source literals as Typst code.
+- The Typst title page paints the backdrop full bleed before placing the existing sharp inset and live text.
+
+*** Reuse, shared behaviour and variation
+
+- Shared operation :: Reuse existing cover decode, image treatment, blur, light/dark-to-text-fill resolver, source limits and atomic conversion.
+- Variation :: Image mode supplies a derived PNG; solid mode supplies a validated colour; none supplies no backdrop.
+
+*** Boundaries and dependencies
+
+- Only =mode: inset= accepts =backdrop=. Existing background-cover composition and unsupported consumers continue to reject irrelevant cover fields.
+- Use the standard library image packages already in the application. Add no dependency, subprocess or network boundary.
+
+*** Flow
+
+1. Load and validate the effective strict =folio.cover-image= block.
+2. Resolve and bound the original cover source as today.
+3. Prepare the sharp inset through the existing optional Superscale path.
+4. For image backdrop mode, independently treat the original source, centre-crop it to the physical page aspect, downsample it to at most =512= pixels on the longest axis without upscaling, and apply the configured physical blur.
+5. Render the backdrop full bleed, then the unchanged sharp inset and live text; publish through the existing atomic PDF route.
+
+*** Interfaces and configuration
+:PROPERTIES:
+:CUSTOM_ID: backdrop-yaml-contract
+:END:
+
+#+begin_src yaml
+folio:
+  cover-image:
+    path: artwork/cover.jpg
+    mode: inset
+    placement: dodge
+    size: 80mm
+    backdrop:
+      mode: image          # none | image | solid
+      image:
+        blur: 8mm          # positive mm; defaults to 8mm
+      solid:
+        color: "#2a2524"   # required when mode is solid
+      wash:
+        treatment: dark    # required: light gives black text; dark gives white
+        opacity: 25%       # 0%-100%; defaults to 0%
+#+end_src
+
+- Interface :: =backdrop= allows only =mode=, =image=, =solid= and =wash=; =image= allows only =blur=, =solid= allows only =color=, and =wash= allows only =treatment= and =opacity=.
+- Defaults :: An absent block is equivalent to =mode: none=. When a block is present, =mode= is required; image and solid modes also require =wash.treatment=. Wash opacity defaults to =0%=; image blur defaults to =8mm=.
+- Image mode :: =image.blur= must be a positive =mm= length. The =solid= branch is inactive.
+- Solid mode :: =solid.color= is required as exactly six hexadecimal digits prefixed by =#=. The =image= branch is inactive.
+- None mode :: All recognized sibling branches are inactive. It exists for explicit cascade override and has the same output as an absent block.
+- Cascade switching :: Inactive recognized branches may remain after recursive layer merging and are ignored. Every branch is still type-checked and unknown children still fail, but only the selected branch's values are semantically validated. This permits a higher layer to change or disable a lower backdrop without restating its complete mapping.
+- Compatibility :: Existing =overlay.wash= keeps its current contract and is more specific inside overlay regions. Backdrop wash controls the remaining title-page text and page-wide wash.
+- Org projection :: Every leaf path is included in the recognized dotted Org source configuration inventory.
+
+*** Data and state
+
+- The only new state is an optional prepared PNG inside the existing unique temporary cover directory. Existing cleanup removes it on success, failure or interruption.
+- Source images, configuration files and the installed application remain unchanged.
+
+*** Failure behaviour
+
+- Strict-key and combination errors identify the complete path before image preparation or target publication.
+- Decode, crop, resize, blur or temporary-file failures use the existing contextual cover-image error path and leave the target absent or unchanged.
+
+*** Simplicity and proportionality
+
+- One nested block and one optional derived asset cover both requested compositions. Reusing the existing pipeline avoids a second image path, automatic contrast heuristics and format-specific configuration.
+
+** Design decisions and verification
+
+*** Use an enum for backdrop selection
+
+- Decision :: =backdrop.mode= is =none=, =image= or =solid= rather than a boolean.
+- Rationale :: A boolean cannot distinguish the two requested backdrop sources without ambiguous secondary-field inference.
+- Verification :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]] covers every mode and illegal combination.
+
+*** Reuse explicit light and dark treatment
+
+- Decision :: =backdrop.wash.treatment= uses the existing light/black-text and dark/white-text mapping. Folio does not sample the image or colour to guess contrast.
+- Verification :: [[#rt-079-2][RT079.2 - Backdrop and overlay treatments resolve by region]] and [[#ut-079-1][UT079.1 - Inset backdrop composition is visually acceptable]].
+
+*** Keep the backdrop derivative deliberately small
+
+- Decision :: Centre-crop before downsampling, cap the longest axis at =512= pixels and never upscale a smaller source.
+- Rationale :: The derivative is intentionally blurred and stretched; a bounded raster avoids processing and embedding a second full-resolution image without reducing the sharp inset's quality.
+- Verification :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]] checks dimensions, crop aspect and smoothing; [[#at-079-1][AT079.1 - Rendered inset backdrops follow the PDF contract]] checks the rendered distinction between backdrop and inset.
+
+** Routine details left to implementation
+
+- Choose the standard-library resampling loop and internal field names within the specified crop order, =512=-pixel ceiling and output contract.
+- Select rasterization tolerances that account for PDF antialiasing while still distinguishing exact solid colour from the default white page.
+
+** Architecture impact
+
+*** Security impact
+
+- Threat boundary :: Unchanged local source image and configuration boundary.
+- Data and secrets :: No new data source, persistence, metadata or diagnostic content. Temporary assets retain private directory permissions and existing cleanup.
+- Access :: No network, authorization, executable lookup or expanded filesystem access.
+- Conclusion :: Existing cover source limits and atomic publication are sufficient; the derived image is smaller than the already bounded decoded source.
+
+*** Other relevant qualities
+
+- Performance :: The derivative ceiling bounds additional blur work and PDF asset size; Superscale is not invoked for the backdrop.
+- Maintainability :: One renderer-neutral typed backdrop value leaves later DOCX/ODT adoption possible without including it in W079.
+- Accessibility :: Explicit contrast selection is deterministic, but human visual validation remains required because treatment cannot guarantee contrast for every image at =0%= wash opacity.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Required reading :: [[file:../../docs/config.md::#script-pdf-cover-images-foliocover-image][cover-image configuration]], [[file:../073-script-title-image-pdf/spec.org][W073 cover-image design]], =internal/config/cover_image.go=, =internal/app/cover_image.go=, =internal/app/script_render.go= and =templates/script.typ=.
+- Entry conditions :: Explicit delivery authority after operator approval; D078 source-precedence delivery must have current passing evidence because W079's YAML/Org parity depends on it.
+- First implementation step :: Write [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]], [[#rt-079-2][RT079.2 - Backdrop and overlay treatments resolve by region]] and the permitted AT scaffolding, observe meaningful RED, then obtain the test-code review before implementation.
+- Definition evidence :: [[file:audits.yaml][=audits.yaml=]]
+- Validation evidence :: Create =validation.org= at delivery admission with one tagged result heading per defined test.
+- Documentation impact :: Update =docs/config.md=, =docs/ARCHITECTURE.md=, =README.md=, =presets/british.yaml= and =examples/script.yaml.example= with the exact backdrop contract and PDF-only boundary.
