@@ -188,8 +188,8 @@ PDF and DOCX adoption would leave ODT inconsistent with the public script title-
 - Covers :: [[#ac-075-1][AC075.1 - ODT embeds proportional title images]], [[#ac-075-2][AC075.2 - ODT overlay remains legible and editable]], [[#ac-075-3][AC075.3 - ODT dodge separates text and inset]] and [[#ac-075-5][AC075.5 - ODT packages remain conforming]].
 - Boundary :: Built =folio convert= command and resulting native ODT packages.
 - Setup :: Use the W073 measured-image fixtures for A4 background cropping, both explicit inset examples, light and dark overlay, and both dodge positions.
-- Action :: Convert each fixture, validate the ODF package with the project's supported package checks, then render title pages with the available local office renderer for measured comparison.
-- Expected :: Public conversion embeds the correct asset and produces the expected physical geometry, text grouping, contrast and non-overlap within documented office tolerance; no package requires repair or the original image file.
+- Action :: Convert each fixture, validate the ODF package with the project's supported package checks, render it to PDF with isolated-profile =soffice --headless --convert-to pdf:writer_pdf_Export=, then measure the PDF and rasterized title page.
+- Expected :: Public conversion embeds the correct asset; image and padded-region boundaries are within =2mm= of the shared plan, aspect-ratio error is below =1%=, text grouping and contrast are correct, and dodge text does not overlap the image; no package requires repair or the original image file.
 - Retention :: Ticket-specific evidence; not part of the persistent regression suite.
 
 ** AT075.2 - ODT publication is atomic :testdef:
@@ -309,7 +309,7 @@ PDF and DOCX adoption would leave ODT inconsistent with the public script title-
 ** Routine details left to implementation
 
 - ODF style names, frame names, picture filenames and manifest ordering may follow existing package conventions.
-- The exact documented office-renderer tolerance is selected during RED test construction from current no-image layout tolerances; it may not excuse wrong mode, aspect ratio, order or overlap.
+- Helper structure and raster sampling details may follow the existing isolated-profile office-render test conventions; the =2mm= geometry and =1%= aspect-ratio tolerances in AT075.1 remain fixed.
 
 ** Architecture impact
 

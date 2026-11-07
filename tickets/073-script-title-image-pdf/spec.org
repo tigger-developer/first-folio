@@ -238,7 +238,7 @@ folio:
 - Boundary :: Built =folio convert= command, compiled PDF and rasterized first page.
 - Setup :: Synthetic images contain measured corner and centre markers; script fixtures exercise A4 background cropping, both inset aspect-ratio examples, light and dark overlay treatment, and dodge at both relative vertical positions.
 - Action :: Produce PDFs, inspect page and image geometry programmatically, rasterize title pages and sample the known image, wash and text-region markers.
-- Expected :: Page coverage, centred crop, inset dimensions, relative placement, non-overlap, contrasting text, padding, blur and wash all match the configured values within documented renderer tolerance; later script pages match their controls.
+- Expected :: Page coverage, centred crop, inset dimensions, relative placement and padded region boundaries are within =0.5mm= of the plan; aspect-ratio error is below =0.1%=; text does not overlap a dodge image; contrasting text, localized blur and wash are present at the sampled markers; later script pages match their controls.
 - Retention :: Ticket-specific evidence; not part of the persistent regression suite.
 
 ** AT073.2 - Public conversion fails atomically for invalid image input :testdef:
