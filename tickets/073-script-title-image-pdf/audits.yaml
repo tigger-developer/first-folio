@@ -71,3 +71,36 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests or invoke Superscale."
       - "Standalone Typst, DOCX, ODT, manuscript and letter adoption remain outside W073 and reject configured covers until separately delivered."
+  - id: definition-c1-r3
+    timestamp: "2026-11-07T15:03:57Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 3
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "389baba136841e9ec97d161791a14601200109f4"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Definition criteria and authorities recorded for definition-c1-r2, unchanged on 2026-11-07"
+      - "Operator-approved separation of image treatment from wash treatment, with light meaning lighten and dark meaning darken"
+      - "Configuration clarity, independent opacity, contrast behaviour and downstream format consistency"
+    evidence:
+      - "tickets/073-script-title-image-pdf/spec.org at 389baba136841e9ec97d161791a14601200109f4"
+      - "folio.cover-image.image defines independent treatment and opacity; folio.cover-image.overlay.wash defines independent treatment and opacity"
+      - "The YAML table, AC073.3, RT073.1, AT073.1, transparent-image edge case, accessibility impact and renderer design use the same semantics"
+      - "Sixteen addressable AC/test records remain traced, all internal anchors resolve, sanitize proposed no changes and git diff --check passed"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
+      - "Visual contrast remains subject to UT073.1 because source imagery and selected opacity vary."

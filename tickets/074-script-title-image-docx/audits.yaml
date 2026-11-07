@@ -68,3 +68,34 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
       - "Delivery depends on W073's implemented top-level model, process result and unchanged configuration contract."
+  - id: definition-c1-r3
+    timestamp: "2026-11-07T15:03:57Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 3
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "389baba136841e9ec97d161791a14601200109f4"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Definition criteria and authorities recorded for definition-c1-r2, unchanged on 2026-11-07"
+      - "W073 independent image/wash treatment contract and native editable DOCX projection"
+    evidence:
+      - "tickets/074-script-title-image-docx/spec.org at 389baba136841e9ec97d161791a14601200109f4"
+      - "Scope, AC074.2, shared responsibilities and overlay layering consistently preserve independent treatment semantics"
+      - "Ten addressable AC/test records remain traced, all internal anchors resolve, sanitize proposed no changes and git diff --check passed"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
+      - "Delivery depends on the W073 contract remaining unchanged."
