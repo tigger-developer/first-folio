@@ -9,7 +9,9 @@
 ** GREEN RT078.1 - Supported source configuration follows one cascade :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-078-1-result
-:EVIDENCE: Focused shared-loader, application and manuscript tests pass after source-over-local ordering and Markdown script extraction. Full-suite evidence is pending.
+:REVISION: 36312ffbbbcf6e1e4632dda19a5a44cdadfc4460
+:COMMAND: make test
+:EVIDENCE: Focused shared-loader, application and manuscript tests pass after source-over-local ordering and Markdown script extraction. The complete suite passed after reconciling stale local-over-source expectations.
 :END:
 
 - RED 2026-11-07 :: Shared-loader script and manuscript cases resolved local =10mm= instead of source =20mm=. Org and Markdown script conversions retained a locally enabled character table. Manuscript rendered local page/font/style values, and local configuration repaired an invalid source value.
@@ -24,6 +26,8 @@
 ** GREEN AT078.1 - Public commands honour source-over-local precedence :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-078-1-result
+:REVISION: 36312ffbbbcf6e1e4632dda19a5a44cdadfc4460
+:COMMAND: Build a temporary folio executable, run the Org and Markdown convert fixtures and both manuscript dry-run style cases defined in AT078.1.
 :EVIDENCE: A temporary Mach-O arm64 folio build converted equivalent Org and Markdown scripts with source character-table false over local true; both outputs omitted the cast marker and configuration declarations. Manuscript dry-run selected source style us, then explicit CLI style british.
 :END:
 
@@ -36,6 +40,7 @@
 ** GREEN OT078.1 - Aisle Seats uses its Org title position :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ot-078-1-result
+:REVISION: 36312ffbbbcf6e1e4632dda19a5a44cdadfc4460
 :EVIDENCE: The current Org source value 60% overrode the nearest local YAML value 10%. A temporary repository conversion produced a 16-page A4 PDF with title y=522.164pt and subtitle y=601.056pt on page one.
 :END:
 
@@ -53,4 +58,8 @@
 
 * Delivery checks
 
-- Full regression rerun, lint, vulnerability and delivery-code readiness checks are pending.
+- 2026-11-07 at =df13a5b=: =make test= GREEN; =internal/app= completed in =407.446s= and every remaining package passed or was validly cached.
+- 2026-11-07 at =6190f98=: =make lint= GREEN.
+- 2026-11-07 at =6190f98=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
+- 2026-11-07 at =6190f98=: =git diff --check= GREEN and the worktree was clean before this evidence update.
+- Delivery-code readiness and self-audit are pending.
