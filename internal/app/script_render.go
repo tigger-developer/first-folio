@@ -146,6 +146,7 @@ type scriptTemplateData struct {
 	FrontmatterFont                                    typstFontData
 	FrontmatterParagraphFont                           typstFontData
 	HasTitle, HasSubtitle, HasAuthor                   bool
+	AuthorGrouped, AuthorBottom, HasFooter             bool
 	TitlePageEnabled, TitlePageNumber                  bool
 	TitleSkipHeader, TitleSkipFooter                   bool
 	Title, Subtitle, Author, AuthorPrefixInline        string
@@ -307,6 +308,15 @@ func newScriptTemplateDataWithCover(doc play.Document, cfg config.Config, format
 	}
 	data.AuthorPrefixInline, data.AuthorPrefixLines = authorPrefix(cfg.String("folio.title-page.author.prefix", ""))
 	data.HasTitle, data.HasSubtitle, data.HasAuthor = data.Title != "", data.Subtitle != "", data.Author != ""
+	authorPosition := cfg.String("folio.title-page.author.position", "group")
+	if authorPosition != "group" && authorPosition != "bottom-center" {
+		return scriptTemplateData{}, fmt.Errorf("folio.title-page.author.position must be group or bottom-center; got %q", authorPosition)
+	}
+	if authorPosition == "bottom-center" && !data.TitlePageEnabled {
+		return scriptTemplateData{}, fmt.Errorf("folio.title-page.author.position bottom-center requires folio.title-page.enabled true")
+	}
+	data.AuthorGrouped = data.HasAuthor && authorPosition == "group"
+	data.AuthorBottom = data.HasAuthor && authorPosition == "bottom-center"
 	data.SpeakerContent = caseExpression(cfg.String("folio.positioning.speech.speaker.case-transform", "upper"), escapeTypstContent(cfg.String("folio.positioning.speech.speaker.prefix", ""))+"#name"+escapeTypstContent(cfg.String("folio.positioning.speech.speaker.suffix", ":")))
 	data.ActOpen, data.ActClose = caseDelimiters(cfg.String("folio.positioning.act-header.case-transform", "as-written"))
 	data.SceneOpen, data.SceneClose = caseDelimiters(cfg.String("folio.positioning.scene-header.case-transform", "as-written"))
@@ -315,6 +325,7 @@ func newScriptTemplateDataWithCover(doc play.Document, cfg config.Config, format
 		data.TitleOffset = "40%"
 	}
 	data.FooterLeft, data.FooterRight = titleFooter(doc, cfg, data.DateFont, data.VersionFont)
+	data.HasFooter = data.FooterLeft != "" || data.AuthorBottom || data.FooterRight != ""
 	data.Body = renderPlayBody(doc, cfg, format)
 	if cover != nil {
 		data.Cover = scriptCoverTemplateData(cover, data, cfg)
@@ -349,7 +360,7 @@ func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, cfg 
 		FooterPadding: coverPadding(plan.Config.OverlayPadding, footerFontSize(data)), DodgeFactor: factor,
 		DodgePadding: coverPadding(plan.Config.DodgePadding, rootFontPoints),
 		HasUpper:     data.HasTitle || data.HasSubtitle,
-		HasLower:     data.HasAuthor || data.FooterLeft != "" || data.FooterRight != "",
+		HasLower:     data.AuthorGrouped,
 		HasBlur:      plan.Config.OverlayBlur != "0mm",
 	}
 }
@@ -360,7 +371,7 @@ func populatedFontSize(data scriptTemplateData) float64 {
 	for _, item := range []struct {
 		present bool
 		size    string
-	}{{data.HasTitle, data.TitleFont.Size}, {data.HasSubtitle, data.SubtitleFont.Size}, {data.HasAuthor, data.AuthorFont.Size}} {
+	}{{data.HasTitle, data.TitleFont.Size}, {data.HasSubtitle, data.SubtitleFont.Size}, {data.AuthorGrouped, data.AuthorFont.Size}} {
 		if value := typstPoints(item.size, root); item.present && value > maximum {
 			maximum = value
 		}
@@ -375,6 +386,9 @@ func footerFontSize(data scriptTemplateData) float64 {
 	root := typstPoints(data.RootFont.Size, 11)
 	maximum := typstPoints(data.DateFont.Size, root)
 	if value := typstPoints(data.VersionFont.Size, root); value > maximum {
+		maximum = value
+	}
+	if value := typstPoints(data.AuthorFont.Size, root); data.AuthorBottom && value > maximum {
 		maximum = value
 	}
 	return maximum

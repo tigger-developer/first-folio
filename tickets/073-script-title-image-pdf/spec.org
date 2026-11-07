@@ -6,6 +6,7 @@
 #+OPERATOR_SIGNOFF: APPROVED 2026-11-07
 #+OPERATOR_AMENDMENT: APPROVED 2026-11-07 dodge image clearance
 #+OPERATOR_AMENDMENT: APPROVED 2026-11-07 dodge clearance may use title-page margins
+#+OPERATOR_AMENDMENT: APPROVED 2026-11-07 bottom-centre author footer slot
 
 * Synopsis
 :PROPERTIES:
@@ -174,6 +175,15 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 - Default and failure :: The default is *=1em= resolved from =folio.font.size=*. Explicit positive =em= and =mm= values are accepted. The raw relative position remains margin-bounded, but a minimum clearance adjustment may move text into the title-page margin. Only a move beyond the *physical page edge* reports the named non-fitting group and publishes no target.
 - Proven by :: [[#rt-073-1][RT073.1 - Cover-image configuration, keys and source limits are validated]], [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
 
+** AC073.17 - Author can share an anchored bottom metadata row :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-17
+:END:
+
+- Criterion :: Given a dedicated script PDF title page, =folio.title-page.author.position= accepts =group= or =bottom-center= and defaults to =group=. =bottom-center= places the prefixed author between bottom-left date and bottom-right version in one anchored row.
+- Dodge independence :: The bottom metadata row retains its configured position when =dodge.padding= changes. If the inset plus clearance reaches the fixed row, conversion reports the lower layout conflict and publishes no target rather than moving the row.
+- Proven by :: [[#rt-073-1][RT073.1 - Cover-image configuration, keys and source limits are validated]], [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+
 ** AC073.6 - Source-relative cover paths resolve consistently :ac:
 :PROPERTIES:
 :CUSTOM_ID: ac-073-6
@@ -264,7 +274,7 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 :CUSTOM_ID: rt-073-1
 :END:
 
-- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]], [[#ac-073-15][AC073.15 - Source-image resource limits are enforced]] and [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
+- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]], [[#ac-073-15][AC073.15 - Source-image resource limits are enforced]], [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
 - Boundary :: *Configuration loading and renderer-neutral planning*.
 - Setup :: The table covers *both formats/modes/treatments*, percentage and length boundaries, dodge-padding defaults and units, all Superscale states, differing source/configuration/working directories, invalid combinations, and *unknown keys at every cover level*. Injected metadata covers *minimum, exact-limit and one-over-limit* cases without allocating boundary rasters.
 - Action :: *Load each configuration with its source path and build the plan*.
@@ -276,11 +286,11 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 :CUSTOM_ID: rt-073-2
 :END:
 
-- Covers :: [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[#ac-073-7][AC073.7 - No-cover output remains compatible]], [[#ac-073-13][AC073.13 - A cover can create an image-only title page]], [[#ac-073-14][AC073.14 - Dodge rejects text-region overflow]] and [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
+- Covers :: [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[#ac-073-7][AC073.7 - No-cover output remains compatible]], [[#ac-073-13][AC073.13 - A cover can create an image-only title page]], [[#ac-073-14][AC073.14 - Dodge rejects text-region overflow]], [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
 - Boundary :: *The internal Typst source and compiler used by public PDF conversion*.
 - Setup :: Fixtures cover *background/inset, overlay/dodge, both positions, absent roles, image-only, compact and no-cover routes*. Dodge includes *fitting, exact-height, =0.1pt= overflow, post-placement clearance, a =210mm= square inset using title-page margins and long upper/lower metadata* using actual fonts.
 - Action :: *Render and compile each PDF fixture*; separately publish the no-cover standalone Typst control.
-- Expected :: Generated PDF-intermediate Typst *places and measures image/text regions from the resolved plan*. Dodge calculates centre/third against the margin-bounded region and actual image edge, then enforces minimum clearance without shrinking that calculation region. A clearance adjustment may use title-page margin space; only the physical page edge is a failure boundary. Fitting and exact-height groups compile without overlap; post-clearance page overflow, over-height and long groups fail with the named upper/lower group before PDF publication. Overlay treatment remains localized, the image-only page creates no empty regions, and no-cover standalone Typst/compact routes remain unchanged.
+- Expected :: Generated PDF-intermediate Typst *places and measures image/text regions from the resolved plan*. Dodge calculates centre/third against the margin-bounded region and actual image edge, then enforces minimum clearance without shrinking that calculation region. A clearance adjustment may use title-page margin space; only the physical page edge is a failure boundary. A bottom-centre author remains aligned with the independently anchored date/version row across padding changes; collision fails rather than moving that row. Fitting and exact-height groups compile without overlap; post-clearance page overflow, over-height and long groups fail with the named upper/lower group before PDF publication. Overlay treatment remains localized, the image-only page creates no empty regions, and no-cover standalone Typst/compact routes remain unchanged.
 - Retention :: Persistent regression suite under =make test=.
 
 ** RT073.3 - Superscale invocation and fallback are deterministic :testdef:
@@ -300,11 +310,11 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 :CUSTOM_ID: at-073-1
 :END:
 
-- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[#ac-073-13][AC073.13 - A cover can create an image-only title page]] and [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
+- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[#ac-073-13][AC073.13 - A cover can create an image-only title page]], [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
 - Boundary :: *Built =folio convert=, compiled PDF and rasterized title page*.
 - Setup :: Measured-marker images exercise *separated source/YAML/working paths, A4 crop, both inset examples, independent treatments, image-only output and both dodge positions*.
 - Action :: *Produce, measure and raster-sample PDFs* at image, wash and text-region markers.
-- Expected :: Geometry is *within =0.5mm=* and aspect-ratio error *below =0.1%=*; dodge retains its raw centre/third calculation unless minimum image clearance requires a smaller one-sided adjustment; contrasting text, localized blur/wash and unchanged later pages match controls.
+- Expected :: Geometry is *within =0.5mm=* and aspect-ratio error *below =0.1%=*; dodge retains its raw centre/third calculation unless minimum image clearance requires a smaller one-sided adjustment; a bottom-centre author stays aligned with date/version when padding changes; contrasting text, localized blur/wash and unchanged later pages match controls.
 - Retention :: Ticket-specific evidence; not part of the persistent regression suite.
 
 ** AT073.2 - Invalid and unsupported cover input fails atomically :testdef:
@@ -336,10 +346,10 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 :CUSTOM_ID: ut-073-1
 :END:
 
-- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]] and [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]].
+- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]], [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
 - Validation method :: *User validation in the normal PDF reader*.
 - Procedure :: Open *light/dark background overlays and portrait/landscape inset overlay/dodge PDFs*; where installed, compare one low-resolution source across null/default/=2x=/=4x=/=8x=; inspect composition, legibility, crop, padding, proportions and page two.
-- Expected :: Images remain *undistorted and intentionally composed*; Superscale changes detail but not geometry; overlays remain legible/localized; dodge remains balanced with *visible configured clearance* and unchanged centre/third intent; later pages remain unchanged.
+- Expected :: Images remain *undistorted and intentionally composed*; Superscale changes detail but not geometry; overlays remain legible/localized; dodge remains balanced with *visible configured clearance* and unchanged centre/third intent; bottom-centre author/date/version remain aligned and anchored; later pages remain unchanged.
 - Record :: Write the dated result to =validation.org=.
 
 * Edge Cases
@@ -442,6 +452,7 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 - Overlay treatment is *clipped to each equally padded occupied text region*: aligned blur, independent wash, then contrasting live text.
 - Dodge *centres the inset and divides the content rectangle at its actual image bounds*. Title/subtitle form the upper group; author/date/version form the lower group. =folio.title-page.title.position= applies within those unchanged regions; existing horizontal settings remain applicable.
 - Typst constructs each populated group as a width-constrained block using the *actual font, stretch, spacing and prefix configuration*, then uses =measure= before placement. It calculates the requested relative position first, then clamps only a violating edge to =image edge +/- dodge.padding=. The clamp does *not alter the region or relative-position factor*. It may place the adjusted group into the title-page margin; a group that crosses the physical page edge raises a deterministic upper/lower-group error. The application maps that marker to a cover-layout diagnostic and *does not replace the target PDF*.
+- Author position :: =folio.title-page.author.position= defaults to =group=. =bottom-center= removes the author from the movable title/dodge group and places its existing prefix and typography in the fixed centre slot of a three-column bottom metadata row. Date and version retain their configured left/right slots. The fixed row does not move with dodge padding; an image-clearance collision is a lower-group error.
 
 *** Interfaces and configuration
 
@@ -495,6 +506,7 @@ folio:
 - Sizing contract :: Background uses *proportional cover crop*. Inset applies =size= to the *longest axis*: =200 x 400= at =80mm= becomes =40mm x 80mm=; =1000 x 250= at =50mm= becomes =50mm x 12.5mm=.
 - Text-region contract :: Overlay uses *one populated title/subtitle/author region plus separate date/version regions*, never a full-width band. =em= resolves against the region's largest populated font.
 - Dodge contract :: The inset is *physically centred*; raw upper/lower regions are bounded by margins and the actual image. =center=/=third= apply *within each unchanged region*. =dodge.padding= is then enforced as a one-sided minimum clearance and *does not consume calculated space*. That minimum adjustment may use the title-page margins, with the physical page edge as its failure boundary; horizontal settings remain applicable. A non-empty =dodge= block is invalid for overlay placement.
+- Author footer contract :: =folio.title-page.author.position= accepts only =group= and =bottom-center= for dedicated script PDF title pages. =bottom-center= shares an anchored three-slot row with date and version and is independent of dodge displacement. Compact title mode rejects =bottom-center=.
 
 **** Source-image resource contract
 :PROPERTIES:

@@ -114,4 +114,7 @@ func TestRT073_1DodgePaddingIsAvailableToOrgSourceConfiguration(t *testing.T) {
 	if _, ok := paths["folio.cover-image.dodge.padding"]; !ok {
 		t.Fatal("folio.cover-image.dodge.padding is absent from Org source configuration paths")
 	}
+	if _, ok := paths["folio.title-page.author.position"]; !ok {
+		t.Fatal("folio.title-page.author.position is absent from Org source configuration paths")
+	}
 }

@@ -437,6 +437,102 @@ func TestRT073_2DodgeClearanceMayUseTitlePageMargins(t *testing.T) {
 	}
 }
 
+func TestRT073_2BottomCenterAuthorSharesAnchoredFooterRow(t *testing.T) {
+	requireW073Tools(t)
+	dir := t.TempDir()
+	t.Setenv("HOME", t.TempDir())
+	source := filepath.Join(dir, "play.org")
+	writeAppFile(t, source, "#+TITLE: Footer row\n#+AUTHOR: AUTHORCENTER\n#+DATE: DATELEFT\n#+VERSION: VERSIONRIGHT\n* ACT ONE\n**** CÁIT\nBody.\n")
+	writeW073PNG(t, filepath.Join(dir, "cover.png"), 976, 976, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+	type row struct {
+		author, date, version wordBoundsW073
+	}
+	render := func(padding string) row {
+		t.Helper()
+		target := filepath.Join(dir, "footer-row-"+padding+".pdf")
+		writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  margin: 25mm\n  title-page:\n    author:\n      position: bottom-center\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 180mm\n    dodge:\n      padding: "+padding+"\n")
+		status, _, stderr := runApp(t, "convert", source, target)
+		if status != 0 {
+			t.Fatalf("padding=%s status=%d stderr=%s", padding, status, stderr)
+		}
+		return row{
+			author:  w073WordBounds(t, target, "AUTHORCENTER"),
+			date:    w073WordBounds(t, target, "DATELEFT"),
+			version: w073WordBounds(t, target, "VERSIONRIGHT"),
+		}
+	}
+
+	small := render("1em")
+	large := render("15mm")
+	for name, pair := range map[string][2]wordBoundsW073{
+		"author": {small.author, large.author}, "date": {small.date, large.date}, "version": {small.version, large.version},
+	} {
+		if absoluteFloatW073(pair[0].yMin-pair[1].yMin) > 0.2 {
+			t.Errorf("%s moved with dodge padding: 1em=%#v 15mm=%#v", name, pair[0], pair[1])
+		}
+	}
+	if !(large.date.xMax < large.author.xMin && large.author.xMax < large.version.xMin) {
+		t.Fatalf("footer row is not left/centre/right: date=%#v author=%#v version=%#v", large.date, large.author, large.version)
+	}
+	if absoluteFloatW073(large.author.yMax-large.date.yMax) > 3 || absoluteFloatW073(large.author.yMax-large.version.yMax) > 3 {
+		t.Fatalf("footer row baselines are not aligned: date=%#v author=%#v version=%#v", large.date, large.author, large.version)
+	}
+	if text := w073PDFText(t, filepath.Join(dir, "footer-row-15mm.pdf")); !strings.Contains(text, "by AUTHORCENTER") {
+		t.Fatalf("bottom-center author prefix absent from PDF text: %q", text)
+	}
+
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  margin: 25mm\n  title-page:\n    author:\n      position: bottom-center\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 210mm\n    dodge:\n      padding: 20mm\n")
+	collisionTarget := filepath.Join(dir, "footer-row-collision.pdf")
+	status, _, stderr := runApp(t, "convert", source, collisionTarget)
+	if status == 0 || !strings.Contains(stderr, "lower") {
+		t.Fatalf("fixed footer collision status=%d stderr=%s", status, stderr)
+	}
+	if _, err := os.Stat(collisionTarget); !os.IsNotExist(err) {
+		t.Fatalf("fixed footer collision published target: %v", err)
+	}
+}
+
+func TestRT073_2BottomCenterAuthorWorksWithoutCover(t *testing.T) {
+	requireW073Tools(t)
+	dir := t.TempDir()
+	t.Setenv("HOME", t.TempDir())
+	source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "no-cover-footer-row.pdf")
+	writeAppFile(t, source, "#+TITLE: Footer row\n#+AUTHOR: AUTHORCENTER\n#+DATE: DATELEFT\n#+VERSION: VERSIONRIGHT\n* ACT ONE\n**** CÁIT\nBody.\n")
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n    author:\n      position: bottom-center\n")
+	status, _, stderr := runApp(t, "convert", source, target)
+	if status != 0 {
+		t.Fatalf("status=%d stderr=%s", status, stderr)
+	}
+	date := w073WordBounds(t, target, "DATELEFT")
+	author := w073WordBounds(t, target, "AUTHORCENTER")
+	version := w073WordBounds(t, target, "VERSIONRIGHT")
+	if !(date.xMax < author.xMin && author.xMax < version.xMin) {
+		t.Fatalf("no-cover footer row is not left/centre/right: date=%#v author=%#v version=%#v", date, author, version)
+	}
+}
+
+func TestRT073_1BottomCenterAuthorPositionIsValidated(t *testing.T) {
+	requireW073Tools(t)
+	for _, tc := range []struct {
+		name, position, extra string
+	}{
+		{"invalid value", "floating", ""},
+		{"compact title", "bottom-center", "    enabled: false\n"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Setenv("HOME", t.TempDir())
+			source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.pdf")
+			writeAppFile(t, source, "#+TITLE: Position\n#+AUTHOR: Author\n* ACT ONE\n**** CÁIT\nBody.\n")
+			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n"+tc.extra+"    author:\n      position: "+tc.position+"\n")
+			status, _, stderr := runApp(t, "convert", source, target)
+			if status == 0 || !strings.Contains(stderr, "folio.title-page.author.position") {
+				t.Fatalf("status=%d stderr=%s", status, stderr)
+			}
+		})
+	}
+}
+
 func TestRT073_3SuperscaleInvocationAndFallbackAreDeterministic(t *testing.T) {
 	requireW073Tools(t)
 	for _, tc := range []struct {

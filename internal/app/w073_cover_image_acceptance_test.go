@@ -191,6 +191,32 @@ func TestAT073_1RenderedPDFGeometryFollowsTheImageContract(t *testing.T) {
 			t.Fatalf("lower group did not use available page-margin space: page=%v image=%v lower=%#v", page.Bounds(), imageBox, lower)
 		}
 	})
+
+	t.Run("bottom-center author row ignores dodge displacement", func(t *testing.T) {
+		root, home := t.TempDir(), t.TempDir()
+		source := filepath.Join(root, "play.org")
+		writeAppFile(t, source, "#+TITLE: Footer row\n#+AUTHOR: AUTHORCENTER\n#+DATE: DATELEFT\n#+VERSION: VERSIONRIGHT\n* ACT ONE\n**** CÁIT\nBody.\n")
+		writeW073PNG(t, filepath.Join(root, "cover.png"), 976, 976, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+		render := func(padding string) [3]wordBoundsW073 {
+			t.Helper()
+			target := filepath.Join(root, "footer-row-"+padding+".pdf")
+			writeAppFile(t, filepath.Join(root, "script.yaml"), "folio:\n  margin: 25mm\n  title-page:\n    author:\n      position: bottom-center\n  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 180mm\n    dodge:\n      padding: "+padding+"\n")
+			_, diagnostic, err := officeRun(t, binary, t.TempDir(), officeEnv(t, home, nil), "convert", source, target)
+			if err != nil {
+				t.Fatalf("padding=%s conversion: %v: %s", padding, err, diagnostic)
+			}
+			return [3]wordBoundsW073{w073WordBounds(t, target, "DATELEFT"), w073WordBounds(t, target, "AUTHORCENTER"), w073WordBounds(t, target, "VERSIONRIGHT")}
+		}
+		small, large := render("1em"), render("15mm")
+		for i, name := range []string{"date", "author", "version"} {
+			if absoluteFloatW073(small[i].yMin-large[i].yMin) > 0.2 {
+				t.Errorf("%s moved with dodge padding: 1em=%#v 15mm=%#v", name, small[i], large[i])
+			}
+		}
+		if !(large[0].xMax < large[1].xMin && large[1].xMax < large[2].xMin) {
+			t.Fatalf("footer row is not left/centre/right: %#v", large)
+		}
+	})
 }
 
 func TestAT073_2InvalidAndUnsupportedCoverInputFailsAtomically(t *testing.T) {

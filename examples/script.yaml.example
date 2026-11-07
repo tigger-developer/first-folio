@@ -90,6 +90,7 @@
   #     space-before: 1em
   #   author:
   #     align: center
+  #     position: group          # group | bottom-center
   #     prefix: "by "
   #     space-before: 2em
   #   date:

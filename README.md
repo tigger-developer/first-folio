@@ -189,7 +189,7 @@ Dedicated script PDF title pages can use a source-relative PNG or JPEG through
 page; insets use a configured longest-axis size and support live title text as
 an overlay or in bounded regions above and below the image. Optional image
 treatment, localized blur, wash, overlay padding, post-placement dodge
-clearance and Superscale preprocessing are
+clearance, an optional bottom-centre author metadata slot and Superscale preprocessing are
 documented under [script PDF cover images](docs/config.md#script-pdf-cover-images-foliocover-image).
 DOCX, ODT, standalone Typst, compact script titles, manuscripts and letters
 reject this configuration until their separate format work is delivered.

@@ -127,7 +127,7 @@ Script layout is configured beneath `folio.title-page` and `folio.positioning`. 
 |---|---|
 | `folio.title-page.enabled` | Separate script title page (`true`); compact first-page title block (`false`) |
 | `folio.title-page.skip-header`, `folio.title-page.skip-footer` | Suppress corresponding running matter on the title/first page (both default `true`) |
-| `folio.title-page.{title,subtitle,author,date,version}` | Title-page alignment, typography, spacing, and footer position |
+| `folio.title-page.{title,subtitle,author,date,version}` | Title-page alignment, typography, spacing, and footer position; author supports `group` or `bottom-center` |
 | `folio.positioning.speech.space-before` | Space before a speech block |
 | `folio.positioning.speech.speaker` | Speaker alignment, weight, case, prefix, and suffix |
 | `folio.positioning.speech.speech-instruction` | Parenthetical placement, alignment, delimiters, and emphasis |
@@ -146,16 +146,18 @@ The effective CLI layout overrides are `--font`, `--font-size`, `--margin`, and 
 
 #### Script title and subtitle placement
 
-`folio.title-page.title.position` controls the vertical offset of the grouped
-script title, subtitle and author on a dedicated title page. The portable
-script value is `third`, which places the group after 30% preceding page space.
-Compact mode ignores this field because the title group joins the first content
-page.
+`folio.title-page.title.position` controls the vertical offset of script title
+metadata on a dedicated title page. With the default author `position: group`,
+ordinary and overlay pages keep title, subtitle and author together. The
+portable script value is `third`, which places that group after 30% preceding
+page space. Compact mode ignores this field because the title group joins the
+first content page.
 
 For an inset cover image with `placement: dodge`, W073 additionally recognizes
-`center`: the upper title/subtitle group and lower author/date/version group are
-centred within their respective available regions. `third` places each group
-one-third of the way through its available region. Use the exact spelling
+`center`: the upper title/subtitle group and a grouped lower author are centred
+within their respective available regions. Date, version and an optional
+bottom-centre author remain in their anchored metadata row. `third` places each
+movable group one-third of the way through its available region. Use the exact spelling
 `third` for script output. `one-third`, arbitrary percentages and lengths are
 manuscript chapter-position syntax, not script title-position syntax. Existing
 non-`third` values on an ordinary or overlay script title page retain the
@@ -239,6 +241,13 @@ a group that violates the clearance moves, and only by the required distance.
 The adjustment may use title-page margin space. A group that crosses the
 physical page edge is reported by name before the target is replaced. A
 non-empty `dodge` block is invalid with overlay placement.
+
+`folio.title-page.author.position` defaults to `group`. Set it to
+`bottom-center` on a dedicated script PDF title page to place the existing
+prefixed author between bottom-left date and bottom-right version. This
+three-slot row is anchored independently of dodge padding. If image clearance
+reaches the fixed row, conversion reports the lower layout conflict instead of
+moving the row. Compact title mode rejects `bottom-center`.
 
 The `cover-image` block rejects unknown nested keys and invalid combinations.
 It is incompatible with compact script title mode, standalone Typst, DOCX,
@@ -898,6 +907,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.43 (2026-11-07): Add an anchored bottom-centre author slot beside script date and version metadata.
 
 - 0.42 (2026-11-07): Allow post-placement dodge clearance to use title-page margins up to the physical page edge.
 

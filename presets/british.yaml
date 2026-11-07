@@ -109,6 +109,7 @@ folio:
 
     author:
       align: center
+      position: group                 # group | bottom-center; bottom-center joins date/version footer row.
       font:
         family: Libertinus Sans
         size: 12pt
