@@ -70,3 +70,41 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "The W079 target implementation does not yet exist; RED results approve the tests for implementation, not product behaviour."
       - "UT079.1 remains AMBER for operator inspection after delivery-code review."
+  - id: delivery-code-c1-r1
+    timestamp: "2026-11-07T23:41:30Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "1024b3e5c0368c728c8ad7f66f76c918fa8bc21c"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Approved W079 specification, solution design and acceptance criteria at 6190f98a63d012a724650bc08c5547308a098c37"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORGMODE.md, ORG-SCHEMA.md, SELF-AUDIT.md, REVIEW.md and project-selected Go standards as deployed on 2026-11-07"
+      - "Current project authorities README.md, docs/config.md, docs/ARCHITECTURE.md and existing W073 cover-image contracts"
+      - "Delivery-code readiness from the installed sdlc-validate command"
+    evidence:
+      - "The installed validator reported schema valid and delivery-code ready with all two RTs and two ATs GREEN, no OTs and UT079.1 correctly AMBER."
+      - "The strict typed block accepts only mode, image, solid and wash with strict nested keys; active modes validate exact semantics, recognized inactive branches remain cascade-safe, explicit none disables lower configuration and every leaf is recognized by dotted Org frontmatter."
+      - "Image mode independently decodes the original bounded cover source, applies the shared transparent-image treatment, centre-crops to the physical page aspect, downsamples with bilinear interpolation to a 512-pixel longest-axis ceiling without upscaling and applies physical blur. Superscale remains isolated to the sharp inset path."
+      - "Typed template data escapes the prepared asset basename and supplies validated solid colour, page-wide wash and text treatment. Typst paints the full-bleed backdrop before the unchanged inset; dodge text uses backdrop treatment and localized overlay regions retain the more specific overlay treatment."
+      - "The public convert boundary continues to reject covers outside PDF and now names folio.cover-image.backdrop for unsupported backdrop consumers. Invalid active fields fail before publication with complete paths, and temporary assets remain inside the existing uniquely created cleanup directory."
+      - "At 3dbf3724a6fb7017694cd572c81ec8222caece3f, the focused RT079 and built-executable AT079 commands were GREEN. make test was GREEN with internal/app in 413.135s and internal/manuscript in 101.586s; every remaining package passed or was validly cached."
+      - "At 3dbf3724a6fb7017694cd572c81ec8222caece3f, make lint and make vulncheck were GREEN; govulncheck reported no vulnerabilities and git diff --check was GREEN."
+      - "README.md, docs/config.md, docs/ARCHITECTURE.md, presets/british.yaml and examples/script.yaml.example document the exact PDF-only contract, cascade disablement, original-source derivative, 512-pixel ceiling, treatment precedence and dotted Org form. sanitize oed was run and unsafe proposals to rename public literals such as color and center were inspected and rejected."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT079.1 remains AMBER and requires operator inspection in the normal PDF reader."
+      - "The feature branch has not been merged, installed or deployed, and the live dist/folio binary remains outside this delivery."
