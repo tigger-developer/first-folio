@@ -361,7 +361,7 @@ Common manuscript keys:
 |---|---|---|---|
 | `page` | string | `a4` | inherited |
 | `margin` | string | `20mm` | `25mm` |
-| `font` | font block | Libertinus Serif, 12pt | Menlo, 10pt |
+| `font` | font block | Libertinus Sans, 12pt | Menlo, 10pt |
 | `heading.font` | font block | Libertinus Sans, 14pt | Menlo, 10pt |
 | `mono.font` | deprecated compatibility font block | Inherits top-level `folio.mono.font` | Supplies the shared role only when the top-level path is absent at that layer |
 
@@ -865,6 +865,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.39 (2026-11-07): Align the documented British body default with Libertinus Sans and add the public cover-image example.
 
 - 0.38 (2026-11-07): Define the strict `folio.cover-image` contract for dedicated script PDF title pages.
 

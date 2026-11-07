@@ -34,7 +34,7 @@
 # --- First Folio PDF rendering ---
 # folio:
 #   font:
-#     family: Libertinus Serif   # any installed font; e.g. EB Garamond, Asap
+#     family: Libertinus Sans    # British default; any installed font is valid
 #     size: 12pt
 #     weight: regular            # thin, light, regular, bold, black, or 100-900
 #     stretch: 100%              # e.g. 75%, 100%, 125%
@@ -101,6 +101,25 @@
   #     font:
   #       size: 10pt
 
+  # --- Dedicated script PDF title image ---
+  # cover-image:
+  #   path: artwork/cover.jpg    # PNG/JPEG, relative to the source document
+  #   mode: inset               # background | inset
+  #   placement: overlay        # overlay | dodge; dodge requires inset
+  #   size: 80mm                # required for inset; sizes the longest axis
+  #   image:
+  #     treatment: light        # light = white backing; dark = black backing
+  #     opacity: 100%
+  #   superscale: null          # null | default | 2x | 4x | 8x
+  #   overlay:
+  #     blur: 0mm               # non-negative mm radius
+  #     wash:
+  #       treatment: dark       # light = white wash; dark = black wash
+  #       opacity: 30%
+  #     padding: 1em            # one em or mm value on every side
+  # PDF is the current consumer. DOCX, ODT, standalone Typst, compact script
+  # titles, manuscripts and letters reject a configured cover image.
+
   # --- Per-element positioning ---
   # positioning:
   #   speech:
@@ -144,7 +163,7 @@
   # --- Cover letter rendering (folio letter) ---
   # letter:
   #   font:
-  #     family: Libertinus Serif   # may differ from script body font
+  #     family: Libertinus Sans    # British default; may differ from script body
   #     size: 11pt
   #     weight: regular
   #     stretch: 100%
@@ -169,7 +188,7 @@
   #   margin: 20mm
   #   gutter: 0mm
   #   font:
-  #     family: Libertinus Serif
+  #     family: Libertinus Sans
   #     size: 12pt
   #   heading:
   #     font:
