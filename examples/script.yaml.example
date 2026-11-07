@@ -252,7 +252,7 @@
   #     show-number: false
   #   chapter:
   #     page-break-before: true
-  #     position: one-third
+  #     position: one-third       # top | one-third | center/middle | 15% | 20mm | 4em
   #     align: center
   #     number-reset: never         # default; per-part restarts at each part
   #     number-format: "1"          # 1, I, i, or part.chapter such as I.1

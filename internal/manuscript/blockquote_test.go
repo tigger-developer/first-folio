@@ -143,7 +143,7 @@ func TestQuotedBlockFontPropertiesInheritWhenOmitted(t *testing.T) {
 			for _, fragment := range []string{
 				"#show quote.where(block: true): it => {",
 				"above: par.spacing + 6mm", "below: par.spacing + 6mm", "#pad(left: 0em)[#text(",
-				`font: "Libertinus Serif"`, "size: 12pt", `weight: "regular"`,
+				`font: "Libertinus Sans"`, "size: 12pt", `weight: "regular"`,
 				"stretch: 100%", test.wantStyle, "tracking: 0em",
 			} {
 				assertContains(t, typst, fragment)
@@ -167,7 +167,7 @@ func TestQuotedBlockFontPropertiesInheritIndependently(t *testing.T) {
 		omitted  string
 		expected map[string]string
 	}{
-		{"family", "family", map[string]string{"family": "Libertinus Serif"}},
+		{"family", "family", map[string]string{"family": "Libertinus Sans"}},
 		{"size", "size", map[string]string{"size": "12pt"}},
 		{"weight", "weight", map[string]string{"weight": "regular"}},
 		{"stretch", "stretch", map[string]string{"stretch": "100%"}},

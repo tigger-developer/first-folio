@@ -425,6 +425,21 @@ The `part` and `chapter` blocks share this shape:
 | `explicit-numbering` | Use `derived` source order or `source` number text |
 | `number-reset` | `never` or, for chapters, `per-part` |
 
+`folio.manuscript.chapter.position` is vertical space inserted before a chapter
+heading. Portable named values are `top` (`0%`), `one-third` (`30%`), and
+`center` or `middle` (`50%`). It also accepts a non-negative `pt`, `mm`, `cm`,
+`in`, or `em` length, or a percentage such as `15%`. Percentages are relative
+to the available page height; lengths are physical or font-relative. These
+values remain flow spacing, so they do not establish an absolute coordinate
+from the page edge.
+
+This value applies only to `chapter.position`. `folio.manuscript.part.vertical-align`
+is a separate placement enum: `top`, `center`/`middle`/`horizon`, or `bottom`.
+It does not accept percentages or lengths. The part and chapter `align` fields
+are horizontal only and accept `left`, `center`, or `right`. The historical
+PDF-only `third` spelling is not portable to DOCX or ODT; use `one-third` for
+consistent conversion across formats.
+
 The `copyright` block accepts:
 
 | Group | Accepted keys |

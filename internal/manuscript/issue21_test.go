@@ -136,7 +136,7 @@ func TestRT_21_9_ISBNLabelBoldValueRegular(t *testing.T) {
 		"      isbn: \"978-0-000000-00-2\"",
 		"",
 	}, "\n"))
-	assertContains(t, typst, `#text(font: "Libertinus Serif", size: 12pt, weight: "bold"`)
+	assertContains(t, typst, `#text(font: "Libertinus Sans", size: 12pt, weight: "bold"`)
 	assertContains(t, typst, `)[ISBN]`)
 	assertContains(t, typst, ": 978-0-000000-00-2")
 }

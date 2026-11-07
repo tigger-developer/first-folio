@@ -26,8 +26,8 @@ func TestMarkdownManuscriptCLIProducesTypstContract(t *testing.T) {
 	assertContains(t, typst, `margin: 20mm`)
 	assertContains(t, typst, `Contents`)
 	assertContains(t, typst, `#outline(title: none)`)
-	assertContains(t, typst, `font: "Libertinus Serif"`)
-	assertContains(t, typst, `font: "Libertinus Sans"`)
+	assertContains(t, typst, `font: "Libertinus Sans", size: 12pt`)
+	assertContains(t, typst, `font: "Libertinus Sans", size: 14pt`)
 	// W048 measures line and paragraph intervals in PDF instead of asserting implementation strings.
 	assertContains(t, typst, `top: 20mm + 10mm`)
 	assertContains(t, typst, `rest: 20mm`)
