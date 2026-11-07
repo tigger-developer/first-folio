@@ -416,6 +416,41 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "The visual user test remains AMBER for operator review."
       - "W074 DOCX and W075 ODT rendering remain out of scope."
+  - id: delivery-code-c1-r1
+    timestamp: "2026-11-07T16:57:57Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "60f1d2d40b78ecdb04bceef7006bdda63d339f18"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Approved W073 PDF-only requirements, solution design and test definitions"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORG-SCHEMA.md, GO.md, REVIEW.md and SELF-AUDIT.md as deployed on 2026-11-07"
+      - "Delivery-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "Implementation and affected tests reviewed at 60f1d2d, including strict typed configuration, source-relative resource planning, image treatment, physical blur, Typst title composition, atomic PDF publication and explicit unsupported-consumer boundaries."
+      - "Superscale uses inherited PATH and literal argv, accepted unbounded process resources, visible original-image fallback, unique temporary ownership and an interruption path that terminates the child, reports the interruption and removes temporary output."
+      - "go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m passed; go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m passed."
+      - "make lint passed; make vulncheck reported no vulnerabilities; git diff --check passed; sanitize proposed no documentation changes."
+      - "Two representative A4 two-page PDFs were generated from the branch candidate and their first pages were raster-inspected for background overlay and inset dodge composition."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT073.1 - Script title images are visually acceptable remains AMBER for operator inspection."
+      - "The aggregate make test run was not GREEN: before interruption it reported pre-existing environment-sensitive font expectation failures in internal/app and internal/config, observing Libertinus Sans where those tests expected Libertinus Serif. The W073-focused RT and AT packages, lint and vulnerability checks are GREEN."
+      - "W074 DOCX and W075 ODT rendering remain out of scope and configured covers are rejected there."
   - id: test-code-c1-r4
     timestamp: "2026-11-07T16:56:12Z"
     profile: SDLC
