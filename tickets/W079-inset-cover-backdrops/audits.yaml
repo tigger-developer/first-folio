@@ -142,3 +142,37 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "The amended test and production encoding have not yet been written or executed."
       - "The earlier delivery-code PASS applies to the pre-amendment PNG candidate and must not be used for the JPEG revision."
+  - id: test-code-c1-r2
+    timestamp: "2026-11-07T23:52:23Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "74754a91ccc0c999810878c5ecba9c6fd3b2684f"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Approved W079 JPEG derivative amendment at 5efbe6d1b9dcba64a9501189086db1f6bee25a18"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, ORG-SCHEMA.md, SELF-AUDIT.md and REVIEW.md as deployed on 2026-11-07"
+      - "Test-code readiness from the installed sdlc-validate command"
+    evidence:
+      - "The installed validator reported schema valid and test-code ready with amended RT079.1 RED, retained RT079.2 and both ATs GREEN, and UT079.1 AMBER."
+      - "At 32479e8db61acb219bcd92e62fe70103ea8159d7, the focused RT079 command reaches prepared assets and fails only because the backdrop path and decoded format are PNG instead of the amended JPEG contract."
+      - "The amended regression inspects the actual temporary file extension and image decoder format rather than source text or an implementation declaration. It separately asserts that the sharp prepared inset remains PNG."
+      - "Existing dimension, page-aspect crop, no-upscale, original-source treatment and none/solid absence assertions remain in the same executed test boundary. Rendered acceptance remains preservation GREEN because temporary encoding must not change the visible composition."
+      - "No production encoding change is present in the reviewed candidate; the test therefore establishes useful behavioural RED rather than compilation or setup failure."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "Fixed JPEG quality 85 is a production design constant reviewed at delivery-code audit; the retained behavioural test verifies the resulting file format rather than mirroring that internal argument."
+      - "UT079.1 remains AMBER for operator review after the revised candidate is rendered."
