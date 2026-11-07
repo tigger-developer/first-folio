@@ -157,6 +157,14 @@ A script author can select a coordinated full-page backdrop without replacing th
 - Criterion :: Given no backdrop block, existing inset and background-cover PDFs retain their current composition. A backdrop configured for a non-inset or unsupported output remains an explicit error rather than being ignored.
 - Proven by :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]] and [[#at-079-2][AT079.2 - Invalid backdrop input preserves the target]].
 
+** AC079.6 - YAML and dotted Org select the same backdrop :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-079-6
+:END:
+
+- Criterion :: Given equivalent backdrop values in YAML or recognized dotted Org frontmatter, script conversion resolves the *same typed backdrop and rendered composition* through the shared configuration cascade.
+- Proven by :: [[#rt-079-1][RT079.1 - Backdrop configuration and image preparation remain deterministic]] and [[#at-079-1][AT079.1 - Rendered inset backdrops follow the PDF contract]].
+
 * Test Definitions
 :PROPERTIES:
 :CUSTOM_ID: test-definitions
@@ -167,11 +175,11 @@ A script author can select a coordinated full-page backdrop without replacing th
 :CUSTOM_ID: rt-079-1
 :END:
 
-- Covers :: [[#ac-079-1][AC079.1 - Image backdrop softens an inset cover]], [[#ac-079-2][AC079.2 - Solid backdrop uses the configured colour]], [[#ac-079-4][AC079.4 - Invalid backdrop configuration fails atomically]] and [[#ac-079-5][AC079.5 - Existing cover routes remain compatible]].
+- Covers :: [[#ac-079-1][AC079.1 - Image backdrop softens an inset cover]], [[#ac-079-2][AC079.2 - Solid backdrop uses the configured colour]], [[#ac-079-4][AC079.4 - Invalid backdrop configuration fails atomically]], [[#ac-079-5][AC079.5 - Existing cover routes remain compatible]] and [[#ac-079-6][AC079.6 - YAML and dotted Org select the same backdrop]].
 - Boundary :: Typed configuration loading and the Go cover preparation pipeline.
-- Setup :: Valid image, solid and absent-backdrop cases plus named strict-key, mode, colour, blur and mapping boundary cases.
+- Setup :: Equivalent YAML and dotted Org image/solid cases, an absent-backdrop case, and named strict-key, mode, colour, blur and mapping boundary cases.
 - Action :: Load each configuration and prepare variants from a small patterned PNG.
-- Expected :: Valid cases resolve the exact contract below. Image mode produces one full-page-aspect derivative whose longest pixel axis is at most =512= without upscaling a smaller source; solid mode produces no derivative; inactive mode-specific values may remain from lower layers without affecting output; invalid active values name the full path; absent-backdrop output matches the established plan.
+- Expected :: Every new leaf is present in the recognized dotted Org path inventory, and equivalent source forms resolve the same typed values. Image mode produces one full-page-aspect derivative whose longest pixel axis is at most =512= without upscaling a smaller source; solid mode produces no derivative; inactive mode-specific values may remain from lower layers without affecting output; invalid active values name the full path; absent-backdrop output matches the established plan.
 - Retention :: Persistent regression suite under =make test=.
 
 ** RT079.2 - Backdrop and overlay treatments resolve by region :testdef:
@@ -191,9 +199,9 @@ A script author can select a coordinated full-page backdrop without replacing th
 :CUSTOM_ID: at-079-1
 :END:
 
-- Covers :: [[#ac-079-1][AC079.1 - Image backdrop softens an inset cover]], [[#ac-079-2][AC079.2 - Solid backdrop uses the configured colour]] and [[#ac-079-3][AC079.3 - Treatment selects predictable text contrast]].
+- Covers :: [[#ac-079-1][AC079.1 - Image backdrop softens an inset cover]], [[#ac-079-2][AC079.2 - Solid backdrop uses the configured colour]], [[#ac-079-3][AC079.3 - Treatment selects predictable text contrast]] and [[#ac-079-6][AC079.6 - YAML and dotted Org select the same backdrop]].
 - Boundary :: Temporary built =folio= executable, Typst compilation and rasterized page-one PDF output.
-- Setup :: One sharp patterned inset with image backdrop and one with solid =#2a2524= backdrop at =wash.opacity: 0%=; both retain live title and footer text.
+- Setup :: A dotted Org fixture selects a sharp patterned inset with image backdrop; a YAML fixture selects a solid =#2a2524= backdrop at =wash.opacity: 0%=. Both retain live title and footer text.
 - Action :: Convert both fixtures, rasterize page one and measure the page corners, inset centre, backdrop variation and text colours.
 - Expected :: Image mode fills every page edge with a visibly smoothed derivative while the inset retains sharp pattern boundaries. Solid corners match the configured RGB value within rasterization tolerance. Light/dark text follows [[#ac-079-3][AC079.3 - Treatment selects predictable text contrast]].
 - Retention :: Ticket-specific evidence; not part of the persistent regression suite.
