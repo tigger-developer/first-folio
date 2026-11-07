@@ -126,13 +126,14 @@ folio:
         padding: 1em       # one em or mm length, applied on all sides
 #+end_src
 
-- =tone: light= uses a white canvas and wash with black overlay text; =tone: dark= uses a black canvas and wash with white overlay text. It does not alter typography other than the contrasting text colour required for overlay readability.
+- =tone: light= uses a white image backing and wash with black overlay text; =tone: dark= uses a black image backing and wash with white overlay text. The backing occupies only the image rectangle: the whole page for =background= and the inset rectangle for =inset=. Dodge text and page area outside an inset retain their existing colours and background.
 - =opacity= and =overlay.wash= accept percentages from =0%= through =100%=. Defaults are =100%= and =0%= respectively. =overlay.blur= defaults to =0mm= and =overlay.padding= defaults to =0em=.
 - =mode= is required when =path= is present. =placement= defaults to =overlay=. =size= is required only for =inset= and must be a positive =mm= length.
 - =background= fills the physical configured title-page size using cover scaling and centred cropping; it does not force A4 when another configured page size is in use. An A4 script therefore fills and crops to A4.
 - =inset= scales the decoded image so its longest axis equals =size= and its other axis is proportional. Thus a =200 x 400= image at =80mm= renders at =40mm x 80mm=, while a =1000 x 250= image at =50mm= renders at =50mm x 12.5mm=.
-- =overlay.padding= accepts one positive or zero =em= or =mm= length and applies it equally horizontally and vertically around each occupied text region. Overlay has one primary region for the existing title/subtitle/author block and separate populated regions for date and version at their existing positions; it never expands those regions into full-width bands.
+- =overlay.padding= accepts one positive or zero =em= or =mm= length and applies it equally horizontally and vertically around each occupied text region. An =em= resolves against the largest configured font size among populated roles in that region. Overlay has one primary region for the existing title/subtitle/author block and separate populated regions for date and version at their existing positions; it never expands those regions into full-width bands.
 - In dodge mode the inset is centred on the physical title page. The upper and lower available regions are bounded by the title-page content margins and the inset rectangle. =folio.title-page.title.position= governs both groups: =center= uses each region's midpoint and =third= uses the point one third down from that region's top. Existing alignment and date/version side settings continue to govern horizontal placement.
+- Non-default =overlay= treatment values with =placement: dodge= are invalid rather than silently ignored.
 
 ** Unresolved blockers
 
@@ -289,7 +290,7 @@ folio:
 ** Transparent pixels
 
 - Condition :: A PNG contains transparency or image opacity is below =100%=.
-- Required behaviour :: The configured light or dark tone canvas is visible through transparent image pixels and opacity; transparency does not expose uninitialized page content.
+- Required behaviour :: The configured light or dark image backing is visible through transparent image pixels and opacity within the image rectangle; transparency does not recolour page area outside an inset or expose uninitialized page content.
 - Covered by :: [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]] and [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]].
 
 * Solution Design
