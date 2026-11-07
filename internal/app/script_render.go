@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -320,15 +321,16 @@ func newScriptTemplateDataWithCover(doc play.Document, cfg config.Config, format
 	data.SpeakerContent = caseExpression(cfg.String("folio.positioning.speech.speaker.case-transform", "upper"), escapeTypstContent(cfg.String("folio.positioning.speech.speaker.prefix", ""))+"#name"+escapeTypstContent(cfg.String("folio.positioning.speech.speaker.suffix", ":")))
 	data.ActOpen, data.ActClose = caseDelimiters(cfg.String("folio.positioning.act-header.case-transform", "as-written"))
 	data.SceneOpen, data.SceneClose = caseDelimiters(cfg.String("folio.positioning.scene-header.case-transform", "as-written"))
-	data.TitleOffset = "30%"
-	if cfg.String("folio.title-page.title.position", "third") != "third" {
-		data.TitleOffset = "40%"
+	titleOffset, dodgeFactor, err := scriptTitlePosition(cfg.String("folio.title-page.title.position", "third"))
+	if err != nil {
+		return scriptTemplateData{}, err
 	}
+	data.TitleOffset = titleOffset
 	data.FooterLeft, data.FooterRight = titleFooter(doc, cfg, data.DateFont, data.VersionFont)
 	data.HasFooter = data.FooterLeft != "" || data.AuthorBottom || data.FooterRight != ""
 	data.Body = renderPlayBody(doc, cfg, format)
 	if cover != nil {
-		data.Cover = scriptCoverTemplateData(cover, data, cfg)
+		data.Cover = scriptCoverTemplateData(cover, data, dodgeFactor)
 	}
 	if err := validateScriptData(data); err != nil {
 		return scriptTemplateData{}, err
@@ -336,7 +338,7 @@ func newScriptTemplateDataWithCover(doc play.Document, cfg config.Config, format
 	return data, nil
 }
 
-func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, cfg config.Config) *scriptCoverData {
+func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, dodgeFactor string) *scriptCoverData {
 	textFill := "black"
 	base := "FFFFFF"
 	if plan.Config.OverlayWashTreatment == "dark" {
@@ -344,11 +346,6 @@ func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, cfg 
 		base = "000000"
 	}
 	alpha := int(plan.Config.OverlayWashOpacity*255 + 0.5)
-	position := cfg.String("folio.title-page.title.position", "third")
-	factor := "1 / 3"
-	if position == "center" {
-		factor = "1 / 2"
-	}
 	rootFontPoints := typstPoints(data.RootFont.Size, 11)
 	return &scriptCoverData{
 		Mode: plan.Config.Mode, Placement: plan.Config.Placement,
@@ -357,12 +354,34 @@ func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, cfg 
 		PageWidth: fmt.Sprintf("%.6gmm", plan.PageWidthMM), PageHeight: fmt.Sprintf("%.6gmm", plan.PageHeightMM),
 		WashFill: fmt.Sprintf(`rgb("#%s%02X")`, base, alpha), TextFill: textFill,
 		TitlePadding:  coverPadding(plan.Config.OverlayPadding, populatedFontSize(data)),
-		FooterPadding: coverPadding(plan.Config.OverlayPadding, footerFontSize(data)), DodgeFactor: factor,
+		FooterPadding: coverPadding(plan.Config.OverlayPadding, footerFontSize(data)), DodgeFactor: dodgeFactor,
 		DodgePadding: coverPadding(plan.Config.DodgePadding, rootFontPoints),
 		HasUpper:     data.HasTitle || data.HasSubtitle,
 		HasLower:     data.AuthorGrouped,
 		HasBlur:      plan.Config.OverlayBlur != "0mm",
 	}
+}
+
+func scriptTitlePosition(value string) (offset, dodgeFactor string, err error) {
+	value = strings.ToLower(strings.TrimSpace(value))
+	switch value {
+	case "", "third":
+		return "30%", "1 / 3", nil
+	case "center":
+		// Preserve the established ordinary/overlay title offset while retaining
+		// true centring inside a dodge region.
+		return "40%", "1 / 2", nil
+	}
+	if !strings.HasSuffix(value, "%") {
+		return "", "", fmt.Errorf("folio.title-page.title.position must be third, center, or a percentage from 0%% through 100%%; got %q", value)
+	}
+	number, parseErr := strconv.ParseFloat(strings.TrimSpace(strings.TrimSuffix(value, "%")), 64)
+	if parseErr != nil || math.IsNaN(number) || math.IsInf(number, 0) || number < 0 || number > 100 {
+		return "", "", fmt.Errorf("folio.title-page.title.position must be third, center, or a percentage from 0%% through 100%%; got %q", value)
+	}
+	percentage := strconv.FormatFloat(number, 'f', -1, 64)
+	factor := strconv.FormatFloat(number/100, 'f', -1, 64)
+	return percentage + "%", factor, nil
 }
 
 func populatedFontSize(data scriptTemplateData) float64 {
