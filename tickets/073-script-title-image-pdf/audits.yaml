@@ -327,3 +327,58 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "The review assessed the executable test package before production implementation; product behaviour was expected to remain RED."
       - "W074 DOCX and W075 ODT rendering remain outside W073; unsupported-consumer rejection is within the PDF contract."
+  - id: test-code-c1-r2
+    timestamp: "2026-11-07T16:29:28Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "1895118f21268ff46935da687babede0f35eb57e"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, ORG-SCHEMA.md, GO.md, REVIEW.md and SELF-AUDIT.md as deployed on 2026-11-07"
+      - "Approved W073 PDF-only acceptance criteria and test definitions at 1895118f21268ff46935da687babede0f35eb57e"
+      - "Test-code readiness result ready: true from the installed validator on 2026-11-07"
+    evidence:
+      - "internal/config/cover_image_test.go, internal/config/cover_image.go, internal/app/cover_image.go, internal/app/w073_cover_image_test.go and internal/app/w073_cover_image_acceptance_test.go at 1895118f21268ff46935da687babede0f35eb57e"
+      - "Committed intended-RED execution at c4d067d5793ca3ad516b1c058f5c072ec45eecf7 is recorded in validation.org with exact RT and AT commands"
+      - "The RT package now exercises typed defaults, planning, supported image formats, source limits, image treatment, physical blur, live overlay text, measured dodge relationships, exact fit comparison and observable Superscale output/argv"
+      - "The built-command AT package now measures centre crop, both inset examples, localized overlay treatment, live metadata, both dodge positions, body preservation, representative invalid inputs, unsupported consumers, existing/absent publication and fallback warnings/geometry/cleanup"
+      - "Existing script title regressions retain no-cover dedicated, compact and standalone Typst behaviour; W073 adds explicit no-cover PDF and Typst public controls"
+    findings: []
+    prior_finding_dispositions:
+      - id: F1
+        disposition: resolved
+        reason: "Typed default/boundary cases and renderer-neutral source-relative PNG/JPEG geometry planning were added."
+        evidence: "internal/config/cover_image_test.go and TestRT073_1CoverPlanResolvesSourcePathFormatsAndGeometry"
+      - id: F2
+        disposition: resolved
+        reason: "Persistent compiled-PDF cases now cover overlay, both dodge positions, image-only, named upper/lower overflow and exact/0.1pt comparison; existing regressions retain compact and standalone Typst no-cover routes."
+        evidence: "TestRT073_2 tests plus internal/app/script_title_test.go"
+      - id: F3
+        disposition: resolved
+        reason: "Usable default, 2x, 4x and 8x cases assert exact scale argv, literal special-character input, distinct generated pixels and cleanup alongside every fallback."
+        evidence: "TestRT073_3SuperscaleInvocationAndFallbackAreDeterministic"
+      - id: F4
+        disposition: resolved
+        reason: "Public marker fixtures now measure centre crop, portrait/landscape insets, live overlay treatment, centre/third dodge placement and unchanged body content."
+        evidence: "TestAT073_1RenderedPDFGeometryFollowsTheImageContract"
+      - id: F5
+        disposition: resolved
+        reason: "The built-command rejection package now covers representative invalid assets/configuration, all unsupported consumers, byte/axis/pixel limits, dodge overflow, existing/absent targets and no-cover controls."
+        evidence: "TestAT073_2InvalidAndUnsupportedCoverInputFailsAtomically"
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The test-code gate establishes test quality and intended RED only; it does not claim delivered product behaviour."
+      - "The visual user test remains AMBER for operator review after implementation."
+      - "W074 DOCX and W075 ODT rendering remain out of scope."
