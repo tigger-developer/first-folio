@@ -102,7 +102,7 @@ classification; it is provenance, not current state.
 - Scope :: Project W073's shared script title-image contract into editable native DOCX after the PDF delivery.
 - Dependency :: W073 shared configuration and layout delivery.
 
-** REVIEW W073 - Add script title-page images to PDF output :feature:
+** TODO W073 - Add script title-page images to PDF output :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-073
 :PRIORITY: P1

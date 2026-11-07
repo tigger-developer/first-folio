@@ -585,8 +585,8 @@ folio:
 :END:
 
 - Required reading :: *Configuration, architecture, script Typst template, renderer and current loader* named here: [[file:../../docs/config.md][configuration]], [[file:../../docs/ARCHITECTURE.md][architecture]], [[file:../../templates/script.typ][template]] and =internal/app/script_render.go=.
-- Entry conditions :: *Explicit W073 delivery authority and current definition PASS*; W074/W075 remain separate.
-- First implementation step :: Write *RT073.1-3 and AT073.1-3*, observe meaningful RED for new behaviour and preservation GREEN for no-cover controls.
+- Entry conditions :: *Operator-approved W073 definition and explicit delivery authority*; the retained audit history does not override operator readiness, and W074/W075 remain separate.
+- First implementation step :: Write the *defined regression and automated test package*, observe meaningful RED for new behaviour and preservation GREEN for no-cover controls.
 - Definition evidence :: *Canonical review history* is [[file:audits.yaml][=audits.yaml=]].
 - Validation evidence :: *One tagged result per defined test* in [[file:validation.org][=validation.org=]], following =ORG-SCHEMA.md=.
 - Documentation impact :: Update *README, configuration and architecture* for =folio.cover-image=, PDF consumption, source-relative paths, strict keys, source limits, Superscale risk/fallback, renderer sequencing and PDF behaviour.
