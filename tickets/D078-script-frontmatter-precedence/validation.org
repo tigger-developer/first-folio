@@ -45,10 +45,10 @@
 
 * User validation
 
-** AMBER UT078.1 - Source-driven placement is visually acceptable :testdef:
+** GREEN UT078.1 - Source-driven placement is visually acceptable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-078-1-result
-:REASON: Requires operator inspection of regenerated project documents after the audited candidate is available.
+:EVIDENCE: Operator reported on 2026-11-07 that the corrected source-driven result was tested and satisfactory.
 :END:
 
 * Delivery checks
