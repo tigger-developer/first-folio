@@ -41,6 +41,19 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 		}
 		return fmt.Errorf("cannot read from %s format. PDF is write-only", sourceFormat)
 	}
+	var sourceConfig map[string]any
+	var sourceWarnings []string
+	if sourceFormat == play.FormatOrg {
+		var orgPrefix string
+		orgPrefix, err = readOrgConfigurationPrefix(opts.source)
+		if err != nil {
+			return err
+		}
+		sourceConfig, sourceWarnings, err = orgScriptSourceConfig(orgPrefix, opts.source)
+		if err != nil {
+			return err
+		}
+	}
 
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -50,12 +63,18 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 		Mode:     config.ModeScript,
 		Home:     home,
 		LocalDir: filepath.Dir(opts.source),
+		Source:   sourceConfig,
 		CLI:      opts.cli,
 	})
 	if err != nil {
 		return err
 	}
 	for _, warning := range cfg.Warnings() {
+		if _, err := fmt.Fprintln(stderr, "Warning:", warning); err != nil {
+			return err
+		}
+	}
+	for _, warning := range sourceWarnings {
 		if _, err := fmt.Fprintln(stderr, "Warning:", warning); err != nil {
 			return err
 		}

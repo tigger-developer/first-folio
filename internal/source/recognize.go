@@ -14,7 +14,7 @@ type Line struct {
 	Cells                 []string
 }
 
-var orgKeyword = regexp.MustCompile(`^#\+([\w-]+):\s*(.*)$`)
+var orgKeyword = regexp.MustCompile(`^#\+([\w.-]+):\s*(.*)$`)
 var orgHeading = regexp.MustCompile(`^(\*+)\s+(.*)$`)
 var mdHeading = regexp.MustCompile(`^(#{1,6})\s+(.*)$`)
 var orgNote = regexp.MustCompile(`^\[fn:([^\]]+)\]\s*(.*)$`)

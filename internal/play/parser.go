@@ -46,6 +46,9 @@ func parseOrg(source string) (Document, error) {
 		token := nativesource.Recognize("org", line)
 		if token.Kind == "keyword" {
 			key := token.Name
+			if key == "folio" || strings.HasPrefix(key, "folio.") || strings.HasPrefix(key, "folio-") || strings.HasPrefix(key, "folio_") || strings.HasPrefix(key, "render.") {
+				continue
+			}
 			doc.Metadata[key] = token.Text
 			doc.Events = append(doc.Events, Event{Kind: EventFrontMatter, Key: key, Text: token.Text})
 			continue
