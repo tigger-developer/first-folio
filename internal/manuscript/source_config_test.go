@@ -33,7 +33,7 @@ const sourceConfigCommon = `folio:
       enabled: false
 `
 
-// RT037.1: source font family survives local size overrides; local page wins for each edition.
+// RT078.1: source layout and font values override local edition defaults.
 func TestRT037SourceConfigMergedIntoEditionPDFs(t *testing.T) {
 	binary := buildFontCLI(t)
 	for _, page := range []string{"a4", "6x9in"} {
@@ -47,8 +47,7 @@ func TestRT037SourceConfigMergedIntoEditionPDFs(t *testing.T) {
 			pdf := filepath.Join(dir, "source.pdf")
 			commandOutput(t, exec.Command(binary, "manuscript", input, pdf))
 			got := inlinePDFWords(t, pdf)
-			reference := strings.Replace(sourceConfigCommon, "page: a5", "page: "+page, 1)
-			reference = strings.Replace(reference, "size: 11pt", "size: 18pt", 1)
+			reference := sourceConfigCommon
 			writeFile(t, input, "---\ntitle: SourceTitle\n---\n"+sourceConfigBody)
 			writeFile(t, filepath.Join(dir, "script.yaml"), reference)
 			expected := filepath.Join(dir, "reference.pdf")
@@ -65,10 +64,7 @@ func TestRT037SourceConfigMergedIntoEditionPDFs(t *testing.T) {
 				}
 			}
 			info := commandOutput(t, exec.Command("pdfinfo", pdf))
-			size := "595.276 x 841.89"
-			if page == "6x9in" {
-				size = "432 x 648"
-			}
+			size := "419.528 x 595.276"
 			if !strings.Contains(info, size) {
 				t.Errorf("wrong %s page dimensions: %s", page, info)
 			}
@@ -76,11 +72,11 @@ func TestRT037SourceConfigMergedIntoEditionPDFs(t *testing.T) {
 	}
 }
 
-// RT037.2: source style selects presets and siblings; local and CLI style still win.
+// RT078.1: source style overrides local style; CLI style remains highest.
 func TestRT037SourceStylePrecedence(t *testing.T) {
 	binary := buildFontCLI(t)
 	for _, c := range []struct{ name, local, cli, want string }{
-		{"source", "", "", "us"}, {"local", "british", "", "british"}, {"cli", "british", "us", "us"},
+		{"source", "", "", "us"}, {"local", "british", "", "us"}, {"cli", "us", "british", "british"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			home, dir := t.TempDir(), t.TempDir()
@@ -102,9 +98,6 @@ func TestRT037SourceStylePrecedence(t *testing.T) {
 			}
 			output := commandOutput(t, exec.Command(binary, args...))
 			margin := "15mm"
-			if c.want == "us" {
-				margin = "22mm"
-			}
 			if !strings.Contains(output, "style: "+c.want+"\n") || !strings.Contains(output, "margin: "+margin+"\n") {
 				t.Fatal(output)
 			}
@@ -173,15 +166,22 @@ func TestRT037FirstSourceAndMetadata(t *testing.T) {
 	}
 }
 
-// RT037.3: validation sees the effective value after local overrides, not an obsolete source value.
-func TestRT037LocalOverrideRepairsSourceValue(t *testing.T) {
+// RT078.1: a lower local layer cannot repair an invalid winning source value.
+func TestRT078_1LocalConfigurationCannotRepairSourceValue(t *testing.T) {
 	binary := buildFontCLI(t)
 	t.Setenv("HOME", t.TempDir())
 	dir := t.TempDir()
 	input := filepath.Join(dir, "input.md")
 	writeFile(t, input, "---\nfolio:\n  manuscript:\n    chapter:\n      align: diagonal\nrender: {}\n---\nBody.\n")
 	writeFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  manuscript:\n    chapter:\n      align: left\n")
-	commandOutput(t, exec.Command(binary, "manuscript", input, filepath.Join(dir, "output.pdf")))
+	output := filepath.Join(dir, "output.pdf")
+	data, err := exec.Command(binary, "manuscript", input, output).CombinedOutput()
+	if err == nil || !strings.Contains(string(data), "folio.manuscript.chapter.align") {
+		t.Fatalf("invalid source was repaired by local configuration: %s (%v)", data, err)
+	}
+	if _, err := os.Stat(output); !os.IsNotExist(err) {
+		t.Fatalf("invalid source published output: %v", err)
+	}
 }
 
 // RT037.4: a later input may begin with a normal Markdown scene break.

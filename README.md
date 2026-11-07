@@ -1,7 +1,7 @@
 ---
 title: First Folio
-version: "1.14"
-last-updated: 2026-11-01
+version: "1.16"
+last-updated: 2026-11-07
 ---
 
 # First Folio
@@ -170,7 +170,7 @@ folio:
   page: a4
 ```
 
-Configuration is merged by key. Every typography role uses the same six-property `font` block; partial blocks inherit from the same role in lower layers. Script introduction paragraphs also inherit omitted properties from `folio.font`; override them independently with `folio.positioning.frontmatter.paragraph.font`. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the first Markdown manuscript input's `folio:`/`render:` frontmatter, the global style-specific file, global `script.yaml`, the selected built-in style overlay, and the shared British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
+Configuration is merged by key. Every typography role uses the same six-property `font` block; partial blocks inherit from the same role in lower layers. Script introduction paragraphs also inherit omitted properties from `folio.font`; override them independently with `folio.positioning.frontmatter.paragraph.font`. In descending precedence: CLI overrides, supported source-document configuration, the nearest local style-specific file, the nearest local `script.yaml`, the global style-specific file, global `script.yaml`, the selected built-in style overlay, and the shared British built-in base. Scripts support source configuration in Markdown YAML and dotted Org frontmatter; manuscripts support it in the first Markdown input. The same winning configuration feeds every output route for that mode. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
 
 The British base uses Libertinus Sans for proportional script, letter and
 manuscript typography. Role-specific blocks may override it through the same
@@ -260,6 +260,8 @@ make vulncheck # Go dependency and reachable-code vulnerability gate
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.16 (2026-11-07): Document source-document configuration above local YAML for every applicable output route.
 
 - 1.15 (2026-11-07): Align British font documentation and the annotated configuration example with the current image conventions.
 

@@ -152,7 +152,7 @@ func TestOrgDottedCoverImageFrontmatterUsesExistingYAMLContract(t *testing.T) {
 	}
 }
 
-func TestOrgSourceConfigurationRemainsBelowLocalConfiguration(t *testing.T) {
+func TestRT078_1OrgSourceConfigurationOverridesLocalConfiguration(t *testing.T) {
 	dir := t.TempDir()
 	t.Setenv("HOME", t.TempDir())
 	source := filepath.Join(dir, "play.org")
@@ -171,8 +171,97 @@ Hello.
 	if status != 0 || stderr != "" {
 		t.Fatalf("status %d stderr %q", status, stderr)
 	}
-	if !strings.Contains(stdout, "A speaker") {
-		t.Fatalf("local configuration did not override Org source frontmatter:\n%s", stdout)
+	if strings.Contains(stdout, "A speaker") {
+		t.Fatalf("Org source frontmatter did not override local configuration:\n%s", stdout)
+	}
+}
+
+func TestRT078_1MarkdownSourceConfigurationOverridesLocalConfiguration(t *testing.T) {
+	dir := t.TempDir()
+	t.Setenv("HOME", t.TempDir())
+	source, target := filepath.Join(dir, "play.md"), filepath.Join(dir, "play-output.md")
+	writeAppFile(t, source, `---
+render:
+  character-table: false
+---
+# Cascade example
+
+| Character | Description |
+| - | - |
+| CÁIT | A speaker |
+
+## ACT ONE
+
+**CÁIT:**
+Hello.
+`)
+	writeAppFile(t, filepath.Join(dir, "script.yaml"), "render:\n  character-table: true\n")
+
+	status, _, stderr := runApp(t, "convert", source, target)
+	if status != 0 || stderr != "" {
+		t.Fatalf("status %d stderr %q", status, stderr)
+	}
+	markdown := readAppFile(t, target)
+	if strings.Contains(markdown, "A speaker") {
+		t.Fatalf("Markdown source frontmatter did not override local configuration:\n%s", markdown)
+	}
+	if strings.Contains(markdown, "character-table") || strings.Contains(markdown, "render:") {
+		t.Fatalf("Markdown source configuration leaked into output:\n%s", markdown)
+	}
+}
+
+func TestRT078_1MarkdownSourceConfigurationRejectsInvalidBoundaries(t *testing.T) {
+	for _, tc := range []struct {
+		name    string
+		content string
+		want    string
+	}{
+		{
+			name:    "missing closing delimiter",
+			content: "---\nrender:\n  character-table: false\n",
+			want:    "has no closing --- delimiter",
+		},
+		{
+			name:    "folio is not a mapping",
+			content: "---\nfolio: invalid\n---\n# Play\n",
+			want:    "frontmatter folio must be a mapping",
+		},
+		{
+			name:    "render is not a mapping",
+			content: "---\nrender: false\n---\n# Play\n",
+			want:    "frontmatter render must be a mapping",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			source := filepath.Join(t.TempDir(), "play.md")
+			writeAppFile(t, source, tc.content)
+			_, err := markdownScriptSourceConfig(source)
+			if err == nil || !strings.Contains(err.Error(), tc.want) {
+				t.Fatalf("markdownScriptSourceConfig() error = %v, want %q", err, tc.want)
+			}
+		})
+	}
+}
+
+func TestRT078_1MarkdownSourceConfigurationRejectsOversizedFrontmatter(t *testing.T) {
+	source := filepath.Join(t.TempDir(), "play.md")
+	writeAppFile(t, source, "---\nfolio:\n  ignored: "+strings.Repeat("x", markdownConfigurationPrefixLimit)+"\n")
+	_, err := markdownScriptSourceConfig(source)
+	if err == nil || !strings.Contains(err.Error(), "configuration frontmatter exceeds") {
+		t.Fatalf("markdownScriptSourceConfig() error = %v, want size limit", err)
+	}
+}
+
+func TestRT078_1MarkdownSourceConfigurationAcceptsCRLF(t *testing.T) {
+	source := filepath.Join(t.TempDir(), "play.md")
+	writeAppFile(t, source, "---\r\nrender:\r\n  character-table: false\r\n---\r\n# Play\r\n")
+	got, err := markdownScriptSourceConfig(source)
+	if err != nil {
+		t.Fatal(err)
+	}
+	render, ok := got["render"].(map[string]any)
+	if !ok || render["character-table"] != false {
+		t.Fatalf("render configuration = %#v, want character-table false", got)
 	}
 }
 

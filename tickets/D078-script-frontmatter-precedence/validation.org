@@ -1,0 +1,54 @@
+#+TITLE: D078 - Source frontmatter precedence validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** GREEN RT078.1 - Supported source configuration follows one cascade :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-078-1-result
+:EVIDENCE: Focused shared-loader, application and manuscript tests pass after source-over-local ordering and Markdown script extraction. Full-suite evidence is pending.
+:END:
+
+- RED 2026-11-07 :: Shared-loader script and manuscript cases resolved local =10mm= instead of source =20mm=. Org and Markdown script conversions retained a locally enabled character table. Manuscript rendered local page/font/style values, and local configuration repaired an invalid source value.
+- GREEN 2026-11-07 :: =go test ./internal/config ./internal/app -run '^TestRT078_1' -count=1 -timeout=3m= passed.
+- GREEN 2026-11-07 :: =go test ./internal/manuscript -run '^(TestRT037SourceConfigMergedIntoEditionPDFs|TestRT037SourceStylePrecedence|TestRT078_1LocalConfigurationCannotRepairSourceValue)$' -count=1 -timeout=3m= passed.
+- Boundary evidence :: Markdown LF and CRLF source configuration loads; missing closing delimiters, scalar namespaces and a frontmatter prefix beyond 1 MiB fail explicitly.
+
+* Acceptance test
+
+** GREEN AT078.1 - Public commands honour source-over-local precedence :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-078-1-result
+:EVIDENCE: A temporary Mach-O arm64 folio build converted equivalent Org and Markdown scripts with source character-table false over local true; both outputs omitted the cast marker and configuration declarations. Manuscript dry-run selected source style us, then explicit CLI style british.
+:END:
+
+- Date :: 2026-11-07.
+- Boundary :: Public =convert= and =manuscript --dry-run= commands using a temporary built executable.
+- Output :: Operating-system temporary directory only; the installed binary was not changed.
+
+* One-off verification
+
+** GREEN OT078.1 - Aisle Seats uses its Org title position :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-078-1-result
+:EVIDENCE: The current Org source value 60% overrode the nearest local YAML value 10%. A temporary repository conversion produced a 16-page A4 PDF with title y=522.164pt and subtitle y=601.056pt on page one.
+:END:
+
+- Date :: 2026-11-07.
+- Source :: =/Users/tigger/notes/gp/subs/aisle-seats.org= and =/Users/tigger/notes/gp/subs/script.yaml=, both read only.
+- Output :: Operating-system temporary directory only; the installed binary was not changed.
+
+* User validation
+
+** AMBER UT078.1 - Source-driven placement is visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-078-1-result
+:REASON: Requires operator inspection of regenerated project documents after the audited candidate is available.
+:END:
+
+* Delivery checks
+
+- Full regression, lint, vulnerability and delivery-code readiness checks are pending.

@@ -78,14 +78,15 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** ACTIVE D078 - Let script frontmatter override shared local YAML :defect:
+** ACTIVE D078 - Let source frontmatter override shared local YAML :defect:
 :PROPERTIES:
 :CUSTOM_ID: d-078
 :PRIORITY: P1
 :SOURCE: operator
 :CREATED: 2026-11-07
 :END:
-- Defect :: [[file:../tickets/D078-script-frontmatter-precedence/defect.org][D078 - Script frontmatter loses to shared local YAML]].
+- Specification :: [[file:../tickets/D078-script-frontmatter-precedence/spec.org][D078 - Source frontmatter precedence]].
+- Emergency authority :: =BYPASS-GATE-7= invoked 2026-11-07 for consistent Markdown YAML and dotted Org precedence across output consumers.
 
 ** ACTIVE D077 - Honour script title-position percentages :defect:
 :PROPERTIES:

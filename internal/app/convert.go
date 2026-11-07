@@ -43,13 +43,19 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	}
 	var sourceConfig map[string]any
 	var sourceWarnings []string
-	if sourceFormat == play.FormatOrg {
+	switch sourceFormat {
+	case play.FormatOrg:
 		var orgPrefix string
 		orgPrefix, err = readOrgConfigurationPrefix(opts.source)
 		if err != nil {
 			return err
 		}
 		sourceConfig, sourceWarnings, err = orgScriptSourceConfig(orgPrefix, opts.source)
+		if err != nil {
+			return err
+		}
+	case play.FormatMarkdown:
+		sourceConfig, err = markdownScriptSourceConfig(opts.source)
 		if err != nil {
 			return err
 		}

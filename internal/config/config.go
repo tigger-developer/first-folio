@@ -26,7 +26,7 @@ type Options struct {
 	Home     string
 	LocalDir string
 	CLI      map[string]any
-	// Source is the first Markdown manuscript's configuration, below local files.
+	// Source is supported document configuration, above local files and below CLI.
 	Source map[string]any
 }
 
@@ -60,7 +60,7 @@ func Load(opts Options) (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
-	style := selectStyle(opts.Mode, global, opts.Source, local, opts.CLI)
+	style := selectStyle(opts.Mode, global, local, opts.Source, opts.CLI)
 
 	name := ""
 	switch style {
@@ -123,7 +123,6 @@ func Load(opts Options) (Config, error) {
 	if err := mergeFile(filepath.Join(globalDir, "script-"+styleSuffix(style)+".yaml")); err != nil {
 		return Config{}, err
 	}
-	mergeLayer(opts.Source)
 	mergeLayer(local)
 	warnLoadedFile(localScriptPath, localLoaded)
 	if localScriptPath != "" {
@@ -131,6 +130,9 @@ func Load(opts Options) (Config, error) {
 			return Config{}, err
 		}
 	}
+	// Source-document configuration is more specific than shared local YAML.
+	// CLI values remain the final and highest-priority layer.
+	mergeLayer(opts.Source)
 	mergeLayer(cliLayer(base, opts.CLI))
 	setPath(base, "folio.style", style)
 	if opts.Mode == ModeManuscript {

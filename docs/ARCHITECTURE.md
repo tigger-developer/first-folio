@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.22"
-last-updated: 2026-10-24
+version: "0.28"
+last-updated: 2026-11-07
 ---
 
 # Architecture
@@ -72,12 +72,20 @@ Letters have a smaller recipient-oriented model because their sender, recipient,
 2. Selected built-in style override.
 3. Global `~/.config/first-folio/script.yaml`.
 4. Global style-specific YAML.
-5. First Markdown manuscript input's `folio:` and `render:` mappings.
-6. Selected local `script.yaml`.
-7. Selected local style-specific YAML.
+5. Selected local `script.yaml`.
+6. Selected local style-specific YAML.
+7. Supported source-document `folio:` and `render:` configuration.
 8. CLI overrides.
 
-Manuscript orchestration reads Markdown source configuration before loading the effective configuration. The parser shares one frontmatter decoder with this extraction path; metadata remains a separate document concern. Later input files cannot supply another configuration layer. Other modes do not pass a source layer to the shared loader.
+Script orchestration projects Markdown YAML or dotted Org frontmatter into the
+source layer before parsing and rendering. Manuscript orchestration reads the
+first Markdown input's YAML source configuration through its shared frontmatter
+decoder; metadata remains a separate document concern, and later input files
+cannot supply another configuration layer. Org manuscripts, Fountain scripts
+and letters do not currently define source-document configuration syntax. Once
+loaded, the same effective configuration is supplied to every output route for
+that mode, so PDF, Typst, DOCX, ODT and semantic text conversion do not acquire
+format-specific precedence.
 
 Local discovery begins at the source directory and walks upwards towards HOME. Only the nearest `script.yaml` is selected; its style-specific sibling is loaded from the same directory. For a multi-file manuscript, the first resolved input determines that starting directory.
 
@@ -200,6 +208,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.28 (2026-11-07): Place supported source-document configuration above local YAML and feed one resolved cascade to every output route.
 
 - 0.27 (2026-11-07): Honour literal script title-position percentages across PDF title-page layouts.
 

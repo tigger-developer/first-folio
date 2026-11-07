@@ -1,4 +1,4 @@
-#+TITLE: D078 - Script frontmatter loses to shared local YAML
+#+TITLE: D078 - Source frontmatter loses to shared local YAML
 #+SCHEMA: 1
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
@@ -9,8 +9,8 @@
 :END:
 
 - Reported by :: Operator on 2026-11-07.
-- User outcome :: A script cannot override a shared project's =script.yaml= setting through its document-specific dotted Org =FOLIO= or =RENDER= frontmatter.
-- Status :: Reproduced and registered; not yet specified, delivery-approved or corrected.
+- User outcome :: A document cannot reliably override shared project YAML through its more specific source-document configuration.
+- Emergency authority :: The operator invoked =BYPASS-GATE-7= on 2026-11-07 and required Markdown YAML and dotted Org source configuration to follow one precedence rule across downstream output consumers.
 
 * Observed Behaviour
 :PROPERTIES:
@@ -27,9 +27,10 @@
 :CUSTOM_ID: expected-behaviour
 :END:
 
-- Operator requirement :: For scripts, document-specific dotted Org =FOLIO= and =RENDER= frontmatter should override shared local YAML defaults. Explicit CLI overrides remain highest priority.
-- Proposed boundary from the operator discussion :: Apply the precedence correction to script source configuration first; do not silently reverse manuscript precedence, which currently supports output-specific local layout files.
-- Compatibility note :: This changes the currently documented script precedence and may alter scripts that rely on local YAML overriding a source value.
+- Operator requirement :: Supported document-specific =FOLIO= and =RENDER= source configuration overrides shared local YAML defaults. Explicit CLI overrides remain highest priority.
+- Scope expansion :: The earlier script-only proposal is superseded by the operator's same-session instruction that Markdown YAML and dotted Org frontmatter behave consistently across downstream output consumers. Markdown manuscript source configuration follows the same shared-layer ordering.
+- Format boundary :: The rule applies wherever the mode already supports source-document configuration: Org and Markdown scripts, and Markdown manuscripts. It does not introduce a new syntax for Fountain scripts, Org manuscripts or letters.
+- Compatibility note :: This reverses the previously documented manuscript source-versus-local ordering and may alter documents that relied on local YAML overriding a source value.
 
 * Reproduction
 :PROPERTIES:
@@ -65,5 +66,5 @@
 :CUSTOM_ID: delivery-handoff
 :END:
 
-- Distinguishing check :: With local =10%= and source =15%= versus =40%=, the corrected script cascade must produce different title/subtitle bounds while preserving CLI as the highest layer.
-- Required decision :: Define the exact script-only layer ordering and compatibility evidence before implementation. Manuscript and letter precedence remain outside this report unless explicitly added.
+- Distinguishing check :: With local =10%= and source =60%=, the corrected cascade must use =60%= in every script output route that consumes title-page configuration, while an explicit CLI value remains highest. Equivalent Markdown and Org configuration must enter the same source layer.
+- Durable authority :: [[file:spec.org][D078 - Source frontmatter precedence]].

@@ -1,0 +1,178 @@
+#+TITLE: D078 - Source frontmatter precedence
+#+SCHEMA: 8
+#+SUBTITLE: Emergency delivery reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: BYPASS-GATE-7 2026-11-07
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+- Outcome :: Supported source-document configuration overrides shared local YAML, while explicit CLI overrides remain highest.
+- Source forms :: Markdown YAML =folio:= and =render:= mappings, and dotted Org =#+FOLIO...:= and =#+RENDER...:= fields.
+- Consumers :: One resolved configuration is supplied to every applicable output route for the selected mode, including PDF, Typst, DOCX, ODT and semantic text conversion.
+- Emergency authority :: The operator invoked =BYPASS-GATE-7= after an Org script's title position was ignored and required consistent Markdown and Org precedence across the application.
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+** Problem
+- The shared loader merged source configuration before local YAML. A shared project's =script.yaml= therefore overrode a more specific value embedded in the document.
+- Script conversion extracted dotted Org configuration but did not extract equivalent Markdown YAML configuration.
+
+** Scope
+*** In scope
+- One shared precedence order for script and manuscript modes that already support source-document configuration.
+- Dotted Org and Markdown YAML configuration extraction for scripts.
+- Existing Markdown YAML source configuration for manuscripts.
+- CLI precedence, effective-value validation and atomic failure.
+*** Out of scope
+- A new source-configuration syntax for Fountain scripts, Org manuscripts or letters.
+- New configuration keys, new output-specific cascades, metadata precedence, renderer layout changes or installed-binary replacement.
+
+** Authorities
+- Emergency request :: Operator instructions in the active delivery session on 2026-11-07.
+- Defect record :: [[file:defect.org][D078 - Source frontmatter loses to shared local YAML]].
+- Architecture :: [[file:../../docs/ARCHITECTURE.md][Project architecture]].
+- Configuration :: [[file:../../docs/config.md][Configuration reference]].
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC078.1 - Source configuration overrides local YAML :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-078-1
+:END:
+
+- Criterion :: When the same property occurs in supported source-document configuration and the selected local base or style-specific YAML, the source value wins. Non-overlapping properties continue to merge recursively.
+- Modes :: This applies to Org and Markdown scripts and to Markdown manuscripts. The resolved result is not changed by selecting PDF, Typst, DOCX, ODT or a semantic text target.
+- Proven by :: [[#rt-078-1][RT078.1 - Supported source configuration follows one cascade]], [[#at-078-1][AT078.1 - Public commands honour source-over-local precedence]] and [[#ot-078-1][OT078.1 - Aisle Seats uses its Org title position]].
+
+** AC078.2 - Explicit CLI overrides remain highest :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-078-2
+:END:
+
+- Criterion :: An applicable explicit CLI value overrides the same source-document property. Style selection follows the same ordering.
+- Proven by :: [[#rt-078-1][RT078.1 - Supported source configuration follows one cascade]] and [[#at-078-1][AT078.1 - Public commands honour source-over-local precedence]].
+
+** AC078.3 - Markdown and Org configuration are consumed, not rendered :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-078-3
+:END:
+
+- Criterion :: Script conversion projects supported Markdown YAML or dotted Org fields into the source layer before parsing. Those configuration declarations do not appear as script body content.
+- Boundary :: Markdown =folio= and =render= namespaces must be mappings; missing delimiters and source configuration beyond the bounded prefix fail explicitly.
+- Proven by :: [[#rt-078-1][RT078.1 - Supported source configuration follows one cascade]] and [[#at-078-1][AT078.1 - Public commands honour source-over-local precedence]].
+
+** AC078.4 - Invalid winning source values fail atomically :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-078-4
+:END:
+
+- Criterion :: Effective-value validation occurs after merging. A lower local value cannot repair an invalid winning source value, and no target is published on failure.
+- Proven by :: [[#rt-078-1][RT078.1 - Supported source configuration follows one cascade]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT078.1 - Supported source configuration follows one cascade :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-078-1
+:END:
+
+- Covers :: [[#ac-078-1][AC078.1 - Source configuration overrides local YAML]], [[#ac-078-2][AC078.2 - Explicit CLI overrides remain highest]], [[#ac-078-3][AC078.3 - Markdown and Org configuration are consumed, not rendered]] and [[#ac-078-4][AC078.4 - Invalid winning source values fail atomically]].
+- Boundary :: Shared loader tests for script and manuscript modes; public application tests for Org and Markdown scripts; rendered manuscript tests for source layout and style selection.
+- Setup :: Source, local base and local style layers define overlapping values. CLI cases define a final override. Script fixtures set =render.character-table= in source and local layers. Invalid Markdown and manuscript cases exercise namespace, delimiter, size and effective-value boundaries.
+- Expected :: Source wins over both local layers, CLI wins over source, source declarations are absent from body output, supported CRLF frontmatter loads, invalid boundaries report explicit errors, and invalid winning values publish no target.
+- Retention :: Persistent regression suite under =make test=.
+
+** AT078.1 - Public commands honour source-over-local precedence :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-078-1
+:END:
+
+- Covers :: [[#ac-078-1][AC078.1 - Source configuration overrides local YAML]], [[#ac-078-2][AC078.2 - Explicit CLI overrides remain highest]] and [[#ac-078-3][AC078.3 - Markdown and Org configuration are consumed, not rendered]].
+- Boundary :: A temporary built =folio= executable, invoked through public script and manuscript commands.
+- Procedure :: Convert equivalent Org and Markdown script fixtures whose source disables a character table while local YAML enables it. Run manuscript dry-run with source and local style conflicts, then repeat with an explicit CLI style.
+- Expected :: Both script outputs omit the character table and source declarations. Manuscript dry-run reports source style without CLI and CLI style when specified.
+- Record :: Write the dated result to =validation.org=.
+
+** OT078.1 - Aisle Seats uses its Org title position :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ot-078-1
+:END:
+
+- Covers :: [[#ac-078-1][AC078.1 - Source configuration overrides local YAML]].
+- Boundary :: The reported =aisle-seats.org= source and its nearest local configuration, converted read-only with the repository candidate.
+- Procedure :: Confirm the source and local title positions, convert to a temporary PDF and extract page-one title and subtitle bounds.
+- Expected :: The source value wins, moving the grouped title and subtitle away from the local =10%= placement. Source, local YAML and the installed binary remain unchanged.
+- Record :: Write the dated result to =validation.org=.
+
+** UT078.1 - Source-driven placement is visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-078-1
+:END:
+
+- Covers :: [[#ac-078-1][AC078.1 - Source configuration overrides local YAML]].
+- Validation method :: Operator inspection of a regenerated document using normal project configuration.
+- Expected :: The intended per-document values visibly override shared defaults without an output-format-specific surprise.
+- Record :: Write the dated result to =validation.org=.
+
+* Emergency Delivery Record
+:PROPERTIES:
+:CUSTOM_ID: emergency-delivery-record
+:END:
+
+- TDD :: RT078.1 was amended before production changes. Script, manuscript and shared-loader cases failed because local YAML won; Markdown script frontmatter was not loaded; and a local manuscript value repaired an invalid source value.
+- Actual change :: The shared loader merges local base and style layers before the source layer, then applies CLI overrides. Script conversion now extracts bounded Markdown YAML =folio= and =render= mappings alongside the existing dotted Org path.
+- Retrospective design :: Reconcile the final design below after the delivery-code self-audit, as required by the emergency workflow.
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+** Architecture context
+- Shared ownership :: =internal/config= owns layer selection, recursive merging, style selection and effective-value validation for every mode.
+- Script orchestration :: =internal/app= extracts source configuration before loading the effective configuration and passes one result to every target branch.
+- Manuscript orchestration :: =internal/manuscript= retains its existing first-Markdown-input extraction and passes the same source layer to the shared loader.
+
+** High-level design
+- The low-to-high order is built-in base, built-in style, global base, global style, local base, local style, source document and CLI.
+- Style selection inspects those same layers in the same order, preventing the chosen preset and merged values from disagreeing about precedence.
+- Script Markdown extraction reads at most a 1 MiB prefix, recognizes an opening and closing YAML delimiter, decodes only =folio= and =render= mappings into the source layer, and leaves ordinary metadata to the script parser.
+- Existing dotted Org extraction continues to validate recognized paths and report unknown =FOLIO= or =RENDER= fields through its warning channel.
+
+** Format consistency
+- Target selection occurs only after source extraction and shared configuration loading. PDF, Typst, DOCX, ODT and semantic text targets therefore receive the same effective configuration object.
+- Consistency describes precedence for applicable fields. It does not make a renderer implement a setting outside that renderer's documented support contract.
+- Modes without an existing source-configuration contract do not infer one from this precedence change.
+
+** Validation, security and reliability
+- Markdown namespaces are mapping-only. Missing closing delimiters, malformed YAML and configuration prefixes beyond 1 MiB fail before target creation.
+- Effective-value validation runs after the final CLI layer. Invalid winning source values fail atomically; explicit CLI values can override them where the CLI defines that field.
+- No new subprocess, network, cache, installation or publication behaviour is introduced. Source files and local YAML remain read-only.
+
+** Verification mapping
+- Shared order, both script source forms, manuscript precedence, CLI precedence, parsing bounds and atomic failure are covered by [[#rt-078-1][RT078.1 - Supported source configuration follows one cascade]].
+- Built-executable public behaviour is covered by [[#at-078-1][AT078.1 - Public commands honour source-over-local precedence]].
+- The reported composition is covered by [[#ot-078-1][OT078.1 - Aisle Seats uses its Org title position]].
+- Reader-level composition remains [[#ut-078-1][UT078.1 - Source-driven placement is visually acceptable]].
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Validation evidence :: [[file:validation.org][D078 validation record]].
+- Audit evidence :: [[file:audits.yaml][D078 canonical audit record]].
+- Documentation impact :: Configuration precedence, source-format boundaries and architecture records are updated with the shared rule.

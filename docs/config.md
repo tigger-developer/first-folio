@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.37"
-last-updated: 2026-10-24
+version: "0.43"
+last-updated: 2026-11-07
 ---
 
 # Configuration
@@ -15,9 +15,9 @@ See [examples/script.yaml.example](../examples/script.yaml.example) for an annot
 Manuscript DOCX/ODT exports consume the existing `folio.manuscript` settings and
 shared running matter. Letter DOCX/ODT exports consume `folio.letter`, without
 headers or footers. Office output follows the same mode-specific YAML cascade
-as PDF, including the first Markdown manuscript input's `folio:` and `render:`
-frontmatter mappings. Selecting an output format does not reload configuration
-with different precedence. Select these outputs through the manuscript target extension
+as PDF, including supported source-document `folio:` and `render:` configuration.
+Selecting an output format does not reload configuration with different precedence.
+Select these outputs through the manuscript target extension
 or `folio letter --format docx|odt`; no extra YAML output schema is introduced.
 Native office editors control final pagination and field refresh. ODT starts a
 new page when the frontmatter/body number format changes, a reset is requested
@@ -41,9 +41,9 @@ All config sources are read and merged. Each layer overrides individual keys fro
 | Priority | Source |
 |----------|--------|
 | 1 (highest) | CLI flags |
-| 2 | Nearest local `script-<style>.yaml` |
-| 3 | Nearest local `script.yaml` |
-| 4 | First Markdown manuscript input's `folio:` and `render:` frontmatter |
+| 2 | Supported source-document `folio:` and `render:` configuration |
+| 3 | Nearest local `script-<style>.yaml` |
+| 4 | Nearest local `script.yaml` |
 | 5 | Global `~/.config/first-folio/script-<style>.yaml` |
 | 6 | Global `~/.config/first-folio/script.yaml` |
 | 7 | Selected built-in style override |
@@ -53,17 +53,24 @@ All config sources are read and merged. Each layer overrides individual keys fro
 
 For `folio manuscript`, each external YAML file loaded into this cascade produces one warning on stderr with its resolved path, in merge order. This includes global and selected local base and style-specific files, even when a file changes no effective setting. Missing and unselected files, built-in presets, source frontmatter, and CLI values produce no load warning. The warning names no settings or values and does not alter precedence or manuscript output.
 
-## Manuscript source configuration
+## Source-document configuration
 
-The first resolved Markdown manuscript input may contain `folio:` and `render:` mappings alongside its metadata. These mappings merge recursively **after global files and before local files**. A local layout changes only the properties it specifies; it does not replace an entire font or manuscript object.
+Script conversion accepts `folio:` and `render:` mappings in Markdown YAML
+frontmatter and dotted `#+FOLIO...:` and `#+RENDER...:` fields in Org
+frontmatter. The first resolved Markdown manuscript input may contain the same
+YAML mappings alongside its metadata. Every supported source form enters one
+source-document layer, which merges recursively **after local files and before
+CLI overrides**. The winning source configuration therefore applies unchanged
+to PDF, Typst, DOCX, ODT and semantic text output consumers. Selecting an output
+format does not change precedence.
 
-For example, source frontmatter can set `folio.manuscript.font.family: DejaVu Sans Mono`, while local `script.yaml` sets `folio.manuscript.font.size: 11.5pt`. Both values apply, and other font properties inherit from lower layers at that same role path. If both source and local files set the size, the local value wins. This supports common manuscript settings with separate A4 and 6x9 layout files.
+For example, source frontmatter can set `folio.manuscript.font.family: DejaVu Sans Mono`, while local `script.yaml` sets `folio.manuscript.font.size: 11.5pt`. Both values apply, and other font properties inherit from lower layers at that same role path. If both source and local files set the size, the source value wins. Use an explicit CLI flag when a conversion must override the document.
 
-The same merge and effective-value validation rules apply as for external YAML. The `folio` and `render` namespace values themselves must be mappings; null or scalar namespaces are errors. Source values overridden by local properties are validated as part of the final merged configuration. Unknown-key handling is unchanged from external configuration; this is not a new strict-schema validator. `render` retains its existing mode-specific meaning and gains no new manuscript rendering switches.
+The same merge and effective-value validation rules apply as for external YAML. In Markdown, the `folio` and `render` namespace values themselves must be mappings; null or scalar namespaces are errors. Invalid winning source values fail before output and cannot be repaired by a lower local layer. Unknown-key handling is unchanged from external YAML. Org dotted fields retain their stricter recognized-path checks and warnings. `render` retains its existing mode-specific meaning and gains no new manuscript rendering switches.
 
-A source `folio.style` or `folio.manuscript.style` participates in style selection below local configuration and explicit `--style`. The selected style determines the built-in overlay and style-specific files. Source metadata such as title and author retains its existing handling, separate from these configuration mappings.
+A source `folio.style` or `folio.manuscript.style` participates in style selection above local configuration and below explicit `--style`. The selected style determines the built-in overlay and style-specific files. Source metadata such as title and author retains its existing handling, separate from these configuration mappings.
 
-For multiple input files, resolution sorts paths and uses the first. A later input with a decoded `folio:` or `render:` frontmatter mapping is rejected with its path before output is written. Other later-file content remains ordinary Markdown body; leading scene breaks are not treated as malformed configuration. Configuration in Org manuscripts, stage-play sources and letters is unchanged. Source configuration is not emitted as body content. File discovery still starts from the first input's directory.
+For multiple manuscript input files, resolution sorts paths and uses the first. A later input with a decoded `folio:` or `render:` frontmatter mapping is rejected with its path before output is written. Other later-file content remains ordinary Markdown body; leading scene breaks are not treated as malformed configuration. Org manuscripts and letters do not currently define a source-document configuration syntax. Source configuration is not emitted as body content. File discovery still starts from the first input's directory.
 
 ## Schema
 
@@ -912,6 +919,8 @@ At non-100% stretch, First Folio supplies English discretionary break points fro
 - 0.43 (2026-11-07): Add an anchored bottom-centre author slot beside script date and version metadata.
 
 - 0.42 (2026-11-07): Allow post-placement dodge clearance to use title-page margins up to the physical page edge.
+
+- 0.43 (2026-11-07): Make supported Org and Markdown source-document configuration override local YAML consistently for every downstream output consumer, with CLI overrides remaining highest.
 
 - 0.41 (2026-11-07): Define post-placement dodge image clearance for script PDF title pages.
 
