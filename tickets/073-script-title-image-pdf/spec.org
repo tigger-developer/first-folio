@@ -590,3 +590,31 @@ folio:
 - Definition evidence :: *Canonical review history* is [[file:audits.yaml][=audits.yaml=]].
 - Validation evidence :: *One tagged result per defined test* in [[file:validation.org][=validation.org=]], following =ORG-SCHEMA.md=.
 - Documentation impact :: Update *README, configuration and architecture* for =folio.cover-image=, PDF consumption, source-relative paths, strict keys, source limits, Superscale risk/fallback, renderer sequencing and PDF behaviour.
+
+* Hands-off mode decision log
+:PROPERTIES:
+:CUSTOM_ID: hands-off-mode-decision-log
+:VISIBILITY: folded
+:END:
+
+** 2026-11-07T16:13:16Z - PDF-only delivery :hands-off:review:
+
+*** Scope and continuation
+
+- Original design reference :: [[#solution-design][Solution Design]] and [[#delivery-handoff][Delivery Handoff]].
+- Decision :: Deliver *W073 PDF behaviour only* on =feature/W073-script-title-image-pdf= through TDD, documentation, validation and current-session implementation review.
+- Boundary :: *W074 DOCX and W075 ODT remain separate*; no merge, installation, deployment or closure is authorized by this invocation.
+- Native continuation :: The delivery goal is active with a =2,000,000=-token limit and ends at operator validation.
+
+*** Test and budget boundary
+
+- Automated scope :: Implement and execute the *three defined regression tests and three defined automated tests* before and after production behaviour.
+- Human scope :: [[#ut-073-1][UT073.1 - Script title images are visually acceptable]] remains AMBER for operator validation after executable delivery work.
+- One-off budget :: *No one-off test or external spending is required*; Superscale tests use a local controlled process boundary and no network service.
+
+*** Delivery decisions
+
+- Departure status :: *No departure from the approved product behaviour or architecture is planned*.
+- Risk boundary :: Retain the approved *unbounded local Superscale process risk*, original-image warning fallback and cleanup contract without introducing a deadline, process-output ceiling or generated-image resource ceiling.
+- Reversibility :: All candidate changes remain isolated on the published feature branch and are reversible through Git history.
+- Operator acceptance :: PENDING for delivered behaviour and the visual user test; definition approval is recorded separately above.

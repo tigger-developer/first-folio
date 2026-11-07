@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -40,6 +41,16 @@ type scriptRunningMatter struct {
 	Font                                         typstFontData
 	Format                                       string
 	Align, DistanceFromEdge, ContentPaddingAfter string
+}
+
+type scriptCoverData struct {
+	Mode, Placement                      string
+	ImagePath, BlurredPath               string
+	Width, Height, PageWidth, PageHeight string
+	WashFill, TextFill                   string
+	TitlePadding, FooterPadding          string
+	DodgeFactor                          string
+	HasUpper, HasLower, HasBlur          bool
 }
 
 var scriptRunningTokenRE = regexp.MustCompile(`\[([^\[\]]+)\]`)
@@ -106,6 +117,7 @@ func scriptRunningFormat(format string, doc play.Document) string {
 }
 
 type scriptTemplateData struct {
+	Cover                                              *scriptCoverData
 	RunningHeader, RunningFooter                       scriptRunningMatter
 	Page, Margin                                       string
 	RootFont, HeadingFont, MonoFont                    typstFontData
@@ -151,7 +163,16 @@ type typstFontData struct {
 }
 
 func renderPlayDocument(doc play.Document, cfg config.Config, format play.Format, target string, toStdout bool, force bool, stdout io.Writer) error {
-	source, err := renderPlayTypst(doc, cfg, format)
+	return renderPlayDocumentForSource(doc, cfg, format, "", target, toStdout, force, stdout, io.Discard)
+}
+
+func renderPlayDocumentForSource(doc play.Document, cfg config.Config, format play.Format, sourceDocument, target string, toStdout bool, force bool, stdout, stderr io.Writer) error {
+	cover, cleanup, err := prepareCoverForRender(cfg, sourceDocument, stderr)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
+	source, err := renderPlayTypstWithCover(doc, cfg, format, cover)
 	if err != nil {
 		return err
 	}
@@ -164,11 +185,19 @@ func renderPlayDocument(doc play.Document, cfg config.Config, format play.Format
 	if toStdout && writerIsTerminal(stdout) && !force {
 		return fmt.Errorf("PDF is binary output. Refusing to write to terminal\nUse a target file, redirect stdout, or pass --force to override")
 	}
-	return compilePlayTypst(source, target, toStdout, stdout)
+	typstDir := ""
+	if cover != nil {
+		typstDir = filepath.Dir(cover.SourcePath)
+	}
+	return compilePlayTypstInDir(source, target, toStdout, stdout, typstDir)
 }
 
 func renderPlayTypst(doc play.Document, cfg config.Config, format play.Format) (string, error) {
-	data, err := newScriptTemplateData(doc, cfg, format)
+	return renderPlayTypstWithCover(doc, cfg, format, nil)
+}
+
+func renderPlayTypstWithCover(doc play.Document, cfg config.Config, format play.Format, cover *coverImagePlan) (string, error) {
+	data, err := newScriptTemplateDataWithCover(doc, cfg, format, cover)
 	if err != nil {
 		return "", err
 	}
@@ -188,6 +217,10 @@ func renderPlayTypst(doc play.Document, cfg config.Config, format play.Format) (
 }
 
 func newScriptTemplateData(doc play.Document, cfg config.Config, format play.Format) (scriptTemplateData, error) {
+	return newScriptTemplateDataWithCover(doc, cfg, format, nil)
+}
+
+func newScriptTemplateDataWithCover(doc play.Document, cfg config.Config, format play.Format, cover *coverImagePlan) (scriptTemplateData, error) {
 	var fontErr error
 	font := func(path string) typstFontData {
 		if fontErr != nil {
@@ -283,10 +316,85 @@ func newScriptTemplateData(doc play.Document, cfg config.Config, format play.For
 	}
 	data.FooterLeft, data.FooterRight = titleFooter(doc, cfg, data.DateFont, data.VersionFont)
 	data.Body = renderPlayBody(doc, cfg, format)
+	if cover != nil {
+		data.Cover = scriptCoverTemplateData(cover, data, cfg)
+	}
 	if err := validateScriptData(data); err != nil {
 		return scriptTemplateData{}, err
 	}
 	return data, nil
+}
+
+func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, cfg config.Config) *scriptCoverData {
+	textFill := "black"
+	base := "FFFFFF"
+	if plan.Config.OverlayWashTreatment == "dark" {
+		textFill = "white"
+		base = "000000"
+	}
+	alpha := int(plan.Config.OverlayWashOpacity*255 + 0.5)
+	position := cfg.String("folio.title-page.title.position", "third")
+	factor := "1 / 3"
+	if position == "center" {
+		factor = "1 / 2"
+	}
+	return &scriptCoverData{
+		Mode: plan.Config.Mode, Placement: plan.Config.Placement,
+		ImagePath: escapeTypstString(filepath.Base(plan.SourcePath)), BlurredPath: escapeTypstString(filepath.Base(plan.BlurredPath)),
+		Width: fmt.Sprintf("%.6gmm", plan.RenderedWidthMM), Height: fmt.Sprintf("%.6gmm", plan.RenderedHeightMM),
+		PageWidth: fmt.Sprintf("%.6gmm", plan.PageWidthMM), PageHeight: fmt.Sprintf("%.6gmm", plan.PageHeightMM),
+		WashFill: fmt.Sprintf(`rgb("#%s%02X")`, base, alpha), TextFill: textFill,
+		TitlePadding:  coverPadding(plan.Config.OverlayPadding, populatedFontSize(data)),
+		FooterPadding: coverPadding(plan.Config.OverlayPadding, footerFontSize(data)), DodgeFactor: factor,
+		HasUpper: data.HasTitle || data.HasSubtitle,
+		HasLower: data.HasAuthor || data.FooterLeft != "" || data.FooterRight != "",
+		HasBlur:  plan.Config.OverlayBlur != "0mm",
+	}
+}
+
+func populatedFontSize(data scriptTemplateData) float64 {
+	maximum := 0.0
+	for _, item := range []struct {
+		present bool
+		size    string
+	}{{data.HasTitle, data.TitleFont.Size}, {data.HasSubtitle, data.SubtitleFont.Size}, {data.HasAuthor, data.AuthorFont.Size}} {
+		if value := typstPoints(item.size); item.present && value > maximum {
+			maximum = value
+		}
+	}
+	if maximum == 0 {
+		maximum = typstPoints(data.RootFont.Size)
+	}
+	return maximum
+}
+
+func footerFontSize(data scriptTemplateData) float64 {
+	maximum := typstPoints(data.DateFont.Size)
+	if value := typstPoints(data.VersionFont.Size); value > maximum {
+		maximum = value
+	}
+	return maximum
+}
+
+func coverPadding(value string, emPoints float64) string {
+	value = strings.TrimSpace(value)
+	if !strings.HasSuffix(value, "em") {
+		return value
+	}
+	number, err := strconv.ParseFloat(strings.TrimSpace(strings.TrimSuffix(value, "em")), 64)
+	if err != nil {
+		return value
+	}
+	return fmt.Sprintf("%.6gpt", number*emPoints)
+}
+
+func typstPoints(value string) float64 {
+	value = strings.TrimSpace(value)
+	if !strings.HasSuffix(value, "pt") {
+		return 0
+	}
+	number, _ := strconv.ParseFloat(strings.TrimSpace(strings.TrimSuffix(value, "pt")), 64)
+	return number
 }
 
 func authorPrefix(value string) (string, []string) {
@@ -432,7 +540,11 @@ func validateScriptData(data scriptTemplateData) error {
 }
 
 func compilePlayTypst(source string, target string, toStdout bool, stdout io.Writer) error {
-	typstFile, err := os.CreateTemp("", "folio-script-*.typ")
+	return compilePlayTypstInDir(source, target, toStdout, stdout, "")
+}
+
+func compilePlayTypstInDir(source string, target string, toStdout bool, stdout io.Writer, typstDir string) error {
+	typstFile, err := os.CreateTemp(typstDir, "folio-script-*.typ")
 	if err != nil {
 		return fmt.Errorf("creating temporary Typst source: %w", err)
 	}
@@ -446,6 +558,7 @@ func compilePlayTypst(source string, target string, toStdout bool, stdout io.Wri
 		return fmt.Errorf("closing temporary Typst source: %w", err)
 	}
 	outputPath := target
+	publicationPath := ""
 	if toStdout {
 		pdfFile, err := os.CreateTemp("", "folio-script-*.pdf")
 		if err != nil {
@@ -454,8 +567,27 @@ func compilePlayTypst(source string, target string, toStdout bool, stdout io.Wri
 		outputPath = pdfFile.Name()
 		pdfFile.Close()
 		defer os.Remove(outputPath)
+	} else {
+		dir := filepath.Dir(target)
+		pdfFile, err := os.CreateTemp(dir, ".folio-script-*.pdf")
+		if err != nil {
+			return fmt.Errorf("creating temporary PDF beside %s: %w", target, err)
+		}
+		outputPath = pdfFile.Name()
+		if err := pdfFile.Close(); err != nil {
+			_ = os.Remove(outputPath)
+			return fmt.Errorf("closing temporary PDF beside %s: %w", target, err)
+		}
+		defer os.Remove(outputPath)
+		publicationPath = target
 	}
 	if err := typstutil.Compile(typstPath, outputPath); err != nil {
+		if strings.Contains(err.Error(), "folio-cover-upper-overflow") {
+			return fmt.Errorf("folio.cover-image dodge upper group does not fit its available region")
+		}
+		if strings.Contains(err.Error(), "folio-cover-lower-overflow") {
+			return fmt.Errorf("folio.cover-image dodge lower group does not fit its available region")
+		}
 		return err
 	}
 	if toStdout {
@@ -465,6 +597,9 @@ func compilePlayTypst(source string, target string, toStdout bool, stdout io.Wri
 		}
 		_, err = stdout.Write(raw)
 		return err
+	}
+	if err := os.Rename(outputPath, publicationPath); err != nil {
+		return fmt.Errorf("publishing PDF %s: %w", publicationPath, err)
 	}
 	return nil
 }

@@ -110,7 +110,7 @@ func TestRT039_1ScriptFontBlockEmitsAllPropertiesForSelectedRole(t *testing.T) {
 	}
 	typst := readAppFile(t, target)
 	assertAppContains(t, typst, `#text(font: "W039 Act", size: 13.5pt, weight: 650, stretch: 100%, style: "oblique", tracking: -0.03em)[#folio-font-stretch(117.5%)`)
-	assertAppContains(t, typst, `font: "Libertinus Serif", size: 12pt, weight: "bold"`)
+	assertAppContains(t, typst, `font: "Libertinus Sans", size: 12pt, weight: "bold"`)
 }
 
 func TestRT039_2CopiedBritishBaseLeavesPublicOutputsUnchanged(t *testing.T) {

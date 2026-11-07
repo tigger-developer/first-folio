@@ -65,6 +65,19 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
+	if _, enabled, err := cfg.CoverImage(); err != nil {
+		return err
+	} else if enabled {
+		if !cfg.Bool("folio.title-page.enabled", true) {
+			return fmt.Errorf("folio.cover-image is not supported when folio.title-page.enabled is false")
+		}
+		if opts.target != "" && strings.HasSuffix(strings.ToLower(opts.target), ".typ") {
+			return fmt.Errorf("folio.cover-image is not supported for standalone Typst output")
+		}
+		if targetFormat != play.FormatPDF {
+			return fmt.Errorf("folio.cover-image is not supported for %s conversion", targetFormat)
+		}
+	}
 	var raw []byte
 	if targetFormat == play.FormatODT {
 		raw, err = readODTSource(opts.source)
@@ -91,7 +104,7 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 		return exportDOCX(doc, cfg, sourceFormat, opts, toStdout, stdout, stderr)
 	}
 	if targetFormat == play.FormatPDF {
-		return renderPlayDocument(doc, cfg, sourceFormat, opts.target, toStdout, opts.force, stdout)
+		return renderPlayDocumentForSource(doc, cfg, sourceFormat, opts.source, opts.target, toStdout, opts.force, stdout, stderr)
 	}
 	result, err := play.Emit(doc, targetFormat)
 	if err != nil {

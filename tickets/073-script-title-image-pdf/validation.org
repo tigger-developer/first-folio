@@ -1,0 +1,92 @@
+#+TITLE: W073 - Validation Evidence
+#+SCHEMA: 2
+#+STARTUP: content
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated tests
+
+** GREEN AT073.1 - Rendered PDF geometry follows the image contract :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-073-1-result
+:REVISION: 2b9e0b3ab522032c370d846527547bbcdf69fe86
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
+:EVIDENCE: The built CLI produced measured A4 centre crop, both requested longest-axis inset examples, localized treated overlay with live metadata, both dodge positions and an unchanged later body page.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]] and [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]].
+- Runs :: 2026-11-07: intended RED at the built executable, compiled PDF, extracted live-text and measured raster boundary; both inset examples, overlay treatment, both dodge positions and the unchanged body marker executed.
+- Runs :: 2026-11-07 at =2b9e0b3=: GREEN; all marker raster, live-text, relative-position and unchanged-body assertions passed.
+
+** GREEN AT073.2 - Invalid and unsupported cover input fails atomically :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-073-2-result
+:REVISION: 2b9e0b3ab522032c370d846527547bbcdf69fe86
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
+:EVIDENCE: The built CLI rejected malformed cover input, unsupported consumers, source-limit violations and measured dodge overflow with field-specific diagnostics while preserving existing or absent targets; no-cover PDF and Typst controls passed.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]], [[file:spec.org::#ac-073-12][AC073.12 - Unsupported consumers reject configured covers]], [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]] and [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]].
+- Runs :: 2026-11-07: intended RED for unknown keys, malformed combinations/assets, compact mode, standalone Typst, DOCX, ODT, manuscript, letter, missing input, byte/axis/pixel limits and measured dodge overflow; existing and absent publication states executed.
+- Runs :: 2026-11-07 at =2b9e0b3=: GREEN; every rejection, publication-state and no-cover control passed.
+
+** GREEN AT073.3 - Public Superscale fallback preserves PDF output :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-073-3-result
+:REVISION: 2b9e0b3ab522032c370d846527547bbcdf69fe86
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT073_' -count=1 -timeout=10m
+:EVIDENCE: Missing, non-zero and unusable Superscale cases each emitted one bounded warning, produced the original-image PDF geometry and left no First Folio temporary output.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-9][AC073.9 - Disabled or unavailable Superscale is non-blocking]] and [[file:spec.org::#ac-073-10][AC073.10 - Superscale execution failures fall back visibly]].
+- Runs :: 2026-11-07: intended RED through a controlled child PATH with real Typst and absent or synthetic Superscale.
+- Runs :: 2026-11-07 at =2b9e0b3=: GREEN through the built public command with real Typst and controlled missing or synthetic Superscale.
+
+* Automated regression
+
+** GREEN RT073.1 - Cover-image configuration, keys and source limits are validated :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-1-result
+:REVISION: 2b9e0b3ab522032c370d846527547bbcdf69fe86
+:COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
+:EVIDENCE: Typed defaults, strict nested keys, value boundaries, source-relative PNG/JPEG planning, physical geometry and exact source-resource boundaries all passed.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-6][AC073.6 - Source-relative cover paths resolve consistently]], [[file:spec.org::#ac-073-11][AC073.11 - Invalid cover configuration fails atomically]] and [[file:spec.org::#ac-073-15][AC073.15 - Source-image resource limits are enforced]].
+- Runs :: 2026-11-07: intended RED for typed defaults, modes/treatments/value boundaries, strict nested keys, separated source/configuration/working paths, both supported image formats, both inset examples and minimum/exact/over-limit source metadata.
+- Runs :: 2026-11-07 at =2b9e0b3=: GREEN in =internal/config= and =internal/app=.
+
+** GREEN RT073.2 - Typst output contains the resolved title-image layout :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-2-result
+:REVISION: 2b9e0b3ab522032c370d846527547bbcdf69fe86
+:COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
+:EVIDENCE: Compiled PDFs passed treatment and physical-blur preparation, live overlay, centre/third dodge, exact-fit comparison, image-only title, named upper/lower overflow and no-cover preservation assertions.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[file:spec.org::#ac-073-7][AC073.7 - No-cover output remains compatible]], [[file:spec.org::#ac-073-13][AC073.13 - A cover can create an image-only title page]] and [[file:spec.org::#ac-073-14][AC073.14 - Dodge rejects text-region overflow]].
+- Runs :: 2026-11-07: intended RED for image treatment and physical blur, live overlay, centre/third dodge, exact and 0.1pt-over fit boundaries, and separately named long upper/lower groups; no-cover conversion remained GREEN without manufacturing a failure.
+- Runs :: 2026-11-07 at =2b9e0b3=: GREEN through the real Typst compiler.
+
+** GREEN RT073.3 - Superscale invocation and fallback are deterministic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-3-result
+:REVISION: 2b9e0b3ab522032c370d846527547bbcdf69fe86
+:COMMAND: go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m
+:EVIDENCE: Null, missing, non-zero, unusable, default, 2x, 4x and 8x cases passed exact argv, selected-pixel, fallback-warning and cleanup assertions; process interruption returned a named error and removed temporary output.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]], [[file:spec.org::#ac-073-9][AC073.9 - Disabled or unavailable Superscale is non-blocking]] and [[file:spec.org::#ac-073-10][AC073.10 - Superscale execution failures fall back visibly]].
+- Runs :: 2026-11-07: intended RED for exact default/2x/4x/8x argv, literal special-character input, distinct generated pixels, requested fallback and cleanup; the disabled preservation case remained GREEN.
+- Runs :: 2026-11-07 at =2b9e0b3=: GREEN, including the added interruption and temporary-directory cleanup case.
+
+* User tests
+
+** AMBER UT073.1 - Script title images are visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-073-1-result
+:REASON: Representative PDF outputs are ready; human inspection in the normal PDF reader remains required before user acceptance.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-1][AC073.1 - Background images cover the script title page]], [[file:spec.org::#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[file:spec.org::#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[file:spec.org::#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[file:spec.org::#ac-073-5][AC073.5 - Dodge honours relative vertical placement]] and [[file:spec.org::#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]].
+- Method :: User validation in the normal PDF reader.

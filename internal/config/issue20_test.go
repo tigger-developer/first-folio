@@ -52,8 +52,8 @@ func TestRT_20_3_NoScriptOnWalkPathSucceeds(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expected success with no local script.yaml on walk path, got %v", err)
 	}
-	// Preset font should be present (Libertinus Serif from the shared British base).
-	assertValue(t, cfg, "folio.font.family", "Libertinus Serif")
+	// Preset font should be present (Libertinus Sans from the shared British base).
+	assertValue(t, cfg, "folio.font.family", "Libertinus Sans")
 }
 
 // RT-20.4: the walk stops at the home directory boundary; a script.yaml above

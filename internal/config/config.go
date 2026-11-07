@@ -145,6 +145,9 @@ func Load(opts Options) (Config, error) {
 			}
 		}
 	}
+	if _, _, err := (Config{data: base}).CoverImage(); err != nil {
+		return Config{}, err
+	}
 	if opts.Mode != ModeLetter {
 		if err := validateRunningMatter(base); err != nil {
 			return Config{}, err

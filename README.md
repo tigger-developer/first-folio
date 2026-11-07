@@ -172,6 +172,10 @@ folio:
 
 Configuration is merged by key. Every typography role uses the same six-property `font` block; partial blocks inherit from the same role in lower layers. Script introduction paragraphs also inherit omitted properties from `folio.font`; override them independently with `folio.positioning.frontmatter.paragraph.font`. In descending precedence: CLI overrides, the nearest local style-specific file, the nearest local `script.yaml`, the first Markdown manuscript input's `folio:`/`render:` frontmatter, the global style-specific file, global `script.yaml`, the selected built-in style overlay, and the shared British built-in base. Local discovery starts at the source directory and walks towards HOME; the nearest `script.yaml` wins. Documented top-level metadata and `render` keys may be shared with Yapper. The `folio:` block belongs exclusively to First Folio; a top-level `yapper:` block belongs exclusively to Yapper and is ignored by First Folio.
 
+The British base uses Libertinus Sans for proportional script, letter and
+manuscript typography. Role-specific blocks may override it through the same
+cascade.
+
 Inline code and supported code blocks use shared `folio.mono.font` typography in scripts, letters and manuscripts. The former `folio.manuscript.mono.font` path remains compatible but emits a deprecation warning. PDF output applies configured stretch geometrically from the normal-width face for every font role; DOCX and ODT retain native editable scaling.
 
 See [docs/config.md](docs/config.md) for the configuration reference and [examples/script.yaml.example](examples/script.yaml.example) for an annotated example.
@@ -179,6 +183,15 @@ See [docs/config.md](docs/config.md) for the configuration reference and [exampl
 Running headers and footers for scripts and manuscripts use `folio.page-header` and `folio.page-footer`, including configurable typography, format strings, edge distance and body clearance. Letters do not inherit running matter. Former manuscript-local header/footer blocks remain supported with deprecation warnings in manuscript mode; see [shared running matter](docs/config.md#shared-running-matter-foliopage-header-and-foliopage-footer).
 
 For page-limited script submissions, set `folio.title-page.enabled: false` to place the title-page items above the script on its first content page instead of using a separate title page. `folio.title-page.skip-header` and `skip-footer` default to `true`, hiding running matter on that first page while retaining it on later pages. Set either to `false` to allow its enabled shared role on page 1. Manuscript title-page settings remain independent. See [compact script titles and first-page running matter](docs/config.md#compact-script-title-block).
+
+Dedicated script PDF title pages can use a source-relative PNG or JPEG through
+`folio.cover-image`. Background images proportionally cover and centre-crop the
+page; insets use a configured longest-axis size and support live title text as
+an overlay or in bounded regions above and below the image. Optional image
+treatment, localized blur, wash, padding and Superscale preprocessing are
+documented under [script PDF cover images](docs/config.md#script-pdf-cover-images-foliocover-image).
+DOCX, ODT, standalone Typst, compact script titles, manuscripts and letters
+reject this configuration until their separate format work is delivered.
 
 ## Project Structure
 
@@ -246,6 +259,10 @@ make vulncheck # Go dependency and reachable-code vulnerability gate
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.15 (2026-11-07): Align British font documentation and the annotated configuration example with the current image conventions.
+
+- 1.14 (2026-11-07): Document source-relative cover images for dedicated script PDF title pages and the deferred output formats.
 
 - 1.13 (2026-10-24): Document shared monospace typography and application-wide geometric PDF stretch.
 
