@@ -78,6 +78,30 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** TODO W075 - Add script title-page images to ODT output :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-075
+:PRIORITY: P2
+:SOURCE: operator
+:CREATED: 2026-11-07
+:END:
+
+** TODO W074 - Add script title-page images to DOCX output :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-074
+:PRIORITY: P2
+:SOURCE: operator
+:CREATED: 2026-11-07
+:END:
+
+** TODO W073 - Add script title-page images to PDF output :feature:
+:PROPERTIES:
+:CUSTOM_ID: w-073
+:PRIORITY: P1
+:SOURCE: operator
+:CREATED: 2026-11-07
+:END:
+
 ** REVIEW W072 - Convert attributed DOCX footnotes to comments :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-072
