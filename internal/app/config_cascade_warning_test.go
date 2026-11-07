@@ -34,8 +34,8 @@ func TestRT064_1ReportsEachLoadedYAMLFileOnceInTheCascade(t *testing.T) {
 		t.Fatalf("manuscript dry-run status %d\nstdout:\n%s\nstderr:\n%s", status, stdout, stderr)
 	}
 	assertLoadedYAMLWarnings(t, stderr, []string{globalPath, globalStylePath, localPath, localStylePath})
-	if !strings.Contains(stdout, "margin: 23mm") {
-		t.Fatalf("dry-run did not preserve the existing winning margin:\n%s", stdout)
+	if !strings.Contains(stdout, "margin: 19mm") {
+		t.Fatalf("dry-run did not use the winning source margin:\n%s", stdout)
 	}
 	if strings.Contains(stdout, "Warning:") {
 		t.Fatalf("load warning leaked to stdout:\n%s", stdout)

@@ -37,6 +37,9 @@ func TestRT063_4_PDFCascadeParity(t *testing.T) {
 					proseSource(t, global, "script-british.yaml", config(10))
 				}
 				want := 9 + layer
+				if mode == "manuscript" && layer >= 2 {
+					want = 11
+				}
 				if mode == "letter" {
 					if layer >= 3 {
 						want = 12

@@ -16,6 +16,8 @@
 - GREEN 2026-11-07 :: =go test ./internal/config ./internal/app -run '^TestRT078_1' -count=1 -timeout=3m= passed.
 - GREEN 2026-11-07 :: =go test ./internal/manuscript -run '^(TestRT037SourceConfigMergedIntoEditionPDFs|TestRT037SourceStylePrecedence|TestRT078_1LocalConfigurationCannotRepairSourceValue)$' -count=1 -timeout=3m= passed.
 - Boundary evidence :: Markdown LF and CRLF source configuration loads; missing closing delimiters, scalar namespaces and a frontmatter prefix beyond 1 MiB fail explicitly.
+- RED 2026-11-07 full-suite reconciliation :: =make test= exposed stale local-over-source expectations in W063 PDF/DOCX/ODT cascade parity, W064 manuscript load-warning coverage and W068 shared monospace layering. The outputs consistently contained the new winning source values.
+- GREEN 2026-11-07 focused reconciliation :: =go test ./internal/config -run '^TestRT068_3' -count=1 -timeout=2m= and =go test ./internal/app -run '^(TestRT064_1|TestRT063_4_PDFCascadeParity|TestRT063_4_OfficeConfigurationLayering)$' -count=1 -timeout=3m= passed after correcting those expected winners.
 
 * Acceptance test
 
@@ -51,4 +53,4 @@
 
 * Delivery checks
 
-- Full regression, lint, vulnerability and delivery-code readiness checks are pending.
+- Full regression rerun, lint, vulnerability and delivery-code readiness checks are pending.

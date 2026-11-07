@@ -45,7 +45,7 @@ func TestRT068_2LegacyMonospaceFontWarnsAndRemainsEffective(t *testing.T) {
 	}
 }
 
-func TestRT068_3SharedMonospaceValuesWinWithinLayerAndLaterLayersWinNormally(t *testing.T) {
+func TestRT068_3SharedMonospaceValuesWinWithinLayerAndSourceWinsOverLocal(t *testing.T) {
 	home := t.TempDir()
 	project := t.TempDir()
 	writeYAML(t, project+"/script.yaml", "folio:\n  mono:\n    font:\n      size: 14pt\n      weight: bold\n  manuscript:\n    mono:\n      font:\n        family: Legacy Local\n        size: 8pt\n        style: italic\n")
@@ -59,7 +59,7 @@ func TestRT068_3SharedMonospaceValuesWinWithinLayerAndLaterLayersWinNormally(t *
 	if err != nil {
 		t.Fatal(err)
 	}
-	if font.Family != "Legacy Local" || font.Size != "14pt" || font.Weight != "bold" || font.Style != "italic" || font.Stretch != "80%" {
+	if font.Family != "Shared Source" || font.Size != "14pt" || font.Weight != "bold" || font.Style != "italic" || font.Stretch != "80%" {
 		t.Fatalf("effective shared mono = %+v", font)
 	}
 }

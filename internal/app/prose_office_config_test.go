@@ -16,9 +16,9 @@ func TestRT063_4_OfficeConfigurationLayering(t *testing.T) {
 			name, local, cli string
 			margin           float64
 		}{
-			{"source-style", "", "", 22},
+			{"source-style", "", "", 15},
 			{"local-style", "british", "", 15},
-			{"cli-style", "british", "us", 22},
+			{"cli-style", "british", "us", 15},
 		} {
 			t.Run(format+"/"+tc.name, func(t *testing.T) {
 				home, dir := t.TempDir(), t.TempDir()
@@ -50,16 +50,16 @@ func TestRT063_4_OfficeConfigurationLayering(t *testing.T) {
 				layers := officeEffective(t, pkg, format, officeParagraph(t, body, "LAYERED-FONT-MARKER"))
 				if format == "docx" {
 					officeAssertEffective(t, layers, "rFonts", "ascii", "Iosevka Publish")
-					officeAssertEffective(t, layers, "sz", "val", "26")
+					officeAssertEffective(t, layers, "sz", "val", "22")
 				} else {
-					officeAssertEffective(t, layers, "text-properties", "font-size", "13pt")
+					officeAssertEffective(t, layers, "text-properties", "font-size", "11pt")
 				}
 				page := []*officeXML{body}
 				if format == "odt" {
 					page = []*officeXML{pkg["styles.xml"]}
 				}
-				officeAssertLength(t, page, format, "pgSz", "w", "page-layout-properties", "page-width", 432)
-				officeAssertLength(t, page, format, "pgSz", "h", "page-layout-properties", "page-height", 648)
+				officeAssertLength(t, page, format, "pgSz", "w", "page-layout-properties", "page-width", 419.527559)
+				officeAssertLength(t, page, format, "pgSz", "h", "page-layout-properties", "page-height", 595.275591)
 				officeAssertLength(t, page, format, "pgMar", "top", "page-layout-properties", "margin-top", tc.margin*72/25.4)
 			})
 		}
