@@ -6,17 +6,18 @@
 
 * Automated regression
 
-** GREEN RT079.1 - Backdrop configuration and image preparation remain deterministic :testdef:
+** RED RT079.1 - Backdrop configuration and image preparation remain deterministic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-079-1-result
-:REVISION: 3dbf3724a6fb7017694cd572c81ec8222caece3f
+:REVISION: 32479e8db61acb219bcd92e62fe70103ea8159d7
 :COMMAND: go test ./internal/config ./internal/app -run '^TestRT079_' -count=1 -timeout=10m
-:EVIDENCE: Typed defaults, strict complete-path failures, dormant cascade branches, explicit none, every dotted Org leaf, YAML/Org parity, original-source treatment, page-aspect crop, 512-pixel ceiling, no-upscale behaviour and derivative selection all passed.
+:EVIDENCE: Intended JPEG-amendment RED. Configuration, source projection and image preparation reach the derivative assertion, which observes backdrop.png instead of the required .jpg JPEG while the sharp prepared inset remains PNG.
 :END:
 
 - Runs :: 2026-11-07 at =6ee6008=: RED at the typed configuration, image-preparation, source-projection and compiled-PDF boundaries.
 - Runs :: 2026-11-07 at =1c4dab1=: RED after extending the image-preparation boundary to cover explicit disablement, transparent-source treatment and original-source selection.
 - Runs :: 2026-11-07 at =3dbf372=: GREEN across configuration and application packages.
+- Runs :: 2026-11-07 at =32479e8=: RED only at the amended derivative extension and decoded-format assertions; existing setup and retained boundaries execute normally.
 
 ** GREEN RT079.2 - Backdrop and overlay treatments resolve by region :testdef:
 :PROPERTIES:
