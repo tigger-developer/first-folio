@@ -120,6 +120,13 @@ func TestRT073_1DodgePaddingIsAvailableToOrgSourceConfiguration(t *testing.T) {
 }
 
 func TestRT081_2DisabledCoverBypassesActiveFieldValidation(t *testing.T) {
+	paths, pathsErr := ScriptSourcePaths()
+	if pathsErr != nil {
+		t.Fatal(pathsErr)
+	}
+	if _, ok := paths["folio.cover-image.enabled"]; !ok {
+		t.Fatal("folio.cover-image.enabled is absent from Org source configuration paths")
+	}
 	cfg, err := Load(Options{Mode: ModeScript, Home: t.TempDir(), LocalDir: t.TempDir(), Source: map[string]any{"folio": map[string]any{"cover-image": map[string]any{"enabled": false, "path": 42, "mode": "invalid"}}}})
 	if err != nil {
 		t.Fatal(err)
