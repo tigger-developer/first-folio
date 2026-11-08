@@ -9,7 +9,7 @@
 ** GREEN RT081.1 - Disabled covers are ignored across rendered formats :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-081-1-result
-:REVISION: 95806752d196d79f1109b04d49884ae84092774f
+:REVISION: 2d9f73b
 :COMMAND: go test ./internal/config ./internal/app -run 'TestRT081_' -count=1
 :EVIDENCE: Both explicit cover disablement and disabled title-page cases produced non-empty PDF, DOCX and ODT targets despite a deliberately missing source-frontmatter image.
 :END:
@@ -17,7 +17,7 @@
 ** GREEN RT081.2 - Disabled cover validation short-circuits :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-081-2-result
-:REVISION: 95806752d196d79f1109b04d49884ae84092774f
+:REVISION: 2d9f73b
 :COMMAND: go test ./internal/config ./internal/app -run 'TestRT081_' -count=1
 :EVIDENCE: The shared loader accepts the Boolean leaf and returns no cover before interpreting invalid dormant path and mode values; dotted Org recognizes the same field.
 :END:
@@ -27,5 +27,13 @@
 ** AMBER UT081.1 - Cover profile switching is acceptable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-081-1-result
-:REASON: Requires operator comparison of enabled-cover and disabled-cover profiles using the normal project source.
+:REASON: The first operator test found that compact PDF composition still rejected a retained bottom-centre author setting, leaving old targets visible after atomic failure. The corrected candidate groups that author and awaits operator retest.
 :END:
+
+- Failed run 2026-11-08 :: Title-page-disabled conversion reported an error and pre-existing outputs retained images in misleading positions.
+- Corrective automated evidence :: The repository regression now covers a disabled title page with a retained bottom-centre author across PDF, DOCX and ODT. An isolated temporary copy of the actors profile and =Aisle_Seats.org= produced all three outputs without loading its unavailable cover asset; live files and the installed symlink were not used.
+
+* Delivery checks
+
+- =make test= and =make lint= passed at =2d9f73b= after reconciling the retained W073 compact-author expectation.
+- =make vulncheck= passed at =2d9f73b= and reported no vulnerabilities.

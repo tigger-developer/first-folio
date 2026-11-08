@@ -9,9 +9,9 @@
 ** GREEN RT080.1 - Renderers consume stage-direction space after :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-080-1-result
-:REVISION: 95806752d196d79f1109b04d49884ae84092774f
+:REVISION: 2d9f73b
 :COMMAND: go test ./internal/config ./internal/app -run 'TestRT081_|TestScriptLayoutConfigurationParity|TestRT054_2OfficeBodyLayoutLengths' -count=1
-:EVIDENCE: The focused conversion tests passed. Typst emitted below 0.75em and DOCX/ODT exposed the expected compacted 4.5pt paragraph-after value; the complete suite passed at the implementation revision before the documentation-only reconciliation.
+:EVIDENCE: The focused conversion tests passed. Typst emitted below 0.75em and DOCX/ODT exposed the expected compacted 4.5pt paragraph-after value; the complete suite passed on the integrated candidate.
 :END:
 
 * User validation
@@ -22,3 +22,8 @@
 :REVISION: 78b5a8a8249de22109ce8d866a203ebd37d2d76c
 :EVIDENCE: Operator reported on 2026-11-08 that PDF, DOCX and ODT user tests passed.
 :END:
+
+* Delivery checks
+
+- =make test= and =make lint= passed at =2d9f73b=.
+- =make vulncheck= passed at =2d9f73b= and reported no vulnerabilities.
