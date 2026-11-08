@@ -63,7 +63,7 @@ func TestAT074_1PublicDOCXConversionPreservesTitleImageSemantics(t *testing.T) {
 		dir := t.TempDir()
 		source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.docx")
 		writeW073CropMarkerPNG(t, filepath.Join(dir, "cover.png"), 300, 500)
-		writeAppFile(t, source, "#+TITLE: BACKGROUNDTITLE\n#+SUBTITLE: BACKGROUNDSUBTITLE\n#+AUTHOR: BACKGROUNDAUTHOR\n* ACT ONE\n**** CÁIT\nBODYMARKER.\n")
+		writeAppFile(t, source, "#+TITLE: BACKGROUNDTITLE\n#+SUBTITLE: BACKGROUNDSUBTITLE\n#+AUTHOR: BACKGROUNDAUTHOR\n#+DATE: BACKGROUNDDATE\n#+VERSION: BACKGROUNDVERSION\n* ACT ONE\n**** CÁIT\nBODYMARKER.\n")
 		writeAppFile(t, filepath.Join(dir, "script.yaml"), `folio:
   title-page:
     title:
@@ -78,7 +78,7 @@ func TestAT074_1PublicDOCXConversionPreservesTitleImageSemantics(t *testing.T) {
       blur: 2mm
       padding: 5mm
       wash:
-        treatment: light
+        treatment: dark
         opacity: 70%
 `)
 		_, stderr, err := officeRun(t, binary, dir, officeEnv(t, t.TempDir(), nil), "convert", source, target)
@@ -86,7 +86,7 @@ func TestAT074_1PublicDOCXConversionPreservesTitleImageSemantics(t *testing.T) {
 			t.Fatalf("convert: %v: %s", err, stderr)
 		}
 		document := string(w074PackageMember(t, target, "word/document.xml"))
-		for _, marker := range []string{"BACKGROUNDTITLE", "BACKGROUNDSUBTITLE", "BACKGROUNDAUTHOR", "BODYMARKER"} {
+		for _, marker := range []string{"BACKGROUNDTITLE", "BACKGROUNDSUBTITLE", "BACKGROUNDAUTHOR", "BACKGROUNDDATE", "BACKGROUNDVERSION", "BODYMARKER"} {
 			if !strings.Contains(document, marker) {
 				t.Errorf("editable document text lacks %s", marker)
 			}
@@ -108,6 +108,17 @@ func TestAT074_1PublicDOCXConversionPreservesTitleImageSemantics(t *testing.T) {
 		wantGap := 4 * 72 / 25.4
 		if absoluteFloatW073((subtitle.yMin-title.yMax)-wantGap) > 2*72/25.4 {
 			t.Errorf("subtitle visible gap=%.2fpt, want %.2fpt within 2mm", subtitle.yMin-title.yMax, wantGap)
+		}
+		washPoint := image.Pt(80, int((title.yMax+subtitle.yMin)/2))
+		washPixel := color.RGBAModel.Convert(page.At(washPoint.X, washPoint.Y)).(color.RGBA)
+		if washPixel.R > 120 || washPixel.G > 40 || washPixel.B > 90 {
+			t.Errorf("title wash is not visibly dark at %v: got %#v", washPoint, washPixel)
+		}
+		date := w073WordBounds(t, pdf, "BACKGROUNDDATE")
+		bottomWashPoint := image.Pt(180, int(date.yMin))
+		bottomWashPixel := color.RGBAModel.Convert(page.At(bottomWashPoint.X, bottomWashPoint.Y)).(color.RGBA)
+		if bottomWashPixel.R > 120 || bottomWashPixel.G > 40 || bottomWashPixel.B > 90 {
+			t.Errorf("bottom metadata wash is not visibly dark at %v: got %#v", bottomWashPoint, bottomWashPixel)
 		}
 	})
 

@@ -57,8 +57,8 @@
 
 * User validation
 
-** AMBER UT074.1 - DOCX title images remain editable and stable :testdef:
+** RED UT074.1 - DOCX title images remain editable and stable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-074-1-result
-:REASON: Requires operator review in a Word-compatible editor after delivery-code audit.
+:REASON: Operator review in LibreOffice found that overlay wash shading was not visible behind editable title-page text, leaving white title and metadata text unreadable over the artwork. Correction awaits operator retest.
 :END:
