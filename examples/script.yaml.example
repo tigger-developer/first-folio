@@ -80,7 +80,7 @@
   #       weight: bold
   #       style: regular
   #     case-transform: as-written   # upper | lower | as-written | small-caps
-  #     position: third          # third | center | literal 0% through 100%
+  #     position: third          # dodge: group-centre anchor; 50% = center
   #     space-before: 0
   #   subtitle:
   #     align: center            # retained; title.align controls the grouped output
@@ -114,6 +114,15 @@
   #   superscale: null          # null | default | 2x | 4x | 8x
   #   dodge:
   #     padding: 1em            # positive em/mm clearance after centre/third placement
+  #   backdrop:                 # inset only; full-page JPEG layer behind the sharp PNG
+  #     mode: image             # none | image | solid
+  #     image:
+  #       blur: 8mm             # positive mm; max 512px, no upscaling, JPEG quality 85
+  #     solid:
+  #       color: "#2a2524"      # exact #RRGGBB, required for solid mode
+  #     wash:
+  #       treatment: dark       # light gives black page text; dark gives white page text
+  #       opacity: 25%          # 0%-100%; defaults to 0%
   #   overlay:
   #     blur: 0mm               # non-negative mm radius
   #     wash:

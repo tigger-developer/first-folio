@@ -1,0 +1,79 @@
+#+TITLE: W079 - Inset cover title-page backdrop validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** GREEN RT079.1 - Backdrop configuration and image preparation remain deterministic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-079-1-result
+:REVISION: 3ec1d04b5d6968cf6e55272ce6bfbeb1c5f463c8
+:COMMAND: go test ./internal/config ./internal/app -run '^TestRT079_' -count=1 -timeout=10m
+:EVIDENCE: Configuration, source projection and image preparation produce a .jpg backdrop decoded as JPEG at fixed quality 85 while the separately prepared sharp inset remains PNG.
+:END:
+
+- Runs :: 2026-11-07 at =6ee6008=: RED at the typed configuration, image-preparation, source-projection and compiled-PDF boundaries.
+- Runs :: 2026-11-07 at =1c4dab1=: RED after extending the image-preparation boundary to cover explicit disablement, transparent-source treatment and original-source selection.
+- Runs :: 2026-11-07 at =3dbf372=: GREEN across configuration and application packages.
+- Runs :: 2026-11-07 at =32479e8=: RED only at the amended derivative extension and decoded-format assertions; existing setup and retained boundaries execute normally.
+- Runs :: 2026-11-07 at =3ec1d04=: GREEN across configuration and application packages; the generated backdrop decodes as JPEG and the sharp inset decodes as PNG.
+
+** GREEN RT079.2 - Backdrop and overlay treatments resolve by region :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-079-2-result
+:REVISION: 3ec1d04b5d6968cf6e55272ce6bfbeb1c5f463c8
+:COMMAND: go test ./internal/config ./internal/app -run '^TestRT079_' -count=1 -timeout=10m
+:EVIDENCE: Compiled PDFs reported black title, subtitle and footer marker text for light dodge treatment, white for dark dodge treatment, and the opposite localized overlay treatment remained authoritative inside overlay regions.
+:END:
+
+- Runs :: 2026-11-07 at =6ee6008=: RED before rendering because the approved typed configuration does not yet exist.
+- Runs :: 2026-11-07 at =1c4dab1=: RED remained isolated at the same unimplemented typed configuration boundary.
+- Runs :: 2026-11-07 at =3dbf372=: GREEN through Typst and extracted page-one PDF font colours.
+- Runs :: 2026-11-07 at =3ec1d04=: GREEN after the JPEG derivative amendment through Typst and extracted page-one PDF font colours.
+
+* Acceptance tests
+
+** GREEN AT079.1 - Rendered inset backdrops follow the PDF contract :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-079-1-result
+:REVISION: 3ec1d04b5d6968cf6e55272ce6bfbeb1c5f463c8
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT079_' -count=1 -timeout=10m
+:EVIDENCE: A freshly built executable rendered dotted Org image and YAML solid backdrops. Rasterized image mode filled all page edges, retained materially sharper inset variation and used white live text; solid corners matched #2a2524 within tolerance and used black live text.
+:END:
+
+- Runs :: 2026-11-07 at =6ee6008=: RED through a freshly built executable, Typst, page-one rasterization and extracted PDF text colours.
+- Runs :: 2026-11-07 at =3dbf372=: GREEN through a freshly built executable, Typst, rasterized page one and extracted PDF text colours.
+- Runs :: 2026-11-07 at =3ec1d04=: GREEN after the JPEG derivative amendment through a freshly built executable, Typst, rasterized page one and extracted PDF text colours.
+
+** GREEN AT079.2 - Invalid backdrop input preserves the target :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-079-2-result
+:REVISION: 3ec1d04b5d6968cf6e55272ce6bfbeb1c5f463c8
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT079_' -count=1 -timeout=10m
+:EVIDENCE: Background-cover use, missing and malformed solid colour, invalid active image blur, unknown nested key and unsupported DOCX output each exited non-zero with the required complete path and preserved the sentinel target byte for byte.
+:END:
+
+- Runs :: 2026-11-07 at =6ee6008=: RED for field-specific diagnostics; sentinel publication assertions executed and remained intact.
+- Runs :: 2026-11-07 at =3dbf372=: GREEN through the built public command with atomic target preservation.
+- Runs :: 2026-11-07 at =3ec1d04=: GREEN after the JPEG derivative amendment through the built public command with atomic target preservation.
+
+* Delivery checks
+
+- 2026-11-07 at =3dbf372=: =make test= GREEN; =internal/app= completed in =413.135s=, =internal/manuscript= in =101.586s= and every remaining package passed or was validly cached.
+- 2026-11-07 at =3dbf372=: =make lint= GREEN.
+- 2026-11-07 at =3dbf372=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
+- 2026-11-07 at =3dbf372=: =git diff --check= GREEN and the working tree contained no uncommitted product or documentation delta before this validation update.
+- 2026-11-08 at =3ec1d04=: =make test= GREEN; =internal/app= completed in =425.196s=, =internal/manuscript= in =106.746s= and every remaining package passed or was validly cached.
+- 2026-11-08 at =3ec1d04=: =make lint= GREEN.
+- 2026-11-08 at =3ec1d04=: =make vulncheck= GREEN; =govulncheck= reported no vulnerabilities.
+- 2026-11-08 at =3ec1d04=: =git diff --check= GREEN before this validation update.
+
+* User validation
+
+** AMBER UT079.1 - Inset backdrop composition is visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-079-1-result
+:REASON: Requires operator inspection of image and solid backdrop PDFs after delivery-code audit.
+:END:

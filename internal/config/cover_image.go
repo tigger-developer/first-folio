@@ -5,25 +5,33 @@ package config
 import (
 	"fmt"
 	"math"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
 )
 
+var coverHexColourRE = regexp.MustCompile(`^#[0-9A-Fa-f]{6}$`)
+
 // CoverImage is the complete effective cover-image value after cascade merge.
 type CoverImage struct {
-	Path                 string
-	Mode                 string
-	Placement            string
-	Size                 string
-	ImageTreatment       string
-	ImageOpacity         float64
-	Superscale           string
-	DodgePadding         string
-	OverlayBlur          string
-	OverlayWashTreatment string
-	OverlayWashOpacity   float64
-	OverlayPadding       string
+	Path                  string
+	Mode                  string
+	Placement             string
+	Size                  string
+	ImageTreatment        string
+	ImageOpacity          float64
+	Superscale            string
+	DodgePadding          string
+	OverlayBlur           string
+	OverlayWashTreatment  string
+	OverlayWashOpacity    float64
+	OverlayPadding        string
+	BackdropMode          string
+	BackdropImageBlur     string
+	BackdropSolidColor    string
+	BackdropWashTreatment string
+	BackdropWashOpacity   float64
 }
 
 // CoverImage returns the typed effective cover-image configuration when enabled.
@@ -36,7 +44,7 @@ func (c Config) CoverImage() (CoverImage, bool, error) {
 	if !ok {
 		return CoverImage{}, false, fmt.Errorf("folio.cover-image must be a mapping; got %#v", raw)
 	}
-	if err := coverKeys("folio.cover-image", block, "path", "mode", "placement", "size", "image", "superscale", "dodge", "overlay"); err != nil {
+	if err := coverKeys("folio.cover-image", block, "path", "mode", "placement", "size", "image", "superscale", "dodge", "overlay", "backdrop"); err != nil {
 		return CoverImage{}, false, err
 	}
 	if len(block) == 0 {
@@ -175,12 +183,104 @@ func (c Config) CoverImage() (CoverImage, bool, error) {
 		return CoverImage{}, false, fmt.Errorf("folio.cover-image.overlay must retain its defaults when folio.cover-image.placement is dodge")
 	}
 
+	backdropMode, backdropImageBlur, backdropSolidColor := "", "", ""
+	backdropWashTreatment := ""
+	backdropWashOpacity := 0.0
+	backdropValue, backdropPresent := block["backdrop"]
+	if backdropPresent && backdropValue != nil {
+		backdrop, err := coverMapping(block, "backdrop", "folio.cover-image.backdrop")
+		if err != nil {
+			return CoverImage{}, false, err
+		}
+		if err := coverKeys("folio.cover-image.backdrop", backdrop, "mode", "image", "solid", "wash"); err != nil {
+			return CoverImage{}, false, err
+		}
+		backdropImage, err := coverMapping(backdrop, "image", "folio.cover-image.backdrop.image")
+		if err != nil {
+			return CoverImage{}, false, err
+		}
+		if err := coverKeys("folio.cover-image.backdrop.image", backdropImage, "blur"); err != nil {
+			return CoverImage{}, false, err
+		}
+		backdropSolid, err := coverMapping(backdrop, "solid", "folio.cover-image.backdrop.solid")
+		if err != nil {
+			return CoverImage{}, false, err
+		}
+		if err := coverKeys("folio.cover-image.backdrop.solid", backdropSolid, "color"); err != nil {
+			return CoverImage{}, false, err
+		}
+		backdropWash, err := coverMapping(backdrop, "wash", "folio.cover-image.backdrop.wash")
+		if err != nil {
+			return CoverImage{}, false, err
+		}
+		if err := coverKeys("folio.cover-image.backdrop.wash", backdropWash, "treatment", "opacity"); err != nil {
+			return CoverImage{}, false, err
+		}
+
+		backdropMode, err = coverString(backdrop, "mode", "folio.cover-image.backdrop.mode", true)
+		if err != nil {
+			return CoverImage{}, false, err
+		}
+		backdropImageBlur, err = coverStringDefault(backdropImage, "blur", "folio.cover-image.backdrop.image.blur", "8mm")
+		if err != nil {
+			return CoverImage{}, false, err
+		}
+		backdropSolidColor, err = coverStringDefault(backdropSolid, "color", "folio.cover-image.backdrop.solid.color", "")
+		if err != nil {
+			return CoverImage{}, false, err
+		}
+		backdropWashTreatment, err = coverStringDefault(backdropWash, "treatment", "folio.cover-image.backdrop.wash.treatment", "")
+		if err != nil {
+			return CoverImage{}, false, err
+		}
+		if value, exists := backdropWash["opacity"]; exists && value != nil {
+			if _, ok := value.(string); !ok {
+				return CoverImage{}, false, fmt.Errorf("folio.cover-image.backdrop.wash.opacity must be a percentage string; got %#v", value)
+			}
+			if inactiveValue, inactiveErr := coverPercentage(backdropWash, "opacity", "folio.cover-image.backdrop.wash.opacity", 0); inactiveErr == nil {
+				backdropWashOpacity = inactiveValue
+			}
+		}
+
+		if backdropMode != "none" && backdropMode != "image" && backdropMode != "solid" {
+			return CoverImage{}, false, fmt.Errorf("folio.cover-image.backdrop.mode must be none, image or solid; got %q", backdropMode)
+		}
+		if mode != "inset" {
+			return CoverImage{}, false, fmt.Errorf("folio.cover-image.backdrop is supported only when folio.cover-image.mode is inset")
+		}
+		if backdropMode == "image" {
+			if _, err := coverLength(backdropImageBlur, "folio.cover-image.backdrop.image.blur", "mm", true); err != nil {
+				return CoverImage{}, false, err
+			}
+		}
+		if backdropMode == "solid" {
+			if !coverHexColourRE.MatchString(backdropSolidColor) {
+				return CoverImage{}, false, fmt.Errorf("folio.cover-image.backdrop.solid.color must be exactly #RRGGBB; got %q", backdropSolidColor)
+			}
+		}
+		if backdropMode == "image" || backdropMode == "solid" {
+			if backdropWashTreatment == "" {
+				return CoverImage{}, false, fmt.Errorf("folio.cover-image.backdrop.wash.treatment is required")
+			}
+			if backdropWashTreatment != "light" && backdropWashTreatment != "dark" {
+				return CoverImage{}, false, fmt.Errorf("folio.cover-image.backdrop.wash.treatment must be light or dark; got %q", backdropWashTreatment)
+			}
+			backdropWashOpacity, err = coverPercentage(backdropWash, "opacity", "folio.cover-image.backdrop.wash.opacity", 0)
+			if err != nil {
+				return CoverImage{}, false, err
+			}
+		}
+	}
+
 	return CoverImage{
 		Path: path, Mode: mode, Placement: placement, Size: size,
 		ImageTreatment: imageTreatment, ImageOpacity: imageOpacity, Superscale: superscale,
 		DodgePadding: dodgePadding,
 		OverlayBlur:  blur, OverlayWashTreatment: washTreatment,
 		OverlayWashOpacity: washOpacity, OverlayPadding: padding,
+		BackdropMode: backdropMode, BackdropImageBlur: backdropImageBlur,
+		BackdropSolidColor: backdropSolidColor, BackdropWashTreatment: backdropWashTreatment,
+		BackdropWashOpacity: backdropWashOpacity,
 	}, true, nil
 }
 

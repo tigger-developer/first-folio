@@ -88,9 +88,11 @@ folio:
         style: regular
         letter-spacing: 0em
       case-transform: as-written
-      # Script title-group position. Percentages from 0% through 100% are literal
-      # within the applicable title region. third retains the 30% alias; center
-      # retains its established script behaviour. Lengths and one-third are invalid.
+      # Ordinary/overlay percentages set preceding space. In dodge mode they
+      # anchor the centre of each movable group within its available region:
+      # 50% centres it, while 10% puts its centre one tenth down. third uses
+      # a one-third centre anchor; center is the 50% dodge alias. Lengths and
+      # one-third are invalid.
       position: third
       space-before: 0
 
@@ -162,6 +164,15 @@ folio:
   #   superscale: null          # null disables; default, 2x, 4x or 8x requests Superscale.
   #   dodge:
   #     padding: 1em            # Positive em/mm clearance applied after centre/third placement.
+  #   backdrop:                 # Inset only: optional full-page JPEG layer behind the sharp PNG.
+  #     mode: image             # none disables a lower layer; image and solid enable a backdrop.
+  #     image:
+  #       blur: 8mm             # Positive mm blur; capped at 512px, never upscaled, JPEG quality 85.
+  #     solid:
+  #       color: "#2a2524"      # Exact #RRGGBB value required only for solid mode.
+  #     wash:
+  #       treatment: dark       # light = white wash/black text; dark = black wash/white text.
+  #       opacity: 25%          # Page-wide wash strength, 0%-100%; defaults to 0%.
   #   overlay:
   #     blur: 0mm               # Physical blur radius behind each live text region.
   #     wash:

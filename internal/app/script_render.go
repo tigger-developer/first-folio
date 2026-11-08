@@ -45,10 +45,12 @@ type scriptRunningMatter struct {
 }
 
 type scriptCoverData struct {
-	Mode, Placement                      string
-	ImagePath, BlurredPath               string
+	Mode, Placement, BackdropMode        string
+	ImagePath, BlurredPath, BackdropPath string
 	Width, Height, PageWidth, PageHeight string
 	WashFill, TextFill                   string
+	BackdropFill, BackdropWashFill       string
+	BackdropTextFill                     string
 	TitlePadding, FooterPadding          string
 	DodgeFactor, DodgePadding            string
 	HasUpper, HasLower, HasBlur          bool
@@ -340,20 +342,25 @@ func newScriptTemplateDataWithCover(doc play.Document, cfg config.Config, format
 }
 
 func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, dodgeFactor string) *scriptCoverData {
-	textFill := "black"
-	base := "FFFFFF"
-	if plan.Config.OverlayWashTreatment == "dark" {
-		textFill = "white"
-		base = "000000"
+	textFill, washFill := coverTreatmentColours(plan.Config.OverlayWashTreatment, plan.Config.OverlayWashOpacity)
+	backdropTextFill, backdropWashFill := coverTreatmentColours(plan.Config.BackdropWashTreatment, plan.Config.BackdropWashOpacity)
+	backdropPath := ""
+	if plan.BackdropPath != "" {
+		backdropPath = escapeTypstString(filepath.Base(plan.BackdropPath))
 	}
-	alpha := int(plan.Config.OverlayWashOpacity*255 + 0.5)
+	backdropFill := "none"
+	if plan.Config.BackdropSolidColor != "" {
+		backdropFill = fmt.Sprintf(`rgb(%q)`, plan.Config.BackdropSolidColor)
+	}
 	rootFontPoints := typstPoints(data.RootFont.Size, 11)
 	return &scriptCoverData{
-		Mode: plan.Config.Mode, Placement: plan.Config.Placement,
+		Mode: plan.Config.Mode, Placement: plan.Config.Placement, BackdropMode: plan.Config.BackdropMode,
 		ImagePath: escapeTypstString(filepath.Base(plan.SourcePath)), BlurredPath: escapeTypstString(filepath.Base(plan.BlurredPath)),
-		Width: fmt.Sprintf("%.6gmm", plan.RenderedWidthMM), Height: fmt.Sprintf("%.6gmm", plan.RenderedHeightMM),
+		BackdropPath: backdropPath,
+		Width:        fmt.Sprintf("%.6gmm", plan.RenderedWidthMM), Height: fmt.Sprintf("%.6gmm", plan.RenderedHeightMM),
 		PageWidth: fmt.Sprintf("%.6gmm", plan.PageWidthMM), PageHeight: fmt.Sprintf("%.6gmm", plan.PageHeightMM),
-		WashFill: fmt.Sprintf(`rgb("#%s%02X")`, base, alpha), TextFill: textFill,
+		WashFill: washFill, TextFill: textFill,
+		BackdropFill: backdropFill, BackdropWashFill: backdropWashFill, BackdropTextFill: backdropTextFill,
 		TitlePadding:  coverPadding(plan.Config.OverlayPadding, populatedFontSize(data)),
 		FooterPadding: coverPadding(plan.Config.OverlayPadding, footerFontSize(data)), DodgeFactor: dodgeFactor,
 		DodgePadding: coverPadding(plan.Config.DodgePadding, rootFontPoints),
@@ -361,6 +368,15 @@ func scriptCoverTemplateData(plan *coverImagePlan, data scriptTemplateData, dodg
 		HasLower:     data.AuthorGrouped,
 		HasBlur:      plan.Config.OverlayBlur != "0mm",
 	}
+}
+
+func coverTreatmentColours(treatment string, opacity float64) (string, string) {
+	textFill, base := "black", "FFFFFF"
+	if treatment == "dark" {
+		textFill, base = "white", "000000"
+	}
+	alpha := int(opacity*255 + 0.5)
+	return textFill, fmt.Sprintf(`rgb("#%s%02X")`, base, alpha)
 }
 
 func scriptTitlePosition(value string) (offset, dodgeFactor string, err error) {

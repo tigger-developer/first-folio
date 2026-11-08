@@ -1,6 +1,6 @@
 ---
 title: Architecture
-version: "0.28"
+version: "0.29"
 last-updated: 2026-11-07
 ---
 
@@ -165,7 +165,8 @@ The renderer-neutral `folio.cover-image` model is validated by the shared
 configuration loader, while W073 adopts it only in the dedicated script PDF
 route. `internal/app` resolves assets from the source document, validates PNG
 or JPEG headers and bounded source dimensions, optionally invokes Superscale
-with literal arguments, and prepares normalized and blurred temporary PNGs.
+with literal arguments, and prepares normalized sharp PNGs and blurred JPEG
+backdrops.
 The script Typst template owns background cover-crop, inset geometry, localized
 overlay regions and dodge composition. Dodge placement first measures and
 positions each live-text group in the region bounded by the actual image edge,
@@ -176,8 +177,18 @@ remains live text. Script author placement defaults to the movable title group;
 the optional bottom-centre position instead joins date and version in a fixed
 three-slot metadata row. Dodge displacement never moves that row, and an image
 clearance collision fails before atomic publication. One validated script-title
-position resolver preserves named compatibility aliases while projecting a
-literal percentage unchanged into ordinary, overlay and dodge geometry.
+position resolver preserves named compatibility aliases. Ordinary and overlay
+layouts use a literal percentage as preceding space; dodge uses the same value
+as the centre anchor of each movable group before applying image clearance.
+For inset backdrops, the Go preparation boundary independently derives a
+page-aspect JPEG at fixed quality 85 from the original bounded source, before any optional
+Superscale selection for the sharp inset. It applies the shared treatment,
+centre-crops, downsamples to a 512-pixel longest-axis ceiling without upscaling
+and applies the configured physical blur. Solid backdrops remain validated
+colour data. Typed template data supplies the selected asset or colour, a
+page-wide wash and its text treatment; the Typst template paints that full
+bleed before composing the existing sharp inset and live text. Localized
+overlay treatment remains the more specific text and wash rule.
 Preparation and layout complete before a PDF is atomically renamed into place;
 warnings fall back to the original image, while invalid configuration, assets
 or measured dodge regions leave the target unchanged. Standalone Typst, DOCX,
@@ -209,7 +220,13 @@ Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/em
 
 ## Document History
 
-- 0.29 (2026-11-08): Make script PDF subtitle spacing an explicit measured gap based on subtitle typography.
+- 0.32 (2026-11-08): Make script PDF subtitle spacing an explicit measured gap based on subtitle typography.
+
+- 0.31 (2026-11-08): Clarify the group-centre anchor used by script dodge percentages.
+
+- 0.30 (2026-11-07): Record the fixed-quality JPEG boundary for generated blurred image backdrops.
+
+- 0.29 (2026-11-07): Add bounded original-source image and solid-colour backdrops to the inset script PDF composition path.
 
 - 0.28 (2026-11-07): Place supported source-document configuration above local YAML and feed one resolved cascade to every output route.
 

@@ -120,6 +120,8 @@
 #set page(numbering: {{if .TitlePageNumber}}"1"{{else}}none{{end}},
   header: {{if .RunningHeader.Enabled}}running-header{{else}}none{{end}},
   {{if and .Cover (eq .Cover.Mode "background")}}background: image("{{.Cover.ImagePath}}", width: 100%, height: 100%, fit: "cover"),{{end}}
+  {{if and .Cover (eq .Cover.BackdropMode "image")}}background: block(width: 100%, height: 100%)[#place(top + left)[#image("{{.Cover.BackdropPath}}", width: {{.Cover.PageWidth}}, height: {{.Cover.PageHeight}}, fit: "cover")]#place(top + left)[#rect(width: {{.Cover.PageWidth}}, height: {{.Cover.PageHeight}}, fill: {{.Cover.BackdropWashFill}})]],{{end}}
+  {{if and .Cover (eq .Cover.BackdropMode "solid")}}background: block(width: 100%, height: 100%)[#place(top + left)[#rect(width: {{.Cover.PageWidth}}, height: {{.Cover.PageHeight}}, fill: {{.Cover.BackdropFill}})]#place(top + left)[#rect(width: {{.Cover.PageWidth}}, height: {{.Cover.PageHeight}}, fill: {{.Cover.BackdropWashFill}})]],{{end}}
   {{if .Cover}}footer: none){{else}}
   {{if and .RunningFooter.Enabled (not .TitleSkipFooter)}}footer-descent: 0pt,{{end}}
   footer: [
@@ -150,6 +152,7 @@
 }
 {{if eq .Cover.Placement "dodge"}}
 #layout(size => {
+  {{if or (eq .Cover.BackdropMode "image") (eq .Cover.BackdropMode "solid")}}set text(fill: {{.Cover.BackdropTextFill}}){{end}}
   let image-width = {{.Cover.Width}}
   let image-height = {{.Cover.Height}}
   let image-x = (size.width - image-width) / 2

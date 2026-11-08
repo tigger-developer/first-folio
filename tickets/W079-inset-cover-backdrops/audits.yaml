@@ -34,3 +34,182 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "No W079 tests or production implementation have been written or executed."
       - "D078 source-precedence full-suite reconciliation remains in progress and is an explicit W079 delivery prerequisite."
+  - id: test-code-c1-r1
+    timestamp: "2026-11-07T23:28:42Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "65abbf8ae247acc0d90ba0be7e172dd6877bed80"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Approved W079 specification and test definitions at 6190f98a63d012a724650bc08c5547308a098c37"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, ORGMODE.md, ORG-SCHEMA.md, SELF-AUDIT.md, REVIEW.md and project-selected Go standards as deployed on 2026-11-07"
+      - "Test-code readiness from the installed sdlc-validate command"
+    evidence:
+      - "The installed validator reported schema valid and test-code ready with six acceptance criteria, two RED regression tests, two RED acceptance tests, no one-off tests and one AMBER user test."
+      - "At 1c4dab1222781beed052e775e5b1ddd979c6c829, go test ./internal/config ./internal/app -run '^TestRT079_' -count=1 -timeout=10m reached meaningful behavioural RED: the strict block and Org leaves are absent, no derivative is produced and compiled-PDF fixtures stop at the unimplemented configuration boundary."
+      - "At 6ee6008eb543d26b305eac1bfe576eac383846ec, go test -tags folio_acceptance ./internal/app -run '^TestAT079_' -count=1 -timeout=10m reached the built executable, Typst, raster and PDF-text boundaries: image mode retained white page edges and black text, YAML mode was rejected and field-specific failures remained unavailable while sentinel targets stayed intact."
+      - "RT079.1 covers typed defaults, exact strict paths, mapping types, active semantic validation, dormant branches, explicit none override through the real cascade, all dotted Org leaves, Org/YAML parity, page-aspect crop, 512-pixel ceiling, no upscale, no solid/none derivative, original-versus-Superscale source selection, transparency and image treatment."
+      - "RT079.2 inspects actual compiled PDF font colours for title, subtitle, author, version and date across dodge light/dark and opposite overlay/backdrop treatments; AT079.1 measures raster page edges, solid RGB and sharp-versus-blurred variation through a newly built binary."
+      - "The only production scaffolding consists of inert typed and plan fields needed for executable tests; it does not recognize, prepare or render backdrop behaviour. Existing W073 focused regressions passed with go test ./internal/config ./internal/app -run '^TestRT073_' -count=1 -timeout=10m."
+      - "The pre-verdict self-review identified and corrected missing explicit-none derivative and transparent treated-original coverage, reran the affected RED suite and revalidated readiness before this assessment."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The W079 target implementation does not yet exist; RED results approve the tests for implementation, not product behaviour."
+      - "UT079.1 remains AMBER for operator inspection after delivery-code review."
+  - id: delivery-code-c1-r1
+    timestamp: "2026-11-07T23:41:30Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "1024b3e5c0368c728c8ad7f66f76c918fa8bc21c"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Approved W079 specification, solution design and acceptance criteria at 6190f98a63d012a724650bc08c5547308a098c37"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORGMODE.md, ORG-SCHEMA.md, SELF-AUDIT.md, REVIEW.md and project-selected Go standards as deployed on 2026-11-07"
+      - "Current project authorities README.md, docs/config.md, docs/ARCHITECTURE.md and existing W073 cover-image contracts"
+      - "Delivery-code readiness from the installed sdlc-validate command"
+    evidence:
+      - "The installed validator reported schema valid and delivery-code ready with all two RTs and two ATs GREEN, no OTs and UT079.1 correctly AMBER."
+      - "The strict typed block accepts only mode, image, solid and wash with strict nested keys; active modes validate exact semantics, recognized inactive branches remain cascade-safe, explicit none disables lower configuration and every leaf is recognized by dotted Org frontmatter."
+      - "Image mode independently decodes the original bounded cover source, applies the shared transparent-image treatment, centre-crops to the physical page aspect, downsamples with bilinear interpolation to a 512-pixel longest-axis ceiling without upscaling and applies physical blur. Superscale remains isolated to the sharp inset path."
+      - "Typed template data escapes the prepared asset basename and supplies validated solid colour, page-wide wash and text treatment. Typst paints the full-bleed backdrop before the unchanged inset; dodge text uses backdrop treatment and localized overlay regions retain the more specific overlay treatment."
+      - "The public convert boundary continues to reject covers outside PDF and now names folio.cover-image.backdrop for unsupported backdrop consumers. Invalid active fields fail before publication with complete paths, and temporary assets remain inside the existing uniquely created cleanup directory."
+      - "At 3dbf3724a6fb7017694cd572c81ec8222caece3f, the focused RT079 and built-executable AT079 commands were GREEN. make test was GREEN with internal/app in 413.135s and internal/manuscript in 101.586s; every remaining package passed or was validly cached."
+      - "At 3dbf3724a6fb7017694cd572c81ec8222caece3f, make lint and make vulncheck were GREEN; govulncheck reported no vulnerabilities and git diff --check was GREEN."
+      - "README.md, docs/config.md, docs/ARCHITECTURE.md, presets/british.yaml and examples/script.yaml.example document the exact PDF-only contract, cascade disablement, original-source derivative, 512-pixel ceiling, treatment precedence and dotted Org form. sanitize oed was run and unsafe proposals to rename public literals such as color and center were inspected and rejected."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT079.1 remains AMBER and requires operator inspection in the normal PDF reader."
+      - "The feature branch has not been merged, installed or deployed, and the live dist/folio binary remains outside this delivery."
+  - id: definition-c1-r2
+    timestamp: "2026-11-07T23:51:18Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "5efbe6d1b9dcba64a9501189086db1f6bee25a18"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Operator instruction on 2026-11-07 to store the blurred background derivative as JPEG because PNG adds file size without useful gain"
+      - "ISSUES.md, TESTING.md, ARCHITECTURE.md, CODING.md, SECURITY.md, DOCUMENTATION.md, ORGMODE.md, ORG-SCHEMA.md, SELF-AUDIT.md and REVIEW.md as deployed on 2026-11-07"
+      - "Existing approved W079 PDF-only inset backdrop scope and test definitions"
+    evidence:
+      - "The amendment changes only the internal opaque blurred derivative from PNG to JPEG and retains the sharp inset's existing PNG preparation, public configuration, cascade semantics, PDF composition and format boundary."
+      - "The design fixes JPEG quality at 85 for deterministic standard-library encoding and explicitly traces the format through AC079.1, RT079.1, preparation flow, state, rationale and verification."
+      - "RT079.1 is the correct retained boundary for asserting JPEG format and the existing dimension, crop, treatment and no-upscale contract. AT079.1 continues to verify the rendered smooth-backdrop/sharp-inset distinction without coupling to the temporary filename."
+      - "JPEG is appropriate because image treatment already produces an opaque raster and physical blur removes the hard-edge fidelity for which lossless PNG would be useful. No new configuration, process, dependency, network or persistent state is introduced."
+      - "sanitize oed and git diff --check produced no amendment changes or whitespace diagnostics; no annotation record is present."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "The amended test and production encoding have not yet been written or executed."
+      - "The earlier delivery-code PASS applies to the pre-amendment PNG candidate and must not be used for the JPEG revision."
+  - id: test-code-c1-r2
+    timestamp: "2026-11-07T23:52:23Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "74754a91ccc0c999810878c5ecba9c6fd3b2684f"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Approved W079 JPEG derivative amendment at 5efbe6d1b9dcba64a9501189086db1f6bee25a18"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, ORG-SCHEMA.md, SELF-AUDIT.md and REVIEW.md as deployed on 2026-11-07"
+      - "Test-code readiness from the installed sdlc-validate command"
+    evidence:
+      - "The installed validator reported schema valid and test-code ready with amended RT079.1 RED, retained RT079.2 and both ATs GREEN, and UT079.1 AMBER."
+      - "At 32479e8db61acb219bcd92e62fe70103ea8159d7, the focused RT079 command reaches prepared assets and fails only because the backdrop path and decoded format are PNG instead of the amended JPEG contract."
+      - "The amended regression inspects the actual temporary file extension and image decoder format rather than source text or an implementation declaration. It separately asserts that the sharp prepared inset remains PNG."
+      - "Existing dimension, page-aspect crop, no-upscale, original-source treatment and none/solid absence assertions remain in the same executed test boundary. Rendered acceptance remains preservation GREEN because temporary encoding must not change the visible composition."
+      - "No production encoding change is present in the reviewed candidate; the test therefore establishes useful behavioural RED rather than compilation or setup failure."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "Fixed JPEG quality 85 is a production design constant reviewed at delivery-code audit; the retained behavioural test verifies the resulting file format rather than mirroring that internal argument."
+      - "UT079.1 remains AMBER for operator review after the revised candidate is rendered."
+  - id: delivery-code-c1-r2
+    timestamp: "2026-11-08T00:02:29Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "602c5290450bae4aab231d764b78c99723f7e722"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Approved W079 JPEG derivative amendment at 5efbe6d1b9dcba64a9501189086db1f6bee25a18"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORGMODE.md, ORG-SCHEMA.md, SELF-AUDIT.md and REVIEW.md as deployed for this delivery"
+      - "Current project authorities README.md, docs/config.md, docs/ARCHITECTURE.md and existing W079 cover-image contracts"
+      - "Delivery-code readiness from the installed sdlc-validate command"
+    evidence:
+      - "The installed validator reported schema valid and delivery-code ready with two RTs and two ATs GREEN, no OTs and UT079.1 correctly AMBER."
+      - "The amended regression reaches the real preparation boundary, requires a .jpg derivative decoded as JPEG and separately confirms that the prepared sharp inset remains PNG. The earlier intended RED was isolated to the old PNG derivative."
+      - "The production delta uses Go's existing standard-library JPEG encoder with the approved fixed quality 85, writes only inside the existing unique temporary cover directory and retains the established contextual create, encode and close failures. No dependency, process, network or persistent state was added."
+      - "The unchanged preparation order still treats the original bounded source, centre-crops to the physical page ratio, downsamples to the 512-pixel ceiling without upscaling, applies physical blur and passes the resulting asset through typed escaped template data. Superscale and the sharp PNG inset remain isolated from the backdrop path."
+      - "At 3ec1d04b5d6968cf6e55272ce6bfbeb1c5f463c8, the focused RT079 and built-executable AT079 commands were GREEN. make test was GREEN with internal/app in 425.196s and internal/manuscript in 106.746s; every remaining package passed or was validly cached."
+      - "At 3ec1d04b5d6968cf6e55272ce6bfbeb1c5f463c8, make lint and make vulncheck were GREEN; govulncheck reported no vulnerabilities and git diff --check was GREEN."
+      - "README.md, docs/config.md, docs/ARCHITECTURE.md, presets/british.yaml and examples/script.yaml.example distinguish the generated fixed-quality JPEG backdrop from the prepared sharp PNG inset. sanitize oed was run and unsafe proposals to rename public literals such as color and center were inspected and rejected."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT079.1 remains AMBER and requires operator inspection in the normal PDF reader."
+      - "The feature branch has not been merged, installed or deployed, and the live dist/folio binary remains outside this delivery."
