@@ -9,7 +9,7 @@
 ** GREEN RT074.1 - Native DOCX package represents the shared image plan :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-1-result
-:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
+:REVISION: 19c237ad4408a9f8799dde0c7a0890f8a755ecae
 :COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
 :EVIDENCE: All five native background, landscape inset, portrait inset, image-backdrop and solid-backdrop cases produced conforming ZIP/XML packages with embedded media, relationships, page anchors, crop and extents, unique drawing identifiers and editable metadata text.
 :END:
@@ -17,7 +17,7 @@
 ** GREEN RT074.2 - DOCX packaging rejects invalid image state safely :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-2-result
-:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
+:REVISION: 19c237ad4408a9f8799dde0c7a0890f8a755ecae
 :COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
 :EVIDENCE: Missing sharp data, unsupported format, zero dimensions, missing inset geometry and missing image-backdrop data each returned a field-specific error and no publishable bytes; the no-image control retained its previous package structure.
 :END:
@@ -25,7 +25,7 @@
 ** GREEN RT074.3 - DOCX source configuration resolves identically :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-3-result
-:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
+:REVISION: 19c237ad4408a9f8799dde0c7a0890f8a755ecae
 :COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
 :EVIDENCE: Equivalent local YAML, Markdown frontmatter YAML and dotted Org frontmatter produced identical normalized native cover package semantics and media hashes, with no unsupported or unrecognized-field warning.
 :END:
@@ -35,30 +35,30 @@
 ** GREEN AT074.1 - Public DOCX conversion preserves title-image semantics :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-074-1-result
-:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
+:REVISION: 19c237ad4408a9f8799dde0c7a0890f8a755ecae
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT074_' -count=1 -timeout=10m
-:EVIDENCE: A freshly built executable produced background overlay, solid-backdrop landscape inset and prepared-JPEG-backdrop portrait inset DOCX files. Isolated LibreOffice and Poppler checks measured full-page cover, 80mm proportional geometry, literal 40% title placement, a visible 4mm subtitle gap, backdrop coverage and dodge non-overlap within the declared tolerances; metadata remained native document text.
+:EVIDENCE: A freshly built executable produced background overlay, solid-backdrop landscape inset and prepared-JPEG-backdrop portrait inset DOCX files. Isolated LibreOffice and Poppler checks measured full-page cover, 80mm proportional geometry, literal 40% title placement, a visible 4mm subtitle gap, visibly opaque title and bottom-metadata wash regions, backdrop coverage and dodge non-overlap within the declared tolerances; metadata remained native document text.
 :END:
 
 ** GREEN AT074.2 - DOCX publication is atomic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-074-2-result
-:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
+:REVISION: 19c237ad4408a9f8799dde0c7a0890f8a755ecae
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT074_' -count=1 -timeout=10m
 :EVIDENCE: Missing-image and invalid-solid-colour conversions retained an existing sentinel target and reported the originating configuration path; the no-image control retained its previous title structure.
 :END:
 
 * Delivery checks
 
-- Focused RT and tagged rendered AT commands passed at =84e6cf89fa14662b006ffb439bdfadb8087b511d=.
-- =make test= passed at =84e6cf89fa14662b006ffb439bdfadb8087b511d= after audit remediation strengthened package ordering, aligned treatment crop and metadata-row placement.
-- =make lint= and =make vulncheck= passed at =84e6cf89fa14662b006ffb439bdfadb8087b511d=; the vulnerability scan reported no findings.
+- Focused RT and tagged rendered AT commands passed at =19c237ad4408a9f8799dde0c7a0890f8a755ecae=, including pixel-level evidence that the title and bottom-metadata wash regions render visibly above the cover artwork.
+- =make test= passed at =19c237ad4408a9f8799dde0c7a0890f8a755ecae= after the correction moved the overlay wash into the editable foreground text boxes.
+- =make lint= and =make vulncheck= passed at =19c237ad4408a9f8799dde0c7a0890f8a755ecae=; the vulnerability scan reported no findings.
 - Documentation changes passed =sanitize oed= unchanged and =git diff --check=.
 
 * User validation
 
-** RED UT074.1 - DOCX title images remain editable and stable :testdef:
+** AMBER UT074.1 - DOCX title images remain editable and stable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-074-1-result
-:REASON: Operator review in LibreOffice found that overlay wash shading was not visible behind editable title-page text, leaving white title and metadata text unreadable over the artwork. Correction awaits operator retest.
+:REASON: Operator review in LibreOffice found that the original overlay wash was not visible behind editable title-page text. The correction now renders the configured wash as the editable foreground text-box fill and awaits operator retest.
 :END:
