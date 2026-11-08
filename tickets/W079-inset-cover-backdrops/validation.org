@@ -72,8 +72,12 @@
 
 * User validation
 
-** AMBER UT079.1 - Inset backdrop composition is visually acceptable :testdef:
+** GREEN UT079.1 - Inset backdrop composition is visually acceptable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-079-1-result
-:REASON: Requires operator inspection of image and solid backdrop PDFs after delivery-code audit.
+:REVISION: 5be9304 - merged W079 delivery installed from master
+:EVIDENCE: Operator explicitly accepted the installed PDF backdrop result for closure on 2026-11-08 after testing representative project documents.
 :END:
+
+- Method :: User validation in the normal PDF workflow.
+- Result :: Accepted for use and closure. Exact reader version and viewing conditions were not recorded.

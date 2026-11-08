@@ -78,14 +78,16 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** ACTIVE W079 - Add inset cover title-page backdrops :feature:
+** DONE W079 - Add inset cover title-page backdrops :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-079
 :PRIORITY: P2
 :SOURCE: operator
 :CREATED: 2026-11-07
+:CLOSED: 2026-11-08
 :END:
 - Specification :: [[file:../tickets/W079-inset-cover-backdrops/spec.org][W079 - Add inset cover title-page backdrops]].
+- Closure 2026-11-08 :: The operator explicitly accepted the installed PDF backdrop result and requested closure after integration at =5be9304=. RT079.1, RT079.2, AT079.1 and AT079.2 remain GREEN; UT079.1 is GREEN by operator acceptance. Product and configuration documentation are reconciled. No release or remote publication accompanies closure.
 
 ** ACTIVE D078 - Let source frontmatter override shared local YAML :defect:
 :PROPERTIES:
