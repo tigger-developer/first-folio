@@ -79,6 +79,8 @@ func w074PackageFiles(t *testing.T, raw []byte) map[string][]byte {
 func TestRT074_1NativeDOCXPackageRepresentsSharedImagePlan(t *testing.T) {
 	sharp := w074Asset(t, "png", 400, 200, color.RGBA{R: 215, G: 40, B: 120, A: 255})
 	blurred := w074Asset(t, "png", 400, 200, color.RGBA{R: 150, G: 120, B: 140, A: 255})
+	portrait := w074Asset(t, "png", 200, 400, color.RGBA{R: 215, G: 40, B: 120, A: 255})
+	portraitBlurred := w074Asset(t, "png", 200, 400, color.RGBA{R: 150, G: 120, B: 140, A: 255})
 	backdrop := w074Asset(t, "jpeg", 842, 1191, color.RGBA{R: 55, G: 65, B: 75, A: 255})
 
 	cases := []struct {
@@ -93,14 +95,21 @@ func TestRT074_1NativeDOCXPackageRepresentsSharedImagePlan(t *testing.T) {
 			cover:             ScriptCover{Config: config.CoverImage{Mode: "background", Placement: "overlay", ImageTreatment: "light", ImageOpacity: 1, OverlayBlur: "2mm", OverlayWashTreatment: "dark", OverlayWashOpacity: 0.35, OverlayPadding: "5mm"}, Sharp: sharp, Blurred: blurred},
 			wantMedia:         []string{"word/media/folio-cover-sharp.png", "word/media/folio-cover-blurred.png"},
 			wantDrawingNames:  []string{"Folio cover background", "Folio title treatment", "Folio title text"},
-			wantDocumentToken: []string{"a:srcRect", "wp:anchor", "relativeFrom=\"page\""},
+			wantDocumentToken: []string{"a:srcRect", "wp:anchor", "relativeFrom=\"page\"", "cx=\"7560000\" cy=\"10692000\""},
 		},
 		{
 			name:              "inset dodge with current placement semantics",
 			cover:             ScriptCover{Config: config.CoverImage{Mode: "inset", Placement: "dodge", Size: "80mm", ImageTreatment: "light", ImageOpacity: 1, DodgePadding: "5mm"}, Sharp: sharp, RenderedWidthMM: 80, RenderedHeightMM: 40},
 			wantMedia:         []string{"word/media/folio-cover-sharp.png"},
 			wantDrawingNames:  []string{"Folio cover inset", "Folio upper title text", "Folio bottom metadata text"},
-			wantDocumentToken: []string{"W074 TITLE", "W074 SUBTITLE", "W074 AUTHOR", "W074 DATE", "W074 VERSION"},
+			wantDocumentToken: []string{"cx=\"2880000\" cy=\"1440000\"", "W074 TITLE", "W074 SUBTITLE", "W074 AUTHOR", "W074 DATE", "W074 VERSION"},
+		},
+		{
+			name:              "portrait inset overlay",
+			cover:             ScriptCover{Config: config.CoverImage{Mode: "inset", Placement: "overlay", Size: "80mm", ImageTreatment: "light", ImageOpacity: 1, OverlayBlur: "2mm", OverlayWashTreatment: "dark", OverlayWashOpacity: 0.35, OverlayPadding: "5mm"}, Sharp: portrait, Blurred: portraitBlurred, RenderedWidthMM: 40, RenderedHeightMM: 80},
+			wantMedia:         []string{"word/media/folio-cover-sharp.png", "word/media/folio-cover-blurred.png"},
+			wantDrawingNames:  []string{"Folio cover inset", "Folio title treatment", "Folio title text"},
+			wantDocumentToken: []string{"cx=\"1440000\" cy=\"2880000\"", "W074 TITLE", "W074 SUBTITLE"},
 		},
 		{
 			name:              "image backdrop",
