@@ -405,3 +405,4 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 *** Verification bounds
 
 - Decision :: No metered or live external one-off tests are required. LibreOffice, Poppler and package inspection remain local bounded test tools. The complete AT/RT package precedes implementation; no visual user result is inferred from automated rendering.
+- Test scaffold :: The test-first candidate declares =office.ScriptCover= asset/geometry values and =ExportScriptWithCover=, with validation returning only the explicit unimplemented error for non-nil covers. It changes no public conversion behaviour and exists solely to let the complete tests reach the intended product boundary rather than fail compilation.

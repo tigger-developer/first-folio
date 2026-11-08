@@ -19,6 +19,14 @@ func ValidText(text string) error { return docxValidText(text) }
 
 // ExportScript uses the established script layout and shared office serializers.
 func ExportScript(doc play.Document, cfg config.Config, sourceFormat play.Format, format string) ([]byte, []string, error) {
+	return ExportScriptWithCover(doc, cfg, sourceFormat, format, nil)
+}
+
+// ExportScriptWithCover supplies an optional, already prepared script-cover projection.
+func ExportScriptWithCover(doc play.Document, cfg config.Config, sourceFormat play.Format, format string, cover *ScriptCover) ([]byte, []string, error) {
+	if err := validateScriptCover(cover); err != nil {
+		return nil, nil, err
+	}
 	layout, err := newDOCXWriter(doc, cfg, sourceFormat)
 	if err != nil {
 		return nil, nil, err
