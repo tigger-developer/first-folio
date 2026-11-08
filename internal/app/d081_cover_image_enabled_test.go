@@ -11,6 +11,7 @@ import (
 func TestRT081_1DisabledScriptCoverIsIgnoredAcrossRenderedFormats(t *testing.T) {
 	binary := officeBuild(t)
 	const source = `#+TITLE: Disabled cover
+#+AUTHOR: Example Author
 #+FOLIO.COVER-IMAGE.PATH: missing-cover.png
 #+FOLIO.COVER-IMAGE.MODE: background
 * ACT ONE
@@ -22,7 +23,7 @@ Hello.
 		yaml string
 	}{
 		{"cover disabled", "folio:\n  cover-image:\n    enabled: false\n"},
-		{"title page disabled", "folio:\n  title-page:\n    enabled: false\n"},
+		{"title page disabled", "folio:\n  title-page:\n    enabled: false\n    author:\n      position: bottom-center\n"},
 	} {
 		for _, format := range []string{"pdf", "docx", "odt"} {
 			t.Run(control.name+"/"+format, func(t *testing.T) {
