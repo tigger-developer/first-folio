@@ -176,3 +176,40 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "Fixed JPEG quality 85 is a production design constant reviewed at delivery-code audit; the retained behavioural test verifies the resulting file format rather than mirroring that internal argument."
       - "UT079.1 remains AMBER for operator review after the revised candidate is rendered."
+  - id: delivery-code-c1-r2
+    timestamp: "2026-11-08T00:02:29Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "602c5290450bae4aab231d764b78c99723f7e722"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: false
+      reviewer_confirmed: false
+    verdict: PASS
+    criteria:
+      - "Approved W079 JPEG derivative amendment at 5efbe6d1b9dcba64a9501189086db1f6bee25a18"
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, DOCUMENTATION.md, ORGMODE.md, ORG-SCHEMA.md, SELF-AUDIT.md and REVIEW.md as deployed for this delivery"
+      - "Current project authorities README.md, docs/config.md, docs/ARCHITECTURE.md and existing W079 cover-image contracts"
+      - "Delivery-code readiness from the installed sdlc-validate command"
+    evidence:
+      - "The installed validator reported schema valid and delivery-code ready with two RTs and two ATs GREEN, no OTs and UT079.1 correctly AMBER."
+      - "The amended regression reaches the real preparation boundary, requires a .jpg derivative decoded as JPEG and separately confirms that the prepared sharp inset remains PNG. The earlier intended RED was isolated to the old PNG derivative."
+      - "The production delta uses Go's existing standard-library JPEG encoder with the approved fixed quality 85, writes only inside the existing unique temporary cover directory and retains the established contextual create, encode and close failures. No dependency, process, network or persistent state was added."
+      - "The unchanged preparation order still treats the original bounded source, centre-crops to the physical page ratio, downsamples to the 512-pixel ceiling without upscaling, applies physical blur and passes the resulting asset through typed escaped template data. Superscale and the sharp PNG inset remain isolated from the backdrop path."
+      - "At 3ec1d04b5d6968cf6e55272ce6bfbeb1c5f463c8, the focused RT079 and built-executable AT079 commands were GREEN. make test was GREEN with internal/app in 425.196s and internal/manuscript in 106.746s; every remaining package passed or was validly cached."
+      - "At 3ec1d04b5d6968cf6e55272ce6bfbeb1c5f463c8, make lint and make vulncheck were GREEN; govulncheck reported no vulnerabilities and git diff --check was GREEN."
+      - "README.md, docs/config.md, docs/ARCHITECTURE.md, presets/british.yaml and examples/script.yaml.example distinguish the generated fixed-quality JPEG backdrop from the prepared sharp PNG inset. sanitize oed was run and unsafe proposals to rename public literals such as color and center were inspected and rejected."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT079.1 remains AMBER and requires operator inspection in the normal PDF reader."
+      - "The feature branch has not been merged, installed or deployed, and the live dist/folio binary remains outside this delivery."
