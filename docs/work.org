@@ -78,6 +78,16 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** ACTIVE D080 - Configure space after script stage directions :defect:
+:PROPERTIES:
+:CUSTOM_ID: d-080
+:PRIORITY: P1
+:SOURCE: operator
+:CREATED: 2026-11-08
+:END:
+- Specification :: [[file:../tickets/D080-stage-direction-space-after/spec.org][D080 - Stage-direction space after]] (emergency reconciliation pending).
+- Emergency authority :: =BYPASS-GATE-7= invoked 2026-11-08 to add =folio.positioning.stage-direction.space-after= consistently to PDF, DOCX and ODT script conversion while preserving the existing default when omitted.
+
 ** DONE W079 - Add inset cover title-page backdrops :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-079
