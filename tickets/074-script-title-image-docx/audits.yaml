@@ -99,3 +99,38 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "Definition review assessed requirements, design and test definitions; it did not execute implementation tests."
       - "Delivery depends on the W073 contract remaining unchanged."
+  - id: definition-c1-r4
+    timestamp: "2026-11-08T02:09:43Z"
+    profile: SDLC
+    gate: definition
+    cycle: 1
+    round: 4
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "8ddeabb4419eb8f54516526622412c9f1847132b"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "ISSUES.md, ARCHITECTURE.md, TESTING.md, CODING.md, SECURITY.md, DOCUMENTATION.md, ORG-SCHEMA.md, REVIEW.md and the Go technology standard retained in the current session"
+      - "Current W073 and W079 title-image, source-cascade, placement and prepared-backdrop contracts"
+      - "Native editable DOCX writer, package validation and atomic publication boundaries inspected at 8ddeabb4419eb8f54516526622412c9f1847132b"
+    evidence:
+      - "tickets/074-script-title-image-docx/spec.org at 8ddeabb4419eb8f54516526622412c9f1847132b"
+      - "Eight falsifiable acceptance criteria trace to three retained RTs, two public ATs and one meaningful Word-compatible editor UT"
+      - "The design reuses the existing W073/W079 preparation pipeline once, passes a bounded immutable office.ScriptCover projection and keeps internal/office independent of internal/app"
+      - "Rendered AT coverage measures sharp images, prepared JPEG and solid backdrops, treatment layers, literal title percentages, subtitle spacing, dodge clearance and editable metadata through public DOCX conversion"
+      - "Source-cascade parity is observed through normalized native DOCX package semantics rather than source inspection or an implementation-only hook"
+      - "sanitize proposed no changes to the candidate and git diff --check passed"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "Definition review assessed requirements, solution design and test definitions; it did not execute implementation tests."
+      - "Microsoft Word user validation remains human-only and is defined as UT074.1."
