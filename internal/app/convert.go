@@ -93,9 +93,6 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 	if cover, enabled, err := cfg.CoverImage(); err != nil {
 		return err
 	} else if enabled {
-		if !cfg.Bool("folio.title-page.enabled", true) {
-			return fmt.Errorf("folio.cover-image is not supported when folio.title-page.enabled is false")
-		}
 		if opts.target != "" && strings.HasSuffix(strings.ToLower(opts.target), ".typ") {
 			return fmt.Errorf("folio.cover-image is not supported for standalone Typst output")
 		}

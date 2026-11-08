@@ -36,6 +36,9 @@ type CoverImage struct {
 
 // CoverImage returns the typed effective cover-image configuration when enabled.
 func (c Config) CoverImage() (CoverImage, bool, error) {
+	if !c.Bool("folio.title-page.enabled", true) {
+		return CoverImage{}, false, nil
+	}
 	raw, exists := c.Get("folio.cover-image")
 	if !exists || raw == nil {
 		return CoverImage{}, false, nil
@@ -44,11 +47,20 @@ func (c Config) CoverImage() (CoverImage, bool, error) {
 	if !ok {
 		return CoverImage{}, false, fmt.Errorf("folio.cover-image must be a mapping; got %#v", raw)
 	}
-	if err := coverKeys("folio.cover-image", block, "path", "mode", "placement", "size", "image", "superscale", "dodge", "overlay", "backdrop"); err != nil {
+	if err := coverKeys("folio.cover-image", block, "enabled", "path", "mode", "placement", "size", "image", "superscale", "dodge", "overlay", "backdrop"); err != nil {
 		return CoverImage{}, false, err
 	}
 	if len(block) == 0 {
 		return CoverImage{}, false, nil
+	}
+	if value, present := block["enabled"]; present {
+		enabled, ok := value.(bool)
+		if !ok {
+			return CoverImage{}, false, fmt.Errorf("folio.cover-image.enabled must be a boolean; got %#v", value)
+		}
+		if !enabled {
+			return CoverImage{}, false, nil
+		}
 	}
 	path, err := coverString(block, "path", "folio.cover-image.path", true)
 	if err != nil {

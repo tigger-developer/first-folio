@@ -154,6 +154,7 @@ folio:
   # the source document. DOCX, ODT, standalone Typst, compact script titles,
   # manuscripts and letters reject this block until separately supported.
   # cover-image:
+  #   enabled: true               # false ignores this block before image validation or loading.
   #   path: artwork/cover.jpg    # Required local PNG/JPEG path; enables the image.
   #   mode: inset               # background fills/crops the page; inset preserves the full image.
   #   placement: overlay        # overlay puts live text over it; dodge requires inset.

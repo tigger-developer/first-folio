@@ -17,6 +17,7 @@ func ScriptSourcePaths() (map[string]struct{}, error) {
 		collectSourcePaths(paths, "", data)
 	}
 	for _, path := range []string{
+		"folio.cover-image.enabled",
 		"folio.cover-image.path",
 		"folio.cover-image.mode",
 		"folio.cover-image.placement",
