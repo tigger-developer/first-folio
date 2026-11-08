@@ -27,10 +27,14 @@ func ExportScriptWithCover(doc play.Document, cfg config.Config, sourceFormat pl
 	if err := validateScriptCover(cover); err != nil {
 		return nil, nil, err
 	}
+	if cover != nil && format != "docx" {
+		return nil, nil, fmt.Errorf("script covers are not supported for %s office output", format)
+	}
 	layout, err := newDOCXWriter(doc, cfg, sourceFormat)
 	if err != nil {
 		return nil, nil, err
 	}
+	layout.cover = cover
 	var raw []byte
 	switch format {
 	case "docx":

@@ -25,6 +25,8 @@ type docxWriter struct {
 	footnotes                                                          []docxNode
 	warnings                                                           []string
 	textBytes, inlineCount                                             int
+	cover                                                              *ScriptCover
+	drawingID                                                          int
 }
 
 func newDOCXWriter(doc play.Document, cfg config.Config, sourceFormat play.Format) (*docxWriter, error) {

@@ -5,6 +5,9 @@ package office
 import "strings"
 
 func (w *docxWriter) title() ([]docxNode, error) {
+	if w.cover != nil {
+		return w.coverTitle()
+	}
 	if w.doc.Metadata["title"] == "" && w.cfg.Bool("folio.title-page.enabled", true) {
 		return nil, nil
 	}
@@ -34,8 +37,9 @@ func (w *docxWriter) title() ([]docxNode, error) {
 }
 
 type docxPart struct {
-	name, contentType, relationship string
-	root                            docxNode
+	name, contentType, relationship, relationshipID string
+	root                                            docxNode
+	raw                                             []byte
 }
 
 func (w *docxWriter) runningParts() ([]docxPart, []docxNode, error) {
@@ -140,10 +144,17 @@ func (w *docxWriter) parts() ([]docxPart, error) {
 // contentParts assembles editable native content for every source mode.
 func (w *docxWriter) contentParts(body []docxNode, section docxNode) []docxPart {
 	body = append(body, section)
+	document := dxRoot("document", dx("body", body...))
+	if w.cover != nil {
+		document = document.attr("xmlns:wp", "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing").attr("xmlns:a", "http://schemas.openxmlformats.org/drawingml/2006/main").attr("xmlns:pic", "http://schemas.openxmlformats.org/drawingml/2006/picture").attr("xmlns:wps", "http://schemas.microsoft.com/office/word/2010/wordprocessingShape")
+	}
 	parts := []docxPart{
-		{name: "word/document.xml", contentType: "document.main", root: dxRoot("document", dx("body", body...))},
+		{name: "word/document.xml", contentType: "document.main", root: document},
 		{name: "word/styles.xml", contentType: "styles", relationship: "styles", root: dxRoot("styles", w.styles...)},
 		{name: "word/settings.xml", contentType: "settings", relationship: "settings", root: dxRoot("settings", dx("evenAndOddHeaders"), dxVal("updateFields", "true"))},
+	}
+	if w.cover != nil {
+		parts = append(parts, w.coverMediaParts()...)
 	}
 	if len(w.footnotes) > 0 {
 		notes := []docxNode{

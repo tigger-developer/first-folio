@@ -99,7 +99,7 @@ func runConvert(args []string, stdout io.Writer, stderr io.Writer) error {
 		if opts.target != "" && strings.HasSuffix(strings.ToLower(opts.target), ".typ") {
 			return fmt.Errorf("folio.cover-image is not supported for standalone Typst output")
 		}
-		if targetFormat != play.FormatPDF {
+		if targetFormat != play.FormatPDF && targetFormat != play.FormatDOCX {
 			if cover.BackdropMode != "" {
 				return fmt.Errorf("folio.cover-image.backdrop is not supported for %s conversion", targetFormat)
 			}

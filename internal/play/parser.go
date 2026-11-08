@@ -279,13 +279,26 @@ func parseMarkdownSchema(doc *Document, lines []string) ([]string, error) {
 		return nil, fmt.Errorf("Markdown frontmatter has no closing --- delimiter")
 	}
 	var metadata struct {
-		Schema string `yaml:"schema"`
+		Schema   string `yaml:"schema"`
+		Title    string `yaml:"title"`
+		Subtitle string `yaml:"subtitle"`
+		Author   string `yaml:"author"`
+		Date     string `yaml:"date"`
+		Version  string `yaml:"version"`
 	}
 	if err := yaml.Unmarshal([]byte(strings.Join(lines[1:end], "\n")), &metadata); err != nil {
 		return nil, fmt.Errorf("parsing Markdown frontmatter: %w", err)
 	}
 	if metadata.Schema != "" {
 		addMetadata(doc, "schema", metadata.Schema)
+	}
+	for key, value := range map[string]string{
+		"title": metadata.Title, "subtitle": metadata.Subtitle, "author": metadata.Author,
+		"date": metadata.Date, "version": metadata.Version,
+	} {
+		if value != "" {
+			addMetadata(doc, key, value)
+		}
 	}
 	return lines[end+1:], nil
 }

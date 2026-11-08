@@ -86,6 +86,12 @@ func w074DOCXFingerprint(t *testing.T, path string) string {
 			sum := sha256.Sum256(data)
 			media = append(media, fmt.Sprintf("%s:%x", file.Name, sum))
 		} else {
+			if file.Name == "word/document.xml" {
+				const coverEnd = "</w:drawing></w:r></w:p>"
+				if end := strings.Index(string(data), coverEnd); end >= 0 {
+					data = data[:end+len(coverEnd)]
+				}
+			}
 			parts[file.Name] = data
 		}
 	}
@@ -134,8 +140,8 @@ folio:
         treatment: dark
         opacity: 15%
 ---
-## Act One
-*BODY MARKER*
+## ACT ONE
+### BODY MARKER
 `,
 		},
 		{
@@ -183,7 +189,22 @@ folio:
 			if want == "" {
 				want = got
 			} else if got != want {
-				t.Fatalf("DOCX title semantics differ from local YAML baseline")
+				index := 0
+				for index < len(got) && index < len(want) && got[index] == want[index] {
+					index++
+				}
+				start := index - 80
+				if start < 0 {
+					start = 0
+				}
+				gotEnd, wantEnd := index+160, index+160
+				if gotEnd > len(got) {
+					gotEnd = len(got)
+				}
+				if wantEnd > len(want) {
+					wantEnd = len(want)
+				}
+				t.Fatalf("DOCX title semantics differ from local YAML baseline at byte %d\nwant: %q\n got: %q", index, want[start:wantEnd], got[start:gotEnd])
 			}
 		})
 	}

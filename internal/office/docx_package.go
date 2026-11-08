@@ -5,6 +5,7 @@ package office
 import (
 	"archive/zip"
 	"fmt"
+	"path/filepath"
 	"strings"
 )
 
@@ -12,11 +13,28 @@ func docxPackage(parts []docxPart) ([]byte, error) {
 	content := docxNode{name: "Types"}.attr("xmlns", docxContentNS)
 	content.children = append(content.children, docxNode{name: "Default"}.attr("Extension", "rels").attr("ContentType", "application/vnd.openxmlformats-package.relationships+xml"), docxNode{name: "Default"}.attr("Extension", "xml").attr("ContentType", "application/xml"))
 	relationships := docxNode{name: "Relationships"}.attr("xmlns", docxPackageRelNS)
+	defaults := map[string]bool{"rels": true, "xml": true}
 	for _, part := range parts {
-		content.children = append(content.children, docxNode{name: "Override"}.attr("PartName", "/"+part.name).attr("ContentType", "application/vnd.openxmlformats-officedocument.wordprocessingml."+part.contentType+"+xml"))
+		if len(part.raw) > 0 {
+			ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(part.name)), ".")
+			if !defaults[ext] {
+				mediaType := "image/" + ext
+				if ext == "jpg" {
+					mediaType = "image/jpeg"
+				}
+				content.children = append(content.children, docxNode{name: "Default"}.attr("Extension", ext).attr("ContentType", mediaType))
+				defaults[ext] = true
+			}
+		} else {
+			content.children = append(content.children, docxNode{name: "Override"}.attr("PartName", "/"+part.name).attr("ContentType", "application/vnd.openxmlformats-officedocument.wordprocessingml."+part.contentType+"+xml"))
+		}
 		if part.relationship != "" {
 			target := strings.TrimPrefix(part.name, "word/")
-			relationships.children = append(relationships.children, docxRelationship(strings.TrimSuffix(target, ".xml"), part.relationship, target))
+			id := part.relationshipID
+			if id == "" {
+				id = strings.TrimSuffix(target, ".xml")
+			}
+			relationships.children = append(relationships.children, docxRelationship(id, part.relationship, target))
 		}
 	}
 	rootRels := docxNode{name: "Relationships", children: []docxNode{docxRelationship("document", "officeDocument", "word/document.xml")}}.attr("xmlns", docxPackageRelNS)
@@ -26,9 +44,13 @@ func docxPackage(parts []docxPart) ([]byte, error) {
 	archive := zip.NewWriter(&output)
 	remaining := docxXMLLimit
 	for _, part := range parts {
-		raw, err := docxEncode(part.root, remaining)
-		if err != nil {
-			return nil, fmt.Errorf("encoding %s: %w", part.name, err)
+		raw := part.raw
+		if raw == nil {
+			var err error
+			raw, err = docxEncode(part.root, remaining)
+			if err != nil {
+				return nil, fmt.Errorf("encoding %s: %w", part.name, err)
+			}
 		}
 		remaining -= len(raw)
 		file, err := archive.Create(part.name)

@@ -50,7 +50,16 @@ func exportDOCX(doc play.Document, cfg config.Config, sourceFormat play.Format, 
 			return err
 		}
 	}
-	raw, warnings, err := office.ExportScript(doc, cfg, sourceFormat, "docx")
+	coverPlan, cleanup, err := prepareCoverForRender(cfg, opts.source, stderr)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
+	cover, err := officeScriptCover(coverPlan)
+	if err != nil {
+		return err
+	}
+	raw, warnings, err := office.ExportScriptWithCover(doc, cfg, sourceFormat, "docx", cover)
 	if err != nil {
 		return err
 	}
@@ -73,6 +82,49 @@ func exportDOCX(doc play.Document, cfg config.Config, sourceFormat play.Format, 
 		return err
 	}
 	return docxPublish(opts.source, opts.target, raw)
+}
+
+func officeScriptCover(plan *coverImagePlan) (*office.ScriptCover, error) {
+	if plan == nil {
+		return nil, nil
+	}
+	sharp, err := officeScriptCoverAsset(plan.SourcePath)
+	if err != nil {
+		return nil, err
+	}
+	result := &office.ScriptCover{Config: plan.Config, Sharp: sharp, RenderedWidthMM: plan.RenderedWidthMM, RenderedHeightMM: plan.RenderedHeightMM}
+	if plan.BlurredPath != "" {
+		result.Blurred, err = officeScriptCoverAsset(plan.BlurredPath)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if plan.BackdropPath != "" {
+		result.Backdrop, err = officeScriptCoverAsset(plan.BackdropPath)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return result, nil
+}
+
+func officeScriptCoverAsset(path string) (office.ScriptCoverAsset, error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return office.ScriptCoverAsset{}, fmt.Errorf("reading prepared folio.cover-image asset: %w", err)
+	}
+	if info.Size() < 1 || info.Size() > coverSourceByteLimit {
+		return office.ScriptCoverAsset{}, fmt.Errorf("prepared folio.cover-image asset size %d exceeds the permitted range", info.Size())
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return office.ScriptCoverAsset{}, fmt.Errorf("reading prepared folio.cover-image asset: %w", err)
+	}
+	width, height, format, err := coverDecodeConfig(path)
+	if err != nil {
+		return office.ScriptCoverAsset{}, fmt.Errorf("decoding prepared folio.cover-image asset: %w", err)
+	}
+	return office.ScriptCoverAsset{Data: data, Format: format, PixelWidth: width, PixelHeight: height}, nil
 }
 
 func docxTarget(source, target string) error {
