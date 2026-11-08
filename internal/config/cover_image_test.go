@@ -118,3 +118,13 @@ func TestRT073_1DodgePaddingIsAvailableToOrgSourceConfiguration(t *testing.T) {
 		t.Fatal("folio.title-page.author.position is absent from Org source configuration paths")
 	}
 }
+
+func TestRT081_2DisabledCoverBypassesActiveFieldValidation(t *testing.T) {
+	cfg, err := Load(Options{Mode: ModeScript, Home: t.TempDir(), LocalDir: t.TempDir(), Source: map[string]any{"folio": map[string]any{"cover-image": map[string]any{"enabled": false, "path": 42, "mode": "invalid"}}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, enabled, coverErr := cfg.CoverImage(); coverErr != nil || enabled || got != (CoverImage{}) {
+		t.Fatalf("disabled CoverImage() = %#v, %t, %v; want zero, false, nil", got, enabled, coverErr)
+	}
+}
