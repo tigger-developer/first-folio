@@ -169,3 +169,37 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "LibreOffice and Poppler geometry assertions have not yet executed because public conversion correctly stops at the intended RED boundary."
       - "UT074.1 remains AMBER for operator review in a Word-compatible editor after delivery-code audit."
+  - id: delivery-code-c1-r1
+    timestamp: "2026-11-08T02:57:12Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "84e6cf89fa14662b006ffb439bdfadb8087b511d"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Approved W074 specification and current W073/W079 title-image, source-cascade, placement and prepared-backdrop contracts"
+      - "REVIEW.md delivery-code criteria, SELF-AUDIT.md and current architecture, coding, testing, security, documentation, Git, Org-schema and Go standards"
+      - "Native DOCX media, relationship, content-type, page-anchor, editable-text, atomic-publication and no-image compatibility boundaries"
+    evidence:
+      - "sdlc-validate reported valid schema and delivery-code readiness with RT074.1 through RT074.3 and AT074.1 through AT074.2 GREEN; UT074.1 remains AMBER"
+      - "Focused RT and tagged rendered AT commands passed at 84e6cf89fa14662b006ffb439bdfadb8087b511d through public conversion, isolated LibreOffice and Poppler"
+      - "make test passed at 84e6cf89fa14662b006ffb439bdfadb8087b511d; make lint and make vulncheck passed and the vulnerability scan reported no findings"
+      - "Pre-review corrections separate grouped and anchored metadata, align localized blur crop with displayed artwork, preserve content-type schema order after font embedding, propagate style errors and suppress running matter on image-only title pages"
+      - "README.md, docs/config.md, docs/format-docx.md and docs/ARCHITECTURE.md describe the delivered DOCX boundary and passed sanitize oed unchanged"
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "LibreOffice and Poppler provide automated package and rendered geometry evidence; Microsoft Word editing and save-reopen behaviour remain human-only."
+      - "UT074.1 remains AMBER, and this PASS does not authorize merge, installation, deployment, acceptance or closure."

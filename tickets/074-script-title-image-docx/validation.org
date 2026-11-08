@@ -6,51 +6,54 @@
 
 * Automated regression
 
-** RED RT074.1 - Native DOCX package represents the shared image plan :testdef:
+** GREEN RT074.1 - Native DOCX package represents the shared image plan :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-1-result
-:REVISION: f16623c1b48961f9276d7da2642cb778935c232c
+:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
 :COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
-:EVIDENCE: All five native background, landscape inset, portrait inset, image-backdrop and solid-backdrop cases reached the declared office.ScriptCover boundary and failed only because non-nil cover projection returns the explicit unimplemented error.
+:EVIDENCE: All five native background, landscape inset, portrait inset, image-backdrop and solid-backdrop cases produced conforming ZIP/XML packages with embedded media, relationships, page anchors, crop and extents, unique drawing identifiers and editable metadata text.
 :END:
 
-** RED RT074.2 - DOCX packaging rejects invalid image state safely :testdef:
+** GREEN RT074.2 - DOCX packaging rejects invalid image state safely :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-2-result
-:REVISION: f16623c1b48961f9276d7da2642cb778935c232c
+:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
 :COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
-:EVIDENCE: Invalid cover plans reached the declared projection boundary but returned the generic scaffold error rather than the required field-specific diagnostics; the no-image preservation control remained GREEN.
+:EVIDENCE: Missing sharp data, unsupported format, zero dimensions, missing inset geometry and missing image-backdrop data each returned a field-specific error and no publishable bytes; the no-image control retained its previous package structure.
 :END:
 
-** RED RT074.3 - DOCX source configuration resolves identically :testdef:
+** GREEN RT074.3 - DOCX source configuration resolves identically :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-3-result
-:REVISION: f16623c1b48961f9276d7da2642cb778935c232c
+:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
 :COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
-:EVIDENCE: Equivalent local YAML, Markdown YAML and dotted Org cases all resolved far enough to report that the recognized backdrop is unsupported for DOCX; no fixture or compilation failure obscured the intended missing writer route.
+:EVIDENCE: Equivalent local YAML, Markdown frontmatter YAML and dotted Org frontmatter produced identical normalized native cover package semantics and media hashes, with no unsupported or unrecognized-field warning.
 :END:
 
 * Acceptance tests
 
-** RED AT074.1 - Public DOCX conversion preserves title-image semantics :testdef:
+** GREEN AT074.1 - Public DOCX conversion preserves title-image semantics :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-074-1-result
-:REVISION: 1e413c5689b6f0e89f5234ef0c3d019f23bf8113
+:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT074_' -count=1 -timeout=10m
-:EVIDENCE: The freshly built executable rejected background overlay, solid-backdrop inset and prepared-image-backdrop inset DOCX cases at the intended unsupported-output boundary before LibreOffice rendering; the background case also contains an unexecuted literal 40% position and 4mm visible-gap measurement.
+:EVIDENCE: A freshly built executable produced background overlay, solid-backdrop landscape inset and prepared-JPEG-backdrop portrait inset DOCX files. Isolated LibreOffice and Poppler checks measured full-page cover, 80mm proportional geometry, literal 40% title placement, a visible 4mm subtitle gap, backdrop coverage and dodge non-overlap within the declared tolerances; metadata remained native document text.
 :END:
 
-** RED AT074.2 - DOCX publication is atomic :testdef:
+** GREEN AT074.2 - DOCX publication is atomic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-074-2-result
-:REVISION: 1e413c5689b6f0e89f5234ef0c3d019f23bf8113
+:REVISION: 84e6cf89fa14662b006ffb439bdfadb8087b511d
 :COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT074_' -count=1 -timeout=10m
-:EVIDENCE: Sentinel preservation executed, but the missing-image case reported generic unsupported DOCX cover output rather than the required folio.cover-image.path error; the no-image compatibility control remained GREEN.
+:EVIDENCE: Missing-image and invalid-solid-colour conversions retained an existing sentinel target and reported the originating configuration path; the no-image control retained its previous title structure.
 :END:
 
 * Delivery checks
 
-- Pending test-first implementation, complete project regression, lint and vulnerability checks.
+- Focused RT and tagged rendered AT commands passed at =84e6cf89fa14662b006ffb439bdfadb8087b511d=.
+- =make test= passed at =84e6cf89fa14662b006ffb439bdfadb8087b511d= after audit remediation strengthened package ordering, aligned treatment crop and metadata-row placement.
+- =make lint= and =make vulncheck= passed at =84e6cf89fa14662b006ffb439bdfadb8087b511d=; the vulnerability scan reported no findings.
+- Documentation changes passed =sanitize oed= unchanged and =git diff --check=.
 
 * User validation
 
