@@ -22,10 +22,12 @@
 
 - Background and inset images are *embedded in the DOCX package* with proportional geometry.
 - Overlay uses editable title text over localized blur and wash regions; inset-only dodge places editable metadata above and below the centred image.
+- An inset can reuse W079's *prepared blurred JPEG or exact solid-colour backdrop* behind the sharp image and editable metadata.
 
 ** Changes
 
 - The native DOCX writer projects the shared title-image plan into page-anchored OOXML drawings and editable text regions.
+- The projection consumes the *current resolved source configuration*, including literal title percentages, exact title-to-subtitle spacing, post-placement dodge padding and the anchored bottom-centre author slot.
 
 ** Unchanged
 
@@ -67,7 +69,9 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 - Dedicated script title pages produced by =folio convert= to DOCX.
 - Background and inset modes, overlay and inset-only dodge placement, independent image and wash treatments, blur and equal-sided padding as defined by W073.
+- W079 image and solid inset backdrops, reusing the conversion-scoped prepared JPEG and resolved wash treatment.
 - Embedded PNG/JPEG image parts, page-relative positioning, cropping and editable title metadata.
+- The same YAML cascade used by the PDF renderer, including Markdown YAML and dotted Org source frontmatter.
 
 *** Out of scope
 
@@ -100,6 +104,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 ** Decisions
 
 - W074 consumes top-level =folio.cover-image= exactly as defined by W073 and introduces no DOCX override.
+- W074 consumes W079's =folio.cover-image.backdrop= block without regenerating the prepared blurred JPEG or maintaining a DOCX-specific treatment model.
 - Background drawings are anchored to the physical page, behind text, and cover the configured page rectangle using W073's centred crop.
 - Insets are centred on the physical page with explicit physical extents. Overlay uses one editable primary region for title/subtitle/author and separate populated date and version regions, never full-width wash bands; dodge text remains in editable positioned regions above and below the image.
 
@@ -152,6 +157,30 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 - Criterion :: Given any supported title-image mode, the DOCX package has *valid, non-conflicting relationships, content types, drawing identifiers and layer order* and opens in a Word-compatible editor without repair.
 - Proven by :: [[#rt-074-1][RT074.1 - Native DOCX package represents the shared image plan]], [[#at-074-1][AT074.1 - Public DOCX conversion preserves title-image semantics]] and [[#ut-074-1][UT074.1 - DOCX title images remain editable and stable]].
 
+** AC074.6 - DOCX renders inset backdrops :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-074-6
+:END:
+
+- Criterion :: Given an inset cover with W079 =backdrop.mode: image= or =solid=, DOCX output places the *full-page backdrop behind the sharp inset and editable title metadata*, applies the resolved wash and text contrast, and introduces no second blur or colour interpretation.
+- Proven by :: [[#rt-074-1][RT074.1 - Native DOCX package represents the shared image plan]], [[#at-074-1][AT074.1 - Public DOCX conversion preserves title-image semantics]] and [[#ut-074-1][UT074.1 - DOCX title images remain editable and stable]].
+
+** AC074.7 - DOCX preserves current title placement semantics :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-074-7
+:END:
+
+- Criterion :: Given current W073 title-page configuration, DOCX output preserves *literal title-position percentages, the configured visible title-to-subtitle gap, post-placement dodge clearance and the optional anchored bottom-centre author slot* without moving unrelated metadata.
+- Proven by :: [[#rt-074-1][RT074.1 - Native DOCX package represents the shared image plan]], [[#at-074-1][AT074.1 - Public DOCX conversion preserves title-image semantics]] and [[#ut-074-1][UT074.1 - DOCX title images remain editable and stable]].
+
+** AC074.8 - Source configuration is format-consistent :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-074-8
+:END:
+
+- Criterion :: Equivalent local YAML, Markdown frontmatter YAML and dotted Org frontmatter produce the *same resolved DOCX title-image and backdrop plan* under the PDF renderer's established cascade; recognized =FOLIO= backdrop fields emit no unsupported-field warning.
+- Proven by :: [[#rt-074-3][RT074.3 - DOCX source configuration resolves identically]] and [[#at-074-1][AT074.1 - Public DOCX conversion preserves title-image semantics]].
+
 * Test Definitions
 :PROPERTIES:
 :CUSTOM_ID: test-definitions
@@ -162,11 +191,11 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 :CUSTOM_ID: rt-074-1
 :END:
 
-- Covers :: [[#ac-074-1][AC074.1 - DOCX embeds proportional title images]], [[#ac-074-2][AC074.2 - DOCX overlay remains legible and editable]], [[#ac-074-3][AC074.3 - DOCX dodge separates text and inset]] and [[#ac-074-5][AC074.5 - DOCX packages remain conforming]].
+- Covers :: [[#ac-074-1][AC074.1 - DOCX embeds proportional title images]], [[#ac-074-2][AC074.2 - DOCX overlay remains legible and editable]], [[#ac-074-3][AC074.3 - DOCX dodge separates text and inset]], [[#ac-074-5][AC074.5 - DOCX packages remain conforming]], [[#ac-074-6][AC074.6 - DOCX renders inset backdrops]] and [[#ac-074-7][AC074.7 - DOCX preserves current title placement semantics]].
 - Boundary :: Native =internal/office= DOCX serialization and parsed OOXML package parts.
-- Setup :: Shared title-image plans cover background overlay, both inset orientations, overlay with non-zero blur/wash/padding, dodge at =center= and =third=, absent metadata roles and image-only title pages.
+- Setup :: Shared title-image plans cover background overlay, both inset orientations, overlay with non-zero blur/wash/padding, dodge at named and literal-percentage positions, =4mm= subtitle spacing, dodge clearance, bottom-centre author, W079 image and solid backdrops, absent metadata roles and image-only title pages.
 - Action :: Serialize each plan, reopen the ZIP package and parse document, drawing, media, relationship and content-type parts.
-- Expected :: Each image is embedded once with valid relationships; page anchors, extents, crop, layer order, text containers, treatment rectangles and dodge regions match the plan; title metadata remains text nodes; identifiers are unique and all XML is well formed.
+- Expected :: Each selected or prepared asset is embedded once with valid relationships; page anchors, extents, crop, layer order, text containers, treatment rectangles, backdrops and dodge regions match the plan; title metadata remains text nodes; identifiers are unique and all XML is well formed.
 - Retention :: Persistent regression suite under =make test=.
 
 ** RT074.2 - DOCX packaging rejects invalid image state safely :testdef:
@@ -181,16 +210,28 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 - Expected :: Inconsistent plans return a bounded error and no publishable package; the no-image control contains no image relationship or drawing and retains its established title/body structure.
 - Retention :: Persistent regression suite under =make test=.
 
+** RT074.3 - DOCX source configuration resolves identically :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-074-3
+:END:
+
+- Covers :: [[#ac-074-8][AC074.8 - Source configuration is format-consistent]].
+- Boundary :: Public =folio convert= source configuration and the resulting native DOCX packages.
+- Setup :: Equivalent local YAML, Markdown YAML frontmatter and dotted Org frontmatter configure an inset image backdrop, literal title percentage, subtitle gap, dodge padding and bottom-centre author; a lower layer supplies conflicting values.
+- Action :: Convert each source, capture diagnostics, reopen each package and compare normalized title-page media, drawing, placement and editable-text semantics.
+- Expected :: All three source forms produce the same winning title-page semantics; dotted Org fields produce no unrecognized-field warning; no DOCX-specific cascade or default affects the result.
+- Retention :: Persistent regression suite under =make test=.
+
 ** AT074.1 - Public DOCX conversion preserves title-image semantics :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-074-1
 :END:
 
-- Covers :: [[#ac-074-1][AC074.1 - DOCX embeds proportional title images]], [[#ac-074-2][AC074.2 - DOCX overlay remains legible and editable]], [[#ac-074-3][AC074.3 - DOCX dodge separates text and inset]] and [[#ac-074-5][AC074.5 - DOCX packages remain conforming]].
+- Covers :: [[#ac-074-1][AC074.1 - DOCX embeds proportional title images]], [[#ac-074-2][AC074.2 - DOCX overlay remains legible and editable]], [[#ac-074-3][AC074.3 - DOCX dodge separates text and inset]], [[#ac-074-5][AC074.5 - DOCX packages remain conforming]], [[#ac-074-6][AC074.6 - DOCX renders inset backdrops]], [[#ac-074-7][AC074.7 - DOCX preserves current title placement semantics]] and [[#ac-074-8][AC074.8 - Source configuration is format-consistent]].
 - Boundary :: Built =folio convert= command and resulting native DOCX packages.
-- Setup :: Use the W073 measured-image fixtures for A4 background cropping, both explicit inset examples, light and dark overlay, and both dodge positions.
+- Setup :: Use the W073/W079 measured-image fixtures for A4 background cropping, both explicit inset examples, light and dark overlay, named and literal-percentage dodge positions, exact subtitle spacing, dodge clearance, bottom-centre author, and image and solid inset backdrops from equivalent YAML and Org configuration.
 - Action :: Convert each fixture, validate the OOXML package with the project's supported package checks, render it to PDF with isolated-profile =soffice --headless --convert-to pdf:writer_pdf_Export=, then measure the PDF and rasterized title page.
-- Expected :: Public conversion embeds the correct asset; image and padded-region boundaries are within =2mm= of the shared plan, aspect-ratio error is below =1%=, text grouping and contrast are correct, and dodge text does not overlap the image; no package requires repair or the original image file.
+- Expected :: Public conversion embeds the correct sharp and prepared backdrop assets; image, backdrop and padded-region boundaries are within =2mm= of the shared plan, aspect-ratio error is below =1%=, title percentages and subtitle gap are within =2mm=, text grouping and contrast are correct, and dodge text does not overlap the image; no package requires repair or the original image file.
 - Retention :: Ticket-specific evidence; not part of the persistent regression suite.
 
 ** AT074.2 - DOCX publication is atomic :testdef:
@@ -210,9 +251,9 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 :CUSTOM_ID: ut-074-1
 :END:
 
-- Covers :: [[#ac-074-1][AC074.1 - DOCX embeds proportional title images]], [[#ac-074-2][AC074.2 - DOCX overlay remains legible and editable]], [[#ac-074-3][AC074.3 - DOCX dodge separates text and inset]] and [[#ac-074-5][AC074.5 - DOCX packages remain conforming]].
+- Covers :: [[#ac-074-1][AC074.1 - DOCX embeds proportional title images]], [[#ac-074-2][AC074.2 - DOCX overlay remains legible and editable]], [[#ac-074-3][AC074.3 - DOCX dodge separates text and inset]], [[#ac-074-5][AC074.5 - DOCX packages remain conforming]], [[#ac-074-6][AC074.6 - DOCX renders inset backdrops]] and [[#ac-074-7][AC074.7 - DOCX preserves current title placement semantics]].
 - Validation method :: User validation in the normal Word-compatible editor.
-- Procedure :: Open representative background-overlay and inset overlay/dodge documents; verify crop, proportions, blur, wash, padding and text placement; edit every title metadata role, save, close and reopen each document.
+- Procedure :: Open representative background-overlay and inset overlay/dodge documents, including image and solid backdrops; verify crop, proportions, blur, wash, backdrop, padding, title percentage, subtitle gap and text placement; edit every title metadata role, save, close and reopen each document.
 - Expected :: The editor shows no repair warning; images and treatments remain stable; metadata edits behave as text rather than image pixels; no title element overlaps unexpectedly; body pagination and content remain usable.
 - Record :: Write the dated result to =validation.org=.
 
@@ -240,7 +281,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 ** Architecture context
 
-- Relevant components :: W073 supplies the validated title-image plan and prepared image variants; the native DOCX writer owns page geometry, paragraphs, drawings, media and relationships.
+- Relevant components :: W073 supplies the validated title-image plan and prepared image variants, including W079's JPEG backdrop derivative; the native DOCX writer owns page geometry, paragraphs, drawings, media and relationships.
 - Ownership boundary :: First Folio creates the complete OOXML package. Word-compatible editors own final layout and editing but must not be required to repair or fetch content.
 - Existing pattern :: Extend the native writer's title-page and package-part builders rather than adding Pandoc or a post-processing executable.
 
@@ -248,13 +289,13 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 *** Components and responsibilities
 
-- The application passes the same W073 plan and selected prepared asset, including requested Superscale output or documented original-image fallback, into the DOCX writer without rerunning the external tool.
+- The application passes the same W073/W079 plan and selected prepared assets, including requested Superscale output, documented original-image fallback and any prepared backdrop JPEG, into the DOCX writer without rerunning external processing.
 - The package layer embeds original/normalized and blurred image parts, registers content types and relationships, and allocates identifiers through existing package mechanisms.
 - The title-page writer creates page-anchored image layers and positioned editable text regions in the plan's order.
 
 *** Reuse, shared behaviour and variation
 
-- Shared operation :: Asset resolution, validation, proportional geometry, independent image/wash treatment and region calculations remain W073 responsibilities.
+- Shared operation :: Asset resolution, validation, proportional geometry, independent image/wash treatment, backdrop preparation and region calculations remain W073/W079 responsibilities.
 - Variation :: DOCX maps physical units to EMUs and uses OOXML drawings/text containers while preserving shared semantics.
 
 *** Boundaries and dependencies
@@ -265,15 +306,17 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 *** Flow
 
 1. Public conversion loads W073 configuration and produces the shared plan.
-2. The DOCX writer embeds required image variants and constructs the title-page visual layer behind editable text.
+2. The DOCX writer embeds required sharp, treatment and backdrop image variants and constructs the title-page visual layers behind editable text.
 3. Existing body and section generation follows, then the complete package is validated and atomically published.
 
 *** Essential mechanisms
 
 - A background drawing is anchored at page origin behind document text with page-sized extents and the plan's centred source crop.
+- An image backdrop reuses W079's prepared page-sized JPEG as the lowest full-page drawing; a solid backdrop uses one page-sized native DrawingML fill. The resolved wash is a separate full-page shape above the backdrop and below the sharp inset and text.
 - An inset drawing uses explicit page-centred position and longest-axis extents.
 - Overlay regions use positioned editable text containers. Their background layer clips the aligned blurred image variant to the padded region, adds the independently configured lightening or darkening wash, then places its defined contrasting text above it.
 - Dodge uses separate upper and lower text regions around the page-centred inset. Region-relative =center= and =third= coordinates come from the shared plan rather than Word paragraph spacing heuristics.
+- Literal percentages, exact subtitle gaps, post-placement dodge padding and bottom-centre author placement are physical coordinates from the shared plan rather than reconstructed from flowing paragraph spacing.
 
 *** Interfaces and configuration
 
@@ -282,17 +325,17 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 *** Data and state
 
-- Image parts are embedded under =word/media= with package relationships. No external link or cache survives conversion.
+- Image parts, including the prepared backdrop JPEG, are embedded under =word/media= with package relationships. No external link or cache survives conversion.
 - Source files and W073 prepared temporary assets remain read-only and conversion-scoped.
 
 *** Failure behaviour
 
-- Missing assets, invalid plan geometry, duplicate identifiers or package validation failure abort before target replacement.
+- Missing assets, invalid plan geometry, duplicate identifiers or package validation failure abort before target replacement. A recognized backdrop is not rejected as an unsupported DOCX field.
 - Errors retain W073 field/path context where the failure originates and otherwise identify the DOCX packaging boundary.
 
 *** Simplicity and proportionality
 
-- One native adapter reuses the existing DOCX writer and W073 plan. It avoids a second configuration model, external postprocessor and rasterized title text.
+- One native adapter reuses the existing DOCX writer and W073/W079 plan. It avoids a second configuration model, duplicate blur processing, an external postprocessor and rasterized title text.
 
 ** Design decisions and verification
 
