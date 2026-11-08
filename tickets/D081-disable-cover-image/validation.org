@@ -1,0 +1,31 @@
+#+TITLE: D081 - Disable script cover images validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** GREEN RT081.1 - Disabled covers are ignored across rendered formats :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-081-1-result
+:REVISION: 95806752d196d79f1109b04d49884ae84092774f
+:COMMAND: go test ./internal/config ./internal/app -run 'TestRT081_' -count=1
+:EVIDENCE: Both explicit cover disablement and disabled title-page cases produced non-empty PDF, DOCX and ODT targets despite a deliberately missing source-frontmatter image.
+:END:
+
+** GREEN RT081.2 - Disabled cover validation short-circuits :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-081-2-result
+:REVISION: 95806752d196d79f1109b04d49884ae84092774f
+:COMMAND: go test ./internal/config ./internal/app -run 'TestRT081_' -count=1
+:EVIDENCE: The shared loader accepts the Boolean leaf and returns no cover before interpreting invalid dormant path and mode values; dotted Org recognizes the same field.
+:END:
+
+* User validation
+
+** AMBER UT081.1 - Cover profile switching is acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-081-1-result
+:REASON: Requires operator comparison of enabled-cover and disabled-cover profiles using the normal project source.
+:END:

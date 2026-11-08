@@ -1,0 +1,91 @@
+#+TITLE: D081 - Disable script cover images
+#+SCHEMA: 8
+#+SUBTITLE: Emergency delivery reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: BYPASS-GATE-7 2026-11-08
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+- Problem :: A cover declared in source frontmatter cannot be suppressed by a shared profile, and disabling the title page rejects rather than ignores that cover.
+- Scope :: Add =folio.cover-image.enabled= and make a disabled script title page suppress cover handling across PDF, DOCX and ODT. Active-cover behaviour remains unchanged.
+- Authority :: Operator emergency requests on 2026-11-08; [[file:../../docs/config.md][configuration reference]] and [[file:../../docs/ARCHITECTURE.md][architecture]].
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC081.1 - Explicit cover disablement wins through the YAML cascade :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-081-1
+:END:
+
+- Criterion :: =folio.cover-image.enabled: false= suppresses a lower-layer or source-frontmatter cover before path, mode, asset or output-format validation in PDF, DOCX and ODT conversion.
+- Proven by :: [[#rt-081-1][RT081.1 - Disabled covers are ignored across rendered formats]], [[#rt-081-2][RT081.2 - Disabled cover validation short-circuits]] and [[#ut-081-1][UT081.1 - Cover profile switching is acceptable]].
+
+** AC081.2 - Disabling the title page suppresses its cover :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-081-2
+:END:
+
+- Criterion :: =folio.title-page.enabled: false= selects compact no-cover composition and ignores any cover block before validation or loading.
+- Proven by :: [[#rt-081-1][RT081.1 - Disabled covers are ignored across rendered formats]] and [[#ut-081-1][UT081.1 - Cover profile switching is acceptable]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT081.1 - Disabled covers are ignored across rendered formats :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-081-1
+:END:
+
+- Boundary :: Temporary built executable converting an Org script whose source frontmatter names a deliberately missing cover to PDF, DOCX and ODT.
+- Expected :: Both disabling controls publish non-empty outputs without accessing or validating the missing image.
+
+** RT081.2 - Disabled cover validation short-circuits :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-081-2
+:END:
+
+- Boundary :: Shared typed configuration and accepted dotted Org field inventory.
+- Expected :: The Boolean field is recognized, false returns the no-cover state, and dormant invalid active fields are not interpreted.
+
+** UT081.1 - Cover profile switching is acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-081-1
+:END:
+
+- Validation method :: Operator converts a source-frontmatter cover with enabled and disabled shared profiles.
+- Expected :: The enabled profile shows the title-page image; either disable control produces the intended no-cover composition without editing the source.
+
+* Emergency Delivery Record
+:PROPERTIES:
+:CUSTOM_ID: emergency-delivery-record
+:END:
+
+- TDD :: Focused tests first observed an unknown-field error for =cover-image.enabled= and the existing title-page incompatibility error for all three formats.
+- Actual change :: The typed cover resolver recognizes a strict Boolean switch and resolves either disable condition to no cover before active field and asset processing.
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+- Ownership :: =internal/config= owns both early disable decisions and returns the existing zero-cover result. Renderers therefore require no separate switches.
+- Cascade :: The new leaf is accepted from YAML and dotted Org source configuration. Recursive merging preserves a shared profile's false value when source frontmatter supplies the other cover fields but does not set =enabled=; an explicit source value retains normal source-over-local precedence.
+- Validation :: If present, =enabled= must be Boolean. False bypasses active cover fields; true or omission retains strict current validation.
+- Reliability :: Suppression occurs before image decode, Superscale, temporary variants and output-format compatibility checks. No network, dependency or persistence boundary changes.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Validation :: [[file:validation.org][D081 validation]].
+- Audit :: [[file:audits.yaml][D081 audit record]].

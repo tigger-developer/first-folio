@@ -1,0 +1,75 @@
+#+TITLE: D080 - Stage-direction space after
+#+SCHEMA: 8
+#+SUBTITLE: Emergency delivery reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: BYPASS-GATE-7 2026-11-08
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+- Problem :: Script stage directions expose configurable space before but retain a hard-coded trailing gap.
+- Scope :: Add =folio.positioning.stage-direction.space-after= to PDF, DOCX and ODT script conversion. Preserve =0.6em= when omitted. Text conversion, manuscripts and letters remain unchanged.
+- Authority :: Operator emergency request on 2026-11-08; [[file:../../docs/config.md][configuration reference]] and [[file:../../docs/ARCHITECTURE.md][architecture]].
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC080.1 - Stage-direction trailing space is configurable consistently :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-080-1
+:END:
+
+- Criterion :: A valid =space-after= length controls trailing stage-direction clearance in script PDF, DOCX and ODT; omission retains =0.6em=.
+- Proven by :: [[#rt-080-1][RT080.1 - Renderers consume stage-direction space after]] and [[#ut-080-1][UT080.1 - Stage-direction spacing is acceptable]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT080.1 - Renderers consume stage-direction space after :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-080-1
+:END:
+
+- Boundary :: Public script conversion to Typst, DOCX and ODT.
+- Expected :: Typst emits the configured block-below length; native DOCX and ODT styles expose the corresponding paragraph-after length under their established British compaction rule.
+
+** UT080.1 - Stage-direction spacing is acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-080-1
+:END:
+
+- Validation method :: Operator inspection of representative PDF, DOCX and ODT output.
+- Expected :: The configured trailing clearance is visible and acceptable in all three formats.
+
+* Emergency Delivery Record
+:PROPERTIES:
+:CUSTOM_ID: emergency-delivery-record
+:END:
+
+- TDD :: The focused test first observed the hard-coded =0.6em= PDF value and =3.6pt= compacted office value instead of configured =0.75em= and =4.5pt= values.
+- Actual change :: The shared script data carries an independent after length; Typst and native office styles consume it, with =0.6em= as the compatibility default.
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+- Configuration :: Resolve =space-after= through the existing YAML cascade beside =space-before=.
+- PDF :: Map it to Typst stage-direction block =below= spacing.
+- DOCX and ODT :: Resolve it through the shared native direction paragraph style; ODT projects the DOCX-style semantics into ODF paragraph properties.
+- Reliability :: Existing unit parsing, negative-spacing clamping, atomic conversion and format-specific compaction remain unchanged.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Validation :: [[file:validation.org][D080 validation]].
+- Audit :: [[file:audits.yaml][D080 audit record]].
