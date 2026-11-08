@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.29"
-last-updated: 2026-11-07
+version: "0.33"
+last-updated: 2026-11-08
 ---
 
 # Architecture
@@ -162,8 +162,8 @@ Templates own page composition. Product Go code does not contain generated-langu
 Script title composition uses one shared title block for a dedicated title page or a compact heading above first-page content. Script PDF title and subtitle roles form measured stack items whose configured subtitle spacing is their visible gap; relative spacing uses the subtitle font size. `folio.title-page.enabled` selects between dedicated and compact composition; manuscript title-page settings remain independent. Script-only Boolean validation covers this switch and `skip-header`/`skip-footer`. Running-matter suppression uses the physical page counter and applies to the dedicated title page or compact page 1, without resetting numbering or removing title metadata. The renderer suppresses only the first act's explicit break in compact mode; later act breaks and natural pagination remain. See [script title configuration](config.md#compact-script-title-block) for defaults and untitled-script handling.
 
 The renderer-neutral `folio.cover-image` model is validated by the shared
-configuration loader, while W073 adopts it only in the dedicated script PDF
-route. `internal/app` resolves assets from the source document, validates PNG
+configuration loader and consumed by dedicated script PDF and DOCX routes.
+`internal/app` resolves assets from the source document, validates PNG
 or JPEG headers and bounded source dimensions, optionally invokes Superscale
 with literal arguments, and prepares normalized sharp PNGs and blurred JPEG
 backdrops.
@@ -189,11 +189,19 @@ colour data. Typed template data supplies the selected asset or colour, a
 page-wide wash and its text treatment; the Typst template paints that full
 bleed before composing the existing sharp inset and live text. Localized
 overlay treatment remains the more specific text and wash rule.
-Preparation and layout complete before a PDF is atomically renamed into place;
+For DOCX, `internal/app` copies the resolved geometry and bounded prepared asset
+bytes into an immutable `office.ScriptCover`. The office layer neither resolves
+paths nor invokes Superscale. It embeds media and relationships, maps millimetres
+to page-relative DrawingML anchors, applies native shapes for solid fills and
+washes, and places editable title text above the visual layers. Each drawing
+uses its own conforming anchor, and package validation and staged publication
+retain the existing native DOCX boundaries.
+
+Preparation and layout complete before PDF or DOCX is atomically renamed into place;
 warnings fall back to the original image, while invalid configuration, assets
-or measured dodge regions leave the target unchanged. Standalone Typst, DOCX,
-ODT, compact script titles, manuscripts and letters reject configured covers
-until their own adoption tickets are delivered.
+or measured dodge regions leave the target unchanged. Standalone Typst, ODT,
+compact script titles, manuscripts and letters reject configured covers until
+their own adoption tickets are delivered.
 
 Script, letter and manuscript Typst templates apply every configured font stretch
 as geometric horizontal scaling from a normal-width face. Explicit role wrappers
@@ -219,6 +227,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.33 (2026-11-08): Add the immutable prepared-cover projection and native editable DOCX drawing boundary.
 
 - 0.32 (2026-11-08): Make script PDF subtitle spacing an explicit measured gap based on subtitle typography.
 

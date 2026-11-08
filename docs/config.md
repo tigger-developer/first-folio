@@ -1,7 +1,7 @@
 ---
 title: Configuration
-version: "0.44"
-last-updated: 2026-11-07
+version: "0.48"
+last-updated: 2026-11-08
 ---
 
 # Configuration
@@ -199,12 +199,12 @@ The script follows on the same page, without a forced title-page break or a brea
 
 This switch applies to `folio convert` script PDF/Typst output, including British, US and screenplay styles. It does not change text-format conversion or letters. Manuscripts retain their independent `folio.manuscript.title-page.enabled` setting; disabling a manuscript title page does not create this compact script block.
 
-#### Script PDF cover images (`folio.cover-image`)
+#### Script cover images (`folio.cover-image`)
 
-`folio.cover-image` defines a reusable cover asset, but the current consumer is
-only a dedicated script title page produced by `folio convert` to PDF. The path
-is resolved relative to the source document, independently of the working
-directory or the YAML file location. PNG and JPEG inputs are supported.
+`folio.cover-image` defines a reusable cover asset for a dedicated script title
+page produced by `folio convert` to PDF or DOCX. The path is resolved relative
+to the source document, independently of the working directory or the YAML file
+location. PNG and JPEG inputs are supported.
 
 ```yaml
 folio:
@@ -257,7 +257,7 @@ folio:
 | `overlay.padding` | One non-negative `em` or `mm` length applied on all four sides; defaults to `0em`. |
 
 Overlay retains the configured title-page positioning and keeps title metadata
-as live PDF text. Blur and wash are restricted to the populated title,
+as live text. Blur and wash are restricted to the populated title,
 date and version regions. Dodge physically centres an inset and places the
 title/subtitle group above it and a grouped author below it; date, version and
 an optional bottom-centre author remain in their anchored metadata row. Literal
@@ -283,6 +283,13 @@ Backdrop treatment controls title-page text outside a localized overlay. When
 placement is `overlay`, the existing `overlay.wash.treatment` remains more
 specific for the title and footer regions. Folio does not infer image luminance
 or choose contrast automatically.
+
+PDF composes these layers in Typst. DOCX embeds the same prepared sharp,
+blurred and backdrop assets under `word/media`, maps physical dimensions to
+page-relative DrawingML anchors and places editable title text above them. A
+DOCX remains self-contained after the source artwork and temporary prepared
+files are removed. Word-compatible editors may differ slightly in font metrics;
+the supported geometry tolerance is 2mm. ODT does not yet consume this block.
 
 The backdrop block is strict at every level. A higher-precedence source may set
 `backdrop.mode: none` to disable a lower-layer backdrop without deleting its
@@ -964,6 +971,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.48 (2026-11-08): Extend dedicated script cover images and prepared backdrops to native editable DOCX title pages.
 
 - 0.47 (2026-11-08): Define script PDF subtitle spacing as the visible title-to-subtitle gap, with em values based on the subtitle font.
 

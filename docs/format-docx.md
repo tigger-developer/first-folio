@@ -1,7 +1,7 @@
 ---
 title: DOCX Script Export
-version: "1.14"
-last-updated: 2026-11-03
+version: "1.15"
+last-updated: 2026-11-08
 ---
 
 # DOCX script export
@@ -32,7 +32,7 @@ bundled Iosevka Publish. Unsupported, missing or restricted fonts produce warnin
 | Introduction paragraphs | Global and direct scene introductory paragraphs use all six font properties at `folio.positioning.frontmatter.paragraph.font`; omitted properties inherit `folio.font`. `render.frontmatter: false` hides both. Headings and speech keep their own roles. |
 | Content | Ordered text, inline formatting, cast tables and native footnotes; configured visibility switches apply. |
 | Pages | Configured paper, margins and act breaks. Pagination depends on the reading application. Long rows can split across pages. |
-| Title | Dedicated or compact title. Vertical positioning is approximate; date/version are in-flow rather than bottom-of-page slots. |
+| Title | Dedicated or compact title. Without a cover image, vertical positioning remains approximate and date/version remain in-flow. Dedicated cover-image titles use page-relative native drawings and positioned editable text. |
 | Running matter | First/odd/even parts and native page fields. A single section uses body running matter for intro pages, with a warning for frontmatter overrides. |
 
 Inline emphasis follows the source format: Org `*bold*` is bold and `/italic/`
@@ -46,6 +46,25 @@ Org prose also converts `--`, `---`, `...` and `\-` to an en dash, em dash,
 ellipsis and discretionary soft hyphen. `=verbatim=` and `~code~` contents are
 not transformed. Blank-separated Org footnote paragraphs remain separate
 paragraphs within one native note.
+
+### Script cover images
+
+A dedicated script title page accepts the same `folio.cover-image` configuration
+as PDF, including background and proportional inset images, overlay and
+inset-only dodge placement, localized blur and wash, dodge clearance,
+bottom-centre author placement, literal title-position percentages, and image
+or solid full-page inset backdrops. Paths and configuration follow the ordinary
+PDF YAML cascade, including Markdown YAML and dotted Org frontmatter.
+
+DOCX embeds the prepared PNG and JPEG assets under `word/media`; it never links
+to the source file. Native page-relative DrawingML anchors preserve the shared
+physical geometry and centred crop. Title, subtitle, author, date and version
+remain editable text above the image and treatment layers. The package reuses
+the already prepared blurred JPEG backdrop and never reruns Superscale or blur
+processing in the office writer. Invalid assets or geometry fail before an
+existing target is replaced. LibreOffice and Word-compatible editors may vary
+slightly in font metrics; supported title, gap and image boundaries use a 2mm
+tolerance.
 
 ## Attributed footnotes as comments
 
@@ -151,6 +170,8 @@ title composition, page settings and spacing. That generic conversion is not
 the product ODT route. The native DOCX writer serves scripts, manuscripts and letters.
 
 ## History
+
+- 1.15 (2026-11-08): Add native editable script cover images, treatments and inset backdrops.
 
 - 1.14 (2026-11-03): Preserve separator and word-internal slashes outside valid Org emphasis boundaries.
 - 1.13 (2026-11-02): Span attributed-note comments across the complete source sentence or line preceding the footnote reference.

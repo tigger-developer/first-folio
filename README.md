@@ -1,7 +1,7 @@
 ---
 title: First Folio
-version: "1.17"
-last-updated: 2026-11-07
+version: "1.20"
+last-updated: 2026-11-08
 ---
 
 # First Folio
@@ -184,13 +184,13 @@ Running headers and footers for scripts and manuscripts use `folio.page-header` 
 
 For page-limited script submissions, set `folio.title-page.enabled: false` to place the title-page items above the script on its first content page instead of using a separate title page. `folio.title-page.skip-header` and `skip-footer` default to `true`, hiding running matter on that first page while retaining it on later pages. Set either to `false` to allow its enabled shared role on page 1. Manuscript title-page settings remain independent. See [compact script titles and first-page running matter](docs/config.md#compact-script-title-block).
 
-Dedicated script PDF title pages can use a source-relative PNG or JPEG through
+Dedicated script PDF and DOCX title pages can use a source-relative PNG or JPEG through
 `folio.cover-image`. Background images proportionally cover and centre-crop the
 page; insets use a configured longest-axis size and support live title text as
 an overlay or in bounded regions above and below the image. Optional image
 treatment, localized blur, wash, overlay padding, post-placement dodge
 clearance, an optional bottom-centre author metadata slot and Superscale preprocessing are
-documented under [script PDF cover images](docs/config.md#script-pdf-cover-images-foliocover-image).
+documented under [script cover images](docs/config.md#script-cover-images-foliocover-image).
 In dodge mode, a title-position percentage anchors the centre of each movable
 text group within its available region before minimum image clearance is applied.
 An inset may also retain its sharp PNG artwork over either a full-bleed blurred
@@ -198,8 +198,10 @@ JPEG derivative of the original image or an exact solid colour. The backdrop
 JPEG uses a fixed quality of 85. Explicit light/dark
 wash treatment selects page-wide text contrast while localized overlay
 treatment remains authoritative inside its own regions.
-DOCX, ODT, standalone Typst, compact script titles, manuscripts and letters
-reject this configuration until their separate format work is delivered.
+DOCX embeds the prepared assets in the package, uses native page-relative
+drawings and keeps every title role editable. ODT, standalone Typst, compact
+script titles, manuscripts and letters reject this configuration until their
+separate format work is delivered.
 
 ## Project Structure
 
@@ -267,6 +269,8 @@ make vulncheck # Go dependency and reachable-code vulnerability gate
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.20 (2026-11-08): Document native editable DOCX title images and prepared inset backdrops.
 
 - 1.19 (2026-11-08): Clarify centre-anchor semantics for title-position percentages in dodge layouts.
 
