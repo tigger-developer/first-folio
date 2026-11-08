@@ -133,7 +133,7 @@ classification; it is provenance, not current state.
 - Scope :: Project W073's shared script title-image contract into editable native ODT after the PDF and DOCX deliveries.
 - Dependency :: W073 shared configuration and layout delivery, followed by W074 delivery evidence.
 
-** REVIEW W074 - Add script title-page images to DOCX output :feature:
+** ACTIVE W074 - Add script title-page images to DOCX output :feature:
 :PROPERTIES:
 :CUSTOM_ID: w-074
 :PRIORITY: P2
@@ -144,6 +144,7 @@ classification; it is provenance, not current state.
 - Audit :: [[file:../tickets/074-script-title-image-docx/audits.yaml][Canonical definition audit record]].
 - Scope :: Project W073's shared script title-image contract into editable native DOCX after the PDF delivery.
 - Dependency :: W073 shared configuration and layout delivery.
+- Delivery admission 2026-11-08 :: The operator invoked =$deliver-change= and approved the amended W079 backdrop scope. Definition self-audit =definition-c1-r4= passed against =8ddeabb=; delivery remains subject to TDD, implementation self-audit and UT074.1.
 
 ** ACTIVE W073 - Add script title-page images to PDF output :feature:
 :PROPERTIES:
