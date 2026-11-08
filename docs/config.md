@@ -176,7 +176,10 @@ aligns the complete title/subtitle/author group in PDF, DOCX and ODT. Although
 the schema retains `subtitle.align` and `author.align`, the script renderers do
 not independently place those grouped items. Subtitle vertical spacing is
 controlled by `folio.title-page.subtitle.space-before`; its font block controls
-subtitle typography. There is no script `subtitle.position` field.
+subtitle typography. In script PDF output, this value is the visible gap between
+the rendered title and subtitle rather than additional paragraph leading. An
+`em` value uses the subtitle font size; physical lengths such as `4mm` remain
+absolute. There is no script `subtitle.position` field.
 
 #### Compact script title block
 
@@ -915,6 +918,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.44 (2026-11-08): Define script PDF subtitle spacing as the visible title-to-subtitle gap, with em values based on the subtitle font.
 
 - 0.43 (2026-11-07): Add an anchored bottom-centre author slot beside script date and version metadata.
 

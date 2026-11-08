@@ -105,7 +105,7 @@ folio:
         style: italic
         letter-spacing: 0em
       case-transform: as-written
-      space-before: 1em
+      space-before: 1em              # PDF: visible title gap; em uses subtitle font size.
 
     author:
       align: center

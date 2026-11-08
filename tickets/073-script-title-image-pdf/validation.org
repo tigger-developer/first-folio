@@ -107,6 +107,18 @@
 - Runs :: 2026-11-07 at =38ca459=: GREEN; deterministic Superscale and cleanup assertions remain unchanged and passing.
 - Runs :: 2026-11-07 at =e81826b=: GREEN; deterministic Superscale and cleanup assertions remain unchanged and passing.
 
+** GREEN RT073.4 - Script subtitle spacing controls the visible PDF gap :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-4-result
+:REVISION: cbfe87f34e26872b3216c211424f4a4880813bf2
+:COMMAND: go test ./internal/app -run '^TestRT073_4SubtitleSpaceBeforeIsTheVisibleTitleGap$' -count=1 -timeout=10m
+:EVIDENCE: Ordinary and dodge script PDFs rendered a visible 4mm gap within one pixel at 72dpi; 0.5em rendered as 7pt from the configured 14pt subtitle font, without the former title-line gap.
+:END:
+
+- Criterion :: [[file:spec.org::#ac-073-18][AC073.18 - Subtitle spacing is the visible title gap]].
+- Runs :: 2026-11-08 before implementation: intended RED; =4mm= rendered as =52-53px= instead of =11px=, and =0.5em= as =46-47px= instead of =7px=.
+- Runs :: 2026-11-08 at =cbfe87f=: GREEN across ordinary and dodge title-page composition for both physical and subtitle-relative spacing.
+
 * Delivery checks
 
 - 2026-11-07 at =22a3961=: =make test= GREEN; =internal/app= completed in =410.844s= and =internal/manuscript= in =103.794s=; every remaining package passed or was validly cached.

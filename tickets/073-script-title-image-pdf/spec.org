@@ -7,6 +7,7 @@
 #+OPERATOR_AMENDMENT: APPROVED 2026-11-07 dodge image clearance
 #+OPERATOR_AMENDMENT: APPROVED 2026-11-07 dodge clearance may use title-page margins
 #+OPERATOR_AMENDMENT: APPROVED 2026-11-07 bottom-centre author footer slot
+#+OPERATOR_AMENDMENT: BYPASS-GATE-7 2026-11-08 exact title-to-subtitle spacing
 
 * Synopsis
 :PROPERTIES:
@@ -31,6 +32,7 @@
 
 - Top-level =folio.cover-image= defines a reusable cover asset, sizing, independent image and wash treatments, optional Superscale processing and placement; W073 makes script PDF its first consumer.
 - A configured image counts as title-page content, so an image-only dedicated title page can be produced.
+- Script PDF title and subtitle blocks use *the configured visible gap*, with =em= values resolved from the subtitle font.
 
 ** Unchanged
 
@@ -184,6 +186,14 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 - Dodge independence :: The bottom metadata row retains its configured position when =dodge.padding= changes. If the inset plus clearance reaches the fixed row, conversion reports the lower layout conflict and publishes no target rather than moving the row.
 - Proven by :: [[#rt-073-1][RT073.1 - Cover-image configuration, keys and source limits are validated]], [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]], [[#at-073-1][AT073.1 - Rendered PDF geometry follows the image contract]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
 
+** AC073.18 - Subtitle spacing is the visible title gap :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-073-18
+:END:
+
+- Criterion :: Given a script PDF title and subtitle, =folio.title-page.subtitle.space-before= sets the *visible gap between their rendered text*, without an additional title-sized line gap; an =em= value resolves from the *subtitle font size*.
+- Proven by :: [[#rt-073-4][RT073.4 - Script subtitle spacing controls the visible PDF gap]] and [[#ut-073-1][UT073.1 - Script title images are visually acceptable]].
+
 ** AC073.6 - Source-relative cover paths resolve consistently :ac:
 :PROPERTIES:
 :CUSTOM_ID: ac-073-6
@@ -305,6 +315,18 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 - Expected :: Null *performs no lookup or invocation*. =default= omits =--scale=; explicit values pass =--scale 2=, =4= or =8=; every invocation passes =--no-face-enhance=, one literal input path and a unique output directory without a shell. One usable zero-exit output becomes the prepared image; lookup absence, non-zero and unusable zero-exit output each *emit one warning and return the original image*. Temporary output is removed after every result.
 - Retention :: Persistent regression suite under =make test=.
 
+** RT073.4 - Script subtitle spacing controls the visible PDF gap :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-073-4
+:END:
+
+- Covers :: [[#ac-073-18][AC073.18 - Subtitle spacing is the visible title gap]].
+- Boundary :: Public script PDF composition through Typst and rasterized page-one output.
+- Setup :: Ordinary and dodge title pages use a =34pt= title, =14pt= subtitle and either =4mm= or =0.5em= subtitle spacing.
+- Action :: Convert each fixture, rasterize page one at =72dpi= and measure the blank pixel rows between the title and subtitle ink.
+- Expected :: The visible gap is within one raster pixel of =4mm= or =7pt= respectively; no implicit title-line gap is added.
+- Retention :: Persistent regression suite under =make test=.
+
 ** AT073.1 - Rendered PDF geometry follows the image contract :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-073-1
@@ -346,10 +368,10 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 :CUSTOM_ID: ut-073-1
 :END:
 
-- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]], [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]] and [[#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]].
+- Covers :: [[#ac-073-1][AC073.1 - Background images cover the script title page]], [[#ac-073-2][AC073.2 - Insets use longest-axis sizing]], [[#ac-073-3][AC073.3 - Overlay treatment preserves configured text placement]], [[#ac-073-4][AC073.4 - Dodge places metadata around a centred inset]], [[#ac-073-5][AC073.5 - Dodge honours relative vertical placement]], [[#ac-073-8][AC073.8 - Requested Superscale processing precedes layout]], [[#ac-073-16][AC073.16 - Dodge padding provides post-placement image clearance]], [[#ac-073-17][AC073.17 - Author can share an anchored bottom metadata row]] and [[#ac-073-18][AC073.18 - Subtitle spacing is the visible title gap]].
 - Validation method :: *User validation in the normal PDF reader*.
 - Procedure :: Open *light/dark background overlays and portrait/landscape inset overlay/dodge PDFs*; where installed, compare one low-resolution source across null/default/=2x=/=4x=/=8x=; inspect composition, legibility, crop, padding, proportions and page two.
-- Expected :: Images remain *undistorted and intentionally composed*; Superscale changes detail but not geometry; overlays remain legible/localized; dodge remains balanced with *visible configured clearance* and unchanged centre/third intent; bottom-centre author/date/version remain aligned and anchored; later pages remain unchanged.
+- Expected :: Images remain *undistorted and intentionally composed*; Superscale changes detail but not geometry; overlays remain legible/localized; dodge remains balanced with *visible configured clearance* and unchanged centre/third intent; the title-to-subtitle gap matches =subtitle.space-before=; bottom-centre author/date/version remain aligned and anchored; later pages remain unchanged.
 - Record :: Write the dated result to =validation.org=.
 
 * Edge Cases
@@ -368,6 +390,12 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 - Condition :: A dedicated title page has an image but no title metadata.
 - Required behaviour :: The image creates the page; absent text regions create no empty wash, blur or padding boxes.
 - Covered by :: [[#ac-073-13][AC073.13 - A cover can create an image-only title page]] and [[#rt-073-2][RT073.2 - Typst output contains the resolved title-image layout]].
+
+** Differently sized title and subtitle fonts
+
+- Condition :: The title and subtitle use different font sizes and =subtitle.space-before= uses =em=.
+- Required behaviour :: The *visible inter-block gap uses the subtitle font as the =em= basis* and does not inherit the title line box.
+- Covered by :: [[#ac-073-18][AC073.18 - Subtitle spacing is the visible title gap]] and [[#rt-073-4][RT073.4 - Script subtitle spacing controls the visible PDF gap]].
 
 ** Oversized inset
 
@@ -423,7 +451,7 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 - Configuration validation *strictly validates only =folio.cover-image=* into a typed, renderer-neutral model and reports complete field paths; permissive unknown-key behaviour elsewhere remains unchanged.
 - The application *resolves =path= from the source document*, enforces original-source byte/dimension/pixel limits before full decode, and calculates physical background or inset geometry.
 - Image preparation *optionally invokes Superscale*, selects its output on usable zero exit, or warns and returns the original image for lookup, exit or output failure.
-- The Typst title-page template *measures title groups with the actual configured fonts*, enforces dodge-region fit, composes image layers and retains metadata as live text.
+- The Typst title-page template *stacks title and subtitle with an explicit visible gap*, measures title groups with the actual configured fonts, enforces dodge-region fit, composes image layers and retains metadata as live text.
 
 *** Reuse, shared behaviour and variation
 
@@ -450,6 +478,7 @@ Script title pages *cannot include cover artwork*. Authors therefore cannot prod
 - Background sizing uses *proportional cover scale and centred page clipping*: =max(pageWidth / imageWidth, pageHeight / imageHeight)=.
 - Inset sizing uses *one longest-axis scale for both axes*: =configuredSize / max(imageWidth, imageHeight)=.
 - Overlay treatment is *clipped to each equally padded occupied text region*: aligned blur, independent wash, then contrasting live text.
+- Title/subtitle composition uses one measured vertical stack; =subtitle.space-before= is the stack gap, and =em= is converted from =subtitle.font.size= before Typst layout.
 - Dodge *centres the inset and divides the content rectangle at its actual image bounds*. Title/subtitle form the upper group; a grouped author forms the lower movable group. Date/version and an optional bottom-centre author remain in the anchored metadata row. =folio.title-page.title.position= applies within the unchanged movable regions; existing horizontal settings remain applicable.
 - Typst constructs each populated group as a width-constrained block using the *actual font, stretch, spacing and prefix configuration*, then uses =measure= before placement. It calculates the requested relative position first, then clamps only a violating edge to =image edge +/- dodge.padding=. The clamp does *not alter the region or relative-position factor*. It may place the adjusted group into the title-page margin; a group that crosses the physical page edge raises a deterministic upper/lower-group error. The application maps that marker to a cover-layout diagnostic and *does not replace the target PDF*.
 - Author position :: =folio.title-page.author.position= defaults to =group=. =bottom-center= removes the author from the movable title/dodge group and places its existing prefix and typography in the fixed centre slot of a three-column bottom metadata row. Date and version retain their configured left/right slots. The fixed row does not move with dodge padding; an image-clearance collision is a lower-group error.
@@ -507,6 +536,7 @@ folio:
 - Text-region contract :: Overlay uses *one populated title/subtitle/grouped-author region plus separate metadata regions* for date, version and an optional bottom-centre author, never a full-width band. =em= resolves against the region's largest populated font.
 - Dodge contract :: The inset is *physically centred*; raw upper/lower regions are bounded by margins and the actual image. =center=/=third= apply *within each unchanged region*. =dodge.padding= is then enforced as a one-sided minimum clearance and *does not consume calculated space*. That minimum adjustment may use the title-page margins, with the physical page edge as its failure boundary; horizontal settings remain applicable. A non-empty =dodge= block is invalid for overlay placement.
 - Author footer contract :: =folio.title-page.author.position= accepts only =group= and =bottom-center= for dedicated script PDF title pages. =bottom-center= shares an anchored three-slot row with date and version and is independent of dodge displacement. Compact title mode rejects =bottom-center=.
+- Subtitle-spacing contract :: =folio.title-page.subtitle.space-before= is the *visible title-to-subtitle gap* on ordinary, overlay and dodge script PDF title pages. Physical lengths remain absolute; =em= resolves against =folio.title-page.subtitle.font.size=.
 
 **** Source-image resource contract
 :PROPERTIES:

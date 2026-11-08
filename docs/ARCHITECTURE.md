@@ -159,7 +159,7 @@ Substantial Typst layouts live in real `.typ` files. Go code owns:
 
 Templates own page composition. Product Go code does not contain generated-language heredocs or invoke a shell to run Typst.
 
-Script title composition uses one shared title block for a dedicated title page or a compact heading above first-page content. `folio.title-page.enabled` selects between them; manuscript title-page settings remain independent. Script-only Boolean validation covers this switch and `skip-header`/`skip-footer`. Running-matter suppression uses the physical page counter and applies to the dedicated title page or compact page 1, without resetting numbering or removing title metadata. The renderer suppresses only the first act's explicit break in compact mode; later act breaks and natural pagination remain. See [script title configuration](config.md#compact-script-title-block) for defaults and untitled-script handling.
+Script title composition uses one shared title block for a dedicated title page or a compact heading above first-page content. Script PDF title and subtitle roles form measured stack items whose configured subtitle spacing is their visible gap; relative spacing uses the subtitle font size. `folio.title-page.enabled` selects between dedicated and compact composition; manuscript title-page settings remain independent. Script-only Boolean validation covers this switch and `skip-header`/`skip-footer`. Running-matter suppression uses the physical page counter and applies to the dedicated title page or compact page 1, without resetting numbering or removing title metadata. The renderer suppresses only the first act's explicit break in compact mode; later act breaks and natural pagination remain. See [script title configuration](config.md#compact-script-title-block) for defaults and untitled-script handling.
 
 The renderer-neutral `folio.cover-image` model is validated by the shared
 configuration loader, while W073 adopts it only in the dedicated script PDF
@@ -208,6 +208,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.29 (2026-11-08): Make script PDF subtitle spacing an explicit measured gap based on subtitle typography.
 
 - 0.28 (2026-11-07): Place supported source-document configuration above local YAML and feed one resolved cascade to every output route.
 

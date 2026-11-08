@@ -87,7 +87,7 @@
   #     font:
   #       size: 14pt
   #       style: italic
-  #     space-before: 1em
+  #     space-before: 1em         # PDF visible title gap; em uses subtitle font size
   #   author:
   #     align: center
   #     position: group          # group | bottom-center
