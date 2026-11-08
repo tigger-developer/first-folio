@@ -193,7 +193,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 - Covers :: [[#ac-074-1][AC074.1 - DOCX embeds proportional title images]], [[#ac-074-2][AC074.2 - DOCX overlay remains legible and editable]], [[#ac-074-3][AC074.3 - DOCX dodge separates text and inset]], [[#ac-074-5][AC074.5 - DOCX packages remain conforming]], [[#ac-074-6][AC074.6 - DOCX renders inset backdrops]] and [[#ac-074-7][AC074.7 - DOCX preserves current title placement semantics]].
 - Boundary :: Native =internal/office= DOCX serialization and parsed OOXML package parts.
-- Setup :: Shared title-image plans cover background overlay, both inset orientations, overlay with non-zero blur/wash/padding, dodge at named and literal-percentage positions, =4mm= subtitle spacing, dodge clearance, bottom-centre author, W079 image and solid backdrops, absent metadata roles and image-only title pages.
+- Setup :: DOCX projection inputs cover background overlay, both inset orientations, overlay with non-zero blur/wash/padding, dodge at named and literal-percentage positions, =4mm= subtitle spacing, dodge clearance, bottom-centre author, W079 image and solid backdrops, absent metadata roles and image-only title pages.
 - Action :: Serialize each plan, reopen the ZIP package and parse document, drawing, media, relationship and content-type parts.
 - Expected :: Each selected or prepared asset is embedded once with valid relationships; page anchors, extents, crop, layer order, text containers, treatment rectangles, backdrops and dodge regions match the plan; title metadata remains text nodes; identifiers are unique and all XML is well formed.
 - Retention :: Persistent regression suite under =make test=.
@@ -281,7 +281,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 ** Architecture context
 
-- Relevant components :: W073 supplies the validated title-image plan and prepared image variants, including W079's JPEG backdrop derivative; the native DOCX writer owns page geometry, paragraphs, drawings, media and relationships.
+- Relevant components :: The application owns W073/W079 validation, source-relative resolution and prepared image variants, including W079's JPEG backdrop derivative; the native DOCX writer owns page geometry, editable text, drawings, media and relationships.
 - Ownership boundary :: First Folio creates the complete OOXML package. Word-compatible editors own final layout and editing but must not be required to repair or fetch content.
 - Existing pattern :: Extend the native writer's title-page and package-part builders rather than adding Pandoc or a post-processing executable.
 
@@ -289,13 +289,13 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 *** Components and responsibilities
 
-- The application passes the same W073/W079 plan and selected prepared assets, including requested Superscale output, documented original-image fallback and any prepared backdrop JPEG, into the DOCX writer without rerunning external processing.
+- The application passes an immutable =office.ScriptCover= projection containing resolved geometry and bounded selected/prepared asset bytes into the DOCX writer. It includes requested Superscale output, documented original-image fallback and any prepared backdrop JPEG without rerunning external processing.
 - The package layer embeds original/normalized and blurred image parts, registers content types and relationships, and allocates identifiers through existing package mechanisms.
 - The title-page writer creates page-anchored image layers and positioned editable text regions in the plan's order.
 
 *** Reuse, shared behaviour and variation
 
-- Shared operation :: Asset resolution, validation, proportional geometry, independent image/wash treatment, backdrop preparation and region calculations remain W073/W079 responsibilities.
+- Shared operation :: Asset resolution, validation, proportional image geometry, independent image/wash treatment and backdrop preparation remain in the application-owned W073/W079 pipeline. The DOCX adapter maps the resolved values into office-native geometry without changing their meaning.
 - Variation :: DOCX maps physical units to EMUs and uses OOXML drawings/text containers while preserving shared semantics.
 
 *** Boundaries and dependencies
@@ -305,8 +305,8 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 *** Flow
 
-1. Public conversion loads W073 configuration and produces the shared plan.
-2. The DOCX writer embeds required sharp, treatment and backdrop image variants and constructs the title-page visual layers behind editable text.
+1. Public conversion loads the established configuration cascade, runs the existing W073/W079 preparation pipeline once and adapts its result to =office.ScriptCover=.
+2. The DOCX writer embeds required sharp, treatment and backdrop image variants and constructs title-page visual layers behind editable text.
 3. Existing body and section generation follows, then the complete package is validated and atomically published.
 
 *** Essential mechanisms
@@ -316,16 +316,17 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 - An inset drawing uses explicit page-centred position and longest-axis extents.
 - Overlay regions use positioned editable text containers. Their background layer clips the aligned blurred image variant to the padded region, adds the independently configured lightening or darkening wash, then places its defined contrasting text above it.
 - Dodge uses separate upper and lower text regions around the page-centred inset. Region-relative =center= and =third= coordinates come from the shared plan rather than Word paragraph spacing heuristics.
-- Literal percentages, exact subtitle gaps, post-placement dodge padding and bottom-centre author placement are physical coordinates from the shared plan rather than reconstructed from flowing paragraph spacing.
+- Literal percentages, exact subtitle gaps, post-placement dodge padding and bottom-centre author placement are resolved into page-relative office geometry rather than collapsed to the writer's existing fixed paragraph-spacing aliases.
 
 *** Interfaces and configuration
 
-- Interface :: No new public interface; consume W073's top-level =folio.cover-image= model.
-- Compatibility :: The writer selects the image route only when the shared plan is present. Existing title paragraphs remain the no-image route.
+- Public interface :: No new user-facing interface; consume the established top-level =folio.cover-image= and title-page configuration.
+- Internal interface :: Add an optional =office.ScriptCover= value to the native script export boundary. It carries only resolved scalar geometry/treatment values and bounded asset bytes with their media types; =internal/office= does not import =internal/app=, resolve source paths or invoke Superscale.
+- Compatibility :: The writer selects the image route only when =office.ScriptCover= is present. Existing title paragraphs remain the no-image route.
 
 *** Data and state
 
-- Image parts, including the prepared backdrop JPEG, are embedded under =word/media= with package relationships. No external link or cache survives conversion.
+- Image parts, including the prepared backdrop JPEG, are embedded under =word/media= with package relationships. The conversion-scoped =office.ScriptCover= owns copied bytes only for package construction; no external link, source path or cache survives conversion.
 - Source files and W073 prepared temporary assets remain read-only and conversion-scoped.
 
 *** Failure behaviour
@@ -335,7 +336,7 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 
 *** Simplicity and proportionality
 
-- One native adapter reuses the existing DOCX writer and W073/W079 plan. It avoids a second configuration model, duplicate blur processing, an external postprocessor and rasterized title text.
+- One native adapter reuses the existing DOCX writer and application preparation pipeline. It avoids a second configuration model, duplicate blur processing, an external postprocessor and rasterized title text.
 
 ** Design decisions and verification
 
