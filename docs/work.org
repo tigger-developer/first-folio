@@ -78,6 +78,16 @@ classification; it is provenance, not current state.
 
 * Work items
 
+** ACTIVE D081 - Disable script cover images explicitly or with the title page :defect:
+:PROPERTIES:
+:CUSTOM_ID: d-081
+:PRIORITY: P1
+:SOURCE: operator
+:CREATED: 2026-11-08
+:END:
+- Specification :: [[file:../tickets/D081-disable-cover-image/spec.org][D081 - Disable script cover images]] (emergency reconciliation pending).
+- Emergency authority :: =BYPASS-GATE-7= invoked 2026-11-08 to let =folio.cover-image.enabled: false= suppress source-frontmatter cover images and to make =folio.title-page.enabled: false= ignore cover configuration before validation or loading across PDF, DOCX and ODT.
+
 ** ACTIVE D080 - Configure space after script stage directions :defect:
 :PROPERTIES:
 :CUSTOM_ID: d-080
