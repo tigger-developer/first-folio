@@ -62,7 +62,7 @@
 {{end}}
 
 #let stage-direction(body) = {
-  block(width: 100%, above: {{.DirectionSpace}}, below: 0.6em)[
+  block(width: 100%, above: {{.DirectionSpace}}, below: {{.DirectionAfter}})[
     #pad(left: {{.DirectionIndent}})[#align({{.DirectionAlign}})[#text({{.DirectionFont.Args}})[#folio-font-stretch({{.DirectionFont.Stretch}})[{{.DirectionOpen}}#body{{.DirectionClose}}]]]]
   ]
 }

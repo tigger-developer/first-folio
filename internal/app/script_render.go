@@ -135,7 +135,8 @@ type scriptTemplateData struct {
 	InstructionAlign                                   string
 	InstructionFont                                    typstFontData
 	DialogueFont                                       typstFontData
-	DirectionSpace, DirectionAlign, DirectionIndent    string
+	DirectionSpace, DirectionAfter, DirectionAlign     string
+	DirectionIndent                                    string
 	DirectionOpen, DirectionClose                      string
 	DirectionFont                                      typstFontData
 	TransitionSpace, TransitionAlign, TransitionIndent string
@@ -262,6 +263,7 @@ func newScriptTemplateDataWithCover(doc play.Document, cfg config.Config, format
 		InstructionAlign:         validAlign(cfg.String("folio.positioning.speech.speech-instruction.align", "left")),
 		InstructionInline:        cfg.String("folio.positioning.speech.speech-instruction.placement", "same-line") == "same-line",
 		DirectionSpace:           cfg.String("folio.positioning.stage-direction.space-before", "1.6em"),
+		DirectionAfter:           cfg.String("folio.positioning.stage-direction.space-after", "0.6em"),
 		DirectionAlign:           validAlign(cfg.String("folio.positioning.stage-direction.align", "left")),
 		DirectionIndent:          typstDimension(cfg.String("folio.positioning.stage-direction.indent", "0")),
 		DirectionFont:            font("folio.positioning.stage-direction.font"),
@@ -584,7 +586,7 @@ func escapeTypstString(value string) string {
 func validateScriptData(data scriptTemplateData) error {
 	for name, value := range map[string]string{
 		"font-size": data.RootFont.Size, "margin": data.Margin, "speech spacing": data.SpeechSpace, "dialogue indent": data.DialogueIndent, "dialogue wrap": data.DialogueWrap,
-		"speaker indent": data.SpeakerIndent, "direction spacing": data.DirectionSpace, "direction indent": data.DirectionIndent, "transition spacing": data.TransitionSpace, "transition indent": data.TransitionIndent,
+		"speaker indent": data.SpeakerIndent, "direction spacing": data.DirectionSpace, "direction after": data.DirectionAfter, "direction indent": data.DirectionIndent, "transition spacing": data.TransitionSpace, "transition indent": data.TransitionIndent,
 		"act spacing": data.ActSpace, "act size": data.ActFont.Size,
 		"scene spacing": data.SceneSpace, "scene after": data.SceneAfter, "scene size": data.SceneFont.Size,
 		"frontmatter spacing": data.FrontmatterSpace, "frontmatter size": data.FrontmatterFont.Size,

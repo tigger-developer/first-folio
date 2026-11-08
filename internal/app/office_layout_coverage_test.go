@@ -287,6 +287,7 @@ func TestRT054_2OfficeBodyLayoutLengths(t *testing.T) {
       dialogue: {wrap-indent: 5em}
     stage-direction:
       space-before: 2em
+      space-after: 0.75em
       indent: 1cm
       align: right
       font: {size: 12pt}
@@ -329,7 +330,7 @@ func TestRT054_2OfficeBodyLayoutLengths(t *testing.T) {
 				text, align         string
 				before, after, left float64
 			}{
-				{"Direction text.", "right", 12, 3.6, 720 / 25.4},
+				{"Direction text.", "right", 12, 4.5, 720 / 25.4},
 				{"transition text", "left", 6, 0, 36},
 				{"act one", "right", 12, 3.6, 0},
 				{"scene one", "center", 24, 6, 0},

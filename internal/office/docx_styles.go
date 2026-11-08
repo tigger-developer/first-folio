@@ -283,7 +283,10 @@ func (w *docxWriter) paragraphProperties(role, path string, size float64) (docxN
 			return docxNode{}, err
 		}
 		if role == "Direction" {
-			after = int(math.Round(size * 12))
+			after, err = w.length(path+".space-after", "0.6em", size, w.height-w.top-w.bottom)
+			if err != nil {
+				return docxNode{}, err
+			}
 		}
 	case "Act":
 		after = int(math.Round(size * 6))
