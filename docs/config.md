@@ -193,7 +193,7 @@ folio:
     enabled: false
 ```
 
-This moves the available title, subtitle, author, date and version to a block at the top of the first content page rather than removing the metadata. Title-role fonts, subtitle/author spacing and author prefixes remain configurable. The dedicated title-page vertical position is not applied. Date/version appear below the title block rather than in the page footer, leaving running matter independent.
+This moves the available title, subtitle, author, date and version to a block at the top of the first content page rather than removing the metadata. Title-role fonts, subtitle/author spacing and author prefixes remain configurable. The dedicated title-page vertical position is not applied. A configured `author.position: bottom-center` falls back to the grouped author because compact mode has no anchored title-page metadata row. Date/version appear below the title block rather than in the page footer, leaving running matter independent.
 
 The script follows on the same page, without a forced title-page break or a break before the first act. Later acts retain `folio.positioning.act-header.page-break-before`; content may still paginate naturally. Introductory material remains controlled by `render.frontmatter` and `render.character-table`. Script page numbering begins at physical page 1; the first-page running header and footer are hidden by default through the suppression switches below.
 
@@ -320,8 +320,8 @@ combinations. Set `folio.cover-image.enabled: false` in any higher-precedence
 configuration layer to suppress a lower-layer or source-frontmatter cover. A
 false `folio.title-page.enabled` value also suppresses cover processing. Both
 controls act before cover path, mode, asset and output-format validation.
-Active covers remain incompatible with compact script title mode, standalone
-Typst, ODT, manuscript and letter output in this release. Original source
+Active covers remain incompatible with standalone Typst, ODT, manuscript and
+letter output in this release. Original source
 images are limited to 100 MiB, 32,768 pixels on either axis and 100,000,000
 pixels in total before decode.
 

@@ -318,8 +318,8 @@ func newScriptTemplateDataWithCover(doc play.Document, cfg config.Config, format
 	if authorPosition != "group" && authorPosition != "bottom-center" {
 		return scriptTemplateData{}, fmt.Errorf("folio.title-page.author.position must be group or bottom-center; got %q", authorPosition)
 	}
-	if authorPosition == "bottom-center" && !data.TitlePageEnabled {
-		return scriptTemplateData{}, fmt.Errorf("folio.title-page.author.position bottom-center requires folio.title-page.enabled true")
+	if !data.TitlePageEnabled {
+		authorPosition = "group"
 	}
 	data.AuthorGrouped = data.HasAuthor && authorPosition == "group"
 	data.AuthorBottom = data.HasAuthor && authorPosition == "bottom-center"

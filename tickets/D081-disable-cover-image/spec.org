@@ -32,7 +32,7 @@
 :CUSTOM_ID: ac-081-2
 :END:
 
-- Criterion :: =folio.title-page.enabled: false= selects compact no-cover composition and ignores any cover block before validation or loading.
+- Criterion :: =folio.title-page.enabled: false= selects compact no-cover composition, ignores any cover block before validation or loading, and groups an author configured for the dedicated page's bottom-centre slot.
 - Proven by :: [[#rt-081-1][RT081.1 - Disabled covers are ignored across rendered formats]] and [[#ut-081-1][UT081.1 - Cover profile switching is acceptable]].
 
 * Test Definitions
@@ -70,7 +70,7 @@
 :END:
 
 - TDD :: Focused tests first observed an unknown-field error for =cover-image.enabled= and the existing title-page incompatibility error for all three formats.
-- Actual change :: The typed cover resolver recognizes a strict Boolean switch and resolves either disable condition to no cover before active field and asset processing.
+- Actual change :: The typed cover resolver recognizes a strict Boolean switch and resolves either disable condition to no cover before active field and asset processing. Compact PDF composition groups a configured bottom-centre author because its dedicated metadata row is absent.
 
 * Solution Design
 :PROPERTIES:
