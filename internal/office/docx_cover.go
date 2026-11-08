@@ -144,7 +144,12 @@ func (w *docxWriter) coverOverlayText(imageX, imageY, imageW, imageH, pageW, pag
 	if w.cfg.String("folio.title-page.author.position", "group") == "group" {
 		roles = append(roles, "Author")
 	}
-	titleText, err := w.coverTextBox("Folio title text", contentX, titleY, contentW, boxH, roles, colour, gap)
+	fill := &coverTextBoxFill{
+		colour:    treatmentHex(w.cover.Config.OverlayWashTreatment),
+		opacity:   w.cover.Config.OverlayWashOpacity,
+		paddingMM: paddingMM,
+	}
+	titleText, err := w.coverTextBox("Folio title text", contentX, titleY, contentW, boxH, roles, colour, gap, fill)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +158,7 @@ func (w *docxWriter) coverOverlayText(imageX, imageY, imageW, imageH, pageW, pag
 		bottomY := w.coverBottomY(pageH)
 		result = append(result, w.coverOverlayTreatment("Folio bottom", contentX-paddingMM, bottomY-paddingMM, contentW+2*paddingMM, 12+2*paddingMM, imageX, imageY, imageW, imageH)...)
 	}
-	bottomNodes, err := w.coverBottomMetadata(pageW, pageH, colour)
+	bottomNodes, err := w.coverBottomMetadata(pageW, pageH, colour, fill)
 	if err != nil {
 		return nil, err
 	}
@@ -179,11 +184,6 @@ func (w *docxWriter) coverOverlayTreatment(prefix string, x, y, width, height, i
 			crop := coverAlignedRegionCrop(w.cover.Blurred, imageW, imageH, (left-imageX)/imageW, (top-imageY)/imageH, (right-imageX)/imageW, (bottom-imageY)/imageH)
 			result = append(result, w.coverPictureWithCrop(prefix+" treatment", "coverBlurred", left, top, right-left, bottom-top, w.cover.Blurred, true, crop))
 		}
-	}
-	if len(result) == 0 {
-		result = append(result, w.coverShape(prefix+" treatment", x, y, width, height, treatmentHex(w.cover.Config.OverlayWashTreatment), w.cover.Config.OverlayWashOpacity, true))
-	} else if w.cover.Config.OverlayWashOpacity > 0 {
-		result = append(result, w.coverShape(prefix+" wash", x, y, width, height, treatmentHex(w.cover.Config.OverlayWashTreatment), w.cover.Config.OverlayWashOpacity, true))
 	}
 	return result
 }
@@ -217,7 +217,7 @@ func (w *docxWriter) coverDodgeText(imageY, imageH, pageW, pageH float64, colour
 	upperH := titleSize*25.4/72 + gap*25.4/72 + subtitleSize*25.4/72 + 8
 	upperY := upperTop + (upperBottom-upperTop)*ratio - upperH/2
 	upperY = math.Max(0, math.Min(upperY, math.Max(0, upperBottom-upperH)))
-	upper, err := w.coverTextBox("Folio upper title text", contentX, upperY, contentW, upperH, []string{"Title", "Subtitle"}, colour, gap)
+	upper, err := w.coverTextBox("Folio upper title text", contentX, upperY, contentW, upperH, []string{"Title", "Subtitle"}, colour, gap, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -228,13 +228,13 @@ func (w *docxWriter) coverDodgeText(imageY, imageH, pageW, pageH float64, colour
 	if w.cfg.String("folio.title-page.author.position", "group") == "group" && w.doc.Metadata["author"] != "" {
 		lowerBottom := math.Max(lowerTop, bottomY-5)
 		lowerY := math.Max(lowerTop, lowerTop+(lowerBottom-lowerTop)*0.5-7)
-		author, authorErr := w.coverTextBox("Folio lower author text", contentX, lowerY, contentW, math.Max(14, lowerBottom-lowerY), []string{"Author"}, colour, 0)
+		author, authorErr := w.coverTextBox("Folio lower author text", contentX, lowerY, contentW, math.Max(14, lowerBottom-lowerY), []string{"Author"}, colour, 0, nil)
 		if authorErr != nil {
 			return nil, authorErr
 		}
 		result = append(result, author)
 	}
-	bottom, err := w.coverBottomMetadata(pageW, pageH, colour)
+	bottom, err := w.coverBottomMetadata(pageW, pageH, colour, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +246,7 @@ func (w *docxWriter) coverBottomY(pageH float64) float64 {
 	return math.Max(0, pageH-bottomMargin-8)
 }
 
-func (w *docxWriter) coverBottomMetadata(pageW, pageH float64, colour string) ([]docxNode, error) {
+func (w *docxWriter) coverBottomMetadata(pageW, pageH float64, colour string, fill *coverTextBoxFill) ([]docxNode, error) {
 	contentX := float64(w.margin) * 25.4 / 1440
 	contentW := pageW - 2*contentX
 	columnW := contentW / 3
@@ -285,7 +285,7 @@ func (w *docxWriter) coverBottomMetadata(pageW, pageH float64, colour string) ([
 		if !present {
 			continue
 		}
-		box, err := w.coverTextBox(item.name, contentX+float64(item.column)*columnW, y, columnW, 12, item.roles, colour, 0)
+		box, err := w.coverTextBox(item.name, contentX+float64(item.column)*columnW, y, columnW, 12, item.roles, colour, 0, fill)
 		if err != nil {
 			return nil, err
 		}
@@ -322,7 +322,13 @@ func (w *docxWriter) coverFontSize(role string) (float64, error) {
 	return size, err
 }
 
-func (w *docxWriter) coverTextBox(name string, x, y, width, height float64, roles []string, colour string, subtitleGapPT float64) (docxNode, error) {
+type coverTextBoxFill struct {
+	colour    string
+	opacity   float64
+	paddingMM float64
+}
+
+func (w *docxWriter) coverTextBox(name string, x, y, width, height float64, roles []string, colour string, subtitleGapPT float64, textFill *coverTextBoxFill) (docxNode, error) {
 	var paragraphs []docxNode
 	for _, role := range roles {
 		text := w.doc.Metadata[strings.ToLower(role)]
@@ -346,8 +352,20 @@ func (w *docxWriter) coverTextBox(name string, x, y, width, height float64, role
 	if len(paragraphs) == 0 {
 		paragraphs = append(paragraphs, dx("p"))
 	}
+	fill := coverXML("a:noFill")
+	leftInset, topInset, rightInset, bottomInset := "0", "0", "0", "0"
+	if textFill != nil && textFill.opacity > 0 {
+		alpha := int(math.Round(math.Max(0, math.Min(1, textFill.opacity)) * 100000))
+		fill = coverXML("a:solidFill", coverXML("a:srgbClr", coverXML("a:alpha").attr("val", strconv.Itoa(alpha))).attr("val", textFill.colour))
+		padding := math.Max(0, textFill.paddingMM)
+		x -= padding
+		y -= padding
+		width += 2 * padding
+		height += 2 * padding
+		leftInset, topInset, rightInset, bottomInset = emu(padding), emu(padding), emu(padding), emu(padding)
+	}
 	body := coverXML("wps:txbx", dx("txbxContent", paragraphs...))
-	shape := coverXML("wps:wsp", coverXML("wps:cNvSpPr").attr("txBox", "1"), coverXML("wps:spPr", coverXML("a:xfrm", coverXML("a:off").attr("x", "0").attr("y", "0"), coverXML("a:ext").attr("cx", emu(width)).attr("cy", emu(height))), coverXML("a:prstGeom", coverXML("a:avLst")).attr("prst", "rect"), coverXML("a:noFill"), coverXML("a:ln", coverXML("a:noFill"))), body, coverXML("wps:bodyPr").attr("lIns", "0").attr("tIns", "0").attr("rIns", "0").attr("bIns", "0").attr("anchor", "t"))
+	shape := coverXML("wps:wsp", coverXML("wps:cNvSpPr").attr("txBox", "1"), coverXML("wps:spPr", coverXML("a:xfrm", coverXML("a:off").attr("x", "0").attr("y", "0"), coverXML("a:ext").attr("cx", emu(width)).attr("cy", emu(height))), coverXML("a:prstGeom", coverXML("a:avLst")).attr("prst", "rect"), fill, coverXML("a:ln", coverXML("a:noFill"))), body, coverXML("wps:bodyPr").attr("lIns", leftInset).attr("tIns", topInset).attr("rIns", rightInset).attr("bIns", bottomInset).attr("anchor", "t"))
 	return w.coverAnchor(name, x, y, width, height, false, coverXML("a:graphic", coverXML("a:graphicData", shape).attr("uri", "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"))), nil
 }
 
