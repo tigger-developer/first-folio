@@ -93,7 +93,7 @@ func officeScriptCover(plan *coverImagePlan) (*office.ScriptCover, error) {
 		return nil, err
 	}
 	result := &office.ScriptCover{Config: plan.Config, Sharp: sharp, RenderedWidthMM: plan.RenderedWidthMM, RenderedHeightMM: plan.RenderedHeightMM}
-	if plan.BlurredPath != "" {
+	if plan.BlurredPath != "" && plan.BlurredPath != plan.SourcePath {
 		result.Blurred, err = officeScriptCoverAsset(plan.BlurredPath)
 		if err != nil {
 			return nil, err

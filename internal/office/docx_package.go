@@ -14,6 +14,7 @@ func docxPackage(parts []docxPart) ([]byte, error) {
 	content.children = append(content.children, docxNode{name: "Default"}.attr("Extension", "rels").attr("ContentType", "application/vnd.openxmlformats-package.relationships+xml"), docxNode{name: "Default"}.attr("Extension", "xml").attr("ContentType", "application/xml"))
 	relationships := docxNode{name: "Relationships"}.attr("xmlns", docxPackageRelNS)
 	defaults := map[string]bool{"rels": true, "xml": true}
+	var overrides []docxNode
 	for _, part := range parts {
 		if len(part.raw) > 0 {
 			ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(part.name)), ".")
@@ -26,7 +27,7 @@ func docxPackage(parts []docxPart) ([]byte, error) {
 				defaults[ext] = true
 			}
 		} else {
-			content.children = append(content.children, docxNode{name: "Override"}.attr("PartName", "/"+part.name).attr("ContentType", "application/vnd.openxmlformats-officedocument.wordprocessingml."+part.contentType+"+xml"))
+			overrides = append(overrides, docxNode{name: "Override"}.attr("PartName", "/"+part.name).attr("ContentType", "application/vnd.openxmlformats-officedocument.wordprocessingml."+part.contentType+"+xml"))
 		}
 		if part.relationship != "" {
 			target := strings.TrimPrefix(part.name, "word/")
@@ -37,6 +38,7 @@ func docxPackage(parts []docxPart) ([]byte, error) {
 			relationships.children = append(relationships.children, docxRelationship(id, part.relationship, target))
 		}
 	}
+	content.children = append(content.children, overrides...)
 	rootRels := docxNode{name: "Relationships", children: []docxNode{docxRelationship("document", "officeDocument", "word/document.xml")}}.attr("xmlns", docxPackageRelNS)
 	parts = append(parts, docxPart{name: "[Content_Types].xml", root: content}, docxPart{name: "_rels/.rels", root: rootRels}, docxPart{name: "word/_rels/document.xml.rels", root: relationships})
 	var output docxLimitedBuffer

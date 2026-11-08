@@ -202,6 +202,30 @@ func officeFontXML(raw []byte, start func(xml.StartElement) []docxNode, end func
 }
 
 func officeAppendXML(files map[string][]byte, path, parent string, nodes ...docxNode) error {
+	if path == "[Content_Types].xml" {
+		root, err := parseXML(files[path])
+		if err != nil {
+			return err
+		}
+		root.children = append(root.children, nodes...)
+		ordered := make([]docxNode, 0, len(root.children))
+		for _, child := range root.children {
+			if child.name == "Default" {
+				ordered = append(ordered, child)
+			}
+		}
+		for _, child := range root.children {
+			if child.name != "Default" {
+				ordered = append(ordered, child)
+			}
+		}
+		root.children = ordered
+		raw, err := docxEncode(*root, DataLimit)
+		if err == nil {
+			files[path] = raw
+		}
+		return err
+	}
 	raw, err := officeFontXML(files[path], nil, func(n xml.EndElement) []docxNode {
 		if n.Name.Local == parent {
 			return nodes

@@ -94,7 +94,7 @@ func TestRT074_1NativeDOCXPackageRepresentsSharedImagePlan(t *testing.T) {
 			name:              "background overlay",
 			cover:             ScriptCover{Config: config.CoverImage{Mode: "background", Placement: "overlay", ImageTreatment: "light", ImageOpacity: 1, OverlayBlur: "2mm", OverlayWashTreatment: "dark", OverlayWashOpacity: 0.35, OverlayPadding: "5mm"}, Sharp: sharp, Blurred: blurred},
 			wantMedia:         []string{"word/media/folio-cover-sharp.png", "word/media/folio-cover-blurred.png"},
-			wantDrawingNames:  []string{"Folio cover background", "Folio title treatment", "Folio title text"},
+			wantDrawingNames:  []string{"Folio cover background", "Folio title treatment", "Folio title text", "Folio bottom metadata text"},
 			wantDocumentToken: []string{"a:srcRect", "wp:anchor", "relativeFrom=\"page\"", "cx=\"7560000\" cy=\"10692000\""},
 		},
 		{
@@ -108,7 +108,7 @@ func TestRT074_1NativeDOCXPackageRepresentsSharedImagePlan(t *testing.T) {
 			name:              "portrait inset overlay",
 			cover:             ScriptCover{Config: config.CoverImage{Mode: "inset", Placement: "overlay", Size: "80mm", ImageTreatment: "light", ImageOpacity: 1, OverlayBlur: "2mm", OverlayWashTreatment: "dark", OverlayWashOpacity: 0.35, OverlayPadding: "5mm"}, Sharp: portrait, Blurred: portraitBlurred, RenderedWidthMM: 40, RenderedHeightMM: 80},
 			wantMedia:         []string{"word/media/folio-cover-sharp.png", "word/media/folio-cover-blurred.png"},
-			wantDrawingNames:  []string{"Folio cover inset", "Folio title treatment", "Folio title text"},
+			wantDrawingNames:  []string{"Folio cover inset", "Folio title treatment", "Folio title text", "Folio bottom metadata text"},
 			wantDocumentToken: []string{"cx=\"1440000\" cy=\"2880000\"", "W074 TITLE", "W074 SUBTITLE"},
 		},
 		{
@@ -140,6 +140,10 @@ func TestRT074_1NativeDOCXPackageRepresentsSharedImagePlan(t *testing.T) {
 				t.Fatalf("generated package: %v", err)
 			}
 			files := w074PackageFiles(t, raw)
+			contentTypes := string(files["[Content_Types].xml"])
+			if lastDefault, firstOverride := strings.LastIndex(contentTypes, "<Default "), strings.Index(contentTypes, "<Override "); lastDefault < 0 || firstOverride < 0 || lastDefault > firstOverride {
+				t.Errorf("content types do not keep every Default before Override: %s", contentTypes)
+			}
 			for _, name := range tc.wantMedia {
 				if len(files[name]) == 0 {
 					t.Errorf("missing embedded media %s", name)
@@ -175,6 +179,10 @@ func TestRT074_1NativeDOCXPackageRepresentsSharedImagePlan(t *testing.T) {
 				t.Error("source path leaked into DOCX package")
 			}
 		})
+	}
+
+	if got, want := coverAlignedRegionCrop(sharp, 80, 40, 0.25, 0.25, 0.75, 0.75), [4]string{"25000", "25000", "25000", "25000"}; got != want {
+		t.Fatalf("aligned treatment crop=%v, want %v", got, want)
 	}
 }
 

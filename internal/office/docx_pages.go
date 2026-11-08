@@ -45,7 +45,7 @@ type docxPart struct {
 func (w *docxWriter) runningParts() ([]docxPart, []docxNode, error) {
 	var parts []docxPart
 	var references []docxNode
-	suppressFirst := !w.cfg.Bool("folio.title-page.enabled", true) || w.doc.Metadata["title"] != ""
+	suppressFirst := !w.cfg.Bool("folio.title-page.enabled", true) || w.doc.Metadata["title"] != "" || w.cover != nil
 	for _, role := range []string{"Header", "Footer"} {
 		lower := strings.ToLower(role)
 		path := "folio.page-" + lower

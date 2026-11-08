@@ -155,6 +155,12 @@ func TestAT074_1PublicDOCXConversionPreservesTitleImageSemantics(t *testing.T) {
 				t.Errorf("rendered editable text lacks %s", marker)
 			}
 		}
+		date := w073WordBounds(t, pdf, "SOLIDDATE")
+		author := w073WordBounds(t, pdf, "SOLIDAUTHOR")
+		version := w073WordBounds(t, pdf, "SOLIDVERSION")
+		if date.xMax >= author.xMin || author.xMax >= version.xMin || absoluteFloatW073(date.yMin-author.yMin) > 2*72/25.4 || absoluteFloatW073(author.yMin-version.yMin) > 2*72/25.4 {
+			t.Errorf("bottom metadata is not one left-centre-right row: date=%#v author=%#v version=%#v", date, author, version)
+		}
 	})
 
 	t.Run("portrait inset with prepared image backdrop", func(t *testing.T) {
@@ -197,10 +203,11 @@ Body.
 			}
 		}
 		upper := w073WordBounds(t, pdf, "IMAGETITLE")
+		author := w073WordBounds(t, pdf, "IMAGEAUTHOR")
 		lower := w073WordBounds(t, pdf, "IMAGEVERSION")
 		imageBox, ok := w073ColourBounds(page)
-		if !ok || upper.yMax >= float64(imageBox.Min.Y) || lower.yMin <= float64(imageBox.Max.Y) {
-			t.Fatalf("dodge overlap image=%v found=%t upper=%#v lower=%#v", imageBox, ok, upper, lower)
+		if !ok || upper.yMax >= float64(imageBox.Min.Y) || author.yMin <= float64(imageBox.Max.Y) || lower.yMin <= author.yMax {
+			t.Fatalf("dodge overlap or grouping error image=%v found=%t upper=%#v author=%#v lower=%#v", imageBox, ok, upper, author, lower)
 		}
 	})
 }
