@@ -244,11 +244,7 @@
 {{define "title-block"}}
 #align({{.TitleAlign}})[
   {{if .TitlePageEnabled}}#v({{.TitleOffset}}){{end}}
-  {{if .HasTitle}}#text({{.TitleFont.Args}})[#folio-font-stretch({{.TitleFont.Stretch}})[{{.Title}}]]{{end}}
-  {{if .HasSubtitle}}
-  #v({{.SubtitleSpace}})
-  #text({{.SubtitleFont.Args}})[#folio-font-stretch({{.SubtitleFont.Stretch}})[{{.Subtitle}}]]
-  {{end}}
+  {{template "title-subtitle" .}}
   {{if .AuthorGrouped}}
   {{if .AuthorPrefixLines}}
   #v({{.AuthorSpace}})
@@ -266,13 +262,26 @@
 ]
 {{end}}
 
+{{define "title-subtitle"}}
+{{if and .HasTitle .HasSubtitle}}
+#stack(
+  dir: ttb,
+  spacing: {{.SubtitleSpace}},
+  [#text({{.TitleFont.Args}})[#folio-font-stretch({{.TitleFont.Stretch}})[{{.Title}}]]],
+  [#text({{.SubtitleFont.Args}})[#folio-font-stretch({{.SubtitleFont.Stretch}})[{{.Subtitle}}]]],
+)
+{{else}}
+{{if .HasTitle}}#text({{.TitleFont.Args}})[#folio-font-stretch({{.TitleFont.Stretch}})[{{.Title}}]]{{end}}
+{{if .HasSubtitle}}
+#v({{.SubtitleSpace}})
+#text({{.SubtitleFont.Args}})[#folio-font-stretch({{.SubtitleFont.Stretch}})[{{.Subtitle}}]]
+{{end}}
+{{end}}
+{{end}}
+
 {{define "cover-upper"}}
 #align({{.TitleAlign}})[
-  {{if .HasTitle}}#text({{.TitleFont.Args}})[#folio-font-stretch({{.TitleFont.Stretch}})[{{.Title}}]]{{end}}
-  {{if .HasSubtitle}}
-  #v({{.SubtitleSpace}})
-  #text({{.SubtitleFont.Args}})[#folio-font-stretch({{.SubtitleFont.Stretch}})[{{.Subtitle}}]]
-  {{end}}
+  {{template "title-subtitle" .}}
 ]
 {{end}}
 

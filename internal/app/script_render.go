@@ -307,6 +307,7 @@ func newScriptTemplateDataWithCover(doc play.Document, cfg config.Config, format
 	if fontErr != nil {
 		return scriptTemplateData{}, fontErr
 	}
+	data.SubtitleSpace = coverPadding(data.SubtitleSpace, typstPoints(data.SubtitleFont.Size, typstPoints(data.RootFont.Size, 11)))
 	data.AuthorPrefixInline, data.AuthorPrefixLines = authorPrefix(cfg.String("folio.title-page.author.prefix", ""))
 	data.HasTitle, data.HasSubtitle, data.HasAuthor = data.Title != "", data.Subtitle != "", data.Author != ""
 	authorPosition := cfg.String("folio.title-page.author.position", "group")
