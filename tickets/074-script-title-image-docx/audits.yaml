@@ -203,3 +203,39 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "LibreOffice and Poppler provide automated package and rendered geometry evidence; Microsoft Word editing and save-reopen behaviour remain human-only."
       - "UT074.1 remains AMBER, and this PASS does not authorize merge, installation, deployment, acceptance or closure."
+  - id: delivery-code-c1-r2
+    timestamp: "2026-11-08T15:35:59Z"
+    profile: SDLC
+    gate: delivery-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "9d56fed57127d4bda2fc8fde154b1316dfe42e9e"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "Approved W074 specification, especially AC074.2 localized equal-padded overlay treatment and editable text"
+      - "REVIEW.md delivery-code criteria, SELF-AUDIT.md and retained architecture, coding, testing, security, documentation, Git, Org-schema and Go standards"
+      - "Native DOCX DrawingML layer order, editable text-box fill, opacity, padding, backdrop and publication boundaries"
+    evidence:
+      - "The operator's LibreOffice observation established that the original behindDoc wash was hidden below the full-page artwork; UT074.1 preserved that failed observation and remains AMBER for correction retest."
+      - "The added public-boundary acceptance assertions failed at bc747f6 with unchanged magenta pixels in both title and bottom-metadata wash regions, then passed at 19c237ad4408a9f8799dde0c7a0890f8a755ecae after the correction."
+      - "The correction places the configured solid fill and alpha on foreground editable text boxes, expands their anchors by the configured equal padding and uses matching internal insets so text placement remains unchanged."
+      - "Focused W074 RT and tagged rendered AT suites passed at 19c237ad4408a9f8799dde0c7a0890f8a755ecae through public conversion, isolated LibreOffice and Poppler; rendered pixels prove visible dark wash away from glyphs."
+      - "make test, make lint and make vulncheck passed at 19c237ad4408a9f8799dde0c7a0890f8a755ecae; the vulnerability scan reported no findings."
+      - "sdlc-validate reported valid schema and delivery-code readiness at 9d56fed57127d4bda2fc8fde154b1316dfe42e9e with all ATs and RTs GREEN and UT074.1 AMBER."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "LibreOffice and Poppler prove rendered wash visibility and preserved text extraction; operator editing and save-reopen validation remains UT074.1."
+      - "The prepared blur layer remains a separate best-effort DrawingML picture; this correction addresses the configured wash opacity that the operator found absent."
+      - "This PASS does not authorize merge, installation, deployment, acceptance or closure."
