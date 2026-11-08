@@ -2,4 +2,57 @@ schema: sdlc-audit-record/v1
 ticket: D081
 history: []
 resets: []
-reviews: []
+reviews:
+  - id: delivery-code-c1-r1
+    timestamp: "2026-11-08T17:35:25Z"
+    profile: emergency
+    gate: delivery-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate: {commit: "e5246df69030ab51aeafae0932f540acd63eb4d6", delta: null}
+    live_operator_supervision: {requester_confirmed: true, reviewer_confirmed: true}
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D081 BYPASS-GATE-7 scope and emergency delivery-code criteria"
+      - "Current coding, testing, architecture, security, Git, documentation, Org-schema and Go standards"
+    evidence:
+      - "Tests first observed the unknown enabled field and title-page incompatibility errors, then exercise both suppression controls through temporary PDF, DOCX and ODT conversions with a deliberately unavailable image."
+      - "The typed cover resolver short-circuits before active field and asset processing; compact PDF composition groups a retained bottom-centre author while invalid author positions remain rejected."
+      - "A retained W073 expectation exposed the compatibility change and was corrected to assert successful compact author output; the focused W073/D081 group and full make test passed at 2d9f73b."
+      - "make lint and make vulncheck passed at 2d9f73b; no vulnerabilities were reported."
+      - "Configuration, preset and architecture documentation describe both disable routes; sdlc-validate reported delivery-code ready."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT081.1 remains AMBER after the original operator test failed; the corrected candidate requires operator retest."
+      - "The isolated profile reproduction used a temporary copy; live documents, live YAML and the installed symlink were not test inputs."
+  - id: definition-c1-r1
+    timestamp: "2026-11-08T17:35:25Z"
+    profile: emergency
+    gate: definition
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate: {commit: "e5246df69030ab51aeafae0932f540acd63eb4d6", delta: null}
+    live_operator_supervision: {requester_confirmed: true, reviewer_confirmed: true}
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D081 outcome and retrospective emergency definition criteria"
+      - "Current issues, testing, architecture, coding, security, documentation and Org-schema standards"
+    evidence:
+      - "The specification distinguishes explicit cover disablement from title-page-driven suppression and states their pre-validation boundary across PDF, DOCX and ODT."
+      - "Two falsifiable criteria trace to public conversion, typed configuration and a meaningful profile-switching user test; automated results are GREEN and the corrected UT remains honestly AMBER."
+      - "The design centralizes no-cover state in the shared typed resolver, preserves cascade precedence and active strict validation, and records compact author fallback."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations: ["Retrospective same-context self-review; this is not advance approval or closure."]

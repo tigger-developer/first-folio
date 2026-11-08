@@ -2,4 +2,54 @@ schema: sdlc-audit-record/v1
 ticket: D080
 history: []
 resets: []
-reviews: []
+reviews:
+  - id: delivery-code-c1-r1
+    timestamp: "2026-11-08T17:35:25Z"
+    profile: emergency
+    gate: delivery-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate: {commit: "e5246df69030ab51aeafae0932f540acd63eb4d6", delta: null}
+    live_operator_supervision: {requester_confirmed: true, reviewer_confirmed: true}
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D080 BYPASS-GATE-7 scope and emergency delivery-code criteria"
+      - "Current coding, testing, architecture, security, Git, documentation, Org-schema and Go standards"
+    evidence:
+      - "Focused public Typst and native DOCX/ODT tests observed intended RED constants, then GREEN configured after spacing at the format boundaries."
+      - "The implementation adds one shared template field and one native paragraph-style resolution, preserving the 0.6em default and established office compaction."
+      - "make test, make lint and make vulncheck passed at 2d9f73b; no vulnerabilities were reported."
+      - "Configuration and architecture documentation name the independent before/after fields; sdlc-validate reported delivery-code ready."
+      - "The operator reported PDF, DOCX and ODT user tests passed."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations: ["Same-context author self-review; this is not independent assurance."]
+  - id: definition-c1-r1
+    timestamp: "2026-11-08T17:35:25Z"
+    profile: emergency
+    gate: definition
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate: {commit: "e5246df69030ab51aeafae0932f540acd63eb4d6", delta: null}
+    live_operator_supervision: {requester_confirmed: true, reviewer_confirmed: true}
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D080 outcome and retrospective emergency definition criteria"
+      - "Current issues, testing, architecture, coding, security, documentation and Org-schema standards"
+    evidence:
+      - "The specification bounds the change to script stage-direction trailing spacing across PDF, DOCX and ODT and preserves the omitted-key default."
+      - "One falsifiable criterion traces to one real-boundary persistent regression and one meaningful operator test; both are GREEN."
+      - "The design assigns shared configuration, Typst and native office responsibilities without new state, dependencies or subprocesses."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations: ["Retrospective same-context self-review; this is not advance approval or closure."]

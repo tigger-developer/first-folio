@@ -78,25 +78,27 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** ACTIVE D081 - Disable script cover images explicitly or with the title page :defect:
+** REVIEW D081 - Disable script cover images explicitly or with the title page :defect:
 :PROPERTIES:
 :CUSTOM_ID: d-081
 :PRIORITY: P1
 :SOURCE: operator
 :CREATED: 2026-11-08
 :END:
-- Specification :: [[file:../tickets/D081-disable-cover-image/spec.org][D081 - Disable script cover images]] (emergency reconciliation pending).
+- Specification :: [[file:../tickets/D081-disable-cover-image/spec.org][D081 - Disable script cover images]] (emergency reconciliation recorded).
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-11-08 to let =folio.cover-image.enabled: false= suppress source-frontmatter cover images and to make =folio.title-page.enabled: false= ignore cover configuration before validation or loading across PDF, DOCX and ODT.
+- Audit :: [[file:../tickets/D081-disable-cover-image/audits.yaml][Canonical self-audit record]]. Delivery-code and retrospective definition reviews passed; corrected-candidate UT081.1 remains AMBER.
 
-** ACTIVE D080 - Configure space after script stage directions :defect:
+** REVIEW D080 - Configure space after script stage directions :defect:
 :PROPERTIES:
 :CUSTOM_ID: d-080
 :PRIORITY: P1
 :SOURCE: operator
 :CREATED: 2026-11-08
 :END:
-- Specification :: [[file:../tickets/D080-stage-direction-space-after/spec.org][D080 - Stage-direction space after]] (emergency reconciliation pending).
+- Specification :: [[file:../tickets/D080-stage-direction-space-after/spec.org][D080 - Stage-direction space after]] (emergency reconciliation recorded).
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-11-08 to add =folio.positioning.stage-direction.space-after= consistently to PDF, DOCX and ODT script conversion while preserving the existing default when omitted.
+- Audit :: [[file:../tickets/D080-stage-direction-space-after/audits.yaml][Canonical self-audit record]]. Delivery-code and retrospective definition reviews passed; RT080.1 and operator UT080.1 are GREEN.
 
 ** DONE W079 - Add inset cover title-page backdrops :feature:
 :PROPERTIES:
