@@ -6,36 +6,46 @@
 
 * Automated regression
 
-** AMBER RT074.1 - Native DOCX package represents the shared image plan :testdef:
+** RED RT074.1 - Native DOCX package represents the shared image plan :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-1-result
-:REASON: Test code has not yet executed against the approved baseline.
+:REVISION: 0bd6d8e0df3b346c7d62d7a9c52b40c37eb5c72d
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
+:EVIDENCE: All four native image, inset, backdrop and treatment cases reached the declared office.ScriptCover boundary and failed only because non-nil cover projection returns the explicit unimplemented error.
 :END:
 
-** AMBER RT074.2 - DOCX packaging rejects invalid image state safely :testdef:
+** RED RT074.2 - DOCX packaging rejects invalid image state safely :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-2-result
-:REASON: Test code has not yet executed against the approved baseline.
+:REVISION: 0bd6d8e0df3b346c7d62d7a9c52b40c37eb5c72d
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
+:EVIDENCE: Invalid cover plans reached the declared projection boundary but returned the generic scaffold error rather than the required field-specific diagnostics; the no-image preservation control remained GREEN.
 :END:
 
-** AMBER RT074.3 - DOCX source configuration resolves identically :testdef:
+** RED RT074.3 - DOCX source configuration resolves identically :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-3-result
-:REASON: Test code has not yet executed against the approved baseline.
+:REVISION: 0bd6d8e0df3b346c7d62d7a9c52b40c37eb5c72d
+:COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
+:EVIDENCE: Equivalent local YAML, Markdown YAML and dotted Org cases all resolved far enough to report that the recognized backdrop is unsupported for DOCX; no fixture or compilation failure obscured the intended missing writer route.
 :END:
 
 * Acceptance tests
 
-** AMBER AT074.1 - Public DOCX conversion preserves title-image semantics :testdef:
+** RED AT074.1 - Public DOCX conversion preserves title-image semantics :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-074-1-result
-:REASON: Test code has not yet executed against the approved baseline.
+:REVISION: 0bd6d8e0df3b346c7d62d7a9c52b40c37eb5c72d
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT074_' -count=1 -timeout=10m
+:EVIDENCE: The freshly built executable rejected background overlay, solid-backdrop inset and prepared-image-backdrop inset DOCX cases at the intended unsupported-output boundary before LibreOffice rendering.
 :END:
 
-** AMBER AT074.2 - DOCX publication is atomic :testdef:
+** RED AT074.2 - DOCX publication is atomic :testdef:
 :PROPERTIES:
 :CUSTOM_ID: at-074-2-result
-:REASON: Test code has not yet executed against the approved baseline.
+:REVISION: 0bd6d8e0df3b346c7d62d7a9c52b40c37eb5c72d
+:COMMAND: go test -tags folio_acceptance ./internal/app -run '^TestAT074_' -count=1 -timeout=10m
+:EVIDENCE: Sentinel preservation executed, but the missing-image case reported generic unsupported DOCX cover output rather than the required folio.cover-image.path error; the no-image compatibility control remained GREEN.
 :END:
 
 * Delivery checks

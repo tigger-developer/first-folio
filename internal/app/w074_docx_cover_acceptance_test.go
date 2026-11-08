@@ -100,6 +100,11 @@ func TestAT074_1PublicDOCXConversionPreservesTitleImageSemantics(t *testing.T) {
 		}
 		title := w073WordBounds(t, pdf, "BACKGROUNDTITLE")
 		subtitle := w073WordBounds(t, pdf, "BACKGROUNDSUBTITLE")
+		margin := 25 * 72 / 25.4
+		wantTitleTop := margin + (float64(page.Bounds().Dy())-2*margin)*0.4
+		if absoluteFloatW073(title.yMin-wantTitleTop) > 2*72/25.4 {
+			t.Errorf("literal 40%% title top=%.2fpt, want %.2fpt within 2mm", title.yMin, wantTitleTop)
+		}
 		wantGap := 4 * 72 / 25.4
 		if absoluteFloatW073((subtitle.yMin-title.yMax)-wantGap) > 2*72/25.4 {
 			t.Errorf("subtitle visible gap=%.2fpt, want %.2fpt within 2mm", subtitle.yMin-title.yMax, wantGap)
