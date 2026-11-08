@@ -39,7 +39,7 @@ var renderedFontProperties = []struct {
 	name, value, marker string
 }{
 	{"family", "W039 Family", `"W039 Family"`},
-	{"size", "13.5pt", "13.5pt"},
+	{"size", "13.5pt", "size: 13.5pt"},
 	{"weight", "643", "643"},
 	{"stretch", "117.5%", "117.5%"},
 	{"style", "oblique", `"oblique"`},

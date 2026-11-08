@@ -320,7 +320,7 @@ func TestCompactScriptTitleEscapingAndFontRoles(t *testing.T) {
 			t.Errorf("missing font or escaped content: %#v", role)
 		}
 	}
-	assertTextContains(t, output, []string{"#v(0.7em)", "#v(0.9em)", ")[Written]", ")[by]"})
+	assertTextContains(t, output, []string{"spacing: 9.1pt", "#v(0.9em)", ")[Written]", ")[by]"})
 	for _, forbidden := range []string{"#v(30%)", "#v(40%)", "#pagebreak()", "#pagebreak(weak: true)"} {
 		if strings.Contains(output, forbidden) {
 			t.Errorf("compact output contains %q", forbidden)
