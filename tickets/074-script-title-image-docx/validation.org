@@ -9,15 +9,15 @@
 ** RED RT074.1 - Native DOCX package represents the shared image plan :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-1-result
-:REVISION: 1e413c5689b6f0e89f5234ef0c3d019f23bf8113
+:REVISION: f16623c1b48961f9276d7da2642cb778935c232c
 :COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
-:EVIDENCE: All four native image, inset, backdrop and treatment cases reached the declared office.ScriptCover boundary and failed only because non-nil cover projection returns the explicit unimplemented error.
+:EVIDENCE: All five native background, landscape inset, portrait inset, image-backdrop and solid-backdrop cases reached the declared office.ScriptCover boundary and failed only because non-nil cover projection returns the explicit unimplemented error.
 :END:
 
 ** RED RT074.2 - DOCX packaging rejects invalid image state safely :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-2-result
-:REVISION: 1e413c5689b6f0e89f5234ef0c3d019f23bf8113
+:REVISION: f16623c1b48961f9276d7da2642cb778935c232c
 :COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
 :EVIDENCE: Invalid cover plans reached the declared projection boundary but returned the generic scaffold error rather than the required field-specific diagnostics; the no-image preservation control remained GREEN.
 :END:
@@ -25,7 +25,7 @@
 ** RED RT074.3 - DOCX source configuration resolves identically :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-074-3-result
-:REVISION: 1e413c5689b6f0e89f5234ef0c3d019f23bf8113
+:REVISION: f16623c1b48961f9276d7da2642cb778935c232c
 :COMMAND: go test ./internal/office ./internal/app -run '^TestRT074_' -count=1 -timeout=10m
 :EVIDENCE: Equivalent local YAML, Markdown YAML and dotted Org cases all resolved far enough to report that the recognized backdrop is unsupported for DOCX; no fixture or compilation failure obscured the intended missing writer route.
 :END:
