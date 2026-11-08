@@ -391,26 +391,35 @@ func TestRT073_4SubtitleSpaceBeforeIsTheVisibleTitleGap(t *testing.T) {
 		{name: "dodge cover", cover: "  cover-image:\n    path: cover.png\n    mode: inset\n    placement: dodge\n    size: 200mm\n"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			dir := t.TempDir()
-			t.Setenv("HOME", t.TempDir())
-			source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.pdf")
-			writeAppFile(t, source, "#+TITLE: SPACINGTITLE\n#+SUBTITLE: SPACINGSUBTITLE\n* ACT ONE\n**** CÁIT\nBody.\n")
-			writeW073PNG(t, filepath.Join(dir, "cover.png"), 400, 400, color.RGBA{R: 230, G: 20, B: 150, A: 255})
-			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  font:\n    size: 11pt\n  title-page:\n    title:\n      position: 50%\n      font:\n        size: 34pt\n        weight: bold\n    subtitle:\n      space-before: 4mm\n      font:\n        size: 14pt\n        style: italic\n"+tc.cover)
+			for _, spacing := range []struct {
+				value      string
+				wantPoints float64
+			}{
+				{value: "4mm", wantPoints: 4 * 72 / 25.4},
+				{value: "0.5em", wantPoints: 7},
+			} {
+				t.Run(spacing.value, func(t *testing.T) {
+					dir := t.TempDir()
+					t.Setenv("HOME", t.TempDir())
+					source, target := filepath.Join(dir, "play.org"), filepath.Join(dir, "play.pdf")
+					writeAppFile(t, source, "#+TITLE: SPACINGTITLE\n#+SUBTITLE: SPACINGSUBTITLE\n* ACT ONE\n**** CÁIT\nBody.\n")
+					writeW073PNG(t, filepath.Join(dir, "cover.png"), 400, 400, color.RGBA{R: 230, G: 20, B: 150, A: 255})
+					writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  font:\n    size: 11pt\n  title-page:\n    title:\n      position: 50%\n      font:\n        size: 34pt\n        weight: bold\n    subtitle:\n      space-before: "+spacing.value+"\n      font:\n        size: 14pt\n        style: italic\n"+tc.cover)
 
-			status, _, stderr := runApp(t, "convert", source, target)
-			if status != 0 {
-				t.Fatalf("status=%d stderr=%s", status, stderr)
-			}
-			runs := w073DarkRowRuns(rasterW073Page(t, target, 1))
-			if len(runs) < 2 {
-				t.Fatalf("dark row runs = %v; want title and subtitle", runs)
-			}
-			gap := runs[1][0] - runs[0][1] - 1
-			wantPixels := 4.0 * 72.0 / 25.4
-			want := int(wantPixels + 0.5)
-			if absW073(gap-want) > 1 {
-				t.Fatalf("visible title-to-subtitle gap = %dpx at 72dpi; want %dpx for 4mm (runs %v)", gap, want, runs[:2])
+					status, _, stderr := runApp(t, "convert", source, target)
+					if status != 0 {
+						t.Fatalf("status=%d stderr=%s", status, stderr)
+					}
+					runs := w073DarkRowRuns(rasterW073Page(t, target, 1))
+					if len(runs) < 2 {
+						t.Fatalf("dark row runs = %v; want title and subtitle", runs)
+					}
+					gap := runs[1][0] - runs[0][1] - 1
+					want := int(spacing.wantPoints + 0.5)
+					if absW073(gap-want) > 1 {
+						t.Fatalf("visible title-to-subtitle gap = %dpx at 72dpi; want %dpx for %s (runs %v)", gap, want, spacing.value, runs[:2])
+					}
+				})
 			}
 		})
 	}
