@@ -569,9 +569,10 @@ func TestRT073_1BottomCenterAuthorPositionIsValidated(t *testing.T) {
 	requireW073Tools(t)
 	for _, tc := range []struct {
 		name, position, extra string
+		wantError             bool
 	}{
-		{"invalid value", "floating", ""},
-		{"compact title", "bottom-center", "    enabled: false\n"},
+		{"invalid value", "floating", "", true},
+		{"compact title", "bottom-center", "    enabled: false\n", false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			dir := t.TempDir()
@@ -580,9 +581,16 @@ func TestRT073_1BottomCenterAuthorPositionIsValidated(t *testing.T) {
 			writeAppFile(t, source, "#+TITLE: Position\n#+AUTHOR: Author\n* ACT ONE\n**** CÁIT\nBody.\n")
 			writeAppFile(t, filepath.Join(dir, "script.yaml"), "folio:\n  title-page:\n"+tc.extra+"    author:\n      position: "+tc.position+"\n")
 			status, _, stderr := runApp(t, "convert", source, target)
-			if status == 0 || !strings.Contains(stderr, "folio.title-page.author.position") {
+			if tc.wantError {
+				if status == 0 || !strings.Contains(stderr, "folio.title-page.author.position") {
+					t.Fatalf("status=%d stderr=%s", status, stderr)
+				}
+				return
+			}
+			if status != 0 {
 				t.Fatalf("status=%d stderr=%s", status, stderr)
 			}
+			w073WordBounds(t, target, "Author")
 		})
 	}
 }
