@@ -112,11 +112,6 @@ func TestRT074_3DOCXSourceConfigurationResolvesIdentically(t *testing.T) {
 			name: "markdown frontmatter", extension: ".md", local: w074ConflictingYAML,
 			source: `---
 schema: https://github.com/tigger-developer/first-folio/blob/master/schema/script.md
-title: W074 TITLE
-subtitle: W074 SUBTITLE
-author: W074 AUTHOR
-date: W074 DATE
-version: W074 VERSION
 folio:
   title-page:
     title:
@@ -140,6 +135,14 @@ folio:
         treatment: dark
         opacity: 15%
 ---
+# W074 TITLE
+
+**W074 SUBTITLE**
+
+*by W074 AUTHOR*
+
+--- W074 VERSION | W074 DATE ---
+
 ## ACT ONE
 ### BODY MARKER
 `,
