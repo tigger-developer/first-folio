@@ -1,0 +1,51 @@
+#+TITLE: W074 - Script title-page image DOCX validation
+#+SCHEMA: 2
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+TODO: AMBER RED | GREEN
+
+* Automated regression
+
+** AMBER RT074.1 - Native DOCX package represents the shared image plan :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-074-1-result
+:REASON: Test code has not yet executed against the approved baseline.
+:END:
+
+** AMBER RT074.2 - DOCX packaging rejects invalid image state safely :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-074-2-result
+:REASON: Test code has not yet executed against the approved baseline.
+:END:
+
+** AMBER RT074.3 - DOCX source configuration resolves identically :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-074-3-result
+:REASON: Test code has not yet executed against the approved baseline.
+:END:
+
+* Acceptance tests
+
+** AMBER AT074.1 - Public DOCX conversion preserves title-image semantics :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-074-1-result
+:REASON: Test code has not yet executed against the approved baseline.
+:END:
+
+** AMBER AT074.2 - DOCX publication is atomic :testdef:
+:PROPERTIES:
+:CUSTOM_ID: at-074-2-result
+:REASON: Test code has not yet executed against the approved baseline.
+:END:
+
+* Delivery checks
+
+- Pending test-first implementation, complete project regression, lint and vulnerability checks.
+
+* User validation
+
+** AMBER UT074.1 - DOCX title images remain editable and stable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-074-1-result
+:REASON: Requires operator review in a Word-compatible editor after delivery-code audit.
+:END:

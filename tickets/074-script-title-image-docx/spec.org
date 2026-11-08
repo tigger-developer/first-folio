@@ -382,3 +382,26 @@ After W073, the public cover-image configuration would apply to PDF only. DOCX i
 - Definition evidence :: [[file:audits.yaml][=audits.yaml=]].
 - Validation evidence :: [[file:validation.org][=validation.org=]]; one tagged result heading per defined test, including RTs. Follow =ORG-SCHEMA.md=.
 - Documentation impact :: Update =README.md=, =docs/config.md=, =docs/format-docx.md= and =docs/ARCHITECTURE.md= with DOCX support, editability, embedded-asset behaviour and documented layout tolerance.
+
+* Hands-off mode decision log
+:PROPERTIES:
+:CUSTOM_ID: hands-off-mode-decision-log
+:VISIBILITY: folded
+:END:
+
+** 2026-11-08T02:10:48Z - Native DOCX title-image delivery :hands-off:review:
+
+*** Scope and continuation
+
+- Decision :: Deliver the approved W074 definition on =feature/W074-script-title-image-docx= through TDD, internal test-code and delivery-code review, documentation, validation and publication for operator testing. UT074.1 remains human-only.
+- Native goal :: Active with an enforced =2000000= token limit and the W074 operator-validation handoff as its completion boundary.
+- Publication boundary :: The approved primary baseline and feature branch are published. Delivery does not authorize merge, installation, deployment, closure or ODT implementation.
+
+*** Backdrop projection
+
+- Decision :: Reuse W079's existing prepared JPEG and resolved treatment data. DOCX does not rerun blur or Superscale processing and does not introduce format-specific configuration.
+- Contingency authority :: The operator prefers native Word-compatible backdrop support. If current OOXML cannot provide a conforming stable result after investigated native alternatives, a recognized backdrop may be ignored with an explicit warning rather than failing conversion; any such departure must be recorded, verified and left for operator disposition before delivery acceptance.
+
+*** Verification bounds
+
+- Decision :: No metered or live external one-off tests are required. LibreOffice, Poppler and package inspection remain local bounded test tools. The complete AT/RT package precedes implementation; no visual user result is inferred from automated rendering.
