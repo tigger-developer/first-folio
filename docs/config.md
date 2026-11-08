@@ -162,14 +162,16 @@ Compact mode ignores this field because the title group joins the first content
 page.
 
 For an inset cover image with `placement: dodge`, W073 additionally recognizes
-`center`: the upper title/subtitle group and a grouped lower author are centred
-within their respective available regions. Date, version and an optional
-bottom-centre author remain in their anchored metadata row. A percentage is
-applied literally within each unchanged movable region; `third` places each
-group one-third of the way through it. `center` retains its established script
-behaviour: 40% preceding space on ordinary/overlay title pages and true 50%
-centring inside dodge regions. Lengths, `one-third` and unknown tokens are
-invalid and report `folio.title-page.title.position` before publication.
+`center`. In dodge mode, the position is the vertical anchor for the *centre of
+each movable group*, not preceding space before its top edge. Thus `50%` and
+`center` centre the upper title/subtitle group and a grouped lower author within
+their respective available regions; `10%` places each group's centre one tenth
+of the way through its region, so the group's top appears above that point.
+`third` uses a one-third centre anchor. Date, version and an optional
+bottom-centre author remain in their anchored metadata row. `center` retains its
+established 40% preceding-space behaviour on ordinary/overlay title pages.
+Lengths, `one-third` and unknown tokens are invalid and report
+`folio.title-page.title.position` before publication.
 
 `folio.title-page.title.align` accepts `left`, `center`, or `right` and currently
 aligns the complete title/subtitle/author group in PDF, DOCX and ODT. Although
@@ -256,8 +258,9 @@ as live PDF text. Blur and wash are restricted to the populated title,
 date and version regions. Dodge physically centres an inset and places the
 title/subtitle group above it and a grouped author below it; date, version and
 an optional bottom-centre author remain in their anchored metadata row. Literal
-percentages, `center` and `third` are interpreted within the movable regions
-bounded by the actual image edge. Dodge padding is applied afterwards as minimum image clearance. It
+percentages, `center` and `third` position the centre of each movable group
+within the region bounded by the relevant content edge and actual image edge.
+Dodge padding is applied afterwards as minimum image clearance. It
 does not reduce those regions or change the relative-position calculation; only
 a group that violates the clearance moves, and only by the required distance.
 The adjustment may use title-page margin space. A group that crosses the
@@ -958,6 +961,8 @@ folio:
 At non-100% stretch, First Folio supplies English discretionary break points from bundled patterns. No download is needed. Words containing non-ASCII letters and tokens longer than 128 letters remain whole. Break points that would alter a ligature or kerned pair are omitted, preserving unbroken word widths. Typst chooses which permitted breaks to use; enabling hyphenation does not force every line to end in a hyphen. The inserted discretionary hyphen uses its native glyph width, while the source letters retain the configured geometric stretch. These restrictions apply to stretched prose; normal-width prose uses Typst's native hyphenation.
 
 ## Changelog
+
+- 0.46 (2026-11-08): Clarify that dodge percentages anchor the centre of each movable title group before image-clearance adjustment.
 
 - 0.45 (2026-11-07): Document fixed-quality JPEG encoding for generated blurred image backdrops.
 

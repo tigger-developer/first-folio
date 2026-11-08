@@ -177,8 +177,9 @@ remains live text. Script author placement defaults to the movable title group;
 the optional bottom-centre position instead joins date and version in a fixed
 three-slot metadata row. Dodge displacement never moves that row, and an image
 clearance collision fails before atomic publication. One validated script-title
-position resolver preserves named compatibility aliases while projecting a
-literal percentage unchanged into ordinary, overlay and dodge geometry.
+position resolver preserves named compatibility aliases. Ordinary and overlay
+layouts use a literal percentage as preceding space; dodge uses the same value
+as the centre anchor of each movable group before applying image clearance.
 For inset backdrops, the Go preparation boundary independently derives a
 page-aspect JPEG at fixed quality 85 from the original bounded source, before any optional
 Superscale selection for the sharp inset. It applies the shared treatment,
@@ -218,6 +219,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.31 (2026-11-08): Clarify the group-centre anchor used by script dodge percentages.
 
 - 0.30 (2026-11-07): Record the fixed-quality JPEG boundary for generated blurred image backdrops.
 

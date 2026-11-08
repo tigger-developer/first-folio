@@ -191,6 +191,8 @@ an overlay or in bounded regions above and below the image. Optional image
 treatment, localized blur, wash, overlay padding, post-placement dodge
 clearance, an optional bottom-centre author metadata slot and Superscale preprocessing are
 documented under [script PDF cover images](docs/config.md#script-pdf-cover-images-foliocover-image).
+In dodge mode, a title-position percentage anchors the centre of each movable
+text group within its available region before minimum image clearance is applied.
 An inset may also retain its sharp PNG artwork over either a full-bleed blurred
 JPEG derivative of the original image or an exact solid colour. The backdrop
 JPEG uses a fixed quality of 85. Explicit light/dark
@@ -265,6 +267,8 @@ make vulncheck # Go dependency and reachable-code vulnerability gate
   - [Org manuscript](docs/format-manuscript-org.md) - prose manuscript org-mode contract
 
 ## Documentation History
+
+- 1.19 (2026-11-08): Clarify centre-anchor semantics for title-position percentages in dodge layouts.
 
 - 1.18 (2026-11-07): Document the fixed-quality JPEG derivative used for blurred inset-cover backdrops.
 

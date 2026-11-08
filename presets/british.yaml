@@ -88,9 +88,11 @@ folio:
         style: regular
         letter-spacing: 0em
       case-transform: as-written
-      # Script title-group position. Percentages from 0% through 100% are literal
-      # within the applicable title region. third retains the 30% alias; center
-      # retains its established script behaviour. Lengths and one-third are invalid.
+      # Ordinary/overlay percentages set preceding space. In dodge mode they
+      # anchor the centre of each movable group within its available region:
+      # 50% centres it, while 10% puts its centre one tenth down. third uses
+      # a one-third centre anchor; center is the 50% dodge alias. Lengths and
+      # one-third are invalid.
       position: third
       space-before: 0
 

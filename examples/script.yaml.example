@@ -80,7 +80,7 @@
   #       weight: bold
   #       style: regular
   #     case-transform: as-written   # upper | lower | as-written | small-caps
-  #     position: third          # third | center | literal 0% through 100%
+  #     position: third          # dodge: group-centre anchor; 50% = center
   #     space-before: 0
   #   subtitle:
   #     align: center            # retained; title.align controls the grouped output
