@@ -134,3 +134,38 @@ reviews:
       - "Same-context author self-review; this is not independent assurance."
       - "Definition review assessed requirements, solution design and test definitions; it did not execute implementation tests."
       - "Microsoft Word user validation remains human-only and is defined as UT074.1."
+  - id: test-code-c1-r1
+    timestamp: "2026-11-08T02:17:38Z"
+    profile: SDLC
+    gate: test-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate:
+      commit: "f50c3203dbc6f27dec7414ab7714495e33859acc"
+      delta: null
+    live_operator_supervision:
+      requester_confirmed: true
+      reviewer_confirmed: true
+    verdict: PASS
+    criteria:
+      - "CODING.md, TESTING.md, ARCHITECTURE.md, SECURITY.md, GIT.md, ORG-SCHEMA.md, REVIEW.md and the Go technology standard retained in the current session"
+      - "Approved W074 acceptance criteria and RT074.1 through RT074.3, AT074.1 through AT074.2 and UT074.1 definitions"
+      - "Test-code readiness output for tickets/074-script-title-image-docx at f50c3203dbc6f27dec7414ab7714495e33859acc"
+    evidence:
+      - "The installed validator reported schema valid and test-code ready with three RTs and two ATs RED and UT074.1 AMBER."
+      - "The native regression package parses generated ZIP/XML, media, relationships, page anchors, crop/extents, unique drawing identifiers, editable text and both landscape and portrait geometry."
+      - "The source-cascade regression invokes public conversion for local YAML, Markdown YAML and dotted Org and compares normalized native package semantics, including media hashes and diagnostics."
+      - "The acceptance package builds the public executable, preserves sentinel targets, renders DOCX through an isolated LibreOffice profile and measures page coverage, inset geometry, literal 40 percent placement, 4mm subtitle gap, backdrops and dodge non-overlap through Poppler."
+      - "RED at f16623c is isolated to explicit unsupported or unimplemented cover boundaries and field-specific validation; no-image controls are preservation GREEN."
+      - "The only production scaffold declares immutable ScriptCover data and returns an explicit unimplemented error for non-nil values; it does not implement target behaviour or change the public conversion route."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "LibreOffice and Poppler geometry assertions have not yet executed because public conversion correctly stops at the intended RED boundary."
+      - "UT074.1 remains AMBER for operator review in a Word-compatible editor after delivery-code audit."
