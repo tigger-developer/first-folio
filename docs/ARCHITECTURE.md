@@ -163,6 +163,10 @@ Script title composition uses one shared title block for a dedicated title page 
 
 The renderer-neutral `folio.cover-image` model is validated by the shared
 configuration loader and consumed by dedicated script PDF and DOCX routes.
+The shared loader resolves an explicit false `cover-image.enabled` value or a
+disabled script title page to the no-cover state before validating cover fields
+or loading assets. This permits a higher-precedence profile to suppress an
+image declared in source frontmatter without mutating that source.
 `internal/app` resolves assets from the source document, validates PNG
 or JPEG headers and bounded source dimensions, optionally invokes Superscale
 with literal arguments, and prepares normalized sharp PNGs and blurred JPEG
@@ -196,6 +200,11 @@ to page-relative DrawingML anchors, applies native shapes for solid fills and
 washes, and places editable title text above the visual layers. Each drawing
 uses its own conforming anchor, and package validation and staged publication
 retain the existing native DOCX boundaries.
+
+Script stage-direction layout resolves independent `space-before` and
+`space-after` lengths through the shared configuration cascade. Typst maps them
+to block spacing; the native DOCX style maps them to paragraph spacing and ODT
+projects the same style semantics through its native paragraph properties.
 
 Preparation and layout complete before PDF or DOCX is atomically renamed into place;
 warnings fall back to the original image, while invalid configuration, assets

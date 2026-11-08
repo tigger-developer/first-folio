@@ -233,6 +233,7 @@ folio:
 
     stage-direction:
       space-before: 1.6em
+      space-after: 0.6em
       align: left
       font:
         family: Libertinus Sans

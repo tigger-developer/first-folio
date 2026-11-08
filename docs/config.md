@@ -139,7 +139,7 @@ Script layout is configured beneath `folio.title-page` and `folio.positioning`. 
 | `folio.positioning.speech.speaker` | Speaker alignment, weight, case, prefix, and suffix |
 | `folio.positioning.speech.speech-instruction` | Parenthetical placement, alignment, delimiters, and emphasis |
 | `folio.positioning.speech.dialogue` | Same-line/new-line placement and wrapping indent |
-| `folio.positioning.stage-direction` | Direction spacing, alignment, emphasis, case, and indentation |
+| `folio.positioning.stage-direction` | Direction `space-before` and `space-after`, alignment, emphasis, case, and indentation |
 | `folio.positioning.transition` | Transition spacing, alignment, and case |
 | `folio.positioning.{frontmatter,act-header,scene-header}` | Header typography, spacing, alignment, case, and page breaks |
 
@@ -197,7 +197,7 @@ This moves the available title, subtitle, author, date and version to a block at
 
 The script follows on the same page, without a forced title-page break or a break before the first act. Later acts retain `folio.positioning.act-header.page-break-before`; content may still paginate naturally. Introductory material remains controlled by `render.frontmatter` and `render.character-table`. Script page numbering begins at physical page 1; the first-page running header and footer are hidden by default through the suppression switches below.
 
-This switch applies to `folio convert` script PDF/Typst output, including British, US and screenplay styles. It does not change text-format conversion or letters. Manuscripts retain their independent `folio.manuscript.title-page.enabled` setting; disabling a manuscript title page does not create this compact script block.
+This switch applies to `folio convert` script PDF/Typst, DOCX and ODT output, including British, US and screenplay styles. When false, it suppresses any `folio.cover-image` block before image-field or asset validation and produces the compact no-cover route. It does not change text-format conversion or letters. Manuscripts retain their independent `folio.manuscript.title-page.enabled` setting; disabling a manuscript title page does not create this compact script block.
 
 #### Script cover images (`folio.cover-image`)
 
@@ -209,6 +209,7 @@ location. PNG and JPEG inputs are supported.
 ```yaml
 folio:
   cover-image:
+    enabled: true            # false ignores the remaining cover block
     path: artwork/cover.jpg
     mode: inset             # background | inset
     placement: overlay      # overlay | dodge
@@ -238,6 +239,7 @@ folio:
 
 | Key | Values and behaviour |
 |---|---|
+| `enabled` | Boolean, default `true`. When false, the remaining cover block is ignored before image validation or loading. |
 | `path` | Required non-empty local PNG/JPEG path. Absence selects the unchanged no-cover route. |
 | `mode` | Required `background` or `inset`. Background proportionally covers and centre-crops the A4 title page. |
 | `placement` | `overlay` by default, or `dodge` for inset images only. |
@@ -313,11 +315,15 @@ three-slot row is anchored independently of dodge padding. If image clearance
 reaches the fixed row, conversion reports the lower layout conflict instead of
 moving the row. Compact title mode rejects `bottom-center`.
 
-The `cover-image` block rejects unknown nested keys and invalid combinations.
-It is incompatible with compact script title mode, standalone Typst, DOCX,
-ODT, manuscript and letter output in this release. Original source images are
-limited to 100 MiB, 32,768 pixels on either axis and 100,000,000 pixels in
-total before decode.
+An active `cover-image` block rejects unknown nested keys and invalid
+combinations. Set `folio.cover-image.enabled: false` in any higher-precedence
+configuration layer to suppress a lower-layer or source-frontmatter cover. A
+false `folio.title-page.enabled` value also suppresses cover processing. Both
+controls act before cover path, mode, asset and output-format validation.
+Active covers remain incompatible with compact script title mode, standalone
+Typst, ODT, manuscript and letter output in this release. Original source
+images are limited to 100 MiB, 32,768 pixels on either axis and 100,000,000
+pixels in total before decode.
 
 When `superscale` is non-null, First Folio invokes `superscale` directly from
 the inherited `PATH`, disables face enhancement and keeps the configured
