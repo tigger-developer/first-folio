@@ -78,15 +78,16 @@ classification; it is provenance, not current state.
 
 * Work items
 
-** ACTIVE D082 - Render Org underline as PDF highlighting :defect:
+** REVIEW D082 - Render Org underline as PDF highlighting :defect:
 :PROPERTIES:
 :CUSTOM_ID: d-082
 :PRIORITY: P1
 :SOURCE: operator
 :CREATED: 2026-11-09
 :END:
-- Specification :: [[file:../tickets/D082-org-pdf-highlighting/spec.org][D082 - Render Org underline as PDF highlighting]] (emergency reconciliation pending).
+- Specification :: [[file:../tickets/D082-org-pdf-highlighting/spec.org][D082 - Render Org underline as PDF highlighting]] (emergency reconciliation recorded).
 - Emergency authority :: =BYPASS-GATE-7= invoked 2026-11-09 to render Org =_underline_= syntax as =#FFF59D= highlighting in PDF output from =convert=, =letter= and =manuscript=; DOCX and ODT are excluded from this increment.
+- Audit :: [[file:../tickets/D082-org-pdf-highlighting/audits.yaml][Canonical self-audit record]]. Delivery-code and corrected retrospective definition reviews passed; [[file:../tickets/D082-org-pdf-highlighting/validation.org][UT082.1 - PDF highlighting is visually acceptable]] remains AMBER for operator review.
 
 ** REVIEW D081 - Disable script cover images explicitly or with the title page :defect:
 :PROPERTIES:

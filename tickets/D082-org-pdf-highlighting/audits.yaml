@@ -30,8 +30,6 @@ reviews:
     provisional_conditions: []
     limitations:
       - "Same-context author self-review; this is not independent assurance."
-      - "UT082.1 remains AMBER pending operator visual review of representative PDFs."
-      - "DOCX and ODT highlighting are explicitly outside this emergency increment and retain underline."
   - id: definition-c1-r1
     timestamp: "2026-11-09T06:05:33Z"
     profile: emergency
@@ -61,3 +59,63 @@ reviews:
     provisional_conditions: []
     limitations:
       - "Same-context author self-review; this is not independent assurance."
+  - id: delivery-code-c1-r2
+    timestamp: "2026-11-09T06:07:29Z"
+    profile: emergency
+    gate: delivery-code
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate: {commit: "27fc6804842259df39fe9ae817dd7f817f9ce46a", delta: null}
+    live_operator_supervision: {requester_confirmed: true, reviewer_confirmed: true}
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D082 BYPASS-GATE-7 PDF-only scope and emergency delivery-code criteria"
+      - "Current coding, testing, architecture, security, Git, documentation, Org-schema and Go standards"
+    evidence:
+      - "RT082.1 exercises actual public script, letter and manuscript PDF output, extracted text and raster colour; RT082.2 now exercises Markdown and Fountain through public convert Typst output rather than only an internal renderer."
+      - "The strengthened targeted app test passed at 6002c54 and make lint passed after the test change. Production code was unchanged from the candidate whose full make test, lint and vulnerability checks passed at d299d73."
+      - "The shared source-aware projection remains limited to Org PDF paths; native office production code has no delta."
+      - "Current product documentation and the schema 11 retrospective record describe the delivered and unchanged boundaries; sdlc-validate reports delivery-code ready."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT082.1 remains AMBER pending operator visual review of representative PDFs."
+      - "The full suite predates only the added public-boundary preservation test; that affected test and lint were rerun on the changed candidate."
+      - "DOCX and ODT highlighting are explicitly outside this emergency increment and retain underline."
+  - id: definition-c1-r2
+    timestamp: "2026-11-09T06:07:29Z"
+    profile: emergency
+    gate: definition
+    cycle: 1
+    round: 2
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate: {commit: "27fc6804842259df39fe9ae817dd7f817f9ce46a", delta: null}
+    live_operator_supervision: {requester_confirmed: true, reviewer_confirmed: true}
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D082 outcome and current retrospective emergency definition criteria"
+      - "Current issues, testing, architecture, coding, security, documentation and Org-schema standards"
+    evidence:
+      - "The schema 11 specification has all eight Synopsis categories, bounded in-scope and out-of-scope behaviour, explicit source-format edge cases and a context-independent handoff."
+      - "Two falsifiable acceptance criteria trace to public PDF and Typst conversion evidence plus meaningful visual user validation; RTs are GREEN and UT082.1 remains honestly AMBER."
+      - "The solution design assigns one shared Typst primitive, source-aware script and letter projection, manuscript Pandoc bridging and the unchanged native office boundary without adding dependencies or state."
+      - "sdlc-validate reports a valid schema and delivery-code readiness; sanitize reported no specification changes required."
+    findings: []
+    prior_finding_dispositions:
+      - finding: F-D082-DEF-001
+        disposition: remediated
+        evidence: "The specification now uses schema 11 with current Synopsis, Edge Cases, design, security and handoff structure while preserving emergency scope and history."
+    provisional_conditions: []
+    limitations:
+      - "Retrospective same-context self-review; this is not advance approval, independent assurance or closure."
+      - "UT082.1 remains AMBER pending operator visual review of representative PDFs."
+      - "DOCX and ODT highlighting are explicitly outside this emergency increment and retain underline."
