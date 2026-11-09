@@ -61,7 +61,7 @@ func TestRenderTypstInlineOrgMarkup(t *testing.T) {
 		`#mono-text[#raw("inline code")]`,
 		`*bold*`,
 		`_italic_`,
-		`#underline[underline]`,
+		`#highlight(fill: rgb("#FFF59D"))[underline]`,
 		`13 July 2026`,
 		`Hello Aoife at One Theatre.`,
 	} {

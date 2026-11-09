@@ -61,7 +61,7 @@ Nurse Alison greets Tom, Mags and Marg. Mairéad enters.
 					t.Fatalf("status %d: %s", status, stderr)
 				}
 				output := readAppFile(t, target)
-				want := "#stage-direction[NURSE ALISON greets TOM, MAGS and MARG. MAIRÉAD enters. #underline[ALISON exits].]"
+				want := "#stage-direction[NURSE ALISON greets TOM, MAGS and MARG. MAIRÉAD enters. #highlight(fill: rgb(\"#FFF59D\"))[ALISON exits].]"
 				if !strings.Contains(output, want) {
 					t.Fatalf("missing %q", want)
 				}
