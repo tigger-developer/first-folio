@@ -2,4 +2,62 @@ schema: sdlc-audit-record/v1
 ticket: D082
 history: []
 resets: []
-reviews: []
+reviews:
+  - id: delivery-code-c1-r1
+    timestamp: "2026-11-09T06:01:38Z"
+    profile: emergency
+    gate: delivery-code
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate: {commit: "bccb38e1d703d1851812b1a80b289e05a804ee71", delta: null}
+    live_operator_supervision: {requester_confirmed: true, reviewer_confirmed: true}
+    verdict: PASS
+    criteria:
+      - "Operator-authorized D082 BYPASS-GATE-7 PDF-only scope and emergency delivery-code criteria"
+      - "Current coding, testing, architecture, security, Git, documentation, Org-schema and Go standards"
+    evidence:
+      - "The public regression invokes script, letter and manuscript commands, verifies retained PDF text, rasterizes page one and requires pixels matching the pale yellow treatment. It observed zero matching pixels before implementation and passed after implementation."
+      - "A separate regression proves Markdown and Fountain still emit native Typst underline; existing Org script and letter expectations were reconciled to the approved highlight treatment."
+      - "The shared Typst primitive owns the exact colour, source rendering selects it only for Org, and the Org manuscript canonicalization path maps Pandoc underline spans to the same primitive. Native office rendering was not changed."
+      - "make test, make lint and make vulncheck passed at d299d73; vulnerability scanning reported no vulnerabilities."
+      - "Affected format and architecture documentation is current, sanitize reported no changes required, and sdlc-validate reported delivery-code ready."
+    findings: []
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."
+      - "UT082.1 remains AMBER pending operator visual review of representative PDFs."
+      - "DOCX and ODT highlighting are explicitly outside this emergency increment and retain underline."
+  - id: definition-c1-r1
+    timestamp: "2026-11-09T06:05:33Z"
+    profile: emergency
+    gate: definition
+    cycle: 1
+    round: 1
+    method: self
+    reviewer: current author session
+    recorder: current author session
+    separation: same context; not independent
+    candidate: {commit: "bccb38e1d703d1851812b1a80b289e05a804ee71", delta: null}
+    live_operator_supervision: {requester_confirmed: true, reviewer_confirmed: true}
+    verdict: FAIL
+    criteria:
+      - "Current retrospective emergency definition criteria"
+      - "Current issues, testing, architecture, coding, security, documentation and Org-schema standards"
+    evidence:
+      - "The initial retrospective specification used schema 8 and the older D081 emergency layout rather than current schema 11."
+    findings:
+      - id: F-D082-DEF-001
+        severity: blocking
+        location: "tickets/D082-org-pdf-highlighting/spec.org"
+        requirement: "ISSUES.md unified specification and ABC presentation contract"
+        evidence: "The candidate lacked the required Synopsis structure, explicit Edge Cases section, current template version and source-independent handoff detail."
+        correction: "Reconcile the retrospective record to schema 11 while preserving the authorized outcome, PDF-only boundary and actual design."
+    prior_finding_dispositions: []
+    provisional_conditions: []
+    limitations:
+      - "Same-context author self-review; this is not independent assurance."

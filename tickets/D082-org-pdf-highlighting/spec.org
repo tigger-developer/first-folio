@@ -1,18 +1,107 @@
 #+TITLE: D082 - Render Org underline as PDF highlighting
-#+SCHEMA: 8
-#+SUBTITLE: Emergency delivery reconciliation
+#+SCHEMA: 11
+#+SUBTITLE: Unified change specification
 #+STARTUP: overview
 #+OPTIONS: toc:2 num:nil
-#+OPERATOR_SIGNOFF: BYPASS-GATE-7 2026-11-09
+#+OPERATOR_SIGNOFF: APPROVED 2026-11-09 PDF only
+
+* Synopsis
+:PROPERTIES:
+:CUSTOM_ID: summary
+:END:
+
+** Outcome
+
+- Org underline syntax becomes *pale yellow highlighting* in *PDF output*.
+
+** Before
+
+- Org =_marked_= text rendered as *underline* in every output format.
+
+** After
+
+- Script, letter and manuscript PDFs render Org =_marked_= text with a *#FFF59D background* while *retaining the text*.
+
+** Changes
+
+- The three public PDF routes use one *source-aware highlight projection*.
+
+** Unchanged
+
+- Markdown, Fountain, DOCX and ODT *retain native underline*.
+
+** Edge cases
+:PROPERTIES:
+:CUSTOM_ID: synopsis-edge-cases
+:END:
+
+- Literal text and unmatched Org markers *remain literal* under the existing inline parser contract.
+
+** Decisions
+
+- The emergency increment is *PDF only* and uses the fixed pale yellow colour =#FFF59D=.
+
+** Next step
+
+- Complete retrospective review, then obtain *operator visual validation* under [[#delivery-handoff][Delivery Handoff]].
+
+-----
 
 * Context
 :PROPERTIES:
 :CUSTOM_ID: context
 :END:
 
-- Problem :: Org underline syntax renders as underline, but the editorial use case requires a visible highlighter treatment in PDF output.
-- Scope :: Render Org =_marked_= text as pale yellow =#FFF59D= highlighting in PDF output from =folio convert=, =folio letter= and =folio manuscript=. DOCX and ODT are excluded from this emergency increment.
-- Compatibility :: Markdown and Fountain underline remain underline. Org DOCX and ODT retain their current editable underline treatment.
+** Problem
+
+Org underline syntax rendered as underline, but the editorial use case requires a visible highlighter treatment in PDF output.
+
+** Outcome
+
+Org =_marked_= text has a *readable pale yellow background* in PDFs produced by every public document mode.
+
+** Scope
+
+*** In scope
+
+- Render Org =_marked_= text as =#FFF59D= highlighting in PDFs from =folio convert=, =folio letter= and =folio manuscript=.
+- Preserve the marked text in PDF extraction and visual rendering.
+
+*** Out of scope
+
+- *No DOCX or ODT highlighting* is introduced by this increment.
+- No configurable highlight colour or additional Org syntax is introduced.
+
+*** Unchanged
+
+- Markdown and Fountain underline *remain underline*.
+- Org DOCX and ODT retain their current *editable underline* treatment.
+
+** Authority and starting point
+
+- Project profile :: [[file:../../.sdlc/project.yaml][=.sdlc/project.yaml=]]
+- Product authority :: [[file:../../docs/format-org.md][Org-mode Play Format]] and [[file:../../docs/format-manuscript-org.md][Org-mode Manuscript Format]]
+- Architecture authority :: [[file:../../docs/ARCHITECTURE.md][Architecture]]
+- Emergency authority :: =BYPASS-GATE-7= invoked on 2026-11-09 for PDF delivery first.
+- Starting behaviour :: The shared source renderer and manuscript Pandoc route projected Org underline as native Typst underline.
+
+** Constraints and dependencies
+:PROPERTIES:
+:CUSTOM_ID: constraints-and-dependencies
+:END:
+
+- Actual PDF validation depends on the existing Typst and Poppler test tools.
+- The change must use the existing source-recognition and PDF compilation paths without a new dependency.
+
+** Decisions
+
+- Use the fixed conventional highlighter colour =#FFF59D=.
+- Select highlighting from the *recognized Org source format*, not from underscore text alone.
+- Keep the office renderers outside this PDF-only increment.
+
+** Unresolved blockers
+
+- None.
 
 * Acceptance Criteria
 :PROPERTIES:
@@ -24,15 +113,15 @@
 :CUSTOM_ID: ac-082-1
 :END:
 
-- Criterion :: Org =_marked_= text rendered through the public script, letter and manuscript PDF commands retains its text and has a pale yellow =#FFF59D= background.
+- Criterion :: Given Org =_marked_= text, the public script, letter and manuscript PDF commands *retain the marked text* and render a *#FFF59D background* behind it.
 - Proven by :: [[#rt-082-1][RT082.1 - Public Org PDF routes render highlighting]] and [[#ut-082-1][UT082.1 - PDF highlighting is visually acceptable]].
 
-** AC082.2 - Other underline contracts do not change :ac:
+** AC082.2 - Non-Org PDF underline does not change :ac:
 :PROPERTIES:
 :CUSTOM_ID: ac-082-2
 :END:
 
-- Criterion :: Markdown and Fountain underline continue to use native underline. This PDF-only increment does not alter Org DOCX or ODT underline handling.
+- Criterion :: Given Markdown or Fountain underline, PDF rendering *continues to use native underline*.
 - Proven by :: [[#rt-082-2][RT082.2 - Non-Org PDF underline remains underline]].
 
 * Test Definitions
@@ -45,47 +134,155 @@
 :CUSTOM_ID: rt-082-1
 :END:
 
-- Boundary :: Temporary Org fixtures processed through the public script, letter and manuscript commands into actual PDFs.
-- Expected :: Extracted text contains the marked phrase and rasterized output contains pixels matching the =#FFF59D= highlight colour.
+- Covers :: [[#ac-082-1][AC082.1 - Org underline becomes PDF highlighting]]
+- Boundary :: Public application commands producing actual PDFs.
+- Setup :: Temporary Org script, letter and manuscript fixtures contain the same unique marked phrase.
+- Action :: Run each public command, extract PDF text and rasterize its first page.
+- Expected :: Each PDF *contains the marked phrase* and at least 20 raster pixels within the bounded =#FFF59D= colour range.
+- Retention :: Persistent regression suite under the supported test command.
 
 ** RT082.2 - Non-Org PDF underline remains underline :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-082-2
 :END:
 
-- Boundary :: Shared inline rendering for Markdown and Fountain underline syntax.
-- Expected :: Both formats emit the existing native Typst underline primitive rather than the Org highlight primitive.
+- Covers :: [[#ac-082-2][AC082.2 - Non-Org PDF underline does not change]]
+- Boundary :: Shared inline projection used by script PDF rendering.
+- Setup :: Equivalent Markdown and Fountain underline inputs.
+- Action :: Render each input to its Typst inline representation.
+- Expected :: Both formats emit *native Typst underline* and do not emit the Org highlight primitive.
+- Retention :: Persistent regression suite under the supported test command.
 
 ** UT082.1 - PDF highlighting is visually acceptable :testdef:
 :PROPERTIES:
 :CUSTOM_ID: ut-082-1
 :END:
 
-- Validation method :: Operator reviews representative Org script, letter and manuscript PDFs.
-- Expected :: Marked text is readable and the pale yellow treatment resembles a conventional highlighter without obscuring glyphs.
+- Covers :: [[#ac-082-1][AC082.1 - Org underline becomes PDF highlighting]]
+- Validation method :: User validation.
+- Procedure :: Review representative Org script, letter and manuscript PDFs at ordinary reading scale.
+- Expected :: Marked text is *readable*, the treatment resembles a *pale yellow highlighter*, and glyphs are not obscured.
+- Record :: Write the dated result to =validation.org=.
 
-* Emergency Delivery Record
+* Edge Cases
 :PROPERTIES:
-:CUSTOM_ID: emergency-delivery-record
+:CUSTOM_ID: edge-cases
 :END:
 
-- TDD :: The public PDF regression first retained the marked text but detected no =#FFF59D= pixels in script, letter or manuscript output.
-- Actual change :: Org-aware Typst projection now selects one shared highlight primitive. The manuscript Org-to-Markdown boundary canonicalizes Pandoc underline spans before applying the same projection.
+** Source-format boundary
+
+- Condition :: Equivalent underscore syntax is parsed from Org, Markdown or Fountain.
+- Required behaviour :: Only the *Org PDF projection highlights*; the other formats retain underline.
+- Covered by :: [[#ac-082-2][AC082.2 - Non-Org PDF underline does not change]] and [[#rt-082-2][RT082.2 - Non-Org PDF underline remains underline]].
+
+** Literal and unmatched markers
+
+- Condition :: An underscore occurs in protected literal text or does not form a valid Org emphasis span.
+- Required behaviour :: The existing parser contract *preserves it as literal text* rather than applying highlighting.
+- Covered by :: Existing shared inline-parser regressions; D082 does not change marker recognition.
 
 * Solution Design
 :PROPERTIES:
 :CUSTOM_ID: solution-design
 :END:
 
-- Ownership :: =internal/typst= owns the shared highlight primitive. =internal/source= selects it for Org script and letter inline markup. =internal/manuscript= bridges Org's canonicalized underline span to it.
-- Source boundary :: Selection depends on the recognized source format, not the output text alone, so Markdown and Fountain retain native underline.
-- Office boundary :: Native DOCX and ODT renderers are unchanged and retain editable Org underline.
-- Reliability :: The feature uses existing parsing and Typst compilation paths. It adds no dependency, network access, persistence or external state.
+** Architecture context
+
+- Relevant components :: =internal/source= owns shared inline recognition and Typst projection; =internal/manuscript= owns Org manuscript canonicalization; =internal/typst= owns shared Typst primitives.
+- Ownership boundary :: Native DOCX and ODT rendering remains owned by =internal/office= and is unchanged.
+- Existing pattern :: Source format is already carried into the shared inline renderer so presentation may vary without changing marker recognition.
+
+** High-level design
+
+*** Components and responsibilities
+
+- =internal/typst= defines the shared =#FFF59D= highlight opener.
+- =internal/source= selects that opener for Org underline nodes and retains the native underline opener for other formats.
+- =internal/manuscript= converts Pandoc's Org underline representation into its existing underline span, then projects that span to the shared highlight opener.
+
+*** Reuse, shared behaviour and variation
+
+- Shared operation :: All PDF modes use one *Typst highlight primitive*.
+- Variation :: The source format selects highlight for Org and underline for Markdown or Fountain.
+
+*** Boundaries and dependencies
+
+- The change remains inside existing Go parsing and Typst compilation paths and introduces *no dependency or external service*.
+
+*** Flow
+
+1. The public command recognizes Org input and parses its inline underline semantics.
+2. Script and letter rendering select the shared highlight directly; manuscript canonicalization maps Pandoc's underline span to it.
+3. Typst compiles the projected markup into the published PDF.
+
+*** Essential mechanisms
+
+- The shared opener is =#highlight(fill: rgb("#FFF59D"))[=.
+- Manuscript replacement occurs after Pandoc block parsing so the existing manuscript block model remains unchanged.
+
+*** Interfaces and configuration
+
+- Interface :: Existing public commands and source syntax are unchanged.
+- Compatibility :: No new YAML field or CLI option is introduced; non-Org and office behaviour remains compatible.
+
+*** Data and state
+
+- No persistent state, migration or source-document rewrite is introduced.
+
+*** Failure behaviour
+
+- Existing parse and Typst compilation errors propagate through the current command error paths.
+
+*** Simplicity and proportionality
+
+- One shared primitive plus two existing projection points avoids renderer duplication and adds no speculative abstraction.
+
+** Design decisions and verification
+
+*** Source-aware presentation
+
+- Decision :: Highlighting is selected only when the recognized source format is Org.
+- Verification :: [[#rt-082-1][RT082.1 - Public Org PDF routes render highlighting]] and [[#rt-082-2][RT082.2 - Non-Org PDF underline remains underline]].
+
+*** PDF-only emergency increment
+
+- Decision :: Native DOCX and ODT underline remains unchanged.
+- Verification :: Delivery review confirms no =internal/office= production delta; office highlighting requires separate authority.
+
+** Routine details left to implementation
+
+- Helper names and bounded raster colour tolerances may vary while preserving the defined observations.
+
+** Architecture impact
+
+*** Security impact
+
+- Threat boundary :: *No trust boundary changes*.
+- Data and secrets :: No new data, secret, log or persistence path.
+- Access :: No authorization or privilege change.
+- Conclusion :: Existing local parsing and compiler controls remain sufficient.
+
+*** Other relevant qualities
+
+- Maintainability :: One shared colour primitive prevents drift between PDF modes.
+- Accessibility :: UT082.1 checks that the background does not obscure the marked text; the text itself remains present for extraction.
+
+* Emergency Delivery Record
+:PROPERTIES:
+:CUSTOM_ID: emergency-delivery-record
+:END:
+
+- TDD :: The public PDF regression first retained the marked text but detected *zero #FFF59D pixels* in script, letter and manuscript output.
+- Actual change :: Org-aware Typst projection now selects one shared highlight primitive, including the manuscript Pandoc boundary.
 
 * Delivery Handoff
 :PROPERTIES:
 :CUSTOM_ID: delivery-handoff
 :END:
 
-- Validation :: [[file:validation.org][D082 validation]].
-- Audit :: [[file:audits.yaml][D082 audit record]].
+- Required reading :: [[file:../../docs/format-org.md][Org-mode Play Format]], [[file:../../docs/format-manuscript-org.md][Org-mode Manuscript Format]] and [[file:../../docs/ARCHITECTURE.md][Architecture]].
+- Entry conditions :: Emergency authority is recorded above; automated evidence and audit state are read from the linked records.
+- First implementation step :: Write [[#rt-082-1][RT082.1 - Public Org PDF routes render highlighting]] and observe meaningful RED before implementation.
+- Definition evidence :: [[file:audits.yaml][=audits.yaml=]]
+- Validation evidence :: [[file:validation.org][=validation.org=]]
+- Documentation impact :: The three required reading documents describe the delivered PDF and unchanged office boundaries.
