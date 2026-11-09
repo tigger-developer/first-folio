@@ -1,7 +1,7 @@
 ---
 title: Architecture
-version: "0.33"
-last-updated: 2026-11-08
+version: "0.34"
+last-updated: 2026-11-09
 ---
 
 # Architecture
@@ -105,6 +105,12 @@ packages it with `archive/zip`, and publishes through a same-directory staged
 rename. No Pandoc or Typst process runs at any stage of script, manuscript or letter DOCX, including source parsing and dry-run. British scene tables, font
 mapping, resource bounds and approximations are described in [DOCX export](format-docx.md).
 The conversion entry point passes the source format into the shared office inline renderer, so Org single-asterisk bold also applies to DOCX and ODT, including footnotes. The existing Typst route retains its independent source-aware renderer.
+
+PDF projection treats Org underline as editorial highlighting. The shared Typst
+highlight primitive uses `#FFF59D`; script and letter source rendering selects
+it directly, while the Org manuscript canonicalizer maps Pandoc's underline
+span to the same primitive. Markdown and Fountain retain native underline, and
+the office renderers continue to emit editable underline for Org input.
 
 After native DOCX generation, the shared attributed-footnote transformer places each Word comment range start before the reference paragraph's first content and replaces the original footnote-reference run with the range end and comment reference. This preserves complete sentence or line highlighting across multiple Word runs. Multiple ranges in one paragraph are nested in reference order before bounded package validation and atomic publication.
 
@@ -236,6 +242,8 @@ Automated coverage is Go-owned. Unit tests cover parsing, emission, configuratio
 Before issue #10, conversion and letters used a Perl dispatcher, Perl parsers/emitters, embedded YAML::Tiny, and shell regression suites; manuscripts used a separately built Go helper. Issue #10 replaced that split with the single Go runtime while preserving the public CLI and accepted rendering behaviour.
 
 ## Document History
+
+- 0.34 (2026-11-09): Record source-aware Org PDF highlighting and the manuscript canonicalization boundary.
 
 - 0.33 (2026-11-08): Add the immutable prepared-cover projection and native editable DOCX drawing boundary.
 

@@ -1,0 +1,91 @@
+#+TITLE: D082 - Render Org underline as PDF highlighting
+#+SCHEMA: 8
+#+SUBTITLE: Emergency delivery reconciliation
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+OPERATOR_SIGNOFF: BYPASS-GATE-7 2026-11-09
+
+* Context
+:PROPERTIES:
+:CUSTOM_ID: context
+:END:
+
+- Problem :: Org underline syntax renders as underline, but the editorial use case requires a visible highlighter treatment in PDF output.
+- Scope :: Render Org =_marked_= text as pale yellow =#FFF59D= highlighting in PDF output from =folio convert=, =folio letter= and =folio manuscript=. DOCX and ODT are excluded from this emergency increment.
+- Compatibility :: Markdown and Fountain underline remain underline. Org DOCX and ODT retain their current editable underline treatment.
+
+* Acceptance Criteria
+:PROPERTIES:
+:CUSTOM_ID: acceptance-criteria
+:END:
+
+** AC082.1 - Org underline becomes PDF highlighting :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-082-1
+:END:
+
+- Criterion :: Org =_marked_= text rendered through the public script, letter and manuscript PDF commands retains its text and has a pale yellow =#FFF59D= background.
+- Proven by :: [[#rt-082-1][RT082.1 - Public Org PDF routes render highlighting]] and [[#ut-082-1][UT082.1 - PDF highlighting is visually acceptable]].
+
+** AC082.2 - Other underline contracts do not change :ac:
+:PROPERTIES:
+:CUSTOM_ID: ac-082-2
+:END:
+
+- Criterion :: Markdown and Fountain underline continue to use native underline. This PDF-only increment does not alter Org DOCX or ODT underline handling.
+- Proven by :: [[#rt-082-2][RT082.2 - Non-Org PDF underline remains underline]].
+
+* Test Definitions
+:PROPERTIES:
+:CUSTOM_ID: test-definitions
+:END:
+
+** RT082.1 - Public Org PDF routes render highlighting :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-082-1
+:END:
+
+- Boundary :: Temporary Org fixtures processed through the public script, letter and manuscript commands into actual PDFs.
+- Expected :: Extracted text contains the marked phrase and rasterized output contains pixels matching the =#FFF59D= highlight colour.
+
+** RT082.2 - Non-Org PDF underline remains underline :testdef:
+:PROPERTIES:
+:CUSTOM_ID: rt-082-2
+:END:
+
+- Boundary :: Shared inline rendering for Markdown and Fountain underline syntax.
+- Expected :: Both formats emit the existing native Typst underline primitive rather than the Org highlight primitive.
+
+** UT082.1 - PDF highlighting is visually acceptable :testdef:
+:PROPERTIES:
+:CUSTOM_ID: ut-082-1
+:END:
+
+- Validation method :: Operator reviews representative Org script, letter and manuscript PDFs.
+- Expected :: Marked text is readable and the pale yellow treatment resembles a conventional highlighter without obscuring glyphs.
+
+* Emergency Delivery Record
+:PROPERTIES:
+:CUSTOM_ID: emergency-delivery-record
+:END:
+
+- TDD :: The public PDF regression first retained the marked text but detected no =#FFF59D= pixels in script, letter or manuscript output.
+- Actual change :: Org-aware Typst projection now selects one shared highlight primitive. The manuscript Org-to-Markdown boundary canonicalizes Pandoc underline spans before applying the same projection.
+
+* Solution Design
+:PROPERTIES:
+:CUSTOM_ID: solution-design
+:END:
+
+- Ownership :: =internal/typst= owns the shared highlight primitive. =internal/source= selects it for Org script and letter inline markup. =internal/manuscript= bridges Org's canonicalized underline span to it.
+- Source boundary :: Selection depends on the recognized source format, not the output text alone, so Markdown and Fountain retain native underline.
+- Office boundary :: Native DOCX and ODT renderers are unchanged and retain editable Org underline.
+- Reliability :: The feature uses existing parsing and Typst compilation paths. It adds no dependency, network access, persistence or external state.
+
+* Delivery Handoff
+:PROPERTIES:
+:CUSTOM_ID: delivery-handoff
+:END:
+
+- Validation :: [[file:validation.org][D082 validation]].
+- Audit :: [[file:audits.yaml][D082 audit record]].

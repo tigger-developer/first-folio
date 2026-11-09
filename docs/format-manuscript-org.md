@@ -1,7 +1,7 @@
 ---
 title: Org-mode Manuscript Format
-version: "0.8"
-last-updated: 2026-11-01
+version: "0.9"
+last-updated: 2026-11-09
 ---
 
 # Org-mode Manuscript Format
@@ -39,6 +39,7 @@ Supported front matter fields are `TITLE`, `SUBTITLE`, `AUTHOR`, `ATTRIBUTION`, 
 | `-----` or `_____` on its own line | Section break, rendered as the configured manuscript scene-break marker |
 | `*bold*` | Bold text |
 | `/italic/` | Italic text |
+| `_marked_` | Pale yellow (`#FFF59D`) highlighting in PDF; underline in DOCX and ODT |
 | `+deleted+` | Strikethrough text |
 | `=code=`, `~code~` and source blocks | Monospace literal text |
 | `--`, `---`, `...` and `\-` | En dash, em dash, ellipsis and discretionary soft hyphen |
@@ -97,6 +98,7 @@ This planning note is excluded.
 
 ## Revision History
 
+- 0.9, 2026-11-09: Render Org underline as pale yellow highlighting in PDF manuscripts while retaining office underline behaviour.
 - 0.8, 2026-11-01: Define protected literal spans, ellipsis and soft-hyphen substitutions, and structured multi-paragraph footnotes.
 - 0.7, 2026-09-27: Linked stretch and hyphenation controls and reconciled current block-clearance defaults.
 - 0.6, 2026-09-26: Document exact quote indentation and additive quote clearance.
