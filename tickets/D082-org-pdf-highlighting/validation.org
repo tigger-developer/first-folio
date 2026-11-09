@@ -36,3 +36,9 @@
 
 - =go test ./internal/source ./internal/letter ./internal/manuscript -count=1= passed on 2026-11-09.
 - =go test ./internal/app -run '^(TestOrgUnderlineRendersAsYellowHighlightInPDF|TestScriptCharacterAliases)$' -count=1= passed on 2026-11-09.
+
+* Delivery checks
+
+- =make test= passed at =d299d73= on 2026-11-09. The slowest packages were =internal/app= at 681.024 seconds and =internal/manuscript= at 179.704 seconds.
+- =make lint= passed at =d299d73= on 2026-11-09.
+- =make vulncheck= passed at =d299d73= on 2026-11-09 and reported no vulnerabilities.
