@@ -9,7 +9,7 @@
 ** GREEN RT082.1 - Public Org PDF routes render highlighting :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-082-1-result
-:REVISION: pending
+:REVISION: da86ed3
 :COMMAND: go test ./internal/app -run '^TestOrgUnderlineRendersAsYellowHighlightInPDF$' -count=1
 :EVIDENCE: Script, letter and manuscript public commands produced PDFs containing the marker text and raster pixels matching #FFF59D.
 :END:
@@ -19,7 +19,7 @@
 ** GREEN RT082.2 - Non-Org PDF underline remains underline :testdef:
 :PROPERTIES:
 :CUSTOM_ID: rt-082-2-result
-:REVISION: pending
+:REVISION: da86ed3
 :COMMAND: go test ./internal/source -run '^TestRT082_2NonOrgUnderlineRemainsUnderline$' -count=1
 :EVIDENCE: Markdown and Fountain inputs emitted the native Typst underline primitive and did not emit the Org highlight primitive.
 :END:
