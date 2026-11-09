@@ -121,7 +121,7 @@ Org =_marked_= text has a *readable pale yellow background* in PDFs produced by 
 :CUSTOM_ID: ac-082-2
 :END:
 
-- Criterion :: Given Markdown or Fountain underline, PDF rendering *continues to use native underline*.
+- Criterion :: Given Markdown or Fountain underline, Typst/PDF projection *continues to use native underline*.
 - Proven by :: [[#rt-082-2][RT082.2 - Non-Org PDF underline remains underline]].
 
 * Test Definitions
@@ -147,9 +147,9 @@ Org =_marked_= text has a *readable pale yellow background* in PDFs produced by 
 :END:
 
 - Covers :: [[#ac-082-2][AC082.2 - Non-Org PDF underline does not change]]
-- Boundary :: Shared inline projection used by script PDF rendering.
+- Boundary :: Public =folio convert= output to the supported Typst intermediate.
 - Setup :: Equivalent Markdown and Fountain underline inputs.
-- Action :: Render each input to its Typst inline representation.
+- Action :: Convert each source through the public command and inspect the generated Typst output.
 - Expected :: Both formats emit *native Typst underline* and do not emit the Org highlight primitive.
 - Retention :: Persistent regression suite under the supported test command.
 

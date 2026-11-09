@@ -20,8 +20,8 @@
 :PROPERTIES:
 :CUSTOM_ID: rt-082-2-result
 :REVISION: da86ed3
-:COMMAND: go test ./internal/source -run '^TestRT082_2NonOrgUnderlineRemainsUnderline$' -count=1
-:EVIDENCE: Markdown and Fountain inputs emitted the native Typst underline primitive and did not emit the Org highlight primitive.
+:COMMAND: go test ./internal/app -run '^TestRT082_2NonOrgUnderlineRemainsUnderline$' -count=1
+:EVIDENCE: Public Markdown and Fountain conversions emitted the native Typst underline primitive and did not emit the Org highlight primitive.
 :END:
 
 * User validation

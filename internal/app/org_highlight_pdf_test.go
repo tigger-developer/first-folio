@@ -4,6 +4,7 @@ package app
 
 import (
 	"image"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -70,6 +71,37 @@ func TestOrgUnderlineRendersAsYellowHighlightInPDF(t *testing.T) {
 			}
 			if pixels := yellowHighlightPixels(rasterW073Page(t, target, 1)); pixels < 20 {
 				t.Fatalf("PDF yellow highlight pixels = %d; want at least 20", pixels)
+			}
+		})
+	}
+}
+
+func TestRT082_2NonOrgUnderlineRemainsUnderline(t *testing.T) {
+	for _, tc := range []struct {
+		name, extension, source string
+	}{
+		{name: "markdown", extension: ".md", source: "# ACT ONE\n\n**CÁIT:**\nBefore _marked_ after.\n"},
+		{name: "fountain", extension: ".fountain", source: "# ACT ONE\n\nCÁIT\nBefore _marked_ after.\n"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Setenv("HOME", t.TempDir())
+			source := filepath.Join(dir, "source"+tc.extension)
+			target := filepath.Join(dir, "output.typ")
+			writeAppFile(t, source, tc.source)
+			status, _, stderr := runApp(t, "convert", source, target)
+			if status != 0 {
+				t.Fatalf("Typst conversion failed: %s", stderr)
+			}
+			output, err := os.ReadFile(target)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !strings.Contains(string(output), "#underline[marked]") {
+				t.Fatalf("public Typst output did not retain native underline: %s", output)
+			}
+			if strings.Contains(string(output), "#highlight(") {
+				t.Fatalf("public Typst output applied Org highlighting: %s", output)
 			}
 		})
 	}
