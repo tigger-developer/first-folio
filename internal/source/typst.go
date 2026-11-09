@@ -48,7 +48,11 @@ func typstNodes(nodes []Node, notes map[string][]string, format string, resolvin
 				return "", err
 			}
 		case "Underline":
-			if err := wrap("#underline[", "]", n.Content.([]Node)); err != nil {
+			open := "#underline["
+			if format == "org" {
+				open = typstutil.HighlightOpen
+			}
+			if err := wrap(open, "]", n.Content.([]Node)); err != nil {
 				return "", err
 			}
 		case "Strikeout":

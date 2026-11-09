@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/tigger-developer/first-folio/internal/source"
+	typstutil "github.com/tigger-developer/first-folio/internal/typst"
 	"gopkg.in/yaml.v3"
 )
 
@@ -326,9 +327,15 @@ func parseOrg(text string) (Document, error) {
 	markdown = stripRawOrgBlocks(markdown)
 	markdown = restoreSectionBreakSentinel(markdown)
 	markdown = normalizePandocMarkdownEscapes(markdown)
+	markdown = strings.ReplaceAll(markdown, "<u>", "[")
+	markdown = strings.ReplaceAll(markdown, "</u>", "]{.underline}")
 	doc, err := parseMarkdown(markdown)
 	if err != nil {
 		return Document{}, err
+	}
+	for i := range doc.Blocks {
+		doc.Blocks[i].Text = strings.ReplaceAll(doc.Blocks[i].Text, "#underline[", typstutil.HighlightOpen)
+		doc.Blocks[i].Name = strings.ReplaceAll(doc.Blocks[i].Name, "#underline[", typstutil.HighlightOpen)
 	}
 	mergeMetadata(&doc.Metadata, meta)
 	return doc, nil

@@ -4,6 +4,9 @@ package typst
 
 import "strings"
 
+// HighlightOpen starts the shared pale-yellow inline highlight used for Org underline semantics.
+const HighlightOpen = `#highlight(fill: rgb("#FFF59D"))[`
+
 func EscapeContent(value string) string {
 	return strings.NewReplacer(
 		`\`, `\\`,
