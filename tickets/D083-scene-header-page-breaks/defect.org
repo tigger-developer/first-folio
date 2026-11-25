@@ -1,0 +1,76 @@
+#+TITLE: D083 - Honour scene-header page breaks without separating Act headers
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+
+* Summary
+
+=folio.positioning.scene-header.page-break-before: true= does not force later
+script Scene headers onto new pages. The first Scene under an Act must remain
+with that Act header.
+
+* Observed behaviour
+
+- Reported observation :: Scene headers do not receive the configured page
+  break.
+- Current source configuration :: On 2026-11-25,
+  =/Users/tigger/notes/gp/mixed-messages/subs/script.yaml= contained
+  =scene-header.page-break-before: false=, despite the reported intended value
+  being =true=.
+- Independent reproduction :: A temporary copy of =Annabellas_Party.org= and
+  its local configuration was converted after forcing the setting to =true=
+  and disabling the cover image. Repository =dist/folio= identified itself as
+  version 0.4.16 and produced a 14-page PDF.
+- Reproduced result :: Page 3 contained =One Act Play=, =SCENE 1= and
+  =SCENE 2=. Later Scene headers appeared on pages 5, 8 and 10 through natural
+  pagination rather than a configured break.
+- Implementation observation :: The PDF Scene-header event branch emits the
+  heading without consulting =scene-header.page-break-before=. The inspected
+  native office Scene branch likewise assigns the Scene role without applying
+  this setting.
+
+* Expected behaviour
+
+- With =page-break-before: true=, later Scene headers begin on a new page.
+- The first Scene belonging to an Act remains on the same page as its Act
+  header.
+- The behaviour for a script containing Scene headers without Act headers is
+  not yet specified.
+
+* Product authority
+
+- [[file:../../docs/config.md][Configuration reference]] documents
+  =folio.positioning.scene-header= as supporting header page breaks.
+- The generic setting applies to script layout; whether its required boundary
+  includes PDF, DOCX and ODT must be confirmed when the correction is defined.
+
+* Impact
+
+- Scripts cannot reliably start later Scenes on new pages through the documented
+  configuration.
+- Manual output adjustment undermines repeatable conversion and editable-office
+  workflows.
+
+* Evidence and environment
+
+- Reported source area :: =/Users/tigger/notes/gp/mixed-messages/subs=
+- Reproduced input :: =Annabellas_Party.org= with a temporary configuration
+  copy; no source document was changed.
+- Reproduced output :: Temporary PDF inspected with =pdfinfo= and =pdftotext=;
+  the temporary fixture was moved to Trash after inspection.
+- Repository state :: =master= synchronized with =origin/master= before ticket
+  reservation.
+
+* Unknowns
+
+- Whether the reported failure was observed in PDF, DOCX, ODT or more than one
+  format.
+- The required first-Scene rule when no Act header exists.
+- Last known working version, if any.
+- Priority remains unassigned.
+
+* Later verification boundary
+
+A later fix should be distinguishable by converting a script with at least two
+Acts and two Scenes per Act: each Act and its first Scene share a page, while
+each later Scene begins on a new page when the setting is =true=. Equivalent
+office-package checks are needed if DOCX and ODT are confirmed within scope.

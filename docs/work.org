@@ -81,11 +81,11 @@ classification; it is provenance, not current state.
 ** TODO D083 - Honour scene-header page breaks without separating Act headers :defect:
 :PROPERTIES:
 :CUSTOM_ID: d-083
-:PRIORITY: P2
+:PRIORITY: UNASSIGNED
 :SOURCE: operator
 :CREATED: 2026-11-25
 :END:
-- Defect :: [[file:../tickets/D083-scene-header-page-breaks/defect.org][D083 - Honour scene-header page breaks without separating Act headers]] (defect report pending).
+- Defect :: [[file:../tickets/D083-scene-header-page-breaks/defect.org][D083 - Honour scene-header page breaks without separating Act headers]].
 
 ** REVIEW D082 - Render Org underline as PDF highlighting :defect:
 :PROPERTIES:
